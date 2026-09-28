@@ -1,0 +1,2 @@
+# duckomo
+DuckDB OM extenstion
