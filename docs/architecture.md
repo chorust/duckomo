@@ -1,28 +1,26 @@
 # duckomo 技术架构
 
-状态：2026-09-28。Phase 0–2 已实现为 **C++ DuckDB extension + 官方 Open-Meteo OM C library**；网格、坐标和谓词下推仍是后续设计。当前实现边界及运行证据见 [本地扫描器计划](../specs/001-local-om-scanner/plan.md) 与 [验收记录](../specs/001-local-om-scanner/evidence/)。
+状态：2026-09-28。Phase 0–2 已实现为 **C++ DuckDB extension + 官方 Open-Meteo OM C library**，并在 Linux AArch64 验证；Linux x86_64 尚无运行证据。网格、坐标和谓词下推仍是后续设计。当前实现边界及运行证据见 [SQL 契约](../specs/001-local-om-scanner/contracts/sql-interface.md) 与 [最终验收记录](../specs/001-local-om-scanner/evidence/final.md)。
 
-## 1. 职责边界
+## 1. 当前实现与后续职责
 
 | 层 | 回答的问题 | 职责 |
 |---|---|---|
-| DuckDB table function | 查什么？ | Bind、SQL schema、projection/filter pushdown、执行调度、DataChunk 输出 |
-| ScanPlan | 本次查询选什么？ | 所需变量、维度条件、逻辑选择、输出布局、任务划分 |
-| GridMapping / DimensionMapping | 在数组哪里？ | 经纬度、时间、level、member、lead time 等语义坐标与 OM 逻辑索引互转 |
-| 官方 OM C reader | 如何读取？ | hierarchy/metadata、逻辑切片到 chunk/LUT/byte range、解压 |
-| I/O adapter | 从哪里读字节？ | 将 OM Sans-I/O 请求接到 DuckDB 文件系统；后续本地/HTTP/S3 共用扫描逻辑 |
+| DuckDB table function（已实现） | 查什么？ | Bind、SQL schema、projection pushdown、执行调度、DataChunk 输出 |
+| ProjectionPlan（已实现） | 本次查询读哪些变量？ | 根据 `column_ids` 保留输出与过滤依赖，去重物理变量并维持输出顺序 |
+| GridMapping / DimensionMapping（规划中） | 在数组哪里？ | 经纬度、时间、level、member、lead time 等语义坐标与 OM 逻辑索引互转 |
+| 官方 OM C reader（已接入） | 如何读取？ | hierarchy/metadata、chunk/LUT/byte range、解压 |
+| I/O adapter（本地已实现） | 从哪里读字节？ | 将 OM Sans-I/O 请求接到 DuckDB 文件系统；HTTP/S3 尚未实现 |
 
 ```text
 DuckDB SQL
-  → TableFunction Bind/GlobalInit/LocalInit/Scan
-  → ScanPlan ← GridMapping + DimensionMapping
-  → OM logical offset/count 或等价 slice
-  → official OM C reader
-  → DuckDB filesystem adapter
-  → decoded block → DuckDB Vector/DataChunk
+  → read_om Bind：本地 OM metadata、schema、dimensions 对齐
+  → GlobalInit：ProjectionPlan（输出列和过滤依赖）
+  → Scan：OM C reader → DuckDB 本地文件系统适配器
+  → decoded values → DuckDB Vector/DataChunk → DuckDB WHERE
 ```
 
-特别明确：`GridMapping::select(bbox)` 返回的是**逻辑网格点/索引区间**。它不做 `get_range_list` 式 chunk ID、OM 文件 byte range 或解压规划；这些由官方 OM reader 负责。旧对话中把 `get_range_list()` 称作扫描核心的建议，已被后续讨论修正。本设计以该修正为准。
+后续 `GridMapping::select(bbox)` 应返回**逻辑网格点/索引区间**，不规划 chunk ID、OM 文件 byte range 或解压；这些仍由官方 OM reader 负责。
 
 ## 2. DuckDB 集成
 
@@ -34,7 +32,7 @@ Phase 0–2 的 [实现计划](../specs/001-local-om-scanner/plan.md) 固定 Duc
 
 目前使用 C++ API 是**版本相关的设计决策**：若将来稳定 C API 具备同等 filter pushdown 能力，可以重新评估，不能把当前决定写成永久限制。
 
-## 3. 空间和维度映射
+## 3. 空间和维度映射（尚未实现）
 
 ### GridMapping
 
@@ -63,26 +61,23 @@ Open-Meteo 主项目已有 `grid.findBox(boundingBox:)` 一类网格选择逻辑
 
 ## 4. OM reader 与 I/O
 
-官方 OM C implementation 是格式读写和局部数组读取的唯一格式核心。duckomo 传入逻辑选择；OM reader 负责 chunk 交集、LUT、压缩和解码。Sans-I/O 设计使 duckomo 能将字节读取请求适配到 DuckDB 文件系统。先跑通本地，Phase 5 再引入 HTTP/S3、缓存、并行任务。不能根据“OM 天然 chunked”就假定扫描已并行或远程读取已高效，需实测。
+官方 OM C implementation 是格式读取核心。当前扫描将本地文件的字节请求接入 DuckDB 文件系统，由官方 reader 负责 chunk 交集、LUT、压缩和解码；应用层按变量列裁剪并分有界批次输出。尚无地理或时间逻辑切片。Phase 5 计划引入 HTTP/S3、缓存和并行任务，届时需实测远程局部读取的效果。
 
-## 5. 建议目录（实施时创建）
+## 5. 代码目录与后续模块
 
 ```text
 src/
-  om_extension.cpp
-  scan/           # bind、table function、ScanPlan、predicates
-  grid/           # GridMapping、Regular/Gaussian/Projection、registry
-  dimensions/     # time、level、forecast/member
-  om/             # 官方 C reader 适配、DuckDB I/O adapter
-  generated/      # 由上游生成的网格定义
-third_party/      # 锁定版本的 OM 依赖（若构建方案采用 vendoring）
-scripts/          # registry 生成/校验
-test/sql/         # SQL 行为和 EXPLAIN
-test/grid/        # 映射边界与上游对照
-test/data/        # 小型、可复现 OM fixtures
+  om_extension.cpp  # 注册 read_om 和 read_om_raw
+  scan/             # bind、schema、projection、batch、table functions
+  om/               # OM reader、metadata、本地文件适配
+third_party/om-file-format/  # 固定的官方 OM 源码
+test/sql/           # SQLLogicTests
+test/native/        # 原生检查
+test/data/          # 可复现 OM fixtures 和参考结果
+scripts/validate.sh # 综合验证
 ```
 
-构建骨架参考 DuckDB extension-template；实际依赖引入方式在 Phase 0 确定，不预先承诺 vendoring。
+后续的 grid、dimensions 和 registry 模块将在对应阶段建立，目前没有这些目录。
 
 ## 6. 实现参考与验证点
 
@@ -99,4 +94,4 @@ test/data/        # 小型、可复现 OM fixtures
 | 后续 N-D 计算 | [xtensor](https://github.com/xtensor-stack/xtensor) | 只适配已解码数据块；不承担 lazy I/O |
 | 后续 SIMD | [xsimd](https://github.com/xtensor-stack/xsimd) 与 OM 自身实现 | 仅在 profiling 证明必要时引入额外向量化代码 |
 
-以上链接是实施参考，不是对未来 API 稳定性的承诺。Phase 0 必须锁定具体 DuckDB/OM 版本，并记录样本文件与测试结果。
+以上链接是实施参考，不是对未来 API 稳定性的承诺。Phase 0–2 已锁定 DuckDB v1.5.4、OM C 源码提交与 fixture，并记录验证结果；具体提交见 [研究记录](../specs/001-local-om-scanner/research.md)。
