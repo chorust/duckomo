@@ -1,0 +1,9 @@
+[submodule "duckdb"]
+	path = duckdb
+	url = https://github.com/duckdb/duckdb.git
+[submodule "third_party/om-file-format"]
+	path = third_party/om-file-format
+	url = https://github.com/open-meteo/om-file-format.git
+[submodule "extension-ci-tools"]
+	path = extension-ci-tools
+	url = https://github.com/duckdb/extension-ci-tools.git

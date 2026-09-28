@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "upstream_om_commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+  "generation_command": "./build/release/test/tools/duckomo_fixture_tool --output test/data",
+  "oracle": "fixed OM C API: om_variable_init + om_decoder_* full-array decode",
+  "fixtures": [
+    {
+      "fixture_id": "raw",
+      "path": "raw.om",
+      "sha256": "6a34044749250c0de21d65d40d4f6c270c3ae31d16ac623626bc6b2f7a01ced3",
+      "source": "official OM C encoder and metadata writer",
+      "format_version": 3,
+      "variable_path": "/",
+      "type": "Float32",
+      "compression": "FPX_XOR2D",
+      "shape": [2,3],
+      "chunk_shape": [1,2],
+      "axes": [],
+      "expected_schema": ["value FLOAT"],
+      "null_positions": [],
+      "reference_csv": "raw.reference.csv",
+      "reference_csv_sha256": "d877c8234157eba79c072172708c89a5a54d87aa83bd8a3307e0731dd1492ad3",
+      "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise full-file"}
+    },
+    {
+      "fixture_id": "special",
+      "path": "special.om",
+      "sha256": "e2b29274a1ac920cb8fad7db177aa07dd4c51f480c94803f2ab0492a767595c0",
+      "source": "official OM C encoder and metadata writer",
+      "format_version": 3,
+      "variable_path": "/",
+      "type": "Float32",
+      "compression": "FPX_XOR2D",
+      "shape": [2,4],
+      "chunk_shape": [1,3],
+      "axes": [],
+      "expected_schema": ["value FLOAT"],
+      "null_positions": [0],
+      "reference_csv": "special.reference.csv",
+      "reference_csv_sha256": "8cee3472479cfa1f7013cb9df3f7d24d95900548c9a2e630418af775ddc4ab7b",
+      "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise full-file"}
+    },
+    {
+      "fixture_id": "raw_large",
+      "path": "raw_large.om",
+      "sha256": "fb6ef03698432659f539b7ea4476c8a017fb3a4a59266e017ecd19112ccadc8f",
+      "source": "official OM C encoder and metadata writer",
+      "format_version": 3,
+      "variable_path": "/",
+      "type": "Float32",
+      "compression": "FPX_XOR2D",
+      "shape": [73,61],
+      "chunk_shape": [7,13],
+      "axes": [],
+      "expected_schema": ["value FLOAT"],
+      "null_positions": [],
+      "reference_csv": "raw_large.reference.csv",
+      "reference_csv_sha256": "fb58024c567740e2ddd08b43088e5ba1084e2e5d7a75fce11f850aaf41fd813f",
+      "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise full-file"}
+    },
+    {
+      "fixture_id": "multi",
+      "path": "multi.om",
+      "sha256": "49aad03bf849d858f46708aba34f673ac3d4176be996f359b47736157d60f25f",
+      "source": "official OM C encoder and metadata writer",
+      "format_version": 3,
+      "variable_path": "/",
+      "type": "NONE container",
+      "compression": "NONE",
+      "shape": null,
+      "chunk_shape": null,
+      "axes": {"/humidity":["row","column"],"/temperature":["row","column"]},
+      "expected_schema": ["/humidity FLOAT","/temperature FLOAT"],
+      "variables": [
+        {"variable_path": "/humidity", "type": "Float32", "compression": "FPX_XOR2D", "shape": [2,3], "chunk_shape": [1,2], "axes": ["row","column"], "expected_column": "/humidity FLOAT", "null_positions": [], "reference_csv": "multi.humidity.reference.csv", "reference_csv_sha256": "699782744ee1a9a250436b1ec0da1f516a0862abeff8fb5d65433b7b93608a5a", "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise official decode"}},
+        {"variable_path": "/temperature", "type": "Float32", "compression": "FPX_XOR2D", "shape": [2,3], "chunk_shape": [1,2], "axes": ["row","column"], "expected_column": "/temperature FLOAT", "null_positions": [], "reference_csv": "multi.temperature.reference.csv", "reference_csv_sha256": "d877c8234157eba79c072172708c89a5a54d87aa83bd8a3307e0731dd1492ad3", "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise official decode"}}
+      ]
+    },
+    {
+      "fixture_id": "nested",
+      "path": "nested.om",
+      "sha256": "dc2b75fa770f9b2814a15cb0223538953006608a8f6343923ad5d7f20eb273ae",
+      "source": "official OM C encoder and metadata writer",
+      "format_version": 3,
+      "variable_path": "/",
+      "type": "NONE container",
+      "compression": "NONE",
+      "shape": null,
+      "chunk_shape": null,
+      "axes": {"/layer_a/value":["row","column"],"/layer_b/temperature":["row","column"],"/layer_b/value":["row","column"],"/temperature":["row","column"],"/weird%2Fname%25/value":["row","column"]},
+      "expected_schema": ["/layer_a/value FLOAT","/layer_b/temperature FLOAT","/layer_b/value FLOAT","/temperature FLOAT","/weird%2Fname%25/value FLOAT"],
+      "variables": [
+        {"variable_path": "/layer_a/value", "type": "Float32", "compression": "FPX_XOR2D", "shape": [2,3], "chunk_shape": [1,2], "axes": ["row","column"], "expected_column": "/layer_a/value FLOAT", "null_positions": [], "reference_csv": "nested.layer_a.value.reference.csv", "reference_csv_sha256": "699782744ee1a9a250436b1ec0da1f516a0862abeff8fb5d65433b7b93608a5a", "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise official decode"}},
+        {"variable_path": "/layer_b/temperature", "type": "Float32", "compression": "FPX_XOR2D", "shape": [2,3], "chunk_shape": [2,2], "axes": ["row","column"], "expected_column": "/layer_b/temperature FLOAT", "null_positions": [], "reference_csv": "nested.layer_b.temperature.reference.csv", "reference_csv_sha256": "98c4d7bb897807165878ad28a98fc8e9b6d82f4190e7c47196072b3fefbb8892", "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise official decode"}},
+        {"variable_path": "/layer_b/value", "type": "Float32", "compression": "FPX_XOR2D", "shape": [2,3], "chunk_shape": [2,2], "axes": ["row","column"], "expected_column": "/layer_b/value FLOAT", "null_positions": [], "reference_csv": "nested.layer_b.value.reference.csv", "reference_csv_sha256": "812a06cd1f03ca76441a16505eeec512bb010aa38ff6446a89afd94f3b9e9d76", "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise official decode"}},
+        {"variable_path": "/temperature", "type": "Float32", "compression": "FPX_XOR2D", "shape": [2,3], "chunk_shape": [1,2], "axes": ["row","column"], "expected_column": "/temperature FLOAT", "null_positions": [], "reference_csv": "nested.temperature.reference.csv", "reference_csv_sha256": "d877c8234157eba79c072172708c89a5a54d87aa83bd8a3307e0731dd1492ad3", "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise official decode"}},
+        {"variable_path": "/weird%2Fname%25/value", "type": "Float32", "compression": "FPX_XOR2D", "shape": [2,3], "chunk_shape": [1,2], "axes": ["row","column"], "expected_column": "/weird%2Fname%25/value FLOAT", "null_positions": [], "reference_csv": "nested.encoded_name.value.reference.csv", "reference_csv_sha256": "a08e3c778e23ad2f1682c4a64b7dd2a18c61dd6b59e02b722592de59ba66da83", "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise official decode"}}
+      ]
+    },
+    {
+      "fixture_id": "projection",
+      "path": "projection.om",
+      "sha256": "fb36284bf8f932c82b171c7bce28b6e767b95321d1d986dc0a1dbd3b84d88a43",
+      "source": "official OM C encoder and metadata writer",
+      "format_version": 3,
+      "variable_path": "/",
+      "type": "NONE container",
+      "compression": "NONE",
+      "shape": null,
+      "chunk_shape": null,
+      "axes": {"/humidity":["row","column"],"/pressure":["row","column"],"/temperature":["row","column"]},
+      "expected_schema": ["/humidity FLOAT","/pressure FLOAT","/temperature FLOAT"],
+      "variables": [
+        {"variable_path": "/humidity", "type": "Float32", "compression": "FPX_XOR2D", "shape": [83,127], "chunk_shape": [11,17], "axes": ["row","column"], "expected_column": "/humidity FLOAT", "null_positions": [], "reference_csv": "projection.humidity.reference.csv", "reference_csv_sha256": "21905a83dd420aa49530d1d57334f5e50faf619f507da3aa1224be93c096e656", "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise official decode"}},
+        {"variable_path": "/pressure", "type": "Float32", "compression": "FPX_XOR2D", "shape": [83,127], "chunk_shape": [13,19], "axes": ["row","column"], "expected_column": "/pressure FLOAT", "null_positions": [], "reference_csv": "projection.pressure.reference.csv", "reference_csv_sha256": "29eb1539c1de6ba0db11fa652e9d23a2c6196528292ecbdba242bb7b792aa3d4", "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise official decode"}},
+        {"variable_path": "/temperature", "type": "Float32", "compression": "FPX_XOR2D", "shape": [83,127], "chunk_shape": [7,23], "axes": ["row","column"], "expected_column": "/temperature FLOAT", "null_positions": [], "reference_csv": "projection.temperature.reference.csv", "reference_csv_sha256": "00a0e2d2e27a2ecc4f59e74d1264830ba2bbfafa679ea2790fd4d7791b997aed", "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise official decode"}}
+      ]
+    }
+  ],
+  "projection_scenarios": {
+    "fixture_id": "projection",
+    "shape": [83,127],
+    "standard_vector_size": 2048,
+    "row_count": 10541,
+    "scenarios": [
+      {"scenario_id": "full_scan", "sql": "SELECT \"/humidity\", \"/pressure\", \"/temperature\" FROM read_om('test/data/projection.om', dimensions := map(['/humidity', '/pressure', '/temperature'], [['row', 'column'], ['row', 'column'], ['row', 'column']])) ORDER BY \"/temperature\"", "result_row_count": 10541, "output_variables": ["/humidity", "/pressure", "/temperature"], "expected_values_reference_csvs": {"/humidity": "projection.humidity.reference.csv", "/pressure": "projection.pressure.reference.csv", "/temperature": "projection.temperature.reference.csv"}},
+      {"scenario_id": "single_variable", "sql": "SELECT \"/temperature\" FROM read_om('test/data/projection.om', dimensions := map(['/humidity', '/pressure', '/temperature'], [['row', 'column'], ['row', 'column'], ['row', 'column']])) ORDER BY \"/temperature\"", "result_row_count": 10541, "output_variables": ["/temperature"], "expected_values_reference_csv": "projection.temperature.reference.csv"},
+      {"scenario_id": "output_plus_filter", "sql": "SELECT \"/temperature\" FROM read_om('test/data/projection.om', dimensions := map(['/humidity', '/pressure', '/temperature'], [['row', 'column'], ['row', 'column'], ['row', 'column']])) WHERE \"/humidity\" = 96 ORDER BY \"/temperature\"", "result_row_count": 108, "output_variables": ["/temperature"], "filter_variables": ["/humidity"], "predicate": "/humidity = 96", "expected_row_positions": [96,193,290,387,484,581,678,775,872,969,1066,1163,1260,1357,1454,1551,1648,1745,1842,1939,2036,2133,2230,2327,2424,2521,2618,2715,2812,2909,3006,3103,3200,3297,3394,3491,3588,3685,3782,3879,3976,4073,4170,4267,4364,4461,4558,4655,4752,4849,4946,5043,5140,5237,5334,5431,5528,5625,5722,5819,5916,6013,6110,6207,6304,6401,6498,6595,6692,6789,6886,6983,7080,7177,7274,7371,7468,7565,7662,7759,7856,7953,8050,8147,8244,8341,8438,8535,8632,8729,8826,8923,9020,9117,9214,9311,9408,9505,9602,9699,9796,9893,9990,10087,10184,10281,10378,10475], "expected_output_values": [-76,-51.75,-27.5,-3.25,21,45.25,69.5,93.75,118,142.25,166.5,190.75,215,239.25,263.5,287.75,312,336.25,360.5,384.75,409,433.25,457.5,481.75,506,530.25,554.5,578.75,603,627.25,651.5,675.75,700,724.25,748.5,772.75,797,821.25,845.5,869.75,894,918.25,942.5,966.75,991,1015.25,1039.5,1063.75,1088,1112.25,1136.5,1160.75,1185,1209.25,1233.5,1257.75,1282,1306.25,1330.5,1354.75,1379,1403.25,1427.5,1451.75,1476,1500.25,1524.5,1548.75,1573,1597.25,1621.5,1645.75,1670,1694.25,1718.5,1742.75,1767,1791.25,1815.5,1839.75,1864,1888.25,1912.5,1936.75,1961,1985.25,2009.5,2033.75,2058,2082.25,2106.5,2130.75,2155,2179.25,2203.5,2227.75,2252,2276.25,2300.5,2324.75,2349,2373.25,2397.5,2421.75,2446,2470.25,2494.5,2518.75]},
+      {"scenario_id": "count", "sql": "SELECT COUNT(*) FROM read_om('test/data/projection.om', dimensions := map(['/humidity', '/pressure', '/temperature'], [['row', 'column'], ['row', 'column'], ['row', 'column']]))", "result_row_count": 1, "count_value": 10541, "expected_values": [10541]}
+    ]
+  },
+  "negative_assets": [
+    {"fixture_id": "unsupported_version", "path": "negative/unsupported_version.om", "sha256": "879ad8f48f960823062e5a1702c55cfc04342fd256a8c8bc43b14e2e0c79a086", "source_fixture": "multi.om", "mutation": "set OM header version byte at offset 2 from 3 to 4", "expected_rejection": "reject unknown/unsupported OM file version before metadata scan"},
+    {"fixture_id": "unsupported_type", "path": "negative/unsupported_type.om", "sha256": "45e2d163863ddcf2f58a8e6d2c8a5bc6fc41716b74e8dda0318c870396fedf9e", "source_fixture": "multi.om", "mutation": "set /temperature metadata data_type to DATA_TYPE_DOUBLE_ARRAY", "expected_rejection": "reject non-Float32 array type at bind time"},
+    {"fixture_id": "unsupported_compression", "path": "negative/unsupported_compression.om", "sha256": "26c205edbf4ddb913ce97cb777fb71e88f596f13be71fd4ab48a1a726256bd3b", "source_fixture": "multi.om", "mutation": "set /temperature metadata compression_type to COMPRESSION_NONE", "expected_rejection": "reject compression other than FPX_XOR2D at bind time"},
+    {"fixture_id": "empty_array_zero_axis", "path": "negative/empty_array_zero_axis.om", "sha256": "ab52fd31cf55cad24b25f7b58a3f3ada88464fef561912bea76da7ad7f274787", "source_fixture": "multi.om", "mutation": "set /temperature dimension[0] from 2 to 0", "expected_rejection": "reject an array with a zero-length axis (empty array)"},
+    {"fixture_id": "duplicate_name", "path": "negative/duplicate_name.om", "sha256": "3a20b27a2d10bd0beb6f81d6c15b2adfc4d9572d8a2d1f64e276765a016863ad", "source_fixture": "nested.om", "mutation": "replace /layer_b metadata name bytes with layer_a (both are seven bytes)", "expected_rejection": "reject duplicate canonical paths including /layer_a/value"},
+    {"fixture_id": "illegal_reference", "path": "negative/illegal_reference.om", "sha256": "c474903b687d022d6199d67612eb2855a7a074047847e984302e9ef69012f55e", "source_fixture": "nested.om", "mutation": "set /layer_a child[0] metadata offset to file_size + 4096", "expected_rejection": "reject an out-of-file metadata child reference"},
+    {"fixture_id": "shape_mismatch", "path": "negative/shape_mismatch.om", "sha256": "9d7c3b4630f8c2cc0f37776fdb09ce73b98885903d35a1c554ac8c46af53af68", "source_fixture": "multi.om", "mutation": "set /humidity dimension[0] from 2 to 3 while /temperature remains [2,3]", "expected_rejection": "reject arrays whose shapes differ"}
+  ],
+  "negative_cases": [
+    {"fixture_id": "missing_axis_mapping", "source_fixture": "multi.om", "method": "omit /humidity from dimensions map while retaining /temperature", "expected_rejection": "dimensions keys must exactly cover all array paths"},
+    {"fixture_id": "different_axis_identity", "source_fixture": "multi.om", "method": "declare /humidity axes as [row,other] and /temperature axes as [row,column]", "expected_rejection": "ordered axis identities differ"}
+  ],
+  "truncation_mutations": [
+    {"source": "raw.om", "method": "copy the file and remove its final byte", "expected_error": "truncated OM trailer"}
+  ]
+}

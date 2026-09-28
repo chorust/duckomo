@@ -1,6 +1,6 @@
 # duckomo v1 产品与接口 Spec
 
-状态：设计基线（2026-09-28）；尚未实现。
+状态：2026-09-28。Phase 0–2 本地 OM 扫描子集已实现；后续网格、坐标与远程访问能力仍是设计目标。
 
 ## 1. 目标
 
@@ -32,6 +32,14 @@ DESCRIBE SELECT * FROM read_om('test.om');
 ```
 
 未来的远程路径沿用同一入口，例如 `read_om('s3://bucket/file.om', domain := '...')`。远程访问属于 Phase 5。
+
+### Phase 0–2 的首批接口子集
+
+本地扫描器的实现与证据见 [实现计划](../specs/001-local-om-scanner/plan.md)、[SQL 契约](../specs/001-local-om-scanner/contracts/sql-interface.md) 和 [Phase 0–2 验收记录](../specs/001-local-om-scanner/evidence/)。当前支持 OM v3、Float32 数组及 FPX 无损压缩；旧版本、其他类型或压缩、非法布局及零长度轴均明确拒绝。NaN 映射为 NULL，±Inf 和 ±0 保留。
+
+OM 基础数组元数据没有通用轴身份，因此多变量不能仅凭相同 shape 对齐。`read_om(path, dimensions := ...)` 使用显式 `dimensions MAP(VARCHAR, VARCHAR[])` 参数，逐变量声明有序轴标识；shape 与轴声明必须完全相同。单变量不要求该参数。该声明只提供逻辑对齐证据，不生成坐标；本地扫描子集不支持 `domain` 映射。根数组输出 `value`，层级数组使用规范路径作为列名，命名和拒绝规则详见 SQL 契约。
+
+`read_om_raw(path)` 是 Phase 0 的单变量验证入口。`read_om(path, dimensions := NULL)` 提供根数组或层级多变量读取。查询只投影实际需要的值变量；由 DuckDB 执行普通过滤，过滤引用的变量仍会作为扫描依赖读取。`COUNT(*)` 可仅读取 metadata 来输出 cardinality，不读取索引或值数组。实际读取和解码计数以及限制见 [Phase 2 证据](../specs/001-local-om-scanner/evidence/phase2.md)。
 
 ### 行和列的语义
 

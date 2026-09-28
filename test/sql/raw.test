@@ -1,0 +1,95 @@
+# name: test/sql/raw.test
+# description: Read official OM raw and special-value fixtures without Python
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+# The independent official-reader oracle records raw.reference.csv with SHA-256
+# d877c8234157eba79c072172708c89a5a54d87aa83bd8a3307e0731dd1492ad3.
+query T
+SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om_raw('__WORKING_DIRECTORY__/test/data/raw.om'));
+----
+value FLOAT
+
+# Values and row count match all rows in the official raw.reference.csv.
+query I
+SELECT count(*) FROM read_om_raw('__WORKING_DIRECTORY__/test/data/raw.om');
+----
+6
+
+query R
+SELECT value
+FROM read_om_raw('__WORKING_DIRECTORY__/test/data/raw.om')
+ORDER BY value;
+----
+0.000000
+1.000000
+2.000000
+3.000000
+4.000000
+5.000000
+
+# The independent official-reader oracle records special.reference.csv with SHA-256
+# 8cee3472479cfa1f7013cb9df3f7d24d95900548c9a2e630418af775ddc4ab7b.
+query IIIII
+SELECT count(*) FILTER (WHERE value IS NULL),
+       count(*) FILTER (WHERE isinf(value) AND value > 0),
+       count(*) FILTER (WHERE isinf(value) AND value < 0),
+       count(*) FILTER (WHERE value = 0 AND NOT signbit(value)),
+       count(*) FILTER (WHERE value = 0 AND signbit(value))
+FROM read_om_raw('__WORKING_DIRECTORY__/test/data/special.om');
+----
+1	1	1	1	1
+
+query R
+SELECT value
+FROM read_om_raw('__WORKING_DIRECTORY__/test/data/special.om')
+WHERE isfinite(value) AND value <> 0
+ORDER BY value;
+----
+-3.500000
+42.250000
+123.125000
+
+# A missing local path is a file-access error.
+statement error
+SELECT * FROM read_om_raw('__WORKING_DIRECTORY__/test/data/does-not-exist.om');
+----
+<REGEX>:(?i).*(file access|io error|could not open|no such file|not found).*
+
+# /proc/kcore is a protected Linux kernel file and cannot be read as OM input.
+statement error
+SELECT * FROM read_om_raw('/proc/kcore');
+----
+<REGEX>:(?i).*(file access|io error|could not open|permission denied|operation not permitted|not readable).*
+
+# Reproduce the manifest's truncation mutation: remove the final byte of raw.om.
+statement ok
+COPY (
+    SELECT array_slice(content, 0, size - 1)
+    FROM read_blob('__WORKING_DIRECTORY__/test/data/raw.om')
+) TO '__TEST_DIR__/duckomo_raw_truncated.om' (FORMAT BLOB);
+
+statement error
+SELECT * FROM read_om_raw('__TEST_DIR__/duckomo_raw_truncated.om');
+----
+<REGEX>:(?i).*(truncated|trailer|data corruption|invalid.*header).*
+
+# Change only the version byte in the official v3 fixture to exercise rejection
+# of an unsupported OM version while preserving the rest of the file.
+statement ok
+COPY (
+    SELECT blob 'OM\x02' || array_slice(content, 4, size)
+    FROM read_blob('__WORKING_DIRECTORY__/test/data/raw.om')
+) TO '__TEST_DIR__/duckomo_raw_v2.om' (FORMAT BLOB);
+
+statement error
+SELECT * FROM read_om_raw('__TEST_DIR__/duckomo_raw_v2.om');
+----
+<REGEX>:(?i).*(unsupported|version.*3|only.*version 3).*

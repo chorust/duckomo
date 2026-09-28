@@ -1,6 +1,6 @@
 # duckomo 技术架构
 
-状态：v1 设计基线（2026-09-28）。目标实现为 **C++ DuckDB extension + 官方 Open-Meteo OM C library**。选择 C++ 的直接原因是 DuckDB C++ table function 提供投影与过滤下推入口；构建时须锁定兼容的 DuckDB 版本。
+状态：2026-09-28。Phase 0–2 已实现为 **C++ DuckDB extension + 官方 Open-Meteo OM C library**；网格、坐标和谓词下推仍是后续设计。当前实现边界及运行证据见 [本地扫描器计划](../specs/001-local-om-scanner/plan.md) 与 [验收记录](../specs/001-local-om-scanner/evidence/)。
 
 ## 1. 职责边界
 
@@ -26,9 +26,11 @@ DuckDB SQL
 
 ## 2. DuckDB 集成
 
-`Bind` 读取足以确定 schema 的元数据，并固定变量与维度解释。`GlobalInit` 接收 `column_ids`/`projection_ids`/`filters`，构造 `ScanPlan`；必要时 `LocalInit` 为并行 worker 准备局部状态。Scan 将已解码块写入 DuckDB Vector，尽量避免 NumPy/xtensor/额外 vector 中转。
+`Bind` 读取足以确定 schema 的元数据，并固定变量与维度解释。`GlobalInit` 根据 DuckDB 的 `column_ids` 构造 `ProjectionPlan`；查询需要的输出列和过滤列都保留，重复列映射到去重后的物理变量，输出顺序仍按 SQL 请求保留。`COLUMN_IDENTIFIER_EMPTY` 作为只提供行数的内部 cardinality slot；`COUNT(*)` 不读取数组索引或数据。Scan 将官方 decoder 解出的值直接放入 DuckDB Vector。当前扫描单线程运行，本地读由 DuckDB 文件系统适配器完成。
 
-`projection_pushdown` 用于减少变量读取；`filter_pushdown` 用于提前选择维度；`filter_prune` 只有在精确过滤已由 scanner 执行且相关 DuckDB 行为已验证时才开启。复杂或不支持的谓词保留给 DuckDB。DuckDB 的过滤器传递细节及 table function 类型存在版本差异，Phase 0/3 必须在锁定版本上以 EXPLAIN 和物理 I/O 计数验证。
+`projection_pushdown` 用于减少变量读取；本阶段 `filter_pushdown` 和 `filter_prune` 均关闭，SQL 过滤由 DuckDB 正常执行，谓词所需变量仍参与扫描。DuckDB 的列裁剪行为已在固定版本上通过结果对照和实际 I/O 指标验证；计数查询的 cardinality 路径也已单独检查。未来只有在精确谓词执行和过滤依赖保留经过集成验证后，才考虑增加维度选择下推。
+
+Phase 0–2 的 [实现计划](../specs/001-local-om-scanner/plan.md) 固定 DuckDB v1.5.4 和官方 OM 源码提交（完整版本见 [研究记录](../specs/001-local-om-scanner/research.md)）。多变量轴身份通过显式 `dimensions` 参数验证，不凭 shape 推断；这一逻辑只处理对齐，不实现后续坐标映射。扫描采用本地定位读取与有界批次，官方 reader 仍拥有 chunk 和字节请求规划权。支持的 OM v3、Float32、FPX 子集和文件格式拒绝规则见 [SQL 契约](../specs/001-local-om-scanner/contracts/sql-interface.md)。
 
 目前使用 C++ API 是**版本相关的设计决策**：若将来稳定 C API 具备同等 filter pushdown 能力，可以重新评估，不能把当前决定写成永久限制。
 
