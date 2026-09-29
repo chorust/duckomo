@@ -11,15 +11,15 @@ LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
 
 # Reordered and repeated output slots preserve their requested values and order.
 query RRR
-SELECT "/temperature", "/humidity", "/temperature"
+SELECT "temperature", "humidity", "temperature"
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/projection.om',
     dimensions := map(
-        ['/humidity', '/pressure', '/temperature'],
+        ['humidity', 'pressure', 'temperature'],
         [['row', 'column'], ['row', 'column'], ['row', 'column']]
     )
 )
-ORDER BY "/temperature"
+ORDER BY "temperature"
 LIMIT 4;
 ----
 -100.000000	0.000000	-100.000000
@@ -30,25 +30,25 @@ LIMIT 4;
 # Compare every reordered/duplicate projected row with a materialized full read.
 query I
 WITH full_read AS MATERIALIZED (
-    SELECT "/humidity", "/pressure", "/temperature"
+    SELECT "humidity", "pressure", "temperature"
     FROM read_om(
         '__WORKING_DIRECTORY__/test/data/projection.om',
         dimensions := map(
-            ['/humidity', '/pressure', '/temperature'],
+            ['humidity', 'pressure', 'temperature'],
             [['row', 'column'], ['row', 'column'], ['row', 'column']]
         )
     )
 ),
 expected AS (
-    SELECT "/temperature" AS first, "/humidity" AS second, "/temperature" AS third
+    SELECT "temperature" AS first, "humidity" AS second, "temperature" AS third
     FROM full_read
 ),
 projected AS MATERIALIZED (
-    SELECT "/temperature" AS first, "/humidity" AS second, "/temperature" AS third
+    SELECT "temperature" AS first, "humidity" AS second, "temperature" AS third
     FROM read_om(
         '__WORKING_DIRECTORY__/test/data/projection.om',
         dimensions := map(
-            ['/humidity', '/pressure', '/temperature'],
+            ['humidity', 'pressure', 'temperature'],
             [['row', 'column'], ['row', 'column'], ['row', 'column']]
         )
     )
@@ -66,29 +66,29 @@ SELECT (
 # Expressions over projected columns match expression results from a full read.
 query I
 WITH full_read AS MATERIALIZED (
-    SELECT "/humidity", "/pressure", "/temperature"
+    SELECT "humidity", "pressure", "temperature"
     FROM read_om(
         '__WORKING_DIRECTORY__/test/data/projection.om',
         dimensions := map(
-            ['/humidity', '/pressure', '/temperature'],
+            ['humidity', 'pressure', 'temperature'],
             [['row', 'column'], ['row', 'column'], ['row', 'column']]
         )
     )
 ),
 expected AS (
-    SELECT "/pressure" / 2 AS half_pressure,
-           "/temperature" + "/humidity" AS temperature_plus_humidity,
-           "/temperature" * 2 - "/pressure" AS difference
+    SELECT "pressure" / 2 AS half_pressure,
+           "temperature" + "humidity" AS temperature_plus_humidity,
+           "temperature" * 2 - "pressure" AS difference
     FROM full_read
 ),
 projected AS MATERIALIZED (
-    SELECT "/pressure" / 2 AS half_pressure,
-           "/temperature" + "/humidity" AS temperature_plus_humidity,
-           "/temperature" * 2 - "/pressure" AS difference
+    SELECT "pressure" / 2 AS half_pressure,
+           "temperature" + "humidity" AS temperature_plus_humidity,
+           "temperature" * 2 - "pressure" AS difference
     FROM read_om(
         '__WORKING_DIRECTORY__/test/data/projection.om',
         dimensions := map(
-            ['/humidity', '/pressure', '/temperature'],
+            ['humidity', 'pressure', 'temperature'],
             [['row', 'column'], ['row', 'column'], ['row', 'column']]
         )
     )
@@ -106,28 +106,28 @@ SELECT (
 # Humidity is needed by WHERE even though only temperature is returned.
 query IIR
 WITH full_read AS MATERIALIZED (
-    SELECT "/humidity", "/pressure", "/temperature"
+    SELECT "humidity", "pressure", "temperature"
     FROM read_om(
         '__WORKING_DIRECTORY__/test/data/projection.om',
         dimensions := map(
-            ['/humidity', '/pressure', '/temperature'],
+            ['humidity', 'pressure', 'temperature'],
             [['row', 'column'], ['row', 'column'], ['row', 'column']]
         )
     )
 ),
 expected AS (
-    SELECT "/temperature" AS value FROM full_read WHERE "/humidity" = 96
+    SELECT "temperature" AS value FROM full_read WHERE "humidity" = 96
 ),
 projected AS MATERIALIZED (
-    SELECT "/temperature" AS value
+    SELECT "temperature" AS value
     FROM read_om(
         '__WORKING_DIRECTORY__/test/data/projection.om',
         dimensions := map(
-            ['/humidity', '/pressure', '/temperature'],
+            ['humidity', 'pressure', 'temperature'],
             [['row', 'column'], ['row', 'column'], ['row', 'column']]
         )
     )
-    WHERE "/humidity" = 96
+    WHERE "humidity" = 96
 )
 SELECT
     (SELECT count(*) FROM (
@@ -142,15 +142,15 @@ SELECT
 
 # ORDER BY needs pressure even though pressure is absent from the result.
 query R
-SELECT "/temperature"
+SELECT "temperature"
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/projection.om',
     dimensions := map(
-        ['/humidity', '/pressure', '/temperature'],
+        ['humidity', 'pressure', 'temperature'],
         [['row', 'column'], ['row', 'column'], ['row', 'column']]
     )
 )
-ORDER BY "/pressure" DESC
+ORDER BY "pressure" DESC
 LIMIT 8;
 ----
 2535.000000
@@ -166,30 +166,30 @@ LIMIT 8;
 # produce the same groups and values as a materialized full scan.
 query II
 WITH full_read AS MATERIALIZED (
-    SELECT "/humidity", "/pressure", "/temperature"
+    SELECT "humidity", "pressure", "temperature"
     FROM read_om(
         '__WORKING_DIRECTORY__/test/data/projection.om',
         dimensions := map(
-            ['/humidity', '/pressure', '/temperature'],
+            ['humidity', 'pressure', 'temperature'],
             [['row', 'column'], ['row', 'column'], ['row', 'column']]
         )
     )
 ),
 expected AS (
-    SELECT floor("/pressure" / 100)::INTEGER AS band, sum("/temperature") AS total
+    SELECT floor("pressure" / 100)::INTEGER AS band, sum("temperature") AS total
     FROM full_read
-    GROUP BY floor("/pressure" / 100)::INTEGER
+    GROUP BY floor("pressure" / 100)::INTEGER
 ),
 projected AS MATERIALIZED (
-    SELECT floor("/pressure" / 100)::INTEGER AS band, sum("/temperature") AS total
+    SELECT floor("pressure" / 100)::INTEGER AS band, sum("temperature") AS total
     FROM read_om(
         '__WORKING_DIRECTORY__/test/data/projection.om',
         dimensions := map(
-            ['/humidity', '/pressure', '/temperature'],
+            ['humidity', 'pressure', 'temperature'],
             [['row', 'column'], ['row', 'column'], ['row', 'column']]
         )
     )
-    GROUP BY floor("/pressure" / 100)::INTEGER
+    GROUP BY floor("pressure" / 100)::INTEGER
 )
 SELECT
     (SELECT count(*) FROM (
@@ -207,7 +207,7 @@ SELECT count(*)
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/projection.om',
     dimensions := map(
-        ['/humidity', '/pressure', '/temperature'],
+        ['humidity', 'pressure', 'temperature'],
         [['row', 'column'], ['row', 'column'], ['row', 'column']]
     )
 );
@@ -216,11 +216,11 @@ FROM read_om(
 
 # A constant false predicate returns no rows for a projected output column.
 query R
-SELECT "/temperature"
+SELECT "temperature"
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/projection.om',
     dimensions := map(
-        ['/humidity', '/pressure', '/temperature'],
+        ['humidity', 'pressure', 'temperature'],
         [['row', 'column'], ['row', 'column'], ['row', 'column']]
     )
 )
@@ -229,13 +229,13 @@ WHERE FALSE;
 
 # A real predicate with no matches still depends on humidity and returns no rows.
 query R
-SELECT "/temperature"
+SELECT "temperature"
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/projection.om',
     dimensions := map(
-        ['/humidity', '/pressure', '/temperature'],
+        ['humidity', 'pressure', 'temperature'],
         [['row', 'column'], ['row', 'column'], ['row', 'column']]
     )
 )
-WHERE "/humidity" = -999999;
+WHERE "humidity" = -999999;
 ----

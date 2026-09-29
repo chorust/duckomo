@@ -12,6 +12,7 @@ namespace duckomo {
 
 struct MetadataVariable final {
 	std::string canonical_path;
+	std::vector<std::string> inferred_axes;
 	std::vector<std::uint64_t> shape;
 	std::vector<std::uint64_t> chunk_shape;
 	std::uint64_t row_count = 0;
@@ -25,7 +26,7 @@ struct OmMetadataTree final {
 };
 
 // Reads and validates all metadata nodes through the official OM v3 reader.
-// Only NONE containers and Float32/FPX leaf arrays are accepted.
+// Float32 arrays are value columns; their descendants and scalar siblings are metadata.
 OmMetadataTree ReadMetadataTree(const OmV3Reader &reader);
 
 // Encodes a single metadata name segment as a canonical OM path segment.

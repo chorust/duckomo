@@ -16,6 +16,35 @@ FROM (DESCRIBE SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om'));
 ----
 value FLOAT
 
+# Real-world-style PFOR arrays retain their scalar attributes. Matching
+# coordinates metadata allows safe alignment without an explicit dimensions map.
+query T
+SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/pfor_attributes.om'));
+----
+humidity FLOAT
+temperature FLOAT
+
+query RR
+SELECT humidity, temperature
+FROM read_om('__WORKING_DIRECTORY__/test/data/pfor_attributes.om')
+ORDER BY humidity;
+----
+10.000000	1.250000
+20.000000	NULL
+30.000000	-2.500000
+40.000000	3.500000
+50.000000	4.250000
+60.000000	5.000000
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/pfor_attributes.om',
+    dimensions := map(['humidity', 'temperature'], [['x', 'y'], ['x', 'y']])
+);
+----
+<REGEX>:(?i).*(coordinates|axis names|dimensions).*
+
 query R
 SELECT value FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om') ORDER BY value;
 ----
@@ -49,26 +78,26 @@ SELECT column_name || ' ' || column_type
 FROM (DESCRIBE SELECT * FROM read_om(
     '__WORKING_DIRECTORY__/test/data/multi.om',
     dimensions := map(
-        ['/humidity', '/temperature'],
+        ['humidity', 'temperature'],
         [['row', 'column'], ['row', 'column']]
     )
 ))
 ORDER BY column_name;
 ----
-/humidity FLOAT
-/temperature FLOAT
+humidity FLOAT
+temperature FLOAT
 
 # Both variables on each row refer to the same flattened index tuple.
 query RR
-SELECT "/humidity", "/temperature"
+SELECT "humidity", "temperature"
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/multi.om',
     dimensions := map(
-        ['/humidity', '/temperature'],
+        ['humidity', 'temperature'],
         [['row', 'column'], ['row', 'column']]
     )
 )
-ORDER BY "/humidity";
+ORDER BY "humidity";
 ----
 100.000000	0.000000
 101.000000	1.000000
@@ -79,15 +108,15 @@ ORDER BY "/humidity";
 
 # Repeating the same full scan gives the same ordered values.
 query RR
-SELECT "/humidity", "/temperature"
+SELECT "humidity", "temperature"
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/multi.om',
     dimensions := map(
-        ['/humidity', '/temperature'],
+        ['humidity', 'temperature'],
         [['row', 'column'], ['row', 'column']]
     )
 )
-ORDER BY "/humidity";
+ORDER BY "humidity";
 ----
 100.000000	0.000000
 101.000000	1.000000
@@ -103,30 +132,30 @@ SELECT column_name || ' ' || column_type
 FROM (DESCRIBE SELECT * FROM read_om(
     '__WORKING_DIRECTORY__/test/data/nested.om',
     dimensions := map(
-        ['/layer_a/value', '/layer_b/temperature', '/layer_b/value', '/temperature', '/weird%2Fname%25/value'],
+        ['layer_a/value', 'layer_b/temperature', 'layer_b/value', 'temperature', 'weird%2Fname%25/value'],
         [['row', 'column'], ['row', 'column'], ['row', 'column'], ['row', 'column'], ['row', 'column']]
     )
 ))
 ORDER BY column_name;
 ----
-/layer_a/value FLOAT
-/layer_b/temperature FLOAT
-/layer_b/value FLOAT
-/temperature FLOAT
-/weird%2Fname%25/value FLOAT
+layer_a/value FLOAT
+layer_b/temperature FLOAT
+layer_b/value FLOAT
+temperature FLOAT
+weird%2Fname%25/value FLOAT
 
 # Full nested scans keep each variable aligned with the same six logical rows.
 query RRRRR
-SELECT "/layer_a/value", "/layer_b/temperature", "/layer_b/value", "/temperature",
-       "/weird%2Fname%25/value"
+SELECT "layer_a/value", "layer_b/temperature", "layer_b/value", "temperature",
+       "weird%2Fname%25/value"
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/nested.om',
     dimensions := map(
-        ['/layer_a/value', '/layer_b/temperature', '/layer_b/value', '/temperature', '/weird%2Fname%25/value'],
+        ['layer_a/value', 'layer_b/temperature', 'layer_b/value', 'temperature', 'weird%2Fname%25/value'],
         [['row', 'column'], ['row', 'column'], ['row', 'column'], ['row', 'column'], ['row', 'column']]
     )
 )
-ORDER BY "/temperature";
+ORDER BY "temperature";
 ----
 100.000000	200.000000	300.000000	0.000000	400.000000
 101.000000	201.000000	301.000000	1.000000	401.000000
@@ -140,7 +169,7 @@ ORDER BY "/temperature";
 statement error
 SELECT * FROM read_om(
     '__WORKING_DIRECTORY__/test/data/multi.om',
-    dimensions := map(['/temperature'], [['row', 'column']])
+    dimensions := map(['temperature'], [['row', 'column']])
 );
 ----
 <REGEX>:(?i).*(dimensions|keys|humidity|cover).*
@@ -148,7 +177,7 @@ SELECT * FROM read_om(
 statement error
 SELECT * FROM read_om(
     '__WORKING_DIRECTORY__/test/data/multi.om',
-    dimensions := map(['/other', '/temperature'], [['row', 'column'], ['row', 'column']])
+    dimensions := map(['/other', 'temperature'], [['row', 'column'], ['row', 'column']])
 );
 ----
 <REGEX>:(?i).*(dimensions|unknown|array path|other).*
@@ -158,7 +187,7 @@ statement error
 SELECT * FROM read_om(
     '__WORKING_DIRECTORY__/test/data/multi.om',
     dimensions := map(
-        ['/humidity', '/temperature'],
+        ['humidity', 'temperature'],
         [['row'], ['row', 'column']]
     )
 );
@@ -169,7 +198,7 @@ statement error
 SELECT * FROM read_om(
     '__WORKING_DIRECTORY__/test/data/multi.om',
     dimensions := map(
-        ['/humidity', '/temperature'],
+        ['humidity', 'temperature'],
         [['row', 'row'], ['row', 'column']]
     )
 );
@@ -180,7 +209,7 @@ statement error
 SELECT * FROM read_om(
     '__WORKING_DIRECTORY__/test/data/multi.om',
     dimensions := map(
-        ['/humidity', '/temperature'],
+        ['humidity', 'temperature'],
         [['row', ''], ['row', 'column']]
     )
 );
@@ -191,7 +220,7 @@ statement error
 SELECT * FROM read_om(
     '__WORKING_DIRECTORY__/test/data/multi.om',
     dimensions := map(
-        ['/humidity', '/temperature'],
+        ['humidity', 'temperature'],
         [['row', NULL], ['row', 'column']]
     )
 );
@@ -202,7 +231,7 @@ statement error
 SELECT * FROM read_om(
     '__WORKING_DIRECTORY__/test/data/multi.om',
     dimensions := map(
-        ['/humidity', '/temperature'],
+        ['humidity', 'temperature'],
         [NULL, ['row', 'column']]
     )
 );
@@ -220,7 +249,7 @@ statement error
 SELECT * FROM read_om(
     '__WORKING_DIRECTORY__/test/data/multi.om',
     dimensions := map(
-        ['/humidity', '/temperature'],
+        ['humidity', 'temperature'],
         [['row', 'other'], ['row', 'column']]
     )
 );
@@ -231,7 +260,7 @@ statement error
 SELECT * FROM read_om(
     '__WORKING_DIRECTORY__/test/data/negative/shape_mismatch.om',
     dimensions := map(
-        ['/humidity', '/temperature'],
+        ['humidity', 'temperature'],
         [['row', 'column'], ['row', 'column']]
     )
 );
@@ -250,7 +279,7 @@ statement error
 SELECT * FROM read_om(
     '__WORKING_DIRECTORY__/test/data/negative/unsupported_version.om',
     dimensions := map(
-        ['/humidity', '/temperature'],
+        ['humidity', 'temperature'],
         [['row', 'column'], ['row', 'column']]
     )
 );
@@ -261,7 +290,7 @@ statement error
 SELECT * FROM read_om(
     '__WORKING_DIRECTORY__/test/data/negative/unsupported_type.om',
     dimensions := map(
-        ['/humidity', '/temperature'],
+        ['humidity', 'temperature'],
         [['row', 'column'], ['row', 'column']]
     )
 );
@@ -272,7 +301,7 @@ statement error
 SELECT * FROM read_om(
     '__WORKING_DIRECTORY__/test/data/negative/unsupported_compression.om',
     dimensions := map(
-        ['/humidity', '/temperature'],
+        ['humidity', 'temperature'],
         [['row', 'column'], ['row', 'column']]
     )
 );
@@ -283,7 +312,7 @@ statement error
 SELECT * FROM read_om(
     '__WORKING_DIRECTORY__/test/data/negative/empty_array_zero_axis.om',
     dimensions := map(
-        ['/humidity', '/temperature'],
+        ['humidity', 'temperature'],
         [['row', 'column'], ['row', 'column']]
     )
 );
@@ -297,7 +326,7 @@ SELECT latitude
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/multi.om',
     dimensions := map(
-        ['/humidity', '/temperature'],
+        ['humidity', 'temperature'],
         [['row', 'column'], ['row', 'column']]
     )
 );
@@ -309,7 +338,7 @@ SELECT longitude, time
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/multi.om',
     dimensions := map(
-        ['/humidity', '/temperature'],
+        ['humidity', 'temperature'],
         [['row', 'column'], ['row', 'column']]
     )
 );

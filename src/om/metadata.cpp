@@ -4,7 +4,9 @@
 #include <cstddef>
 #include <limits>
 #include <new>
+#include <sstream>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -89,17 +91,14 @@ std::vector<std::uint64_t> CopyShape(const std::uint64_t *shape, std::size_t ran
 void AddArray(const OmVariable_t *variable, std::uint64_t offset, std::uint64_t size,
               const std::shared_ptr<const OwnedMetadataBuffer> &owner, const std::string &path,
               OmMetadataTree &tree) {
-	if (om_variable_get_children_count(variable) != 0) {
-		throw ReaderError(ReaderErrorCode::UnsupportedNode,
-		                  "OM array nodes with children are not supported at '" + path + "'");
-	}
 	if (om_variable_get_type(variable) != DATA_TYPE_FLOAT_ARRAY) {
 		throw ReaderError(ReaderErrorCode::UnsupportedDataType,
 		                  "only Float32 OM arrays are supported at '" + path + "'");
 	}
-	if (om_variable_get_compression(variable) != COMPRESSION_FPX_XOR2D) {
+	const auto compression = om_variable_get_compression(variable);
+	if (compression != COMPRESSION_FPX_XOR2D && compression != COMPRESSION_PFOR_DELTA2D_INT16) {
 		throw ReaderError(ReaderErrorCode::UnsupportedCompression,
-		                  "only FPX_XOR2D OM arrays are supported at '" + path + "'");
+		                  "only FPX_XOR2D and PFOR_DELTA2D_INT16 OM arrays are supported at '" + path + "'");
 	}
 	const auto rank = om_variable_get_dimensions_count(variable);
 	if (rank == 0 || rank > OM_MAX_RANK) {
@@ -136,8 +135,32 @@ void AddArray(const OmVariable_t *variable, std::uint64_t offset, std::uint64_t 
 	tree.arrays.emplace_back(std::move(result));
 }
 
+std::vector<std::string> ParseCoordinates(const OmVariable_t *variable) {
+	void *value = nullptr;
+	std::uint64_t size = 0;
+	if (om_variable_get_scalar(variable, &value, &size) != ERROR_OK || value == nullptr || size == 0) {
+		return {};
+	}
+	const std::string coordinates(static_cast<const char *>(value), static_cast<std::size_t>(size));
+	if (!IsValidUtf8Name(coordinates)) {
+		return {};
+	}
+	std::istringstream input(coordinates);
+	std::vector<std::string> axes;
+	std::unordered_set<std::string> seen;
+	std::string axis;
+	while (input >> axis) {
+		if (!seen.emplace(axis).second) {
+			return {};
+		}
+		axes.emplace_back(std::move(axis));
+	}
+	return axes;
+}
+
 void Traverse(const OmV3Reader &reader, std::uint64_t offset, std::uint64_t size, const std::string &parent_path,
-              bool root_node, std::unordered_set<std::uint64_t> &active_offsets, OmMetadataTree &tree) {
+              bool root_node, bool array_attribute, std::unordered_set<std::uint64_t> &active_offsets,
+              std::unordered_map<std::string, std::vector<std::string>> &coordinates_by_path, OmMetadataTree &tree) {
 	if (!active_offsets.emplace(offset).second) {
 		throw ReaderError(ReaderErrorCode::InvalidMetadata,
 		                  "cycle detected in OM metadata references at file offset " + std::to_string(offset));
@@ -158,8 +181,9 @@ void Traverse(const OmV3Reader &reader, std::uint64_t offset, std::uint64_t size
 	const auto type = om_variable_get_type(variable);
 	const auto children_count = om_variable_get_children_count(variable);
 	auto node_path = parent_path;
+	std::string name;
 	if (!root_node) {
-		auto name = ReadNodeName(variable, parent_path);
+		name = ReadNodeName(variable, parent_path);
 		if (parent_path.empty()) {
 			node_path = "/" + EncodeMetadataName(name);
 		} else {
@@ -167,15 +191,23 @@ void Traverse(const OmV3Reader &reader, std::uint64_t offset, std::uint64_t size
 		}
 	}
 
-	if (type >= DATA_TYPE_INT8_ARRAY && type <= DATA_TYPE_STRING_ARRAY) {
+	const auto is_array = type >= DATA_TYPE_INT8_ARRAY && type <= DATA_TYPE_STRING_ARRAY;
+	if (type == DATA_TYPE_FLOAT_ARRAY && !array_attribute) {
 		const auto owner = borrowed.MetadataOwner();
 		AddArray(variable, offset, owner->Size(), owner, node_path, tree);
-		return;
-	}
-	if (type != DATA_TYPE_NONE) {
+	} else if (is_array && !array_attribute) {
 		throw ReaderError(ReaderErrorCode::UnsupportedNode,
-		                  "only NONE containers and Float32 arrays are supported in OM metadata at '" +
+		                  "only Float32 value arrays are supported in OM metadata at '" +
 	                      (node_path.empty() ? "/" : node_path) + "'");
+	} else if (type == DATA_TYPE_STRING && name == "coordinates") {
+		const auto axes = ParseCoordinates(variable);
+		if (!axes.empty()) {
+			const auto owner_path = parent_path.empty() ? "/" : parent_path;
+			if (!coordinates_by_path.emplace(owner_path, axes).second) {
+				throw ReaderError(ReaderErrorCode::InvalidMetadata,
+				                  "duplicate coordinates metadata at '" + owner_path + "'");
+			}
+		}
 	}
 	if (children_count == 0) {
 		return;
@@ -199,7 +231,8 @@ void Traverse(const OmV3Reader &reader, std::uint64_t offset, std::uint64_t size
 	                      (node_path.empty() ? "/" : node_path) + "'");
 	}
 	for (std::uint32_t child = 0; child < children_count; child++) {
-		Traverse(reader, child_offsets[child], child_sizes[child], node_path, false, active_offsets, tree);
+		Traverse(reader, child_offsets[child], child_sizes[child], node_path, false,
+		         array_attribute || type != DATA_TYPE_NONE, active_offsets, coordinates_by_path, tree);
 	}
 }
 
@@ -227,7 +260,25 @@ std::string EncodeMetadataName(const std::string &name) {
 OmMetadataTree ReadMetadataTree(const OmV3Reader &reader) {
 	OmMetadataTree result;
 	std::unordered_set<std::uint64_t> active_offsets;
-	Traverse(reader, reader.RootOffset(), reader.RootSize(), "", true, active_offsets, result);
+	std::unordered_map<std::string, std::vector<std::string>> coordinates_by_path;
+	Traverse(reader, reader.RootOffset(), reader.RootSize(), "", true, false, active_offsets, coordinates_by_path, result);
+	for (auto &array : result.arrays) {
+		auto owner_path = array.canonical_path;
+		while (true) {
+			const auto found = coordinates_by_path.find(owner_path);
+			if (found != coordinates_by_path.end()) {
+				if (found->second.size() == array.shape.size()) {
+					array.inferred_axes = found->second;
+				}
+				break;
+			}
+			if (owner_path == "/") {
+				break;
+			}
+			const auto separator = owner_path.find_last_of('/');
+			owner_path = separator == 0 ? "/" : owner_path.substr(0, separator);
+		}
+	}
 	if (result.arrays.empty()) {
 		throw ReaderError(ReaderErrorCode::InvalidMetadata, "OM file contains no supported Float32 arrays");
 	}

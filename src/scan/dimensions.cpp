@@ -62,9 +62,20 @@ AxisDeclarations ValidateAxisDeclarations(const Value *dimensions, const BoundSc
 	}
 	if (dimensions == nullptr || dimensions->IsNull()) {
 		if (schema.variables.size() > 1) {
-			throw BinderException(AxisInputError("is required when the file contains multiple arrays"));
+			AxisDeclarations inferred;
+			inferred.reserve(schema.variables.size());
+			for (const auto &variable : schema.variables) {
+				if (variable.shape != schema.shape || variable.row_count != schema.row_count ||
+				    variable.inferred_axes.empty() ||
+				    (!inferred.empty() && inferred.front() != variable.inferred_axes)) {
+					throw BinderException(AxisInputError(
+					    "is required for multiple arrays without matching shapes and ordered coordinates metadata"));
+				}
+				inferred.emplace_back(variable.inferred_axes);
+			}
+			return inferred;
 		}
-		return AxisDeclarations(1);
+		return AxisDeclarations(1, schema.variables.front().inferred_axes);
 	}
 	if (dimensions->type().id() != LogicalTypeId::MAP ||
 	    MapType::KeyType(dimensions->type()).id() != LogicalTypeId::VARCHAR ||
@@ -78,6 +89,7 @@ AxisDeclarations ValidateAxisDeclarations(const Value *dimensions, const BoundSc
 	variables_by_path.reserve(schema.variables.size());
 	for (const auto &variable : schema.variables) {
 		variables_by_path.emplace(variable.canonical_path, &variable);
+		variables_by_path.emplace(variable.column_name, &variable);
 	}
 	if (entries.size() != schema.variables.size()) {
 		throw BinderException(AxisInputError("keys must exactly cover every array path"));
@@ -95,7 +107,7 @@ AxisDeclarations ValidateAxisDeclarations(const Value *dimensions, const BoundSc
 		if (found == variables_by_path.end()) {
 			throw BinderException(AxisInputError("contains unknown array path '" + path + "'"));
 		}
-		if (!axes_by_path.emplace(path, ReadAxes(parts[1], *found->second)).second) {
+		if (!axes_by_path.emplace(found->second->canonical_path, ReadAxes(parts[1], *found->second)).second) {
 			throw BinderException(AxisInputError("contains duplicate array path '" + path + "'"));
 		}
 	}
@@ -105,10 +117,14 @@ AxisDeclarations ValidateAxisDeclarations(const Value *dimensions, const BoundSc
 	for (const auto &variable : schema.variables) {
 		const auto found = axes_by_path.find(variable.canonical_path);
 		if (found == axes_by_path.end()) {
-			throw BinderException(AxisInputError("is missing array path '" + variable.canonical_path + "'"));
+			throw BinderException(AxisInputError("is missing array path '" + variable.column_name + "'"));
 		}
 		if (variable.shape != schema.shape || variable.row_count != schema.row_count) {
 			throw BinderException("read_om arrays do not have identical shapes: '" + variable.canonical_path + "'");
+		}
+		if (!variable.inferred_axes.empty() && found->second != variable.inferred_axes) {
+			throw BinderException("read_om dimensions axis names conflict with coordinates metadata for array '" +
+			                      variable.column_name + "'");
 		}
 		if (!result.empty() && result.front() != found->second) {
 			throw BinderException("read_om dimensions axis order differs for array '" + variable.canonical_path + "'");

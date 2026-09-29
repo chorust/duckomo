@@ -580,14 +580,14 @@ ReferenceRows ReadReferences(const JsonValue &manifest, const JsonValue &scenari
 		for (const auto &entry : scenario.At("expected_values_reference_csvs").object)
 			ReadReferenceCsv(fixtures, entry.second.AsString(), entry.first, references);
 	} else if (scenario.object.count("expected_values_reference_csv")) {
-		ReadReferenceCsv(fixtures, scenario.At("expected_values_reference_csv").AsString(), "/temperature", references);
+		ReadReferenceCsv(fixtures, scenario.At("expected_values_reference_csv").AsString(), "temperature", references);
 	} else if (scenario.At("scenario_id").AsString() == "output_plus_filter") {
 		bool found = false;
 		for (const auto &fixture : manifest.At("fixtures").array) {
 			if (fixture.At("fixture_id").AsString() != "projection") continue;
 			for (const auto &variable : fixture.At("variables").array) {
 				if (variable.At("variable_path").AsString() != "/temperature") continue;
-				ReadReferenceCsv(fixtures, variable.At("reference_csv").AsString(), "/temperature", references);
+				ReadReferenceCsv(fixtures, variable.At("reference_csv").AsString(), "temperature", references);
 				found = true;
 			}
 		}
@@ -663,7 +663,7 @@ ComparisonResult CompareScenario(const std::string &scenario_id, const JsonValue
 			expected.emplace_back(std::move(row));
 		}
 		const auto order_column = std::find_if(columns.begin(), columns.end(), [](const JsonValue &value) {
-			return value.AsString() == "/temperature";
+			return value.AsString() == "temperature";
 		});
 		Require(order_column != columns.end(), "full_scan ORDER BY column missing from output");
 		const auto order_index = static_cast<std::size_t>(std::distance(columns.begin(), order_column));
@@ -678,7 +678,7 @@ ComparisonResult CompareScenario(const std::string &scenario_id, const JsonValue
 		}
 		comparison.detail = "all three variables matched independent reference CSVs in SQL sort order";
 	} else if (scenario_id == "single_variable") {
-		const auto reference = references.find("/temperature");
+		const auto reference = references.find("temperature");
 		Require(reference != references.end(), "single_variable temperature reference missing");
 		comparison.expected_rows = reference->second.size();
 		Require(actual_rows.size() == comparison.expected_rows, "single_variable row count differs from reference");
@@ -691,7 +691,7 @@ ComparisonResult CompareScenario(const std::string &scenario_id, const JsonValue
 		}
 		comparison.detail = "temperature matched its independent reference CSV";
 	} else if (scenario_id == "output_plus_filter") {
-		const auto reference = references.find("/temperature");
+		const auto reference = references.find("temperature");
 		Require(reference != references.end(), "output_plus_filter temperature reference missing");
 		const auto &positions = scenario.At("expected_row_positions").array;
 		const auto &manifest_values = scenario.At("expected_output_values").array;

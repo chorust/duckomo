@@ -61,7 +61,7 @@ SQL
 
 ## Multi-variable full and narrow scans
 
-多变量文件必须为每个 canonical variable path 显式提供有序轴名。DuckDB MAP 的实际写法如下；这与已通过的 `test/sql/read_om.test` 相同：
+多变量文件若没有可用于自动对齐的一致 `coordinates` 元数据，必须为每个值列显式提供有序轴名。DuckDB MAP 的实际写法如下；这与已通过的 `test/sql/read_om.test` 相同：
 
 ```sh
 ./build/release/duckdb -unsigned :memory: <<'SQL'
@@ -69,46 +69,46 @@ LOAD 'build/release/extension/duckomo/duckomo.duckdb_extension';
 DESCRIBE SELECT * FROM read_om(
   'test/data/multi.om',
   dimensions := map(
-    ['/humidity', '/temperature'],
+    ['humidity', 'temperature'],
     [['row', 'column'], ['row', 'column']]
   )
 );
-SELECT "/humidity", "/temperature"
+SELECT "humidity", "temperature"
 FROM read_om(
   'test/data/multi.om',
   dimensions := map(
-    ['/humidity', '/temperature'],
+    ['humidity', 'temperature'],
     [['row', 'column'], ['row', 'column']]
   )
 )
-ORDER BY "/humidity";
-SELECT "/temperature"
+ORDER BY "humidity";
+SELECT "temperature"
 FROM read_om(
   'test/data/multi.om',
   dimensions := map(
-    ['/humidity', '/temperature'],
+    ['humidity', 'temperature'],
     [['row', 'column'], ['row', 'column']]
   )
 )
-ORDER BY "/temperature";
-SELECT "/temperature"
+ORDER BY "temperature";
+SELECT "temperature"
 FROM read_om(
   'test/data/multi.om',
   dimensions := map(
-    ['/humidity', '/temperature'],
+    ['humidity', 'temperature'],
     [['row', 'column'], ['row', 'column']]
   )
 )
-WHERE "/humidity" >= 103
-ORDER BY "/temperature";
+WHERE "humidity" >= 103
+ORDER BY "temperature";
 SQL
 ```
 
-预期：schema 按路径排序为 `/humidity FLOAT`、`/temperature FLOAT`；全量扫描返回 `(100,0)` 到 `(105,5)`；窄查询仍返回六行 `0` 到 `5`；过滤查询返回 `3`、`4`、`5`。即使湿度列没有出现在结果中，它仍是过滤依赖，必须参与扫描。`COUNT(*)` 的值数组读取成本和 projection fixture 上全量/窄查询的实际字节、decoder 计数由 validation harness 检查，不能用 `EXPLAIN` 代替指标。
+预期：schema 按路径排序为 `humidity FLOAT`、`temperature FLOAT`；全量扫描返回 `(100,0)` 到 `(105,5)`；窄查询仍返回六行 `0` 到 `5`；过滤查询返回 `3`、`4`、`5`。即使湿度列没有出现在结果中，它仍是过滤依赖，必须参与扫描。`COUNT(*)` 的值数组读取成本和 projection fixture 上全量/窄查询的实际字节、decoder 计数由 validation harness 检查，不能用 `EXPLAIN` 代替指标。
 
 ## Projection and evidence
 
-`test/data/projection.om` 包含 `/humidity`、`/pressure`、`/temperature` 三个变量，形状为 `[83,127]`，共 10,541 行。完整扫描读取全部变量；只选择一个变量时其余变量不读取或解码；输出 temperature 并按 humidity 过滤时，两者都读取；`COUNT(*)` 不读取 index 或 data。四个场景由以下命令完整消费查询结果并写入 `build/evidence/summary.json` 与场景 JSON：
+`test/data/projection.om` 包含 `humidity`、`pressure`、`temperature` 三个值列，形状为 `[83,127]`，共 10,541 行。完整扫描读取全部变量；只选择一个变量时其余变量不读取或解码；输出 temperature 并按 humidity 过滤时，两者都读取；`COUNT(*)` 不读取 index 或 data。四个场景由以下命令完整消费查询结果并写入 `build/evidence/summary.json` 与场景 JSON：
 
 ```sh
 ./build/release/test/tools/duckomo_validation \
@@ -135,7 +135,7 @@ SQL
 ## Supported behavior and current platform
 
 - `read_om_raw(path)` 扫描单个根 Float32/FPX 数组，暴露 `value FLOAT`。
-- `read_om(path, dimensions := map(VARCHAR, VARCHAR[]))` 支持 OM v3 层级容器中的 Float32/FPX 数组；多变量需要完整且一致的有序轴声明。schema 列按 canonical 路径排序。
+- `read_om(path, dimensions := map(VARCHAR, VARCHAR[]))` 支持 OM v3 层级容器中的 Float32/FPX 与 Float32/PFOR 数组；多变量需要一致的有序轴身份，可来自 `coordinates` 元数据或显式声明。schema 列按内部规范路径排序，对外列名不带前导 `/`。
 - NaN 映射为 SQL NULL，正负无穷及正负零保留。缺失文件、截断数据、未知版本、不支持的类型/压缩、缺少或不一致的轴声明会报错。
 - 当前只支持本地文件。latitude、longitude、time 等坐标列和物理坐标映射尚未实现。
 

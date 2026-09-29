@@ -195,7 +195,7 @@ void CheckExpectedSchema(const BoundSchema &schema, const std::vector<std::strin
 	for (std::size_t index = 0; index < expected_paths.size(); index++) {
 		Require(schema.variables[index].canonical_path == expected_paths[index],
 		        description + ": paths are missing or not sorted by UTF-8 bytes");
-		const auto expected_column = expected_paths[index] == "/" ? "value" : expected_paths[index];
+		const auto expected_column = expected_paths[index] == "/" ? "value" : expected_paths[index].substr(1);
 		Require(schema.variables[index].column_name == expected_column,
 		        description + ": unexpected DuckDB column name");
 		Require(schema.variables[index].type == duckdb::LogicalType::FLOAT,
@@ -219,6 +219,30 @@ void TestFixtureTraversal(duckdb::ClientContext &context, const fs::path &fixtur
 	Require(EncodeMetadataName("slash/%") == "slash%2F%25", "metadata path segments must escape '/' and '%' bytes");
 	Require(nested.row_count == 6 && nested.shape == std::vector<std::uint64_t>({2, 3}),
 	        "nested.om schema lost shared shape information");
+
+	const auto pfor = ReadSchema(context, fixture_directory / "pfor_attributes.om");
+	CheckExpectedSchema(pfor, {"/humidity", "/temperature"}, "PFOR arrays with metadata attributes");
+	Require(pfor.variables[0].inferred_axes == std::vector<std::string>({"row", "column"}) &&
+	            pfor.variables[1].inferred_axes == pfor.variables[0].inferred_axes,
+	        "matching coordinates metadata must provide ordered axes");
+	Require(ValidateAxisDeclarations(nullptr, pfor).size() == 2,
+	        "matching coordinates metadata must allow implicit dimension alignment");
+}
+
+void TestInvalidArrayAttributeReference(duckdb::ClientContext &context, const fs::path &pfor_path,
+                                        const TemporaryDirectory &temporary) {
+	auto fixture = ReadFixtureBytes(pfor_path);
+	const auto array_offset = FindNamedChild(fixture, "temperature");
+	const auto *metadata = reinterpret_cast<const OmVariableArrayV3_t *>(fixture.bytes.data() + array_offset);
+	Require(metadata->children_count > 0, "PFOR fixture must have array attributes");
+	const auto reference_offset = array_offset + sizeof(OmVariableArrayV3_t) +
+	                              sizeof(std::uint64_t) * metadata->children_count;
+	const auto invalid_offset = static_cast<std::uint64_t>(fixture.bytes.size()) + 4096;
+	std::memcpy(fixture.bytes.data() + reference_offset, &invalid_offset, sizeof(invalid_offset));
+	const auto damaged_path = temporary.File("invalid_array_attribute_reference.om");
+	WriteFixture(damaged_path, fixture);
+	RequireReaderError(ReaderErrorCode::InvalidMetadata, [&] { (void)ReadSchema(context, damaged_path); },
+	                   "array attribute child references must be validated");
 }
 
 void TestInvalidNames(duckdb::ClientContext &context, const fs::path &nested_path,
@@ -368,6 +392,7 @@ int main() {
 		TemporaryDirectory temporary;
 
 		TestFixtureTraversal(*connection.context, fixture_directory);
+		TestInvalidArrayAttributeReference(*connection.context, fixture_directory / "pfor_attributes.om", temporary);
 		TestInvalidNames(*connection.context, fixture_directory / "nested.om", temporary);
 		TestIdentifierCollisionsAndShapeBounds();
 		TestNegativeFixtures(*connection.context, fixture_directory);

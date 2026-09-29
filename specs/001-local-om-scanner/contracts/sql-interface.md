@@ -11,17 +11,17 @@ read_om(path VARCHAR, dimensions MAP(VARCHAR, VARCHAR[]) := NULL)
 
 - 参数在 bind 时为非 NULL 的常量路径；dimensions 默认缺省，显式 NULL 等同缺省。只接受本地单个普通文件，不支持 glob、文件列表、目录和远程 URI。
 - `read_om_raw` 为 Phase 0 验证入口，仅接受 v3 根 Float32 数组，返回 `value FLOAT`。不承诺该验证入口长期兼容。
-- `read_om` 接受下表支持子集。单数组不需要 dimensions；两个及以上数组必须声明全部变量的有序轴标识。
-- dimensions 类型是原生 MAP，不是 JSON 文件。键为下文定义的变量规范路径。若传入，键必须精确覆盖所有数组，每个数组的轴列表非空、元素不得为 NULL、轴名非空且唯一、长度等于 rank；轴名按 UTF-8 字节精确比较。所有数组的 shape 和轴列表必须逐位置完全相同，否则失败；不自动转置、广播或连接。
+- `read_om` 接受下表支持子集。单数组不需要 dimensions；多数组在同形状且拥有相同有序 `coordinates` 元数据时自动对齐，否则必须显式声明全部值变量的有序轴标识。
+- dimensions 类型是原生 MAP，不是 JSON 文件。键可用对外列名（如 `humidity`）或内部绝对路径（如 `/humidity`）。若传入，键必须精确覆盖所有值数组，每个数组的轴列表非空、元素不得为 NULL、轴名非空且唯一、长度等于 rank；轴名按 UTF-8 字节精确比较。显式轴名与现有 `coordinates` 元数据冲突时拒绝。所有值数组的 shape 和轴列表必须逐位置完全相同，否则失败；不自动转置、广播或连接。
 - `domain`、bbox、time range 等命名参数尚不支持；本阶段没有坐标映射能力。
 
 ```sql
 SELECT * FROM read_om('test/data/raw.om');
 DESCRIBE SELECT * FROM read_om('test/data/raw.om');
 
-SELECT "/temperature"
+SELECT temperature
 FROM read_om('test/data/multi.om', dimensions := map(
-  ['/temperature', '/humidity'],
+  ['temperature', 'humidity'],
   [['row', 'column'], ['row', 'column']]
 ));
 ```
@@ -33,14 +33,14 @@ FROM read_om('test/data/multi.om', dimensions := map(
 | 项目 | 首批行为 |
 | --- | --- |
 | 文件版本 | OM v3；v1/v2 和未知版本拒绝 |
-| 布局 | 根数组，或 NONE 容器组成的树和 Float32 数组；数组带子节点、其他标量/数组类型拒绝 |
+| 布局 | 根数组，或 NONE 容器组成的树和 Float32 值数组；数组子节点及容器中的标量作为附属元数据遍历校验，不生成值列；其他顶层数组类型拒绝 |
 | 数据类型 | FLOAT_ARRAY → DuckDB FLOAT |
-| 压缩 | FPX_XOR2D；其他压缩拒绝 |
+| 压缩 | read_om 支持 FPX_XOR2D、PFOR_DELTA2D_INT16；其他压缩拒绝。read_om_raw 仍仅接受 FPX_XOR2D 根数组 |
 | 维度 | rank 1–8；shape 和 chunk shape 每项正；shape 乘积不超过 INT64_MAX |
 | 空数组 | 当前子集拒绝零长度维度；无数组文件也拒绝；过滤产生零行正常支持 |
 | 缺测 | NaN → NULL；普通零、负数及 ±Inf 保留；无隐式 nodata 哨兵 |
-| 精度 | 相对官方 FPX Float32 解码结果容差 0；NaN 位置单独比较，非有限值单独比较 |
-| 多变量 | shape、rank、有序显式轴身份都相等；缺失映射或不一致即拒绝 |
+| 精度 | 相对官方 OM Float32 解码结果容差 0；PFOR 为有损编码，比较的是解码后的值；NaN 位置单独比较 |
+| 多变量 | shape、rank、有序轴身份都相等；轴身份可来自共同 `coordinates` 元数据或显式 dimensions，否则拒绝 |
 | 坐标列 | 不生成；引用 latitude/longitude/time 等不存在列由正常绑定报错，说明中引导查看实际 schema |
 
 NaN/Inf 和完整 FPX 文件 roundtrip 必须在实施 Phase 0 实测通过后才可声称支持；若失败，先修订契约和基线，不能无声切换有损编码或抹掉缺测。
@@ -48,9 +48,9 @@ NaN/Inf 和完整 FPX 文件 roundtrip 必须在实施 Phase 0 实测通过后�
 ## 命名和模式稳定性
 
 - 根数组忽略其标签，规范路径为 `/`、输出列固定为 `value`。
-- 层级数组的列名等于从根容器以下开始的绝对规范路径，如 `/temperature`、`/surface/temperature`；根容器自身名称不参与。
+- 层级数组的对外列名不带前导 `/`，如 `temperature`、`surface/temperature`；内部仍使用 `/temperature`、`/surface/temperature` 等绝对规范路径定位节点，根容器自身名称不参与。
 - 路径分段中的 `%` 编码为 `%25`，`/` 编码为 `%2F`，保持大小写；拒绝空名称、NUL、无效 UTF-8。使用双引号引用带 `/` 的 SQL 列名。
-- 层级数组按规范路径 UTF-8 字节序排序；生成列名必须在 DuckDB 标识符比较规则下唯一，不能靠遍历时追加序号掩盖重复。冲突时报告路径并失败。
+- 层级数组按内部规范路径 UTF-8 字节序排序；生成列名必须在 DuckDB 标识符比较规则下唯一，不能靠遍历时追加序号掩盖重复。冲突时报告路径并失败。
 - 列描述只读必要 metadata；在同一文件内容与参数下不因 SELECT 列表变化而改变名称或类型。
 
 ## 行、投影与 SQL 语义

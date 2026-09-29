@@ -93,6 +93,9 @@ struct Fixture final {
 	std::vector<std::uint64_t> shape;
 	std::vector<std::uint64_t> chunks;
 	std::vector<float> values;
+	OmCompression_t compression = COMPRESSION_FPX_XOR2D;
+	float scale_factor = 1.0F;
+	float add_offset = 0.0F;
 };
 
 struct TreeArray final {
@@ -100,6 +103,7 @@ struct TreeArray final {
 	std::vector<std::string> segments;
 	std::vector<std::string> axes;
 	std::string reference_name;
+	std::vector<std::pair<std::string, std::string>> string_attributes;
 	std::uint64_t lut_size = 0;
 	std::uint64_t lut_offset = 0;
 };
@@ -135,7 +139,8 @@ std::vector<std::uint8_t> EncodeRootArray(const Fixture &fixture) {
 	}
 
 	OmEncoder_t encoder{};
-	const auto init_error = om_encoder_init(&encoder, 1.0F, 0.0F, COMPRESSION_FPX_XOR2D, DATA_TYPE_FLOAT_ARRAY,
+	const auto init_error = om_encoder_init(&encoder, fixture.scale_factor, fixture.add_offset, fixture.compression,
+	                                       DATA_TYPE_FLOAT_ARRAY,
 	                                       fixture.shape.data(), fixture.chunks.data(), fixture.shape.size());
 	Require(init_error == ERROR_OK, "official OM encoder init failed for " + fixture.id + ": " + om_error_string(init_error));
 
@@ -187,7 +192,8 @@ std::vector<std::uint8_t> EncodeRootArray(const Fixture &fixture) {
 	const auto root_size = om_variable_write_numeric_array_size(0, 0, fixture.shape.size());
 	std::vector<std::uint8_t> root_metadata(root_size, 0);
 	om_variable_write_numeric_array(root_metadata.data(), 0, 0, nullptr, nullptr, "", DATA_TYPE_FLOAT_ARRAY,
-	                                COMPRESSION_FPX_XOR2D, 1.0F, 0.0F, fixture.shape.size(), fixture.shape.data(),
+	                                fixture.compression, fixture.scale_factor, fixture.add_offset,
+	                                fixture.shape.size(), fixture.shape.data(),
 	                                fixture.chunks.data(), compressed_lookup_size, lookup_offset);
 	Append(file, root_metadata.data(), root_metadata.size());
 
@@ -226,7 +232,8 @@ void EncodeArrayPayload(std::vector<std::uint8_t> &file, TreeArray &array) {
 	}
 
 	OmEncoder_t encoder{};
-	const auto init_error = om_encoder_init(&encoder, 1.0F, 0.0F, COMPRESSION_FPX_XOR2D, DATA_TYPE_FLOAT_ARRAY,
+	const auto init_error = om_encoder_init(&encoder, fixture.scale_factor, fixture.add_offset, fixture.compression,
+	                                       DATA_TYPE_FLOAT_ARRAY,
 	                                       fixture.shape.data(), fixture.chunks.data(), fixture.shape.size());
 	Require(init_error == ERROR_OK, "official OM encoder init failed for " + fixture.id + ": " + om_error_string(init_error));
 	const auto chunk_count = om_encoder_count_chunks(&encoder);
@@ -293,13 +300,33 @@ TreeNode &InsertArray(TreeNode &root, TreeArray &array) {
 
 NodeRef WriteTreeMetadata(std::vector<std::uint8_t> &file, TreeNode &node, bool root = false) {
 	if (node.array != nullptr) {
+		std::vector<std::uint64_t> child_offsets;
+		std::vector<std::uint64_t> child_sizes;
+		for (const auto &attribute : node.array->string_attributes) {
+			AlignForArrayMetadata(file);
+			const auto offset = static_cast<std::uint64_t>(file.size());
+			const auto size = om_variable_write_scalar_size(AsNameSize(attribute.first), 0, DATA_TYPE_STRING,
+			                                                attribute.second.size());
+			std::vector<std::uint8_t> metadata(size, 0);
+			om_variable_write_scalar(metadata.data(), AsNameSize(attribute.first), 0, nullptr, nullptr,
+			                         attribute.first.data(), DATA_TYPE_STRING, attribute.second.data(),
+			                         attribute.second.size());
+			Append(file, metadata.data(), metadata.size());
+			child_offsets.push_back(offset);
+			child_sizes.push_back(size);
+		}
 		AlignForArrayMetadata(file);
 		node.metadata_offset = static_cast<std::uint64_t>(file.size());
 		const auto &fixture = node.array->fixture;
-		const auto metadata_size = om_variable_write_numeric_array_size(AsNameSize(node.name), 0, fixture.shape.size());
+		const auto children_count = static_cast<std::uint32_t>(child_offsets.size());
+		const auto metadata_size = om_variable_write_numeric_array_size(AsNameSize(node.name), children_count,
+		                                                              fixture.shape.size());
 		std::vector<std::uint8_t> metadata(metadata_size, 0);
-		om_variable_write_numeric_array(metadata.data(), AsNameSize(node.name), 0, nullptr, nullptr, node.name.data(),
-		                                DATA_TYPE_FLOAT_ARRAY, COMPRESSION_FPX_XOR2D, 1.0F, 0.0F,
+		om_variable_write_numeric_array(metadata.data(), AsNameSize(node.name), children_count,
+		                                child_offsets.empty() ? nullptr : child_offsets.data(),
+		                                child_sizes.empty() ? nullptr : child_sizes.data(), node.name.data(),
+		                                DATA_TYPE_FLOAT_ARRAY, fixture.compression, fixture.scale_factor,
+		                                fixture.add_offset,
 		                                fixture.shape.size(), fixture.shape.data(), fixture.chunks.data(),
 		                                node.array->lut_size, node.array->lut_offset);
 		Append(file, metadata.data(), metadata.size());
@@ -381,8 +408,9 @@ std::vector<float> DecodeFullRootArray(const std::filesystem::path &path, std::v
 	const auto *variable = om_variable_init(root_data);
 	Require(om_variable_get_type(variable) == DATA_TYPE_FLOAT_ARRAY,
 	        "independent official oracle accepts only Float32 array roots: " + path.string());
-	Require(om_variable_get_compression(variable) == COMPRESSION_FPX_XOR2D,
-	        "independent official oracle accepts only FPX roots: " + path.string());
+	Require(om_variable_get_compression(variable) == COMPRESSION_FPX_XOR2D ||
+	            om_variable_get_compression(variable) == COMPRESSION_PFOR_DELTA2D_INT16,
+	        "independent official oracle accepts only FPX or PFOR Float32 roots: " + path.string());
 
 	const auto rank = om_variable_get_dimensions_count(variable);
 	Require(rank > 0 && rank <= 8, "official OM reader found unsupported root array rank");
@@ -433,18 +461,32 @@ std::vector<float> DecodeFullRootArray(const std::filesystem::path &path, std::v
 
 std::vector<float> DecodeArrayVariable(const std::vector<std::uint8_t> &file, const OmVariable_t *variable,
                                        std::vector<std::uint64_t> *shape_out = nullptr,
-                                       std::vector<std::uint64_t> *chunks_out = nullptr) {
+                                       std::vector<std::uint64_t> *chunks_out = nullptr,
+                                       std::uint64_t prefix_count = 0) {
 	Require(om_variable_get_type(variable) == DATA_TYPE_FLOAT_ARRAY,
 	        "independent official oracle accepts only Float32 array variables");
-	Require(om_variable_get_compression(variable) == COMPRESSION_FPX_XOR2D,
-	        "independent official oracle accepts only FPX variables");
+	Require(om_variable_get_compression(variable) == COMPRESSION_FPX_XOR2D ||
+	            om_variable_get_compression(variable) == COMPRESSION_PFOR_DELTA2D_INT16,
+	        "independent official oracle accepts only FPX or PFOR Float32 variables");
 	const auto rank = om_variable_get_dimensions_count(variable);
 	Require(rank > 0 && rank <= 8, "official OM reader found unsupported array rank");
 	const auto *dimension_pointer = om_variable_get_dimensions(variable);
 	const auto *chunk_pointer = om_variable_get_chunks(variable);
 	std::vector<std::uint64_t> dimensions(dimension_pointer, dimension_pointer + rank);
 	std::vector<std::uint64_t> chunks(chunk_pointer, chunk_pointer + rank);
-	const auto row_count = CheckedProduct(dimensions);
+	std::vector<std::uint64_t> read_count = dimensions;
+	const auto total_rows = CheckedProduct(dimensions);
+	const auto prefix_rows = prefix_count == 0 ? total_rows : std::min(prefix_count, total_rows);
+	if (prefix_count != 0) {
+		std::uint64_t trailing_rows = 1;
+		for (std::size_t axis = dimensions.size(); axis > 0; axis--) {
+			const auto current_axis = axis - 1;
+			const auto required = prefix_rows / trailing_rows + (prefix_rows % trailing_rows != 0);
+			read_count[current_axis] = std::min(dimensions[current_axis], required);
+			trailing_rows *= dimensions[current_axis];
+		}
+	}
+	const auto row_count = CheckedProduct(read_count);
 	Require(row_count <= std::numeric_limits<std::size_t>::max() / sizeof(float),
 	        "official OM result is too large for this process");
 	if (shape_out != nullptr) {
@@ -457,8 +499,8 @@ std::vector<float> DecodeArrayVariable(const std::vector<std::uint8_t> &file, co
 	std::vector<std::uint64_t> read_offset(dimensions.size(), 0);
 	std::vector<std::uint64_t> cube_offset(dimensions.size(), 0);
 	OmDecoder_t decoder{};
-	const auto decoder_error = om_decoder_init(&decoder, variable, rank, read_offset.data(), dimensions.data(),
-	                                          cube_offset.data(), dimensions.data(), IO_SIZE_MERGE, IO_SIZE_MAX);
+	const auto decoder_error = om_decoder_init(&decoder, variable, rank, read_offset.data(), read_count.data(),
+	                                          cube_offset.data(), read_count.data(), IO_SIZE_MERGE, IO_SIZE_MAX);
 	Require(decoder_error == ERROR_OK,
 	        "official OM decoder init failed: " + std::string(om_error_string(decoder_error)));
 	Require(decoder.bytes_per_element == sizeof(float), "official OM decoder selected unexpected Float32 byte width");
@@ -482,6 +524,7 @@ std::vector<float> DecodeArrayVariable(const std::vector<std::uint8_t> &file, co
 		}
 		Require(error == ERROR_OK, "official OM index/decode request failed: " + std::string(om_error_string(error)));
 	}
+	values.resize(static_cast<std::size_t>(prefix_rows));
 	return values;
 }
 
@@ -833,7 +876,7 @@ std::vector<std::string> SortedExpectedSchema(const std::vector<TreeArray> &arra
 	std::vector<std::string> schema;
 	schema.reserve(arrays.size());
 	for (const auto &array : arrays) {
-		schema.push_back(CanonicalVariablePath(array.segments) + " FLOAT");
+		schema.push_back(CanonicalVariablePath(array.segments).substr(1) + " FLOAT");
 	}
 	std::sort(schema.begin(), schema.end());
 	return schema;
@@ -857,6 +900,33 @@ std::vector<TreeArray> BuildMultiArrays() {
 	humidity.segments = {"humidity"};
 	humidity.axes = {"row", "column"};
 	humidity.reference_name = "multi.humidity.reference.csv";
+	return {std::move(temperature), std::move(humidity)};
+}
+
+std::vector<TreeArray> BuildPforAttributeArrays() {
+	TreeArray temperature;
+	temperature.fixture.id = "pfor_attributes.temperature";
+	temperature.fixture.shape = {2, 3};
+	temperature.fixture.chunks = {1, 3};
+	temperature.fixture.values = {1.25F, std::numeric_limits<float>::quiet_NaN(), -2.5F, 3.5F, 4.25F, 5.0F};
+	temperature.fixture.compression = COMPRESSION_PFOR_DELTA2D_INT16;
+	temperature.fixture.scale_factor = 4.0F;
+	temperature.segments = {"temperature"};
+	temperature.axes = {"row", "column"};
+	temperature.reference_name = "pfor_attributes.temperature.reference.csv";
+	temperature.string_attributes = {{"coordinates", "row column"}, {"unit", "Celsius"}};
+
+	TreeArray humidity;
+	humidity.fixture.id = "pfor_attributes.humidity";
+	humidity.fixture.shape = {2, 3};
+	humidity.fixture.chunks = {1, 3};
+	humidity.fixture.values = {10.0F, 20.0F, 30.0F, 40.0F, 50.0F, 60.0F};
+	humidity.fixture.compression = COMPRESSION_PFOR_DELTA2D_INT16;
+	humidity.fixture.scale_factor = 4.0F;
+	humidity.segments = {"humidity"};
+	humidity.axes = {"row", "column"};
+	humidity.reference_name = "pfor_attributes.humidity.reference.csv";
+	humidity.string_attributes = {{"coordinates", "row column"}, {"unit", "percent"}};
 	return {std::move(temperature), std::move(humidity)};
 }
 
@@ -1007,6 +1077,30 @@ NodeRef FindMetadataNode(std::vector<std::uint8_t> &file, const std::vector<std:
 	return current_ref;
 }
 
+std::vector<float> DecodePrefixFile(const std::filesystem::path &path, const std::string &variable_path,
+                                    std::uint64_t count) {
+	Require(count > 0 && !variable_path.empty() && variable_path.front() == '/',
+	        "oracle prefix requires a positive count and an absolute variable path");
+	auto file = ReadFile(path);
+	std::vector<std::string> segments;
+	std::size_t start = 1;
+	while (start < variable_path.size()) {
+		const auto end = variable_path.find('/', start);
+		segments.emplace_back(variable_path.substr(start, end == std::string::npos ? end : end - start));
+		Require(!segments.back().empty(), "oracle prefix contains an empty path segment");
+		if (end == std::string::npos) {
+			break;
+		}
+		start = end + 1;
+	}
+	const auto ref = FindMetadataNode(file, segments);
+	Require(ref.offset <= file.size() && ref.size <= file.size() - ref.offset,
+	        "oracle variable metadata is outside the file");
+	const auto *variable = om_variable_init(file.data() + static_cast<std::size_t>(ref.offset));
+	Require(om_variable_validate(variable, ref.size) == ERROR_OK, "official OM reader rejected variable metadata");
+	return DecodeArrayVariable(file, variable, nullptr, nullptr, count);
+}
+
 std::size_t MetadataNameOffset(const std::vector<std::uint8_t> &file, NodeRef ref) {
 	const auto *variable = om_variable_init(file.data() + static_cast<std::size_t>(ref.offset));
 	if (_om_variable_memory_layout(variable) == OM_MEMORY_LAYOUT_ARRAY) {
@@ -1064,7 +1158,7 @@ std::vector<NegativeAsset> GenerateNegativeAssets(const std::filesystem::path &d
 		           COMPRESSION_NONE);
 		assets.push_back(WriteNegativeAsset(directory, "unsupported_compression", "negative/unsupported_compression.om",
 		                                    "multi.om", "set /temperature metadata compression_type to COMPRESSION_NONE",
-		                                    "reject compression other than FPX_XOR2D at bind time", std::move(bytes)));
+		                                    "reject compression other than FPX_XOR2D or PFOR_DELTA2D_INT16 at bind time", std::move(bytes)));
 	}
 	{
 		auto bytes = ReadFile(multi_path);
@@ -1161,10 +1255,12 @@ void WriteTreeFixtureManifestEntry(std::ostringstream &manifest, const std::file
 		const auto &reference = FindDecodedVariable(decoded, variable_path);
 		const auto reference_bytes = ReadFile(directory / array.reference_name);
 		manifest << "        {\"variable_path\": \"" << JsonEscape(variable_path) << "\", \"type\": \"Float32\", "
-		         << "\"compression\": \"FPX_XOR2D\", \"shape\": " << JsonNumberArray(reference.shape)
+		         << "\"compression\": \""
+		         << (array.fixture.compression == COMPRESSION_PFOR_DELTA2D_INT16 ? "PFOR_DELTA2D_INT16" : "FPX_XOR2D")
+		         << "\", \"shape\": " << JsonNumberArray(reference.shape)
 		         << ", \"chunk_shape\": " << JsonNumberArray(reference.chunks)
 		         << ", \"axes\": " << JsonStringArray(array.axes)
-		         << ", \"expected_column\": \"" << JsonEscape(variable_path + " FLOAT") << "\""
+		         << ", \"expected_column\": \"" << JsonEscape(variable_path.substr(1) + " FLOAT") << "\""
 		         << ", \"null_positions\": " << JsonNullPositions(reference.values)
 		         << ", \"reference_csv\": \"" << JsonEscape(array.reference_name) << "\""
 		         << ", \"reference_csv_sha256\": \"" << Sha256Hex(reference_bytes) << "\""
@@ -1178,7 +1274,7 @@ void WriteTreeFixtureManifestEntry(std::ostringstream &manifest, const std::file
 std::string ProjectionReadOmSql(const std::string &select_list, const std::string &suffix = "") {
 	return "SELECT " + select_list +
 	       " FROM read_om('test/data/projection.om', dimensions := map("
-	       "['/humidity', '/pressure', '/temperature'], "
+	       "['humidity', 'pressure', 'temperature'], "
 	       "[['row', 'column'], ['row', 'column'], ['row', 'column']]))" + suffix;
 }
 
@@ -1206,24 +1302,24 @@ void WriteProjectionScenarioManifest(std::ostringstream &manifest, const std::ve
 	         << "    \"row_count\": " << row_count << ",\n"
 	         << "    \"scenarios\": [\n"
 	         << "      {\"scenario_id\": \"full_scan\", \"sql\": \""
-	         << JsonEscape(ProjectionReadOmSql("\"/humidity\", \"/pressure\", \"/temperature\"",
-	                                             " ORDER BY \"/temperature\""))
+	         << JsonEscape(ProjectionReadOmSql("\"humidity\", \"pressure\", \"temperature\"",
+	                                             " ORDER BY \"temperature\""))
 	         << "\", \"result_row_count\": " << row_count
-	         << ", \"output_variables\": [\"/humidity\", \"/pressure\", \"/temperature\"]"
+	         << ", \"output_variables\": [\"humidity\", \"pressure\", \"temperature\"]"
 	         << ", \"expected_values_reference_csvs\": {"
-	         << "\"/humidity\": \"projection.humidity.reference.csv\", "
-	         << "\"/pressure\": \"projection.pressure.reference.csv\", "
-	         << "\"/temperature\": \"projection.temperature.reference.csv\"}},\n"
+	         << "\"humidity\": \"projection.humidity.reference.csv\", "
+	         << "\"pressure\": \"projection.pressure.reference.csv\", "
+	         << "\"temperature\": \"projection.temperature.reference.csv\"}},\n"
 	         << "      {\"scenario_id\": \"single_variable\", \"sql\": \""
-	         << JsonEscape(ProjectionReadOmSql("\"/temperature\"", " ORDER BY \"/temperature\""))
+	         << JsonEscape(ProjectionReadOmSql("\"temperature\"", " ORDER BY \"temperature\""))
 	         << "\", \"result_row_count\": " << row_count
-	         << ", \"output_variables\": [\"/temperature\"]"
+	         << ", \"output_variables\": [\"temperature\"]"
 	         << ", \"expected_values_reference_csv\": \"projection.temperature.reference.csv\"},\n"
 	         << "      {\"scenario_id\": \"output_plus_filter\", \"sql\": \""
-	         << JsonEscape(ProjectionReadOmSql("\"/temperature\"", " WHERE \"/humidity\" = 96 ORDER BY \"/temperature\""))
+	         << JsonEscape(ProjectionReadOmSql("\"temperature\"", " WHERE \"humidity\" = 96 ORDER BY \"temperature\""))
 	         << "\", \"result_row_count\": " << filtered_temperature.size()
-	         << ", \"output_variables\": [\"/temperature\"], \"filter_variables\": [\"/humidity\"]"
-	         << ", \"predicate\": \"/humidity = 96\", \"expected_row_positions\": "
+	         << ", \"output_variables\": [\"temperature\"], \"filter_variables\": [\"humidity\"]"
+	         << ", \"predicate\": \"humidity = 96\", \"expected_row_positions\": "
 	         << JsonNumberArray(matching_positions) << ", \"expected_output_values\": "
 	         << JsonFloatArray(filtered_temperature) << "},\n"
 	         << "      {\"scenario_id\": \"count\", \"sql\": \""
@@ -1235,6 +1331,7 @@ void WriteProjectionScenarioManifest(std::ostringstream &manifest, const std::ve
 
 void WriteManifest(const std::filesystem::path &directory, const std::vector<Fixture> &fixtures,
 	               const std::vector<TreeArray> &multi_arrays, const std::vector<DecodedVariable> &multi_decoded,
+	               const std::vector<TreeArray> &pfor_arrays, const std::vector<DecodedVariable> &pfor_decoded,
 	               const std::vector<TreeArray> &nested_arrays, const std::vector<DecodedVariable> &nested_decoded,
 	               const std::vector<TreeArray> &projection_arrays,
 	               const std::vector<DecodedVariable> &projection_decoded,
@@ -1275,6 +1372,9 @@ void WriteManifest(const std::filesystem::path &directory, const std::vector<Fix
 	}
 	// Keep every valid OM input in one manifest collection for downstream validators.
 	WriteTreeFixtureManifestEntry(manifest, directory, "multi", "multi.om", multi_arrays, multi_decoded);
+	manifest << ",\n";
+	WriteTreeFixtureManifestEntry(manifest, directory, "pfor_attributes", "pfor_attributes.om", pfor_arrays,
+	                              pfor_decoded);
 	manifest << ",\n";
 	WriteTreeFixtureManifestEntry(manifest, directory, "nested", "nested.om", nested_arrays, nested_decoded);
 	manifest << ",\n";
@@ -1367,6 +1467,22 @@ void Generate(const std::filesystem::path &output_directory) {
 		          << " oracle=passed sha256=" << Sha256Hex(multi_bytes) << '\n';
 	}
 
+	auto pfor_arrays = BuildPforAttributeArrays();
+	const auto pfor_bytes = EncodeTreeFile(pfor_arrays);
+	const auto pfor_path = output_directory / "pfor_attributes.om";
+	WriteFile(pfor_path, pfor_bytes);
+	const auto pfor_decoded = DecodeTreeFile(pfor_path);
+	Require(pfor_decoded.size() == pfor_arrays.size(), "official tree oracle returned the wrong PFOR array count");
+	for (const auto &array : pfor_arrays) {
+		const auto variable_path = CanonicalVariablePath(array.segments);
+		const auto &decoded = FindDecodedVariable(pfor_decoded, variable_path);
+		Require(decoded.shape == array.fixture.shape && decoded.chunks == array.fixture.chunks,
+		        "official tree oracle returned different PFOR metadata for " + variable_path);
+		WriteReferenceCsv(output_directory / array.reference_name, decoded.values);
+		std::cout << "generated pfor_attributes.om variable=" << variable_path << " rows=" << decoded.values.size()
+		          << " oracle=passed sha256=" << Sha256Hex(pfor_bytes) << '\n';
+	}
+
 	auto nested_arrays = BuildNestedArrays();
 	const auto nested_bytes = EncodeTreeFile(nested_arrays);
 	const auto nested_path = output_directory / "nested.om";
@@ -1414,7 +1530,8 @@ void Generate(const std::filesystem::path &output_directory) {
 	        "projection fixture must use a non-square shape");
 
 	const auto negative_assets = GenerateNegativeAssets(output_directory, multi_path, nested_path);
-	WriteManifest(output_directory, fixtures, multi_arrays, multi_decoded, nested_arrays, nested_decoded,
+	WriteManifest(output_directory, fixtures, multi_arrays, multi_decoded, pfor_arrays, pfor_decoded,
+	              nested_arrays, nested_decoded,
 	              projection_arrays, projection_decoded, negative_assets);
 }
 
@@ -1422,7 +1539,8 @@ void PrintUsage(std::ostream &output) {
 	output << "Usage:\n"
 	       << "  duckomo_fixture_tool --output DIR\n"
 	       << "  duckomo_fixture_tool --oracle INPUT.om --csv REFERENCE.csv\n"
-	       << "\n--output generates raw.om, special.om, raw_large.om, multi.om, nested.om, projection.om, their oracle CSV files, "
+	       << "  duckomo_fixture_tool --oracle-prefix INPUT.om --variable /PATH --count N --csv REFERENCE.csv\n"
+	       << "\n--output generates raw.om, special.om, raw_large.om, multi.om, pfor_attributes.om, nested.om, projection.om, their oracle CSV files, "
 	          "negative mutation assets, and manifest.json.\n"
 	       << "--oracle runs the independent fixed official OM reader over a full root array and exports index,value CSV.\n";
 }
@@ -1433,7 +1551,10 @@ int main(int argc, char **argv) {
 	try {
 		std::filesystem::path output_directory;
 		std::filesystem::path oracle_input;
+		std::filesystem::path oracle_prefix_input;
 		std::filesystem::path oracle_csv;
+		std::string variable_path;
+		std::uint64_t prefix_count = 0;
 		for (int index = 1; index < argc; index++) {
 			const std::string argument(argv[index]);
 			if (argument == "--help" || argument == "-h") {
@@ -1448,6 +1569,18 @@ int main(int argc, char **argv) {
 				oracle_input = argv[++index];
 				continue;
 			}
+			if (argument == "--oracle-prefix" && index + 1 < argc) {
+				oracle_prefix_input = argv[++index];
+				continue;
+			}
+			if (argument == "--variable" && index + 1 < argc) {
+				variable_path = argv[++index];
+				continue;
+			}
+			if (argument == "--count" && index + 1 < argc) {
+				prefix_count = std::stoull(argv[++index]);
+				continue;
+			}
 			if (argument == "--csv" && index + 1 < argc) {
 				oracle_csv = argv[++index];
 				continue;
@@ -1456,14 +1589,21 @@ int main(int argc, char **argv) {
 			throw std::runtime_error("unknown or incomplete argument: " + argument);
 		}
 
-		if (!output_directory.empty() && oracle_input.empty() && oracle_csv.empty()) {
+		if (!output_directory.empty() && oracle_input.empty() && oracle_prefix_input.empty() && oracle_csv.empty()) {
 			Generate(output_directory);
 			return 0;
 		}
-		if (output_directory.empty() && !oracle_input.empty() && !oracle_csv.empty()) {
+		if (output_directory.empty() && !oracle_input.empty() && oracle_prefix_input.empty() && !oracle_csv.empty()) {
 			const auto decoded = DecodeFullRootArray(oracle_input);
 			WriteReferenceCsv(oracle_csv, decoded);
 			std::cout << "official OM oracle exported " << decoded.size() << " rows to " << oracle_csv.string() << '\n';
+			return 0;
+		}
+		if (output_directory.empty() && oracle_input.empty() && !oracle_prefix_input.empty() && !oracle_csv.empty() &&
+		    !variable_path.empty() && prefix_count != 0) {
+			const auto decoded = DecodePrefixFile(oracle_prefix_input, variable_path, prefix_count);
+			WriteReferenceCsv(oracle_csv, decoded);
+			std::cout << "official OM oracle exported " << decoded.size() << " prefix rows to " << oracle_csv.string() << '\n';
 			return 0;
 		}
 		PrintUsage(std::cerr);

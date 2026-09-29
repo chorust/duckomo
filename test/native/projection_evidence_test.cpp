@@ -66,7 +66,7 @@ std::string SqlLiteral(const std::string &value) {
 
 std::string ReadProjection(const std::string &path = PROJECTION_FIXTURE) {
 	return "read_om(" + SqlLiteral(path) +
-	       ", dimensions := map(['/humidity', '/pressure', '/temperature'], "
+	       ", dimensions := map(['humidity', 'pressure', 'temperature'], "
 	       "[['row', 'column'], ['row', 'column'], ['row', 'column']]))";
 }
 
@@ -601,7 +601,7 @@ bool EligibleForPerformance(const JsonValue &record) {
 void TestProjectionMetrics(duckdb::Connection &connection, MetricsOutput &metrics) {
 	const auto read_om = ReadProjection();
 	auto full = RunSuccessWithMetrics(connection, metrics, "projection", PROJECTION_SHA256, "native_full_scan",
-	                                  "SELECT \"/humidity\", \"/pressure\", \"/temperature\" FROM " + read_om,
+	                                  "SELECT \"humidity\", \"pressure\", \"temperature\" FROM " + read_om,
 	                                  "full projection metrics scan");
 	Require(full.At("schema_version").AsUInt("schema_version") == 1, "metrics schema version must be 1");
 	Require(full.At("metadata_bytes").AsUInt("metadata_bytes") > 0 &&
@@ -616,7 +616,7 @@ void TestProjectionMetrics(duckdb::Connection &connection, MetricsOutput &metric
 	metrics.SetScenario("native_single_variable");
 	// The environment must be set before BindReadOm reads its query identity.
 	metrics.Clear();
-	auto single_result = RequireSuccess(connection, "SELECT \"/temperature\" FROM " + read_om,
+	auto single_result = RequireSuccess(connection, "SELECT \"temperature\" FROM " + read_om,
 	                                    "single-variable metrics scan");
 	Require(single_result->RowCount() == 10541, "single-variable projection returned the wrong row count");
 	single_result.reset();
@@ -637,7 +637,7 @@ void TestProjectionMetrics(duckdb::Connection &connection, MetricsOutput &metric
 	metrics.SetScenario("native_filter_dependency");
 	metrics.Clear();
 	auto filtered = RequireSuccess(connection,
-	                               "SELECT \"/temperature\" FROM " + read_om + " WHERE \"/humidity\" = 96",
+	                               "SELECT \"temperature\" FROM " + read_om + " WHERE \"humidity\" = 96",
 	                               "projection with an unselected filter variable");
 	Require(filtered->RowCount() == 108, "filter-dependency query returned an unexpected row count");
 	filtered.reset();
@@ -747,7 +747,7 @@ void TestFailureMetricsAndRecovery(duckdb::Connection &connection, MetricsOutput
 }
 
 std::string CancellationSql() {
-	std::string expression = "\"/temperature\"";
+	std::string expression = "\"temperature\"";
 	for (std::size_t index = 0; index < 128; index++) {
 		expression = "sin(" + expression + ")";
 	}
@@ -818,7 +818,7 @@ void TestCancellationMetricsAndRecovery(duckdb::Connection &connection, MetricsO
 	metrics.SetScenario("native_cancel_recovery");
 	metrics.Clear();
 	auto recovered = RequireSuccess(connection,
-	                               "SELECT \"/temperature\" FROM " + ReadProjection(),
+	                               "SELECT \"temperature\" FROM " + ReadProjection(),
 	                               "valid projection after cancellation");
 	Require(recovered->RowCount() == 10541, "post-cancellation recovery query returned the wrong row count");
 	recovered.reset();

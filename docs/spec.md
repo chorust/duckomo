@@ -23,28 +23,28 @@ SQL 投影和谓词
 ```sql
 SELECT value FROM read_om('test/data/raw.om') ORDER BY value;
 
-SELECT "/temperature"
+SELECT "temperature"
 FROM read_om('test/data/multi.om', dimensions := map(
-  ['/humidity', '/temperature'],
+  ['humidity', 'temperature'],
   [['row', 'column'], ['row', 'column']]
 ))
-WHERE "/humidity" >= 103;
+WHERE "humidity" >= 103;
 ```
 
 `domain` 参数和语义坐标列尚未实现。未来计划在可靠的映射可用后支持 `domain`、经纬度与时间筛选；远程路径属于 Phase 5。
 
 ### Phase 0–2 的首批接口子集
 
-本地扫描器的实现与证据见 [实现计划](../specs/001-local-om-scanner/plan.md)、[SQL 契约](../specs/001-local-om-scanner/contracts/sql-interface.md) 和 [Phase 0–2 验收记录](../specs/001-local-om-scanner/evidence/)。当前支持 OM v3、Float32 数组及 FPX_XOR2D 压缩；旧版本、其他类型或压缩、非法布局及零长度轴均明确拒绝。NaN 映射为 NULL，±Inf 和 ±0 保留。
+本地扫描器的实现与证据见 [实现计划](../specs/001-local-om-scanner/plan.md)、[SQL 契约](../specs/001-local-om-scanner/contracts/sql-interface.md) 和 [Phase 0–2 验收记录](../specs/001-local-om-scanner/evidence/)。当前 `read_om` 支持 OM v3、Float32 数组及 FPX_XOR2D、PFOR_DELTA2D_INT16 压缩，也可读取数组上的附属元数据。旧版本、其他值数组类型或压缩、非法布局及零长度轴均明确拒绝。NaN 映射为 NULL。
 
-OM 基础数组元数据没有通用轴身份，因此多变量不能仅凭相同 shape 对齐。`read_om(path, dimensions := ...)` 使用显式 `dimensions MAP(VARCHAR, VARCHAR[])` 参数，逐变量声明有序轴标识；shape 与轴声明必须完全相同。单变量不要求该参数。该声明只提供逻辑对齐证据，不生成坐标；本地扫描子集不支持 `domain` 映射。根数组输出 `value`，层级数组使用规范路径作为列名，命名和拒绝规则详见 SQL 契约。
+OM 基础数组元数据没有通用轴身份，因此多变量不能仅凭相同 shape 对齐。若文件的 `coordinates` 元数据给出相同的有序轴名且值数组 shape 相同，`read_om` 可自动对齐；否则用 `dimensions MAP(VARCHAR, VARCHAR[])` 逐变量显式声明。轴声明只提供逻辑对齐证据，不生成坐标；本地扫描子集不支持 `domain` 映射。根数组输出 `value`，层级数组列名不带前导 `/`，详见 SQL 契约。
 
-`read_om_raw(path)` 是 Phase 0 的单变量验证入口。`read_om(path, dimensions := NULL)` 可读取单数组；层级多变量必须提供完整的 `dimensions` 映射。查询只投影实际需要的值变量；由 DuckDB 执行普通过滤，过滤引用的变量仍会作为扫描依赖读取。`COUNT(*)` 可仅读取 metadata 来输出 cardinality，不读取索引或值数组。实际读取和解码计数以及限制见 [Phase 2 证据](../specs/001-local-om-scanner/evidence/phase2.md)。
+`read_om_raw(path)` 是 Phase 0 的单变量验证入口，仍限于 FPX 根数组。`read_om(path, dimensions := NULL)` 可读取单数组以及具备一致有序 `coordinates` 元数据的多数组；其他多数组需完整的 `dimensions` 映射。查询只投影实际需要的值变量；由 DuckDB 执行普通过滤，过滤引用的变量仍会作为扫描依赖读取。`COUNT(*)` 可仅读取 metadata 来输出 cardinality，不读取索引或值数组。实际读取和解码计数以及限制见 [Phase 2 证据](../specs/001-local-om-scanner/evidence/phase2.md)。
 
 ### 当前行和列的语义
 
 - 每行表示选中变量在同一组逻辑索引处的值，最后一轴变化最快；不承诺未指定 `ORDER BY` 时的 SQL 结果顺序。
-- Bind 读取 OM hierarchy、变量名、类型、shape 和 chunk 元数据，产生稳定的 `DESCRIBE` 模式。根数组列名为 `value`；层级数组使用规范路径，如 `"/temperature"`。
+- Bind 读取 OM hierarchy、变量名、类型、shape 和 chunk 元数据，产生稳定的 `DESCRIBE` 模式。根数组列名为 `value`；层级数组列名如 `temperature` 或 `"surface/temperature"`。
 - 目前不生成 `latitude`、`longitude`、`time`、`level` 等语义坐标列。引用不存在的坐标列会由 DuckDB 正常报绑定错误；`dimensions` 仅声明轴身份，不生成坐标。
 
 ### 后续目标用法

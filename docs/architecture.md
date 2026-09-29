@@ -28,7 +28,7 @@ DuckDB SQL
 
 `projection_pushdown` 用于减少变量读取；本阶段 `filter_pushdown` 和 `filter_prune` 均关闭，SQL 过滤由 DuckDB 正常执行，谓词所需变量仍参与扫描。DuckDB 的列裁剪行为已在固定版本上通过结果对照和实际 I/O 指标验证；计数查询的 cardinality 路径也已单独检查。未来只有在精确谓词执行和过滤依赖保留经过集成验证后，才考虑增加维度选择下推。
 
-Phase 0–2 的 [实现计划](../specs/001-local-om-scanner/plan.md) 固定 DuckDB v1.5.4 和官方 OM 源码提交（完整版本见 [研究记录](../specs/001-local-om-scanner/research.md)）。多变量轴身份通过显式 `dimensions` 参数验证，不凭 shape 推断；这一逻辑只处理对齐，不实现后续坐标映射。扫描采用本地定位读取与有界批次，官方 reader 仍拥有 chunk 和字节请求规划权。支持的 OM v3、Float32、FPX 子集和文件格式拒绝规则见 [SQL 契约](../specs/001-local-om-scanner/contracts/sql-interface.md)。
+Phase 0–2 的 [实现计划](../specs/001-local-om-scanner/plan.md) 固定 DuckDB v1.5.4 和官方 OM 源码提交（完整版本见 [研究记录](../specs/001-local-om-scanner/research.md)）。多变量轴身份通过一致的 `coordinates` 元数据或显式 `dimensions` 参数验证，不凭 shape 单独推断；这一逻辑只处理对齐，不实现后续坐标映射。扫描采用本地定位读取与有界批次，官方 reader 仍拥有 chunk 和字节请求规划权。支持的 OM v3、Float32、FPX/PFOR 子集和文件格式拒绝规则见 [SQL 契约](../specs/001-local-om-scanner/contracts/sql-interface.md)。
 
 目前使用 C++ API 是**版本相关的设计决策**：若将来稳定 C API 具备同等 filter pushdown 能力，可以重新评估，不能把当前决定写成永久限制。
 

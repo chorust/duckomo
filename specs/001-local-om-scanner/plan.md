@@ -1,5 +1,7 @@
 # Implementation Plan: Phase 0–2 本地 OM 可用扫描器
 
+本文记录 2026-09-28 的原始实施范围；真实 OM 兼容性修复后的支持范围与 SQL 命名规则以 [当前接口契约](contracts/sql-interface.md) 为准。
+
 **Branch**: `main` | **Date**: 2026-09-28 | **Spec**: [spec.md](spec.md)
 
 **Input**: `specs/001-local-om-scanner/spec.md`

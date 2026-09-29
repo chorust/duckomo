@@ -14,6 +14,7 @@ namespace duckomo {
 struct BoundVariable final {
 	std::string canonical_path;
 	std::string column_name;
+	std::vector<std::string> inferred_axes;
 	LogicalType type = LogicalType::FLOAT;
 	std::vector<std::uint64_t> shape;
 	std::vector<std::uint64_t> chunk_shape;

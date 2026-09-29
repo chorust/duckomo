@@ -156,8 +156,9 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 		throw ReaderError(ReaderErrorCode::UnsupportedDataType, "OM decoder only supports Float32 arrays");
 	}
 	const auto compression = om_variable_get_compression(variable);
-	if (compression != COMPRESSION_FPX_XOR2D) {
-		throw ReaderError(ReaderErrorCode::UnsupportedCompression, "OM decoder only supports FPX_XOR2D compression");
+	if (compression != COMPRESSION_FPX_XOR2D && compression != COMPRESSION_PFOR_DELTA2D_INT16) {
+		throw ReaderError(ReaderErrorCode::UnsupportedCompression,
+		                  "OM decoder only supports FPX_XOR2D and PFOR_DELTA2D_INT16 compression");
 	}
 
 	const auto rank = om_variable_get_dimensions_count(variable);

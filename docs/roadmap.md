@@ -5,7 +5,7 @@
 | 阶段 | 状态 | 交付物 / 退出条件 |
 |---|---|---|
 | **0 — Spike** | 已完成 | 固定 DuckDB/OM 版本；`read_om_raw` 将本地 OM C reader 解码结果输出为 DataChunk，并与官方 reader 参考结果对齐。 |
-| **1 — Proper scanner** | 已完成 | `read_om(path, dimensions := ...)` 绑定 metadata/hierarchy 和稳定 schema；多变量以显式轴身份对齐，不猜测坐标。 |
+| **1 — Proper scanner** | 已完成 | `read_om(path, dimensions := ...)` 绑定 metadata/hierarchy 和稳定 schema；多变量通过一致的 `coordinates` 元数据或显式轴声明对齐。 |
 | **2 — Projection pushdown** | 已完成 | 按 `column_ids` 只读取所需变量，保留过滤依赖；与全量结果及物理读取指标对照。`COUNT(*)` 无索引或数据读取。 |
 | **3 — Spatial pushdown** | 计划中 | `GridMapping`、RegularGrid、显式 domain/网格配置、bbox→OM 逻辑选择；经纬度结果与基准一致，窄区域 bytes/chunks 少于全域。 |
 | **4 — Other dimensions** | 计划中 | `DimensionMapping`：time、level、lead_time、member、run；验证混合谓词、维度顺序和空结果。 |
@@ -22,8 +22,8 @@
 
 ## Phase 0–2 已确认的实现决策
 
-- 支持的文件子集为本地 OM v3、Float32、FPX_XOR2D；根数组与层级数组均已有 fixture，其他格式按 [SQL 契约](../specs/001-local-om-scanner/contracts/sql-interface.md) 拒绝。
-- 多变量必须提供完整且一致的 `dimensions` 轴声明；当前文件元数据不足以确定时间或网格语义。
+- 支持的文件子集为本地 OM v3、Float32、FPX_XOR2D 和 PFOR_DELTA2D_INT16；根数组与层级数组均可读取，其他格式按 [SQL 契约](../specs/001-local-om-scanner/contracts/sql-interface.md) 拒绝。
+- 多变量需具备相同 shape 和有序轴身份；身份可来自一致的 `coordinates` 元数据或完整的显式 `dimensions` 声明。当前仍不生成时间或网格坐标列。
 - 官方 OM C reader 负责格式、chunk 和解码，本地 Sans-I/O 请求接到 DuckDB 文件系统。
 - DuckDB v1.5.4 上已验证 projection pushdown；`filter_pushdown` 和 `filter_prune` 保持关闭，过滤仍由 DuckDB 执行。
 

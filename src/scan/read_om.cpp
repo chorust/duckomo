@@ -136,7 +136,8 @@ bool SameSchema(const BoundSchema &left, const BoundSchema &right) {
 		const auto &left_variable = left.variables[index];
 		const auto &right_variable = right.variables[index];
 		if (left_variable.canonical_path != right_variable.canonical_path ||
-		    left_variable.column_name != right_variable.column_name || left_variable.type != right_variable.type ||
+		    left_variable.column_name != right_variable.column_name ||
+		    left_variable.inferred_axes != right_variable.inferred_axes || left_variable.type != right_variable.type ||
 		    left_variable.shape != right_variable.shape || left_variable.chunk_shape != right_variable.chunk_shape ||
 		    left_variable.row_count != right_variable.row_count ||
 		    left_variable.metadata_offset != right_variable.metadata_offset ||

@@ -25,6 +25,10 @@ set_target_properties(duckomo_om PROPERTIES
     C_STANDARD_REQUIRED ON
     C_EXTENSIONS ON
 )
+if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+    # Upstream generated bitpacking headers emit very large warning streams.
+    target_compile_options(duckomo_om PRIVATE -w)
+endif()
 
 set(EXTENSION_SOURCES
     src/om_extension.cpp

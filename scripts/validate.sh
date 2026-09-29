@@ -106,6 +106,7 @@ check_fixture_hashes() {
 		([.fixtures[].fixture_id] | index("special") != null) and
 		([.fixtures[].fixture_id] | index("raw_large") != null) and
 		([.fixtures[].fixture_id] | index("projection") != null) and
+		([.fixtures[].fixture_id] | index("pfor_attributes") != null) and
 		([.projection_scenarios.scenarios[].scenario_id] | sort) ==
 			["count", "full_scan", "output_plus_filter", "single_variable"] and
 		([.negative_assets | length] >= 7)
@@ -128,7 +129,7 @@ check_fixture_hashes() {
 		[[ "$actual" == "$expected" ]] || die "SHA-256 mismatch for $relative: expected $expected, got $actual"
 		count=$((count + 1))
 	done <<< "$entries"
-	[[ "$count" -eq 26 ]] || die "expected 26 fixture/reference/negative checksums, verified $count"
+	[[ "$count" -eq 29 ]] || die "expected 29 fixture/reference/negative checksums, verified $count"
 	printf 'Verified %s fixture, reference, and negative asset SHA-256 values.\n' "$count"
 }
 
