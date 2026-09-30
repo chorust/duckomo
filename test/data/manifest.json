@@ -41,6 +41,60 @@
       "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise full-file"}
     },
     {
+      "fixture_id": "spatial_flat",
+      "path": "spatial_flat.om",
+      "sha256": "9ae730ced86cadd9348d1c9f0e86ac09b9dad99a0b6d6e2ac20884145c3dd7e3",
+      "source": "official OM C encoder and metadata writer",
+      "format_version": 3,
+      "variable_path": "/",
+      "type": "Float32",
+      "compression": "FPX_XOR2D",
+      "shape": [2,6],
+      "chunk_shape": [1,2],
+      "axes": ["sample","point"],
+      "expected_schema": ["value FLOAT"],
+      "null_positions": [],
+      "reference_csv": "spatial_flat.reference.csv",
+      "reference_csv_sha256": "c82865fa5ee988756d83d0de463cc7b85822ceae3a440cf49e08e7b6cb0212d2",
+      "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise full-file"}
+    },
+    {
+      "fixture_id": "spatial_axes",
+      "path": "spatial_axes.om",
+      "sha256": "74a506a754bff6c65c19e8db68de04e841d2d0eb84ac1084c4df402a35c2759a",
+      "source": "official OM C encoder and metadata writer",
+      "format_version": 3,
+      "variable_path": "/",
+      "type": "Float32",
+      "compression": "FPX_XOR2D",
+      "shape": [2,2,3],
+      "chunk_shape": [1,1,2],
+      "axes": ["member","latitude_axis","longitude_axis"],
+      "expected_schema": ["value FLOAT"],
+      "null_positions": [5],
+      "reference_csv": "spatial_axes.reference.csv",
+      "reference_csv_sha256": "da05d384f6a6e2ace0f9e1b8ea14017c814c329ed6fa40dd01a0331be2de3842",
+      "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise full-file"}
+    },
+    {
+      "fixture_id": "spatial_single",
+      "path": "spatial_single.om",
+      "sha256": "21207eeca2b44f4e647bf0df88ca065f2c61b9da1d5feabf907044d8f8ad5b2a",
+      "source": "official OM C encoder and metadata writer",
+      "format_version": 3,
+      "variable_path": "/",
+      "type": "Float32",
+      "compression": "FPX_XOR2D",
+      "shape": [1,1],
+      "chunk_shape": [1,1],
+      "axes": ["latitude_axis","longitude_axis"],
+      "expected_schema": ["value FLOAT"],
+      "null_positions": [],
+      "reference_csv": "spatial_single.reference.csv",
+      "reference_csv_sha256": "26f29cccc0ac7e545ea737e12ccfb3f4f5a41780fc10bdbfbf43984978fa3e0d",
+      "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise full-file"}
+    },
+    {
       "fixture_id": "raw_large",
       "path": "raw_large.om",
       "sha256": "fb6ef03698432659f539b7ea4476c8a017fb3a4a59266e017ecd19112ccadc8f",
@@ -74,6 +128,23 @@
       "variables": [
         {"variable_path": "/humidity", "type": "Float32", "compression": "FPX_XOR2D", "shape": [2,3], "chunk_shape": [1,2], "axes": ["row","column"], "expected_column": "humidity FLOAT", "null_positions": [], "reference_csv": "multi.humidity.reference.csv", "reference_csv_sha256": "699782744ee1a9a250436b1ec0da1f516a0862abeff8fb5d65433b7b93608a5a", "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise official decode"}},
         {"variable_path": "/temperature", "type": "Float32", "compression": "FPX_XOR2D", "shape": [2,3], "chunk_shape": [1,2], "axes": ["row","column"], "expected_column": "temperature FLOAT", "null_positions": [], "reference_csv": "multi.temperature.reference.csv", "reference_csv_sha256": "d877c8234157eba79c072172708c89a5a54d87aa83bd8a3307e0731dd1492ad3", "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise official decode"}}
+      ]
+    },
+    {
+      "fixture_id": "spatial_conflict",
+      "path": "spatial_conflict.om",
+      "sha256": "a2080cf4b1ff65788a240af69afc793a5981e3596ff195b4338405ed6305169f",
+      "source": "official OM C encoder and metadata writer",
+      "format_version": 3,
+      "variable_path": "/",
+      "type": "NONE container",
+      "compression": "NONE",
+      "shape": null,
+      "chunk_shape": null,
+      "axes": {"/Latitude":["lat","lon"]},
+      "expected_schema": ["Latitude FLOAT"],
+      "variables": [
+        {"variable_path": "/Latitude", "type": "Float32", "compression": "FPX_XOR2D", "shape": [2,3], "chunk_shape": [1,2], "axes": ["lat","lon"], "expected_column": "Latitude FLOAT", "null_positions": [], "reference_csv": "spatial_conflict.latitude.reference.csv", "reference_csv_sha256": "d877c8234157eba79c072172708c89a5a54d87aa83bd8a3307e0731dd1492ad3", "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise official decode"}}
       ]
     },
     {

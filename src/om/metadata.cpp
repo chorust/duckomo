@@ -208,6 +208,16 @@ void Traverse(const OmV3Reader &reader, std::uint64_t offset, std::uint64_t size
 				                  "duplicate coordinates metadata at '" + owner_path + "'");
 			}
 		}
+	} else if (type == DATA_TYPE_STRING && name == "crs_wkt") {
+		void *value = nullptr;
+		std::uint64_t value_size = 0;
+		if (om_variable_get_scalar(variable, &value, &value_size) == ERROR_OK && value != nullptr && value_size != 0) {
+			const std::string wkt(static_cast<const char *>(value), static_cast<std::size_t>(value_size));
+			if (!tree.crs_wkt.empty() && tree.crs_wkt != wkt) {
+				throw ReaderError(ReaderErrorCode::InvalidMetadata, "conflicting crs_wkt metadata in OM file");
+			}
+			tree.crs_wkt = wkt;
+		}
 	}
 	if (children_count == 0) {
 		return;

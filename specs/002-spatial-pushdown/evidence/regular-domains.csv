@@ -1,0 +1,205 @@
+directory,domain,status,s3_key,source_bytes,local_metadata_tail_bytes,shape,variable_count,coordinates,wkt_bbox
+data_spatial,bom_access_global,no_sample,,,,,,,
+data_spatial,bom_access_global_ensemble,no_sample,,,,,,,
+data_spatial,cams_europe,bind_ok,data_spatial/cams_europe/2026/09/21/0000Z/2026-09-21T0200.om,1569056,1048576,"420,700",25,lat lon,"71.95,-24.95,30.049995,44.95"
+data_spatial,cams_global,bind_ok,data_spatial/cams_global/2026/09/21/0000Z/2026-09-21T0100.om,779528,779528,"451,900",5,lat lon,"-90.0,-180.0,90.0,179.6"
+data_spatial,cams_global_greenhouse_gases,bind_ok,data_spatial/cams_global_greenhouse_gases/2026/09/21/0000Z/2026-09-21T0900.om,3305264,1048576,"1801,3600",3,lat lon,"-90.0,-180.0,90.0,179.9"
+data_spatial,chmi_aladin_cz_1km,bind_ok,data_spatial/chmi_aladin_cz_1km/2026/09/21/0000Z/2026-09-21T0200.om,635088,635088,"290,501",21,lat lon,"48.5,12.0,51.098,18.995"
+data_spatial,cma_grapes_global,bind_ok,data_spatial/cma_grapes_global/2026/09/21/0000Z/2026-09-21T0000.om,212913320,1048576,"1440,2880",251,lat lon,"-89.9375,-180.0,89.9375,179.875"
+data_spatial,cmc_gem_gdps,no_sample,,,,,,,
+data_spatial,cmc_gem_gdps_15km,bind_ok,data_spatial/cmc_gem_gdps_15km/2026/09/21/0000Z/2026-09-21T0000.om,24078816,1048576,"1201,2400",19,lat lon,"-90.0,-180.0,90.0,179.85"
+data_spatial,cmc_gem_gdps_15km_upper_level,bind_ok,data_spatial/cmc_gem_gdps_15km_upper_level/2026/09/21/0000Z/2026-09-21T0300.om,119531224,1048576,"1201,2400",156,lat lon,"-90.0,-180.0,90.0,179.85"
+data_spatial,cmc_gem_geps,bind_ok,data_spatial/cmc_gem_geps/2026/09/21/0000Z/2026-09-21T0600.om,126792,126792,"361,720",1,lat lon,"-90.0,-180.0,90.0,179.5"
+data_spatial,cmc_gem_geps_ensemble_mean,no_sample,,,,,,,
+data_spatial,copernicus_era5,no_sample,,,,,,,
+data_spatial,copernicus_era5_ensemble,no_sample,,,,,,,
+data_spatial,copernicus_era5_land,no_sample,,,,,,,
+data_spatial,copernicus_era5_ocean,no_sample,,,,,,,
+data_spatial,dwd_ewam,bind_ok,data_spatial/dwd_ewam/2026/09/21/0000Z/2026-09-21T0900.om,1061592,1048576,"721,526",11,lat lon,"30.0,-10.5,66.0,42.0"
+data_spatial,dwd_gwam,bind_ok,data_spatial/dwd_gwam/2026/09/21/0000Z/2026-09-21T0000.om,3559680,1048576,"699,1440",11,lat lon,"-85.25,-180.0,89.25,179.75"
+data_spatial,dwd_icon,bind_ok,data_spatial/dwd_icon/2026/09/21/0000Z/2026-09-21T0000_model-level.om,18273208,1048576,"1441,2879",9,lat lon,"-90.0,-180.0,90.0,179.75"
+data_spatial,dwd_icon_d2,bind_ok,data_spatial/dwd_icon_d2/2026/09/21/0000Z/2026-09-21T0000_model-level.om,3501096,1048576,"746,1215",9,lat lon,"43.18,-3.94,58.08,20.339998"
+data_spatial,dwd_icon_d2_15min,no_sample,,,,,,,
+data_spatial,dwd_icon_d2_eps,bind_ok,data_spatial/dwd_icon_d2_eps/2026/09/21/0000Z/2026-09-21T1000.om,45928,45928,"745,1214",1,lat lon,"43.18,-3.94,58.06,20.32"
+data_spatial,dwd_icon_d2_eps_ensemble_mean,no_sample,,,,,,,
+data_spatial,dwd_icon_eps,bind_ok,data_spatial/dwd_icon_eps/2026/09/21/0000Z/2026-09-21T0100.om,409080,409080,"721,1439",1,lat lon,"-90.0,-180.0,90.0,179.5"
+data_spatial,dwd_icon_eps_ensemble_mean,no_sample,,,,,,,
+data_spatial,dwd_icon_eu,bind_ok,data_spatial/dwd_icon_eu/2026/09/20/2100Z/2026-09-21T2100_model-level.om,3561328,1048576,"657,1377",9,lat lon,"29.5,-23.5,70.5,62.5"
+data_spatial,dwd_icon_eu_eps,bind_ok,data_spatial/dwd_icon_eu_eps/2026/09/21/0000Z/2026-09-21T0100.om,60704,60704,"329,689",1,lat lon,"29.5,-23.5,70.5,62.5"
+data_spatial,dwd_icon_eu_eps_ensemble_mean,no_sample,,,,,,,
+data_spatial,ecmwf_aifs025_ensemble,bind_ok,data_spatial/ecmwf_aifs025_ensemble/2026/09/20/1800Z/2026-09-22T0000.om,368672,368672,"721,1440",1,lat lon,"-90.0,-180.0,90.0,179.75"
+data_spatial,ecmwf_aifs025_ensemble_mean,no_sample,,,,,,,
+data_spatial,ecmwf_aifs025_single,bind_ok,data_spatial/ecmwf_aifs025_single/2026/09/21/0000Z/2026-09-23T0600.om,27282672,1048576,"721,1440",103,lat lon,"-90.0,-180.0,90.0,179.75"
+data_spatial,ecmwf_ifs025,bind_ok,data_spatial/ecmwf_ifs025/2026/09/20/1800Z/2026-09-20T1800.om,40165416,1048576,"721,1440",113,lat lon,"-90.0,-180.0,90.0,179.75"
+data_spatial,ecmwf_ifs025_ensemble,bind_ok,data_spatial/ecmwf_ifs025_ensemble/2026/09/20/1800Z/2026-09-21T0300.om,408672,408672,"721,1440",1,lat lon,"-90.0,-180.0,90.0,179.75"
+data_spatial,ecmwf_ifs025_ensemble_mean,no_sample,,,,,,,
+data_spatial,ecmwf_wam025,bind_ok,data_spatial/ecmwf_wam025/2026/09/20/1800Z/2026-09-20T2100.om,1411464,1048576,"721,1440",4,lat lon,"-90.0,-180.0,90.0,179.75"
+data_spatial,geosphere_arome_austria,bind_ok,data_spatial/geosphere_arome_austria/2026/09/20/2100Z/2026-09-20T2100.om,1970024,1048576,"492,594",23,lat lon,"42.981,5.498,51.819,22.102001"
+data_spatial,italia_meteo_arpae_icon_2i,bind_ok,data_spatial/italia_meteo_arpae_icon_2i/2026/09/21/0000Z/2026-09-21T0000.om,11279832,1048576,"761,761",63,lat lon,"33.7,3.0,48.9,22.0"
+data_spatial,jma_gsm,bind_ok,data_spatial/jma_gsm/2026/09/20/1800Z/2026-09-20T1800.om,8197144,1048576,"361,720",77,lat lon,"-90.0,-180.0,90.0,179.5"
+data_spatial,jma_msm,bind_ok,data_spatial/jma_msm/2026/09/20/1800Z/2026-09-20T1800.om,818504,818504,"505,481",9,lat lon,"22.4,120.0,47.6,150.0"
+data_spatial,jma_msm_upper_level,bind_ok,data_spatial/jma_msm_upper_level/2026/09/20/1800Z/2026-09-20T1800.om,1602720,1048576,"253,241",92,lat lon,"22.4,120.0,47.6,150.0"
+data_spatial,kma_gdps,no_sample,,,,,,,
+data_spatial,knmi_harmonie_arome_netherlands,bind_ok,data_spatial/knmi_harmonie_arome_netherlands/2026/09/20/2200Z/2026-09-20T2300.om,1406288,1048576,"390,390",30,lat lon,"49.0,0.0,56.002,11.281"
+data_spatial,meteofrance_arome_france0025,bind_ok,data_spatial/meteofrance_arome_france0025/2026/09/20/2100Z/2026-09-20T2100.om,29223776,1048576,"717,1121",141,lat lon,"37.5,-12.0,55.4,16.0"
+data_spatial,meteofrance_arome_france0025_15min,bind_ok,data_spatial/meteofrance_arome_france0025_15min/2026/09/21/0000Z/2026-09-21T0000.om,3036216,1048576,"717,1121",8,lat lon,"37.5,-12.0,55.4,16.0"
+data_spatial,meteofrance_arome_france_hd,bind_ok,data_spatial/meteofrance_arome_france_hd/2026/09/20/2100Z/2026-09-20T2100.om,16304008,1048576,"1791,2801",11,lat lon,"37.5,-12.0,55.4,16.0"
+data_spatial,meteofrance_arome_france_hd_15min,bind_ok,data_spatial/meteofrance_arome_france_hd_15min/2026/09/21/0000Z/2026-09-21T0000.om,3966104,1048576,"1791,2801",3,lat lon,"37.5,-12.0,55.4,16.0"
+data_spatial,meteofrance_arpege_europe,bind_ok,data_spatial/meteofrance_arpege_europe/2026/09/21/0000Z/2026-09-21T0000.om,18924696,1048576,"521,741",145,lat lon,"20.0,-32.0,72.0,42.0"
+data_spatial,meteofrance_arpege_europe_probabilities,no_sample,,,,,,,
+data_spatial,meteofrance_arpege_world025,bind_ok,data_spatial/meteofrance_arpege_world025/2026/09/21/0000Z/2026-09-21T0100.om,57709304,1048576,"721,1440",149,lat lon,"-90.0,-180.0,90.0,179.75"
+data_spatial,meteofrance_currents,bind_ok,data_spatial/meteofrance_currents/2026/09/21/0000Z/2026-09-20T0500.om,6108136,1048576,"2041,4320",4,lat lon,"-79.958336,-179.95833,90.041664,179.95836"
+data_spatial,meteofrance_sea_surface_temperature,bind_ok,data_spatial/meteofrance_sea_surface_temperature/2026/09/21/0000Z/2026-09-22T1200.om,2178584,1048576,"2041,4320",1,lat lon,"-79.958336,-179.95833,90.041664,179.95836"
+data_spatial,meteofrance_wave,bind_ok,data_spatial/meteofrance_wave/2026/09/20/1200Z/2026-09-19T2100.om,26465064,1048576,"2041,4320",12,lat lon,"-79.958336,-179.95833,90.041664,179.95836"
+data_spatial,ncep_aigefs025,bind_ok,data_spatial/ncep_aigefs025/2026/09/20/1800Z/2026-09-21T0600.om,356472,356472,"721,1440",1,lat lon,"-90.0,-180.0,90.0,179.75"
+data_spatial,ncep_aigefs025_ensemble_mean,no_sample,,,,,,,
+data_spatial,ncep_aigfs025,bind_ok,data_spatial/ncep_aigfs025/2026/09/21/0000Z/2026-09-23T0000.om,30904664,1048576,"721,1440",87,lat lon,"-90.0,-180.0,90.0,179.75"
+data_spatial,ncep_gefs025,bind_ok,data_spatial/ncep_gefs025/2026/09/21/0000Z/2026-09-21T1500.om,350416,350416,"721,1440",1,lat lon,"-90.0,-180.0,90.0,179.75"
+data_spatial,ncep_gefs025_ensemble_mean,no_sample,,,,,,,
+data_spatial,ncep_gefs05,bind_ok,data_spatial/ncep_gefs05/2026/09/20/1800Z/2026-10-04T0000.om,139224,139224,"361,720",1,lat lon,"-90.0,-180.0,90.0,179.5"
+data_spatial,ncep_gefs05_ensemble_mean,no_sample,,,,,,,
+data_spatial,ncep_gfs013,bind_ok,data_spatial/ncep_gfs013/2026/09/21/0000Z/2026-09-21T0000.om,24819064,1048576,"1536,3072",16,lat lon,"-89.912125,-180.0,89.912125,179.88281"
+data_spatial,ncep_gfs025,bind_ok,data_spatial/ncep_gfs025/2026/09/21/0000Z/2026-09-21T0200.om,112274264,1048576,"721,1440",316,lat lon,"-90.0,-180.0,90.0,179.75"
+data_spatial,ncep_gfs_graphcast025,no_sample,,,,,,,
+data_spatial,ncep_gfswave016,bind_ok,data_spatial/ncep_gfswave016/2026/09/21/0000Z/2026-09-21T0400.om,4566456,1048576,"406,2160",15,lat lon,"-15.0,-180.0,52.5,179.83334"
+data_spatial,ncep_gfswave025,bind_ok,data_spatial/ncep_gfswave025/2026/09/21/0000Z/2026-09-21T0900.om,5828280,1048576,"721,1440",15,lat lon,"-90.0,-180.0,90.0,179.75"
+data_spatial,ncep_hgefs025_ensemble_mean,bind_ok,data_spatial/ncep_hgefs025_ensemble_mean/2026/09/20/1800Z/2026-09-23T0600.om,32407544,1048576,"721,1440",144,lat lon,"-90.0,-180.0,90.0,179.75"
+data_spatial,ukmo_global_deterministic_10km,bind_ok,data_spatial/ukmo_global_deterministic_10km/2026/09/20/1800Z/2026-09-21T0200.om,284661080,4194304,"1920,2560",218,,
+data_spatial,ukmo_global_ensemble_20km,bind_ok,data_spatial/ukmo_global_ensemble_20km/2026/09/20/1800Z/2026-09-20T1900.om,11648,11648,"960,1280",1,lat lon,"-90.0,-180.0,89.8125,179.71875"
+data_spatial,ukmo_global_ensemble_mean_20km,no_sample,,,,,,,
+data_run,bom_access_global,no_sample,,,,,,,
+data_run,bom_access_global_ensemble,no_sample,,,,,,,
+data_run,cams_europe,bind_ok,data_run/cams_europe/2026/06/27/0000Z/alder_pollen.om,291032,291032,"420,700,97",1,lat lon time,"71.95,-24.95,30.049995,44.95"
+data_run,cams_global,bind_ok,data_run/cams_global/2026/06/27/0000Z/nitrogen_monoxide.om,1299984,1299984,"451,900,41",1,lat lon time,"-90.0,-180.0,90.0,179.6"
+data_run,cams_global_greenhouse_gases,bind_ok,data_run/cams_global_greenhouse_gases/2026/06/30/0000Z/carbon_dioxide.om,49282048,2097152,"1801,3600,41",1,lat lon time,"-90.0,-180.0,90.0,179.9"
+data_run,chmi_aladin_cz_1km,bind_ok,data_run/chmi_aladin_cz_1km/2026/06/27/0000Z/precipitation.om,1118400,1118400,"290,501,73",1,lat lon time,"48.5,12.0,51.098,18.995"
+data_run,cma_grapes_global,bind_ok,data_run/cma_grapes_global/2026/06/26/1800Z/cloud_cover_100hPa.om,4968280,2097152,"1440,2880,41",1,lat lon time,"-89.9375,-180.0,89.9375,179.875"
+data_run,cmc_gem_gdps,no_sample,,,,,,,
+data_run,cmc_gem_gdps_15km,bind_ok,data_run/cmc_gem_gdps_15km/2026/08/18/1200Z/snow_depth.om,9391008,2097152,"1201,2400,137",1,lat lon time,"-90.0,-180.0,90.0,179.85"
+data_run,cmc_gem_gdps_15km_upper_level,bind_ok,data_run/cmc_gem_gdps_15km_upper_level/2026/06/27/0000Z/geopotential_height_50hPa.om,35632304,2097152,"1201,2400,69",1,lat lon time,"-90.0,-180.0,90.0,179.85"
+data_run,cmc_gem_geps,no_sample,,,,,,,
+data_run,cmc_gem_geps_ensemble_mean,no_sample,,,,,,,
+data_run,copernicus_era5,no_sample,,,,,,,
+data_run,copernicus_era5_ensemble,no_sample,,,,,,,
+data_run,copernicus_era5_land,no_sample,,,,,,,
+data_run,copernicus_era5_ocean,bind_ok,data_run/copernicus_era5_ocean/2026/06/21/0000Z/wave_period.om,1291024,1291024,"361,720,24",1,lat lon time,"-90.0,-180.0,90.0,179.5"
+data_run,dwd_ewam,bind_ok,data_run/dwd_ewam/2026/06/27/0000Z/wave_height.om,3908896,2097152,"721,526,79",1,lat lon time,"30.0,-10.5,66.0,42.0"
+data_run,dwd_gwam,bind_ok,data_run/dwd_gwam/2026/06/27/0000Z/swell_wave_peak_period.om,11477160,2097152,"699,1440,59",1,lat lon time,"-85.25,-180.0,89.25,179.75"
+data_run,dwd_icon,bind_ok,data_run/dwd_icon/2026/06/27/0000Z/cape.om,136561232,2097152,"1441,2879,113",1,lat lon time,"-90.0,-180.0,90.0,179.75"
+data_run,dwd_icon_d2,bind_ok,data_run/dwd_icon_d2/2026/06/27/0000Z/convective_cloud_base.om,4248512,2097152,"746,1215,49",1,lat lon time,"43.18,-3.94,58.08,20.339998"
+data_run,dwd_icon_d2_15min,bind_ok,data_run/dwd_icon_d2_15min/2026/06/27/0000Z/lightning_potential.om,3279208,2097152,"746,1215,192",1,lat lon time,"43.18,-3.94,58.08,20.339998"
+data_run,dwd_icon_d2_eps,no_sample,,,,,,,
+data_run,dwd_icon_d2_eps_ensemble_mean,no_sample,,,,,,,
+data_run,dwd_icon_eps,no_sample,,,,,,,
+data_run,dwd_icon_eps_ensemble_mean,no_sample,,,,,,,
+data_run,dwd_icon_eu,bind_ok,data_run/dwd_icon_eu/2026/06/26/2100Z/temperature_80m.om,10631856,2097152,"657,1377,31",1,lat lon time,"29.5,-23.5,70.5,62.5"
+data_run,dwd_icon_eu_eps,no_sample,,,,,,,
+data_run,dwd_icon_eu_eps_ensemble_mean,no_sample,,,,,,,
+data_run,ecmwf_aifs025_ensemble,no_sample,,,,,,,
+data_run,ecmwf_aifs025_ensemble_mean,no_sample,,,,,,,
+data_run,ecmwf_aifs025_single,bind_ok,data_run/ecmwf_aifs025_single/2026/06/27/0000Z/geopotential_height_100hPa.om,16301080,2097152,"721,1440,61",1,lat lon time,"-90.0,-180.0,90.0,179.75"
+data_run,ecmwf_ifs025,bind_ok,data_run/ecmwf_ifs025/2026/06/26/1800Z/geopotential_height_100hPa.om,12768616,2097152,"721,1440,49",1,lat lon time,"-90.0,-180.0,90.0,179.75"
+data_run,ecmwf_ifs025_ensemble,no_sample,,,,,,,
+data_run,ecmwf_ifs025_ensemble_mean,no_sample,,,,,,,
+data_run,ecmwf_wam025,bind_ok,data_run/ecmwf_wam025/2026/06/26/1800Z/wave_height.om,12512960,2097152,"721,1440,49",1,lat lon time,"-90.0,-180.0,90.0,179.75"
+data_run,geosphere_arome_austria,bind_ok,data_run/geosphere_arome_austria/2026/06/26/2100Z/rain.om,1432176,1432176,"492,594,61",1,lat lon time,"42.981,5.498,51.819,22.102001"
+data_run,italia_meteo_arpae_icon_2i,bind_ok,data_run/italia_meteo_arpae_icon_2i/2026/06/27/0000Z/geopotential_height_250hPa.om,9455824,2097152,"761,761,73",1,lat lon time,"33.7,3.0,48.9,22.0"
+data_run,jma_gsm,bind_ok,data_run/jma_gsm/2026/06/26/1800Z/geopotential_height_100hPa.om,772040,772040,"361,720,23",1,lat lon time,"-90.0,-180.0,90.0,179.5"
+data_run,jma_msm,bind_ok,data_run/jma_msm/2026/06/26/2100Z/precipitation.om,1467344,1467344,"505,481,39",1,lat lon time,"22.4,120.0,47.6,150.0"
+data_run,jma_msm_upper_level,bind_ok,data_run/jma_msm_upper_level/2026/06/26/2100Z/geopotential_height_100hPa.om,47160,47160,"253,241,14",1,lat lon time,"22.4,120.0,47.6,150.0"
+data_run,kma_gdps,no_sample,,,,,,,
+data_run,knmi_harmonie_arome_netherlands,bind_ok,data_run/knmi_harmonie_arome_netherlands/2026/06/27/0000Z/pressure_msl.om,161560,161560,"390,390,61",1,lat lon time,"49.0,0.0,56.002,11.281"
+data_run,meteofrance_arome_france0025,bind_ok,data_run/meteofrance_arome_france0025/2026/06/26/2100Z/geopotential_height_100hPa.om,6447264,2097152,"717,1121,52",1,lat lon time,"37.5,-12.0,55.4,16.0"
+data_run,meteofrance_arome_france0025_15min,bind_ok,data_run/meteofrance_arome_france0025_15min/2026/06/27/0000Z/shortwave_radiation.om,1360480,1360480,"717,1121,6",1,lat lon time,"37.5,-12.0,55.4,16.0"
+data_run,meteofrance_arome_france_hd,bind_ok,data_run/meteofrance_arome_france_hd/2026/06/26/2100Z/precipitation.om,16667520,2097152,"1791,2801,51",1,lat lon time,"37.5,-12.0,55.4,16.0"
+data_run,meteofrance_arome_france_hd_15min,bind_ok,data_run/meteofrance_arome_france_hd_15min/2026/06/27/0000Z/snowfall_water_equivalent.om,1338864,1338864,"1791,2801,24",1,lat lon time,"37.5,-12.0,55.4,16.0"
+data_run,meteofrance_arpege_europe,bind_ok,data_run/meteofrance_arpege_europe/2026/06/27/0000Z/geopotential_height_100hPa.om,5514704,2097152,"521,741,67",1,lat lon time,"20.0,-32.0,72.0,42.0"
+data_run,meteofrance_arpege_europe_probabilities,no_sample,,,,,,,
+data_run,meteofrance_arpege_world025,bind_ok,data_run/meteofrance_arpege_world025/2026/06/27/0000Z/geopotential_height_100hPa.om,16014904,2097152,"721,1440,67",1,lat lon time,"-90.0,-180.0,90.0,179.75"
+data_run,meteofrance_currents,bind_ok,data_run/meteofrance_currents/2026/06/28/0000Z/invert_barometer_height.om,290221896,2097152,"2041,4320,264",1,lat lon time,"-79.958336,-179.95833,90.041664,179.95836"
+data_run,meteofrance_sea_surface_temperature,bind_ok,data_run/meteofrance_sea_surface_temperature/2026/06/29/0000Z/sea_surface_temperature.om,74648224,2097152,"2041,4320,44",1,lat lon time,"-79.958336,-179.95833,90.041664,179.95836"
+data_run,meteofrance_wave,bind_ok,data_run/meteofrance_wave/2026/06/26/1200Z/wave_period.om,137734056,2097152,"2041,4320,84",1,lat lon time,"-79.958336,-179.95833,90.041664,179.95836"
+data_run,ncep_aigefs025,no_sample,,,,,,,
+data_run,ncep_aigefs025_ensemble_mean,no_sample,,,,,,,
+data_run,ncep_aigfs025,bind_ok,data_run/ncep_aigfs025/2026/06/27/0000Z/geopotential_height_100hPa.om,18128320,2097152,"721,1440,64",1,lat lon time,"-90.0,-180.0,90.0,179.75"
+data_run,ncep_gefs025,no_sample,,,,,,,
+data_run,ncep_gefs025_ensemble_mean,no_sample,,,,,,,
+data_run,ncep_gefs05,no_sample,,,,,,,
+data_run,ncep_gefs05_ensemble_mean,no_sample,,,,,,,
+data_run,ncep_gfs013,bind_ok,data_run/ncep_gfs013/2026/06/27/0000Z/precipitation.om,211448288,2097152,"1536,3072,208",1,lat lon time,"-89.912125,-180.0,89.912125,179.88281"
+data_run,ncep_gfs025,bind_ok,data_run/ncep_gfs025/2026/06/26/1800Z/categorical_freezing_rain.om,2676880,2097152,"721,1440,208",1,lat lon time,"-90.0,-180.0,90.0,179.75"
+data_run,ncep_gfs_graphcast025,no_sample,,,,,,,
+data_run,ncep_gfswave016,bind_ok,data_run/ncep_gfswave016/2026/06/27/0000Z/tertiary_swell_wave_height.om,48645224,2097152,"406,2160,209",1,lat lon time,"-15.0,-180.0,52.5,179.83334"
+data_run,ncep_gfswave025,bind_ok,data_run/ncep_gfswave025/2026/06/27/0000Z/tertiary_swell_wave_height.om,49974816,2097152,"721,1440,209",1,lat lon time,"-90.0,-180.0,90.0,179.75"
+data_run,ncep_hgefs025_ensemble_mean,bind_ok,data_run/ncep_hgefs025_ensemble_mean/2026/06/26/1800Z/geopotential_height_100hPa_spread.om,5790872,2097152,"721,1440,40",1,lat lon time,"-90.0,-180.0,90.0,179.75"
+data_run,ukmo_global_deterministic_10km,bind_ok,data_run/ukmo_global_deterministic_10km/2026/06/26/1800Z/cloud_cover_2m.om,28746440,2097152,"1920,2560,57",1,lat lon time,"-90.0,-180.0,89.90625,179.85938"
+data_run,ukmo_global_ensemble_20km,no_sample,,,,,,,
+data_run,ukmo_global_ensemble_mean_20km,no_sample,,,,,,,
+data,bom_access_global,metadata_parse_error,data/bom_access_global/cloud_cover/chunk_1643.om,279210762,,,,,
+data,bom_access_global_ensemble,metadata_parse_error,data/bom_access_global_ensemble/precipitation_probability/chunk_1653.om,21059675,,,,,
+data,cams_europe,bind_ok,data/cams_europe/alder_pollen/chunk_2312.om,484544,484544,"420,700,193",1,,
+data,cams_global,bind_ok,data/cams_global/aerosol_optical_depth/chunk_2124.om,20745008,2097152,"451,900,217",1,,
+data,cams_global_greenhouse_gases,bind_ok,data/cams_global_greenhouse_gases/carbon_dioxide/chunk_2224.om,44362864,2097152,"1801,3600,72",1,,
+data,chmi_aladin_cz_1km,bind_ok,data/chmi_aladin_cz_1km/cape/chunk_4131.om,5048344,2097152,"290,501,120",1,,
+data,cma_grapes_global,metadata_parse_error,data/cma_grapes_global/cape/chunk_1314.om,48905332,,,,,
+data,cmc_gem_gdps,metadata_parse_error,data/cmc_gem_gdps/cape/chunk_1418.om,131568444,,,,,
+data,cmc_gem_gdps_15km,bind_ok,data/cmc_gem_gdps_15km/cloud_cover/chunk_1872.om,114275704,2097152,"1201,2400,264",1,,
+data,cmc_gem_gdps_15km_upper_level,bind_ok,data/cmc_gem_gdps_15km_upper_level/cape/chunk_1872.om,34795368,2097152,"1201,2400,88",1,,
+data,cmc_gem_geps,metadata_parse_error,data/cmc_gem_geps/precipitation_probability/chunk_1108.om,1438992,,,,,
+data,cmc_gem_geps_ensemble_mean,no_sample,,,,,,,
+data,copernicus_era5,bind_ok,data/copernicus_era5/boundary_layer_height/chunk_947.om,67998624,2097152,"721,1440,504",1,,
+data,copernicus_era5_ensemble,bind_ok,data/copernicus_era5_ensemble/boundary_layer_height/chunk_315.om,5728528,2097152,"361,720,504",1,,
+data,copernicus_era5_land,bind_ok,data/copernicus_era5_land/dew_point_2m/chunk_904.om,377675840,2097152,"1801,3600,504",1,,
+data,copernicus_era5_ocean,bind_ok,data/copernicus_era5_ocean/static/HSURF.om,25464,25464,"361,720",1,,
+data,dwd_ewam,bind_ok,data/dwd_ewam/static/HSURF.om,38728,38728,"721,526",1,,
+data,dwd_gwam,bind_ok,data/dwd_gwam/static/HSURF.om,77440,77440,"699,1440",1,,
+data,dwd_icon,metadata_parse_error,data/dwd_icon/cape/chunk_1852.om,270085857,,,,,
+data,dwd_icon_d2,metadata_parse_error,data/dwd_icon_d2/cape/chunk_3868.om,14890107,,,,,
+data,dwd_icon_d2_15min,metadata_parse_error,data/dwd_icon_d2_15min/cape/chunk_7093.om,28150742,,,,,
+data,dwd_icon_d2_eps,metadata_parse_error,data/dwd_icon_d2_eps/precipitation_probability/chunk_3934.om,9417301,,,,,
+data,dwd_icon_d2_eps_ensemble_mean,no_sample,,,,,,,
+data,dwd_icon_eps,metadata_parse_error,data/dwd_icon_eps/precipitation_probability/chunk_1881.om,17622541,,,,,
+data,dwd_icon_eps_ensemble_mean,no_sample,,,,,,,
+data,dwd_icon_eu,metadata_parse_error,data/dwd_icon_eu/cape/chunk_2427.om,42376702,,,,,
+data,dwd_icon_eu_eps,metadata_parse_error,data/dwd_icon_eu_eps/precipitation_probability/chunk_2466.om,1552494,,,,,
+data,dwd_icon_eu_eps_ensemble_mean,no_sample,,,,,,,
+data,ecmwf_aifs025_ensemble,bind_ok,data/ecmwf_aifs025_ensemble/precipitation_probability/chunk_1137.om,29969848,2097152,"721,1440,72",1,,
+data,ecmwf_aifs025_ensemble_mean,no_sample,,,,,,,
+data,ecmwf_aifs025_single,bind_ok,data/ecmwf_aifs025_single/cloud_cover/chunk_1118.om,23457000,2097152,"721,1440,72",1,,
+data,ecmwf_ifs025,metadata_parse_error,data/ecmwf_ifs025/cape/chunk_1522.om,33605624,,,,,
+data,ecmwf_ifs025_ensemble,metadata_parse_error,data/ecmwf_ifs025_ensemble/precipitation_probability/chunk_1526.om,53183386,,,,,
+data,ecmwf_ifs025_ensemble_mean,no_sample,,,,,,,
+data,ecmwf_wam025,bind_ok,data/ecmwf_wam025/wave_direction/chunk_1521.om,13880200,2097152,"721,1440,104",1,,
+data,geosphere_arome_austria,bind_ok,data/geosphere_arome_austria/cape/chunk_4563.om,4001216,2097152,"492,594,108",1,,
+data,italia_meteo_arpae_icon_2i,bind_ok,data/italia_meteo_arpae_icon_2i/cape/chunk_5047.om,2393432,2097152,"761,761,96",1,,
+data,jma_gsm,metadata_parse_error,data/jma_gsm/cloud_cover/chunk_711.om,22099211,,,,,
+data,jma_msm,metadata_parse_error,data/jma_msm/cloud_cover/chunk_4107.om,16912317,,,,,
+data,jma_msm_upper_level,bind_ok,data/jma_msm_upper_level/geopotential_height_1000hPa/chunk_2043.om,800408,800408,"253,241,80",1,,
+data,kma_gdps,bind_ok,data/kma_gdps/cape/chunk_1455.om,184169560,2097152,"1920,2560,112",1,,
+data,knmi_harmonie_arome_netherlands,metadata_parse_error,data/knmi_harmonie_arome_netherlands/cloud_cover/chunk_5306.om,619268,,,,,
+data,meteofrance_arome_france0025,metadata_parse_error,data/meteofrance_arome_france0025/cape/chunk_4381.om,4471093,,,,,
+data,meteofrance_arome_france0025_15min,metadata_parse_error,data/meteofrance_arome_france0025_15min/cloud_cover_high/chunk_39998.om,2352435,,,,,
+data,meteofrance_arome_france_hd,metadata_parse_error,data/meteofrance_arome_france_hd/cape/chunk_4334.om,126192681,,,,,
+data,meteofrance_arome_france_hd_15min,metadata_parse_error,data/meteofrance_arome_france_hd_15min/cape/chunk_39470.om,23601940,,,,,
+data,meteofrance_arpege_europe,metadata_parse_error,data/meteofrance_arpege_europe/cape/chunk_2523.om,22067509,,,,,
+data,meteofrance_arpege_europe_probabilities,metadata_parse_error,data/meteofrance_arpege_europe_probabilities/precipitation_probability/chunk_2425.om,6592639,,,,,
+data,meteofrance_arpege_world025,metadata_parse_error,data/meteofrance_arpege_world025/cape/chunk_2253.om,42241169,,,,,
+data,meteofrance_currents,bind_ok,data/meteofrance_currents/invert_barometer_height/chunk_1287.om,72047408,2097152,"2041,4320,360",1,,
+data,meteofrance_sea_surface_temperature,bind_ok,data/meteofrance_sea_surface_temperature/sea_surface_temperature/chunk_1287.om,30337712,2097152,"2041,4320,60",1,,
+data,meteofrance_wave,bind_ok,data/meteofrance_wave/secondary_swell_wave_direction/chunk_1346.om,375972104,2097152,"2041,4320,120",1,,
+data,ncep_aigefs025,bind_ok,data/ncep_aigefs025/precipitation_probability/chunk_1376.om,16861264,2097152,"721,1440,60",1,,
+data,ncep_aigefs025_ensemble_mean,bind_ok,data/ncep_aigefs025_ensemble_mean/cloud_cover/chunk_1376.om,24946112,2097152,"721,1440,60",1,,
+data,ncep_aigfs025,bind_ok,data/ncep_aigfs025/cloud_cover/chunk_1363.om,6137840,2097152,"721,1440,60",1,,
+data,ncep_gefs025,metadata_parse_error,data/ncep_gefs025/precipitation_probability/chunk_1404.om,31638655,,,,,
+data,ncep_gefs025_ensemble_mean,no_sample,,,,,,,
+data,ncep_gefs05,metadata_parse_error,data/ncep_gefs05/precipitation_probability/chunk_512.om,10456651,,,,,
+data,ncep_gefs05_ensemble_mean,no_sample,,,,,,,
+data,ncep_gfs013,bind_ok,data/ncep_gfs013/boundary_layer_height/chunk_1003.om,1389347728,2097152,"1536,3072,481",1,,
+data,ncep_gfs025,metadata_parse_error,data/ncep_gfs025/cape/chunk_1002.om,132141253,,,,,
+data,ncep_gfs_graphcast025,metadata_parse_error,data/ncep_gfs_graphcast025/cloud_cover/chunk_1325.om,34115348,,,,,
+data,ncep_gfswave016,bind_ok,data/ncep_gfswave016/secondary_swell_wave_direction/chunk_1008.om,135334784,2097152,"406,2160,481",1,,
+data,ncep_gfswave025,bind_ok,data/ncep_gfswave025/secondary_swell_wave_direction/chunk_1008.om,149676248,2097152,"721,1440,481",1,,
+data,ncep_hgefs025_ensemble_mean,bind_ok,data/ncep_hgefs025_ensemble_mean/cloud_cover/chunk_1364.om,5537784,2097152,"721,1440,60",1,,
+data,ukmo_global_deterministic_10km,metadata_parse_error,data/ukmo_global_deterministic_10km/cape/chunk_2369.om,296949310,,,,,
+data,ukmo_global_ensemble_20km,bind_ok,data/ukmo_global_ensemble_20km/precipitation_probability/chunk_2487.om,2105560,2097152,"960,1280,199",1,,
+data,ukmo_global_ensemble_mean_20km,no_sample,,,,,,,

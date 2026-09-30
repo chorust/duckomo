@@ -7,7 +7,12 @@
 namespace duckdb {
 namespace duckomo {
 
-ProjectionPlan::ProjectionPlan(const BoundSchema &schema, const std::vector<column_t> &column_ids) {
+ProjectionPlan::ProjectionPlan(const BoundSchema &schema, const std::vector<column_t> &column_ids)
+    : ProjectionPlan(schema, column_ids, false) {
+}
+
+ProjectionPlan::ProjectionPlan(const BoundSchema &schema, const std::vector<column_t> &column_ids,
+                               bool has_spatial_columns) {
 	output_slots.reserve(column_ids.size());
 	required_variable_ids.reserve(column_ids.size());
 	std::unordered_map<idx_t, idx_t> required_variable_indexes;
@@ -18,6 +23,16 @@ ProjectionPlan::ProjectionPlan(const BoundSchema &schema, const std::vector<colu
 		if (column_id == COLUMN_IDENTIFIER_EMPTY) {
 			slot.is_cardinality = true;
 			has_cardinality_slot = true;
+			output_slots.emplace_back(slot);
+			continue;
+		}
+		if (has_spatial_columns && column_id == schema.variables.size()) {
+			slot.is_latitude = true;
+			output_slots.emplace_back(slot);
+			continue;
+		}
+		if (has_spatial_columns && column_id == schema.variables.size() + 1) {
+			slot.is_longitude = true;
 			output_slots.emplace_back(slot);
 			continue;
 		}

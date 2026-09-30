@@ -1,6 +1,7 @@
 #include "duckdb.hpp"
 #include "duckdb/main/extension_helper.hpp"
 #include "duckomo/metrics.hpp"
+#include "duckomo/projection.hpp"
 
 #include <algorithm>
 #include <atomic>
@@ -68,6 +69,20 @@ std::string ReadProjection(const std::string &path = PROJECTION_FIXTURE) {
 	return "read_om(" + SqlLiteral(path) +
 	       ", dimensions := map(['humidity', 'pressure', 'temperature'], "
 	       "[['row', 'column'], ['row', 'column'], ['row', 'column']]))";
+}
+
+std::string SpatialRawRead(const std::string &path) {
+	return "read_om(" + SqlLiteral(path) +
+	       ", dimensions := map(['value'], [['lat','lon']]), "
+	       "grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':2.0,'order':'separate'}, "
+	       "spatial_axes := ['lat','lon'])";
+}
+
+std::string SpatialProjectionRead() {
+	return "read_om('test/data/projection.om', "
+	       "dimensions := map(['humidity','pressure','temperature'], [['row','column'],['row','column'],['row','column']]), "
+	       "grid := {'nx':127,'ny':83,'lat0':-41.0,'lon0':-126.0,'dlat':1.0,'dlon':2.0,'order':'separate'}, "
+	       "spatial_axes := ['row','column'])";
 }
 
 std::unique_ptr<duckdb::MaterializedQueryResult> RequireSuccess(duckdb::Connection &connection,
@@ -598,15 +613,67 @@ bool EligibleForPerformance(const JsonValue &record) {
 	return true;
 }
 
+void TestSpatialMetricsSchema() {
+	duckdb::duckomo::ScanMetrics metrics;
+	metrics.RecordMetadataRead(duckdb::duckomo::ScanMetadataStage::Bind, 10);
+	metrics.RecordMetadataRead(duckdb::duckomo::ScanMetadataStage::Scan, 20);
+	metrics.SetSpatialContext("nx=3,ny=2", "lat,lon", "explicit");
+	metrics.SetSpatialSelection("restricted", true, {"unsupported OR branch"}, 2);
+	metrics.SetSpatialReference("fixture-sha256", 1e-9, true, true);
+	const auto snapshot = metrics.Snapshot();
+	Require(snapshot.schema_version == 2, "spatial metrics use schema version 2");
+	Require(snapshot.metadata_bytes == 30 && snapshot.metadata_requests == 2 &&
+	            snapshot.bind_metadata_bytes == 10 && snapshot.scan_metadata_bytes == 20,
+	        "bind and scan metadata are separately counted and sum into metadata totals");
+	Require(snapshot.selection_mode == "restricted" && snapshot.residual_filter_retained &&
+	            snapshot.candidate_rows == 2 && snapshot.fallback_reasons.size() == 1,
+	        "spatial selection evidence is copied into the metrics snapshot");
+	const auto json = metrics.ToEvidenceJson();
+	for (const auto *field : {"schema_version", "bind_metadata_bytes", "scan_metadata_bytes", "grid_definition",
+	                          "spatial_layout", "grid_source", "selection_mode", "residual_filter_retained",
+	                          "filter_callback_invoked", "fallback_reasons", "candidate_rows", "optimizer_empty", "reference_identity",
+	                          "coordinate_tolerance", "logical_positions_match", "null_positions_match"}) {
+		Require(json.find(std::string("\"") + field + "\":") != std::string::npos,
+		        std::string("spatial metrics JSON is missing field ") + field);
+	}
+}
+
+void TestSpatialProjectionSlotsPreserveOrderAndDeduplicateValues() {
+	duckdb::duckomo::BoundSchema schema;
+	for (const auto *name : {"temperature", "humidity"}) {
+		duckdb::duckomo::BoundVariable variable;
+		variable.canonical_path = std::string("/") + name;
+		variable.column_name = name;
+		schema.variables.emplace_back(std::move(variable));
+	}
+	const std::vector<duckdb::column_t> requested = {3, 1, duckdb::COLUMN_IDENTIFIER_EMPTY, 2, 1, 0};
+	duckdb::duckomo::ProjectionPlan spatial(schema, requested, true);
+	const auto &slots = spatial.GetOutputSlots();
+	Require(slots.size() == requested.size(), "spatial output keeps every requested column slot");
+	Require(slots[0].is_longitude && slots[1].variable_index == 1 && slots[2].is_cardinality &&
+	            slots[3].is_latitude && slots[4].variable_index == 1 && slots[5].variable_index == 0,
+	        "coordinate, cardinality, reordered and duplicate output slots retain their request order");
+	Require(spatial.GetRequiredVariableIds() == std::vector<duckdb::idx_t>({1, 0}),
+	        "each value dependency is decoded once in first-use order");
+	Require(spatial.HasCardinalitySlot(), "the empty virtual column is represented without a value slot");
+
+	duckdb::duckomo::ProjectionPlan legacy(schema, {1, 0, 1});
+	Require(legacy.GetRequiredVariableIds() == std::vector<duckdb::idx_t>({1, 0}) &&
+	            legacy.GetOutputSlots()[0].variable_index == 1 && legacy.GetOutputSlots()[2].variable_index == 1,
+	        "the original value-only projection path retains order and duplicate behavior");
+}
+
 void TestProjectionMetrics(duckdb::Connection &connection, MetricsOutput &metrics) {
 	const auto read_om = ReadProjection();
 	auto full = RunSuccessWithMetrics(connection, metrics, "projection", PROJECTION_SHA256, "native_full_scan",
 	                                  "SELECT \"humidity\", \"pressure\", \"temperature\" FROM " + read_om,
 	                                  "full projection metrics scan");
-	Require(full.At("schema_version").AsUInt("schema_version") == 1, "metrics schema version must be 1");
+	Require(full.At("schema_version").AsUInt("schema_version") == 2, "metrics schema version must be 2");
 	Require(full.At("metadata_bytes").AsUInt("metadata_bytes") > 0 &&
 	            full.At("metadata_requests").AsUInt("metadata_requests") > 0,
 	        "full scan must record metadata reads separately");
+	Require(full.At("filter_callback_invoked").AsBool("filter_callback_invoked") == false,
+	        "a query without filters must not report a complex-filter callback");
 	for (const auto *path : {"/humidity", "/pressure", "/temperature"}) {
 		RequireVariableRead(full, path, "full scan");
 	}
@@ -644,6 +711,8 @@ void TestProjectionMetrics(duckdb::Connection &connection, MetricsOutput &metric
 	auto filter_metrics = metrics.Read();
 	Require(filter_metrics.At("status").AsString("filter status") == "success",
 	        "filter-dependency scan must succeed");
+	Require(filter_metrics.At("filter_callback_invoked").AsBool("filter_callback_invoked"),
+	         "complex-filter callback must run when the query has a WHERE clause");
 	RequireVariableRead(filter_metrics, "/temperature", "filter dependency");
 	RequireVariableRead(filter_metrics, "/humidity", "unselected filter dependency");
 	RequireVariableUnread(filter_metrics, "/pressure", "filter dependency");
@@ -685,8 +754,8 @@ std::size_t CountOpenFileDescriptors() {
 
 void TestFailureMetricsAndRecovery(duckdb::Connection &connection, MetricsOutput &metrics,
 	                               const TemporaryCorruptFixture &corrupt) {
-	const auto valid_sql = "SELECT value FROM read_om(" + SqlLiteral(RAW_FIXTURE) + ")";
-	const auto error_sql = "SELECT value FROM read_om(" + SqlLiteral(corrupt.Path()) + ")";
+	const auto valid_sql = "SELECT value FROM " + SpatialRawRead(RAW_FIXTURE);
+	const auto error_sql = "SELECT value FROM " + SpatialRawRead(corrupt.Path());
 	auto valid = RunSuccessWithMetrics(connection, metrics, "raw", RAW_SHA256, "native_lifecycle_valid_warmup",
 	                                   valid_sql, "valid lifecycle warmup");
 	Require(EligibleForPerformance(valid), "valid lifecycle scan must be eligible for performance comparisons");
@@ -751,7 +820,7 @@ std::string CancellationSql() {
 	for (std::size_t index = 0; index < 128; index++) {
 		expression = "sin(" + expression + ")";
 	}
-	return "SELECT " + expression + " FROM " + ReadProjection();
+	return "SELECT " + expression + " FROM " + SpatialProjectionRead();
 }
 
 void TestCancellationMetricsAndRecovery(duckdb::Connection &connection, MetricsOutput &metrics) {
@@ -818,7 +887,7 @@ void TestCancellationMetricsAndRecovery(duckdb::Connection &connection, MetricsO
 	metrics.SetScenario("native_cancel_recovery");
 	metrics.Clear();
 	auto recovered = RequireSuccess(connection,
-	                               "SELECT \"temperature\" FROM " + ReadProjection(),
+	                               "SELECT \"temperature\" FROM " + SpatialProjectionRead(),
 	                               "valid projection after cancellation");
 	Require(recovered->RowCount() == 10541, "post-cancellation recovery query returned the wrong row count");
 	recovered.reset();
@@ -846,7 +915,9 @@ void LoadExtension(duckdb::Connection &connection) {
 	Require(core_functions != nullptr && !core_functions->HasError(),
 	        "cannot load core_functions" +
 	            (core_functions && core_functions->HasError() ? ": " + core_functions->GetError() : ""));
-	auto result = connection.Query("LOAD './build/release/extension/duckomo/duckomo.duckdb_extension'");
+	const auto *extension_override = std::getenv("DUCKOMO_EXTENSION_PATH");
+	const auto extension_path = extension_override ? extension_override : "./build/release/extension/duckomo/duckomo.duckdb_extension";
+	auto result = connection.Query("LOAD '" + std::string(extension_path) + "'");
 	Require(result != nullptr && !result->HasError(),
 	        "cannot load release extension" + (result && result->HasError() ? ": " + result->GetError() : ""));
 }
@@ -864,6 +935,8 @@ int main() {
 		MetricsOutput metrics;
 		TemporaryCorruptFixture corrupt(RAW_FIXTURE);
 
+		TestSpatialMetricsSchema();
+		TestSpatialProjectionSlotsPreserveOrderAndDeduplicateValues();
 		TestProjectionMetrics(connection, metrics);
 		TestFailureMetricsAndRecovery(connection, metrics, corrupt);
 		TestCancellationMetricsAndRecovery(connection, metrics);

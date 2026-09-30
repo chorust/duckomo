@@ -41,6 +41,12 @@ set(EXTENSION_SOURCES
     src/scan/read_om.cpp
     src/scan/raw_scan.cpp
     src/scan/schema.cpp
+    src/scan/spatial_filter.cpp
+    src/scan/spatial_selection.cpp
+    src/grid/domain_bbox.cpp
+    src/grid/regular_grid.cpp
+    src/grid/spatial_layout.cpp
+    src/grid/domain_registry.cpp
 )
 build_static_extension(${TARGET_NAME} ${EXTENSION_SOURCES})
 build_loadable_extension(${TARGET_NAME} " " ${EXTENSION_SOURCES})

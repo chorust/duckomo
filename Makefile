@@ -17,12 +17,7 @@ TESTS_BASE_DIRECTORY := test/sql/
 
 .PHONY: test
 test: release
-	./build/release/test/native/batch_test
-	./build/release/test/native/raw_reader_test
-	./build/release/test/native/lifecycle_test
-	./build/release/test/native/schema_test
-	./build/release/test/native/projection_evidence_test
-	./build/release/test/tools/duckomo_validation --fixtures test/data --output build/evidence
+	"$(PROJ_DIR)scripts/validate.sh" "$(PROJ_DIR)build/release"
 
 # Keep sanitizer builds and timings separate from the regular release tests.
 .PHONY: sanitizer-test

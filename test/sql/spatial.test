@@ -1,0 +1,356 @@
+# name: test/sql/spatial.test
+# description: Validate explicit regular-grid coordinates, layouts, and binding errors
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+# No configuration keeps the original value-only schema.
+query I
+SELECT count(*) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');
+----
+6
+
+query T
+SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om'));
+----
+value FLOAT
+
+query T
+SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']));
+----
+value FLOAT
+latitude DOUBLE
+longitude DOUBLE
+
+# The quickstart grid has an independent six-position coordinate reference.
+query RRR
+SELECT value, latitude, longitude
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+ORDER BY value;
+----
+0.000000	10.000000	100.000000
+1.000000	10.000000	102.000000
+2.000000	10.000000	104.000000
+3.000000	11.000000	100.000000
+4.000000	11.000000	102.000000
+5.000000	11.000000	104.000000
+
+# Spatial axes can occur in either file-axis order; the declarations name roles.
+query RRR
+SELECT value, latitude, longitude
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lon','lat']]),
+    grid := {'nx':2, 'ny':3, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+ORDER BY value;
+----
+0.000000	10.000000	100.000000
+1.000000	11.000000	100.000000
+2.000000	12.000000	100.000000
+3.000000	10.000000	102.000000
+4.000000	11.000000	102.000000
+5.000000	12.000000	102.000000
+
+query RRR
+SELECT value, latitude, longitude
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+WHERE latitude >= 11 AND longitude < 104
+ORDER BY value;
+----
+3.000000	11.000000	100.000000
+4.000000	11.000000	102.000000
+
+# A flattened axis preserves each extra sample; this is the lon-fastest order.
+query RRI
+SELECT latitude, longitude, count(*)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/spatial_flat.om',
+    dimensions := map(['value'], [['sample','point']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'lon_fastest'},
+    spatial_axes := ['point']
+)
+GROUP BY latitude, longitude
+ORDER BY latitude, longitude;
+----
+10.000000	100.000000	2
+10.000000	102.000000	2
+10.000000	104.000000	2
+11.000000	100.000000	2
+11.000000	102.000000	2
+11.000000	104.000000	2
+
+# The alternate flatten order makes latitude the faster-changing grid index.
+query RRR
+SELECT value, latitude, longitude
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/spatial_flat.om',
+    dimensions := map(['value'], [['sample','point']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'lat_fastest'},
+    spatial_axes := ['point']
+)
+WHERE value < 6
+ORDER BY value;
+----
+0.000000	10.000000	100.000000
+1.000000	11.000000	100.000000
+2.000000	10.000000	102.000000
+3.000000	11.000000	102.000000
+4.000000	10.000000	104.000000
+5.000000	11.000000	104.000000
+
+# Coordinates participate in projection order and duplicated output slots.
+query RRRR
+SELECT longitude, value, latitude, longitude
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/spatial_flat.om',
+    dimensions := map(['value'], [['sample','point']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'lon_fastest'},
+    spatial_axes := ['point']
+)
+WHERE value < 3
+ORDER BY value;
+----
+100.000000	0.000000	10.000000	100.000000
+102.000000	1.000000	10.000000	102.000000
+104.000000	2.000000	10.000000	104.000000
+
+# Non-spatial axes at the front and middle retain their row multiplicity.
+query RRI
+SELECT latitude, longitude, count(*)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/spatial_axes.om',
+    dimensions := map(['value'], [['member','lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+GROUP BY latitude,longitude ORDER BY latitude,longitude;
+----
+10.000000	100.000000	2
+10.000000	102.000000	2
+10.000000	104.000000	2
+11.000000	100.000000	2
+11.000000	102.000000	2
+11.000000	104.000000	2
+
+query RRI
+SELECT latitude, longitude, count(*)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/spatial_axes.om',
+    dimensions := map(['value'], [['lat','member','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+GROUP BY latitude,longitude ORDER BY latitude,longitude;
+----
+10.000000	100.000000	2
+10.000000	102.000000	2
+10.000000	104.000000	2
+11.000000	100.000000	2
+11.000000	102.000000	2
+11.000000	104.000000	2
+
+# An extra last axis remains ordinary data rows.
+query RRI
+SELECT latitude, longitude, count(*)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/spatial_axes.om',
+    dimensions := map(['value'], [['lat','lon','member']]),
+    grid := {'nx':2, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+GROUP BY latitude,longitude ORDER BY latitude,longitude;
+----
+10.000000	100.000000	3
+10.000000	102.000000	3
+11.000000	100.000000	3
+11.000000	102.000000	3
+
+# Negative steps preserve logical positions while moving coordinates in reverse.
+query RRR
+SELECT value, latitude, longitude
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':11.0, 'lon0':104.0, 'dlat':-1.0, 'dlon':-2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+ORDER BY value;
+----
+0.000000	11.000000	104.000000
+1.000000	11.000000	102.000000
+2.000000	11.000000	100.000000
+3.000000	10.000000	104.000000
+4.000000	10.000000	102.000000
+5.000000	10.000000	100.000000
+
+# Longitude normalization is half-open; repeated wrapped positions remain rows.
+query RRI
+SELECT latitude, longitude, count(*)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':0.0, 'lon0':0.0, 'dlat':1.0, 'dlon':360.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+GROUP BY latitude, longitude
+ORDER BY latitude, longitude;
+----
+0.000000	0.000000	3
+1.000000	0.000000	3
+
+# One point at the pole normalizes +180 to -180, and non-zero steps are required.
+query RR
+SELECT latitude, longitude
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/spatial_single.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':1, 'ny':1, 'lat0':90.0, 'lon0':180.0, 'dlat':0.25, 'dlon':0.25, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+);
+----
+90.000000	-180.000000
+
+# A multi-batch source range crosses the 2,048-row DuckDB batch boundary.
+query RRR
+SELECT value, latitude, longitude
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw_large.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':61, 'ny':73, 'lat0':-36.0, 'lon0':-90.0, 'dlat':1.0, 'dlon':1.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+WHERE value BETWEEN 411.75 AND 412.5
+ORDER BY value;
+----
+411.750000	-3.000000	-56.000000
+412.000000	-3.000000	-55.000000
+412.250000	-3.000000	-54.000000
+412.500000	-3.000000	-53.000000
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', spatial_axes := ['lat','lon']);
+----
+<REGEX>:(?i).*spatial_axes.*requires grid or domain.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'});
+----
+<REGEX>:(?i).*requires spatial_axes.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'unknown'}, spatial_axes := ['lat','lon']);
+----
+<REGEX>:(?i).*order.*separate.*lon_fastest.*lat_fastest.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate', 'extra':1}, spatial_axes := ['lat','lon']);
+----
+<REGEX>:(?i).*exactly nx, ny, lat0, lon0, dlat, dlon, and order.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':NULL, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);
+----
+<REGEX>:(?i).*unknown, duplicate, or NULL field.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3.5, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);
+----
+<REGEX>:(?i).*grid field 'nx'.*integer.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':0, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);
+----
+<REGEX>:(?i).*grid field 'nx'.*positive.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':9223372036854775807, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);
+----
+<REGEX>:(?i).*point count exceeds.*signed 64-bit.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':4, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);
+----
+<REGEX>:(?i).*axis lengths.*do not match.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':0.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);
+----
+<REGEX>:(?i).*dlat.*non-zero.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':'NaN'::DOUBLE, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);
+----
+<REGEX>:(?i).*grid lat0 must be finite.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':91.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);
+----
+<REGEX>:(?i).*latitude.*\[-90, 90\].*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':1e308, 'dlat':1.0, 'dlon':1e308, 'order':'separate'}, spatial_axes := ['lat','lon']);
+----
+<REGEX>:(?i).*longitude coordinate overflows DOUBLE.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lat']);
+----
+<REGEX>:(?i).*spatial layout requires distinct.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);
+----
+<REGEX>:(?i).*(axis identities|axis names|dimensions).*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon'], domain := 'ncep_gfswave025');
+----
+<REGEX>:(?i).*mutually exclusive.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/spatial_conflict.om', dimensions := map(['Latitude'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);
+----
+<REGEX>:(?i).*coordinate column name conflicts.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := NULL);
+----
+<REGEX>:(?i).*requires spatial_axes.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', domain := 'no_such_grid');
+----
+<REGEX>:(?i).*domain is unknown.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', domain := 'ncep_gfswave025');
+----
+<REGEX>:(?i).*requires complete ordered lat/lon axes.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', domain := 'ncep_gfswave025', spatial_axes := ['lat','lon']);
+----
+<REGEX>:(?i).*does not accept an extra spatial_axes override.*

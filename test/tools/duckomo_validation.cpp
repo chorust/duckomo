@@ -26,9 +26,14 @@
 #include <variant>
 #include <vector>
 
+#include "validation_support.hpp"
+
 namespace fs = std::filesystem;
 
 namespace {
+
+using duckomo_validation_support::CommandResult;
+using duckomo_validation_support::RunProcess;
 
 struct JsonValue {
 	enum class Kind { Null, Boolean, Number, String, Array, Object } kind = Kind::Null;
@@ -399,75 +404,6 @@ std::string Sha256(const fs::path &path) {
 	output << std::hex << std::setfill('0');
 	for (const auto word : state) output << std::setw(8) << word;
 	return output.str();
-}
-
-struct CommandResult {
-	int exit_code = -1;
-	std::string output;
-	std::uint64_t peak_rss_bytes = 0;
-	double elapsed_ms = 0;
-};
-
-CommandResult RunProcess(const std::vector<std::string> &arguments, const fs::path &working_directory,
-                         const std::map<std::string, std::string> &environment = {}) {
-	int output_pipe[2];
-	if (pipe(output_pipe) != 0) throw std::runtime_error("pipe failed: " + std::string(std::strerror(errno)));
-	const auto started = std::chrono::steady_clock::now();
-	const pid_t child = fork();
-	if (child < 0) {
-		close(output_pipe[0]); close(output_pipe[1]);
-		throw std::runtime_error("fork failed: " + std::string(std::strerror(errno)));
-	}
-	if (child == 0) {
-		close(output_pipe[0]);
-		if (dup2(output_pipe[1], STDOUT_FILENO) < 0 || dup2(output_pipe[1], STDERR_FILENO) < 0) _exit(126);
-		close(output_pipe[1]);
-		if (chdir(working_directory.c_str()) != 0) _exit(126);
-		for (const auto &entry : environment) {
-			if (setenv(entry.first.c_str(), entry.second.c_str(), 1) != 0) _exit(126);
-		}
-		std::vector<char *> argv;
-		argv.reserve(arguments.size() + 1);
-		for (const auto &argument : arguments) argv.push_back(const_cast<char *>(argument.c_str()));
-		argv.push_back(nullptr);
-		execvp(arguments[0].c_str(), argv.data());
-		const std::string error = "exec failed: " + std::string(std::strerror(errno)) + "\n";
-		const auto error_written = write(STDERR_FILENO, error.data(), error.size());
-		(void)error_written;
-		_exit(127);
-	}
-	close(output_pipe[1]);
-	CommandResult result;
-	std::array<char, 16384> buffer {};
-	for (;;) {
-		const auto count = read(output_pipe[0], buffer.data(), buffer.size());
-		if (count > 0) {
-			result.output.append(buffer.data(), static_cast<std::size_t>(count));
-			continue;
-		}
-		if (count == 0) break;
-		if (errno == EINTR) continue;
-		close(output_pipe[0]);
-		throw std::runtime_error("read from child failed: " + std::string(std::strerror(errno)));
-	}
-	close(output_pipe[0]);
-	int status = 0;
-	struct rusage usage {};
-	pid_t waited;
-	do {
-		waited = wait4(child, &status, 0, &usage);
-	} while (waited < 0 && errno == EINTR);
-	if (waited < 0) throw std::runtime_error("wait4 failed: " + std::string(std::strerror(errno)));
-	const auto finished = std::chrono::steady_clock::now();
-	result.elapsed_ms = std::chrono::duration<double, std::milli>(finished - started).count();
-	if (WIFEXITED(status)) result.exit_code = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status)) result.exit_code = 128 + WTERMSIG(status);
-#if defined(__APPLE__)
-	result.peak_rss_bytes = static_cast<std::uint64_t>(usage.ru_maxrss);
-#else
-	result.peak_rss_bytes = static_cast<std::uint64_t>(usage.ru_maxrss) * 1024;
-#endif
-	return result;
 }
 
 std::string RunGit(const fs::path &root, const fs::path &directory) {
@@ -868,7 +804,7 @@ ScenarioEvidence RunScenario(const Options &options, const JsonValue &manifest_s
 	Require(fs::exists(sidecar), "scenario " + result.id + " did not write DUCKOMO_METRICS_OUTPUT sidecar");
 	auto metrics = JsonParser(ReadText(sidecar)).Parse();
 	Require(metrics.kind == JsonValue::Kind::Object, "scenario metrics sidecar must be a JSON object");
-	Require(metrics.At("schema_version").AsUint64("schema_version") == 1, "unsupported metrics schema version");
+	Require(metrics.At("schema_version").AsUint64("schema_version") == 2, "unsupported metrics schema version");
 	Require(metrics.At("status").AsString("status") == "success", "successful child did not mark scan status success");
 	Require(metrics.At("scenario").AsString("scenario") == result.id, "metrics sidecar scenario does not match requested scenario");
 	Require(metrics.At("fixture_id").AsString("fixture_id") == "projection", "metrics sidecar fixture id mismatch");

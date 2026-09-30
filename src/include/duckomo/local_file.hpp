@@ -18,7 +18,8 @@ namespace duckomo {
 class LocalFile final {
 public:
 	static LocalFile Open(ClientContext &context, const std::string &path,
-	                      std::shared_ptr<ScanMetrics> metrics = nullptr);
+	                      std::shared_ptr<ScanMetrics> metrics = nullptr,
+	                      ScanMetadataStage metadata_stage = ScanMetadataStage::Scan);
 
 	LocalFile(const LocalFile &) = delete;
 	LocalFile &operator=(const LocalFile &) = delete;
@@ -39,7 +40,7 @@ public:
 
 private:
 	LocalFile(FileSystem &file_system, std::unique_ptr<FileHandle> handle, std::string path,
-	          std::uint64_t file_size, std::shared_ptr<ScanMetrics> metrics);
+	          std::uint64_t file_size, std::shared_ptr<ScanMetrics> metrics, ScanMetadataStage metadata_stage);
 	void ReadRangeInternal(std::uint64_t offset, std::uint64_t size, void *destination,
 	                       const ScanReadPhase *phase, const std::string &variable_path) const;
 
@@ -48,6 +49,7 @@ private:
 	std::string path;
 	std::uint64_t file_size;
 	std::shared_ptr<ScanMetrics> metrics;
+	ScanMetadataStage metadata_stage = ScanMetadataStage::Scan;
 };
 
 // Reject URL-like inputs and shell-style glob patterns before asking the local

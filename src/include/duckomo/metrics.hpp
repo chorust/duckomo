@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace duckdb {
 namespace duckomo {
@@ -20,6 +21,7 @@ namespace duckomo {
 enum class ScanReadPhase : std::uint8_t { Metadata, Index, Data };
 
 enum class ScanStatus : std::uint8_t { Unknown, Succeeded, Failed, Cancelled };
+enum class ScanMetadataStage : std::uint8_t { Bind, Scan };
 
 inline const char *ScanStatusName(ScanStatus status) noexcept {
 	switch (status) {
@@ -47,7 +49,7 @@ struct ScanVariableMetrics final {
 // A stable, transport-neutral copy of one query's evidence. The harness can
 // consume this snapshot directly or use ToEvidenceJson() below.
 struct ScanMetricsSnapshot final {
-	std::uint32_t schema_version = 1;
+	std::uint32_t schema_version = 2;
 	std::string query_id;
 	std::string scenario;
 	std::string sql;
@@ -59,6 +61,23 @@ struct ScanMetricsSnapshot final {
 	std::optional<bool> comparison_passed;
 	std::uint64_t metadata_bytes = 0;
 	std::uint64_t metadata_requests = 0;
+	std::uint64_t bind_metadata_bytes = 0;
+	std::uint64_t bind_metadata_requests = 0;
+	std::uint64_t scan_metadata_bytes = 0;
+	std::uint64_t scan_metadata_requests = 0;
+	std::string grid_definition;
+	std::string spatial_layout;
+	std::string grid_source;
+	std::string selection_mode;
+	bool residual_filter_retained = true;
+	bool filter_callback_invoked = false;
+	std::vector<std::string> fallback_reasons;
+	std::uint64_t candidate_rows = 0;
+	bool optimizer_empty = false;
+	std::string reference_identity;
+	double coordinate_tolerance = 1e-9;
+	std::optional<bool> logical_positions_match;
+	std::optional<bool> null_positions_match;
 	std::map<std::string, ScanVariableMetrics> variables;
 	std::uint64_t bytes_fetched = 0;
 	std::uint64_t read_requests = 0;
@@ -78,7 +97,7 @@ struct ScanMetricsSnapshot final {
 // may have processed before returning the error.
 class ScanMetrics final {
 public:
-	static constexpr std::uint32_t SCHEMA_VERSION = 1;
+	static constexpr std::uint32_t SCHEMA_VERSION = 2;
 
 	void SetQueryIdentity(std::string query_id, std::string scenario, std::string sql) {
 		std::lock_guard<std::mutex> guard(mutex_);
@@ -96,6 +115,12 @@ public:
 	void SetDependencyCommit(std::string dependency, std::string commit) {
 		std::lock_guard<std::mutex> guard(mutex_);
 		dependency_commits_[std::move(dependency)] = std::move(commit);
+	}
+
+	void DeclareVariable(const std::string &variable_path) {
+		RequireVariablePath(variable_path);
+		std::lock_guard<std::mutex> guard(mutex_);
+		variables_.try_emplace(variable_path);
 	}
 
 	void SetStatus(ScanStatus status, std::string error_category = {}) {
@@ -133,13 +158,56 @@ public:
 		cache_policy_[std::move(key)] = std::move(value);
 	}
 
+	void RecordMetadataRead(ScanMetadataStage stage, std::uint64_t returned_bytes) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		auto &bytes = stage == ScanMetadataStage::Bind ? bind_metadata_bytes_ : scan_metadata_bytes_;
+		auto &requests = stage == ScanMetadataStage::Bind ? bind_metadata_requests_ : scan_metadata_requests_;
+		AddChecked(bytes, returned_bytes);
+		AddChecked(requests, 1);
+	}
+
+	void SetSpatialContext(std::string grid_definition, std::string spatial_layout, std::string grid_source) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		grid_definition_ = std::move(grid_definition);
+		spatial_layout_ = std::move(spatial_layout);
+		grid_source_ = std::move(grid_source);
+	}
+
+	void MarkFilterCallbackInvoked() {
+		std::lock_guard<std::mutex> guard(mutex_);
+		filter_callback_invoked_ = true;
+	}
+
+	void SetSpatialSelection(std::string selection_mode, bool residual_filter_retained,
+	                         std::vector<std::string> fallback_reasons, std::uint64_t candidate_rows,
+	                         bool optimizer_empty = false) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		selection_mode_ = std::move(selection_mode);
+		residual_filter_retained_ = residual_filter_retained;
+		fallback_reasons_ = std::move(fallback_reasons);
+		candidate_rows_ = candidate_rows;
+		optimizer_empty_ = optimizer_empty;
+	}
+
+	void SetSpatialReference(std::string reference_identity, double coordinate_tolerance,
+	                         std::optional<bool> logical_positions_match, std::optional<bool> null_positions_match) {
+		if (!std::isfinite(coordinate_tolerance) || coordinate_tolerance < 0) {
+			throw std::invalid_argument("coordinate_tolerance must be finite and non-negative");
+		}
+		std::lock_guard<std::mutex> guard(mutex_);
+		reference_identity_ = std::move(reference_identity);
+		coordinate_tolerance_ = coordinate_tolerance;
+		logical_positions_match_ = logical_positions_match;
+		null_positions_match_ = null_positions_match;
+	}
+
 	void RecordSuccessfulRead(ScanReadPhase phase, std::uint64_t returned_bytes,
 	                          const std::string &variable_path = std::string()) {
 		std::lock_guard<std::mutex> guard(mutex_);
 		switch (phase) {
 		case ScanReadPhase::Metadata:
-			AddChecked(metadata_bytes_, returned_bytes);
-			AddChecked(metadata_requests_, 1);
+			AddChecked(scan_metadata_bytes_, returned_bytes);
+			AddChecked(scan_metadata_requests_, 1);
 			break;
 		case ScanReadPhase::Index: {
 			RequireVariablePath(variable_path);
@@ -185,8 +253,27 @@ public:
 		snapshot.status = status_;
 		snapshot.result_rows = result_rows_;
 		snapshot.comparison_passed = comparison_passed_;
-		snapshot.metadata_bytes = metadata_bytes_;
-		snapshot.metadata_requests = metadata_requests_;
+		snapshot.bind_metadata_bytes = bind_metadata_bytes_;
+		snapshot.bind_metadata_requests = bind_metadata_requests_;
+		snapshot.scan_metadata_bytes = scan_metadata_bytes_;
+		snapshot.scan_metadata_requests = scan_metadata_requests_;
+		AddChecked(snapshot.metadata_bytes, bind_metadata_bytes_);
+		AddChecked(snapshot.metadata_bytes, scan_metadata_bytes_);
+		AddChecked(snapshot.metadata_requests, bind_metadata_requests_);
+		AddChecked(snapshot.metadata_requests, scan_metadata_requests_);
+		snapshot.grid_definition = grid_definition_;
+		snapshot.spatial_layout = spatial_layout_;
+		snapshot.grid_source = grid_source_;
+		snapshot.selection_mode = selection_mode_;
+		snapshot.residual_filter_retained = residual_filter_retained_;
+		snapshot.filter_callback_invoked = filter_callback_invoked_;
+		snapshot.fallback_reasons = fallback_reasons_;
+		snapshot.candidate_rows = candidate_rows_;
+		snapshot.optimizer_empty = optimizer_empty_;
+		snapshot.reference_identity = reference_identity_;
+		snapshot.coordinate_tolerance = coordinate_tolerance_;
+		snapshot.logical_positions_match = logical_positions_match_;
+		snapshot.null_positions_match = null_positions_match_;
 		snapshot.variables = variables_;
 		snapshot.elapsed_ms = elapsed_ms_;
 		snapshot.environment = environment_;
@@ -194,8 +281,8 @@ public:
 		snapshot.peak_rss_bytes = peak_rss_bytes_;
 		snapshot.error_category = error_category_;
 		snapshot.decode_count_complete = true;
-		snapshot.bytes_fetched = metadata_bytes_;
-		snapshot.read_requests = metadata_requests_;
+		snapshot.bytes_fetched = snapshot.metadata_bytes;
+		snapshot.read_requests = snapshot.metadata_requests;
 		for (const auto &entry : variables_) {
 			const auto &metrics = entry.second;
 			AddChecked(snapshot.bytes_fetched, metrics.index_bytes);
@@ -222,6 +309,23 @@ public:
 		     << ",\"comparison_passed\":" << JsonOptionalBool(snapshot.comparison_passed)
 		     << ",\"metadata_bytes\":" << snapshot.metadata_bytes
 		     << ",\"metadata_requests\":" << snapshot.metadata_requests
+		     << ",\"bind_metadata_bytes\":" << snapshot.bind_metadata_bytes
+		     << ",\"bind_metadata_requests\":" << snapshot.bind_metadata_requests
+		     << ",\"scan_metadata_bytes\":" << snapshot.scan_metadata_bytes
+		     << ",\"scan_metadata_requests\":" << snapshot.scan_metadata_requests
+		     << ",\"grid_definition\":" << JsonString(snapshot.grid_definition)
+		     << ",\"spatial_layout\":" << JsonString(snapshot.spatial_layout)
+		     << ",\"grid_source\":" << JsonString(snapshot.grid_source)
+		     << ",\"selection_mode\":" << JsonString(snapshot.selection_mode)
+		     << ",\"residual_filter_retained\":" << JsonBool(snapshot.residual_filter_retained)
+		     << ",\"filter_callback_invoked\":" << JsonBool(snapshot.filter_callback_invoked)
+		     << ",\"fallback_reasons\":" << JsonStringArray(snapshot.fallback_reasons)
+		     << ",\"candidate_rows\":" << snapshot.candidate_rows
+		     << ",\"optimizer_empty\":" << JsonBool(snapshot.optimizer_empty)
+		     << ",\"reference_identity\":" << JsonString(snapshot.reference_identity)
+		     << ",\"coordinate_tolerance\":" << std::setprecision(17) << snapshot.coordinate_tolerance
+		     << ",\"logical_positions_match\":" << JsonOptionalBool(snapshot.logical_positions_match)
+		     << ",\"null_positions_match\":" << JsonOptionalBool(snapshot.null_positions_match)
 		     << ",\"variables\":{";
 		bool first = true;
 		for (const auto &entry : snapshot.variables) {
@@ -309,6 +413,17 @@ private:
 		return escaped;
 	}
 
+	static std::string JsonStringArray(const std::vector<std::string> &values) {
+		std::ostringstream json;
+		json << '[';
+		for (std::size_t index = 0; index < values.size(); index++) {
+			if (index != 0) json << ',';
+			json << JsonString(values[index]);
+		}
+		json << ']';
+		return json.str();
+	}
+
 	template <class VALUE_TYPE>
 	static std::string JsonStringMap(const std::map<std::string, VALUE_TYPE> &values) {
 		std::ostringstream json;
@@ -352,8 +467,23 @@ private:
 	ScanStatus status_ = ScanStatus::Unknown;
 	std::optional<std::uint64_t> result_rows_;
 	std::optional<bool> comparison_passed_;
-	std::uint64_t metadata_bytes_ = 0;
-	std::uint64_t metadata_requests_ = 0;
+	std::uint64_t bind_metadata_bytes_ = 0;
+	std::uint64_t bind_metadata_requests_ = 0;
+	std::uint64_t scan_metadata_bytes_ = 0;
+	std::uint64_t scan_metadata_requests_ = 0;
+	std::string grid_definition_;
+	std::string spatial_layout_;
+	std::string grid_source_;
+	std::string selection_mode_;
+	bool residual_filter_retained_ = true;
+	bool filter_callback_invoked_ = false;
+	std::vector<std::string> fallback_reasons_;
+	std::uint64_t candidate_rows_ = 0;
+	bool optimizer_empty_ = false;
+	std::string reference_identity_;
+	double coordinate_tolerance_ = 1e-9;
+	std::optional<bool> logical_positions_match_;
+	std::optional<bool> null_positions_match_;
 	std::map<std::string, ScanVariableMetrics> variables_;
 	std::optional<double> elapsed_ms_;
 	std::map<std::string, std::string> environment_;

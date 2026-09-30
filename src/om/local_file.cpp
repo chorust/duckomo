@@ -72,12 +72,14 @@ std::string LocalFilePathFromValue(const Value &path_value) {
 }
 
 LocalFile::LocalFile(FileSystem &file_system_p, std::unique_ptr<FileHandle> handle_p, std::string path_p,
-                     std::uint64_t file_size_p, std::shared_ptr<ScanMetrics> metrics_p)
+                     std::uint64_t file_size_p, std::shared_ptr<ScanMetrics> metrics_p,
+                     ScanMetadataStage metadata_stage_p)
 	: file_system(&file_system_p), handle(std::move(handle_p)), path(std::move(path_p)), file_size(file_size_p),
-	  metrics(std::move(metrics_p)) {
+	  metrics(std::move(metrics_p)), metadata_stage(metadata_stage_p) {
 }
 
-LocalFile LocalFile::Open(ClientContext &context, const std::string &path, std::shared_ptr<ScanMetrics> metrics) {
+LocalFile LocalFile::Open(ClientContext &context, const std::string &path, std::shared_ptr<ScanMetrics> metrics,
+                          ScanMetadataStage metadata_stage) {
 	ValidateLocalFilePath(path);
 	auto &file_system = FileSystem::GetLocal(*context.db);
 	try {
@@ -112,7 +114,8 @@ LocalFile LocalFile::Open(ClientContext &context, const std::string &path, std::
 	} catch (const std::exception &exception) {
 		throw ReaderError(ReaderErrorCode::FileIo, FileErrorMessage("could not read the size of", path, exception));
 	}
-	return LocalFile(file_system, std::move(handle), path, static_cast<std::uint64_t>(size), std::move(metrics));
+	return LocalFile(file_system, std::move(handle), path, static_cast<std::uint64_t>(size), std::move(metrics),
+	                  metadata_stage);
 }
 
 std::uint64_t LocalFile::Size() const noexcept {
@@ -161,7 +164,11 @@ void LocalFile::ReadRangeInternal(std::uint64_t offset, std::uint64_t size, void
 		throw ReaderError(ReaderErrorCode::FileIo, FileErrorMessage("could not read", path, exception));
 	}
 	if (metrics && phase != nullptr) {
-		metrics->RecordSuccessfulRead(*phase, size, variable_path);
+		if (*phase == ScanReadPhase::Metadata) {
+			metrics->RecordMetadataRead(metadata_stage, size);
+		} else {
+			metrics->RecordSuccessfulRead(*phase, size, variable_path);
+		}
 	}
 }
 

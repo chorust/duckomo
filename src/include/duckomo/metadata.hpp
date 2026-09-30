@@ -23,6 +23,7 @@ struct MetadataVariable final {
 
 struct OmMetadataTree final {
 	std::vector<MetadataVariable> arrays;
+	std::string crs_wkt;
 };
 
 // Reads and validates all metadata nodes through the official OM v3 reader.

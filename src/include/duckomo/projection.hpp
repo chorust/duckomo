@@ -14,6 +14,8 @@ namespace duckomo {
 // array. Physical-variable indexes address ProjectionPlan::RequiredVariableIds.
 struct ProjectionOutputSlot final {
 	bool is_cardinality = false;
+	bool is_latitude = false;
+	bool is_longitude = false;
 	idx_t variable_index = DConstants::INVALID_INDEX;
 	idx_t required_variable_index = DConstants::INVALID_INDEX;
 };
@@ -24,6 +26,7 @@ struct ProjectionOutputSlot final {
 class ProjectionPlan final {
 public:
 	ProjectionPlan(const BoundSchema &schema, const std::vector<column_t> &column_ids);
+	ProjectionPlan(const BoundSchema &schema, const std::vector<column_t> &column_ids, bool has_spatial_columns);
 
 	const std::vector<ProjectionOutputSlot> &GetOutputSlots() const {
 		return output_slots;

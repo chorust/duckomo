@@ -93,6 +93,7 @@ struct Fixture final {
 	std::vector<std::uint64_t> shape;
 	std::vector<std::uint64_t> chunks;
 	std::vector<float> values;
+	std::vector<std::string> axes;
 	OmCompression_t compression = COMPRESSION_FPX_XOR2D;
 	float scale_factor = 1.0F;
 	float add_offset = 0.0F;
@@ -903,6 +904,18 @@ std::vector<TreeArray> BuildMultiArrays() {
 	return {std::move(temperature), std::move(humidity)};
 }
 
+std::vector<TreeArray> BuildSpatialConflictArrays() {
+	TreeArray latitude;
+	latitude.fixture.id = "spatial_conflict.latitude";
+	latitude.fixture.shape = {2, 3};
+	latitude.fixture.chunks = {1, 2};
+	latitude.fixture.values = {0.0F, 1.0F, 2.0F, 3.0F, 4.0F, 5.0F};
+	latitude.segments = {"Latitude"};
+	latitude.axes = {"lat", "lon"};
+	latitude.reference_name = "spatial_conflict.latitude.reference.csv";
+	return {std::move(latitude)};
+}
+
 std::vector<TreeArray> BuildPforAttributeArrays() {
 	TreeArray temperature;
 	temperature.fixture.id = "pfor_attributes.temperature";
@@ -1331,6 +1344,8 @@ void WriteProjectionScenarioManifest(std::ostringstream &manifest, const std::ve
 
 void WriteManifest(const std::filesystem::path &directory, const std::vector<Fixture> &fixtures,
 	               const std::vector<TreeArray> &multi_arrays, const std::vector<DecodedVariable> &multi_decoded,
+	               const std::vector<TreeArray> &spatial_conflict_arrays,
+	               const std::vector<DecodedVariable> &spatial_conflict_decoded,
 	               const std::vector<TreeArray> &pfor_arrays, const std::vector<DecodedVariable> &pfor_decoded,
 	               const std::vector<TreeArray> &nested_arrays, const std::vector<DecodedVariable> &nested_decoded,
 	               const std::vector<TreeArray> &projection_arrays,
@@ -1362,7 +1377,7 @@ void WriteManifest(const std::filesystem::path &directory, const std::vector<Fix
 	         << "      \"compression\": \"FPX_XOR2D\",\n"
 	         << "      \"shape\": " << JsonNumberArray(decoded_shape) << ",\n"
 	         << "      \"chunk_shape\": " << JsonNumberArray(decoded_chunks) << ",\n"
-	         << "      \"axes\": [],\n"
+	         << "      \"axes\": " << JsonStringArray(fixture.axes) << ",\n"
 	         << "      \"expected_schema\": [\"value FLOAT\"],\n"
 	         << "      \"null_positions\": " << JsonNullPositions(fixture.values) << ",\n"
 	         << "      \"reference_csv\": \"" << JsonEscape(fixture.reference_name) << "\",\n"
@@ -1372,6 +1387,9 @@ void WriteManifest(const std::filesystem::path &directory, const std::vector<Fix
 	}
 	// Keep every valid OM input in one manifest collection for downstream validators.
 	WriteTreeFixtureManifestEntry(manifest, directory, "multi", "multi.om", multi_arrays, multi_decoded);
+	manifest << ",\n";
+	WriteTreeFixtureManifestEntry(manifest, directory, "spatial_conflict", "spatial_conflict.om",
+	                              spatial_conflict_arrays, spatial_conflict_decoded);
 	manifest << ",\n";
 	WriteTreeFixtureManifestEntry(manifest, directory, "pfor_attributes", "pfor_attributes.om", pfor_arrays,
 	                              pfor_decoded);
@@ -1426,7 +1444,39 @@ std::vector<Fixture> BuildInitialFixtures() {
 			raw_large.values.push_back(static_cast<float>(ordinal) * 0.25F - 100.0F);
 		}
 	}
-	return {std::move(raw), std::move(special), std::move(raw_large)};
+	Fixture spatial_flat;
+	spatial_flat.id = "spatial_flat";
+	spatial_flat.file_name = "spatial_flat.om";
+	spatial_flat.reference_name = "spatial_flat.reference.csv";
+	spatial_flat.shape = {2, 6};
+	spatial_flat.chunks = {1, 2};
+	spatial_flat.axes = {"sample", "point"};
+	for (std::uint64_t sample = 0; sample < 2; sample++) {
+		for (std::uint64_t point = 0; point < 6; point++) {
+			spatial_flat.values.push_back(static_cast<float>(sample * 100 + point));
+		}
+	}
+	Fixture spatial_axes;
+	spatial_axes.id = "spatial_axes";
+	spatial_axes.file_name = "spatial_axes.om";
+	spatial_axes.reference_name = "spatial_axes.reference.csv";
+	spatial_axes.shape = {2, 2, 3};
+	spatial_axes.chunks = {1, 1, 2};
+	spatial_axes.axes = {"member", "latitude_axis", "longitude_axis"};
+	for (std::uint64_t index = 0; index < CheckedProduct(spatial_axes.shape); index++) {
+		spatial_axes.values.push_back(index == 5 ? std::numeric_limits<float>::quiet_NaN()
+		                                         : static_cast<float>(index) * 1.25F - 4.0F);
+	}
+	Fixture spatial_single;
+	spatial_single.id = "spatial_single";
+	spatial_single.file_name = "spatial_single.om";
+	spatial_single.reference_name = "spatial_single.reference.csv";
+	spatial_single.shape = {1, 1};
+	spatial_single.chunks = {1, 1};
+	spatial_single.axes = {"latitude_axis", "longitude_axis"};
+	spatial_single.values = {42.0F};
+	return {std::move(raw), std::move(special), std::move(spatial_flat), std::move(spatial_axes),
+	        std::move(spatial_single), std::move(raw_large)};
 }
 
 void Generate(const std::filesystem::path &output_directory) {
@@ -1465,6 +1515,24 @@ void Generate(const std::filesystem::path &output_directory) {
 		WriteReferenceCsv(output_directory / array.reference_name, decoded.values);
 		std::cout << "generated multi.om variable=" << variable_path << " rows=" << decoded.values.size()
 		          << " oracle=passed sha256=" << Sha256Hex(multi_bytes) << '\n';
+	}
+
+	auto spatial_conflict_arrays = BuildSpatialConflictArrays();
+	const auto spatial_conflict_bytes = EncodeTreeFile(spatial_conflict_arrays);
+	const auto spatial_conflict_path = output_directory / "spatial_conflict.om";
+	WriteFile(spatial_conflict_path, spatial_conflict_bytes);
+	const auto spatial_conflict_decoded = DecodeTreeFile(spatial_conflict_path);
+	Require(spatial_conflict_decoded.size() == spatial_conflict_arrays.size(),
+	        "official oracle returned the wrong spatial-conflict fixture array count");
+	for (const auto &array : spatial_conflict_arrays) {
+		const auto variable_path = CanonicalVariablePath(array.segments);
+		const auto &decoded = FindDecodedVariable(spatial_conflict_decoded, variable_path);
+		Require(decoded.shape == array.fixture.shape && decoded.chunks == array.fixture.chunks,
+		        "official oracle returned different spatial-conflict metadata for " + variable_path);
+		RequireExactRoundtrip(array.fixture, decoded.values);
+		WriteReferenceCsv(output_directory / array.reference_name, decoded.values);
+		std::cout << "generated spatial_conflict.om variable=" << variable_path << " rows=" << decoded.values.size()
+		          << " oracle=passed sha256=" << Sha256Hex(spatial_conflict_bytes) << '\n';
 	}
 
 	auto pfor_arrays = BuildPforAttributeArrays();
@@ -1530,7 +1598,8 @@ void Generate(const std::filesystem::path &output_directory) {
 	        "projection fixture must use a non-square shape");
 
 	const auto negative_assets = GenerateNegativeAssets(output_directory, multi_path, nested_path);
-	WriteManifest(output_directory, fixtures, multi_arrays, multi_decoded, pfor_arrays, pfor_decoded,
+	WriteManifest(output_directory, fixtures, multi_arrays, multi_decoded, spatial_conflict_arrays,
+	              spatial_conflict_decoded, pfor_arrays, pfor_decoded,
 	              nested_arrays, nested_decoded,
 	              projection_arrays, projection_decoded, negative_assets);
 }
@@ -1540,7 +1609,7 @@ void PrintUsage(std::ostream &output) {
 	       << "  duckomo_fixture_tool --output DIR\n"
 	       << "  duckomo_fixture_tool --oracle INPUT.om --csv REFERENCE.csv\n"
 	       << "  duckomo_fixture_tool --oracle-prefix INPUT.om --variable /PATH --count N --csv REFERENCE.csv\n"
-	       << "\n--output generates raw.om, special.om, raw_large.om, multi.om, pfor_attributes.om, nested.om, projection.om, their oracle CSV files, "
+	       << "\n--output generates raw.om, special.om, raw_large.om, spatial_flat.om, spatial_axes.om, spatial_single.om, spatial_conflict.om, multi.om, pfor_attributes.om, nested.om, projection.om, their oracle CSV files, "
 	          "negative mutation assets, and manifest.json.\n"
 	       << "--oracle runs the independent fixed official OM reader over a full root array and exports index,value CSV.\n";
 }

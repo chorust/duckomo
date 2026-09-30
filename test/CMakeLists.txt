@@ -6,6 +6,7 @@
 set(DUCKOMO_TOOL_SOURCES
     duckomo_fixture_tool
     duckomo_validation
+    duckomo_spatial_validation
 )
 set(DUCKOMO_NATIVE_TEST_SOURCES
     batch_test
@@ -13,12 +14,23 @@ set(DUCKOMO_NATIVE_TEST_SOURCES
     lifecycle_test
     schema_test
     projection_evidence_test
+    regular_grid_test
+    spatial_layout_test
+    spatial_metrics_test
+    spatial_callback_test
+    spatial_selection_test
+    spatial_io_test
+    spatial_lifecycle_test
+    domain_reference_test
 )
 
 set(DUCKOMO_SQLLOGICTEST_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/raw.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/read_om.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/projection.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/spatial.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/spatial_pushdown.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/spatial_composition.test"
 )
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
     ${DUCKOMO_SQLLOGICTEST_FILES}
@@ -72,7 +84,41 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
         native
     )
     if(TARGET "${test}")
-        target_link_libraries("${test}" PRIVATE duckdb_static duckdb_generated_extension_loader duckomo_extension duckomo_om)
+        if(test STREQUAL "domain_reference_test")
+            target_include_directories("${test}" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/tools")
+        endif()
+        if(test STREQUAL "spatial_selection_test")
+            target_sources("${test}" PRIVATE
+                "${PROJECT_SOURCE_DIR}/src/grid/regular_grid.cpp"
+                "${PROJECT_SOURCE_DIR}/src/grid/spatial_layout.cpp"
+                "${PROJECT_SOURCE_DIR}/src/scan/spatial_selection.cpp"
+                "${PROJECT_SOURCE_DIR}/src/scan/batch.cpp"
+                "${PROJECT_SOURCE_DIR}/duckdb/extension/loader/dummy_static_extension_loader.cpp"
+            )
+            target_link_libraries("${test}" PRIVATE duckdb_static duckomo_om)
+        elseif(test STREQUAL "regular_grid_test" OR test STREQUAL "spatial_layout_test" OR
+               test STREQUAL "spatial_metrics_test")
+            # Pure value/layout tests only need the implementation under test.
+            # Avoid pulling DuckDB's static extension loader (and its optional
+            # CoreFunctions/Parquet symbols) into these standalone binaries.
+            if(test STREQUAL "regular_grid_test")
+                target_sources("${test}" PRIVATE
+                    "${PROJECT_SOURCE_DIR}/src/grid/regular_grid.cpp"
+                    "${PROJECT_SOURCE_DIR}/src/grid/domain_bbox.cpp"
+                    "${PROJECT_SOURCE_DIR}/src/grid/domain_registry.cpp"
+                )
+            elseif(test STREQUAL "spatial_layout_test")
+                target_sources("${test}" PRIVATE
+                    "${PROJECT_SOURCE_DIR}/src/grid/regular_grid.cpp"
+                    "${PROJECT_SOURCE_DIR}/src/grid/spatial_layout.cpp"
+                    "${PROJECT_SOURCE_DIR}/duckdb/extension/loader/dummy_static_extension_loader.cpp"
+                )
+                target_link_libraries("${test}" PRIVATE duckdb_static)
+            endif()
+        else()
+            target_link_libraries("${test}" PRIVATE duckdb_static duckomo_extension duckomo_om)
+            target_link_libraries("${test}" PRIVATE duckdb_generated_extension_loader)
+        endif()
     endif()
 endforeach()
 
@@ -185,6 +231,73 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
             WORKING_DIRECTORY "${DUCKOMO_SANITIZER_RUNTIME_DIR}"
         )
         list(APPEND DUCKOMO_SANITIZER_TEST_TARGETS duckomo_lifecycle_sanitizer)
+    endif()
+
+    duckomo_add_source_target(
+        duckomo_spatial_selection_sanitizer
+        "native/spatial_selection_test.cpp"
+        "sanitizer/native"
+    )
+    if(TARGET duckomo_spatial_selection_sanitizer)
+        set_target_properties(duckomo_spatial_selection_sanitizer PROPERTIES EXCLUDE_FROM_ALL TRUE)
+        target_sources(duckomo_spatial_selection_sanitizer PRIVATE
+            "${PROJECT_SOURCE_DIR}/src/grid/regular_grid.cpp"
+            "${PROJECT_SOURCE_DIR}/src/grid/spatial_layout.cpp"
+            "${PROJECT_SOURCE_DIR}/src/scan/spatial_selection.cpp"
+            "${PROJECT_SOURCE_DIR}/src/scan/batch.cpp"
+            "${PROJECT_SOURCE_DIR}/duckdb/extension/loader/dummy_static_extension_loader.cpp"
+        )
+        target_compile_options(duckomo_spatial_selection_sanitizer PRIVATE ${DUCKOMO_SANITIZER_COMPILE_OPTIONS})
+        target_link_options(duckomo_spatial_selection_sanitizer PRIVATE ${DUCKOMO_SANITIZER_LINK_OPTIONS})
+        target_link_libraries(duckomo_spatial_selection_sanitizer PRIVATE duckdb_static duckomo_om)
+        add_test(NAME duckomo_sanitizer_spatial_selection
+            COMMAND "$<TARGET_FILE:duckomo_spatial_selection_sanitizer>"
+        )
+        set_tests_properties(duckomo_sanitizer_spatial_selection PROPERTIES
+            WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+        )
+        list(APPEND DUCKOMO_SANITIZER_TEST_TARGETS duckomo_spatial_selection_sanitizer)
+    endif()
+
+    foreach(test spatial_io_test spatial_lifecycle_test)
+        set(test_target "${test}_sanitizer")
+        duckomo_add_source_target("${test_target}" "native/${test}.cpp" "sanitizer/native")
+        if(TARGET "${test_target}")
+            set_target_properties("${test_target}" PROPERTIES EXCLUDE_FROM_ALL TRUE)
+            target_compile_options("${test_target}" PRIVATE ${DUCKOMO_SANITIZER_COMPILE_OPTIONS})
+            target_link_options("${test_target}" PRIVATE ${DUCKOMO_SANITIZER_LINK_OPTIONS})
+            target_link_libraries("${test_target}" PRIVATE duckdb_static duckdb_generated_extension_loader duckomo_om)
+            add_test(NAME "duckomo_sanitizer_${test}"
+                COMMAND "$<TARGET_FILE:${test_target}>"
+            )
+            set_tests_properties("duckomo_sanitizer_${test}" PROPERTIES
+                WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+                ENVIRONMENT "DUCKOMO_EXTENSION_PATH=${DUCKOMO_SANITIZER_RUNTIME_DIR}/build/release/extension/duckomo/duckomo.duckdb_extension"
+            )
+            list(APPEND DUCKOMO_SANITIZER_TEST_TARGETS "${test_target}")
+        endif()
+    endforeach()
+
+    duckomo_add_source_target(
+        duckomo_projection_evidence_sanitizer
+        "native/projection_evidence_test.cpp"
+        "sanitizer/native"
+    )
+    if(TARGET duckomo_projection_evidence_sanitizer)
+        set_target_properties(duckomo_projection_evidence_sanitizer PROPERTIES EXCLUDE_FROM_ALL TRUE)
+        target_compile_options(duckomo_projection_evidence_sanitizer PRIVATE ${DUCKOMO_SANITIZER_COMPILE_OPTIONS})
+        target_link_options(duckomo_projection_evidence_sanitizer PRIVATE ${DUCKOMO_SANITIZER_LINK_OPTIONS})
+        target_link_libraries(duckomo_projection_evidence_sanitizer PRIVATE
+            duckdb_static duckdb_generated_extension_loader duckomo_extension_sanitized duckomo_om
+        )
+        add_test(NAME duckomo_sanitizer_projection_evidence
+            COMMAND "$<TARGET_FILE:duckomo_projection_evidence_sanitizer>"
+        )
+        set_tests_properties(duckomo_sanitizer_projection_evidence PROPERTIES
+            WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+            ENVIRONMENT "DUCKOMO_EXTENSION_PATH=${DUCKOMO_SANITIZER_RUNTIME_DIR}/build/release/extension/duckomo/duckomo.duckdb_extension"
+        )
+        list(APPEND DUCKOMO_SANITIZER_TEST_TARGETS duckomo_projection_evidence_sanitizer)
     endif()
 
     add_custom_target(duckomo_sanitizer_checks

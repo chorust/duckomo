@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "domain": "ncep_gfswave025",
+  "sample": {
+    "url": "https://openmeteo.s3.amazonaws.com/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om",
+    "path": "build/s3-samples/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om",
+    "bytes": 5812040,
+    "sha256": "0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd",
+    "created_at": "2026-09-28T03:59:37Z"
+  },
+  "upstream": {
+    "repository": "https://github.com/open-meteo/open-meteo",
+    "commit": "34b9cea169395be9b4686f2b5b23eca26dfef7a2",
+    "domain_source": "Sources/App/Gfs/GfsDomain.swift",
+    "grid_source": "Sources/App/Domains/RegularGrid.swift"
+  },
+  "layout": {
+    "shape": [721, 1440],
+    "axes": ["lat", "lon"],
+    "chunk_shape": [32, 32],
+    "coordinates_attribute": "lat lon",
+    "grid": {
+      "nx": 1440,
+      "ny": 721,
+      "lat0": -90.0,
+      "lon0": -180.0,
+      "dlat": 0.25,
+      "dlon": 0.25,
+      "order": "separate"
+    },
+    "expected_bbox": [-90.0, -180.0, 90.0, 179.75],
+    "coordinate_formula": "latitude=-90+row*0.25; longitude=normalize_180(-180+column*0.25)"
+  },
+  "oracle": {
+    "values": "fixed OM C API full-array decode via duckomo_fixture_tool --oracle-prefix",
+    "coordinates": "independent scalar formula in test/tools/spatial_reference.hpp; no production grid code is linked",
+    "reference_directory": "build/evidence/spatial/reference",
+    "rows_per_variable": 1038240,
+    "coordinate_absolute_tolerance_degrees": 1e-9,
+    "value_tolerance": 0,
+    "variables": [
+      {"path": "/secondary_swell_wave_direction", "reference_csv": "secondary_swell_wave_direction.csv", "sha256": "c5869e3890039ed88b684fb2916f6b74925c08243d36692fe906c255e7c4eed5"},
+      {"path": "/secondary_swell_wave_height", "reference_csv": "secondary_swell_wave_height.csv", "sha256": "41446f0736f55a5ad9bc1878059cebd7b168a67501cf3a402224c069451c7a48"},
+      {"path": "/secondary_swell_wave_period", "reference_csv": "secondary_swell_wave_period.csv", "sha256": "e438f165d10dc7669ad2e6cc60797530453e32797c43a3745705261102dcf5fb"},
+      {"path": "/swell_wave_direction", "reference_csv": "swell_wave_direction.csv", "sha256": "f7ea32de7afc46b242715f08cbf7e71ca4723624e82f2956fec365b96c94b956"},
+      {"path": "/swell_wave_height", "reference_csv": "swell_wave_height.csv", "sha256": "e69cb9dd35f2834bf360cd74ff5796d2276a9ac894b6002e00077eb03e692993"},
+      {"path": "/swell_wave_period", "reference_csv": "swell_wave_period.csv", "sha256": "9dc94349e8450e08465884a0adc1cf8a5da7f2d6a1c0c57d522765626776f4e1"},
+      {"path": "/tertiary_swell_wave_direction", "reference_csv": "tertiary_swell_wave_direction.csv", "sha256": "e1052e3024573087d74cc7231da3198f4ca6d6ef70322a83aca08e9275c425cc"},
+      {"path": "/tertiary_swell_wave_height", "reference_csv": "tertiary_swell_wave_height.csv", "sha256": "a978bc1ac061e4eaf5084c7c07543cf9edad268e80363f84322668867b224c8a"},
+      {"path": "/tertiary_swell_wave_period", "reference_csv": "tertiary_swell_wave_period.csv", "sha256": "6403b60f88d31837c42ccdc928dcfe4bf5f1fc80aa407337316941a299fe81a0"},
+      {"path": "/wave_direction", "reference_csv": "wave_direction.csv", "sha256": "4ef1d56c20de5739bdf8719aab09ad491dea9ccd5d7b3606fffe348067295a83"},
+      {"path": "/wave_height", "reference_csv": "wave_height.csv", "sha256": "c5a0bd2bc2e0457ad1a3a0e4b1da877a655b2a8c37a654f8d25a3730c388e778"},
+      {"path": "/wave_period", "reference_csv": "wave_period.csv", "sha256": "cebaca77f2a0c2c3131e6648de8e70ad9cdeb39c55f05452792e8690e2d85a9a"},
+      {"path": "/wind_wave_direction", "reference_csv": "wind_wave_direction.csv", "sha256": "1b25c4905b056cefc8345e2f402a38ee5864e13302dc86182b50f272ca68e5ef"},
+      {"path": "/wind_wave_height", "reference_csv": "wind_wave_height.csv", "sha256": "ab149d25f08b77714a06ce8030fc795315a7664dbd3600b9c566b70c1220c090"},
+      {"path": "/wind_wave_period", "reference_csv": "wind_wave_period.csv", "sha256": "dce257e8a4d70893cfa42e25c2dd78d4989cf9ae15870df4a7ba20ccbd122dc3"}
+    ]
+  }
+}

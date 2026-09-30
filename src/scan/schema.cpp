@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "duckdb/common/string_util.hpp"
+#include "duckdb/common/exception/binder_exception.hpp"
 
 namespace duckdb {
 namespace duckomo {
@@ -33,6 +34,7 @@ BoundSchema BuildBoundSchema(const OmMetadataTree &tree) {
 	});
 
 	BoundSchema result;
+	result.crs_wkt = tree.crs_wkt;
 	result.variables.reserve(arrays.size());
 	std::vector<std::string> seen_names;
 	seen_names.reserve(arrays.size());
@@ -72,6 +74,20 @@ BoundSchema BuildBoundSchema(const OmMetadataTree &tree) {
 	result.shape = result.variables.front().shape;
 	result.row_count = result.variables.front().row_count;
 	return result;
+}
+
+void AppendSpatialOutputColumns(const BoundSchema &schema, std::vector<LogicalType> &return_types,
+	                            std::vector<std::string> &names) {
+	for (const auto &variable : schema.variables) {
+		if (StringUtil::CIEquals(variable.column_name, "latitude") ||
+		    StringUtil::CIEquals(variable.column_name, "longitude")) {
+			throw BinderException("read_om coordinate column name conflicts with source array '" + variable.column_name + "'");
+		}
+	}
+	return_types.emplace_back(LogicalType::DOUBLE);
+	names.emplace_back("latitude");
+	return_types.emplace_back(LogicalType::DOUBLE);
+	names.emplace_back("longitude");
 }
 
 } // namespace duckomo
