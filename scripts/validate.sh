@@ -63,6 +63,7 @@ REQUIRED_EXECUTABLES=(
 	"$BUILD_DIR/test/native/raw_reader_test"
 	"$BUILD_DIR/test/native/lifecycle_test"
 	"$BUILD_DIR/test/native/schema_test"
+	"$BUILD_DIR/test/native/time_test"
 	"$BUILD_DIR/test/native/projection_evidence_test"
 	"$BUILD_DIR/test/native/regular_grid_test"
 	"$BUILD_DIR/test/native/spatial_layout_test"
@@ -277,7 +278,7 @@ for sql_test in raw read_om projection spatial spatial_pushdown spatial_composit
 	run_sqllogictest "SQLLogicTest: $sql_test.test" "$BUILD_DIR/test/unittest" "test/sql/$sql_test.test"
 done
 
-for native_test in batch_test raw_reader_test lifecycle_test schema_test projection_evidence_test regular_grid_test spatial_layout_test \
+for native_test in batch_test raw_reader_test lifecycle_test schema_test time_test projection_evidence_test regular_grid_test spatial_layout_test \
 	spatial_metrics_test spatial_callback_test spatial_selection_test spatial_io_test spatial_lifecycle_test; do
 	run "Native check: $native_test" "$BUILD_DIR/test/native/$native_test"
 done

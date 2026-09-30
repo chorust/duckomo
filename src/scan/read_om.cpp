@@ -8,6 +8,7 @@
 #include <cstring>
 #include <fstream>
 #include <memory>
+#include <limits>
 #include <optional>
 #include <sstream>
 #include <iomanip>
@@ -22,6 +23,7 @@
 #include "duckdb/common/constants.hpp"
 #include "duckdb/common/table_column.hpp"
 #include "duckdb/common/types/validity_mask.hpp"
+#include "duckdb/common/types/timestamp.hpp"
 #include "duckdb/common/vector.hpp"
 #include "duckdb/main/client_context_state.hpp"
 #include "duckdb/planner/column_binding.hpp"
@@ -149,7 +151,8 @@ bool SameSchema(const BoundSchema &left, const BoundSchema &right) {
 		if (left_variable.canonical_path != right_variable.canonical_path ||
 		    left_variable.column_name != right_variable.column_name ||
 		    left_variable.inferred_axes != right_variable.inferred_axes || left_variable.type != right_variable.type ||
-		    left_variable.shape != right_variable.shape || left_variable.chunk_shape != right_variable.chunk_shape ||
+		    left_variable.time != right_variable.time || left_variable.shape != right_variable.shape ||
+		    left_variable.chunk_shape != right_variable.chunk_shape ||
 		    left_variable.row_count != right_variable.row_count ||
 		    left_variable.metadata_offset != right_variable.metadata_offset ||
 		    left_variable.metadata_size != right_variable.metadata_size) {
@@ -405,16 +408,92 @@ SpatialBindConfiguration BindSpatialConfiguration(const TableFunctionBindInput &
 	return result;
 }
 
-struct ReadOmBindData final : TableFunctionData {
-    ReadOmBindData(std::string path_p, BoundSchema schema_p, AxisDeclarations axes_p,
-                   SpatialBindConfiguration spatial_p, std::shared_ptr<ScanMetrics> metrics_p)
-        : path(std::move(path_p)), schema(std::move(schema_p)), axes(std::move(axes_p)),
-          spatial(std::move(spatial_p)), metrics(std::move(metrics_p)) {
-    }
+struct TemporalBindConfiguration final {
+	std::vector<timestamp_t> values;
+	std::uint64_t stride = 0; // Zero denotes a scalar snapshot.
+	bool operator==(const TemporalBindConfiguration &other) const {
+		return stride == other.stride && values == other.values;
+	}
+};
 
-    ReadOmBindData(const ReadOmBindData &other)
-        : TableFunctionData(other), path(other.path), schema(other.schema), axes(other.axes), spatial(other.spatial),
-          metrics(other.metrics) {
+std::optional<TemporalBindConfiguration> BindTemporalConfiguration(const TableFunctionBindInput &input,
+                                                                   const BoundSchema &schema,
+                                                                   const AxisDeclarations &axes) {
+	const auto *explicit_times = GetNamedValue(input, "valid_times");
+	const bool has_explicit = explicit_times && !explicit_times->IsNull();
+	std::vector<timestamp_t> supplied;
+	if (has_explicit) {
+		for (const auto &value : ListValue::GetChildren(*explicit_times)) {
+			if (value.IsNull() || !Timestamp::IsFinite(value.GetValue<timestamp_t>())) {
+				throw BinderException("read_om valid_times must contain finite, non-NULL UTC timestamps");
+			}
+			supplied.push_back(value.GetValue<timestamp_t>());
+		}
+		if (supplied.empty()) {
+			throw BinderException("read_om valid_times must not be empty");
+		}
+	}
+	std::optional<TemporalBindConfiguration> result;
+	bool missing_time = false;
+	for (std::size_t index = 0; index < schema.variables.size(); index++) {
+		const auto &variable = schema.variables[index];
+		if (!variable.time && !has_explicit) {
+			missing_time = true;
+			continue;
+		}
+		TemporalBindConfiguration current;
+		if (variable.time) {
+			for (const auto seconds : variable.time->epoch_seconds) {
+				if (seconds > std::numeric_limits<std::int64_t>::max() / 1000000 ||
+				    seconds < std::numeric_limits<std::int64_t>::min() / 1000000) {
+					throw BinderException("read_om time coordinate is outside the finite TIMESTAMP range");
+				}
+				current.values.push_back(Timestamp::FromEpochSeconds(seconds));
+			}
+			if (has_explicit && current.values != supplied) {
+				throw BinderException("read_om valid_times conflicts with file time metadata");
+			}
+		} else {
+			current.values = supplied;
+		}
+		const auto &axis_names = axes.at(index);
+		const auto time_axis = std::find(axis_names.begin(), axis_names.end(), "time");
+		if (time_axis != axis_names.end()) {
+			const auto axis = static_cast<std::size_t>(time_axis - axis_names.begin());
+			if (current.values.size() != variable.shape.at(axis)) {
+				throw BinderException("read_om time coordinate length must match the declared time axis");
+			}
+			current.stride = 1;
+			for (std::size_t next = axis + 1; next < variable.shape.size(); next++) {
+				current.stride *= variable.shape[next];
+			}
+		} else if (current.values.size() != 1 || (variable.time && !variable.time->scalar)) {
+			throw BinderException(
+			    "read_om time array requires a complete ordered time axis from coordinates or dimensions");
+		}
+		if (result && !(current == *result)) {
+			throw BinderException("read_om arrays have conflicting time coordinates");
+		}
+		result = std::move(current);
+	}
+	if (result && missing_time) {
+		throw BinderException(
+		    "read_om time coordinates must cover every value array; supply valid_times for missing metadata");
+	}
+	return result;
+}
+
+struct ReadOmBindData final : TableFunctionData {
+	ReadOmBindData(std::string path_p, BoundSchema schema_p, AxisDeclarations axes_p,
+	               SpatialBindConfiguration spatial_p, std::optional<TemporalBindConfiguration> temporal_p,
+	               std::shared_ptr<ScanMetrics> metrics_p)
+	    : path(std::move(path_p)), schema(std::move(schema_p)), axes(std::move(axes_p)), spatial(std::move(spatial_p)),
+	      temporal(std::move(temporal_p)), metrics(std::move(metrics_p)) {
+	}
+
+	ReadOmBindData(const ReadOmBindData &other)
+	    : TableFunctionData(other), path(other.path), schema(other.schema), axes(other.axes), spatial(other.spatial),
+	      temporal(other.temporal), metrics(other.metrics) {
 	}
 
 	unique_ptr<FunctionData> Copy() const override {
@@ -423,10 +502,10 @@ struct ReadOmBindData final : TableFunctionData {
 
 	bool Equals(const FunctionData &other_p) const override {
 		const auto &other = other_p.Cast<ReadOmBindData>();
-		return path == other.path && axes == other.axes && spatial.grid_signature == other.spatial.grid_signature &&
+		return path == other.path && axes == other.axes && temporal == other.temporal &&
+		       spatial.grid_signature == other.spatial.grid_signature &&
 		       spatial.layout_name == other.spatial.layout_name && spatial.source == other.spatial.source &&
-		       SameSpatialPredicate(*spatial.predicate, *other.spatial.predicate) &&
-		       SameSchema(schema, other.schema);
+		       SameSpatialPredicate(*spatial.predicate, *other.spatial.predicate) && SameSchema(schema, other.schema);
 	}
 
 	bool SupportStatementCache() const override {
@@ -437,7 +516,8 @@ struct ReadOmBindData final : TableFunctionData {
     BoundSchema schema;
     AxisDeclarations axes;
     SpatialBindConfiguration spatial;
-    std::shared_ptr<ScanMetrics> metrics;
+	std::optional<TemporalBindConfiguration> temporal;
+	std::shared_ptr<ScanMetrics> metrics;
 };
 
 void ObserveComplexFilter(ClientContext &, LogicalGet &get, FunctionData *bind_data,
@@ -461,12 +541,12 @@ void ObserveComplexFilter(ClientContext &, LogicalGet &get, FunctionData *bind_d
 }
 
 struct ReadOmGlobalState final : GlobalTableFunctionState {
-    ReadOmGlobalState(ClientContext &context, const ReadOmBindData &bind_data,
-                      const std::vector<column_t> &column_ids, std::shared_ptr<ScanMetrics> metrics_p)
-        : path(bind_data.path), schema(bind_data.schema),
-          projection(schema, column_ids, bind_data.spatial.grid.has_value()), spatial(bind_data.spatial),
-          metrics(std::move(metrics_p)),
-          reader(make_uniq<OmV3Reader>(LocalFile::Open(context, bind_data.path, metrics, ScanMetadataStage::Scan))) {
+	ReadOmGlobalState(ClientContext &context, const ReadOmBindData &bind_data, const std::vector<column_t> &column_ids,
+	                  std::shared_ptr<ScanMetrics> metrics_p)
+	    : path(bind_data.path), schema(bind_data.schema),
+	      projection(schema, column_ids, bind_data.spatial.grid.has_value(), bind_data.temporal.has_value()),
+	      spatial(bind_data.spatial), temporal(bind_data.temporal), metrics(std::move(metrics_p)),
+	      reader(make_uniq<OmV3Reader>(LocalFile::Open(context, bind_data.path, metrics, ScanMetadataStage::Scan))) {
 		// The file may have changed since binding. Revalidate its complete tree
 		// before constructing decoder state, while keeping binding metadata-only.
 		auto current_schema = BuildBoundSchema(ReadMetadataTree(*reader));
@@ -490,9 +570,9 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
             const auto &variable = current_schema.variables.at(variable_index);
             decoders.emplace_back(make_uniq<OmDecoderState>(BorrowedOmVariable(variable.metadata_owner)));
         }
-    }
+	}
 
-    ~ReadOmGlobalState() override {
+	~ReadOmGlobalState() override {
         if (!metrics) {
             return;
         }
@@ -506,7 +586,8 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
     BoundSchema schema;
     ProjectionPlan projection;
     SpatialBindConfiguration spatial;
-    SpatialSelection selection;
+	std::optional<TemporalBindConfiguration> temporal;
+	SpatialSelection selection;
     unique_ptr<SpatialBatchCursor> spatial_cursor;
     std::shared_ptr<ScanMetrics> metrics;
     std::uint64_t next_linear_index = 0;
@@ -534,9 +615,10 @@ unique_ptr<FunctionData> BindReadOm(ClientContext &context, TableFunctionBindInp
 	const auto *dimensions = dimensions_entry == input.named_parameters.end() ? nullptr : &dimensions_entry->second;
 	auto axes = ValidateAxisDeclarations(dimensions, schema);
 	auto spatial = BindSpatialConfiguration(input, schema, axes, *metrics);
+	auto temporal = BindTemporalConfiguration(input, schema, axes);
 
-	return_types.reserve(return_types.size() + schema.variables.size() + (spatial.grid ? 2 : 0));
-	names.reserve(names.size() + schema.variables.size() + (spatial.grid ? 2 : 0));
+	return_types.reserve(return_types.size() + schema.variables.size() + (spatial.grid ? 2 : 0) + (temporal ? 1 : 0));
+	names.reserve(names.size() + schema.variables.size() + (spatial.grid ? 2 : 0) + (temporal ? 1 : 0));
 	for (const auto &variable : schema.variables) {
 		return_types.emplace_back(variable.type);
 		names.emplace_back(variable.column_name);
@@ -544,7 +626,17 @@ unique_ptr<FunctionData> BindReadOm(ClientContext &context, TableFunctionBindInp
 	if (spatial.grid) {
 		AppendSpatialOutputColumns(schema, return_types, names);
 	}
-	return make_uniq<ReadOmBindData>(path, std::move(schema), std::move(axes), std::move(spatial), std::move(metrics));
+	if (temporal) {
+		for (const auto &name : names) {
+			if (StringUtil::CIEquals(name, "valid_time")) {
+				throw BinderException("read_om valid_time column name conflicts with a source array");
+			}
+		}
+		return_types.emplace_back(LogicalType::TIMESTAMP);
+		names.emplace_back("valid_time");
+	}
+	return make_uniq<ReadOmBindData>(path, std::move(schema), std::move(axes), std::move(spatial), std::move(temporal),
+	                                 std::move(metrics));
 }
 
 unique_ptr<GlobalTableFunctionState> InitReadOm(ClientContext &context, TableFunctionInitInput &input) {
@@ -597,7 +689,18 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, DataChunk 
 	}
 
     for (std::size_t output_column = 0; output_column < slots.size(); output_column++) {
-        if (slots[output_column].is_latitude || slots[output_column].is_longitude) {
+		if (slots[output_column].is_valid_time) {
+			auto *values = FlatVector::GetData<timestamp_t>(output.data[output_column]);
+			const auto &time = *state.temporal;
+			for (std::uint64_t row = 0; row < count; row++) {
+				const auto position = state.spatial_cursor ? logical_positions[row] : state.next_linear_index + row;
+				const auto time_index = time.stride == 0 ? 0 : (position / time.stride) % time.values.size();
+				values[row] = time.values[time_index];
+			}
+			FlatVector::Validity(output.data[output_column]).SetAllValid(static_cast<idx_t>(count));
+			continue;
+		}
+		if (slots[output_column].is_latitude || slots[output_column].is_longitude) {
 			if (!state.spatial.grid || !state.spatial.layout) {
 				throw InternalException("read_om projected a spatial column without a bound grid");
 			}
@@ -622,12 +725,12 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, DataChunk 
         idx_t primary_output = DConstants::INVALID_INDEX;
         for (idx_t output_column = 0; output_column < slots.size(); output_column++) {
 			if (!slots[output_column].is_cardinality && !slots[output_column].is_latitude &&
-			    !slots[output_column].is_longitude &&
-                slots[output_column].required_variable_index == required_index) {
-                primary_output = output_column;
+			    !slots[output_column].is_longitude && !slots[output_column].is_valid_time &&
+			    slots[output_column].required_variable_index == required_index) {
+				primary_output = output_column;
                 break;
-            }
-        }
+			}
+		}
         if (primary_output == DConstants::INVALID_INDEX) {
             throw InternalException("read_om projection plan has an unreferenced required variable");
         }
@@ -654,12 +757,12 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, DataChunk 
         }
 
         for (idx_t output_column = 0; output_column < slots.size(); output_column++) {
-            if (output_column == primary_output || slots[output_column].is_cardinality ||
+			if (output_column == primary_output || slots[output_column].is_cardinality ||
 			    slots[output_column].is_latitude || slots[output_column].is_longitude ||
-                slots[output_column].required_variable_index != required_index) {
-                continue;
-            }
-            auto *duplicate_values = FlatVector::GetData<float>(output.data[output_column]);
+			    slots[output_column].is_valid_time || slots[output_column].required_variable_index != required_index) {
+				continue;
+			}
+			auto *duplicate_values = FlatVector::GetData<float>(output.data[output_column]);
             std::memcpy(duplicate_values, values, static_cast<std::size_t>(count) * sizeof(float));
             auto &duplicate_validity = FlatVector::Validity(output.data[output_column]);
             duplicate_validity.SetAllValid(static_cast<idx_t>(count));
@@ -723,7 +826,8 @@ TableFunction GetReadOmFunction() {
 	function.named_parameters["grid"] = LogicalType::ANY;
 	function.named_parameters["spatial_axes"] = LogicalType::LIST(LogicalType::VARCHAR);
 	function.named_parameters["domain"] = LogicalType::VARCHAR;
-    function.get_virtual_columns = GetReadOmVirtualColumns;
+	function.named_parameters["valid_times"] = LogicalType::LIST(LogicalType::TIMESTAMP);
+	function.get_virtual_columns = GetReadOmVirtualColumns;
     function.projection_pushdown = true;
 	function.filter_pushdown = false;
 	function.filter_prune = false;

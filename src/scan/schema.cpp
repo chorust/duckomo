@@ -54,6 +54,7 @@ BoundSchema BuildBoundSchema(const OmMetadataTree &tree) {
 		variable.canonical_path = array.canonical_path;
 		variable.column_name = array.canonical_path == "/" ? "value" : array.canonical_path.substr(1);
 		variable.inferred_axes = array.inferred_axes;
+		variable.time = array.time;
 		variable.shape = array.shape;
 		variable.chunk_shape = array.chunk_shape;
 		variable.row_count = row_count;

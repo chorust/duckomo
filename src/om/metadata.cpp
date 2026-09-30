@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <cstring>
 #include <limits>
 #include <new>
 #include <sstream>
@@ -160,7 +161,8 @@ std::vector<std::string> ParseCoordinates(const OmVariable_t *variable) {
 
 void Traverse(const OmV3Reader &reader, std::uint64_t offset, std::uint64_t size, const std::string &parent_path,
               bool root_node, bool array_attribute, std::unordered_set<std::uint64_t> &active_offsets,
-              std::unordered_map<std::string, std::vector<std::string>> &coordinates_by_path, OmMetadataTree &tree) {
+              std::unordered_map<std::string, std::vector<std::string>> &coordinates_by_path,
+              std::unordered_map<std::string, OmTimeCoordinate> &time_by_path, OmMetadataTree &tree) {
 	if (!active_offsets.emplace(offset).second) {
 		throw ReaderError(ReaderErrorCode::InvalidMetadata,
 		                  "cycle detected in OM metadata references at file offset " + std::to_string(offset));
@@ -192,7 +194,40 @@ void Traverse(const OmV3Reader &reader, std::uint64_t offset, std::uint64_t size
 	}
 
 	const auto is_array = type >= DATA_TYPE_INT8_ARRAY && type <= DATA_TYPE_STRING_ARRAY;
-	if (type == DATA_TYPE_FLOAT_ARRAY && !array_attribute) {
+	if ((name == "time" && is_array && (array_attribute || type == DATA_TYPE_INT64_ARRAY)) ||
+	    (name == "valid_time" && !is_array && type != DATA_TYPE_NONE)) {
+		OmTimeCoordinate time;
+		if (is_array) {
+			const auto *shape = om_variable_get_dimensions(variable);
+			if (type != DATA_TYPE_INT64_ARRAY || om_variable_get_dimensions_count(variable) != 1 || shape == nullptr) {
+				throw ReaderError(ReaderErrorCode::InvalidMetadata,
+				                  "OM time coordinate must be a one-dimensional Int64 array");
+			}
+			const auto count = CheckedShapeProduct(shape, 1);
+			if (count > std::numeric_limits<std::size_t>::max() / sizeof(std::int64_t)) {
+				throw ReaderError(ReaderErrorCode::Allocation, "OM time coordinate exceeds addressable memory");
+			}
+			time.epoch_seconds.resize(static_cast<std::size_t>(count));
+			OmDecoderState decoder(borrowed);
+			reader.DecodeSelection(decoder, node_path, {0}, {count}, {0}, {count}, time.epoch_seconds.data(),
+			                       count * sizeof(std::int64_t));
+		} else {
+			void *value = nullptr;
+			std::uint64_t value_size = 0;
+			if (type != DATA_TYPE_INT64 || om_variable_get_scalar(variable, &value, &value_size) != ERROR_OK ||
+			    value == nullptr || value_size != sizeof(std::int64_t)) {
+				throw ReaderError(ReaderErrorCode::InvalidMetadata, "OM valid_time must be Int64 UTC Unix seconds");
+			}
+			std::int64_t seconds;
+			std::memcpy(&seconds, value, sizeof(seconds));
+			time.epoch_seconds.push_back(seconds);
+			time.scalar = true;
+		}
+		const auto owner_path = parent_path.empty() ? "/" : parent_path;
+		if (!time_by_path.emplace(owner_path, std::move(time)).second) {
+			throw ReaderError(ReaderErrorCode::InvalidMetadata, "duplicate time coordinates at '" + owner_path + "'");
+		}
+	} else if (type == DATA_TYPE_FLOAT_ARRAY && !array_attribute) {
 		const auto owner = borrowed.MetadataOwner();
 		AddArray(variable, offset, owner->Size(), owner, node_path, tree);
 	} else if (is_array && !array_attribute) {
@@ -242,7 +277,7 @@ void Traverse(const OmV3Reader &reader, std::uint64_t offset, std::uint64_t size
 	}
 	for (std::uint32_t child = 0; child < children_count; child++) {
 		Traverse(reader, child_offsets[child], child_sizes[child], node_path, false,
-		         array_attribute || type != DATA_TYPE_NONE, active_offsets, coordinates_by_path, tree);
+		         array_attribute || type != DATA_TYPE_NONE, active_offsets, coordinates_by_path, time_by_path, tree);
 	}
 }
 
@@ -271,8 +306,23 @@ OmMetadataTree ReadMetadataTree(const OmV3Reader &reader) {
 	OmMetadataTree result;
 	std::unordered_set<std::uint64_t> active_offsets;
 	std::unordered_map<std::string, std::vector<std::string>> coordinates_by_path;
-	Traverse(reader, reader.RootOffset(), reader.RootSize(), "", true, false, active_offsets, coordinates_by_path, result);
+	std::unordered_map<std::string, OmTimeCoordinate> time_by_path;
+	Traverse(reader, reader.RootOffset(), reader.RootSize(), "", true, false, active_offsets, coordinates_by_path,
+	         time_by_path, result);
 	for (auto &array : result.arrays) {
+		auto time_owner_path = array.canonical_path;
+		while (true) {
+			const auto found = time_by_path.find(time_owner_path);
+			if (found != time_by_path.end()) {
+				array.time = found->second;
+				break;
+			}
+			if (time_owner_path == "/") {
+				break;
+			}
+			const auto separator = time_owner_path.find_last_of('/');
+			time_owner_path = separator == 0 ? "/" : time_owner_path.substr(0, separator);
+		}
 		auto owner_path = array.canonical_path;
 		while (true) {
 			const auto found = coordinates_by_path.find(owner_path);

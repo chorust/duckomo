@@ -42,11 +42,11 @@ FROM read_om('/path/to/chunk_4131.om',
 WHERE latitude BETWEEN 49 AND 50;
 ```
 
-绑定会检查所有值变量的有序轴、空间轴长度和文件存在时的 WKT BBOX。额外轴保留在原逻辑行序中，同一网格坐标会在不同时间位置重复；当前不会生成 `time` 等语义列。显式 `grid` 仍限制纬度在 `[-90,90]`。上游的 `meteofrance_wave`、`meteofrance_currents`、`meteofrance_sea_surface_temperature` 末行纬度约为 90.041664°，仅这三个登记 domain 按源数据定义保留该值。
+绑定会检查所有值变量的有序轴、空间轴长度和文件存在时的 WKT BBOX。额外轴保留在原逻辑行序中，同一网格坐标会在不同时间位置重复；文件带 Int64 `time` 坐标数组或标量 `valid_time` 时自动生成 UTC `valid_time TIMESTAMP`；无时间元数据时可显式提供 `valid_times`，详见 [README 有效时间查询](../README.md#有效时间查询)。显式 `grid` 仍限制纬度在 `[-90,90]`。上游的 `meteofrance_wave`、`meteofrance_currents`、`meteofrance_sea_surface_temperature` 末行纬度约为 90.041664°，仅这三个登记 domain 按源数据定义保留该值。
 
 ## 审计方法与完整值对照
 
-对象来自公开桶 `s3://openmeteo/`。审计按目录列出 domain prefix，记录一个对象键；通过 HTTP Range 取文件末尾的 OM 元数据，保持原文件长度，在本地稀疏文件中重建尾部供官方 OM C 元数据 API 与 DuckDB bind 读取。CSV 的 `local_metadata_tail_bytes` 是实际取得的尾部字节数。此方法检查 metadata 和绑定，不读取未下载的值数据；UKMO 样本因元数据较大，尾部扩大到 4 MiB 后绑定成功。
+对象来自公开桶 `s3://openmeteo/`。审计按目录列出 domain prefix，记录一个对象键；通过 HTTP Range 取文件末尾的 OM 元数据，保持原文件长度，在本地稀疏文件中重建尾部供官方 OM C 元数据 API 与 DuckDB bind 读取。CSV 的 `local_metadata_tail_bytes` 是实际取得的尾部字节数。此方法记录的是时间列实现前的 metadata 与绑定检查，不读取未下载的值数据；当前绑定带 `time` 数组的文件还需下载该坐标数组及其 LUT，只有元数据尾部的稀疏文件不能作为时间坐标的验证样本。UKMO 样本因元数据较大，尾部扩大到 4 MiB 后绑定成功。
 
 最初的 `ncep_gfswave025` 全域值校验见 [domain evidence](../specs/002-spatial-pushdown/evidence/domain.md)。另外，CHMI 145,290 行和 GeoSphere 292,248 行样本的坐标分别与独立 Swift Float 公式逐位置对照，最大绝对差约 `2.35e-6` 和 `3.72e-6` 度；`temperature_2m` 与官方 OM C reader 的全量 Float32 位模式逐行一致。这些全量对照是针对两个具体样本，其余登记项的证据范围如上表所述。
 

@@ -13,6 +13,7 @@ set(DUCKOMO_NATIVE_TEST_SOURCES
     raw_reader_test
     lifecycle_test
     schema_test
+    time_test
     projection_evidence_test
     regular_grid_test
     spatial_layout_test

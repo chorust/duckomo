@@ -12,7 +12,12 @@ ProjectionPlan::ProjectionPlan(const BoundSchema &schema, const std::vector<colu
 }
 
 ProjectionPlan::ProjectionPlan(const BoundSchema &schema, const std::vector<column_t> &column_ids,
-                               bool has_spatial_columns) {
+                               bool has_spatial_columns)
+    : ProjectionPlan(schema, column_ids, has_spatial_columns, false) {
+}
+
+ProjectionPlan::ProjectionPlan(const BoundSchema &schema, const std::vector<column_t> &column_ids,
+                               bool has_spatial_columns, bool has_time_column) {
 	output_slots.reserve(column_ids.size());
 	required_variable_ids.reserve(column_ids.size());
 	std::unordered_map<idx_t, idx_t> required_variable_indexes;
@@ -23,6 +28,11 @@ ProjectionPlan::ProjectionPlan(const BoundSchema &schema, const std::vector<colu
 		if (column_id == COLUMN_IDENTIFIER_EMPTY) {
 			slot.is_cardinality = true;
 			has_cardinality_slot = true;
+			output_slots.emplace_back(slot);
+			continue;
+		}
+		if (has_time_column && column_id == schema.variables.size() + (has_spatial_columns ? 2 : 0)) {
+			slot.is_valid_time = true;
 			output_slots.emplace_back(slot);
 			continue;
 		}

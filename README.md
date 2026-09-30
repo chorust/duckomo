@@ -8,7 +8,7 @@ duckomo 是一个 DuckDB C++ 扩展，将本地 [Open-Meteo OM](https://github.c
 - **按需读取**：只读取输出和过滤需要的值变量；安全的经纬度条件可进一步缩小读取范围。
 - **坐标**：可用显式规则网格或 [68 个已登记的 domain](docs/regular-domains.md) 生成 `latitude`、`longitude`。
 
-当前仅支持单个本地文件、单线程扫描。时间等额外轴保留在数据行中，但不生成语义列；远程读取、并行扫描及投影/Gaussian 网格尚未实现。已验证平台为 Linux AArch64，Linux x86_64 支持与验证暂缓。
+当前仅支持单个本地文件、单线程扫描。除经纬度和有效时间外，其他轴不生成语义列；远程读取、并行扫描及投影/Gaussian 网格尚未实现。已验证平台为 Linux AArch64，Linux x86_64 支持与验证暂缓。
 
 ## 构建与加载
 
@@ -39,6 +39,36 @@ SELECT value FROM read_om('test/data/raw.om') ORDER BY value;
 ```
 
 随后加载 `build/versions/v1.5.5/release/extension/duckomo/duckomo.duckdb_extension`。脚本接受 `vX.Y.Z` tag，源码和产物放在 `build/versions/<版本>/`。每个目标 DuckDB 版本需分别编译；脚本成功运行的 SQL 用例是该次构建的兼容性依据。
+
+## `data/`、`data_run/` 与 `data_spatial/` 的读取
+
+三个目录的本地 OM 文件都使用 `read_om()`，不需要指定目录对应的读取模式；读取器根据文件内部元数据解析。远程对象须先下载到本地。
+
+| 目录 | 已审计样本的常见轴与元数据 | 查询经纬度时的参数 |
+|---|---|---|
+| `data_spatial/` | 通常为 `[lat, lon]`，多数带完整 `coordinates` | 通常只需 `domain`；缺少轴元数据时补充 `dimensions` |
+| `data_run/` | 通常为 `[lat, lon, time]`，多数带完整 `coordinates` | 通常只需 `domain`；缺少轴元数据时补充 `dimensions` |
+| `data/` | 可绑定样本缺少 `coordinates` | `domain` + 覆盖每个值变量的完整 `dimensions` |
+
+只读取值时可省略网格参数；多个变量缺少一致有序轴元数据时仍需 `dimensions`。生成经纬度须显式提供 `domain`，或 `grid` + `spatial_axes`；不会从目录、文件名或 shape 推断网格。轴顺序须以具体文件为准，目录名不能代替轴声明。同一经纬度的不同时间位置保留为多行，有时间坐标时追加 `valid_time` 列。
+
+具体 SQL、缺失轴元数据的声明方法、旧版 OM 限制和各 domain 样本覆盖见 [Open-Meteo 规则网格与目录差异](docs/regular-domains.md)。
+
+## 有效时间查询
+
+`data_run` 的 Int64 `time` 坐标数组和 `data_spatial` 的 Int64 标量 `valid_time` 按 UTC Unix 秒解析，自动追加 `valid_time TIMESTAMP`。数组逐位置映射到声明的 `time` 轴，保留实际时间间隔；标量用于整个空间快照。时间列不依赖 `domain`，也可单独查询：
+
+```sql
+SELECT value, latitude, longitude, valid_time
+FROM read_om('build/s3-samples/data_run/ncep_gfs025/2026/09/28/0000Z/cloud_cover_50hPa.om',
+  domain := 'ncep_gfs025')
+WHERE latitude BETWEEN 30 AND 40 AND longitude BETWEEN 110 AND 120
+  AND valid_time = TIMESTAMP '2026-09-28 03:00:00';
+```
+
+该路径需先下载对应文件。`TIMESTAMP` 列按 UTC 解释，不随会话时区转换。时间条件由 DuckDB 执行，当前不缩小 OM 时间轴的读取范围。
+
+缺少时间元数据时，可通过 `valid_times := [TIMESTAMP '...', ...]` 显式提供每个时间位置的 UTC 时间；长度必须匹配 `time` 轴，缺少轴元数据时还需 `dimensions`。无 `time` 轴的空间快照可传一个时间。列表必须非空、无 NULL 且时间有限；不能覆盖文件已有的不同时间坐标。既无时间元数据也未提供 `valid_times` 的文件保持原有输出，不从路径或起报时间猜测有效时间。
 
 ## 多变量查询
 

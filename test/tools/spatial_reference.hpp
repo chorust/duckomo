@@ -159,11 +159,13 @@ inline std::pair<double, double> IndependentDomainCoordinate(std::uint64_t logic
 
 inline void CompareDomainResult(duckdb::MaterializedQueryResult &result,
 	                            const std::array<std::vector<float>, 15> &references) {
-	Require(result.ColumnCount() == 17, "domain query must return 15 values and two coordinate columns");
+	Require(result.ColumnCount() == 18, "domain query must return 15 values, two coordinates, and valid_time");
 	Require(result.RowCount() == DOMAIN_ROWS, "domain query returned an unexpected full-grid row count");
 	std::uint64_t logical_index = 0;
 	while (auto chunk = result.Fetch()) {
 		for (duckdb::idx_t row = 0; row < chunk->size(); row++, logical_index++) {
+			Require(chunk->GetValue(17, row).ToString() == "2026-10-02 03:00:00",
+			        "domain valid_time differs from the pinned spatial snapshot");
 			const auto coordinate = IndependentDomainCoordinate(logical_index);
 			const auto latitude = chunk->GetValue(15, row).GetValue<double>();
 			const auto longitude = chunk->GetValue(16, row).GetValue<double>();

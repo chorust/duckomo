@@ -152,14 +152,19 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 	}
 
 	const auto type = om_variable_get_type(variable);
-	if (type != DATA_TYPE_FLOAT_ARRAY) {
-		throw ReaderError(ReaderErrorCode::UnsupportedDataType, "OM decoder only supports Float32 arrays");
+	if (type != DATA_TYPE_FLOAT_ARRAY && type != DATA_TYPE_INT64_ARRAY) {
+		throw ReaderError(ReaderErrorCode::UnsupportedDataType,
+		                  "OM decoder only supports Float32 values and Int64 time coordinates");
 	}
 	const auto compression = om_variable_get_compression(variable);
-	if (compression != COMPRESSION_FPX_XOR2D && compression != COMPRESSION_PFOR_DELTA2D_INT16) {
-		throw ReaderError(ReaderErrorCode::UnsupportedCompression,
-		                  "OM decoder only supports FPX_XOR2D and PFOR_DELTA2D_INT16 compression");
+	if ((type == DATA_TYPE_FLOAT_ARRAY && compression != COMPRESSION_FPX_XOR2D &&
+	     compression != COMPRESSION_PFOR_DELTA2D_INT16) ||
+	    (type == DATA_TYPE_INT64_ARRAY && compression != COMPRESSION_PFOR_DELTA2D)) {
+		throw ReaderError(
+		    ReaderErrorCode::UnsupportedCompression,
+		    "OM decoder requires FPX_XOR2D/PFOR_DELTA2D_INT16 for values or PFOR_DELTA2D for time coordinates");
 	}
+	const auto element_size = type == DATA_TYPE_INT64_ARRAY ? sizeof(std::int64_t) : sizeof(float);
 
 	const auto rank = om_variable_get_dimensions_count(variable);
 	if (rank == 0 || rank > OM_MAX_RANK || read_offset.size() != rank || read_count.size() != rank ||
@@ -175,8 +180,8 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 	const auto dimension_count = static_cast<std::size_t>(rank);
 	const auto dimension_product = CheckedShapeProduct(dimensions, dimension_count);
 	const auto chunk_product = CheckedShapeProduct(chunks, dimension_count);
-	CheckedByteSize(chunk_product, sizeof(float), "OM chunk scratch");
-	CheckedByteSize(CheckedShapeProduct(cube_dimensions), sizeof(float), "OM decoder output");
+	CheckedByteSize(chunk_product, element_size, "OM chunk scratch");
+	CheckedByteSize(CheckedShapeProduct(cube_dimensions), element_size, "OM decoder output");
 
 	for (std::size_t axis = 0; axis < dimension_count; axis++) {
 		if (dimensions[axis] == 0 || chunks[axis] == 0 || chunks[axis] > dimensions[axis]) {
@@ -196,8 +201,8 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 	if (dimension_product == 0 || chunk_product == 0) {
 		throw ReaderError(ReaderErrorCode::InvalidShape, "OM dimensions and chunks must have a positive product");
 	}
-	const auto required_output_bytes = CheckedByteSize(CheckedShapeProduct(cube_dimensions), sizeof(float),
-	                                                    "OM decoder output");
+	const auto required_output_bytes =
+	    CheckedByteSize(CheckedShapeProduct(cube_dimensions), element_size, "OM decoder output");
 	if (output == nullptr || output_bytes < required_output_bytes) {
 		throw ReaderError(ReaderErrorCode::InvalidSelection, "OM decoder output buffer is smaller than its cube");
 	}
@@ -227,7 +232,7 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 	}
 
 	const auto scratch_size = om_decoder_read_buffer_size(&state.decoder);
-	const auto checked_scratch_size = CheckedByteSize(chunk_product, sizeof(float), "OM chunk scratch");
+	const auto checked_scratch_size = CheckedByteSize(chunk_product, element_size, "OM chunk scratch");
 	if (scratch_size == 0 || scratch_size != checked_scratch_size ||
 	    scratch_size > static_cast<std::uint64_t>(std::numeric_limits<std::size_t>::max())) {
 		throw ReaderError(ReaderErrorCode::Allocation, "OM decoder reported an invalid chunk scratch size");

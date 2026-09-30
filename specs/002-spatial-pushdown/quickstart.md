@@ -60,7 +60,7 @@ FROM read_om('test/data/spatial_flat.om',
 GROUP BY latitude,longitude ORDER BY latitude,longitude;
 ```
 
-输出为六组，每组 count=2；无 sample/time 语义列。lat_fastest、反向轴及额外轴在中/后位置的对照由 native/SQL 验收集覆盖。对于分离轴，spatial_axes 始终按纬度轴、经度轴填写，文件实际轴位置由 dimensions 确定。
+输出为六组，每组 count=2；无 sample 语义列；带时间坐标的文件可输出 `valid_time`，见 [有效时间查询](../../README.md#有效时间查询)。lat_fastest、反向轴及额外轴在中/后位置的对照由 native/SQL 验收集覆盖。对于分离轴，spatial_axes 始终按纬度轴、经度轴填写，文件实际轴位置由 dimensions 确定。
 
 ## 真实 domain
 

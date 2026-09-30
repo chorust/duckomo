@@ -8,7 +8,7 @@ duckomo is a DuckDB C++ extension that queries Float32 arrays in local [Open-Met
 - **Selective reads**: reads only value variables needed by output and filters; safe geographic predicates can further narrow the scan.
 - **Coordinates**: generates `latitude` and `longitude` from an explicit regular grid or [68 registered domains](docs/regular-domains.md).
 
-Currently supports one local file and a single scan thread. Extra axes such as time remain in the rows, but have no generated semantic columns. Remote reads, parallel scans, and projected/Gaussian grids are not implemented. Linux AArch64 is the validated platform; Linux x86_64 support and validation are deferred.
+Currently supports one local file and a single scan thread. Axes other than latitude, longitude, and valid time have no generated semantic columns. Remote reads, parallel scans, and projected/Gaussian grids are not implemented. Linux AArch64 is the validated platform; Linux x86_64 support and validation are deferred.
 
 ## Build and load
 
@@ -39,6 +39,36 @@ The repository pins DuckDB **v1.5.4**. The extension can also be loaded by an of
 ```
 
 Then load `build/versions/v1.5.5/release/extension/duckomo/duckomo.duckdb_extension`. The script accepts a `vX.Y.Z` tag and stores source and artifacts in `build/versions/<version>/`. Each target DuckDB version needs its own build; passing the script's SQL tests provides compatibility evidence for that build.
+
+## Reading `data/`, `data_run/`, and `data_spatial/`
+
+Local OM files from all three directories use `read_om()` without a directory-specific read mode. The reader parses the file's internal metadata. Download remote objects locally first.
+
+| Directory | Typical axes and metadata in audited samples | Parameters for latitude/longitude queries |
+|---|---|---|
+| `data_spatial/` | Usually `[lat, lon]`; most have complete `coordinates` | Usually just `domain`; add `dimensions` when axis metadata is missing |
+| `data_run/` | Usually `[lat, lon, time]`; most have complete `coordinates` | Usually just `domain`; add `dimensions` when axis metadata is missing |
+| `data/` | Bindable samples lack `coordinates` | `domain` + complete `dimensions` covering every value array |
+
+Value-only queries can omit grid parameters; multiple arrays without matching ordered axis metadata still require `dimensions`. Generating coordinates requires an explicit `domain`, or `grid` + `spatial_axes`; the grid is never inferred from the directory, filename, or shape. Use the actual file's axis order; directory names cannot replace axis declarations. Different time positions at the same coordinates remain separate rows; files with time coordinates append `valid_time`.
+
+See [Open-Meteo regular grids and directory differences](docs/regular-domains.md) for SQL examples, missing-axis declarations, older OM format limits, and sample coverage by domain.
+
+## Query valid time
+
+Int64 `time` coordinate arrays in `data_run` and Int64 scalar `valid_time` metadata in `data_spatial` are interpreted as UTC Unix seconds and automatically append `valid_time TIMESTAMP`. Arrays map to the declared `time` axis and preserve the actual intervals; scalars apply to the entire spatial snapshot. Time columns also work without `domain`:
+
+```sql
+SELECT value, latitude, longitude, valid_time
+FROM read_om('build/s3-samples/data_run/ncep_gfs025/2026/09/28/0000Z/cloud_cover_50hPa.om',
+  domain := 'ncep_gfs025')
+WHERE latitude BETWEEN 30 AND 40 AND longitude BETWEEN 110 AND 120
+  AND valid_time = TIMESTAMP '2026-09-28 03:00:00';
+```
+
+Download the corresponding file first. The `TIMESTAMP` column represents UTC without session-timezone conversion. DuckDB applies time filters; they do not currently narrow reads along the OM time axis.
+
+When time metadata is missing, supply a UTC timestamp for each time position with `valid_times := [TIMESTAMP '...', ...]`. Its length must match the `time` axis; missing axis metadata also requires `dimensions`. Spatial snapshots without a `time` axis accept a single timestamp. The list must be nonempty with finite, non-NULL timestamps and cannot override conflicting file time coordinates. Files without time metadata or explicit `valid_times` retain their existing output; valid time is never guessed from paths or forecast reference time.
 
 ## Query multiple variables
 

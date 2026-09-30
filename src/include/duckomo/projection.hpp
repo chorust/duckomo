@@ -9,13 +9,14 @@
 namespace duckdb {
 namespace duckomo {
 
-// An output slot either refers to one metadata variable or to DuckDB's
-// internal empty column, which carries cardinality without reading a value
-// array. Physical-variable indexes address ProjectionPlan::RequiredVariableIds.
+// An output slot refers to a value variable, a synthetic coordinate/time, or
+// DuckDB's internal empty column carrying cardinality. Only physical value
+// variables address ProjectionPlan::RequiredVariableIds.
 struct ProjectionOutputSlot final {
 	bool is_cardinality = false;
 	bool is_latitude = false;
 	bool is_longitude = false;
+	bool is_valid_time = false;
 	idx_t variable_index = DConstants::INVALID_INDEX;
 	idx_t required_variable_index = DConstants::INVALID_INDEX;
 };
@@ -27,6 +28,8 @@ class ProjectionPlan final {
 public:
 	ProjectionPlan(const BoundSchema &schema, const std::vector<column_t> &column_ids);
 	ProjectionPlan(const BoundSchema &schema, const std::vector<column_t> &column_ids, bool has_spatial_columns);
+	ProjectionPlan(const BoundSchema &schema, const std::vector<column_t> &column_ids, bool has_spatial_columns,
+	               bool has_time_column);
 
 	const std::vector<ProjectionOutputSlot> &GetOutputSlots() const {
 		return output_slots;
