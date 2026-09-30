@@ -1,98 +1,66 @@
-# duckomo 产品与接口 Spec
+# duckomo 接口说明
 
-状态：2026-09-28。Phase 0–2 本地扫描器已实现，并在 Linux AArch64 验证；计划目标 Linux x86_64 尚无运行证据。以下区分现有接口与后续目标。详见 [最终验收记录](../specs/001-local-om-scanner/evidence/final.md)。
+当前实现覆盖本地扫描、列裁剪和规则网格空间查询（Phase 0–3）。[README](../README.md) 提供最小示例；参数与错误的完整约定见 [空间 SQL 契约](../specs/002-spatial-pushdown/contracts/sql-interface.md) 和 [基础读取契约](../specs/001-local-om-scanner/contracts/sql-interface.md)。
 
-## 1. 目标
+## 支持范围
 
-让 DuckDB 把 Open-Meteo OM 文件作为可局部读取的多维气象数据源。用户直接运行 SQL，无需先经 Python/NumPy 转成 NetCDF 或 Parquet。最终目标是 **query-aware scanner**：
+| 项目 | 当前行为 |
+|---|---|
+| 输入 | 单个本地普通文件；不接受远程 URI、目录、glob 或文件列表 |
+| 格式 | OM v3；Float32；FPX_XOR2D / PFOR_DELTA2D_INT16 |
+| 布局 | 根数组、层级值数组及附属元数据；rank 1–8，不接受零长度轴 |
+| 多变量 | shape 和有序轴身份一致；不自动转置、广播或连接 |
+| 缺测与精度 | NaN → SQL NULL；保留 ±Inf；值与官方 Float32 解码结果精确一致 |
+| 空间坐标 | 显式规则经纬度网格或 68 个登记 domain |
+| 扫描 | 单线程；列裁剪和安全的空间范围选择 |
+| 尚未实现 | 时间/层次/成员等语义列、投影/Gaussian 网格、远程读取、并行扫描、科学计算算子 |
 
-```text
-SQL 投影和谓词
-  → 变量与维度选择
-  → OM 逻辑索引/切片
-  → 官方 OM reader 的 chunk/LUT/局部读取/解压
-  → DuckDB Vector/DataChunk
-```
-
-目前变量投影已能减少物理读取和解压；地理区域、时间范围对应的局部读取仍属于后续阶段。
-
-## 2. SQL API：当前实现与后续目标
-
-当前入口为 `read_om(path VARCHAR, dimensions MAP(VARCHAR, VARCHAR[]) := NULL)`，另有单根数组验证入口 `read_om_raw(path VARCHAR)`。均只接受本地单个文件。下面是可在仓库 fixture 上执行的查询：
-
-```sql
-SELECT value FROM read_om('test/data/raw.om') ORDER BY value;
-
-SELECT "temperature"
-FROM read_om('test/data/multi.om', dimensions := map(
-  ['humidity', 'temperature'],
-  [['row', 'column'], ['row', 'column']]
-))
-WHERE "humidity" >= 103;
-```
-
-`domain` 参数和语义坐标列尚未实现。未来计划在可靠的映射可用后支持 `domain`、经纬度与时间筛选；远程路径属于 Phase 5。
-
-### Phase 0–2 的首批接口子集
-
-本地扫描器的实现与证据见 [实现计划](../specs/001-local-om-scanner/plan.md)、[SQL 契约](../specs/001-local-om-scanner/contracts/sql-interface.md) 和 [Phase 0–2 验收记录](../specs/001-local-om-scanner/evidence/)。当前 `read_om` 支持 OM v3、Float32 数组及 FPX_XOR2D、PFOR_DELTA2D_INT16 压缩，也可读取数组上的附属元数据。旧版本、其他值数组类型或压缩、非法布局及零长度轴均明确拒绝。NaN 映射为 NULL。
-
-OM 基础数组元数据没有通用轴身份，因此多变量不能仅凭相同 shape 对齐。若文件的 `coordinates` 元数据给出相同的有序轴名且值数组 shape 相同，`read_om` 可自动对齐；否则用 `dimensions MAP(VARCHAR, VARCHAR[])` 逐变量显式声明。轴声明只提供逻辑对齐证据，不生成坐标；本地扫描子集不支持 `domain` 映射。根数组输出 `value`，层级数组列名不带前导 `/`，详见 SQL 契约。
-
-`read_om_raw(path)` 是 Phase 0 的单变量验证入口，仍限于 FPX 根数组。`read_om(path, dimensions := NULL)` 可读取单数组以及具备一致有序 `coordinates` 元数据的多数组；其他多数组需完整的 `dimensions` 映射。查询只投影实际需要的值变量；由 DuckDB 执行普通过滤，过滤引用的变量仍会作为扫描依赖读取。`COUNT(*)` 可仅读取 metadata 来输出 cardinality，不读取索引或值数组。实际读取和解码计数以及限制见 [Phase 2 证据](../specs/001-local-om-scanner/evidence/phase2.md)。
-
-### 当前行和列的语义
-
-- 每行表示选中变量在同一组逻辑索引处的值，最后一轴变化最快；不承诺未指定 `ORDER BY` 时的 SQL 结果顺序。
-- Bind 读取 OM hierarchy、变量名、类型、shape 和 chunk 元数据，产生稳定的 `DESCRIBE` 模式。根数组列名为 `value`；层级数组列名如 `temperature` 或 `"surface/temperature"`。
-- 目前不生成 `latitude`、`longitude`、`time`、`level` 等语义坐标列。引用不存在的坐标列会由 DuckDB 正常报绑定错误；`dimensions` 仅声明轴身份，不生成坐标。
-
-### 后续目标用法
-
-以下 SQL 仅用于说明后续接口方向，`domain` 和经纬度列尚未实现：
-
-```sql
-SELECT temperature_2m
-FROM read_om('test.om', domain := 'example_domain')
-WHERE latitude BETWEEN 30 AND 40
-  AND longitude BETWEEN 110 AND 120;
-```
-
-### 下推的正确性：投影已实现，谓词仍在规划
-
-- **Projection pushdown**：只解码查询需要的变量；用于过滤或构造输出的维度信息也必须保留。
-- **Filter pushdown**：将可识别的经纬度、时间、层次、成员等谓词转成 OM 逻辑选择。无法安全转换的谓词交由 DuckDB 正常计算；不能因优化漏掉满足条件的行。
-- 网格选择可以返回覆盖目标的候选索引；候选行仍需经过精确谓词检查，避免边界、浮点、跨经线、投影或 Gaussian 网格产生额外结果。
-- 空选择不触发数据块读取。谓词下推不可用时，结果正确性优先于局部读取性能，且行为必须可观测。
-- 对 `filter_pushdown`/`filter_prune` 的启用要以所锁定 DuckDB 版本的集成测试为准，尤其检查残余过滤是否保留以及过滤列是否被过早裁剪。
-
-## 3. 后续 v1 范围
-
-Phase 0–2 已完成本地扫描、层级变量和列裁剪。下一条纵向切片是：
+## 参数
 
 ```text
-local OM file
-  → DuckDB C++ table function
-  → 已实现的 bind/scan 与列裁剪
-  → RegularGrid 经纬度映射
-  → SQL bbox 谓词下推
-  → 官方 OM C reader partial read
-  → DataChunk
+read_om(path, dimensions := NULL, grid := NULL,
+        spatial_axes := NULL, domain := NULL)
 ```
 
-之后逐步加入时间/层次/预报维度、Gaussian 与投影网格、远程 I/O 和并行扫描，顺序见 [Roadmap](roadmap.md)。
+参数在绑定时确定；可选参数显式 `NULL` 等同省略。
 
-扫描器核心不重新解析 OM 二进制，不重写压缩或 chunk/byte-range 规划，也不自建 HTTP/S3 客户端。插值、重网格与科学算子属于独立的后续阶段。
+| 参数 | 类型与用途 |
+|---|---|
+| `path` | 非 NULL 的常量 `VARCHAR` 本地文件路径 |
+| `dimensions` | `MAP(VARCHAR, VARCHAR[])`；为每个值变量声明完整有序轴名 |
+| `grid` | 包含且仅包含 `nx, ny, lat0, lon0, dlat, dlon, order` 的 STRUCT |
+| `spatial_axes` | `VARCHAR[]`；指定显式 grid 的空间轴身份 |
+| `domain` | `VARCHAR`；显式选择登记网格，名称精确且区分大小写 |
 
-## 4. 非功能要求与验收
+多变量可使用文件中一致的 `coordinates` 元数据自动对齐。缺少这些元数据时必须提供完整 `dimensions`，键可用列名或内部绝对路径。声明不得与已有轴元数据冲突；相同 shape 本身不能证明轴身份。单数组普通读取可省略轴名，空间查询仍需完整轴身份。
 
-每一阶段同时验证两件事：
+空间配置有两种方式：
 
-1. **结果正确**：与官方 OM reader 或经人工确认的 fixture 对照，覆盖边界、空结果、维度顺序和缺测值。
-2. **物理读取正确**：记录 bytes fetched、read requests、chunks decoded、耗时与峰值内存。窄区域/单变量查询应读取和解压明显少于全域/全部变量查询；不能仅在输出端过滤。
+- **显式 grid**：须同时提供 `spatial_axes`。`nx` / `ny` 为正整数；起点、非零步长须有限。`order='separate'` 使用 `[纬度轴名, 经度轴名]`；`lon_fastest` / `lat_fastest` 使用一个展平轴名。
+- **登记 domain**：使用固定网格和 `lat` / `lon` 轴身份，不接受额外 `grid` 或 `spatial_axes`。检查全部值变量的空间轴长度及文件中存在的 WKT BBOX；不从文件路径自动识别。名称、来源和样本覆盖见 [规则网格 domain](regular-domains.md)。
 
-对于远程文件，指标应从实际文件系统请求或 reader instrumentation 获得。性能门槛在有稳定 fixture 后设定，不在此凭空指定数值。
+## 输出与查询语义
 
-## 5. Phase 7 的扩展方向
+根数组输出 `value FLOAT`；层级值列去掉内部路径的前导 `/`，按内部规范路径排序。嵌套列如 `surface/temperature` 需用双引号引用。附属元数据不生成值列。完整命名规则见基础读取契约。
 
-科学数组能力与扫描入口分离，候选接口为 `om_slice()`、`om_reduce()`、`om_interp()`、`om_regrid()`。xtensor 只作为已解码数据块的可选 N-D 计算后端；普通 `read_om()` 数据流直接进入 DuckDB Vector。重网格可蒸馏 `om-exporter` 的转换经验，但不进入 scanner core。
+有 grid/domain 时，在值列后追加非 NULL 的 `latitude DOUBLE`、`longitude DOUBLE`；与原列名称冲突时拒绝绑定。没有空间配置时只输出值列，`coordinates` 或 `dimensions` 本身不会生成坐标列。
+
+经度统一为 `[-180,180)`。显式 grid 纬度须在 `[-90,90]`；仅三个登记的 MeteoFrance 海洋 domain 按上游定义保留末行约 90.041664° 的纬度。额外轴参与原数组的逻辑索引，同一坐标可对应多行，但不生成 `time` 等列。无 `ORDER BY` 时不承诺 SQL 结果顺序。
+
+有限常量的 `=`, `<`, `<=`, `>`, `>=`, `BETWEEN` 和安全 `AND` 可缩小候选范围。DuckDB 始终执行完整 `WHERE`，保证精确结果。混合 `AND` 可使用独立的安全条件；`OR`、函数、转换及无法证明安全的条件可回退到全域候选。
+
+跨经线范围使用 `longitude >= 170 OR longitude < -170`。普通 `BETWEEN 170 AND -170` 返回空，不隐式环绕。
+
+## 读取成本与失败行为
+
+列裁剪保留输出及过滤依赖，重复引用的值变量只解码一次。仅坐标、纯空间 `COUNT(*)` 和可证明的空选择不读取值数组的 index/data；仍可能读取元数据。区域读取节省取决于 OM 块布局，不能只凭返回行数或 `EXPLAIN` 判断。流程和计量见 [技术架构](architecture.md)。
+
+参数、格式、轴、shape、网格和名称冲突在返回行前报告。扫描中的损坏或取消使整个查询失败；释放资源后可继续执行有效查询。
+
+`read_om_raw(path)` 是早期验证入口，仅支持 OM v3 Float32 / FPX 根数组，输出 `value FLOAT`；日常查询使用 `read_om`。
+
+## 验证范围
+
+实际验收平台为 Linux AArch64，Linux x86_64 支持与验证暂缓。原空间门禁覆盖合成样本、真实 `ncep_gfswave025` 全域坐标与 15 个官方值参考、读取指标和独立复现。后续扩展的 68 个 domain 以元数据样本核对为主，不能据此声明所有对象均可读；详情见 [domain 样本覆盖](regular-domains.md)。
+
+复现步骤见 [空间查询指南](../specs/002-spatial-pushdown/quickstart.md)，已记录结果见 [最终验收](../specs/002-spatial-pushdown/evidence/final.md)。未来能力见 [Roadmap](roadmap.md)。

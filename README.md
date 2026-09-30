@@ -2,39 +2,25 @@
 
 中文 | [English](README.en.md)
 
-duckomo 是一个 DuckDB C++ 扩展，可直接读取本地 [Open-Meteo OM](https://github.com/open-meteo/om-file-format) 文件中的 Float32 数组，并将其作为 SQL 表查询。当前 `read_om` 支持 OM v3、FPX_XOR2D 与 PFOR_DELTA2D_INT16 压缩、带附属元数据的层级变量和列裁剪；只读取查询需要的值变量。`read_om_raw` 是用于单根数组的早期验证入口，常规查询请使用 `read_om`。
+duckomo 是一个 DuckDB C++ 扩展，将本地 [Open-Meteo OM](https://github.com/open-meteo/om-file-format) 文件中的 Float32 数组直接作为 SQL 表查询，无需先转换格式。
 
-目前仅支持本地文件，不生成经纬度或时间坐标列；空间、时间条件下推、远程读取和并行扫描仍在规划中。完整的文件格式和 SQL 限制见 [SQL 接口契约](specs/001-local-om-scanner/contracts/sql-interface.md)。
+- **读取**：支持 OM v3、FPX_XOR2D / PFOR_DELTA2D_INT16 压缩、根数组和层级变量；NaN 转为 SQL `NULL`。
+- **按需读取**：只读取输出和过滤需要的值变量；安全的经纬度条件可进一步缩小读取范围。
+- **坐标**：可用显式规则网格或 [68 个已登记的 domain](docs/regular-domains.md) 生成 `latitude`、`longitude`。
 
-## 安装
+当前仅支持单个本地文件、单线程扫描。时间等额外轴保留在数据行中，但不生成语义列；远程读取、并行扫描及投影/Gaussian 网格尚未实现。已验证平台为 Linux AArch64，Linux x86_64 支持与验证暂缓。
 
-目前从源码构建并加载扩展。需要支持 C11 和 C++17 的编译器、CMake、Make、Git，以及构建 DuckDB 所需的依赖。仓库通过 submodule 固定 DuckDB、extension-ci-tools 和 OM C 库版本；请在仓库根目录执行：
+## 构建与加载
+
+需要 C11 / C++17 编译器、CMake、Make、Git 和 DuckDB 的构建依赖。在仓库根目录执行：
 
 ```sh
 git submodule update --init --recursive
 make release
-```
-
-构建产物为 `build/release/duckdb` 和 `build/release/extension/duckomo/duckomo.duckdb_extension`。该扩展针对仓库固定的 DuckDB v1.5.4 构建，也可加载到同版本、同平台的官方 DuckDB 安装中；本地构建的扩展未签名，CLI 需使用 `-unsigned`。随构建生成的 CLI 只是方便核对版本的开发工具。
-
-如需为指定的 DuckDB 正式版本单独构建并运行 SQL 用例，执行（以 v1.5.5 为例）：
-
-```sh
-./scripts/build-version.sh v1.5.5
-duckdb -unsigned :memory:
-```
-
-上述示例要求安装的 `duckdb` 是 v1.5.5。在 CLI 中执行 `LOAD 'build/versions/v1.5.5/release/extension/duckomo/duckomo.duckdb_extension';` 即可加载对应扩展。脚本不设置版本白名单：对指定的 `vX.Y.Z` tag，分别获取源码、构建扩展并运行 SQL 用例。源码和产物放在 `build/versions/<版本>/`，不会切换仓库固定的子模块。C++ 扩展需与目标 DuckDB 版本分别编译；遇到实际不兼容问题时再修复或明确限制。
-
-## 使用
-
-从仓库根目录启动同版本的 DuckDB CLI（官方安装或随构建生成的均可）。`-unsigned` 允许加载本地构建的未签名扩展；以下示例使用仓库固定的 v1.5.4：
-
-```sh
 ./build/release/duckdb -unsigned :memory:
 ```
 
-加载扩展并读取单根数组：
+在 CLI 中加载扩展并查询仓库样本：
 
 ```sql
 LOAD 'build/release/extension/duckomo/duckomo.duckdb_extension';
@@ -43,45 +29,90 @@ DESCRIBE SELECT * FROM read_om('test/data/raw.om');
 SELECT value FROM read_om('test/data/raw.om') ORDER BY value;
 ```
 
-多变量文件若有一致的 `coordinates` 元数据且形状相同，可直接读取；其他文件需要为**每个变量**声明完整且一致的有序轴名。列名不带前导 `/`，嵌套列名中的 `/` 仍需用双引号引用：
+输出为 `value FLOAT` 列，值为 `0` 到 `5`。以上路径均相对于仓库根目录。
+
+仓库固定 DuckDB **v1.5.4**。扩展也可加载到同版本、同平台的官方 DuckDB 中；本地扩展未签名，CLI 需加 `-unsigned`。为其他正式版本构建并运行 SQL 用例：
+
+```sh
+./scripts/build-version.sh v1.5.5
+./build/versions/v1.5.5/release/duckdb -unsigned :memory:
+```
+
+随后加载 `build/versions/v1.5.5/release/extension/duckomo/duckomo.duckdb_extension`。脚本接受 `vX.Y.Z` tag，源码和产物放在 `build/versions/<版本>/`。每个目标 DuckDB 版本需分别编译；脚本成功运行的 SQL 用例是该次构建的兼容性依据。
+
+## 多变量查询
+
+同形状且带一致有序 `coordinates` 元数据的变量可自动对齐。否则，须通过 `dimensions` 为**每个值变量**声明完整且一致的有序轴名：
 
 ```sql
 SELECT temperature
-FROM read_om(
-  'test/data/multi.om',
+FROM read_om('test/data/multi.om',
   dimensions := map(
     ['humidity', 'temperature'],
     [['row', 'column'], ['row', 'column']]
-  )
-)
+  ))
 WHERE humidity >= 103
 ORDER BY temperature;
 ```
 
-上例返回 `3`、`4`、`5`。`dimensions` 中的轴名用于核对数组对齐，不会生成 `row` 或 `column` 列。真实 `data_spatial` 文件的 `coordinates = 'lat lon'` 可用于同形状变量的自动对齐；它也不会生成坐标列。列裁剪会减少未使用变量的读取；普通 `WHERE` 过滤仍由 DuckDB 执行，不会缩小数组的读取范围。NaN 映射为 SQL `NULL`。也可用 `read_om_raw('test/data/raw.om')` 读取单根数组。
+结果为 `3`、`4`、`5`。虽然 `humidity` 不在输出中，它仍是过滤所需的变量。`dimensions` 用于校验对齐，不生成 `row` / `column` 列，也不能覆盖文件已有的不同轴声明。嵌套列名如 `surface/temperature` 需用双引号引用。
 
-## 架构
+## 经纬度查询
 
-```text
-SQL → read_om table function → 元数据与 schema / 列选择
-    → 本地文件适配器 → 官方 OM C reader → DuckDB DataChunk
+提供完整网格和空间轴身份后，值列后会追加 `latitude DOUBLE`、`longitude DOUBLE`。以下为 `raw.om` 显式赋予一个 3×2 演示网格：
+
+```sql
+SELECT value, latitude, longitude
+FROM read_om('test/data/raw.om',
+  dimensions := map(['value'], [['lat', 'lon']]),
+  grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0,
+           'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+  spatial_axes := ['lat', 'lon'])
+WHERE latitude >= 11 AND longitude < 104
+ORDER BY latitude, longitude;
 ```
 
-- `src/scan/`：绑定参数、校验变量及维度、规划列选择并输出 DuckDB 数据块。
-- `src/om/`：通过 DuckDB 文件系统读取本地文件，调用官方 OM C reader 解析元数据和解码数组。
-- `third_party/om-file-format/`：固定版本的官方 OM 格式实现。
+返回 `(3, 11, 100)`、`(4, 11, 102)`。`lat0` / `lon0` 是起点，`dlat` / `dlon` 是步长；展平空间轴也可使用 `lon_fastest` 或 `lat_fastest` 布局，见 [空间查询指南](specs/002-spatial-pushdown/quickstart.md)。
 
-当前扫描为单线程。OM reader 负责 chunk、字节请求和解码；DuckDB 负责 SQL 过滤。设计与后续阶段见 [技术架构](docs/architecture.md) 和 [Roadmap](docs/roadmap.md)。
+对于已下载到本地的 Open-Meteo 文件，可指定登记的网格：
 
-## 开发
+```sql
+SELECT wave_height, latitude, longitude
+FROM read_om('/path/to/local-gfswave.om', domain := 'ncep_gfswave025')
+WHERE latitude BETWEEN 30 AND 40 AND longitude BETWEEN 110 AND 120;
+```
 
-在仓库根目录使用以下命令：
+此例要求文件符合该 domain 的网格定义，并含 `wave_height` 变量。`domain` 名称是 AWS 对象键中 `data/`、`data_run/` 或 `data_spatial/` 后的 prefix；必须显式指定，不从路径或 shape 推断。
+
+缺少 `coordinates` 时仍需完整 `dimensions`；`coordinates = 'lat lon'` 本身也不足以定义地理网格。名称、轴、shape 和文件中存在的 WKT BBOX 会在返回数据前校验。样本下载、目录差异和兼容范围见 [规则网格 domain](docs/regular-domains.md)。
+
+经度统一为 `[-180,180)`。有限常量的 `=`, `<`, `<=`, `>`, `>=`, `BETWEEN` 和安全的 `AND` 可缩小扫描；完整 `WHERE` 始终由 DuckDB 执行。跨经线区域写为：
+
+```sql
+WHERE longitude >= 170 OR longitude < -170
+```
+
+`OR` 及无法安全分析的表达式保留 SQL 过滤，可能读取全域。实际读取节省取决于 OM 块布局；仅坐标、纯空间 `COUNT(*)` 和可证明的空选择不读取值数组。
+
+## 开发与验证
 
 ```sh
-make release                         # 构建 CLI、扩展和开发工具
-make test                            # SQL、原生检查和投影验证
-./scripts/validate.sh build/release  # SQL、fixture、校验和及读取指标的完整验证
+make test                            # 构建 release 并执行 validate.sh
+./scripts/validate.sh build/release   # 验证已有构建：SQL/native、样本重生与哈希、投影读取指标
 make sanitizer-test                  # ASan/UBSan 检查
 ```
 
-`validate.sh` 额外需要 `jq`、`sha256sum`、`diff` 和 `mktemp`，验证证据写入 `build/evidence/`。SQL 用例在 `test/sql/`，原生检查在 `test/native/`，可复现的 OM 样本在 `test/data/`。构建和验证细节见 [Quickstart](specs/001-local-om-scanner/quickstart.md)；已有验证记录见 [evidence](specs/001-local-om-scanner/evidence/)。
+`validate.sh` 还需 `jq`、`sha256sum`、`diff`、`mktemp`，证据默认写入 `build/evidence/`。设置 `DUCKOMO_DOMAIN_FILE=/path/to/pinned.om` 可额外运行真实样本的完整空间验证；所需样本与哈希见 [空间查询指南](specs/002-spatial-pushdown/quickstart.md)。已有 AArch64 结果和独立复现见 [验收记录](specs/002-spatial-pushdown/evidence/final.md)。
+
+## 文档与源码
+
+| 内容 | 入口 |
+|---|---|
+| 参数、输出、支持范围 | [接口说明](docs/spec.md) · [完整 SQL 契约](specs/002-spatial-pushdown/contracts/sql-interface.md) |
+| 网格定义与真实样本覆盖 | [规则网格 domain](docs/regular-domains.md) |
+| 扫描流程与读取指标 | [技术架构](docs/architecture.md) |
+| 后续能力 | [Roadmap](docs/roadmap.md) |
+| 查询绑定与扫描 / 网格 / 本地 OM 读取 | `src/scan/` / `src/grid/` / `src/om/` |
+| SQL 用例 / 原生检查 / 样本 | `test/sql/` / `test/native/` / `test/data/` |
+
+`read_om_raw` 保留为仅支持 FPX 根数组的早期验证入口；日常查询使用 `read_om`。

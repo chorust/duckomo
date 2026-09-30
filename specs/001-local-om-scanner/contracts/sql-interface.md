@@ -1,6 +1,6 @@
 # SQL Interface Contract
 
-状态：Phase 0–2 已验证实现契约。固定依赖与实际通过证据见 [research](../research.md) 及 [evidence](../evidence/)；本契约仅覆盖当前可执行子集。
+本契约描述 Phase 0–2 的基础读取行为。当前空间参数、坐标列和范围选择由 [Phase 3 契约](../../002-spatial-pushdown/contracts/sql-interface.md) 补充；下文的阶段限制不代表完整的当前接口。固定依赖与当时的验证结果见 [research](../research.md) 和 [evidence](../evidence/)。
 
 ## 入口
 
@@ -13,7 +13,7 @@ read_om(path VARCHAR, dimensions MAP(VARCHAR, VARCHAR[]) := NULL)
 - `read_om_raw` 为 Phase 0 验证入口，仅接受 v3 根 Float32 数组，返回 `value FLOAT`。不承诺该验证入口长期兼容。
 - `read_om` 接受下表支持子集。单数组不需要 dimensions；多数组在同形状且拥有相同有序 `coordinates` 元数据时自动对齐，否则必须显式声明全部值变量的有序轴标识。
 - dimensions 类型是原生 MAP，不是 JSON 文件。键可用对外列名（如 `humidity`）或内部绝对路径（如 `/humidity`）。若传入，键必须精确覆盖所有值数组，每个数组的轴列表非空、元素不得为 NULL、轴名非空且唯一、长度等于 rank；轴名按 UTF-8 字节精确比较。显式轴名与现有 `coordinates` 元数据冲突时拒绝。所有值数组的 shape 和轴列表必须逐位置完全相同，否则失败；不自动转置、广播或连接。
-- `domain`、bbox、time range 等命名参数尚不支持；本阶段没有坐标映射能力。
+- Phase 0–2 不提供坐标映射。当前 `grid`、`spatial_axes`、`domain` 参数见 Phase 3 契约；独立 bbox、time range 参数仍未实现。
 
 ```sql
 SELECT * FROM read_om('test/data/raw.om');
@@ -30,7 +30,7 @@ FROM read_om('test/data/multi.om', dimensions := map(
 
 ## 支持矩阵
 
-| 项目 | 首批行为 |
+| 项目 | 基础读取行为（无 grid/domain） |
 | --- | --- |
 | 文件版本 | OM v3；v1/v2 和未知版本拒绝 |
 | 布局 | 根数组，或 NONE 容器组成的树和 Float32 值数组；数组子节点及容器中的标量作为附属元数据遍历校验，不生成值列；其他顶层数组类型拒绝 |
@@ -43,7 +43,7 @@ FROM read_om('test/data/multi.om', dimensions := map(
 | 多变量 | shape、rank、有序轴身份都相等；轴身份可来自共同 `coordinates` 元数据或显式 dimensions，否则拒绝 |
 | 坐标列 | 不生成；引用 latitude/longitude/time 等不存在列由正常绑定报错，说明中引导查看实际 schema |
 
-NaN/Inf 和完整 FPX 文件 roundtrip 必须在实施 Phase 0 实测通过后才可声称支持；若失败，先修订契约和基线，不能无声切换有损编码或抹掉缺测。
+NaN/Inf 和 FPX roundtrip 的已测结果见 [Phase 0 evidence](../evidence/phase0.md)；PFOR 精度以官方解码后的 Float32 值为基准。
 
 ## 命名和模式稳定性
 
@@ -56,7 +56,7 @@ NaN/Inf 和完整 FPX 文件 roundtrip 必须在实施 Phase 0 实测通过后�
 ## 行、投影与 SQL 语义
 
 - 最后一轴最快的逻辑展平顺序；所有变量同一行来自同一个索引元组。不承诺无 ORDER BY 的一般 SQL 结果顺序。
-- scanner 仅启用列裁剪；普通过滤由 DuckDB 保留并执行。不启用 filter pushdown/filter prune，不承诺条件减少读取行范围。
+- 基础扫描启用列裁剪；普通过滤由 DuckDB 保留并执行，filter pushdown/filter prune 关闭。配置空间坐标后可通过 Phase 3 的 complex-filter callback 缩小候选，完整 WHERE 仍保留。
 - 查询依赖包含 SELECT、WHERE、ORDER BY、GROUP BY、聚合及表达式使用的变量；重复引用不应导致重复解码整变量。
 - `COUNT(*)` 只消费行数时，按 metadata 输出 cardinality，不读取或解码任何值数据；允许正常优化器不执行 scanner。
 - `WHERE FALSE` 和无匹配条件返回零行；后者可以读取全部所需变量。

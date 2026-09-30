@@ -1,97 +1,55 @@
 # duckomo 技术架构
 
-状态：2026-09-28。Phase 0–2 已实现为 **C++ DuckDB extension + 官方 Open-Meteo OM C library**，并在 Linux AArch64 验证；Linux x86_64 尚无运行证据。网格、坐标和谓词下推仍是后续设计。当前实现边界及运行证据见 [SQL 契约](../specs/001-local-om-scanner/contracts/sql-interface.md) 与 [最终验收记录](../specs/001-local-om-scanner/evidence/final.md)。
+当前实现包括本地 OM 扫描、列裁剪和规则网格空间选择。用户接口见 [接口说明](spec.md)，构建与验证命令见 [README](../README.md)。
 
-## 1. 当前实现与后续职责
+## 模块职责
 
-| 层 | 回答的问题 | 职责 |
+| 模块 | 职责 | 源码 |
 |---|---|---|
-| DuckDB table function（已实现） | 查什么？ | Bind、SQL schema、projection pushdown、执行调度、DataChunk 输出 |
-| ProjectionPlan（已实现） | 本次查询读哪些变量？ | 根据 `column_ids` 保留输出与过滤依赖，去重物理变量并维持输出顺序 |
-| GridMapping / DimensionMapping（规划中） | 在数组哪里？ | 经纬度、时间、level、member、lead time 等语义坐标与 OM 逻辑索引互转 |
-| 官方 OM C reader（已接入） | 如何读取？ | hierarchy/metadata、chunk/LUT/byte range、解压 |
-| I/O adapter（本地已实现） | 从哪里读字节？ | 将 OM Sans-I/O 请求接到 DuckDB 文件系统；HTTP/S3 尚未实现 |
+| DuckDB table function | 绑定参数、稳定 schema、分析空间条件、输出 DataChunk | `src/scan/read_om.cpp` |
+| Schema / dimensions | 变量命名、shape 和有序轴身份校验 | `src/scan/schema.cpp`、`dimensions.cpp` |
+| ProjectionPlan | 保留输出与过滤依赖，去重物理变量并保留输出顺序 | `src/scan/projection.cpp` |
+| RegularGrid / SpatialLayout | 生成坐标，核对分离或展平轴及逻辑 stride | `src/grid/` |
+| DomainRegistry | 固定 68 个网格定义；绑定时核对轴长与 WKT BBOX | `src/grid/domain_registry.cpp`、`domain_bbox.cpp` |
+| SpatialPredicate / selection cursor | 提取安全条件，将候选位置切成有界连续段 | `src/scan/spatial_filter.cpp`、`spatial_selection.cpp` |
+| 本地 OM 适配层 | 元数据遍历、文件读取、解码生命周期和计量 | `src/om/` |
+| 官方 OM C reader | 格式解析、物理 chunk 选择、LUT / 字节请求与解码 | `third_party/om-file-format/` |
+
+## 查询流程
 
 ```text
 DuckDB SQL
-  → read_om Bind：本地 OM metadata、schema、dimensions 对齐
-  → GlobalInit：ProjectionPlan（输出列和过滤依赖）
-  → Scan：OM C reader → DuckDB 本地文件系统适配器
-  → decoded values → DuckDB Vector/DataChunk → DuckDB WHERE
+  → Bind：读取元数据，校验参数、变量、网格与布局，确定 schema
+  → 优化：complex-filter callback 收集安全空间条件，保留完整 WHERE
+  → GlobalInit：规划输出与过滤依赖，初始化 selection 和扫描状态
+  → SpatialSelection：逻辑位置转换为有界连续 DecodeSelection 段
+  → 官方 OM C reader + 本地适配器：请求字节并解码所需变量
+  → DuckDB Vector/DataChunk
+  → DuckDB 执行完整 WHERE 和上层 SQL 运算
 ```
 
-后续 `GridMapping::select(bbox)` 应返回**逻辑网格点/索引区间**，不规划 chunk ID、OM 文件 byte range 或解压；这些仍由官方 OM reader 负责。
+当前扫描为单线程。无空间配置时沿用普通逻辑扫描；额外非空间轴仍参与行索引，不被折叠。
 
-## 2. DuckDB 集成
+## 条件分析与正确性
 
-`Bind` 读取足以确定 schema 的元数据，并固定变量与维度解释。`GlobalInit` 根据 DuckDB 的 `column_ids` 构造 `ProjectionPlan`；查询需要的输出列和过滤列都保留，重复列映射到去重后的物理变量，输出顺序仍按 SQL 请求保留。`COLUMN_IDENTIFIER_EMPTY` 作为只提供行数的内部 cardinality slot；`COUNT(*)` 不读取数组索引或数据。Scan 将官方 decoder 解出的值直接放入 DuckDB Vector。当前扫描单线程运行，本地读由 DuckDB 文件系统适配器完成。
+启用 projection pushdown；普通 `filter_pushdown` 和 `filter_prune` 关闭。空间 callback 校验当前 `LogicalGet` 的表/列绑定和引用深度，仅提取可证明安全的经纬度必要条件。它不删除或改写 `WHERE`，不跨生命周期保存表达式指针。
 
-`projection_pushdown` 用于减少变量读取；本阶段 `filter_pushdown` 和 `filter_prune` 均关闭，SQL 过滤由 DuckDB 正常执行，谓词所需变量仍参与扫描。DuckDB 的列裁剪行为已在固定版本上通过结果对照和实际 I/O 指标验证；计数查询的 cardinality 路径也已单独检查。未来只有在精确谓词执行和过滤依赖保留经过集成验证后，才考虑增加维度选择下推。
+有限常量比较、`BETWEEN` 和安全 `AND` 可缩小候选。混合 `AND` 可保留独立安全子句；`OR`、`NOT` 和函数子树不单独缩窄读取，回退原因写入指标。候选必须覆盖所有匹配行，精确过滤由 DuckDB 执行。
 
-Phase 0–2 的 [实现计划](../specs/001-local-om-scanner/plan.md) 固定 DuckDB v1.5.4 和官方 OM 源码提交（完整版本见 [研究记录](../specs/001-local-om-scanner/research.md)）。多变量轴身份通过一致的 `coordinates` 元数据或显式 `dimensions` 参数验证，不凭 shape 单独推断；这一逻辑只处理对齐，不实现后续坐标映射。扫描采用本地定位读取与有界批次，官方 reader 仍拥有 chunk 和字节请求规划权。支持的 OM v3、Float32、FPX/PFOR 子集和文件格式拒绝规则见 [SQL 契约](../specs/001-local-om-scanner/contracts/sql-interface.md)。
+`SpatialLayout` 把逻辑索引映射到分离轴或明确存储顺序的展平轴。selection cursor 生成的段位于最终连续轴内，长度非零且不超过批次上限；不物化全域坐标表。空选择、仅坐标和仅行数查询不构造值 decoder；值过滤所需变量仍保留。
 
-目前使用 C++ API 是**版本相关的设计决策**：若将来稳定 C API 具备同等 filter pushdown 能力，可以重新评估，不能把当前决定写成永久限制。
+## I/O 与指标
 
-## 3. 空间和维度映射（尚未实现）
+网格选择只提供逻辑切片。OM chunk 交集、LUT、字节范围和解码策略由官方 reader 负责；本地适配器通过 DuckDB 文件系统执行读取，并在实际读取与 decoder 边界计数。
 
-### GridMapping
+每次查询的 v2 指标区分 bind/scan 元数据和逐变量 index/data，记录读取字节、请求数、解码块数、候选行数、选择模式、回退原因及完整性。扫描绑定状态相互隔离，prepared statement 禁用 statement cache；query-end observer 记录整个 SQL 查询的成功、失败或取消。计量字段见 [观测契约](../specs/002-spatial-pushdown/contracts/validation-evidence.md)。
 
-建议最小接口（示意，非固定 ABI）：
+性能比较要求同文件、同值列、同环境，完整消费结果并检查计数完整性。数据字节表示应用读取量，不代表磁盘物理 I/O。固定多块样本的 temperature 全扫 / 25 点窗口分别读取 **165,767 / 1,795 字节**，解码 **503 / 5 块**；仅坐标、纯空间 count 和空选择的值 index/data/decode 均为零。证据见 [US2](../specs/002-spatial-pushdown/evidence/us2.md) 和 [US3](../specs/002-spatial-pushdown/evidence/us3.md)。其他块布局不保证相同收益。
 
-```cpp
-struct GridMapping {
-    GridSelection select(BoundingBox bbox) const;
-    Coordinate coordinate(uint64_t logical_index) const;
-    GridPoint nearest(double latitude, double longitude) const;
-};
-```
+## 网格来源与验证
 
-`GridSelection` 可表示一个矩形逻辑切片，也可表示多个扁平索引区间，视实际数组布局而定。跨 180° 经线、不同经度约定、反向纬度、网格边界和非矩形 bbox 覆盖必须有明确测试；返回候选点后执行精确地理谓词。
+Registry 固定 68 个规则网格定义，不自动发现或扩展。上游版本、真实样本 shape、轴和 BBOX 核对见 [规则网格 domain](regular-domains.md)。最初的 `ncep_gfswave025` 有全域坐标与 15 个官方值参考；CHMI 和 GeoSphere 的具体样本另有独立 Swift Float 坐标公式及官方 C reader 值对照。其余登记项以文档记录的样本元数据覆盖为准。
 
-- **RegularGrid**：从 `om-exporter` 提炼 `nx/ny/origin/dx/dy`、坐标互转和 bbox→索引区间。避免先生成全域经纬度数组再过滤。
-- **Reduced Gaussian Grid**：优先复用 Open-Meteo 上游算法；`om-exporter` 的 `nx_of(row)`、`integral(row)`、`lat_of(row)` 是 O320/O1280 研究起点。每行点数不同，bbox 可对应多个扁平逻辑区间。旧 N160/N320 简化公式是 TODO，不能直接移植。
-- **ProjectionGrid**：参考 Open-Meteo 上游投影实现，补全 WGS84→投影坐标→逻辑索引。`om-exporter` 中的 Lambert、rotated lat/lon、stereographic 等定义可作模型/参数线索，不视为已完成坐标变换。
-- **Domain registry**：先用 `om-exporter` 的 `DOMAIN_GRIDS` 作 seed，核对 Open-Meteo 上游定义与真实文件。长期目标是从上游生成 `grids.json` 或等价资产，避免手工维护大块 C++ domain 判断。
+`make test` 构建 release 并调用 `scripts/validate.sh`，覆盖 SQL/native、合成样本重生与哈希、投影指标。设置 `DUCKOMO_DOMAIN_FILE` 后额外执行真实样本的完整空间 harness，缺失文件或哈希不符会失败。`make sanitizer-test` 检查边界与生命周期；性能结论取普通 release 构建。
 
-Open-Meteo 主项目已有 `grid.findBox(boundingBox:)` 一类网格选择逻辑。实现前先核对其覆盖的网格类型及代码所属层：若存在可直接调用的 C 能力则优先复用；若仅在 Swift 层，duckomo 保留必要的 C++ 映射层。不要默认把整个旧 exporter 移植进来。
-
-### DimensionMapping
-
-独立处理 `timestamp ↔ time index`、`pressure level ↔ level index`、`ensemble member ↔ member index`、`forecast run/lead_time ↔ index`。不能把所有文件硬编码为 `time × grid`：实际可能是 `run × lead_time × level × grid`，并且轴语义可能依赖文件外的 domain/run 信息。映射必须由可验证元数据或显式参数构造。
-
-## 4. OM reader 与 I/O
-
-官方 OM C implementation 是格式读取核心。当前扫描将本地文件的字节请求接入 DuckDB 文件系统，由官方 reader 负责 chunk 交集、LUT、压缩和解码；应用层按变量列裁剪并分有界批次输出。尚无地理或时间逻辑切片。Phase 5 计划引入 HTTP/S3、缓存和并行任务，届时需实测远程局部读取的效果。
-
-## 5. 代码目录与后续模块
-
-```text
-src/
-  om_extension.cpp  # 注册 read_om 和 read_om_raw
-  scan/             # bind、schema、projection、batch、table functions
-  om/               # OM reader、metadata、本地文件适配
-third_party/om-file-format/  # 固定的官方 OM 源码
-test/sql/           # SQLLogicTests
-test/native/        # 原生检查
-test/data/          # 可复现 OM fixtures 和参考结果
-scripts/validate.sh # 综合验证
-```
-
-后续的 grid、dimensions 和 registry 模块将在对应阶段建立，目前没有这些目录。
-
-## 6. 实现参考与验证点
-
-| 部分 | 首要参考 | 要验证的点 |
-|---|---|---|
-| 扩展骨架、测试 | [DuckDB extension-template](https://github.com/duckdb/extension-template) | 构建、版本锁定、SQL 测试 |
-| TableFunction、下推、DataChunk | [DuckDB `table_function.hpp`](https://github.com/duckdb/duckdb/blob/main/src/include/duckdb/function/table_function.hpp) 及内建 scanner | 所锁定版本的 filters、projection、filter_prune 语义 |
-| C 与 C++ API 取舍 | [DuckDB C API filter pushdown 议题](https://github.com/duckdb/duckdb/issues/25163) | 实施时重新检查 C API 能力 |
-| OM metadata/partial read | [Open-Meteo OM file format](https://github.com/open-meteo/om-file-format) | C API、Sans-I/O 适配、文件版本和切片语义 |
-| OM 行为对照 | [Open-Meteo python-omfiles](https://github.com/open-meteo/python-omfiles) | 用其切片读取验证值、shape 与局部访问；运行时不依赖 Python |
-| 上游网格/domain | [Open-Meteo 主项目](https://github.com/open-meteo/open-meteo) | `Grid.findBox` 覆盖范围、投影与 domain 定义 |
-| 旧网格原型 | [`blizhan/om-exporter`](https://github.com/blizhan/om-exporter) | Regular/O-grid 公式、registry seed、未完成的 N-grid 与 projection |
-| 远程 I/O | [DuckDB 文件系统/httpfs](https://duckdb.org/docs/stable/core_extensions/httpfs/overview.html) | 所锁定版本的 range read、缓存和凭据行为 |
-| 后续 N-D 计算 | [xtensor](https://github.com/xtensor-stack/xtensor) | 只适配已解码数据块；不承担 lazy I/O |
-| 后续 SIMD | [xsimd](https://github.com/xtensor-stack/xsimd) 与 OM 自身实现 | 仅在 profiling 证明必要时引入额外向量化代码 |
-
-以上链接是实施参考，不是对未来 API 稳定性的承诺。Phase 0–2 已锁定 DuckDB v1.5.4、OM C 源码提交与 fixture，并记录验证结果；具体提交见 [研究记录](../specs/001-local-om-scanner/research.md)。
+原完整验收与独立复现在 Linux AArch64 通过，x86_64 支持与验证暂缓。步骤见 [空间查询指南](../specs/002-spatial-pushdown/quickstart.md)，结果见 [最终验收](../specs/002-spatial-pushdown/evidence/final.md)。后续维度、网格、远程读取和科学算子见 [Roadmap](roadmap.md)。

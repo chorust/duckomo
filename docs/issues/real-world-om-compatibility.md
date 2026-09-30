@@ -10,7 +10,7 @@
 2. 真实数组可能带元数据子节点，如 `coordinates`、`time`、`unit`、`crs_wkt`；修复前只要数组有子节点就拒绝。
 3. `data_spatial/` 文件以容器为根，变量数组也带子节点；修复前在第一个这样的变量处停止。
 
-现有拒绝逻辑见 [`src/om/metadata.cpp`](../../src/om/metadata.cpp) 的 `AddArray`。当前支持子集见 [SQL 接口契约](../../specs/001-local-om-scanner/contracts/sql-interface.md)。
+格式与元数据校验逻辑见 [`src/om/metadata.cpp`](../../src/om/metadata.cpp) 的 `AddArray`。当前支持子集见 [SQL 接口契约](../../specs/001-local-om-scanner/contracts/sql-interface.md)。
 
 ## 复现环境
 
@@ -19,7 +19,7 @@
 - 来源：公开桶 `s3://openmeteo/`；通过匿名 HTTPS 下载完整文件到 `build/s3-samples/` 后测试。本问题只涉及本地文件兼容性；S3 URI 直接读取属于独立的远程 I/O 工作。
 - 测试语句：`DESCRIBE SELECT * FROM read_om('本地文件路径');`。命令的非零退出码和错误信息用于判断当前实现是否接受文件。
 
-最小复现示例（从仓库根目录执行）：
+以下命令用于记录修复前的复现方式；当前版本应能读取这两个样本。从仓库根目录执行，需先通过 `./scripts/build-version.sh v1.5.5` 构建扩展，并使用 v1.5.5 CLI：
 
 ```sh
 mkdir -p build/s3-samples
@@ -32,7 +32,7 @@ duckdb -unsigned :memory: "LOAD 'build/versions/v1.5.5/release/extension/duckomo
 duckdb -unsigned :memory: "LOAD 'build/versions/v1.5.5/release/extension/duckomo/duckomo.duckdb_extension'; DESCRIBE SELECT * FROM read_om('build/s3-samples/chmi-run-precipitation.om');"
 ```
 
-第一条查询报 `only FPX_XOR2D OM arrays are supported at ''`；第二条报 `OM array nodes with children are not supported at ''`。复现需要先构建 v1.5.5 扩展：`./scripts/build-version.sh v1.5.5`。
+修复前，第一条查询报 `only FPX_XOR2D OM arrays are supported at ''`，第二条报 `OM array nodes with children are not supported at ''`。当前版本的复查结果见下文。
 
 ## 已测样本
 
