@@ -1,0 +1,78 @@
+# name: test/sql/parallel_scan.test
+# description: Compare complete unordered OM results with 1/2/4 worker limits
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+statement ok
+SET threads=4;
+
+statement ok
+SET duckomo_max_threads=1;
+
+statement ok
+CREATE TEMP TABLE parallel_one AS
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/dimensions_perf.om',
+    dimensions := map(['value'], [['time','member']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-01-01 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member', 'start':0, 'step':1}
+    }
+);
+
+statement ok
+SET duckomo_max_threads=2;
+
+statement ok
+CREATE TEMP TABLE parallel_two AS
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/dimensions_perf.om',
+    dimensions := map(['value'], [['time','member']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-01-01 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member', 'start':0, 'step':1}
+    }
+);
+
+statement ok
+SET duckomo_max_threads=4;
+
+statement ok
+CREATE TEMP TABLE parallel_four AS
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/dimensions_perf.om',
+    dimensions := map(['value'], [['time','member']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-01-01 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member', 'start':0, 'step':1}
+    }
+);
+
+query I
+SELECT count(*) FROM (
+    (SELECT * FROM parallel_one EXCEPT ALL SELECT * FROM parallel_two)
+    UNION ALL
+    (SELECT * FROM parallel_two EXCEPT ALL SELECT * FROM parallel_one)
+);
+----
+0
+
+query I
+SELECT count(*) FROM (
+    (SELECT * FROM parallel_one EXCEPT ALL SELECT * FROM parallel_four)
+    UNION ALL
+    (SELECT * FROM parallel_four EXCEPT ALL SELECT * FROM parallel_one)
+);
+----
+0
+
+query I
+SELECT count(*) FROM parallel_four;
+----
+131072

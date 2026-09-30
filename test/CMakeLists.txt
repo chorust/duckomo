@@ -7,6 +7,7 @@ set(DUCKOMO_TOOL_SOURCES
     duckomo_fixture_tool
     duckomo_validation
     duckomo_spatial_validation
+    duckomo_dimensions_validation
 )
 set(DUCKOMO_NATIVE_TEST_SOURCES
     batch_test
@@ -20,6 +21,12 @@ set(DUCKOMO_NATIVE_TEST_SOURCES
     spatial_metrics_test
     spatial_callback_test
     spatial_selection_test
+    axis_selection_test
+    parallel_scan_test
+    semantic_axes_test
+    range_cache_test
+    scan_metrics_v3_test
+    session_metrics_test
     spatial_io_test
     spatial_lifecycle_test
     domain_reference_test
@@ -28,6 +35,10 @@ set(DUCKOMO_NATIVE_TEST_SOURCES
 set(DUCKOMO_SQLLOGICTEST_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/raw.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/read_om.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/semantic_axes.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/axis_filter.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/parallel_scan.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/cache_metrics.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/projection.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/spatial.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/spatial_pushdown.test"
@@ -88,7 +99,14 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
         if(test STREQUAL "domain_reference_test")
             target_include_directories("${test}" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/tools")
         endif()
-        if(test STREQUAL "spatial_selection_test")
+		if(test STREQUAL "range_cache_test")
+			target_sources("${test}" PRIVATE "${PROJECT_SOURCE_DIR}/src/om/range_cache.cpp")
+		elseif(test STREQUAL "scan_metrics_v3_test")
+			# The v3 profile is a value type and keeps this contract test independent of DuckDB.
+		elseif(test STREQUAL "axis_selection_test" OR test STREQUAL "semantic_axes_test" OR
+		       test STREQUAL "parallel_scan_test")
+            target_link_libraries("${test}" PRIVATE duckdb_static duckomo_extension duckomo_om)
+        elseif(test STREQUAL "spatial_selection_test")
             target_sources("${test}" PRIVATE
                 "${PROJECT_SOURCE_DIR}/src/grid/regular_grid.cpp"
                 "${PROJECT_SOURCE_DIR}/src/grid/spatial_layout.cpp"
@@ -188,7 +206,7 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
     enable_testing()
     set(DUCKOMO_SANITIZER_TEST_TARGETS)
 
-    foreach(test batch_test raw_reader_test schema_test)
+    foreach(test batch_test raw_reader_test schema_test axis_selection_test parallel_scan_test)
         set(test_target "${test}_sanitizer")
         duckomo_add_source_target("${test_target}" "native/${test}.cpp" "sanitizer/native")
         if(TARGET "${test_target}")

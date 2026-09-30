@@ -1,0 +1,201 @@
+# name: test/sql/semantic_axes.test
+# description: Validate explicit semantic coordinates and their binding errors
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+# Explicit time and member coordinates follow the declared row-major axes.
+query T
+SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','member_axis']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-09-30 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member_axis', 'values':[10,20,30]}
+    }
+));
+----
+value FLOAT
+valid_time TIMESTAMP
+member BIGINT
+
+query TTT
+SELECT value, valid_time, member
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','member_axis']]),
+    axes := {
+        'member': {'axis':'member_axis', 'values':[10,20,30]},
+        'time': {'axis':'time', 'values':[TIMESTAMP '2026-09-30 00:00:00', TIMESTAMP '2026-09-30 01:00:00']}
+    }
+)
+ORDER BY value;
+----
+0.000000	2026-09-30 00:00:00	10
+1.000000	2026-09-30 00:00:00	20
+2.000000	2026-09-30 00:00:00	30
+3.000000	2026-09-30 01:00:00	10
+4.000000	2026-09-30 01:00:00	20
+5.000000	2026-09-30 01:00:00	30
+
+# Independent fixture reference: original physical order is time, member.
+query TTT
+SELECT value, valid_time, member
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/dimensions.om',
+    dimensions := map(['value'], [['time','member']]),
+    axes := {
+        'time': {'axis':'time', 'values':[TIMESTAMP '2026-09-30 00:00:00', TIMESTAMP '2026-09-30 01:00:00']},
+        'member': {'axis':'member', 'values':[10,20,30]}
+    }
+)
+ORDER BY value;
+----
+0.000000	2026-09-30 00:00:00	10
+1.000000	2026-09-30 00:00:00	20
+2.000000	2026-09-30 00:00:00	30
+3.000000	2026-09-30 01:00:00	10
+4.000000	2026-09-30 01:00:00	20
+5.000000	2026-09-30 01:00:00	30
+
+# Same logical values with the physical axes transposed.
+query TTT
+SELECT value, valid_time, member
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/dimensions_axis_order.om',
+    dimensions := map(['value'], [['member','time']]),
+    axes := {
+        'member': {'axis':'member', 'values':[10,20,30]},
+        'time': {'axis':'time', 'values':[TIMESTAMP '2026-09-30 00:00:00', TIMESTAMP '2026-09-30 01:00:00']}
+    }
+)
+ORDER BY value;
+----
+0.000000	2026-09-30 00:00:00	10
+1.000000	2026-09-30 00:00:00	20
+2.000000	2026-09-30 00:00:00	30
+3.000000	2026-09-30 01:00:00	10
+4.000000	2026-09-30 01:00:00	20
+5.000000	2026-09-30 01:00:00	30
+
+# Text members are preserved exactly, and pressure levels retain DOUBLE values.
+query RR
+SELECT value, member
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['level_axis','member_axis']]),
+    axes := {
+        'level': {'axis':'level_axis', 'values':[1000,850], 'kind':'pressure', 'unit':'hPa'},
+        'member': {'axis':'member_axis', 'values':['ctl','pert','p3']}
+    }
+)
+ORDER BY value;
+----
+0.000000	ctl
+1.000000	pert
+2.000000	p3
+3.000000	ctl
+4.000000	pert
+5.000000	p3
+
+query TTT
+SELECT value, lead_time, run
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['forecast','point']]),
+    axes := {
+        'lead_time': {'axis':'forecast', 'values':[INTERVAL '0 hours', INTERVAL '-90 minutes']},
+        'run': {'axis':'point', 'start':TIMESTAMPTZ '2026-09-30 08:00:00+08', 'step':INTERVAL '1 day'}
+    }
+)
+WHERE value IN (0,2,3,5)
+ORDER BY value;
+----
+0.000000	00:00:00	2026-09-30 00:00:00
+2.000000	00:00:00	2026-10-02 00:00:00
+3.000000	-01:30:00	2026-09-30 00:00:00
+5.000000	-01:30:00	2026-10-02 00:00:00
+
+# Regular coordinates stay in compact start/step form and keep repeated values.
+query ITT
+SELECT value::INTEGER, level, member
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['level_axis','member_axis']]),
+    axes := {
+        'level': {'axis':'level_axis', 'start':1000, 'step':-10, 'kind':'pressure', 'unit':'hPa'},
+        'member': {'axis':'member_axis', 'start':20, 'step':0}
+    }
+)
+ORDER BY value;
+----
+0	1000.0	20
+1	1000.0	20
+2	1000.0	20
+3	990.0	20
+4	990.0	20
+5	990.0	20
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','member_axis']]),
+    axes := {'member': {'axis':'member_axis', 'start':9223372036854775807, 'step':1}}
+);
+----
+<REGEX>:(?i).*(overflow|fit).*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','point']]),
+    axes := {'time': {'axis':'time', 'values':[TIMESTAMP '2026-09-30']}},
+    valid_times := [TIMESTAMP '2026-09-30']
+);
+----
+<REGEX>:(?i).*(axes.time|valid_times).*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','point']]),
+    axes := {'level': {'axis':'time', 'start':1000, 'step':-10, 'kind':'pressure', 'unit':'unknown'}}
+);
+----
+<REGEX>:(?i).*(unit|pressure).*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','point']]),
+    axes := {'level': {'axis':'point', 'start':1, 'step':0.5, 'kind':'model', 'unit':'1'}}
+);
+----
+<REGEX>:(?i).*model level coordinates must be integers.*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','point']]),
+    axes := {'member': {'axis':'point', 'values':[10,20]}}
+);
+----
+<REGEX>:(?i).*(coordinate count|axis length).*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','point']]),
+    axes := {
+        'member': {'axis':'point', 'values':[10,20,30]},
+        'run': {'axis':'point', 'values':[TIMESTAMP '2026-09-30', TIMESTAMP '2026-10-01', TIMESTAMP '2026-10-02']}
+    }
+);
+----
+<REGEX>:(?i).*(maps logical axis|more than once).*

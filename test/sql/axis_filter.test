@@ -1,0 +1,101 @@
+# name: test/sql/axis_filter.test
+# description: Validate exact semantic-axis pruning with DuckDB residual filters
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+query ITI
+SELECT value::INTEGER, valid_time, member
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','member_axis']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-09-30 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member_axis', 'values':[10,20,30]}
+    }
+)
+WHERE 20 = member AND TIMESTAMP '2026-09-30 01:00:00' <= valid_time
+ORDER BY value;
+----
+4	2026-09-30 01:00:00	20
+
+query I
+SELECT value::INTEGER
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','member_axis']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-09-30 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member_axis', 'values':[10,20,30]}
+    }
+)
+WHERE member BETWEEN 20 AND 30 AND valid_time BETWEEN TIMESTAMP '2026-09-30 00:00:00' AND TIMESTAMP '2026-09-30 00:00:00'
+ORDER BY value;
+----
+1
+2
+
+query I
+SELECT value::INTEGER
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','member_axis']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-09-30 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member_axis', 'values':[10,20,30]}
+    }
+)
+WHERE (member = 20 OR value = 0)
+ORDER BY value;
+----
+0
+1
+4
+
+query I
+SELECT value::INTEGER
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','member_axis']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-09-30 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member_axis', 'values':[10,20,30]}
+    }
+)
+WHERE member + 0 = 20
+ORDER BY value;
+----
+1
+4
+
+query I
+SELECT value::INTEGER
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','member_axis']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-09-30 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member_axis', 'values':[10,20,30]}
+    }
+)
+WHERE member = 20 AND member = 30;
+----
+
+# A sparse spatial range and a semantic time range intersect in source order.
+query I
+SELECT value::INTEGER
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','point']]),
+    grid := {'nx':3,'ny':1,'lat0':0.0,'lon0':0.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    axes := {'time': {'axis':'time', 'start':TIMESTAMP '2026-09-30 00:00:00', 'step':INTERVAL '1 hour'}}
+)
+WHERE longitude = 1 AND valid_time = TIMESTAMP '2026-09-30 01:00:00';
+----
+4

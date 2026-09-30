@@ -82,33 +82,40 @@ std::uint64_t CheckedByteSize(std::uint64_t elements, std::uint64_t bytes_per_el
 
 } // namespace
 
-OmV3Reader::OmV3Reader(LocalFile file) : file_(std::move(file)) {
-	const auto header_size = static_cast<std::uint64_t>(om_header_write_size());
-	if (file_.Size() < header_size) {
-		throw ReaderError(ReaderErrorCode::TruncatedFile,
-		                  "local OM file '" + file_.Path() + "' is shorter than a version header");
+OmV3Reader::OmV3Reader(LocalFile file)
+	: OmV3Reader(std::make_unique<LocalFile>(std::move(file))) {
+}
+
+OmV3Reader::OmV3Reader(std::unique_ptr<ReadAtFile> file) : file_(std::move(file)) {
+	if (!file_) {
+		throw ReaderError(ReaderErrorCode::InvalidPath, "OM reader requires an open positional-read file session");
 	}
-	auto header = file_.ReadRange(0, header_size, ScanReadPhase::Metadata);
+	const auto header_size = static_cast<std::uint64_t>(om_header_write_size());
+	if (file_->Size() < header_size) {
+		throw ReaderError(ReaderErrorCode::TruncatedFile,
+		                  "OM file '" + file_->Path() + "' is shorter than a version header");
+	}
+	auto header = file_->ReadRange(0, header_size, ScanReadPhase::Metadata);
 	const auto header_type = om_header_type(header.data());
 	if (header_type == OM_HEADER_INVALID) {
 		throw ReaderError(ReaderErrorCode::InvalidHeader,
-		                  "local OM file '" + file_.Path() + "' has an invalid or unsupported header");
+		                  "OM file '" + file_->Path() + "' has an invalid or unsupported header");
 	}
 	if (header_type != OM_HEADER_READ_TRAILER) {
 		throw ReaderError(ReaderErrorCode::UnsupportedVersion,
-		                  "local OM file '" + file_.Path() + "' is not OM v3; only version 3 is supported");
+		                  "OM file '" + file_->Path() + "' is not OM v3; only version 3 is supported");
 	}
 
 	const auto trailer_size = static_cast<std::uint64_t>(om_trailer_size());
-	if (file_.Size() < header_size + trailer_size) {
+	if (file_->Size() < header_size + trailer_size) {
 		throw ReaderError(ReaderErrorCode::TruncatedFile,
-		                  "local OM v3 file '" + file_.Path() + "' is too short to contain its trailer");
+		                  "OM v3 file '" + file_->Path() + "' is too short to contain its trailer");
 	}
-	trailer_offset_ = file_.Size() - trailer_size;
-	auto trailer = file_.ReadRange(trailer_offset_, trailer_size, ScanReadPhase::Metadata);
+	trailer_offset_ = file_->Size() - trailer_size;
+	auto trailer = file_->ReadRange(trailer_offset_, trailer_size, ScanReadPhase::Metadata);
 	if (!om_trailer_read(trailer.data(), &root_offset_, &root_size_)) {
 		throw ReaderError(ReaderErrorCode::InvalidHeader,
-		                  "local OM file '" + file_.Path() + "' has an invalid version 3 trailer");
+		                  "OM file '" + file_->Path() + "' has an invalid version 3 trailer");
 	}
 	root_metadata_ = ReadAndValidateMetadata(root_offset_, root_size_);
 }
@@ -220,7 +227,7 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 	                                        state.read_count.data(), state.cube_offset.data(),
 	                                        state.cube_dimensions.data(), io_size_merge, io_size_max);
 	if (init_error != ERROR_OK) {
-		ThrowOmError(init_error, ReaderErrorCode::InvalidSelection, file_.Path(), "OM decoder initialization");
+		ThrowOmError(init_error, ReaderErrorCode::InvalidSelection, file_->Path(), "OM decoder initialization");
 	}
 	if (state.decoder.lut_chunk_length > io_size_max) {
 		throw ReaderError(ReaderErrorCode::InvalidSelection,
@@ -250,7 +257,7 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 	while (om_decoder_next_index_read(&state.decoder, &index_read)) {
 		ValidateBodyRange(index_read.offset, index_read.count, "index");
 		try {
-			state.index_bytes = file_.ReadRange(index_read.offset, index_read.count, ScanReadPhase::Index,
+			state.index_bytes = file_->ReadRange(index_read.offset, index_read.count, ScanReadPhase::Index,
 			                                   variable_path);
 		} catch (const std::bad_alloc &) {
 			ThrowAllocationError("unable to allocate OM index buffer");
@@ -267,7 +274,7 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 		                                 state.index_bytes.size(), &read_error)) {
 			ValidateBodyRange(data_read.offset, data_read.count, "data");
 			try {
-				state.data_bytes = file_.ReadRange(data_read.offset, data_read.count, ScanReadPhase::Data,
+				state.data_bytes = file_->ReadRange(data_read.offset, data_read.count, ScanReadPhase::Data,
 				                                 variable_path);
 			} catch (const std::bad_alloc &) {
 				ThrowAllocationError("unable to allocate OM data buffer");
@@ -280,24 +287,24 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 			OmError_t decode_error = ERROR_OK;
 			if (!om_decoder_decode_chunks(&state.decoder, data_read.chunkIndex, state.data_bytes.data(),
 			                              data_read.count, output, state.chunk_scratch.data(), &decode_error)) {
-				if (file_.Metrics()) {
-					file_.Metrics()->MarkDecodeCountIncomplete(variable_path);
+				if (file_->Metrics()) {
+					file_->Metrics()->MarkDecodeCountIncomplete(variable_path);
 				}
-				ThrowOmError(decode_error, ReaderErrorCode::Decode, file_.Path(), "OM chunk decode");
+				ThrowOmError(decode_error, ReaderErrorCode::Decode, file_->Path(), "OM chunk decode");
 			}
-			if (file_.Metrics()) {
-				file_.Metrics()->RecordSuccessfulDecode(variable_path,
+			if (file_->Metrics()) {
+				file_->Metrics()->RecordSuccessfulDecode(variable_path,
 				                                       data_read.chunkIndex.upperBound - data_read.chunkIndex.lowerBound);
 			}
 		}
 		if (read_error != ERROR_OK) {
-			ThrowOmError(read_error, ReaderErrorCode::DataRead, file_.Path(), "OM data request planning");
+			ThrowOmError(read_error, ReaderErrorCode::DataRead, file_->Path(), "OM data request planning");
 		}
 	}
 }
 
-const LocalFile &OmV3Reader::File() const noexcept {
-	return file_;
+const ReadAtFile &OmV3Reader::File() const noexcept {
+	return *file_;
 }
 
 void OmV3Reader::ValidateBodyRange(std::uint64_t offset, std::uint64_t size, const char *phase) const {
@@ -309,7 +316,7 @@ void OmV3Reader::ValidateBodyRange(std::uint64_t offset, std::uint64_t size, con
 		} else {
 			message << offset + size;
 		}
-		message << ") is empty or outside the OM v3 body in '" << file_.Path() << "'";
+		message << ") is empty or outside the OM v3 body in '" << file_->Path() << "'";
 		const auto code = std::string(phase) == "metadata" ? ReaderErrorCode::InvalidMetadata
 		                                                 : (std::string(phase) == "index" ? ReaderErrorCode::IndexRead
 		                                                                                : ReaderErrorCode::DataRead);
@@ -324,7 +331,7 @@ std::shared_ptr<const OwnedMetadataBuffer> OmV3Reader::ReadAndValidateMetadata(s
 		throw ReaderError(ReaderErrorCode::InvalidMetadata,
 		                  "OM variable metadata is shorter than the official v3 variable header");
 	}
-	auto bytes = file_.ReadRange(offset, size, ScanReadPhase::Metadata);
+	auto bytes = file_->ReadRange(offset, size, ScanReadPhase::Metadata);
 	const auto embedded_header_type = om_header_type(bytes.data());
 	if (embedded_header_type == OM_HEADER_LEGACY) {
 		throw ReaderError(ReaderErrorCode::UnsupportedVersion,
@@ -336,7 +343,7 @@ std::shared_ptr<const OwnedMetadataBuffer> OmV3Reader::ReadAndValidateMetadata(s
 	}
 	const auto error = om_variable_validate(bytes.data(), size);
 	if (error != ERROR_OK) {
-		ThrowOmError(error, ReaderErrorCode::InvalidMetadata, file_.Path(), "OM variable metadata validation");
+		ThrowOmError(error, ReaderErrorCode::InvalidMetadata, file_->Path(), "OM variable metadata validation");
 	}
 	const auto *variable = om_variable_init(bytes.data());
 	const auto data_type = om_variable_get_type(variable);

@@ -2,11 +2,13 @@
 
 #include <cmath>
 #include <cstdint>
+#include <algorithm>
 #include <iomanip>
 #include <map>
 #include <mutex>
 #include <optional>
 #include <sstream>
+#include <set>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -51,6 +53,7 @@ struct ScanVariableMetrics final {
 struct ScanMetricsSnapshot final {
 	std::uint32_t schema_version = 2;
 	std::string query_id;
+	std::uint64_t scan_id = 0;
 	std::string scenario;
 	std::string sql;
 	std::string fixture_id;
@@ -73,6 +76,16 @@ struct ScanMetricsSnapshot final {
 	bool filter_callback_invoked = false;
 	std::vector<std::string> fallback_reasons;
 	std::uint64_t candidate_rows = 0;
+	std::uint64_t scan_tasks_claimed = 0;
+	std::uint64_t active_workers = 0;
+	std::uint64_t scanned_rows = 0;
+	std::uint64_t coordinate_bytes = 0;
+	std::uint64_t coordinate_requests = 0;
+	std::uint64_t cache_hits = 0;
+	std::uint64_t cache_misses = 0;
+	std::uint64_t cache_hit_bytes = 0;
+	std::optional<std::uint64_t> response_body_bytes;
+	std::optional<std::uint64_t> transport_requests;
 	bool optimizer_empty = false;
 	std::string reference_identity;
 	double coordinate_tolerance = 1e-9;
@@ -110,6 +123,11 @@ public:
 		std::lock_guard<std::mutex> guard(mutex_);
 		fixture_id_ = std::move(fixture_id);
 		fixture_sha256_ = std::move(sha256);
+	}
+
+	void SetScanId(std::uint64_t scan_id) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		scan_id_ = scan_id;
 	}
 
 	void SetDependencyCommit(std::string dependency, std::string commit) {
@@ -176,6 +194,45 @@ public:
 	void MarkFilterCallbackInvoked() {
 		std::lock_guard<std::mutex> guard(mutex_);
 		filter_callback_invoked_ = true;
+	}
+
+	void RecordScanTaskClaimed() {
+		std::lock_guard<std::mutex> guard(mutex_);
+		AddChecked(scan_tasks_claimed_, 1);
+	}
+
+	void RecordWorkerActive(std::uint64_t worker_id) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		active_worker_ids_.insert(worker_id);
+	}
+
+	void RecordScannedRows(std::uint64_t rows) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		AddChecked(scanned_rows_, rows);
+	}
+
+	void RecordCoordinateRead(std::uint64_t returned_bytes) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		AddChecked(coordinate_bytes_, returned_bytes);
+		AddChecked(coordinate_requests_, 1);
+	}
+
+	void RecordCacheLookup(bool hit, std::uint64_t bytes = 0) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		if (hit) {
+			AddChecked(cache_hits_, 1);
+			AddChecked(cache_hit_bytes_, bytes);
+		} else {
+			AddChecked(cache_misses_, 1);
+		}
+	}
+
+	void RecordTransportResponse(std::uint64_t body_bytes) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		if (!response_body_bytes_) response_body_bytes_ = 0;
+		if (!transport_requests_) transport_requests_ = 0;
+		AddChecked(*response_body_bytes_, body_bytes);
+		AddChecked(*transport_requests_, 1);
 	}
 
 	void SetSpatialSelection(std::string selection_mode, bool residual_filter_retained,
@@ -245,6 +302,7 @@ public:
 		std::lock_guard<std::mutex> guard(mutex_);
 		ScanMetricsSnapshot snapshot;
 		snapshot.query_id = query_id_;
+		snapshot.scan_id = scan_id_;
 		snapshot.scenario = scenario_;
 		snapshot.sql = sql_;
 		snapshot.fixture_id = fixture_id_;
@@ -269,6 +327,16 @@ public:
 		snapshot.filter_callback_invoked = filter_callback_invoked_;
 		snapshot.fallback_reasons = fallback_reasons_;
 		snapshot.candidate_rows = candidate_rows_;
+		snapshot.scan_tasks_claimed = scan_tasks_claimed_;
+		snapshot.active_workers = active_worker_ids_.size();
+		snapshot.scanned_rows = scanned_rows_;
+		snapshot.coordinate_bytes = coordinate_bytes_;
+		snapshot.coordinate_requests = coordinate_requests_;
+		snapshot.cache_hits = cache_hits_;
+		snapshot.cache_misses = cache_misses_;
+		snapshot.cache_hit_bytes = cache_hit_bytes_;
+		snapshot.response_body_bytes = response_body_bytes_;
+		snapshot.transport_requests = transport_requests_;
 		snapshot.optimizer_empty = optimizer_empty_;
 		snapshot.reference_identity = reference_identity_;
 		snapshot.coordinate_tolerance = coordinate_tolerance_;
@@ -296,11 +364,17 @@ public:
 
 	std::string ToEvidenceJson() const {
 		const auto snapshot = Snapshot();
+		auto normalized_sql = snapshot.sql;
+		std::transform(normalized_sql.begin(), normalized_sql.end(), normalized_sql.begin(),
+		               [](unsigned char character) { return static_cast<char>(std::tolower(character)); });
+		const bool contains_remote_uri = normalized_sql.find("http://") != std::string::npos ||
+		                                normalized_sql.find("https://") != std::string::npos ||
+		                                normalized_sql.find("s3://") != std::string::npos;
 		std::ostringstream json;
 		json << "{\"schema_version\":" << snapshot.schema_version
 		     << ",\"query_id\":" << JsonString(snapshot.query_id)
 		     << ",\"scenario\":" << JsonString(snapshot.scenario)
-		     << ",\"sql\":" << JsonString(snapshot.sql)
+		     << ",\"sql\":" << JsonString(contains_remote_uri ? "<redacted>" : snapshot.sql)
 		     << ",\"fixture_id\":" << JsonString(snapshot.fixture_id)
 		     << ",\"fixture_sha256\":" << JsonString(snapshot.fixture_sha256)
 		     << ",\"dependency_commits\":" << JsonStringMap(snapshot.dependency_commits)
@@ -321,6 +395,8 @@ public:
 		     << ",\"filter_callback_invoked\":" << JsonBool(snapshot.filter_callback_invoked)
 		     << ",\"fallback_reasons\":" << JsonStringArray(snapshot.fallback_reasons)
 		     << ",\"candidate_rows\":" << snapshot.candidate_rows
+		     << ",\"scan_tasks_claimed\":" << snapshot.scan_tasks_claimed
+		     << ",\"active_workers\":" << snapshot.active_workers
 		     << ",\"optimizer_empty\":" << JsonBool(snapshot.optimizer_empty)
 		     << ",\"reference_identity\":" << JsonString(snapshot.reference_identity)
 		     << ",\"coordinate_tolerance\":" << std::setprecision(17) << snapshot.coordinate_tolerance
@@ -349,6 +425,52 @@ public:
 		     << ",\"cache_policy\":" << JsonStringMap(snapshot.cache_policy)
 		     << ",\"peak_rss_bytes\":" << JsonOptionalUint(snapshot.peak_rss_bytes)
 		     << ",\"error_category\":" << JsonString(snapshot.error_category) << '}';
+		return json.str();
+	}
+
+	// v3 is the stable SQL-facing profile. The prior evidence shape remains
+	// available to the existing release harness through ToEvidenceJson().
+	std::string ToMetricsV3Json() const {
+		const auto snapshot = Snapshot();
+		auto legacy = ToEvidenceJson();
+		const auto sql_key = legacy.find("\"sql\":");
+		if (sql_key != std::string::npos) {
+			const auto value_start = legacy.find('"', sql_key + 6);
+			if (value_start != std::string::npos) {
+				bool escaped = false;
+				std::size_t value_end = value_start + 1;
+				for (; value_end < legacy.size(); value_end++) {
+					const auto ch = legacy[value_end];
+					if (escaped) {
+						escaped = false;
+					} else if (ch == '\\') {
+						escaped = true;
+					} else if (ch == '"') {
+						break;
+					}
+				}
+				if (value_end < legacy.size()) legacy.replace(value_start, value_end - value_start + 1, "\"<redacted>\"");
+			}
+		}
+		std::ostringstream json;
+		json << "{\"schema_version\":3,\"scan_id\":" << snapshot.scan_id
+		     << ",\"query_id\":" << JsonString(snapshot.query_id)
+		     << ",\"status\":" << JsonString(ScanStatusName(snapshot.status))
+		     << ",\"logical_bytes\":" << snapshot.bytes_fetched
+		     << ",\"coordinate_bytes\":" << snapshot.coordinate_bytes
+		     << ",\"coordinate_requests\":" << snapshot.coordinate_requests
+		     << ",\"response_body_bytes\":" << JsonOptionalUint(snapshot.response_body_bytes)
+		     << ",\"transport_requests\":" << JsonOptionalUint(snapshot.transport_requests)
+		     << ",\"cache\":{\"hits\":" << snapshot.cache_hits << ",\"misses\":" << snapshot.cache_misses
+		     << ",\"hit_bytes\":" << snapshot.cache_hit_bytes << '}'
+		     << ",\"candidate_rows\":" << snapshot.candidate_rows
+		     << ",\"scanned_rows\":" << snapshot.scanned_rows
+		     << ",\"tasks_claimed\":" << snapshot.scan_tasks_claimed
+		     << ",\"active_workers\":" << snapshot.active_workers
+		     << ",\"decode_count_complete\":" << JsonBool(snapshot.decode_count_complete)
+		     << ",\"elapsed_ms\":" << JsonOptionalDouble(snapshot.elapsed_ms)
+		     << ",\"peak_rss_bytes\":" << JsonOptionalUint(snapshot.peak_rss_bytes)
+		     << ",\"memory_scope\":\"process\",\"legacy_v2\":" << legacy << '}';
 		return json.str();
 	}
 
@@ -459,6 +581,7 @@ private:
 
 	mutable std::mutex mutex_;
 	std::string query_id_;
+	std::uint64_t scan_id_ = 0;
 	std::string scenario_;
 	std::string sql_;
 	std::string fixture_id_;
@@ -479,6 +602,16 @@ private:
 	bool filter_callback_invoked_ = false;
 	std::vector<std::string> fallback_reasons_;
 	std::uint64_t candidate_rows_ = 0;
+	std::uint64_t scan_tasks_claimed_ = 0;
+	std::uint64_t scanned_rows_ = 0;
+	std::uint64_t coordinate_bytes_ = 0;
+	std::uint64_t coordinate_requests_ = 0;
+	std::uint64_t cache_hits_ = 0;
+	std::uint64_t cache_misses_ = 0;
+	std::uint64_t cache_hit_bytes_ = 0;
+	std::optional<std::uint64_t> response_body_bytes_;
+	std::optional<std::uint64_t> transport_requests_;
+	std::set<std::uint64_t> active_worker_ids_;
 	bool optimizer_empty_ = false;
 	std::string reference_identity_;
 	double coordinate_tolerance_ = 1e-9;

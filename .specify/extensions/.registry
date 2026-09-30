@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "extensions": {
+    "roadmap": {
+      "version": "0.1.1",
+      "source": "local",
+      "manifest_hash": "sha256:44f0a2de47237031011dc7ea60b1a4ebf88bb715311327cf1e44539afbac60eb",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "codex": [
+          "speckit.roadmap.write",
+          "speckit.roadmap.brief",
+          "speckit.roadmap.debrief",
+          "speckit.roadmap.sync"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-09-30T04:47:43.930474+00:00"
+    }
+  }
+}

@@ -44,6 +44,11 @@ void TestVersionTwoSerializationAndAccounting() {
 	metrics.RecordSuccessfulRead(ScanReadPhase::Data, 11, "/value");
 	metrics.RecordSuccessfulDecode("/value", 3);
 	metrics.MarkDecodeCountIncomplete("/other");
+	metrics.RecordScanTaskClaimed();
+	metrics.RecordScanTaskClaimed();
+	metrics.RecordWorkerActive(7);
+	metrics.RecordWorkerActive(7);
+	metrics.RecordWorkerActive(8);
 	metrics.SetStatus(ScanStatus::Succeeded);
 
 	const auto snapshot = metrics.Snapshot();
@@ -56,11 +61,13 @@ void TestVersionTwoSerializationAndAccounting() {
 	        "successful decoder work remains attributed by variable");
 	Require(!snapshot.variables.at("/other").decode_count_complete && !snapshot.decode_count_complete,
 	        "failed decoder accounting cannot appear complete");
+	Require(snapshot.scan_tasks_claimed == 2 && snapshot.active_workers == 2,
+	        "task and distinct active worker evidence is counted without duplicate worker attribution");
 	const auto json = metrics.ToEvidenceJson();
 	for (const auto *field : {"schema_version", "bind_metadata_bytes", "scan_metadata_bytes", "grid_definition",
 	                          "spatial_layout", "grid_source", "selection_mode", "filter_callback_invoked",
 	                          "residual_filter_retained", "fallback_reasons", "candidate_rows", "reference_identity",
-	                          "logical_positions_match", "null_positions_match"}) {
+	                          "logical_positions_match", "null_positions_match", "scan_tasks_claimed", "active_workers"}) {
 		Require(json.find(std::string("\"") + field + "\":") != std::string::npos,
 		        std::string("serialized evidence is missing ") + field);
 	}

@@ -52,7 +52,15 @@ void ValidateLocalFilePath(const std::string &path) {
 		throw ReaderError(ReaderErrorCode::InvalidPath, "local OM file path must not be empty");
 	}
 	if (IsUriPath(path)) {
-		throw ReaderError(ReaderErrorCode::InvalidPath, "remote URI paths are not supported: '" + path + "'");
+		auto colon = path.find(':');
+		auto scheme = path.substr(0, colon);
+		std::transform(scheme.begin(), scheme.end(), scheme.begin(),
+		               [](unsigned char character) { return static_cast<char>(std::tolower(character)); });
+		if (scheme == "http" || scheme == "https" || scheme == "s3") {
+			throw ReaderError(ReaderErrorCode::InvalidPath,
+			                  "remote read_om requires the paired httpfs range-session extension; this build has no compatible remote range provider");
+		}
+		throw ReaderError(ReaderErrorCode::InvalidPath, "URI paths are not supported by the local OM reader");
 	}
 	if (IsGlobPath(path)) {
 		throw ReaderError(ReaderErrorCode::InvalidPath, "glob paths are not supported: '" + path + "'");

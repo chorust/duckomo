@@ -9,6 +9,13 @@ require allow_unsigned_extensions
 statement ok
 LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
 
+# Remote input stays fail-closed without the paired range-session provider, and
+# signed URL query parameters are never echoed in the error.
+statement error
+SELECT * FROM read_om('https://example.invalid/file.om?X-Amz-Signature=must-not-appear');
+----
+<REGEX>:(?i).*paired httpfs range-session extension.*
+
 # A single root array has the stable value column and does not need dimensions.
 query T
 SELECT column_name || ' ' || column_type

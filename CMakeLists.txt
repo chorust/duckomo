@@ -35,10 +35,14 @@ set(EXTENSION_SOURCES
     src/om/local_file.cpp
     src/om/metadata.cpp
     src/om/reader.cpp
+    src/om/range_cache.cpp
     src/scan/batch.cpp
     src/scan/dimensions.cpp
+    src/scan/axis_filter.cpp
+    src/scan/axis_selection.cpp
     src/scan/projection.cpp
     src/scan/read_om.cpp
+	src/scan/semantic_axes.cpp
     src/scan/raw_scan.cpp
     src/scan/schema.cpp
     src/scan/spatial_filter.cpp

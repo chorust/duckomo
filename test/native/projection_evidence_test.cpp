@@ -650,8 +650,10 @@ void TestSpatialProjectionSlotsPreserveOrderAndDeduplicateValues() {
 	duckdb::duckomo::ProjectionPlan spatial(schema, requested, true);
 	const auto &slots = spatial.GetOutputSlots();
 	Require(slots.size() == requested.size(), "spatial output keeps every requested column slot");
-	Require(slots[0].is_longitude && slots[1].variable_index == 1 && slots[2].is_cardinality &&
-	            slots[3].is_latitude && slots[4].variable_index == 1 && slots[5].variable_index == 0,
+	Require(slots[0].kind == duckdb::duckomo::OutputColumnKind::Longitude && slots[1].source_index == 1 &&
+	            slots[2].kind == duckdb::duckomo::OutputColumnKind::Cardinality &&
+	            slots[3].kind == duckdb::duckomo::OutputColumnKind::Latitude &&
+	            slots[4].source_index == 1 && slots[5].source_index == 0,
 	        "coordinate, cardinality, reordered and duplicate output slots retain their request order");
 	Require(spatial.GetRequiredVariableIds() == std::vector<duckdb::idx_t>({1, 0}),
 	        "each value dependency is decoded once in first-use order");
@@ -659,7 +661,7 @@ void TestSpatialProjectionSlotsPreserveOrderAndDeduplicateValues() {
 
 	duckdb::duckomo::ProjectionPlan legacy(schema, {1, 0, 1});
 	Require(legacy.GetRequiredVariableIds() == std::vector<duckdb::idx_t>({1, 0}) &&
-	            legacy.GetOutputSlots()[0].variable_index == 1 && legacy.GetOutputSlots()[2].variable_index == 1,
+	            legacy.GetOutputSlots()[0].source_index == 1 && legacy.GetOutputSlots()[2].source_index == 1,
 	        "the original value-only projection path retains order and duplicate behavior");
 }
 

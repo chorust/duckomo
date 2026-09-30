@@ -7,3 +7,9 @@
 [submodule "extension-ci-tools"]
 	path = extension-ci-tools
 	url = https://github.com/duckdb/extension-ci-tools.git
+[submodule "third_party/duckdb-httpfs"]
+	path = third_party/duckdb-httpfs
+	url = https://github.com/duckdb/duckdb-httpfs.git
+[submodule "speckit-roadmap-extension"]
+	path = .specify/extensions/roadmap
+	url = https://github.com/srobroek/speckit-roadmap.git

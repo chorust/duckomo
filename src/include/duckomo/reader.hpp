@@ -24,6 +24,7 @@ namespace duckomo {
 class OmV3Reader final {
 public:
 	explicit OmV3Reader(LocalFile file);
+	explicit OmV3Reader(std::unique_ptr<ReadAtFile> file);
 
 	OmV3Reader(const OmV3Reader &) = delete;
 	OmV3Reader &operator=(const OmV3Reader &) = delete;
@@ -55,14 +56,14 @@ public:
 	                     std::uint64_t output_bytes, std::uint64_t io_size_merge = 512,
 	                     std::uint64_t io_size_max = 64 * 1024) const;
 
-	const LocalFile &File() const noexcept;
+	const ReadAtFile &File() const noexcept;
 
 private:
 	void ValidateBodyRange(std::uint64_t offset, std::uint64_t size, const char *phase) const;
 	std::shared_ptr<const OwnedMetadataBuffer> ReadAndValidateMetadata(std::uint64_t offset,
 	                                                                   std::uint64_t size) const;
 
-	LocalFile file_;
+	std::unique_ptr<ReadAtFile> file_;
 	std::uint64_t trailer_offset_ = 0;
 	std::uint64_t root_offset_ = 0;
 	std::uint64_t root_size_ = 0;

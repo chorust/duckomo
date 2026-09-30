@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <atomic>
+#include <chrono>
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
@@ -9,6 +10,7 @@
 #include <fstream>
 #include <memory>
 #include <limits>
+#include <mutex>
 #include <optional>
 #include <sstream>
 #include <iomanip>
@@ -26,10 +28,13 @@
 #include "duckdb/common/types/timestamp.hpp"
 #include "duckdb/common/vector.hpp"
 #include "duckdb/main/client_context_state.hpp"
+#include "duckdb/main/database.hpp"
 #include "duckdb/planner/column_binding.hpp"
 #include "duckdb/planner/operator/logical_get.hpp"
 #include "duckdb/main/client_context.hpp"
 #include "duckomo/batch.hpp"
+#include "duckomo/axis_filter.hpp"
+#include "duckomo/axis_selection.hpp"
 #include "duckomo/domain_bbox.hpp"
 #include "duckomo/dimensions.hpp"
 #include "duckomo/domain_registry.hpp"
@@ -37,9 +42,11 @@
 #include "duckomo/metrics.hpp"
 #include "duckomo/metadata.hpp"
 #include "duckomo/projection.hpp"
+#include "duckomo/range_cache.hpp"
 #include "duckomo/reader.hpp"
 #include "duckomo/regular_grid.hpp"
 #include "duckomo/schema.hpp"
+#include "duckomo/semantic_axes.hpp"
 #include "duckomo/spatial_filter.hpp"
 #include "duckomo/spatial_layout.hpp"
 #include "duckomo/spatial_selection.hpp"
@@ -49,6 +56,8 @@ namespace duckomo {
 
 namespace {
 
+constexpr idx_t SCAN_TASK_POSITION_WINDOW = 65536;
+
 std::string EnvironmentValue(const char *name) {
 	const auto *value = std::getenv(name);
 	return value == nullptr ? std::string() : std::string(value);
@@ -56,47 +65,131 @@ std::string EnvironmentValue(const char *name) {
 
 void WriteMetricsSidecar(const ScanMetrics &metrics, const std::string &path) noexcept;
 
-// A table function's global scan state can finish before DuckDB has finished
-// consuming the query (for example, when a downstream operator is interrupted
-// after the final source batch). Keep a query-end observer so the sidecar
-// status describes the complete SQL query rather than only the scanner.
-class ScanMetricsQueryState final : public ClientContextState {
+class DuckomoSessionState final : public ClientContextState {
 public:
-	ScanMetricsQueryState(std::string state_key_p, std::string output_path_p, std::shared_ptr<ScanMetrics> metrics_p)
-	    : state_key(std::move(state_key_p)), output_path(std::move(output_path_p)), metrics(std::move(metrics_p)) {
+	void BeginQuery(const std::string &query_id) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		if (active_query_id_ != query_id) {
+			active_query_id_ = query_id;
+			pending_scans_.clear();
+		}
 	}
 
+	void Publish(const std::shared_ptr<ScanMetrics> &metrics) {
+		const auto snapshot = metrics->Snapshot();
+		std::lock_guard<std::mutex> guard(mutex_);
+		if (snapshot.query_id != active_query_id_) return;
+		pending_scans_.push_back({snapshot.scan_id, snapshot.query_id, metrics->ToMetricsV3Json()});
+		std::sort(pending_scans_.begin(), pending_scans_.end(),
+		          [](const PublishedScan &left, const PublishedScan &right) { return left.scan_id < right.scan_id; });
+		last_scans_ = pending_scans_;
+		last_query_id_ = active_query_id_;
+	}
+
+	struct PublishedScan final {
+		std::uint64_t scan_id;
+		std::string query_id;
+		std::string metrics;
+	};
+
+	std::vector<PublishedScan> LastScans() const {
+		std::lock_guard<std::mutex> guard(mutex_);
+		return last_scans_;
+	}
+
+	RangeCache &Cache() noexcept { return cache_; }
+
+private:
+	mutable std::mutex mutex_;
+	std::string active_query_id_;
+	std::string last_query_id_;
+	std::vector<PublishedScan> pending_scans_;
+	std::vector<PublishedScan> last_scans_;
+	RangeCache cache_;
+};
+
+shared_ptr<DuckomoSessionState> GetDuckomoSessionState(ClientContext &context) {
+	return context.registered_state->GetOrCreate<DuckomoSessionState>("duckomo.session_state");
+}
+
+// A table function's global scan state can finish before DuckDB has finished
+// consuming the query (for example, when a downstream operator is interrupted
+// after the final source batch). Keep a query-end observer so the sidecar and
+// session profile describe the complete SQL query rather than only the scan.
+class ScanMetricsQueryState final : public ClientContextState {
+public:
+	ScanMetricsQueryState(std::string state_key_p, std::string output_path_p,
+	                      shared_ptr<DuckomoSessionState> session_p, std::string query_id_p)
+	    : state_key(std::move(state_key_p)), output_path(std::move(output_path_p)), session(std::move(session_p)),
+	      query_id(std::move(query_id_p)), started_at(std::chrono::steady_clock::now()) {
+		session->BeginQuery(query_id);
+	}
+
+	void Add(std::shared_ptr<ScanMetrics> metrics_p) {
+		std::lock_guard<std::mutex> guard(mutex);
+		metrics.emplace_back(std::move(metrics_p));
+	}
+
+	std::uint64_t NextScanId() noexcept { return next_scan_id.fetch_add(1); }
+	const std::string &QueryId() const noexcept { return query_id; }
+
 	void QueryEnd(ClientContext &context, optional_ptr<ErrorData> error) override {
-		if (error) {
-			const auto current = metrics->Snapshot().status;
-			if (error->Type() == ExceptionType::INTERRUPT) {
-				metrics->SetStatus(ScanStatus::Cancelled, "cancelled");
-			} else if (current != ScanStatus::Failed) {
-				metrics->SetStatus(ScanStatus::Failed, "query_error");
-			}
-		} else {
-			// A successful query can stop before the scan reaches EOF (for
-			// example, when LIMIT has enough rows). Query completion is the
-			// authoritative success signal; the scan destructor may have marked
-			// this case as incomplete_scan already.
-			metrics->SetStatus(ScanStatus::Succeeded);
+		std::vector<std::shared_ptr<ScanMetrics>> current_metrics;
+		{
+			std::lock_guard<std::mutex> guard(mutex);
+			current_metrics = metrics;
 		}
-		WriteMetricsSidecar(*metrics, output_path);
+		const auto elapsed = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - started_at).count();
+		for (const auto &current : current_metrics) {
+			if (error) {
+				const auto status = current->Snapshot().status;
+				if (error->Type() == ExceptionType::INTERRUPT) {
+					current->SetStatus(ScanStatus::Cancelled, "cancelled");
+				} else if (status != ScanStatus::Failed) {
+					current->SetStatus(ScanStatus::Failed, "query_error");
+				}
+			} else {
+				// Query completion is authoritative: a valid LIMIT can stop the
+				// physical scan before the selection cursor reaches EOF.
+				current->SetStatus(ScanStatus::Succeeded);
+			}
+			current->SetElapsedMilliseconds(elapsed);
+			session->Publish(current);
+		}
+		if (!current_metrics.empty()) WriteMetricsSidecar(*current_metrics.back(), output_path);
 		context.registered_state->Remove(state_key);
 	}
 
 private:
 	std::string state_key;
 	std::string output_path;
-	std::shared_ptr<ScanMetrics> metrics;
+	shared_ptr<DuckomoSessionState> session;
+	std::string query_id;
+	std::chrono::steady_clock::time_point started_at;
+	std::atomic<std::uint64_t> next_scan_id{0};
+	std::mutex mutex;
+	std::vector<std::shared_ptr<ScanMetrics>> metrics;
 };
 
-std::shared_ptr<ScanMetrics> CreateScanMetrics(ClientContext &context) {
+shared_ptr<ScanMetricsQueryState> GetScanMetricsQueryState(ClientContext &context) {
 	static std::atomic<std::uint64_t> next_query_id{0};
-	auto metrics = std::make_shared<ScanMetrics>();
+	const auto query_text = context.GetCurrentQuery();
+	const auto state_key = "duckomo.scan_metrics_query." + std::to_string(std::hash<std::string>{}(query_text));
+	auto state = context.registered_state->Get<ScanMetricsQueryState>(state_key);
+	if (state) return state;
 	const auto query_id = std::to_string(static_cast<unsigned long long>(context.GetConnectionId())) + "-" +
 	                      std::to_string(static_cast<unsigned long long>(next_query_id.fetch_add(1)));
-	metrics->SetQueryIdentity(query_id, EnvironmentValue("DUCKOMO_SCENARIO"), context.GetCurrentQuery());
+	state = make_shared_ptr<ScanMetricsQueryState>(state_key, EnvironmentValue("DUCKOMO_METRICS_OUTPUT"),
+	                                               GetDuckomoSessionState(context), query_id);
+	context.registered_state->Insert(state_key, state);
+	return state;
+}
+
+std::shared_ptr<ScanMetrics> CreateScanMetrics(ClientContext &context) {
+	auto metrics = std::make_shared<ScanMetrics>();
+	const auto query_state = GetScanMetricsQueryState(context);
+	metrics->SetQueryIdentity(query_state->QueryId(), EnvironmentValue("DUCKOMO_SCENARIO"), context.GetCurrentQuery());
+	metrics->SetScanId(query_state->NextScanId());
 	metrics->SetFixture(EnvironmentValue("DUCKOMO_FIXTURE_ID"), EnvironmentValue("DUCKOMO_FIXTURE_SHA256"));
 	metrics->SetDependencyCommit("duckdb", "08e34c447bae34eaee3723cac61f2878b6bdf787");
 	metrics->SetDependencyCommit("om-file-format", "d8855e418e2231ae8439f0c7e840fa3f93b371e3");
@@ -108,12 +201,7 @@ std::shared_ptr<ScanMetrics> CreateScanMetrics(ClientContext &context) {
 }
 
 void RegisterScanMetricsQueryState(ClientContext &context, const std::shared_ptr<ScanMetrics> &metrics) {
-	const auto output_path = EnvironmentValue("DUCKOMO_METRICS_OUTPUT");
-	if (!output_path.empty()) {
-		const auto state_key = "duckomo.scan_metrics." + metrics->Snapshot().query_id;
-		context.registered_state->Insert(state_key,
-		                                make_shared_ptr<ScanMetricsQueryState>(state_key, output_path, metrics));
-	}
+	GetScanMetricsQueryState(context)->Add(metrics);
 }
 
 void WriteMetricsSidecar(const ScanMetrics &metrics) noexcept {
@@ -254,6 +342,24 @@ bool SameSpatialPredicate(const SpatialPredicate &left, const SpatialPredicate &
 		const auto &right_condition = right.necessary_conditions[index];
 		if (left_condition.axis != right_condition.axis || left_condition.comparison != right_condition.comparison ||
 		    left_condition.constant != right_condition.constant) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool SameAxisPredicate(const AxisPredicate &left, const AxisPredicate &right) {
+	if (left.has_unsupported_condition != right.has_unsupported_condition ||
+	    left.fallback_reasons != right.fallback_reasons ||
+	    left.necessary_conditions.size() != right.necessary_conditions.size()) {
+		return false;
+	}
+	for (std::size_t index = 0; index < left.necessary_conditions.size(); index++) {
+		const auto &left_condition = left.necessary_conditions[index];
+		const auto &right_condition = right.necessary_conditions[index];
+		if (left_condition.axis_index != right_condition.axis_index ||
+		    left_condition.comparison != right_condition.comparison ||
+		    !Value::NotDistinctFrom(left_condition.constant, right_condition.constant)) {
 			return false;
 		}
 	}
@@ -411,16 +517,44 @@ SpatialBindConfiguration BindSpatialConfiguration(const TableFunctionBindInput &
 struct TemporalBindConfiguration final {
 	std::vector<timestamp_t> values;
 	std::uint64_t stride = 0; // Zero denotes a scalar snapshot.
+	std::uint64_t axis_length = 1;
+	bool regular = false;
+	timestamp_t start = timestamp_t(0);
+	std::int64_t step_micros = 0;
+
+	timestamp_t Coordinate(std::uint64_t logical_position) const {
+		const auto index = stride == 0 ? 0 : (logical_position / stride) % axis_length;
+		if (!regular) return values.at(index);
+		const __int128 value = static_cast<__int128>(start.value) + static_cast<__int128>(step_micros) * index;
+		return timestamp_t(static_cast<std::int64_t>(value));
+	}
+
 	bool operator==(const TemporalBindConfiguration &other) const {
-		return stride == other.stride && values == other.values;
+		return stride == other.stride && axis_length == other.axis_length && regular == other.regular &&
+		       start == other.start && step_micros == other.step_micros && values == other.values;
 	}
 };
 
 std::optional<TemporalBindConfiguration> BindTemporalConfiguration(const TableFunctionBindInput &input,
                                                                    const BoundSchema &schema,
-                                                                   const AxisDeclarations &axes) {
+                                                                   const AxisDeclarations &axes,
+                                                                   const SemanticAxes &semantic_axes) {
 	const auto *explicit_times = GetNamedValue(input, "valid_times");
 	const bool has_explicit = explicit_times && !explicit_times->IsNull();
+	for (const auto &semantic_axis : semantic_axes) {
+		if (semantic_axis.kind != SemanticAxisKind::Time) continue;
+		if (has_explicit) {
+			throw BinderException("read_om axes.time cannot be combined with valid_times");
+		}
+		TemporalBindConfiguration result;
+		result.values = semantic_axis.timestamps;
+		result.stride = semantic_axis.stride;
+		result.axis_length = semantic_axis.axis_length;
+		result.regular = semantic_axis.regular;
+		result.start = semantic_axis.timestamp_start;
+		result.step_micros = semantic_axis.timestamp_step_micros;
+		return result;
+	}
 	std::vector<timestamp_t> supplied;
 	if (has_explicit) {
 		for (const auto &value : ListValue::GetChildren(*explicit_times)) {
@@ -463,6 +597,7 @@ std::optional<TemporalBindConfiguration> BindTemporalConfiguration(const TableFu
 			if (current.values.size() != variable.shape.at(axis)) {
 				throw BinderException("read_om time coordinate length must match the declared time axis");
 			}
+			current.axis_length = variable.shape.at(axis);
 			current.stride = 1;
 			for (std::size_t next = axis + 1; next < variable.shape.size(); next++) {
 				current.stride *= variable.shape[next];
@@ -471,6 +606,7 @@ std::optional<TemporalBindConfiguration> BindTemporalConfiguration(const TableFu
 			throw BinderException(
 			    "read_om time array requires a complete ordered time axis from coordinates or dimensions");
 		}
+		if (time_axis == axis_names.end()) current.axis_length = 1;
 		if (result && !(current == *result)) {
 			throw BinderException("read_om arrays have conflicting time coordinates");
 		}
@@ -486,14 +622,16 @@ std::optional<TemporalBindConfiguration> BindTemporalConfiguration(const TableFu
 struct ReadOmBindData final : TableFunctionData {
 	ReadOmBindData(std::string path_p, BoundSchema schema_p, AxisDeclarations axes_p,
 	               SpatialBindConfiguration spatial_p, std::optional<TemporalBindConfiguration> temporal_p,
+	               SemanticAxes semantic_axes_p,
 	               std::shared_ptr<ScanMetrics> metrics_p)
 	    : path(std::move(path_p)), schema(std::move(schema_p)), axes(std::move(axes_p)), spatial(std::move(spatial_p)),
-	      temporal(std::move(temporal_p)), metrics(std::move(metrics_p)) {
+	      temporal(std::move(temporal_p)), semantic_axes(std::move(semantic_axes_p)), metrics(std::move(metrics_p)) {
 	}
 
 	ReadOmBindData(const ReadOmBindData &other)
 	    : TableFunctionData(other), path(other.path), schema(other.schema), axes(other.axes), spatial(other.spatial),
-	      temporal(other.temporal), metrics(other.metrics) {
+	      temporal(other.temporal), semantic_axes(other.semantic_axes), axis_predicate(other.axis_predicate),
+	      metrics(other.metrics) {
 	}
 
 	unique_ptr<FunctionData> Copy() const override {
@@ -503,9 +641,11 @@ struct ReadOmBindData final : TableFunctionData {
 	bool Equals(const FunctionData &other_p) const override {
 		const auto &other = other_p.Cast<ReadOmBindData>();
 		return path == other.path && axes == other.axes && temporal == other.temporal &&
+		       semantic_axes == other.semantic_axes &&
 		       spatial.grid_signature == other.spatial.grid_signature &&
 		       spatial.layout_name == other.spatial.layout_name && spatial.source == other.spatial.source &&
-		       SameSpatialPredicate(*spatial.predicate, *other.spatial.predicate) && SameSchema(schema, other.schema);
+		       SameSpatialPredicate(*spatial.predicate, *other.spatial.predicate) &&
+		       SameAxisPredicate(*axis_predicate, *other.axis_predicate) && SameSchema(schema, other.schema);
 	}
 
 	bool SupportStatementCache() const override {
@@ -515,8 +655,10 @@ struct ReadOmBindData final : TableFunctionData {
     std::string path;
     BoundSchema schema;
     AxisDeclarations axes;
-    SpatialBindConfiguration spatial;
+	SpatialBindConfiguration spatial;
 	std::optional<TemporalBindConfiguration> temporal;
+	SemanticAxes semantic_axes;
+	std::shared_ptr<AxisPredicate> axis_predicate = std::make_shared<AxisPredicate>();
 	std::shared_ptr<ScanMetrics> metrics;
 };
 
@@ -525,6 +667,9 @@ void ObserveComplexFilter(ClientContext &, LogicalGet &get, FunctionData *bind_d
 	if (bind_data && !filters.empty()) {
 		auto &data = bind_data->Cast<ReadOmBindData>();
 		data.metrics->MarkFilterCallbackInvoked();
+		const auto output_column_base = data.schema.variables.size() + (data.spatial.grid ? 2 : 0) +
+		                               (data.temporal ? 1 : 0);
+		*data.axis_predicate = ExtractAxisPredicate(get, filters, output_column_base, data.semantic_axes);
 		if (data.spatial.grid && data.spatial.layout) {
 			*data.spatial.predicate = ExtractSpatialPredicate(get, filters, data.schema.variables.size());
 			const auto selection = BuildSpatialSelection(*data.spatial.grid, *data.spatial.layout,
@@ -544,57 +689,176 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 	ReadOmGlobalState(ClientContext &context, const ReadOmBindData &bind_data, const std::vector<column_t> &column_ids,
 	                  std::shared_ptr<ScanMetrics> metrics_p)
 	    : path(bind_data.path), schema(bind_data.schema),
-	      projection(schema, column_ids, bind_data.spatial.grid.has_value(), bind_data.temporal.has_value()),
-	      spatial(bind_data.spatial), temporal(bind_data.temporal), metrics(std::move(metrics_p)),
+	      projection(schema, column_ids, bind_data.spatial.grid.has_value(), bind_data.temporal.has_value(),
+	                 bind_data.semantic_axes),
+	      spatial(bind_data.spatial), temporal(bind_data.temporal), semantic_axes(bind_data.semantic_axes),
+	      axis_predicate(*bind_data.axis_predicate), metrics(std::move(metrics_p)),
 	      reader(make_uniq<OmV3Reader>(LocalFile::Open(context, bind_data.path, metrics, ScanMetadataStage::Scan))) {
 		// The file may have changed since binding. Revalidate its complete tree
 		// before constructing decoder state, while keeping binding metadata-only.
 		auto current_schema = BuildBoundSchema(ReadMetadataTree(*reader));
 		if (!SameSchema(schema, current_schema)) {
 			throw ReaderError(ReaderErrorCode::InvalidMetadata,
-			                  "OM array metadata changed between bind and scan for local file '" + path + "'");
+			                  "OM array metadata changed between bind and scan for '" + path + "'");
 		}
 		if (spatial.grid && spatial.layout) {
 			selection = BuildSpatialSelection(*spatial.grid, *spatial.layout, *spatial.predicate);
 			metrics->SetSpatialSelection(SpatialSelectionModeName(selection.mode),
 			                             selection.residual_filter_retained, selection.fallback_reasons,
 			                             selection.candidate_rows, false);
-			spatial_cursor = make_uniq<SpatialBatchCursor>(*spatial.grid, *spatial.layout, selection);
 			if (selection.mode == SpatialSelectionMode::Empty) {
+				no_candidates = true;
 				return;
 			}
 		}
-
-        decoders.reserve(projection.GetRequiredVariableIds().size());
-        for (const auto variable_index : projection.GetRequiredVariableIds()) {
-            const auto &variable = current_schema.variables.at(variable_index);
-            decoders.emplace_back(make_uniq<OmDecoderState>(BorrowedOmVariable(variable.metadata_owner)));
-        }
+		selection_cursor = make_uniq<AxisSelectionCursor>(schema.shape, semantic_axes, axis_predicate);
+		if (selection_cursor->IsEmpty()) {
+			no_candidates = true;
+			return;
+		}
+		if (selection.mode == SpatialSelectionMode::Restricted &&
+		    selection.candidate_rows <= selection_cursor->CandidateCount()) {
+			spatial_cursor = make_uniq<SpatialBatchCursor>(*spatial.grid, *spatial.layout, selection);
+		}
+		candidate_count = selection_cursor->CandidateCount();
+		if (spatial.grid && spatial.layout) {
+			candidate_count = std::min(candidate_count, selection.candidate_rows);
+			// The precise intersection cardinality is not known without exhausting
+			// the lazy cursor. Avoid creating idle workers for sparse mixed queries.
+			if (!axis_predicate.necessary_conditions.empty()) {
+				candidate_count = std::min<std::uint64_t>(candidate_count, SCAN_TASK_POSITION_WINDOW);
+			}
+		}
+		Value configured_limit;
+		std::uint64_t requested_limit = static_cast<std::uint64_t>(context.db->NumberOfThreads());
+		if (context.TryGetCurrentSetting("duckomo_max_threads", configured_limit)) {
+			const auto configured = configured_limit.GetValue<std::int64_t>();
+			if (configured > 0) requested_limit = std::min<std::uint64_t>(requested_limit,
+			                                                           static_cast<std::uint64_t>(configured));
+		}
+		const auto available_tasks = candidate_count == 0
+		                                 ? std::uint64_t(1)
+		                                 : candidate_count / SCAN_TASK_POSITION_WINDOW +
+		                                       (candidate_count % SCAN_TASK_POSITION_WINDOW != 0);
+		max_threads = static_cast<idx_t>(std::max<std::uint64_t>(1, std::min(requested_limit, available_tasks)));
+		metrics->SetSpatialSelection(axis_predicate.necessary_conditions.empty() ?
+		                                 (selection.mode == SpatialSelectionMode::Restricted ? "restricted" :
+		                                  SpatialSelectionModeName(selection.mode)) : "axis_restricted",
+		                             true, axis_predicate.fallback_reasons, candidate_count,
+		                             candidate_count == 0);
 	}
 
 	~ReadOmGlobalState() override {
-        if (!metrics) {
-            return;
-        }
-        if (!scan_completed && !metrics_status_set) {
-            metrics->SetStatus(ScanStatus::Failed, "incomplete_scan");
-        }
-        WriteMetricsSidecar(*metrics);
-    }
+		if (metrics && !scan_completed && !metrics_status_set && !stop_requested.load()) {
+			metrics->SetStatus(ScanStatus::Failed, "incomplete_scan");
+		}
+	}
+
+	idx_t MaxThreads() const override {
+		return max_threads;
+	}
+
+	bool GetNextTask(ClientContext &context, std::vector<std::uint64_t> &positions) {
+		std::lock_guard<std::mutex> guard(task_mutex);
+		if (stop_requested.load() || selection_exhausted || no_candidates) return false;
+		if (spatial_cursor) {
+			positions.clear();
+			SpatialBatch batch;
+			while (positions.size() < SCAN_TASK_POSITION_WINDOW && !spatial_cursor->Exhausted()) {
+				if (context.IsInterrupted()) throw InterruptException();
+				if (!spatial_cursor->Next(std::min<idx_t>(STANDARD_VECTOR_SIZE,
+				                                         SCAN_TASK_POSITION_WINDOW - positions.size()), batch,
+				                          [&context]() { if (context.IsInterrupted()) throw InterruptException(); })) break;
+				for (const auto position : batch.logical_positions) {
+					if (selection_cursor->Contains(position)) positions.push_back(position);
+				}
+			}
+			if (positions.empty()) {
+				selection_exhausted = true;
+				scan_completed = true;
+				return false;
+			}
+			metrics->RecordScanTaskClaimed();
+			return true;
+		}
+		const auto include_spatial = [this, &context](std::uint64_t logical_position) {
+			if (context.IsInterrupted()) throw InterruptException();
+			if (!spatial.grid || !spatial.layout) return true;
+			const auto coordinate = spatial.layout->Coordinate(*spatial.grid, logical_position);
+			for (const auto &constraint : spatial.predicate->necessary_conditions) {
+				const auto value = constraint.axis == SpatialAxis::Latitude ? coordinate.latitude : coordinate.longitude;
+				switch (constraint.comparison) {
+				case SpatialComparison::Equal: if (value != constraint.constant) return false; break;
+				case SpatialComparison::Less: if (!(value < constraint.constant)) return false; break;
+				case SpatialComparison::LessEqual: if (!(value <= constraint.constant)) return false; break;
+				case SpatialComparison::Greater: if (!(value > constraint.constant)) return false; break;
+				case SpatialComparison::GreaterEqual: if (!(value >= constraint.constant)) return false; break;
+				}
+			}
+			return true;
+		};
+		const auto position_count = selection_cursor->Next(SCAN_TASK_POSITION_WINDOW, positions, include_spatial);
+		if (position_count == 0) {
+			selection_exhausted = true;
+			scan_completed = true;
+			return false;
+		}
+		metrics->RecordScanTaskClaimed();
+		return true;
+	}
+
+	bool RequestStop() noexcept {
+		return !stop_requested.exchange(true);
+	}
 
     std::string path;
     BoundSchema schema;
     ProjectionPlan projection;
     SpatialBindConfiguration spatial;
 	std::optional<TemporalBindConfiguration> temporal;
+	SemanticAxes semantic_axes;
+	AxisPredicate axis_predicate;
 	SpatialSelection selection;
-    unique_ptr<SpatialBatchCursor> spatial_cursor;
+	unique_ptr<AxisSelectionCursor> selection_cursor;
+	unique_ptr<SpatialBatchCursor> spatial_cursor;
     std::shared_ptr<ScanMetrics> metrics;
-    std::uint64_t next_linear_index = 0;
     unique_ptr<OmV3Reader> reader;
-    vector<unique_ptr<OmDecoderState>> decoders;
+	mutable std::mutex task_mutex;
+	std::atomic<bool> stop_requested{false};
+	std::atomic<std::uint64_t> next_worker_id{0};
+	bool selection_exhausted = false;
+	bool no_candidates = false;
+	std::uint64_t candidate_count = 0;
+	idx_t max_threads = 1;
     bool scan_completed = false;
-    bool metrics_status_set = false;
+	std::atomic<bool> metrics_status_set{false};
+};
+
+struct ReadOmLocalState final : LocalTableFunctionState {
+	ReadOmLocalState(ClientContext &context, const ReadOmBindData &bind_data, const ReadOmGlobalState &global_state,
+	                 std::uint64_t worker_id_p)
+	    : worker_id(worker_id_p) {
+		if (global_state.no_candidates) return;
+		reader = make_uniq<OmV3Reader>(LocalFile::Open(context, bind_data.path, bind_data.metrics,
+		                                             ScanMetadataStage::Scan));
+		const auto current_schema = BuildBoundSchema(ReadMetadataTree(*reader));
+		if (!SameSchema(global_state.schema, current_schema)) {
+			throw ReaderError(ReaderErrorCode::InvalidMetadata,
+			                  "OM array metadata changed while opening a scan worker for '" + bind_data.path + "'");
+		}
+		decoders.reserve(global_state.projection.GetRequiredVariableIds().size());
+		for (const auto variable_index : global_state.projection.GetRequiredVariableIds()) {
+			const auto &variable = current_schema.variables.at(variable_index);
+			decoders.emplace_back(make_uniq<OmDecoderState>(BorrowedOmVariable(variable.metadata_owner)));
+		}
+	}
+
+	unique_ptr<OmV3Reader> reader;
+	vector<unique_ptr<OmDecoderState>> decoders;
+	std::vector<std::uint64_t> task_positions;
+	idx_t task_position_offset = 0;
+	std::uint64_t worker_id;
+	bool registered_as_active = false;
 };
 
 unique_ptr<FunctionData> BindReadOm(ClientContext &context, TableFunctionBindInput &input,
@@ -615,10 +879,26 @@ unique_ptr<FunctionData> BindReadOm(ClientContext &context, TableFunctionBindInp
 	const auto *dimensions = dimensions_entry == input.named_parameters.end() ? nullptr : &dimensions_entry->second;
 	auto axes = ValidateAxisDeclarations(dimensions, schema);
 	auto spatial = BindSpatialConfiguration(input, schema, axes, *metrics);
-	auto temporal = BindTemporalConfiguration(input, schema, axes);
+	std::vector<std::string> spatial_axis_names;
+	if (spatial.layout) {
+		if (spatial.layout->flattened) {
+			spatial_axis_names.emplace_back(spatial.layout->axes.at(spatial.layout->point_axis));
+		} else {
+			spatial_axis_names.emplace_back(spatial.layout->axes.at(spatial.layout->latitude_axis));
+			spatial_axis_names.emplace_back(spatial.layout->axes.at(spatial.layout->longitude_axis));
+		}
+	}
+	const auto *semantic_axes_value = GetNamedValue(input, "axes");
+	auto semantic_axes = BindSemanticAxes(semantic_axes_value, schema, axes, spatial_axis_names);
+	auto temporal = BindTemporalConfiguration(input, schema, axes, semantic_axes);
 
-	return_types.reserve(return_types.size() + schema.variables.size() + (spatial.grid ? 2 : 0) + (temporal ? 1 : 0));
-	names.reserve(names.size() + schema.variables.size() + (spatial.grid ? 2 : 0) + (temporal ? 1 : 0));
+	const auto semantic_column_count = static_cast<std::size_t>(std::count_if(
+	    semantic_axes.begin(), semantic_axes.end(),
+	    [](const SemanticAxis &axis) { return axis.kind != SemanticAxisKind::Time; }));
+	return_types.reserve(return_types.size() + schema.variables.size() + (spatial.grid ? 2 : 0) +
+	                     (temporal ? 1 : 0) + semantic_column_count);
+	names.reserve(names.size() + schema.variables.size() + (spatial.grid ? 2 : 0) +
+	              (temporal ? 1 : 0) + semantic_column_count);
 	for (const auto &variable : schema.variables) {
 		return_types.emplace_back(variable.type);
 		names.emplace_back(variable.column_name);
@@ -635,8 +915,20 @@ unique_ptr<FunctionData> BindReadOm(ClientContext &context, TableFunctionBindInp
 		return_types.emplace_back(LogicalType::TIMESTAMP);
 		names.emplace_back("valid_time");
 	}
+	for (const auto &semantic_axis : semantic_axes) {
+		if (semantic_axis.kind == SemanticAxisKind::Time) continue;
+		const auto name = SemanticOutputName(semantic_axis.kind);
+		for (const auto &existing_name : names) {
+			if (StringUtil::CIEquals(existing_name, name)) {
+				throw BinderException("read_om " + name + " column name conflicts with existing column '" +
+				                      existing_name + "'");
+			}
+		}
+		return_types.emplace_back(semantic_axis.output_type);
+		names.emplace_back(name);
+	}
 	return make_uniq<ReadOmBindData>(path, std::move(schema), std::move(axes), std::move(spatial), std::move(temporal),
-	                                 std::move(metrics));
+	                                 std::move(semantic_axes), std::move(metrics));
 }
 
 unique_ptr<GlobalTableFunctionState> InitReadOm(ClientContext &context, TableFunctionInitInput &input) {
@@ -647,73 +939,90 @@ unique_ptr<GlobalTableFunctionState> InitReadOm(ClientContext &context, TableFun
 	return make_uniq<ReadOmGlobalState>(context, bind_data, input.column_ids, bind_data.metrics);
 }
 
-void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, DataChunk &output) {
-	output.SetCardinality(0);
-	std::uint64_t count = 0;
-	std::vector<BatchSegment> segments;
-	std::vector<std::uint64_t> logical_positions;
-	if (state.spatial_cursor) {
-		SpatialBatch batch;
-		if (!state.spatial_cursor->Next(STANDARD_VECTOR_SIZE, batch, [&context] {
-				if (context.IsInterrupted()) {
-					throw InterruptException();
-				}
-			})) {
-			state.scan_completed = true;
-			if (state.metrics) {
-				state.metrics->SetStatus(ScanStatus::Succeeded);
-				state.metrics_status_set = true;
-			}
-			return;
-		}
-		count = batch.logical_positions.size();
-		logical_positions = std::move(batch.logical_positions);
-		segments = std::move(batch.read_segments);
-	} else {
-		if (state.next_linear_index >= state.schema.row_count) {
-			state.scan_completed = true;
-			if (state.metrics) {
-				state.metrics->SetStatus(ScanStatus::Succeeded);
-				state.metrics_status_set = true;
-			}
-			return;
-		}
-		count = std::min<std::uint64_t>(state.schema.row_count - state.next_linear_index,
-		                                static_cast<std::uint64_t>(STANDARD_VECTOR_SIZE));
-		segments = BuildBatchSegments(state.schema.shape, state.next_linear_index, count);
+unique_ptr<LocalTableFunctionState> InitReadOmLocal(ExecutionContext &context, TableFunctionInitInput &input,
+                                                    GlobalTableFunctionState *global_state) {
+	if (!input.bind_data || !global_state) {
+		throw InternalException("read_om worker was initialized without bind or global state");
 	}
-    const auto &slots = state.projection.GetOutputSlots();
-    const auto &required_variables = state.projection.GetRequiredVariableIds();
-    if (output.data.size() != slots.size() || state.decoders.size() != required_variables.size()) {
-        throw InternalException("read_om output column count does not match its projection plan");
+	auto &global = global_state->Cast<ReadOmGlobalState>();
+	try {
+		const auto worker_id = global.next_worker_id.fetch_add(1);
+		return make_uniq<ReadOmLocalState>(context.client, input.bind_data->Cast<ReadOmBindData>(), global, worker_id);
+	} catch (const ReaderError &error) {
+		if (global.RequestStop() && global.metrics) {
+			global.metrics->SetStatus(ScanStatus::Failed,
+			                          "reader_error_" + std::to_string(static_cast<unsigned int>(error.Code())));
+			global.metrics_status_set = true;
+		}
+		throw;
+	} catch (const std::exception &) {
+		if (global.RequestStop() && global.metrics) {
+			global.metrics->SetStatus(ScanStatus::Failed, "worker_init_error");
+			global.metrics_status_set = true;
+		}
+		throw;
+	}
+}
+
+void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLocalState &local, DataChunk &output) {
+	output.SetCardinality(0);
+	if (state.stop_requested.load() || context.IsInterrupted()) {
+		throw InterruptException();
+	}
+	while (local.task_position_offset >= local.task_positions.size()) {
+		if (!state.GetNextTask(context, local.task_positions)) {
+			return;
+		}
+		local.task_position_offset = 0;
+	}
+	const auto count = std::min<idx_t>(STANDARD_VECTOR_SIZE,
+	                                  local.task_positions.size() - local.task_position_offset);
+	std::vector<std::uint64_t> logical_positions(
+	    local.task_positions.begin() + local.task_position_offset,
+	    local.task_positions.begin() + local.task_position_offset + count);
+	const auto segments = BuildSelectedBatchSegments(state.schema.shape, logical_positions);
+	const auto &slots = state.projection.GetOutputSlots();
+	const auto &required_variables = state.projection.GetRequiredVariableIds();
+	if (output.data.size() != slots.size() || local.decoders.size() != required_variables.size()) {
+		throw InternalException("read_om output column count does not match its projection plan");
 	}
 
     for (std::size_t output_column = 0; output_column < slots.size(); output_column++) {
-		if (slots[output_column].is_valid_time) {
+		if (slots[output_column].kind == OutputColumnKind::ValidTime) {
 			auto *values = FlatVector::GetData<timestamp_t>(output.data[output_column]);
-			const auto &time = *state.temporal;
 			for (std::uint64_t row = 0; row < count; row++) {
-				const auto position = state.spatial_cursor ? logical_positions[row] : state.next_linear_index + row;
-				const auto time_index = time.stride == 0 ? 0 : (position / time.stride) % time.values.size();
-				values[row] = time.values[time_index];
+				values[row] = state.temporal->Coordinate(logical_positions[row]);
 			}
 			FlatVector::Validity(output.data[output_column]).SetAllValid(static_cast<idx_t>(count));
 			continue;
 		}
-		if (slots[output_column].is_latitude || slots[output_column].is_longitude) {
+		if (slots[output_column].kind == OutputColumnKind::Latitude ||
+		    slots[output_column].kind == OutputColumnKind::Longitude) {
 			if (!state.spatial.grid || !state.spatial.layout) {
 				throw InternalException("read_om projected a spatial column without a bound grid");
 			}
 			auto *values = FlatVector::GetData<double>(output.data[output_column]);
 			for (std::uint64_t row = 0; row < count; row++) {
-				const auto logical_index = state.spatial_cursor ? logical_positions[row] : state.next_linear_index + row;
+				const auto logical_index = logical_positions[row];
 				const auto coordinate = state.spatial.layout->Coordinate(*state.spatial.grid, logical_index);
-				values[row] = slots[output_column].is_latitude ? coordinate.latitude : coordinate.longitude;
+				values[row] = slots[output_column].kind == OutputColumnKind::Latitude ? coordinate.latitude
+				                                                                            : coordinate.longitude;
 			}
 			FlatVector::Validity(output.data[output_column]).SetAllValid(static_cast<idx_t>(count));
 			continue;
 		}
-		if (!slots[output_column].is_cardinality) {
+		if (slots[output_column].kind == OutputColumnKind::SemanticCoordinate) {
+			if (slots[output_column].semantic_axis_index >= state.semantic_axes.size()) {
+				throw InternalException("read_om projected an unknown semantic coordinate");
+			}
+			const auto &semantic_axis = state.semantic_axes[slots[output_column].semantic_axis_index];
+			for (std::uint64_t row = 0; row < count; row++) {
+				const auto logical_index = logical_positions[row];
+				output.data[output_column].SetValue(row, semantic_axis.CoordinateValue(logical_index));
+			}
+			continue;
+		}
+		if (slots[output_column].kind != OutputColumnKind::Cardinality) {
             continue;
         }
         auto *values = FlatVector::GetData<bool>(output.data[output_column]);
@@ -724,8 +1033,7 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, DataChunk 
     for (std::size_t required_index = 0; required_index < required_variables.size(); required_index++) {
         idx_t primary_output = DConstants::INVALID_INDEX;
         for (idx_t output_column = 0; output_column < slots.size(); output_column++) {
-			if (!slots[output_column].is_cardinality && !slots[output_column].is_latitude &&
-			    !slots[output_column].is_longitude && !slots[output_column].is_valid_time &&
+			if (slots[output_column].kind == OutputColumnKind::Value &&
 			    slots[output_column].required_variable_index == required_index) {
 				primary_output = output_column;
                 break;
@@ -744,7 +1052,7 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, DataChunk 
             std::vector<std::uint64_t> cube_offset(segment.read_count.size(), 0);
             const auto variable_index = required_variables[required_index];
             const auto &variable = state.schema.variables.at(variable_index);
-            state.reader->DecodeSelection(*state.decoders[required_index], variable.canonical_path,
+			local.reader->DecodeSelection(*local.decoders[required_index], variable.canonical_path,
                                           segment.read_offset, segment.read_count,
                                           cube_offset, segment.read_count, values + segment.batch_offset,
                                           segment.count * sizeof(float));
@@ -757,9 +1065,8 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, DataChunk 
         }
 
         for (idx_t output_column = 0; output_column < slots.size(); output_column++) {
-			if (output_column == primary_output || slots[output_column].is_cardinality ||
-			    slots[output_column].is_latitude || slots[output_column].is_longitude ||
-			    slots[output_column].is_valid_time || slots[output_column].required_variable_index != required_index) {
+			if (output_column == primary_output || slots[output_column].kind != OutputColumnKind::Value ||
+			    slots[output_column].required_variable_index != required_index) {
 				continue;
 			}
 			auto *duplicate_values = FlatVector::GetData<float>(output.data[output_column]);
@@ -779,10 +1086,13 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, DataChunk 
 
 	// Commit both the visible cardinality and shared range only after every
 	// array has decoded successfully. Exceptions leave a zero-row chunk.
-	if (!state.spatial_cursor) {
-		state.next_linear_index += count;
-	}
+	local.task_position_offset += count;
+	state.metrics->RecordScannedRows(count);
 	output.SetCardinality(static_cast<idx_t>(count));
+	if (!local.registered_as_active) {
+		state.metrics->RecordWorkerActive(local.worker_id);
+		local.registered_as_active = true;
+	}
 }
 
 void ScanReadOm(ClientContext &context, TableFunctionInput &input, DataChunk &output) {
@@ -790,16 +1100,20 @@ void ScanReadOm(ClientContext &context, TableFunctionInput &input, DataChunk &ou
 		throw InternalException("read_om scan has no global state");
 	}
 	auto &state = input.global_state->Cast<ReadOmGlobalState>();
+	if (!input.local_state) {
+		throw InternalException("read_om scan has no local worker state");
+	}
+	auto &local = input.local_state->Cast<ReadOmLocalState>();
 	try {
-		ScanReadOmImpl(context, state, output);
+		ScanReadOmImpl(context, state, local, output);
 	} catch (const InterruptException &) {
-		if (state.metrics) {
+		if (state.RequestStop() && state.metrics) {
 			state.metrics->SetStatus(ScanStatus::Cancelled, "cancelled");
 			state.metrics_status_set = true;
 		}
 		throw;
 	} catch (const ReaderError &error) {
-		if (state.metrics) {
+		if (state.RequestStop() && state.metrics) {
 			if (error.Code() == ReaderErrorCode::Cancelled) {
 				state.metrics->SetStatus(ScanStatus::Cancelled, "cancelled");
 			} else {
@@ -810,7 +1124,7 @@ void ScanReadOm(ClientContext &context, TableFunctionInput &input, DataChunk &ou
 		}
 		throw;
 	} catch (const std::exception &) {
-		if (state.metrics) {
+		if (state.RequestStop() && state.metrics) {
 			state.metrics->SetStatus(ScanStatus::Failed, "scan_error");
 			state.metrics_status_set = true;
 		}
@@ -818,22 +1132,119 @@ void ScanReadOm(ClientContext &context, TableFunctionInput &input, DataChunk &ou
 	}
 }
 
+struct LastScanMetricsBindData final : FunctionData {
+	unique_ptr<FunctionData> Copy() const override {
+		return make_uniq<LastScanMetricsBindData>();
+	}
+	bool Equals(const FunctionData &other_p) const override {
+		(void)other_p.Cast<LastScanMetricsBindData>();
+		return true;
+	}
+};
+
+struct LastScanMetricsGlobalState final : GlobalTableFunctionState {
+	std::vector<DuckomoSessionState::PublishedScan> rows;
+	idx_t offset = 0;
+};
+
+unique_ptr<FunctionData> BindLastScanMetrics(ClientContext &context, TableFunctionBindInput &,
+                                             vector<LogicalType> &return_types, vector<std::string> &names) {
+	return_types.emplace_back(LogicalType::VARCHAR);
+	names.emplace_back("query_id");
+	return_types.emplace_back(LogicalType::UBIGINT);
+	names.emplace_back("scan_id");
+	return_types.emplace_back(LogicalType::VARCHAR);
+	names.emplace_back("metrics");
+	return make_uniq<LastScanMetricsBindData>();
+}
+
+unique_ptr<GlobalTableFunctionState> InitLastScanMetrics(ClientContext &context, TableFunctionInitInput &) {
+	auto result = make_uniq<LastScanMetricsGlobalState>();
+	result->rows = GetDuckomoSessionState(context)->LastScans();
+	return result;
+}
+
+void ScanLastMetrics(ClientContext &, TableFunctionInput &input, DataChunk &output) {
+	if (!input.bind_data || !input.global_state) {
+		throw InternalException("duckomo_last_scan_metrics was initialized without state");
+	}
+	auto &state = input.global_state->Cast<LastScanMetricsGlobalState>();
+	const auto &rows = state.rows;
+	idx_t count = 0;
+	while (state.offset < rows.size() && count < STANDARD_VECTOR_SIZE) {
+		const auto &row = rows[state.offset++];
+		output.SetValue(0, count, Value(row.query_id));
+		output.SetValue(1, count, Value::UBIGINT(row.scan_id));
+		output.SetValue(2, count, Value(row.metrics));
+		++count;
+	}
+	output.SetCardinality(count);
+}
+
+struct ClearCacheGlobalState final : GlobalTableFunctionState {
+	RangeCacheClearResult result;
+	bool emitted = false;
+};
+
+unique_ptr<FunctionData> BindClearCache(ClientContext &, TableFunctionBindInput &,
+                                        vector<LogicalType> &return_types, vector<std::string> &names) {
+	return_types.emplace_back(LogicalType::UBIGINT);
+	names.emplace_back("cleared_entries");
+	return_types.emplace_back(LogicalType::UBIGINT);
+	names.emplace_back("cleared_bytes");
+	return nullptr;
+}
+
+unique_ptr<GlobalTableFunctionState> InitClearCache(ClientContext &context, TableFunctionInitInput &) {
+	auto result = make_uniq<ClearCacheGlobalState>();
+	result->result = GetDuckomoSessionState(context)->Cache().Clear();
+	return result;
+}
+
+void ScanClearCache(ClientContext &, TableFunctionInput &input, DataChunk &output) {
+	if (!input.global_state) throw InternalException("duckomo_clear_cache was initialized without state");
+	auto &state = input.global_state->Cast<ClearCacheGlobalState>();
+	if (state.emitted) return;
+	output.SetValue(0, 0, Value::UBIGINT(state.result.entries));
+	output.SetValue(1, 0, Value::UBIGINT(state.result.accounted_bytes));
+	output.SetCardinality(1);
+	state.emitted = true;
+}
+
 } // namespace
 
 TableFunction GetReadOmFunction() {
-	TableFunction function("read_om", {LogicalType::VARCHAR}, ScanReadOm, BindReadOm, InitReadOm);
+	TableFunction function("read_om", {LogicalType::VARCHAR}, ScanReadOm, BindReadOm, InitReadOm, InitReadOmLocal);
 	function.named_parameters["dimensions"] = LogicalType::MAP(LogicalType::VARCHAR, LogicalType::LIST(LogicalType::VARCHAR));
 	function.named_parameters["grid"] = LogicalType::ANY;
 	function.named_parameters["spatial_axes"] = LogicalType::LIST(LogicalType::VARCHAR);
 	function.named_parameters["domain"] = LogicalType::VARCHAR;
 	function.named_parameters["valid_times"] = LogicalType::LIST(LogicalType::TIMESTAMP);
+	function.named_parameters["axes"] = LogicalType::ANY;
 	function.get_virtual_columns = GetReadOmVirtualColumns;
     function.projection_pushdown = true;
 	function.filter_pushdown = false;
 	function.filter_prune = false;
 	function.pushdown_complex_filter = ObserveComplexFilter;
-	function.order_preservation_type = OrderPreservationType::INSERTION_ORDER;
+	function.order_preservation_type = OrderPreservationType::NO_ORDER;
 	return function;
+}
+
+TableFunction GetLastScanMetricsFunction() {
+	return TableFunction("duckomo_last_scan_metrics", {}, ScanLastMetrics, BindLastScanMetrics,
+	                     InitLastScanMetrics);
+}
+
+TableFunction GetClearCacheFunction() {
+	return TableFunction("duckomo_clear_cache", {}, ScanClearCache, BindClearCache, InitClearCache);
+}
+
+void SetDuckomoCacheEnabled(ClientContext &context, bool enabled) {
+	GetDuckomoSessionState(context)->Cache().SetEnabled(enabled);
+}
+
+void SetDuckomoCacheCapacity(ClientContext &context, std::uint64_t capacity_bytes) {
+	GetDuckomoSessionState(context)->Cache().SetCapacity(capacity_bytes);
 }
 
 } // namespace duckomo

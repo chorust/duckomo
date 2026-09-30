@@ -1424,6 +1424,76 @@ void WriteManifest(const std::filesystem::path &directory, const std::vector<Fix
 	const auto text = manifest.str();
 	std::vector<std::uint8_t> bytes(text.begin(), text.end());
 	WriteFile(directory / "manifest.json", bytes);
+
+	// This oracle is authored from the fixture generator's logical coordinate
+	// definition, independently of read_om's axis parser and selection code.
+	std::ostringstream coordinates;
+	coordinates.imbue(std::locale::classic());
+	coordinates << "fixture_id,logical_position,time_index,valid_time,level_index,level,lead_time_index,lead_time,"
+	                "member_index,member,run_index,run,value,is_missing\n";
+	for (std::uint64_t position = 0; position < 6; position++) {
+		const auto time = position / 3;
+		const auto member = position % 3;
+		coordinates << "dimensions," << position << ',' << time << ",2026-09-30 " << (time == 0 ? "00" : "01")
+		            << ":00:00,,,,," << member << ',' << (10 + member * 10) << ",,," << (time * 3 + member)
+		            << ",false\n";
+	}
+	for (std::uint64_t position = 0; position < 6; position++) {
+		const auto member = position / 2;
+		const auto time = position % 2;
+		coordinates << "dimensions_axis_order," << position << ',' << time << ",2026-09-30 "
+		            << (time == 0 ? "00" : "01") << ":00:00,,,,," << member << ',' << (10 + member * 10)
+		            << ",,," << (time * 3 + member) << ",false\n";
+	}
+	for (std::uint64_t position = 0; position < 32; position++) {
+		const auto time = position / 16;
+		const auto level = (position / 8) % 2;
+		const auto lead = (position / 4) % 2;
+		const auto member = (position / 2) % 2;
+		const auto run = position % 2;
+		const bool missing = position == 7;
+		coordinates << "dimensions_five_axes," << position << ',' << time << ",2026-09-30 "
+		            << (time == 0 ? "00" : "01") << ":00:00," << level << ','
+		            << (level == 0 ? "500.25" : "850.5") << ',' << lead << ','
+		            << (lead == 0 ? "-01:00:00" : "00:00:00") << ',' << member << ','
+		            << (member == 0 ? "10" : "9223372036854775807") << ',' << run << ",2026-09-29 "
+		            << (run == 0 ? "00:00:00" : "12:00:00") << ',';
+		if (missing) coordinates << "NULL";
+		else coordinates << position;
+		coordinates << ',' << (missing ? "true" : "false") << '\n';
+	}
+	const auto coordinate_text = coordinates.str();
+	WriteFile(directory / "dimensions-coordinates.csv",
+	          std::vector<std::uint8_t>(coordinate_text.begin(), coordinate_text.end()));
+
+	const auto perf = std::find_if(fixtures.begin(), fixtures.end(), [](const Fixture &fixture) {
+		return fixture.id == "dimensions_perf";
+	});
+	Require(perf != fixtures.end(), "dimensions performance fixture is missing from the fixture list");
+	const auto perf_bytes = ReadFile(directory / perf->file_name);
+	const auto perf_reference = ReadFile(directory / perf->reference_name);
+	std::ostringstream perf_manifest;
+	perf_manifest << "{\n"
+	              << "  \"schema_version\": 1,\n"
+	              << "  \"fixture_id\": \"dimensions_perf\",\n"
+	              << "  \"path\": \"" << JsonEscape(perf->file_name) << "\",\n"
+	              << "  \"sha256\": \"" << Sha256Hex(perf_bytes) << "\",\n"
+	              << "  \"reference_csv\": \"" << JsonEscape(perf->reference_name) << "\",\n"
+	              << "  \"reference_csv_sha256\": \"" << Sha256Hex(perf_reference) << "\",\n"
+	              << "  \"shape\": " << JsonNumberArray(perf->shape) << ",\n"
+	              << "  \"chunk_shape\": " << JsonNumberArray(perf->chunks) << ",\n"
+	              << "  \"row_count\": " << CheckedProduct(perf->shape) << ",\n"
+	              << "  \"task_window_positions\": 65536,\n"
+	              << "  \"queries\": {\n"
+	              << "    \"full\": \"SELECT sum(value) FROM read_om('dimensions_perf.om', dimensions := map(['value'], [['time','member']]), axes := {'time': {'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'}, 'member': {'axis':'member','start':0,'step':1}})\",\n"
+	              << "    \"local\": \"SELECT sum(value) FROM read_om('dimensions_perf.om', dimensions := map(['value'], [['time','member']]), axes := {'time': {'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'}, 'member': {'axis':'member','start':0,'step':1}}) WHERE valid_time = TIMESTAMP '2026-01-01 00:00:00' AND member BETWEEN 100 AND 103\",\n"
+	              << "    \"parallel_threads\": [1, 2, 4]\n"
+	              << "  },\n"
+	              << "  \"acceptance\": {\"local_value_bytes_less_than_full\": true, \"local_decoded_chunks_less_than_full\": true, \"parallel_worker_evidence_required\": true}\n"
+	              << "}\n";
+	const auto perf_text = perf_manifest.str();
+	WriteFile(directory / "dimensions-perf-manifest.json",
+	          std::vector<std::uint8_t>(perf_text.begin(), perf_text.end()));
 }
 
 std::vector<Fixture> BuildInitialFixtures() {
@@ -1443,6 +1513,48 @@ std::vector<Fixture> BuildInitialFixtures() {
 			const auto ordinal = row * raw_large.shape[1] + column;
 			raw_large.values.push_back(static_cast<float>(ordinal) * 0.25F - 100.0F);
 		}
+	}
+	Fixture dimensions;
+	dimensions.id = "dimensions";
+	dimensions.file_name = "dimensions.om";
+	dimensions.reference_name = "dimensions.reference.csv";
+	dimensions.shape = {2, 3};
+	dimensions.chunks = {1, 2};
+	dimensions.axes = {"time", "member"};
+	dimensions.values = {0, 1, 2, 3, 4, 5};
+	Fixture dimensions_axis_order;
+	dimensions_axis_order.id = "dimensions_axis_order";
+	dimensions_axis_order.file_name = "dimensions_axis_order.om";
+	dimensions_axis_order.reference_name = "dimensions_axis_order.reference.csv";
+	dimensions_axis_order.shape = {3, 2};
+	dimensions_axis_order.chunks = {2, 1};
+	dimensions_axis_order.axes = {"member", "time"};
+	for (std::uint64_t member = 0; member < 3; member++) {
+		for (std::uint64_t time = 0; time < 2; time++) {
+			dimensions_axis_order.values.push_back(static_cast<float>(time * 3 + member));
+		}
+	}
+	Fixture dimensions_five_axes;
+	dimensions_five_axes.id = "dimensions_five_axes";
+	dimensions_five_axes.file_name = "dimensions_five_axes.om";
+	dimensions_five_axes.reference_name = "dimensions_five_axes.reference.csv";
+	dimensions_five_axes.shape = {2, 2, 2, 2, 2};
+	dimensions_five_axes.chunks = {1, 2, 1, 2, 1};
+	dimensions_five_axes.axes = {"time", "level", "lead_time", "member", "run"};
+	for (std::uint64_t ordinal = 0; ordinal < CheckedProduct(dimensions_five_axes.shape); ordinal++) {
+		dimensions_five_axes.values.push_back(ordinal == 7 ? std::numeric_limits<float>::quiet_NaN()
+		                                                   : static_cast<float>(ordinal));
+	}
+	Fixture dimensions_perf;
+	dimensions_perf.id = "dimensions_perf";
+	dimensions_perf.file_name = "dimensions_perf.om";
+	dimensions_perf.reference_name = "dimensions_perf.reference.csv";
+	dimensions_perf.shape = {512, 256};
+	dimensions_perf.chunks = {32, 32};
+	dimensions_perf.axes = {"time", "member"};
+	dimensions_perf.values.reserve(static_cast<std::size_t>(CheckedProduct(dimensions_perf.shape)));
+	for (std::uint64_t ordinal = 0; ordinal < CheckedProduct(dimensions_perf.shape); ordinal++) {
+		dimensions_perf.values.push_back(static_cast<float>(ordinal) * 0.25F - 100.0F);
 	}
 	Fixture spatial_flat;
 	spatial_flat.id = "spatial_flat";
@@ -1476,7 +1588,8 @@ std::vector<Fixture> BuildInitialFixtures() {
 	spatial_single.axes = {"latitude_axis", "longitude_axis"};
 	spatial_single.values = {42.0F};
 	return {std::move(raw), std::move(special), std::move(spatial_flat), std::move(spatial_axes),
-	        std::move(spatial_single), std::move(raw_large)};
+	        std::move(spatial_single), std::move(raw_large), std::move(dimensions),
+	        std::move(dimensions_axis_order), std::move(dimensions_five_axes), std::move(dimensions_perf)};
 }
 
 void Generate(const std::filesystem::path &output_directory) {
@@ -1496,9 +1609,13 @@ void Generate(const std::filesystem::path &output_directory) {
 		          << " chunks=" << JsonNumberArray(fixture.chunks) << " rows=" << decoded.size()
 	          << " oracle=passed sha256=" << Sha256Hex(encoded) << '\n';
 	}
-	const auto large_rows = CheckedProduct(fixtures.back().shape);
+	const auto raw_large = std::find_if(fixtures.begin(), fixtures.end(), [](const Fixture &fixture) {
+		return fixture.id == "raw_large";
+	});
+	Require(raw_large != fixtures.end(), "raw_large fixture is missing from the fixture list");
+	const auto large_rows = CheckedProduct(raw_large->shape);
 	Require(large_rows > 2 * 2048, "raw_large fixture no longer crosses more than two DuckDB vector batches");
-	Require(fixtures.back().shape[0] != fixtures.back().shape[1], "raw_large fixture must be non-square");
+	Require(raw_large->shape[0] != raw_large->shape[1], "raw_large fixture must be non-square");
 
 	auto multi_arrays = BuildMultiArrays();
 	const auto multi_bytes = EncodeTreeFile(multi_arrays);

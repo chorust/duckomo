@@ -59,11 +59,18 @@ REQUIRED_EXECUTABLES=(
 	"$BUILD_DIR/test/tools/duckomo_fixture_tool"
 	"$BUILD_DIR/test/tools/duckomo_validation"
 	"$BUILD_DIR/test/tools/duckomo_spatial_validation"
+	"$BUILD_DIR/test/tools/duckomo_dimensions_validation"
 	"$BUILD_DIR/test/native/batch_test"
 	"$BUILD_DIR/test/native/raw_reader_test"
 	"$BUILD_DIR/test/native/lifecycle_test"
 	"$BUILD_DIR/test/native/schema_test"
 	"$BUILD_DIR/test/native/time_test"
+	"$BUILD_DIR/test/native/axis_selection_test"
+	"$BUILD_DIR/test/native/parallel_scan_test"
+	"$BUILD_DIR/test/native/semantic_axes_test"
+	"$BUILD_DIR/test/native/range_cache_test"
+	"$BUILD_DIR/test/native/scan_metrics_v3_test"
+	"$BUILD_DIR/test/native/session_metrics_test"
 	"$BUILD_DIR/test/native/projection_evidence_test"
 	"$BUILD_DIR/test/native/regular_grid_test"
 	"$BUILD_DIR/test/native/spatial_layout_test"
@@ -274,11 +281,11 @@ check_evidence() {
 	printf 'Validated summary and all four scenario evidence files.\n'
 }
 
-for sql_test in raw read_om projection spatial spatial_pushdown spatial_composition; do
+for sql_test in raw read_om semantic_axes axis_filter parallel_scan cache_metrics projection spatial spatial_pushdown spatial_composition; do
 	run_sqllogictest "SQLLogicTest: $sql_test.test" "$BUILD_DIR/test/unittest" "test/sql/$sql_test.test"
 done
 
-for native_test in batch_test raw_reader_test lifecycle_test schema_test time_test projection_evidence_test regular_grid_test spatial_layout_test \
+for native_test in batch_test raw_reader_test lifecycle_test schema_test time_test axis_selection_test parallel_scan_test semantic_axes_test range_cache_test scan_metrics_v3_test session_metrics_test projection_evidence_test regular_grid_test spatial_layout_test \
 	spatial_metrics_test spatial_callback_test spatial_selection_test spatial_io_test spatial_lifecycle_test; do
 	run "Native check: $native_test" "$BUILD_DIR/test/native/$native_test"
 done
@@ -303,6 +310,14 @@ run "Release projection metrics harness" \
 	--duckdb "$BUILD_DIR/duckdb" \
 	--extension "$BUILD_DIR/extension/duckomo/duckomo.duckdb_extension"
 check_evidence
+
+run "Release dimensions/selection/parallel validation harness" \
+	"$BUILD_DIR/test/tools/duckomo_dimensions_validation" \
+	--root "$REPO_ROOT" \
+	--fixtures "$FIXTURE_DIR" \
+	--output "$EVIDENCE_DIR/dimensions" \
+	--duckdb "$BUILD_DIR/duckdb" \
+	--extension "$BUILD_DIR/extension/duckomo/duckomo.duckdb_extension"
 
 if [[ -n "${DUCKOMO_DOMAIN_FILE:-}" ]]; then
 	[[ -f "$DUCKOMO_DOMAIN_FILE" ]] || die "DUCKOMO_DOMAIN_FILE is not a regular file: $DUCKOMO_DOMAIN_FILE"

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "fixture_id": "dimensions_perf",
+  "path": "dimensions_perf.om",
+  "sha256": "47a803a4769ab5a8c6622f9be5cc05b53b96152443917b7603d78dab94e1ec13",
+  "reference_csv": "dimensions_perf.reference.csv",
+  "reference_csv_sha256": "415c5838c4532214def2c18479d8c0b8e6d3c273dfec85699edcc809efe5e89c",
+  "shape": [512,256],
+  "chunk_shape": [32,32],
+  "row_count": 131072,
+  "task_window_positions": 65536,
+  "queries": {
+    "full": "SELECT sum(value) FROM read_om('dimensions_perf.om', dimensions := map(['value'], [['time','member']]), axes := {'time': {'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'}, 'member': {'axis':'member','start':0,'step':1}})",
+    "local": "SELECT sum(value) FROM read_om('dimensions_perf.om', dimensions := map(['value'], [['time','member']]), axes := {'time': {'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'}, 'member': {'axis':'member','start':0,'step':1}}) WHERE valid_time = TIMESTAMP '2026-01-01 00:00:00' AND member BETWEEN 100 AND 103",
+    "parallel_threads": [1, 2, 4]
+  },
+  "acceptance": {"local_value_bytes_less_than_full": true, "local_decoded_chunks_less_than_full": true, "parallel_worker_evidence_required": true}
+}

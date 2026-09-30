@@ -1,24 +1,32 @@
 #pragma once
 
+#include <cstdint>
 #include <vector>
 
 #include "duckdb/common/constants.hpp"
 #include "duckdb/common/typedefs.hpp"
 #include "duckomo/schema.hpp"
+#include "duckomo/semantic_axes.hpp"
 
 namespace duckdb {
 namespace duckomo {
 
-// An output slot refers to a value variable, a synthetic coordinate/time, or
-// DuckDB's internal empty column carrying cardinality. Only physical value
-// variables address ProjectionPlan::RequiredVariableIds.
-struct ProjectionOutputSlot final {
-	bool is_cardinality = false;
-	bool is_latitude = false;
-	bool is_longitude = false;
-	bool is_valid_time = false;
-	idx_t variable_index = DConstants::INVALID_INDEX;
+enum class OutputColumnKind : std::uint8_t {
+	Value,
+	Latitude,
+	Longitude,
+	ValidTime,
+	SemanticCoordinate,
+	Cardinality
+};
+
+// Typed output descriptor. Only Value columns address the required variable
+// list; synthetic coordinates carry their source mapping explicitly.
+struct OutputColumn final {
+	OutputColumnKind kind = OutputColumnKind::Value;
+	idx_t source_index = DConstants::INVALID_INDEX;
 	idx_t required_variable_index = DConstants::INVALID_INDEX;
+	idx_t semantic_axis_index = DConstants::INVALID_INDEX;
 };
 
 // Immutable mapping from DuckDB's requested scan columns to the bound schema.
@@ -30,8 +38,10 @@ public:
 	ProjectionPlan(const BoundSchema &schema, const std::vector<column_t> &column_ids, bool has_spatial_columns);
 	ProjectionPlan(const BoundSchema &schema, const std::vector<column_t> &column_ids, bool has_spatial_columns,
 	               bool has_time_column);
+	ProjectionPlan(const BoundSchema &schema, const std::vector<column_t> &column_ids, bool has_spatial_columns,
+	               bool has_time_column, const SemanticAxes &semantic_axes);
 
-	const std::vector<ProjectionOutputSlot> &GetOutputSlots() const {
+	const std::vector<OutputColumn> &GetOutputSlots() const {
 		return output_slots;
 	}
 
@@ -48,7 +58,7 @@ public:
 	}
 
 private:
-	std::vector<ProjectionOutputSlot> output_slots;
+	std::vector<OutputColumn> output_slots;
 	std::vector<idx_t> required_variable_ids;
 	bool has_cardinality_slot = false;
 };

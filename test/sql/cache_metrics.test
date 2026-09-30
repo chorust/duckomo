@@ -1,0 +1,101 @@
+# name: test/sql/cache_metrics.test
+# description: Validate session cache settings and per-scan v3 metrics publication
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+query TT
+SELECT current_setting('duckomo_cache_enabled')::VARCHAR,
+       current_setting('duckomo_cache_capacity')::VARCHAR;
+----
+true	67108864
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics();
+----
+0
+
+query I
+SELECT count(*) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');
+----
+6
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics();
+----
+1
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE metrics LIKE '%"schema_version":3%'
+  AND metrics LIKE '%"status":"success"%'
+  AND metrics LIKE '%"scanned_rows":6%';
+----
+1
+
+query I
+SELECT count(*) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om') a,
+                           read_om('__WORKING_DIRECTORY__/test/data/raw.om') b;
+----
+36
+
+query I
+SELECT CASE WHEN count(*) = 2 AND count(DISTINCT query_id) = 1 AND count(DISTINCT scan_id) = 2
+                  AND min(scan_id) = 0 AND max(scan_id) = 1 THEN 1 ELSE 0 END
+FROM duckomo_last_scan_metrics()
+WHERE metrics LIKE '%"schema_version":3%';
+----
+1
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/missing_dimensions.om');
+----
+<REGEX>:(?i).*could not open local OM file.*
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE metrics LIKE '%"status":"failure"%';
+----
+1
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics();
+----
+1
+
+statement ok
+SET duckomo_cache_enabled=false;
+
+statement ok
+SET duckomo_cache_capacity=0;
+
+query TT
+SELECT current_setting('duckomo_cache_enabled')::VARCHAR,
+       current_setting('duckomo_cache_capacity')::VARCHAR;
+----
+false	0
+
+query II
+CALL duckomo_clear_cache();
+----
+0	0
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics();
+----
+1
+
+statement error
+SET duckomo_cache_capacity=-1;
+----
+<REGEX>:(?i).*duckomo_cache_capacity must be non-negative.*
+
+statement error
+SET duckomo_max_threads=-1;
+----
+<REGEX>:(?i).*duckomo_max_threads must be zero or a positive integer.*
