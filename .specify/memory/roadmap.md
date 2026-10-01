@@ -62,7 +62,7 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 | --- | --- | --- | --- | --- |
 | 001 | Phase 0–2 | `implemented` | 44/44 勾选 | AArch64 运行门禁有通过记录；SC-006 独立复现仍为 Partial |
 | 002 | Phase 3 | `verified` | 46/46 勾选 | 原始 Phase 3 / ncep_gfswave025 在 AArch64 独立验收；T042 为延期决定，未执行 |
-| 003 | Phase 4–5 | `in-progress` | 40/73 勾选，33 项未完成 | 本地维度、筛选及部分并行/缓存已有实施记录；远程与完整交付门禁未闭环 |
+| 003 | Phase 4–5 | `in-progress` | 70/73 勾选，3 项未完成 | 本地 G0–G2 通过，G4 只有本地部分结果；G3、G5–G7 未完成，完整交付门禁未闭环 |
 
 任务数量来自各 [tasks.md](../../specs/003-dimensions-remote-parallel/tasks.md) 的采集时快照，不表示等权完成比例或运行门禁通过数量。001 与 003 的 spec 头部仍写 `Draft`；台账根据实施和验收 artifacts 归纳生命周期，原文件状态保留。
 
@@ -104,8 +104,8 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 - **Addresses:** [产品路线图 Phase 4–5](../../docs/roadmap.md#阶段)、[现有接口](../../docs/spec.md)；差异见 Q-04。
 - **Spec dir:** [specs/003-dimensions-remote-parallel/](../../specs/003-dimensions-remote-parallel/)；[spec](../../specs/003-dimensions-remote-parallel/spec.md)、[plan](../../specs/003-dimensions-remote-parallel/plan.md)、[tasks](../../specs/003-dimensions-remote-parallel/tasks.md)。
 - **Key decisions:** time 沿用 valid_time；只自动识别已核验时间元数据，其他语义显式映射；类型精确比较、重复/非单调坐标保留原位置，区间预算超限安全回退全轴；配套 httpfs ABI 先验收，凭据沿用当前访问上下文；worker 独占 decoder，惰性任务不物化全域；缓存只复用已请求范围；QueryEnd 单次发布权威终态，实际 body 不由逻辑请求量推算。
-- **Notes:** 73 项中 40 项勾选、33 项未完成。已勾选 T012–T034（本地语义与联合筛选）、T045–T051（本地并行）及部分缓存/指标任务，足以证明进入实施；勾选本身不能证明完整 G0–G2/G4–G6 已验收。T002、T005–T010 的配套补丁/ABI，T035–T044 全部远程任务，T052–T053，部分 T055–T066 及 T067–T073 仍未完成。缺少统一最终验收记录，故不标 `implemented` 或 `verified`（Q-03、Q-07）。
-- **Internal sequencing:** [tasks 的故事依赖](../../specs/003-dimensions-remote-parallel/tasks.md#user-story-dependencies)明确 US2 依赖 US1；完整 G3 待 US2 路径完成；本地与远程完整 G4 依赖 US3；G5/G6 并发集成依赖 US4。部分基础开发可提前进行，任务先行勾选不能替代这些集成门禁。Phase 4–5 的旧产品阶段状态由 T073 在真实证据齐备后更新。
+- **Notes:** 截至 2026-10-01，73 项中 70 项勾选；仅 T059（查询归属内存峰值完整计量）、T070（独立复现）和 T073（完整验收后的路线图收尾）未完成。[最终证据记录](../../evidence/003-dimensions-remote-parallel/final.md)显示 G0–G2 在 Linux AArch64 本地通过；G4 只有本地部分结果，远程结果未运行；G3 未通过完整门禁，G5/G6 未运行，G7 未运行。`peak_query_owned_bytes` 仍为 `null`，不得解读为零。任务勾选和功能代码不等同完整发布验收；因此保持 `in-progress`，不标 `implemented` 或 `verified`。
+- **Internal sequencing:** [tasks 的故事依赖](../../specs/003-dimensions-remote-parallel/tasks.md#user-story-dependencies)明确 US2 依赖 US1；完整 G3 待 US2 路径完成；本地与远程完整 G4 依赖 US3；G5/G6 并发集成依赖 US4。部分基础开发可提前进行，任务先行勾选不能替代这些集成门禁。产品路线图现记录本地已验收范围和远程验收缺口；T073 仍待 G0–G7 及独立复现齐备后完成最终收尾。
 
 ### 尚未形成 spec 的既有方向
 
@@ -120,21 +120,21 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 
 - **Q-01 — Constitution 治理待确认：** [constitution](constitution.md) 仍含项目名、原则、版本与日期占位符。正式原则、版本与批准日期尚未定义；本 roadmap 不代填，也不把模板示例当成约束。后续以实际批准的 constitution 解决。
 - **Q-02 — 001 的独立复现待确认：** [001 final](../../specs/001-local-om-scanner/evidence/final.md#sc-001sc-006-outcomes)仍将 SC-006 标为 Partial，虽然 T044 已勾选。需补充未参与实现者的加载、列描述、完整/单列扫描记录，或明确接受标准的范围修订依据，才可判断是否升级 `verified`。x86_64 延期已有依据，不重新假定其必须通过。
-- **Q-03 — 003 各门禁的实际完成状态待确认：** 任务勾选证明已有实施，但现有 spec/plan/contracts/quickstart 仍使用 Draft/拟实现/设计阶段措辞，未见最终汇总。G0–G2、本地并行及部分缓存/观测分别通过到何种程度，需要真实命令、退出码、原始指标与差分记录；G3–G7 完整交付按[观测契约](../../specs/003-dimensions-remote-parallel/contracts/validation-evidence.md#门禁矩阵)判定。缺记录不猜测“已通过”或“测试失败”。
-- **Q-04 — 产品文档与已记录基线的差异待确认：** [docs/spec.md](../../docs/spec.md#支持范围)与 [docs/roadmap.md](../../docs/roadmap.md#后续实现约束)将时间语义列列为尚未实现；[003 plan](../../specs/003-dimensions-remote-parallel/plan.md#summary)、[003 research](../../specs/003-dimensions-remote-parallel/research.md#1-基线与时间兼容)、[domain 文档](../../docs/regular-domains.md#使用与轴声明)明确已有 valid_time/valid_times。旧接口/架构还描述单线程，而 003 部分并行任务已勾选。应确认各文档对应的发布/工作树范围，并由既有 T068–T073 同步，不能把这些差异当作 Phase 4–5 已全部交付。
+- **Q-03 — 003 各门禁的实际完成状态（已记录，完整验收仍待完成）：** [最终证据](../../evidence/003-dimensions-remote-parallel/final.md)记录了构建身份、命令/退出码、原始本地指标及各门禁状态。G0–G2 本地通过；G4 只有本地部分结果；G3 未通过完整门禁，G5/G6/G7 未执行。后续状态以该记录和新增运行证据为准，不将未执行推定为通过。
+- **Q-04 — 产品文档与已记录基线的差异（已同步）：** README、[接口说明](../../docs/spec.md)、[技术架构](../../docs/architecture.md)及[产品路线图](../../docs/roadmap.md)现描述语义轴、并行和远程功能及其验收边界；功能已有实现不代表 Phase 4–5 完整交付。
 - **Q-05 — 002 后续 domain 扩展的验收边界待确认：** 68 项 registry 的来源及元数据审计已记录，但[原始 final](../../specs/002-spatial-pushdown/evidence/final.md)明确不覆盖全部新增 domain。后续扩展需要何种完整值、坐标、异常及独立复现证据才能作更广的 `verified` 声明，需补充对应范围与记录；缺样本项保留未知，不推定可读或不可读。
 - **Q-06 — Phase 6–7 的 spec 结构与依赖待确认：** 两个方向均在[产品路线图](../../docs/roadmap.md#阶段)中计划，但未形成项目 spec 目录。待确定拆分、编号、outcome/范围细化、技术约束和明确前置依据；不从阶段顺序推定它们分别依赖 003 或某个尚不存在的 spec。
-- **Q-07 — 003 最终证据归档路径待确认：** plan 的项目结构说明将实际证据放在 feature 的 `evidence/`，而 tasks T072 指定仓库根下 `evidence/003-dimensions-remote-parallel/final.md`；[观测契约](../../specs/003-dimensions-remote-parallel/contracts/validation-evidence.md#执行范围与成功声明)写 `evidence/final.md`。采集时这些最终文件均未出现，正式归档位置及引用关系待统一；本次保留原 artifacts，不替它们修改路径。
+- **Q-07 — 003 最终证据归档路径待统一：** T072 指定的仓库根 `evidence/003-dimensions-remote-parallel/final.md` 已存在；plan 的项目结构说明和[观测契约](../../specs/003-dimensions-remote-parallel/contracts/validation-evidence.md#执行范围与成功声明)使用 feature 级 `evidence/` 表述。当前记录可由 T072 路径访问，但设计文档与任务路径仍不一致，需后续明确唯一规范路径并同步引用。
 
 ## Cross-Cutting Notes
 
 - **已确认的 spec 依赖：** `002 → 001`；`003 → 001, 002`，箭头表示左侧依赖右侧。依据分别是 002、003 spec 的 Assumptions 及 tasks 的 Prerequisites；003 对 001 的直接列出来自明确的 Phase 0–3 依赖声明。001 的独立复现缺口不被解释为 002 尚未实施或 003 不能开始；依赖要求与整体验收分别记录。
 - **阶段映射：** 001 覆盖三个产品阶段（0–2），002 覆盖 Phase 3，003 同时覆盖 Phase 4 和 5。tasks 内部的 Phase 编号是任务分组，不能据此生成新的项目 spec 或依赖。
 - **历史与后续范围：** 001 原计划仅 FPX、显式轴、Linux x86_64；当前基础契约已有 PFOR 与 coordinates。002 原计划仅首个 domain；当前契约已有 68 项。003 从已有有效时间基线上继续扩展。历史设计、已发布行为、进行中的实现和验收样本覆盖分别以其来源说明为准，范围扩展不自动继承旧验收结论。
-- **证据快照：** 本次读取全部 3 个项目 spec 的 spec/plan/tasks，并查阅 research、data model、contracts、quickstart、规格清单、已有最终/独立验收及相关产品文档。生命周期引用既有运行记录；未重新执行功能门禁，当前工作树中的未提交实施内容不等于发布或验收完成。
-- **配置路径复核：** 直接运行安装的 load-config.sh 时，它从脚本目录向上寻找最近的 `.specify/`，命中 roadmap 扩展内自带的项目示例，错误返回 `roadmap_exists=true`。通过绝对路径环境覆盖复核后，实际 duckomo 目标为 `.specify/memory/roadmap.md` 且尚不存在，按新建初始化；本次未改配置脚本。后续 roadmap 命令也应核对项目根，避免读取扩展示例。
+- **证据快照：** 2026-10-01 更新依据为当前 003 tasks、产品文档及仓库根 [final evidence](../../evidence/003-dimensions-remote-parallel/final.md)。没有重新执行功能门禁；工作树中的实现内容和本地门禁结果不等于完整发布验收。
+- **配置路径复核：** 从 duckomo 仓库根运行 `load-config.sh` 返回 `.specify/memory/roadmap.md`，且 `roadmap_exists=true`；本项目未配置 `docs/adr/`。执行路线图核对时仍应确认运行目录和加载器输出指向当前项目。
 - **项目来源边界：** 本次台账只纳入仓库根的 `specs/`；`.specify/extensions/roadmap/specs/` 及其内嵌 roadmap/constitution 属于扩展自身示例，不作为 duckomo specs。项目无 `docs/adr/`，配置 PRD globs 未匹配到项目 PRD；普通 `docs/spec.md` 用作接口来源，不改称或编写外部 PRD。
 
 ---
 
-**Version**: 1.0.0 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-09-30
+**Version**: 1.0.0 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-01
