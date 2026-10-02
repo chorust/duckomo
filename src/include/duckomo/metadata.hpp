@@ -16,6 +16,35 @@ namespace duckomo {
 struct OmTimeCoordinate final {
 	std::vector<std::int64_t> epoch_seconds;
 	bool scalar = false;
+	std::shared_ptr<ScanMetrics> memory_metrics;
+	std::shared_ptr<ScanMemoryAccount> memory_account;
+
+	OmTimeCoordinate() = default;
+	OmTimeCoordinate(const OmTimeCoordinate &other)
+	    : epoch_seconds(other.epoch_seconds), scalar(other.scalar), memory_metrics(other.memory_metrics) {
+		RefreshMemoryAccount();
+	}
+	OmTimeCoordinate &operator=(const OmTimeCoordinate &other) {
+		if (this != &other) {
+			epoch_seconds = other.epoch_seconds;
+			scalar = other.scalar;
+			memory_metrics = other.memory_metrics;
+			RefreshMemoryAccount();
+		}
+		return *this;
+	}
+	OmTimeCoordinate(OmTimeCoordinate &&) noexcept = default;
+	OmTimeCoordinate &operator=(OmTimeCoordinate &&) noexcept = default;
+
+	void EnableMemoryAccounting(const std::shared_ptr<ScanMetrics> &metrics) {
+		memory_metrics = metrics;
+		RefreshMemoryAccount();
+	}
+	void RefreshMemoryAccount() {
+		if (!memory_metrics) return;
+		if (!memory_account) memory_account = std::make_shared<ScanMemoryAccount>(memory_metrics);
+		memory_account->Set(sizeof(*this) + epoch_seconds.capacity() * sizeof(std::int64_t));
+	}
 	bool operator==(const OmTimeCoordinate &other) const {
 		return scalar == other.scalar && epoch_seconds == other.epoch_seconds;
 	}

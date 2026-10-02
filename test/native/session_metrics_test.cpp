@@ -69,10 +69,26 @@ int main() {
 		        "cache clear should return one row without overwriting scan history");
 		Require(Scalar(first, "SELECT count(*) FROM duckomo_last_scan_metrics()") == "1",
 		        "cache clear must not clear the last scan profile");
+		Require(Scalar(first, "SELECT count(*) FROM read_om('test/data/raw.om') a, read_om('test/data/raw.om') b") == "36",
+		        "two read_om scans in one query should both execute");
+		Require(Scalar(first,
+		               "SELECT CASE WHEN count(*) = 2 AND count(DISTINCT query_id) = 1 AND "
+		               "count(DISTINCT scan_id) = 2 AND min(scan_id) = 0 AND max(scan_id) = 1 "
+		               "THEN 1 ELSE 0 END FROM duckomo_last_scan_metrics()") == "1",
+		        "QueryEnd must publish both scans once under one SQL query ID");
+		Require(Scalar(first, "SELECT count(*) FROM duckomo_last_scan_metrics()") == "2",
+		        "reading metrics must not replace a two-scan query snapshot");
+		Require(Scalar(second, "SELECT count(*) FROM duckomo_last_scan_metrics()") == "1",
+		        "a multi-scan query on one connection must not replace another connection profile");
+		Require(Scalar(first, "SELECT count(*) FROM duckomo_clear_cache()") == "1",
+		        "cache clear should return one row after a multi-scan query");
+		Require(Scalar(first, "SELECT count(*) FROM duckomo_last_scan_metrics()") == "2",
+		        "cache clearing must preserve all scan profiles from the latest query");
 		auto remote = first.Query(
 		    "SELECT * FROM read_om('https://example.invalid/file.om?X-Amz-Signature=secret-signature')");
 		Require(remote && remote->HasError(), "remote reads must stay unavailable without the paired range provider");
-		Require(remote->GetError().find("paired httpfs range-session extension") != std::string::npos,
+		Require(remote->GetError().find("paired httpfs extension with the matching DuckOMO range ABI") !=
+		            std::string::npos,
 		        "unsupported remote input should explain the missing capability");
 		Require(remote->GetError().find("secret-signature") == std::string::npos,
 		        "remote path errors must not expose signed URL query parameters");

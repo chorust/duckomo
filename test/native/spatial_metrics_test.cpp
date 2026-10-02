@@ -81,8 +81,8 @@ void TestCounterOverflowIsRejected() {
 
 	ScanMetrics totals;
 	totals.RecordMetadataRead(ScanMetadataStage::Bind, std::numeric_limits<std::uint64_t>::max());
-	totals.RecordMetadataRead(ScanMetadataStage::Scan, 1);
-	RequireOverflow([&] { (void)totals.Snapshot(); }, "metadata total overflow is checked");
+	RequireOverflow([&] { totals.RecordMetadataRead(ScanMetadataStage::Scan, 1); },
+	                "aggregate physical metadata counter overflow is checked at record time");
 
 	ScanMetrics variable;
 	variable.RecordSuccessfulRead(ScanReadPhase::Data, std::numeric_limits<std::uint64_t>::max(), "/value");

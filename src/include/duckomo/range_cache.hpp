@@ -16,6 +16,7 @@ enum class ObjectVersionStrength : std::uint8_t { None, Weak, StrongETag, S3Vers
 struct ObjectIdentity final {
 	std::string canonical_uri;
 	std::string endpoint;
+	std::string redacted_display_id;
 	std::string access_partition;
 	std::string version_token;
 	std::uint64_t size = 0;
@@ -30,9 +31,14 @@ struct ObjectIdentity final {
 struct RangeCacheStats final {
 	std::uint64_t entries = 0;
 	std::uint64_t accounted_bytes = 0;
+	std::uint64_t control_bytes = 0;
+	std::uint64_t capacity_bytes = 0;
+	std::uint64_t peak_charged_bytes = 0;
 	std::uint64_t hits = 0;
 	std::uint64_t misses = 0;
 	std::uint64_t hit_bytes = 0;
+	std::uint64_t evictions = 0;
+	bool enabled = true;
 };
 
 struct RangeCacheClearResult final {
@@ -73,6 +79,8 @@ private:
 	std::uint64_t hits_ = 0;
 	std::uint64_t misses_ = 0;
 	std::uint64_t hit_bytes_ = 0;
+	std::uint64_t peak_charged_bytes_ = 0;
+	std::uint64_t evictions_ = 0;
 	bool enabled_ = true;
 };
 

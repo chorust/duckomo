@@ -12,6 +12,7 @@
 #include <limits>
 #include <mutex>
 #include <optional>
+#include <sys/resource.h>
 #include <sstream>
 #include <iomanip>
 #include <string>
@@ -43,6 +44,7 @@
 #include "duckomo/metadata.hpp"
 #include "duckomo/projection.hpp"
 #include "duckomo/range_cache.hpp"
+#include "duckomo/remote_file.hpp"
 #include "duckomo/reader.hpp"
 #include "duckomo/regular_grid.hpp"
 #include "duckomo/schema.hpp"
@@ -58,12 +60,22 @@ namespace {
 
 constexpr idx_t SCAN_TASK_POSITION_WINDOW = 65536;
 
+std::unique_ptr<ReadAtFile> OpenOmReadAt(ClientContext &context, const std::string &path,
+                                         const std::shared_ptr<RemoteReadSession> &remote_session,
+                                         const std::shared_ptr<ScanMetrics> &metrics,
+                                         ScanMetadataStage stage, RangeCache *cache) {
+	if (remote_session) return remote_session->Open(context, stage, cache);
+	return std::make_unique<LocalFile>(LocalFile::Open(context, path, metrics, stage));
+}
+
 std::string EnvironmentValue(const char *name) {
 	const auto *value = std::getenv(name);
 	return value == nullptr ? std::string() : std::string(value);
 }
 
 void WriteMetricsSidecar(const ScanMetrics &metrics, const std::string &path) noexcept;
+void WriteMetricsV3Sidecar(const std::vector<std::shared_ptr<ScanMetrics>> &metrics,
+	                       const std::string &path) noexcept;
 
 class DuckomoSessionState final : public ClientContextState {
 public:
@@ -118,9 +130,10 @@ shared_ptr<DuckomoSessionState> GetDuckomoSessionState(ClientContext &context) {
 // session profile describe the complete SQL query rather than only the scan.
 class ScanMetricsQueryState final : public ClientContextState {
 public:
-	ScanMetricsQueryState(std::string state_key_p, std::string output_path_p,
+	ScanMetricsQueryState(std::string state_key_p, std::string output_path_p, std::string output_v3_path_p,
 	                      shared_ptr<DuckomoSessionState> session_p, std::string query_id_p)
-	    : state_key(std::move(state_key_p)), output_path(std::move(output_path_p)), session(std::move(session_p)),
+	    : state_key(std::move(state_key_p)), output_path(std::move(output_path_p)),
+	      output_v3_path(std::move(output_v3_path_p)), session(std::move(session_p)),
 	      query_id(std::move(query_id_p)), started_at(std::chrono::steady_clock::now()) {
 		session->BeginQuery(query_id);
 	}
@@ -154,15 +167,28 @@ public:
 				current->SetStatus(ScanStatus::Succeeded);
 			}
 			current->SetElapsedMilliseconds(elapsed);
+			current->FinalizeQueryMemoryAccounting(!error);
+			rusage usage{};
+			if (getrusage(RUSAGE_SELF, &usage) == 0) {
+#if defined(__APPLE__)
+				current->SetPeakRssBytes(static_cast<std::uint64_t>(usage.ru_maxrss));
+#else
+				current->SetPeakRssBytes(static_cast<std::uint64_t>(usage.ru_maxrss) * 1024);
+#endif
+			}
 			session->Publish(current);
 		}
-		if (!current_metrics.empty()) WriteMetricsSidecar(*current_metrics.back(), output_path);
+		if (!current_metrics.empty()) {
+			WriteMetricsSidecar(*current_metrics.back(), output_path);
+			WriteMetricsV3Sidecar(current_metrics, output_v3_path);
+		}
 		context.registered_state->Remove(state_key);
 	}
 
 private:
 	std::string state_key;
 	std::string output_path;
+	std::string output_v3_path;
 	shared_ptr<DuckomoSessionState> session;
 	std::string query_id;
 	std::chrono::steady_clock::time_point started_at;
@@ -180,6 +206,7 @@ shared_ptr<ScanMetricsQueryState> GetScanMetricsQueryState(ClientContext &contex
 	const auto query_id = std::to_string(static_cast<unsigned long long>(context.GetConnectionId())) + "-" +
 	                      std::to_string(static_cast<unsigned long long>(next_query_id.fetch_add(1)));
 	state = make_shared_ptr<ScanMetricsQueryState>(state_key, EnvironmentValue("DUCKOMO_METRICS_OUTPUT"),
+	                                               EnvironmentValue("DUCKOMO_METRICS_V3_OUTPUT"),
 	                                               GetDuckomoSessionState(context), query_id);
 	context.registered_state->Insert(state_key, state);
 	return state;
@@ -187,6 +214,7 @@ shared_ptr<ScanMetricsQueryState> GetScanMetricsQueryState(ClientContext &contex
 
 std::shared_ptr<ScanMetrics> CreateScanMetrics(ClientContext &context) {
 	auto metrics = std::make_shared<ScanMetrics>();
+	metrics->EnableQueryMemoryAccounting();
 	const auto query_state = GetScanMetricsQueryState(context);
 	metrics->SetQueryIdentity(query_state->QueryId(), EnvironmentValue("DUCKOMO_SCENARIO"), context.GetCurrentQuery());
 	metrics->SetScanId(query_state->NextScanId());
@@ -197,6 +225,11 @@ std::shared_ptr<ScanMetrics> CreateScanMetrics(ClientContext &context) {
 	metrics->SetEnvironmentValue("platform", "linux");
 	metrics->SetEnvironmentValue("build", "release");
 	metrics->SetCachePolicyValue("application_cache", "disabled");
+	const auto cache = GetDuckomoSessionState(context)->Cache().Stats();
+	metrics->SetCacheEvictionBaseline(cache.evictions);
+	metrics->SetCacheState(cache.enabled, cache.capacity_bytes, cache.accounted_bytes,
+	                       cache.peak_charged_bytes, cache.control_bytes, cache.evictions,
+	                       "not_applicable", "unverified");
 	return metrics;
 }
 
@@ -217,6 +250,23 @@ void WriteMetricsSidecar(const ScanMetrics &metrics, const std::string &path) no
 		if (output) {
 			output << metrics.ToEvidenceJson() << '\n';
 		}
+	} catch (...) {
+		// Evidence sidecars are best-effort and must never change query results.
+	}
+}
+
+void WriteMetricsV3Sidecar(const std::vector<std::shared_ptr<ScanMetrics>> &metrics,
+	                       const std::string &path) noexcept {
+	if (path.empty()) return;
+	try {
+		std::ofstream output(path, std::ios::binary | std::ios::trunc);
+		if (!output) return;
+		output << '[';
+		for (std::size_t index = 0; index < metrics.size(); index++) {
+			if (index != 0) output << ',';
+			output << metrics[index]->ToMetricsV3Json();
+		}
+		output << "]\n";
 	} catch (...) {
 		// Evidence sidecars are best-effort and must never change query results.
 	}
@@ -623,15 +673,19 @@ struct ReadOmBindData final : TableFunctionData {
 	ReadOmBindData(std::string path_p, BoundSchema schema_p, AxisDeclarations axes_p,
 	               SpatialBindConfiguration spatial_p, std::optional<TemporalBindConfiguration> temporal_p,
 	               SemanticAxes semantic_axes_p,
-	               std::shared_ptr<ScanMetrics> metrics_p)
+	               std::shared_ptr<RemoteReadSession> remote_session_p,
+	               std::shared_ptr<ScanMetrics> metrics_p,
+	               std::shared_ptr<ScanMemoryAccount> memory_account_p)
 	    : path(std::move(path_p)), schema(std::move(schema_p)), axes(std::move(axes_p)), spatial(std::move(spatial_p)),
-	      temporal(std::move(temporal_p)), semantic_axes(std::move(semantic_axes_p)), metrics(std::move(metrics_p)) {
+	      temporal(std::move(temporal_p)), semantic_axes(std::move(semantic_axes_p)),
+	      remote_session(std::move(remote_session_p)), metrics(std::move(metrics_p)),
+	      memory_account(std::move(memory_account_p)) {
 	}
 
 	ReadOmBindData(const ReadOmBindData &other)
 	    : TableFunctionData(other), path(other.path), schema(other.schema), axes(other.axes), spatial(other.spatial),
 	      temporal(other.temporal), semantic_axes(other.semantic_axes), axis_predicate(other.axis_predicate),
-	      metrics(other.metrics) {
+	      remote_session(other.remote_session), metrics(other.metrics), memory_account(other.memory_account) {
 	}
 
 	unique_ptr<FunctionData> Copy() const override {
@@ -657,10 +711,160 @@ struct ReadOmBindData final : TableFunctionData {
     AxisDeclarations axes;
 	SpatialBindConfiguration spatial;
 	std::optional<TemporalBindConfiguration> temporal;
-	SemanticAxes semantic_axes;
+    SemanticAxes semantic_axes;
 	std::shared_ptr<AxisPredicate> axis_predicate = std::make_shared<AxisPredicate>();
+	std::shared_ptr<RemoteReadSession> remote_session;
 	std::shared_ptr<ScanMetrics> metrics;
+	std::shared_ptr<ScanMemoryAccount> memory_account;
 };
+
+std::uint64_t AddMemoryBytes(std::uint64_t total, std::uint64_t bytes) {
+	return total > UINT64_MAX - bytes ? UINT64_MAX : total + bytes;
+}
+
+std::uint64_t VectorMemoryBytes(std::size_t capacity, std::size_t element_size) {
+	if (element_size != 0 && capacity > UINT64_MAX / element_size) return UINT64_MAX;
+	return static_cast<std::uint64_t>(capacity * element_size);
+}
+
+std::uint64_t StringMemoryBytes(const std::string &value) {
+	return static_cast<std::uint64_t>(value.size());
+}
+
+std::uint64_t StringVectorMemoryBytes(const std::vector<std::string> &values) {
+	std::uint64_t bytes = VectorMemoryBytes(values.capacity(), sizeof(std::string));
+	for (const auto &value : values) bytes = AddMemoryBytes(bytes, StringMemoryBytes(value));
+	return bytes;
+}
+
+std::uint64_t EstimateSchemaMemory(const BoundSchema &schema) {
+	std::uint64_t bytes = 0;
+	bytes = AddMemoryBytes(bytes, VectorMemoryBytes(schema.variables.capacity(), sizeof(BoundVariable)));
+	bytes = AddMemoryBytes(bytes, VectorMemoryBytes(schema.shape.capacity(), sizeof(std::uint64_t)));
+	bytes = AddMemoryBytes(bytes, StringMemoryBytes(schema.crs_wkt));
+	for (const auto &variable : schema.variables) {
+		bytes = AddMemoryBytes(bytes, StringMemoryBytes(variable.canonical_path));
+		bytes = AddMemoryBytes(bytes, StringMemoryBytes(variable.column_name));
+		bytes = AddMemoryBytes(bytes, StringVectorMemoryBytes(variable.inferred_axes));
+		bytes = AddMemoryBytes(bytes, VectorMemoryBytes(variable.shape.capacity(), sizeof(std::uint64_t)));
+		bytes = AddMemoryBytes(bytes, VectorMemoryBytes(variable.chunk_shape.capacity(), sizeof(std::uint64_t)));
+	}
+	return bytes;
+}
+
+std::uint64_t EstimateSemanticAxesMemory(const SemanticAxes &axes) {
+	std::uint64_t bytes = VectorMemoryBytes(axes.capacity(), sizeof(SemanticAxis));
+	for (const auto &axis : axes) {
+		bytes = AddMemoryBytes(bytes, StringMemoryBytes(axis.axis_name));
+		bytes = AddMemoryBytes(bytes, StringMemoryBytes(axis.level_kind));
+		bytes = AddMemoryBytes(bytes, StringMemoryBytes(axis.unit));
+		bytes = AddMemoryBytes(bytes, VectorMemoryBytes(axis.timestamps.capacity(), sizeof(timestamp_t)));
+		bytes = AddMemoryBytes(bytes, VectorMemoryBytes(axis.numbers.capacity(), sizeof(double)));
+		bytes = AddMemoryBytes(bytes, VectorMemoryBytes(axis.durations.capacity(), sizeof(interval_t)));
+		bytes = AddMemoryBytes(bytes, VectorMemoryBytes(axis.integer_members.capacity(), sizeof(std::int64_t)));
+		bytes = AddMemoryBytes(bytes, StringVectorMemoryBytes(axis.text_members));
+	}
+	return bytes;
+}
+
+std::uint64_t EstimateAxisDeclarationsMemory(const AxisDeclarations &axes) {
+	std::uint64_t bytes = VectorMemoryBytes(axes.capacity(), sizeof(std::vector<std::string>));
+	for (const auto &axis : axes) bytes = AddMemoryBytes(bytes, StringVectorMemoryBytes(axis));
+	return bytes;
+}
+
+std::uint64_t EstimateSpatialLayoutMemory(const std::optional<SpatialLayout> &layout) {
+	if (!layout) return 0;
+	std::uint64_t bytes = 0;
+	bytes = AddMemoryBytes(bytes, VectorMemoryBytes(layout->shape.capacity(), sizeof(std::uint64_t)));
+	bytes = AddMemoryBytes(bytes, StringVectorMemoryBytes(layout->axes));
+	bytes = AddMemoryBytes(bytes, VectorMemoryBytes(layout->strides.capacity(), sizeof(std::uint64_t)));
+	bytes = AddMemoryBytes(bytes, VectorMemoryBytes(layout->non_spatial_axes.capacity(), sizeof(std::uint64_t)));
+	return bytes;
+}
+
+std::uint64_t EstimateSpatialPredicateMemory(const SpatialPredicate &predicate) {
+	std::uint64_t bytes = sizeof(predicate);
+	bytes = AddMemoryBytes(bytes, VectorMemoryBytes(predicate.necessary_conditions.capacity(), sizeof(SpatialConstraint)));
+	bytes = AddMemoryBytes(bytes, StringVectorMemoryBytes(predicate.fallback_reasons));
+	return bytes;
+}
+
+std::uint64_t EstimateAxisPredicateMemory(const AxisPredicate &predicate) {
+	std::uint64_t bytes = sizeof(predicate);
+	bytes = AddMemoryBytes(bytes, VectorMemoryBytes(predicate.necessary_conditions.capacity(), sizeof(AxisConstraint)));
+	for (const auto &condition : predicate.necessary_conditions) {
+		if (condition.constant.type().id() == LogicalTypeId::VARCHAR) {
+			bytes = AddMemoryBytes(bytes, StringMemoryBytes(condition.constant.GetValue<std::string>()));
+		}
+	}
+	bytes = AddMemoryBytes(bytes, StringVectorMemoryBytes(predicate.fallback_reasons));
+	return bytes;
+}
+
+std::uint64_t EstimateSpatialBindMemory(const SpatialBindConfiguration &spatial) {
+	std::uint64_t bytes = 0;
+	bytes = AddMemoryBytes(bytes, EstimateSpatialLayoutMemory(spatial.layout));
+	bytes = AddMemoryBytes(bytes, EstimateSpatialPredicateMemory(*spatial.predicate));
+	bytes = AddMemoryBytes(bytes, StringMemoryBytes(spatial.grid_signature));
+	bytes = AddMemoryBytes(bytes, StringMemoryBytes(spatial.layout_name));
+	bytes = AddMemoryBytes(bytes, StringMemoryBytes(spatial.source));
+	return bytes;
+}
+
+std::uint64_t EstimateSpatialCopyMemory(const SpatialBindConfiguration &spatial) {
+	std::uint64_t bytes = EstimateSpatialLayoutMemory(spatial.layout);
+	bytes = AddMemoryBytes(bytes, StringMemoryBytes(spatial.grid_signature));
+	bytes = AddMemoryBytes(bytes, StringMemoryBytes(spatial.layout_name));
+	bytes = AddMemoryBytes(bytes, StringMemoryBytes(spatial.source));
+	return bytes;
+}
+
+std::uint64_t EstimateTemporalMemory(const std::optional<TemporalBindConfiguration> &temporal) {
+	if (!temporal) return 0;
+	return VectorMemoryBytes(temporal->values.capacity(), sizeof(timestamp_t));
+}
+
+std::uint64_t EstimateBindMemory(const ReadOmBindData &data) {
+	std::uint64_t bytes = sizeof(data);
+	bytes = AddMemoryBytes(bytes, StringMemoryBytes(data.path));
+	bytes = AddMemoryBytes(bytes, EstimateSchemaMemory(data.schema));
+	bytes = AddMemoryBytes(bytes, EstimateAxisDeclarationsMemory(data.axes));
+	bytes = AddMemoryBytes(bytes, EstimateSpatialBindMemory(data.spatial));
+	bytes = AddMemoryBytes(bytes, EstimateTemporalMemory(data.temporal));
+	bytes = AddMemoryBytes(bytes, EstimateSemanticAxesMemory(data.semantic_axes));
+	bytes = AddMemoryBytes(bytes, EstimateAxisPredicateMemory(*data.axis_predicate));
+	return bytes;
+}
+
+std::uint64_t EstimateSpatialSelectionMemory(const SpatialSelection &selection) {
+	std::uint64_t bytes = 0;
+	bytes = AddMemoryBytes(bytes, VectorMemoryBytes(selection.latitude_ranges.capacity(), sizeof(AxisRange)));
+	bytes = AddMemoryBytes(bytes, VectorMemoryBytes(selection.longitude_ranges.capacity(), sizeof(AxisRange)));
+	bytes = AddMemoryBytes(bytes, StringVectorMemoryBytes(selection.fallback_reasons));
+	return bytes;
+}
+
+std::uint64_t EstimateProjectionMemory(const ProjectionPlan &projection) {
+	std::uint64_t bytes = 0;
+	bytes = AddMemoryBytes(bytes, VectorMemoryBytes(projection.GetOutputSlots().capacity(), sizeof(OutputColumn)));
+	bytes = AddMemoryBytes(bytes, VectorMemoryBytes(projection.GetRequiredVariableIds().capacity(), sizeof(idx_t)));
+	return bytes;
+}
+
+std::uint64_t EstimateSegmentsMemory(const std::vector<BatchSegment> &segments) {
+	std::uint64_t bytes = VectorMemoryBytes(segments.capacity(), sizeof(BatchSegment));
+	for (const auto &segment : segments) {
+		bytes = AddMemoryBytes(bytes, VectorMemoryBytes(segment.read_offset.capacity(), sizeof(std::uint64_t)));
+		bytes = AddMemoryBytes(bytes, VectorMemoryBytes(segment.read_count.capacity(), sizeof(std::uint64_t)));
+	}
+	return bytes;
+}
+
+std::uint64_t EstimateSpatialBatchMemory(const SpatialBatch &batch) {
+	std::uint64_t bytes = VectorMemoryBytes(batch.logical_positions.capacity(), sizeof(std::uint64_t));
+	return AddMemoryBytes(bytes, EstimateSegmentsMemory(batch.read_segments));
+}
 
 void ObserveComplexFilter(ClientContext &, LogicalGet &get, FunctionData *bind_data,
                            vector<unique_ptr<Expression>> &filters) {
@@ -680,6 +884,7 @@ void ObserveComplexFilter(ClientContext &, LogicalGet &get, FunctionData *bind_d
 		} else {
 			data.metrics->SetSpatialSelection("fallback", true, {"spatial_mapping_unavailable_in_callback"}, 0);
 		}
+		if (data.memory_account) data.memory_account->Set(EstimateBindMemory(data));
 	}
 	// Preserve every expression. DuckDB rebuilds these as ordinary filters
 	// after this callback when table-function filter pushdown is disabled.
@@ -693,7 +898,10 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 	                 bind_data.semantic_axes),
 	      spatial(bind_data.spatial), temporal(bind_data.temporal), semantic_axes(bind_data.semantic_axes),
 	      axis_predicate(*bind_data.axis_predicate), metrics(std::move(metrics_p)),
-	      reader(make_uniq<OmV3Reader>(LocalFile::Open(context, bind_data.path, metrics, ScanMetadataStage::Scan))) {
+	      memory_account(std::make_shared<ScanMemoryAccount>(metrics)),
+	      reader(make_uniq<OmV3Reader>(OpenOmReadAt(context, bind_data.path, bind_data.remote_session, metrics,
+	                                               ScanMetadataStage::Scan,
+	                                               &GetDuckomoSessionState(context)->Cache()))) {
 		// The file may have changed since binding. Revalidate its complete tree
 		// before constructing decoder state, while keeping binding metadata-only.
 		auto current_schema = BuildBoundSchema(ReadMetadataTree(*reader));
@@ -706,14 +914,20 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 			metrics->SetSpatialSelection(SpatialSelectionModeName(selection.mode),
 			                             selection.residual_filter_retained, selection.fallback_reasons,
 			                             selection.candidate_rows, false);
-			if (selection.mode == SpatialSelectionMode::Empty) {
-				no_candidates = true;
-				return;
+		if (selection.mode == SpatialSelectionMode::Empty) {
+			no_candidates = true;
+			scan_completed = true;
+			metrics->SetScanComplete(true);
+			RefreshMemoryAccount();
+			return;
 			}
 		}
 		selection_cursor = make_uniq<AxisSelectionCursor>(schema.shape, semantic_axes, axis_predicate);
 		if (selection_cursor->IsEmpty()) {
 			no_candidates = true;
+			scan_completed = true;
+			metrics->SetScanComplete(true);
+			RefreshMemoryAccount();
 			return;
 		}
 		if (selection.mode == SpatialSelectionMode::Restricted &&
@@ -746,6 +960,7 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 		                                  SpatialSelectionModeName(selection.mode)) : "axis_restricted",
 		                             true, axis_predicate.fallback_reasons, candidate_count,
 		                             candidate_count == 0);
+		RefreshMemoryAccount();
 	}
 
 	~ReadOmGlobalState() override {
@@ -764,6 +979,8 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 		if (spatial_cursor) {
 			positions.clear();
 			SpatialBatch batch;
+			ScanMemoryAccount batch_account(metrics);
+			const auto prior_position_capacity = positions.capacity();
 			while (positions.size() < SCAN_TASK_POSITION_WINDOW && !spatial_cursor->Exhausted()) {
 				if (context.IsInterrupted()) throw InterruptException();
 				if (!spatial_cursor->Next(std::min<idx_t>(STANDARD_VECTOR_SIZE,
@@ -772,13 +989,18 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 				for (const auto position : batch.logical_positions) {
 					if (selection_cursor->Contains(position)) positions.push_back(position);
 				}
+				const auto position_growth = positions.capacity() > prior_position_capacity
+				                                 ? VectorMemoryBytes(positions.capacity() - prior_position_capacity,
+				                                                     sizeof(std::uint64_t))
+				                                 : 0;
+				batch_account.Set(AddMemoryBytes(position_growth, EstimateSpatialBatchMemory(batch)));
 			}
 			if (positions.empty()) {
 				selection_exhausted = true;
-				scan_completed = true;
+				MaybeSetScanCompleteLocked();
 				return false;
 			}
-			metrics->RecordScanTaskClaimed();
+			ClaimTaskLocked();
 			return true;
 		}
 		const auto include_spatial = [this, &context](std::uint64_t logical_position) {
@@ -800,16 +1022,62 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 		const auto position_count = selection_cursor->Next(SCAN_TASK_POSITION_WINDOW, positions, include_spatial);
 		if (position_count == 0) {
 			selection_exhausted = true;
-			scan_completed = true;
+			MaybeSetScanCompleteLocked();
 			return false;
 		}
-		metrics->RecordScanTaskClaimed();
+		ClaimTaskLocked();
 		return true;
+	}
+
+	void RecordTaskCompleted() {
+		std::lock_guard<std::mutex> guard(task_mutex);
+		if (outstanding_tasks > 0) --outstanding_tasks;
+		metrics->RecordScanTaskCompleted();
+		MaybeSetScanCompleteLocked();
+	}
+
+	void RecordTaskFailed(bool cancelled) {
+		std::lock_guard<std::mutex> guard(task_mutex);
+		if (outstanding_tasks > 0) --outstanding_tasks;
+		if (cancelled) metrics->RecordScanTaskCancelled();
+		else metrics->RecordScanTaskFailed();
 	}
 
 	bool RequestStop() noexcept {
 		return !stop_requested.exchange(true);
 	}
+
+private:
+	void RefreshMemoryAccount() const {
+		if (!memory_account) return;
+		std::uint64_t bytes = sizeof(*this);
+		bytes = AddMemoryBytes(bytes, EstimateSchemaMemory(schema));
+		bytes = AddMemoryBytes(bytes, EstimateProjectionMemory(projection));
+		bytes = AddMemoryBytes(bytes, EstimateSpatialCopyMemory(spatial));
+		bytes = AddMemoryBytes(bytes, EstimateTemporalMemory(temporal));
+		bytes = AddMemoryBytes(bytes, EstimateSemanticAxesMemory(semantic_axes));
+		bytes = AddMemoryBytes(bytes, EstimateAxisPredicateMemory(axis_predicate));
+		bytes = AddMemoryBytes(bytes, EstimateSpatialSelectionMemory(selection));
+		if (selection_cursor) bytes = AddMemoryBytes(bytes, selection_cursor->EstimatedBytes());
+		if (spatial_cursor) bytes = AddMemoryBytes(bytes, spatial_cursor->EstimatedBytes());
+		bytes = AddMemoryBytes(bytes, sizeof(OmV3Reader));
+		memory_account->Set(bytes);
+	}
+
+	void ClaimTaskLocked() {
+		++outstanding_tasks;
+		metrics->RecordScanTaskCreated();
+		metrics->RecordScanTaskClaimed();
+	}
+
+	void MaybeSetScanCompleteLocked() {
+		if (selection_exhausted && outstanding_tasks == 0 && !stop_requested.load() && !scan_completed) {
+			scan_completed = true;
+			metrics->SetScanComplete(true);
+		}
+	}
+
+public:
 
     std::string path;
     BoundSchema schema;
@@ -822,11 +1090,13 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 	unique_ptr<AxisSelectionCursor> selection_cursor;
 	unique_ptr<SpatialBatchCursor> spatial_cursor;
     std::shared_ptr<ScanMetrics> metrics;
+    std::shared_ptr<ScanMemoryAccount> memory_account;
     unique_ptr<OmV3Reader> reader;
 	mutable std::mutex task_mutex;
 	std::atomic<bool> stop_requested{false};
 	std::atomic<std::uint64_t> next_worker_id{0};
 	bool selection_exhausted = false;
+	std::uint64_t outstanding_tasks = 0; // guarded by task_mutex
 	bool no_candidates = false;
 	std::uint64_t candidate_count = 0;
 	idx_t max_threads = 1;
@@ -837,10 +1107,14 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 struct ReadOmLocalState final : LocalTableFunctionState {
 	ReadOmLocalState(ClientContext &context, const ReadOmBindData &bind_data, const ReadOmGlobalState &global_state,
 	                 std::uint64_t worker_id_p)
-	    : worker_id(worker_id_p) {
-		if (global_state.no_candidates) return;
-		reader = make_uniq<OmV3Reader>(LocalFile::Open(context, bind_data.path, bind_data.metrics,
-		                                             ScanMetadataStage::Scan));
+	    : worker_id(worker_id_p), memory_account(std::make_shared<ScanMemoryAccount>(bind_data.metrics)) {
+		if (global_state.no_candidates) {
+			RefreshMemoryAccount();
+			return;
+		}
+		reader = make_uniq<OmV3Reader>(OpenOmReadAt(context, bind_data.path, bind_data.remote_session,
+		                                             bind_data.metrics, ScanMetadataStage::Scan,
+		                                             &GetDuckomoSessionState(context)->Cache()));
 		const auto current_schema = BuildBoundSchema(ReadMetadataTree(*reader));
 		if (!SameSchema(global_state.schema, current_schema)) {
 			throw ReaderError(ReaderErrorCode::InvalidMetadata,
@@ -851,6 +1125,15 @@ struct ReadOmLocalState final : LocalTableFunctionState {
 			const auto &variable = current_schema.variables.at(variable_index);
 			decoders.emplace_back(make_uniq<OmDecoderState>(BorrowedOmVariable(variable.metadata_owner)));
 		}
+		RefreshMemoryAccount();
+	}
+
+	void RefreshMemoryAccount() const {
+		std::uint64_t bytes = sizeof(*this);
+		bytes = AddMemoryBytes(bytes, VectorMemoryBytes(decoders.capacity(), sizeof(unique_ptr<OmDecoderState>)));
+		bytes = AddMemoryBytes(bytes, VectorMemoryBytes(task_positions.capacity(), sizeof(std::uint64_t)));
+		if (reader) bytes = AddMemoryBytes(bytes, sizeof(OmV3Reader));
+		memory_account->Set(bytes);
 	}
 
 	unique_ptr<OmV3Reader> reader;
@@ -858,18 +1141,42 @@ struct ReadOmLocalState final : LocalTableFunctionState {
 	std::vector<std::uint64_t> task_positions;
 	idx_t task_position_offset = 0;
 	std::uint64_t worker_id;
+	std::shared_ptr<ScanMemoryAccount> memory_account;
 	bool registered_as_active = false;
+	bool task_active = false;
 };
 
 unique_ptr<FunctionData> BindReadOm(ClientContext &context, TableFunctionBindInput &input,
                                     vector<LogicalType> &return_types, vector<std::string> &names) {
 	auto metrics = CreateScanMetrics(context);
 	RegisterScanMetricsQueryState(context, metrics);
+	auto memory_account = std::make_shared<ScanMemoryAccount>(metrics);
 	if (input.inputs.size() != 1) {
 		throw BinderException("read_om expects one constant VARCHAR path");
 	}
-	const auto path = LocalFilePathFromValue(input.inputs[0]);
-	OmV3Reader reader(LocalFile::Open(context, path, metrics, ScanMetadataStage::Bind));
+	if (input.inputs[0].IsNull() || input.inputs[0].type().id() != LogicalTypeId::VARCHAR) {
+		throw BinderException("read_om expects one constant VARCHAR path");
+	}
+	const auto requested_path = input.inputs[0].GetValue<std::string>();
+	std::shared_ptr<RemoteReadSession> remote_session;
+	std::string path;
+	std::unique_ptr<ReadAtFile> input_file;
+	if (IsSupportedRemoteOmUri(requested_path)) {
+		remote_session = RemoteReadSession::Create(context, requested_path, metrics);
+		path = remote_session->Path();
+		input_file = remote_session->Open(context, ScanMetadataStage::Bind,
+		                                 &GetDuckomoSessionState(context)->Cache());
+	} else {
+		path = LocalFilePathFromValue(input.inputs[0]);
+		metrics->SetTransportAvailable(false);
+		const auto cache = GetDuckomoSessionState(context)->Cache().Stats();
+		metrics->SetCacheState(cache.enabled, cache.capacity_bytes, cache.accounted_bytes,
+		                       cache.peak_charged_bytes, cache.control_bytes, cache.evictions,
+		                       "local_source", "not_applicable");
+		input_file = std::make_unique<LocalFile>(
+		    LocalFile::Open(context, path, metrics, ScanMetadataStage::Bind));
+	}
+	OmV3Reader reader(std::move(input_file));
 	auto schema = BuildBoundSchema(ReadMetadataTree(reader));
 	for (const auto &variable : schema.variables) {
 		metrics->DeclareVariable(variable.canonical_path);
@@ -927,8 +1234,11 @@ unique_ptr<FunctionData> BindReadOm(ClientContext &context, TableFunctionBindInp
 		return_types.emplace_back(semantic_axis.output_type);
 		names.emplace_back(name);
 	}
-	return make_uniq<ReadOmBindData>(path, std::move(schema), std::move(axes), std::move(spatial), std::move(temporal),
-	                                 std::move(semantic_axes), std::move(metrics));
+	auto bind_data = make_uniq<ReadOmBindData>(path, std::move(schema), std::move(axes), std::move(spatial),
+	                                          std::move(temporal), std::move(semantic_axes),
+	                                          std::move(remote_session), metrics, memory_account);
+	memory_account->Set(EstimateBindMemory(bind_data->Cast<ReadOmBindData>()));
+	return bind_data;
 }
 
 unique_ptr<GlobalTableFunctionState> InitReadOm(ClientContext &context, TableFunctionInitInput &input) {
@@ -970,17 +1280,37 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLoca
 		throw InterruptException();
 	}
 	while (local.task_position_offset >= local.task_positions.size()) {
+		if (local.task_active) {
+			state.RecordTaskCompleted();
+			local.task_active = false;
+		}
 		if (!state.GetNextTask(context, local.task_positions)) {
+			local.RefreshMemoryAccount();
 			return;
 		}
+		local.RefreshMemoryAccount();
 		local.task_position_offset = 0;
+		local.task_active = true;
 	}
 	const auto count = std::min<idx_t>(STANDARD_VECTOR_SIZE,
 	                                  local.task_positions.size() - local.task_position_offset);
+	struct WorkerExecution final {
+		ScanMetrics &metrics;
+		std::uint64_t worker_id;
+		WorkerExecution(ScanMetrics &metrics_p, std::uint64_t worker_id_p)
+		    : metrics(metrics_p), worker_id(worker_id_p) { metrics.BeginWorkerExecution(worker_id); }
+		~WorkerExecution() { metrics.EndWorkerExecution(worker_id); }
+	} worker_execution(*state.metrics, local.worker_id);
 	std::vector<std::uint64_t> logical_positions(
 	    local.task_positions.begin() + local.task_position_offset,
 	    local.task_positions.begin() + local.task_position_offset + count);
 	const auto segments = BuildSelectedBatchSegments(state.schema.shape, logical_positions);
+	ScanMemoryAccount batch_account(state.metrics);
+	auto refresh_batch_memory = [&]() {
+		batch_account.Set(AddMemoryBytes(VectorMemoryBytes(logical_positions.capacity(), sizeof(std::uint64_t)),
+		                                  EstimateSegmentsMemory(segments)));
+	};
+	refresh_batch_memory();
 	const auto &slots = state.projection.GetOutputSlots();
 	const auto &required_variables = state.projection.GetRequiredVariableIds();
 	if (output.data.size() != slots.size() || local.decoders.size() != required_variables.size()) {
@@ -1049,7 +1379,8 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLoca
             if (context.IsInterrupted()) {
                 throw InterruptException();
             }
-            std::vector<std::uint64_t> cube_offset(segment.read_count.size(), 0);
+			std::vector<std::uint64_t> cube_offset(segment.read_count.size(), 0);
+			refresh_batch_memory();
             const auto variable_index = required_variables[required_index];
             const auto &variable = state.schema.variables.at(variable_index);
 			local.reader->DecodeSelection(*local.decoders[required_index], variable.canonical_path,
@@ -1107,13 +1438,23 @@ void ScanReadOm(ClientContext &context, TableFunctionInput &input, DataChunk &ou
 	try {
 		ScanReadOmImpl(context, state, local, output);
 	} catch (const InterruptException &) {
-		if (state.RequestStop() && state.metrics) {
+		const auto first_stop = state.RequestStop();
+		if (local.task_active) {
+			state.RecordTaskFailed(true);
+			local.task_active = false;
+		}
+		if (first_stop && state.metrics) {
 			state.metrics->SetStatus(ScanStatus::Cancelled, "cancelled");
 			state.metrics_status_set = true;
 		}
 		throw;
 	} catch (const ReaderError &error) {
-		if (state.RequestStop() && state.metrics) {
+		const auto first_stop = state.RequestStop();
+		if (local.task_active) {
+			state.RecordTaskFailed(error.Code() == ReaderErrorCode::Cancelled);
+			local.task_active = false;
+		}
+		if (first_stop && state.metrics) {
 			if (error.Code() == ReaderErrorCode::Cancelled) {
 				state.metrics->SetStatus(ScanStatus::Cancelled, "cancelled");
 			} else {
@@ -1124,7 +1465,12 @@ void ScanReadOm(ClientContext &context, TableFunctionInput &input, DataChunk &ou
 		}
 		throw;
 	} catch (const std::exception &) {
-		if (state.RequestStop() && state.metrics) {
+		const auto first_stop = state.RequestStop();
+		if (local.task_active) {
+			state.RecordTaskFailed(false);
+			local.task_active = false;
+		}
+		if (first_stop && state.metrics) {
 			state.metrics->SetStatus(ScanStatus::Failed, "scan_error");
 			state.metrics_status_set = true;
 		}

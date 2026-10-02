@@ -1,6 +1,6 @@
 # Validation and Profiling Contract
 
-状态：设计。继承现有 [v2 观测契约](../../002-spatial-pushdown/contracts/validation-evidence.md) 的字段含义，新增 schema_version=3；旧 v2 验收读取器保留并显式分版，不静默重释 bytes_fetched。
+状态：本地实现已接入；远程门禁仍待受控服务验证。继承现有 [v2 观测契约](../../002-spatial-pushdown/contracts/validation-evidence.md) 的字段含义，新增 schema_version=3；旧 v2 验收读取器保留并显式分版，不静默重释 bytes_fetched。
 
 ## 指标
 
@@ -9,7 +9,7 @@
 | schema_version, query_id, scan_id | v3；同一 SQL 多个 read_om 使用同 query_id、不同 scan_id |
 | status, scan_complete | SQL success/failure/cancelled 由 QueryEnd 决定；LIMIT 等提前结束令 scan_complete=false |
 | axes, selection_mode, fallback_reasons | 记录含义/单位/轴映射及 full/restricted/empty/fallback/optimizer_empty；不复制巨大坐标向量，使用来源 hash |
-| metadata、coordinate、variables | 分 bind/scan；coordinate index/data/decode 单列，值变量保留各自 index/data/decode |
+| metadata、coordinate、variables | metadata 分 bind/scan；coordinate 单列 logical/physical index/data 请求与 decoded_chunks；variables 只记录值数组各自的 index/data/decode |
 | logical_requested_bytes/requests | reader 请求量，含缓存命中；不是网络量 |
 | bytes_fetched/read_requests | 兼容 v2：实际从缓存以下文件适配器成功取得的范围量，按读取类别相加；命中不增加 |
 | transport_body_bytes / attempts / responses | 响应事件实测，含 HEAD 探测、重定向和重试；本地为 0，能力不足不是 0 |
@@ -19,11 +19,11 @@
 | candidate_rows / scanner_rows | 读取候选位置与提交给 DuckDB 残余过滤前的行数；不要冒称最终 WHERE 后行数 |
 | result_rows | 完整 SQL 结果行数，harness 完整消费后提供；产品路径无法取到时为 NULL 并注明 unobserved，不以 scanner_rows 替代 |
 | elapsed_ms | 绑定至查询终止；阶段耗时另列，失败记录仍有耗时 |
-| peak_query_owned_bytes | 扩展可归属本查询的 buffer/decoder/selection 分配峰值，明确不含共享会话缓存和引擎其他内存 |
-| peak_rss_bytes / memory_scope | 进程 RSS 峰值并标 process；性能门禁采用独立子进程，不能称并发单查询独占 RSS |
+| peak_query_owned_bytes / query_memory_count_complete | 汇总 DuckOMO bind/scan/worker 的 OM 元数据 payload、decoder 固定状态及参数/index/data/scratch vector capacity、坐标数组、选择游标和活跃批次 segment/position capacity。scope 字段固定为 `duckomo_owned_buffer_decoder_selection_capacities`；不含共享会话范围缓存、DuckDB 输出 vector、httpfs/引擎内部内存及 allocator bookkeeping。正常 SQL 结束时提供 high-water mark 并标完整；失败、取消、溢出或计数失效时写 NULL/false，不把未知写成 0 |
+| peak_rss_bytes / memory_scope | `getrusage(RUSAGE_SELF)` 的进程历史 RSS 峰值并标 process；性能门禁采用独立子进程，不能称并发单查询独占 RSS |
 | input_identity / environment | 内容哈希或版本、依赖版本/patch hash、架构、线程、缓存状态、服务版本；敏感 URI/SQL 脱敏 |
 
-各类别相加与总成功底层读取量一致；网络可能因探测/重试大于底层读取量。缓存命中影响底层读取，不把必需 reader 逻辑请求抹掉。并行使用同一 aggregate 或一次合并 local delta，不能对每 worker 重复发布 global snapshot。QueryEnd 发布一次；失败不混进成功平均值。
+coordinate 与各变量的 index/data 类别相加后应与 `physical_read_bytes` / `physical_read_requests` 中的成功 OM 读取总量一致；`legacy_v2.bytes_fetched/read_requests` 继续保留原有 v2 范围，不用于替代 v3 总量。网络可能因探测/重试大于底层读取量。缓存命中影响底层读取，不把必需 reader 逻辑请求抹掉。并行使用同一 aggregate 或一次合并 local delta，不能对每 worker 重复发布 global snapshot。QueryEnd 发布一次；失败不混进成功平均值。
 
 ## 资产与入口
 

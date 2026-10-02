@@ -44,17 +44,19 @@ public:
 	                     const std::vector<std::uint64_t> &read_offset,
 	                     const std::vector<std::uint64_t> &read_count,
 	                     const std::vector<std::uint64_t> &cube_offset,
-	                     const std::vector<std::uint64_t> &cube_dimensions, void *output,
-	                     std::uint64_t output_bytes, std::uint64_t io_size_merge = 512,
-	                     std::uint64_t io_size_max = 64 * 1024) const;
+                     const std::vector<std::uint64_t> &cube_dimensions, void *output,
+                     std::uint64_t output_bytes, std::uint64_t io_size_merge = 512,
+                     std::uint64_t io_size_max = 64 * 1024,
+                     ScanDecodePurpose purpose = ScanDecodePurpose::Value) const;
 
 	// Keep source compatibility for raw scans, which do not attach query metrics.
 	void DecodeSelection(OmDecoderState &state, const std::vector<std::uint64_t> &read_offset,
 	                     const std::vector<std::uint64_t> &read_count,
 	                     const std::vector<std::uint64_t> &cube_offset,
-	                     const std::vector<std::uint64_t> &cube_dimensions, void *output,
-	                     std::uint64_t output_bytes, std::uint64_t io_size_merge = 512,
-	                     std::uint64_t io_size_max = 64 * 1024) const;
+                     const std::vector<std::uint64_t> &cube_dimensions, void *output,
+                     std::uint64_t output_bytes, std::uint64_t io_size_merge = 512,
+                     std::uint64_t io_size_max = 64 * 1024,
+                     ScanDecodePurpose purpose = ScanDecodePurpose::Value) const;
 
 	const ReadAtFile &File() const noexcept;
 

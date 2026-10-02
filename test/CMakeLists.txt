@@ -8,6 +8,7 @@ set(DUCKOMO_TOOL_SOURCES
     duckomo_validation
     duckomo_spatial_validation
     duckomo_dimensions_validation
+    duckomo_remote_validation
 )
 set(DUCKOMO_NATIVE_TEST_SOURCES
     batch_test
@@ -30,6 +31,9 @@ set(DUCKOMO_NATIVE_TEST_SOURCES
     spatial_io_test
     spatial_lifecycle_test
     domain_reference_test
+    httpfs_abi_test
+    httpfs_range_test
+    remote_session_test
 )
 
 set(DUCKOMO_SQLLOGICTEST_FILES
@@ -99,7 +103,41 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
         if(test STREQUAL "domain_reference_test")
             target_include_directories("${test}" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/tools")
         endif()
-		if(test STREQUAL "range_cache_test")
+        if(test STREQUAL "httpfs_abi_test")
+            target_include_directories("${test}" PRIVATE
+                "${PROJECT_SOURCE_DIR}/build/httpfs-stage-v2/source/src/include"
+                "${PROJECT_SOURCE_DIR}/third_party/httpfs-patches"
+            )
+            target_compile_definitions("${test}" PRIVATE
+                "DUCKOMO_HTTPFS_EXTENSION_PATH=\"${CMAKE_BINARY_DIR}/extension/httpfs/httpfs.duckdb_extension\""
+                "DUCKOMO_DUCKOMO_EXTENSION_PATH=\"${CMAKE_BINARY_DIR}/extension/duckomo/duckomo.duckdb_extension\""
+            )
+            target_link_libraries("${test}" PRIVATE
+                duckdb_static duckomo_extension duckomo_om httpfs_extension
+            )
+		elseif(test STREQUAL "httpfs_range_test")
+		    target_include_directories("${test}" PRIVATE
+		        "${PROJECT_SOURCE_DIR}/build/httpfs-stage-v2/source/src/include"
+		        "${PROJECT_SOURCE_DIR}/third_party/httpfs-patches"
+		    )
+		    target_link_libraries("${test}" PRIVATE duckdb_static httpfs_extension)
+		elseif(test STREQUAL "remote_session_test")
+		    target_include_directories("${test}" PRIVATE
+		        "${PROJECT_SOURCE_DIR}/build/httpfs-stage-v2/source/src/include"
+		        "${PROJECT_SOURCE_DIR}/third_party/httpfs-patches"
+		    )
+		    target_compile_definitions("${test}" PRIVATE
+		        "DUCKOMO_REMOTE_FIXTURE_PATH=\"${PROJECT_SOURCE_DIR}/test/data/raw.om\"")
+		    target_link_libraries("${test}" PRIVATE
+		        duckdb_static duckomo_extension duckomo_om httpfs_extension
+		    )
+        elseif(test STREQUAL "domain_reference_test")
+            target_include_directories("${test}" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/tools")
+        endif()
+		if(test STREQUAL "httpfs_abi_test" OR test STREQUAL "httpfs_range_test" OR
+		   test STREQUAL "remote_session_test")
+			# These tests have explicit paired-extension link configurations above.
+		elseif(test STREQUAL "range_cache_test")
 			target_sources("${test}" PRIVATE "${PROJECT_SOURCE_DIR}/src/om/range_cache.cpp")
 		elseif(test STREQUAL "scan_metrics_v3_test")
 			# The v3 profile is a value type and keeps this contract test independent of DuckDB.
@@ -161,6 +199,9 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED ON
     )
+    target_include_directories(duckomo_extension_sanitized PRIVATE
+        "${PROJECT_SOURCE_DIR}/third_party/httpfs-patches"
+    )
     target_compile_options(duckomo_extension_sanitized PRIVATE ${DUCKOMO_SANITIZER_COMPILE_OPTIONS})
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         target_compile_options(duckomo_extension_sanitized PRIVATE -fno-gnu-unique)
@@ -193,6 +234,9 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED ON
     )
+    target_include_directories(duckomo_sanitizer_loadable_extension PRIVATE
+        "${PROJECT_SOURCE_DIR}/third_party/httpfs-patches"
+    )
     target_compile_options(duckomo_sanitizer_loadable_extension PRIVATE ${DUCKOMO_SANITIZER_COMPILE_OPTIONS})
     target_link_options(duckomo_sanitizer_loadable_extension PRIVATE ${DUCKOMO_SANITIZER_LINK_OPTIONS})
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -206,19 +250,32 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
     enable_testing()
     set(DUCKOMO_SANITIZER_TEST_TARGETS)
 
-    foreach(test batch_test raw_reader_test schema_test axis_selection_test parallel_scan_test)
+    foreach(test batch_test raw_reader_test schema_test axis_selection_test parallel_scan_test
+                 range_cache_test scan_metrics_v3_test session_metrics_test remote_session_test)
         set(test_target "${test}_sanitizer")
         duckomo_add_source_target("${test_target}" "native/${test}.cpp" "sanitizer/native")
         if(TARGET "${test_target}")
             set_target_properties("${test_target}" PROPERTIES EXCLUDE_FROM_ALL TRUE)
             target_compile_options("${test_target}" PRIVATE ${DUCKOMO_SANITIZER_COMPILE_OPTIONS})
             target_link_options("${test_target}" PRIVATE ${DUCKOMO_SANITIZER_LINK_OPTIONS})
-            target_link_libraries("${test_target}" PRIVATE
-                duckdb_static
-                duckdb_generated_extension_loader
-                duckomo_extension_sanitized
-                duckomo_om
-            )
+            if(test STREQUAL "remote_session_test")
+                target_include_directories("${test_target}" PRIVATE
+                    "${PROJECT_SOURCE_DIR}/build/httpfs-stage-v2/source/src/include"
+                    "${PROJECT_SOURCE_DIR}/third_party/httpfs-patches"
+                )
+                target_compile_definitions("${test_target}" PRIVATE
+                    "DUCKOMO_REMOTE_FIXTURE_PATH=\"${PROJECT_SOURCE_DIR}/test/data/raw.om\"")
+                target_link_libraries("${test_target}" PRIVATE
+                    duckdb_static httpfs_extension duckomo_extension_sanitized duckomo_om
+                )
+            else()
+                target_link_libraries("${test_target}" PRIVATE
+                    duckdb_static
+                    duckdb_generated_extension_loader
+                    duckomo_extension_sanitized
+                    duckomo_om
+                )
+            endif()
             add_test(NAME "duckomo_sanitizer_${test}"
                 COMMAND "$<TARGET_FILE:${test_target}>"
             )

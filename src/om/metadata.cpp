@@ -197,6 +197,7 @@ void Traverse(const OmV3Reader &reader, std::uint64_t offset, std::uint64_t size
 	if ((name == "time" && is_array && (array_attribute || type == DATA_TYPE_INT64_ARRAY)) ||
 	    (name == "valid_time" && !is_array && type != DATA_TYPE_NONE)) {
 		OmTimeCoordinate time;
+		time.EnableMemoryAccounting(reader.File().Metrics());
 		if (is_array) {
 			const auto *shape = om_variable_get_dimensions(variable);
 			if (type != DATA_TYPE_INT64_ARRAY || om_variable_get_dimensions_count(variable) != 1 || shape == nullptr) {
@@ -208,9 +209,10 @@ void Traverse(const OmV3Reader &reader, std::uint64_t offset, std::uint64_t size
 				throw ReaderError(ReaderErrorCode::Allocation, "OM time coordinate exceeds addressable memory");
 			}
 			time.epoch_seconds.resize(static_cast<std::size_t>(count));
+			time.RefreshMemoryAccount();
 			OmDecoderState decoder(borrowed);
 			reader.DecodeSelection(decoder, node_path, {0}, {count}, {0}, {count}, time.epoch_seconds.data(),
-			                       count * sizeof(std::int64_t));
+			                       count * sizeof(std::int64_t), 512, 64 * 1024, ScanDecodePurpose::Coordinate);
 		} else {
 			void *value = nullptr;
 			std::uint64_t value_size = 0;
@@ -221,6 +223,7 @@ void Traverse(const OmV3Reader &reader, std::uint64_t offset, std::uint64_t size
 			std::int64_t seconds;
 			std::memcpy(&seconds, value, sizeof(seconds));
 			time.epoch_seconds.push_back(seconds);
+			time.RefreshMemoryAccount();
 			time.scalar = true;
 		}
 		const auto owner_path = parent_path.empty() ? "/" : parent_path;

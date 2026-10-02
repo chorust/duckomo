@@ -32,8 +32,12 @@ extern "C" {
 
 namespace duckdb {
 void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
+	const auto *extension_path = std::getenv("DUCKOMO_TEST_EXTENSION");
+	if (extension_path == nullptr || extension_path[0] == '\0') {
+		extension_path = "./build/release/extension/duckomo/duckomo.duckdb_extension";
+	}
 	ExtensionHelper::LoadExternalExtension(*database.instance, database.GetFileSystem(),
-	                                       "./build/release/extension/duckomo/duckomo.duckdb_extension");
+	                                       extension_path);
 }
 } // namespace duckdb
 

@@ -1,0 +1,21 @@
+{
+  "schema_version": 2,
+  "status": "success",
+  "coordinate_fixtures": ["dimensions","dimensions_axis_order","dimensions_five_axes"],
+  "full_data_bytes": 1000800,
+  "local_data_bytes": 4680,
+  "full_decoded_chunks": 4096,
+  "local_decoded_chunks": 8,
+  "parallel_rows": 131072,
+  "parallel_tasks": 2,
+  "active_workers": 2,
+  "timing_ms": {
+    "threads_1": [15.883, 16.495, 24.374, 16.686, 14.788],
+    "threads_2": [21.273, 20.898, 15.336, 15.771, 16.265],
+    "threads_4": [21.803, 17.030, 17.646, 21.756, 22.750],
+    "median_threads_1": 16.495,
+    "median_threads_2": 16.265,
+    "median_threads_4": 21.756
+  },
+  "two_worker_speedup_passed": true
+}

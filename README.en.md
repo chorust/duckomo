@@ -8,7 +8,7 @@ duckomo is a DuckDB C++ extension that queries Float32 arrays in local [Open-Met
 - **Selective reads**: reads only value variables needed by output and filters; safe geographic predicates can further narrow the scan.
 - **Coordinates**: generates `latitude` and `longitude` from an explicit regular grid or [68 registered domains](docs/regular-domains.md).
 
-Currently supports one local file and a single scan thread. Axes other than latitude, longitude, and valid time have no generated semantic columns. Remote reads, parallel scans, and projected/Gaussian grids are not implemented. Linux AArch64 is the validated platform; Linux x86_64 support and validation are deferred.
+The reader supports one local OM file, plus HTTP(S)/S3 range reads through the paired `httpfs` extension. DuckDB can schedule scans in parallel; connection-level thread limits and a bounded range cache are available. Semantic axes include time, level, lead time, member, and run. Projected/Gaussian grids are not implemented. The implementation is present, while full remote performance, server-audit, and independent-reproduction gates remain to be run. Linux AArch64 is the acceptance platform; Linux x86_64 support and validation are deferred.
 
 ## Build and load
 
@@ -19,6 +19,8 @@ git submodule update --init --recursive
 make release
 ./build/release/duckdb -unsigned :memory:
 ```
+
+`make release` builds the paired httpfs artifact. Local reads only need duckomo. Remote reads require the httpfs artifact from the same build to be loaded before duckomo; do not substitute another httpfs version.
 
 In the CLI, load the extension and query the included fixture:
 
@@ -42,7 +44,7 @@ Then load `build/versions/v1.5.5/release/extension/duckomo/duckomo.duckdb_extens
 
 ## Reading `data/`, `data_run/`, and `data_spatial/`
 
-Local OM files from all three directories use `read_om()` without a directory-specific read mode. The reader parses the file's internal metadata. Download remote objects locally first.
+Local OM files from all three directories use `read_om()` without a directory-specific read mode. The reader parses the file's internal metadata. HTTP(S)/S3 URIs can also be passed directly to `read_om()`; each input still names one object.
 
 | Directory | Typical axes and metadata in audited samples | Parameters for latitude/longitude queries |
 |---|---|---|
@@ -66,9 +68,25 @@ WHERE latitude BETWEEN 30 AND 40 AND longitude BETWEEN 110 AND 120
   AND valid_time = TIMESTAMP '2026-09-28 03:00:00';
 ```
 
-Download the corresponding file first. The `TIMESTAMP` column represents UTC without session-timezone conversion. DuckDB applies time filters; they do not currently narrow reads along the OM time axis.
+The input may be a local file or a supported remote URI. The `TIMESTAMP` column represents UTC without session-timezone conversion. Time filters can narrow safe candidate positions, while DuckDB still applies the complete `WHERE` clause.
 
 When time metadata is missing, supply a UTC timestamp for each time position with `valid_times := [TIMESTAMP '...', ...]`. Its length must match the `time` axis; missing axis metadata also requires `dimensions`. Spatial snapshots without a `time` axis accept a single timestamp. The list must be nonempty with finite, non-NULL timestamps and cannot override conflicting file time coordinates. Files without time metadata or explicit `valid_times` retain their existing output; valid time is never guessed from paths or forecast reference time.
+
+Declare other semantic axes explicitly with `axes`. This preserves the existing `valid_time` output name for the `time` axis: `run` produces `run TIMESTAMP`, and the other axes produce `level DOUBLE`, `lead_time INTERVAL`, and `member` with its input type.
+
+```sql
+SELECT value, valid_time, member
+FROM read_om('test/data/raw.om',
+  dimensions := map(['value'], [['time_axis','ensemble']]),
+  axes := {
+    'time': {'axis':'time_axis', 'start':TIMESTAMP '2026-09-30 00:00:00',
+             'step':INTERVAL '1 hour'},
+    'member': {'axis':'ensemble', 'values':[10,20,30]}
+  })
+WHERE valid_time=TIMESTAMP '2026-09-30 01:00:00' AND member=20;
+```
+
+Time and run use UTC microseconds. `lead_time` rejects month components. `level` requires a closed `kind` / `unit` pair. Integer members remain `BIGINT`; strings are not converted to numbers. Explicit coordinates retain their logical positions, including duplicates. See the [SQL contract](specs/003-dimensions-remote-parallel/contracts/sql-interface.md) for types, conflicts, and filter fallback rules.
 
 ## Query multiple variables
 
@@ -124,15 +142,49 @@ WHERE longitude >= 170 OR longitude < -170
 
 `OR` and expressions that cannot be safely analyzed retain SQL filtering and may read the full domain. Read savings depend on OM chunk layout. Coordinate-only queries, spatial `COUNT(*)`, and selections proven empty do not read value arrays.
 
+## Remote, parallel, and cached reads
+
+HTTP(S) and S3 use the paired httpfs build for range reads. The service must support HEAD, a one-byte range probe, and exact `206 Content-Range` responses. Provide S3 credentials through a DuckDB secret or the existing httpfs configuration.
+
+```sql
+LOAD 'build/release/extension/httpfs/httpfs.duckdb_extension';
+LOAD 'build/release/extension/duckomo/duckomo.duckdb_extension';
+
+SELECT value
+FROM read_om('https://example.invalid/path/object.om')
+LIMIT 10;
+```
+
+Configure an S3 secret before reading an S3 URI, for example with `CREATE SECRET ... (TYPE s3, KEY_ID ..., SECRET ..., REGION ...)`. Cross-query caching requires a strong ETag or S3 VersionId. Every query still probes object identity and range authorization. Weak or unversioned objects can be read but are not reused across queries. `read_om_raw(path)` remains local-only.
+
+Thread limits and the application range cache are connection settings:
+
+```sql
+SET threads=4;
+SET duckomo_max_threads=2;        -- 0 uses DuckDB's thread limit
+SET duckomo_cache_capacity=67108864;
+SET duckomo_cache_enabled=true;
+CALL duckomo_clear_cache();       -- this connection; returns cleared entries and bytes
+```
+
+Cache capacity is in bytes; shrinking it evicts entries immediately, and capacity zero stores nothing. Inspect one v3 JSON row per scan from the most recently ended SQL query:
+
+```sql
+SELECT query_id, scan_id, metrics::JSON
+FROM duckomo_last_scan_metrics();
+```
+
+Metrics distinguish logical requests, successful reads below the range cache, and response-body bytes reported by the httpfs observer. Time-coordinate index/data/decode costs are separate from value variables. `scan_complete=false` means the query succeeded but a consumer such as `LIMIT` stopped the scan early. `peak_rss_bytes` is process-scoped. `peak_query_owned_bytes` tracks DuckOMO metadata, decoder, and selection buffer vector capacities; it excludes the shared range cache, DuckDB output vectors, and httpfs or engine internals. Failed, cancelled, or incomplete measurements publish `null` and set `query_memory_count_complete=false`. See [Interface overview](docs/spec.md) for the current behavior and metric fields.
+
 ## Development and validation
 
 ```sh
 make test                            # Build release and run validate.sh
-./scripts/validate.sh build/release   # Validate an existing build: SQL/native, fixture regeneration/hashes, projection metrics
+./scripts/validate.sh build/release   # Validate an existing build: SQL/native, dimensions, local metrics, fixed fixtures
 make sanitizer-test                  # ASan/UBSan checks
 ```
 
-`validate.sh` also requires `jq`, `sha256sum`, `diff`, and `mktemp`. Evidence defaults to `build/evidence/`. Set `DUCKOMO_DOMAIN_FILE=/path/to/pinned.om` to additionally run complete spatial validation with the real sample. See the [spatial query guide](specs/002-spatial-pushdown/quickstart.md) for the required file and hash, and the [validation record](specs/002-spatial-pushdown/evidence/final.md) for existing AArch64 results and independent reproduction.
+`validate.sh` also requires `jq`, `sha256sum`, `diff`, and `mktemp`. Evidence defaults to `build/evidence/`. Set `DUCKOMO_DOMAIN_FILE=/path/to/pinned.om` to run complete spatial validation with the real sample. When remote services are available, follow the [003 Quickstart](specs/003-dimensions-remote-parallel/quickstart.md) to configure and run G3; the remote gate does not pass without its services, real sample, and audit logs.
 
 ## Documentation and source
 

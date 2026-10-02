@@ -36,10 +36,6 @@ fi
 [[ -d "$BUILD_INPUT" ]] || die "release build directory does not exist: $BUILD_INPUT (run make release first)"
 BUILD_DIR="$(cd -- "$BUILD_INPUT" && pwd -P)"
 
-# The projection native test loads the release extension from this fixed path.
-EXPECTED_BUILD_DIR="$(cd -- "$REPO_ROOT/build/release" 2>/dev/null && pwd -P)" || die "build/release is missing"
-[[ "$BUILD_DIR" == "$EXPECTED_BUILD_DIR" ]] || die "the native projection check expects $EXPECTED_BUILD_DIR because its extension loader uses that path"
-
 EVIDENCE_INPUT="${DUCKOMO_EVIDENCE_DIR:-$REPO_ROOT/build/evidence}"
 if [[ "$EVIDENCE_INPUT" != /* ]]; then
 	EVIDENCE_INPUT="$REPO_ROOT/$EVIDENCE_INPUT"
@@ -49,7 +45,7 @@ FIXTURE_DIR="$REPO_ROOT/test/data"
 MANIFEST="$FIXTURE_DIR/manifest.json"
 DOMAIN_MANIFEST="$FIXTURE_DIR/domain-manifest.json"
 
-for tool in jq sha256sum diff mktemp; do
+for tool in jq sha256sum diff mktemp cmake; do
 	command -v "$tool" >/dev/null 2>&1 || die "required command not found: $tool"
 done
 
@@ -80,6 +76,11 @@ REQUIRED_EXECUTABLES=(
 	"$BUILD_DIR/test/native/spatial_io_test"
 	"$BUILD_DIR/test/native/spatial_lifecycle_test"
 	"$BUILD_DIR/test/native/domain_reference_test"
+	"$BUILD_DIR/test/native/httpfs_abi_test"
+	"$BUILD_DIR/test/native/httpfs_range_test"
+	"$BUILD_DIR/test/native/remote_session_test"
+	"$BUILD_DIR/test/tools/duckomo_remote_validation"
+	"$BUILD_DIR/extension/httpfs/httpfs.duckdb_extension"
 	"$BUILD_DIR/extension/duckomo/duckomo.duckdb_extension"
 )
 for executable in "${REQUIRED_EXECUTABLES[@]}"; do
@@ -282,13 +283,23 @@ check_evidence() {
 }
 
 for sql_test in raw read_om semantic_axes axis_filter parallel_scan cache_metrics projection spatial spatial_pushdown spatial_composition; do
-	run_sqllogictest "SQLLogicTest: $sql_test.test" "$BUILD_DIR/test/unittest" "test/sql/$sql_test.test"
+	run_sqllogictest "SQLLogicTest: $sql_test.test" "$BUILD_DIR/test/unittest" "$REPO_ROOT/test/sql/$sql_test.test"
 done
 
 for native_test in batch_test raw_reader_test lifecycle_test schema_test time_test axis_selection_test parallel_scan_test semantic_axes_test range_cache_test scan_metrics_v3_test session_metrics_test projection_evidence_test regular_grid_test spatial_layout_test \
-	spatial_metrics_test spatial_callback_test spatial_selection_test spatial_io_test spatial_lifecycle_test; do
-	run "Native check: $native_test" "$BUILD_DIR/test/native/$native_test"
+	spatial_metrics_test spatial_callback_test spatial_selection_test spatial_io_test spatial_lifecycle_test \
+	httpfs_abi_test httpfs_range_test remote_session_test; do
+	if [[ "$native_test" == projection_evidence_test ]]; then
+		run "Native check: $native_test" env \
+			DUCKOMO_TEST_EXTENSION="$BUILD_DIR/extension/duckomo/duckomo.duckdb_extension" \
+			"$BUILD_DIR/test/native/$native_test"
+	else
+		run "Native check: $native_test" "$BUILD_DIR/test/native/$native_test"
+	fi
 done
+
+run "Critical native ASan/UBSan lifecycle and metrics checks" \
+	cmake --build "$BUILD_DIR" --target duckomo_sanitizer_checks --parallel 2
 
 check_fixture_hashes
 check_domain_manifest
@@ -331,6 +342,29 @@ if [[ -n "${DUCKOMO_DOMAIN_FILE:-}" ]]; then
 		--domain-file "$DUCKOMO_DOMAIN_FILE"
 else
 	printf '\nReal-domain release gate not run. Set DUCKOMO_DOMAIN_FILE to the pinned sample path to run it.\n'
+fi
+
+remote_configured=false
+for remote_value in "${DUCKOMO_HTTP_BASE:-}" "${DUCKOMO_S3_BASE:-}" "${DUCKOMO_S3_SETUP:-}" \
+	"${DUCKOMO_SERVER_LOG:-}" "${DUCKOMO_HTTPFS:-}" "${DUCKOMO_REAL_FILE:-}" "${DUCKOMO_REAL_MANIFEST:-}"; do
+	if [[ -n "$remote_value" ]]; then
+		remote_configured=true
+	fi
+done
+if [[ "$remote_configured" == true ]]; then
+	for remote_name in DUCKOMO_HTTP_BASE DUCKOMO_S3_BASE DUCKOMO_S3_SETUP DUCKOMO_SERVER_LOG \
+		DUCKOMO_HTTPFS DUCKOMO_REAL_FILE DUCKOMO_REAL_MANIFEST; do
+		[[ -n "${!remote_name:-}" ]] || die "remote gate configuration is incomplete: $remote_name is empty"
+	done
+	run "Release HTTP/S3 remote validation gate" \
+		"$BUILD_DIR/test/tools/duckomo_remote_validation" \
+		--root "$REPO_ROOT" --fixtures "$FIXTURE_DIR" --output "$EVIDENCE_DIR/remote" \
+		--duckdb "$BUILD_DIR/duckdb" --extension "$BUILD_DIR/extension/duckomo/duckomo.duckdb_extension" \
+		--httpfs "$DUCKOMO_HTTPFS" --http-base "$DUCKOMO_HTTP_BASE" --s3-base "$DUCKOMO_S3_BASE" \
+		--s3-setup "$DUCKOMO_S3_SETUP" --server-log "$DUCKOMO_SERVER_LOG" \
+		--real-file "$DUCKOMO_REAL_FILE" --real-manifest "$DUCKOMO_REAL_MANIFEST"
+else
+	printf '\nRemote G3–G6 validation not run. Source setup-remote-fixtures.py run.env after provisioning S3.\n'
 fi
 
 printf '\nDuckOMO validation passed. Evidence: %s\n' "$EVIDENCE_DIR"

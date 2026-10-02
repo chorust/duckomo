@@ -36,6 +36,7 @@ set(EXTENSION_SOURCES
     src/om/metadata.cpp
     src/om/reader.cpp
     src/om/range_cache.cpp
+    src/om/remote_file.cpp
     src/scan/batch.cpp
     src/scan/dimensions.cpp
     src/scan/axis_filter.cpp
@@ -54,6 +55,12 @@ set(EXTENSION_SOURCES
 )
 build_static_extension(${TARGET_NAME} ${EXTENSION_SOURCES})
 build_loadable_extension(${TARGET_NAME} " " ${EXTENSION_SOURCES})
+target_include_directories(${TARGET_NAME}_extension PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/third_party/httpfs-patches"
+)
+target_include_directories(${TARGET_NAME}_loadable_extension PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/third_party/httpfs-patches"
+)
 set_target_properties(${TARGET_NAME}_extension ${TARGET_NAME}_loadable_extension PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON

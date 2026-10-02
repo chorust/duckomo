@@ -1,10 +1,24 @@
 <!--
-SYNC IMPACT REPORT
-==================
+LATEST SYNC IMPACT REPORT — 2026-10-02
+======================================
+Version change: 1.0.0 → 1.0.1
+Bump rationale: PATCH — 更新 003 的任务快照和 T059 运行证据；生命周期仍为 in-progress。
+
+Changes this revision:
+  - 003 完成 T059；任务记录由 70/73 更新为 71/73，T070、T073 保持未完成。
+  - 更新 003 notes 和 evidence snapshot，记录完整的本地查询内存计量及仍未执行的远程/独立门禁。
+
+Specs affected: 003
+Open questions added/resolved: none
+Notes: 003 的受控远程 G3/G5/G6 与独立复现 G7 仍未完成；不提议 implemented 或 verified。
+
+---
+HISTORICAL INITIALIZATION SYNC IMPACT REPORT — retained from 2026-09-30
+=======================================================================
 Version change: none → 1.0.0
 Bump rationale: INITIAL — 基于现有项目 artifacts 初始化统一的 spec roadmap。
 
-Changes this revision:
+Initial changes:
   - 纳入 001 — Phase 0–2 本地 OM 可用扫描器，status: implemented。
   - 纳入 002 — Phase 3 规则网格空间下推，status: verified（原始验收范围、Linux AArch64）。
   - 纳入 003 — Phase 4–5 维度语义、远程与并行读取，status: in-progress。
@@ -14,7 +28,7 @@ Changes this revision:
 
 Specs affected: 001, 002, 003（仅新增台账条目）
 Open questions added/resolved: added Q-01–Q-07; resolved none
-Notes: 状态是对 2026-09-30 已有 artifacts 的归纳，不是本次运行验收结果。
+Initial notes: 状态是对 2026-09-30 已有 artifacts 的归纳，不是本次运行验收结果。
        现有 spec、plan、tasks、产品文档及 constitution 未修改。
        constitution 为占位模板；未检测到项目 ADR 或配置 glob 匹配的 PRD。
 -->
@@ -62,7 +76,7 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 | --- | --- | --- | --- | --- |
 | 001 | Phase 0–2 | `implemented` | 44/44 勾选 | AArch64 运行门禁有通过记录；SC-006 独立复现仍为 Partial |
 | 002 | Phase 3 | `verified` | 46/46 勾选 | 原始 Phase 3 / ncep_gfswave025 在 AArch64 独立验收；T042 为延期决定，未执行 |
-| 003 | Phase 4–5 | `in-progress` | 70/73 勾选，3 项未完成 | 本地 G0–G2 通过，G4 只有本地部分结果；G3、G5–G7 未完成，完整交付门禁未闭环 |
+| 003 | Phase 4–5 | `in-progress` | 71/73 勾选，2 项未完成 | 本地 G0–G2 通过，G4 只有本地部分结果；G3、G5–G7 未完成，完整交付门禁未闭环 |
 
 任务数量来自各 [tasks.md](../../specs/003-dimensions-remote-parallel/tasks.md) 的采集时快照，不表示等权完成比例或运行门禁通过数量。001 与 003 的 spec 头部仍写 `Draft`；台账根据实施和验收 artifacts 归纳生命周期，原文件状态保留。
 
@@ -104,7 +118,7 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 - **Addresses:** [产品路线图 Phase 4–5](../../docs/roadmap.md#阶段)、[现有接口](../../docs/spec.md)；差异见 Q-04。
 - **Spec dir:** [specs/003-dimensions-remote-parallel/](../../specs/003-dimensions-remote-parallel/)；[spec](../../specs/003-dimensions-remote-parallel/spec.md)、[plan](../../specs/003-dimensions-remote-parallel/plan.md)、[tasks](../../specs/003-dimensions-remote-parallel/tasks.md)。
 - **Key decisions:** time 沿用 valid_time；只自动识别已核验时间元数据，其他语义显式映射；类型精确比较、重复/非单调坐标保留原位置，区间预算超限安全回退全轴；配套 httpfs ABI 先验收，凭据沿用当前访问上下文；worker 独占 decoder，惰性任务不物化全域；缓存只复用已请求范围；QueryEnd 单次发布权威终态，实际 body 不由逻辑请求量推算。
-- **Notes:** 截至 2026-10-01，73 项中 70 项勾选；仅 T059（查询归属内存峰值完整计量）、T070（独立复现）和 T073（完整验收后的路线图收尾）未完成。[最终证据记录](../../evidence/003-dimensions-remote-parallel/final.md)显示 G0–G2 在 Linux AArch64 本地通过；G4 只有本地部分结果，远程结果未运行；G3 未通过完整门禁，G5/G6 未运行，G7 未运行。`peak_query_owned_bytes` 仍为 `null`，不得解读为零。任务勾选和功能代码不等同完整发布验收；因此保持 `in-progress`，不标 `implemented` 或 `verified`。
+- **Notes:** 截至 2026-10-02，73 项中 71 项勾选；T059 已完成，T070（独立复现）和 T073（完整验收后的路线图收尾）仍未完成。[最终证据记录](../../evidence/003-dimensions-remote-parallel/final.md)显示 G0–G2 在 Linux AArch64 本地通过，G4 有本地部分结果；G3 未通过完整门禁，G5/G6 的受控远程运行未执行，G7 独立复现未执行。T059 的成功本地 v3 profile 记录 `peak_query_owned_bytes=528249` 且 `query_memory_count_complete=true`；RSS 标为 process scope，失败/取消时无法证明的内存值仍为 NULL。任务勾选和本地门禁不等同完整发布验收；因此保持 `in-progress`，不标 `implemented` 或 `verified`。
 - **Internal sequencing:** [tasks 的故事依赖](../../specs/003-dimensions-remote-parallel/tasks.md#user-story-dependencies)明确 US2 依赖 US1；完整 G3 待 US2 路径完成；本地与远程完整 G4 依赖 US3；G5/G6 并发集成依赖 US4。部分基础开发可提前进行，任务先行勾选不能替代这些集成门禁。产品路线图现记录本地已验收范围和远程验收缺口；T073 仍待 G0–G7 及独立复现齐备后完成最终收尾。
 
 ### 尚未形成 spec 的既有方向
@@ -131,10 +145,10 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 - **已确认的 spec 依赖：** `002 → 001`；`003 → 001, 002`，箭头表示左侧依赖右侧。依据分别是 002、003 spec 的 Assumptions 及 tasks 的 Prerequisites；003 对 001 的直接列出来自明确的 Phase 0–3 依赖声明。001 的独立复现缺口不被解释为 002 尚未实施或 003 不能开始；依赖要求与整体验收分别记录。
 - **阶段映射：** 001 覆盖三个产品阶段（0–2），002 覆盖 Phase 3，003 同时覆盖 Phase 4 和 5。tasks 内部的 Phase 编号是任务分组，不能据此生成新的项目 spec 或依赖。
 - **历史与后续范围：** 001 原计划仅 FPX、显式轴、Linux x86_64；当前基础契约已有 PFOR 与 coordinates。002 原计划仅首个 domain；当前契约已有 68 项。003 从已有有效时间基线上继续扩展。历史设计、已发布行为、进行中的实现和验收样本覆盖分别以其来源说明为准，范围扩展不自动继承旧验收结论。
-- **证据快照：** 2026-10-01 更新依据为当前 003 tasks、产品文档及仓库根 [final evidence](../../evidence/003-dimensions-remote-parallel/final.md)。没有重新执行功能门禁；工作树中的实现内容和本地门禁结果不等于完整发布验收。
+- **证据快照：** 2026-10-02 更新依据为当前 003 tasks、仓库根 [final evidence](../../evidence/003-dimensions-remote-parallel/final.md) 与 `local-run/2026-10-02/` 的本地输出。重建后的 Linux AArch64 release 验证通过本地 SQL/native、14 项 sanitizer、fixture、G0–G2 与本地 G4；受控远程 G3/G5/G6 和 G7 未运行。工作树中的实现内容和本地门禁结果不等于完整发布验收。
 - **配置路径复核：** 从 duckomo 仓库根运行 `load-config.sh` 返回 `.specify/memory/roadmap.md`，且 `roadmap_exists=true`；本项目未配置 `docs/adr/`。执行路线图核对时仍应确认运行目录和加载器输出指向当前项目。
 - **项目来源边界：** 本次台账只纳入仓库根的 `specs/`；`.specify/extensions/roadmap/specs/` 及其内嵌 roadmap/constitution 属于扩展自身示例，不作为 duckomo specs。项目无 `docs/adr/`，配置 PRD globs 未匹配到项目 PRD；普通 `docs/spec.md` 用作接口来源，不改称或编写外部 PRD。
 
 ---
 
-**Version**: 1.0.0 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-01
+**Version**: 1.0.1 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-02

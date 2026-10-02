@@ -18,7 +18,7 @@ description: "Task list for Phase 4–5 dimension semantics, remote and parallel
 **Purpose**: 固定可复现的远程构建依赖和验收资产入口；不改变现有查询行为。
 
 - [X] T001 在 `.gitmodules` 和 `third_party/duckdb-httpfs/` 固定 httpfs 上游提交 `c3f215ab360f04dc3d3d5305fa81849c0121f111`，记录取得源码的方式及其许可证。
-- [ ] T002 在 `third_party/httpfs-patches/README.md` 和 `third_party/httpfs-patches/manifest.json` 记录 DuckDB/httpfs 固定提交、补丁版本、hash、应用顺序与两个扩展的配套发布约束。
+- [X] T002 在 `third_party/httpfs-patches/README.md` 和 `third_party/httpfs-patches/manifest.json` 记录 DuckDB/httpfs 固定提交、补丁版本、hash、应用顺序与两个扩展的配套发布约束。
 - [X] T003 [P] 扩展 `test/tools/duckomo_fixture_tool.cpp`，生成带独立原始值参考的 `dimensions.om`、轴顺序变体和 `dimensions_perf.om`，并在 `test/data/manifest.json` 固定 shape、chunk、hash 与样本身份。
 - [X] T004 [P] 在 `test/data/dimensions-coordinates.csv` 和 `test/data/dimensions-perf-manifest.json` 保存独立于待实现映射/选择器的五类坐标参考、缺测位置、查询与预定性能条件；在 `test/data/domain-manifest.json` 核对真实 OM 的固定 hash。
 
@@ -30,12 +30,12 @@ description: "Task list for Phase 4–5 dimension semantics, remote and parallel
 
 **Purpose**: 先证明配套 httpfs 的共享 ABI 与严格范围事件可用，并为后续故事提供统一读取边界。
 
-- [ ] T005 在 `third_party/httpfs-patches/httpfs_om_range.hpp` 定义版本化 `HTTPFSOmRangeProviderV1`、逐 attempt 响应 observer、取消/版本策略及 capability 描述符；保持接口仅用于本次 range-session。
-- [ ] T006 在 `third_party/httpfs-patches/0001-om-range-session.patch` 实现 httpfs 签名前条件请求、禁用隐式完整下载/内部内容缓存/预取、逐 body 事件和严格 206/范围/版本检查；未启用 provider 的普通 httpfs 行为保持原样。
-- [ ] T007 在 `third_party/httpfs-patches/0002-om-capabilities.patch` 实现 `httpfs_om_range_capabilities()` 的 ABI、upstream commit、patch revision 输出和可由 duckomo catalog 读取的共享描述符。
-- [ ] T008 在 `extension_config.cmake`、`CMakeLists.txt` 和 `scripts/stage-httpfs.sh` 配置固定源码的 build 目录复制/打补丁/构建，复用上游 TLS、HTTP、S3 依赖，并产出配套 duckomo/httpfs 加载产物。
-- [ ] T009 [P] 在 `test/native/httpfs_abi_test.cpp` 和 `test/CMakeLists.txt` 验证共享 ABI 生命周期、静态与可加载扩展的 LOAD 顺序、capability 不匹配时的拒绝以及普通本地入口独立于 httpfs。
-- [ ] T010 [P] 在 `test/native/httpfs_range_test.cpp` 和 `test/CMakeLists.txt` 验证真实 observer 收到响应 body/attempt，且 200 回退、短读和版本变化失败；不使用应用层请求长度替代响应字节。
+- [X] T005 在 `third_party/httpfs-patches/httpfs_om_range.hpp` 定义版本化 `HTTPFSOmRangeProviderV2`、逐 attempt 响应 observer、取消/版本策略及 capability 描述符；保持接口仅用于本次 range-session。
+- [X] T006 在 `third_party/httpfs-patches/0001-om-range-session.patch` 实现 httpfs 签名前条件请求、禁用隐式完整下载/内部内容缓存/预取、逐 body 事件和严格 206/范围/版本检查；未启用 provider 的普通 httpfs 行为保持原样。
+- [X] T007 在 `third_party/httpfs-patches/0002-om-capabilities.patch` 实现 `httpfs_om_range_capabilities()` 的 ABI、upstream commit、patch revision 输出和可由 duckomo catalog 读取的共享描述符。
+- [X] T008 在 `extension_config.cmake`、`CMakeLists.txt` 和 `scripts/stage-httpfs.sh` 配置固定源码的 build 目录复制/打补丁/构建，复用上游 TLS、HTTP、S3 依赖，并产出配套 duckomo/httpfs 加载产物。
+- [X] T009 [P] 在 `test/native/httpfs_abi_test.cpp` 和 `test/CMakeLists.txt` 验证共享 ABI 生命周期、静态与可加载扩展的 LOAD 顺序、capability 不匹配时的拒绝以及普通本地入口独立于 httpfs。
+- [X] T010 [P] 在 `test/native/httpfs_range_test.cpp` 和 `test/CMakeLists.txt` 验证真实 observer 收到响应 body/attempt，且 200 回退、短读和版本变化失败；不使用应用层请求长度替代响应字节。
 - [X] T011 在 `src/include/duckomo/reader.hpp`、`src/om/reader.cpp` 和 `src/om/local_file.cpp` 抽出带读取类别的受检 ReadAt/文件会话边界，保留官方 OM reader 的块选择与解码职责及现有本地行为。
 
 **Checkpoint**: T009–T010 在固定构建上通过后，才允许开放远程入口；T011 后可开始各故事的读取实现。
@@ -93,16 +93,16 @@ description: "Task list for Phase 4–5 dimension semantics, remote and parallel
 
 **Independent Test**: G3：同一字节本地/HTTP/S3（含真实 OM）按逻辑位置和值及缺测比对；两远端冷局部响应 body 均少于同列全扫；故障后可成功重查。
 
-- [ ] T035 [US3] 在 `src/include/duckomo/remote_file.hpp` 和 `src/om/remote_file.cpp` 定义规范 URI、endpoint、访问分区、脱敏展示名、大小及强/弱版本的 `ObjectIdentity` 和查询级 `RemoteReadSession`。
-- [ ] T036 [US3] 在 `src/om/remote_file.cpp` 实现保留 ClientContext 凭据/设置/权限的 opener-provider、httpfs capability catalog 校验及远程缺配套构建时的明确拒绝；本地无需加载 httpfs。
-- [ ] T037 [US3] 在 `src/om/remote_file.cpp` 于每查询读取元数据前执行新鲜 HEAD 和 `bytes=0-0` GET 探测，要求正长度及精确范围权限；多个 worker 打开时核对绑定对象身份。
-- [ ] T038 [US3] 在 `src/om/remote_file.cpp` 实现受检 offset/length、206/Content-Range/Content-Length/body/identity 编码校验、条件版本请求与重定向边界；短/长读、超时、412 或 token 变化令整查询失败且错误脱敏。
-- [ ] T039 [US3] 在 `src/om/remote_file.cpp` 通过 observer 汇总每 attempt 实收 body、状态与请求数（含探测、重试、失败），保持 metadata、coordinate、value index/data 分类，不把请求长度算作网络字节。
-- [ ] T040 [US3] 在 `src/om/reader.cpp` 和 `src/scan/read_om.cpp` 将 HTTP(S)/S3 单 URI 送入统一 ReadAt 与官方 reader，维度、空间、投影及缺测路径沿用本地，`read_om_raw` 仍为本地入口。
-- [ ] T041 [P] [US3] 在 `scripts/setup-remote-fixtures.py` 实现仅绑定 loopback 的 HTTP range/故障服务、固定 S3-compatible 服务的 fixture 上传与响应审计代理编排，输出安全引用的 run.env、s3-setup.sql、日志目录及 `--stop`。
-- [ ] T042 [P] [US3] 在 `test/native/remote_session_test.cpp` 验证 HTTP/S3 会话身份、取消、范围和强版本协议错误，错误信息与事件均不包含密钥/签名。
-- [ ] T043 [US3] 在 `test/tools/duckomo_remote_validation.cpp` 实现 G3 的三来源固定样本/真实 OM 完整结果差分、HTTP/S3 服务端 body 交叉核对及 403/404/无 HEAD/200/错范围/短读/超时/替换故障恢复。
-- [ ] T044 [US3] 在 `test/CMakeLists.txt` 注册 T042–T043 和配套 httpfs 加载测试；缺远程服务、真实样本或审计日志时 G3 必须非零退出。
+- [X] T035 [US3] 在 `src/include/duckomo/remote_file.hpp` 和 `src/om/remote_file.cpp` 定义规范 URI、endpoint、访问分区、脱敏展示名、大小及强/弱版本的 `ObjectIdentity` 和查询级 `RemoteReadSession`。
+- [X] T036 [US3] 在 `src/om/remote_file.cpp` 实现保留 ClientContext 凭据/设置/权限的 opener-provider、httpfs capability catalog 校验及远程缺配套构建时的明确拒绝；本地无需加载 httpfs。
+- [X] T037 [US3] 在 `src/om/remote_file.cpp` 于每查询读取元数据前执行新鲜 HEAD 和 `bytes=0-0` GET 探测，要求正长度及精确范围权限；多个 worker 打开时核对绑定对象身份。
+- [X] T038 [US3] 在 `src/om/remote_file.cpp` 实现受检 offset/length、206/Content-Range/Content-Length/body/identity 编码校验、条件版本请求与重定向边界；短/长读、超时、412 或 token 变化令整查询失败且错误脱敏。
+- [X] T039 [US3] 在 `src/om/remote_file.cpp` 通过 observer 汇总每 attempt 实收 body、状态与请求数（含探测、重试、失败），保持 metadata、coordinate、value index/data 分类，不把请求长度算作网络字节。
+- [X] T040 [US3] 在 `src/om/reader.cpp` 和 `src/scan/read_om.cpp` 将 HTTP(S)/S3 单 URI 送入统一 ReadAt 与官方 reader，维度、空间、投影及缺测路径沿用本地，`read_om_raw` 仍为本地入口。
+- [X] T041 [P] [US3] 在 `scripts/setup-remote-fixtures.py` 实现仅绑定 loopback 的 HTTP range/故障服务、固定 S3-compatible 服务的 fixture 上传与响应审计代理编排，输出安全引用的 run.env、s3-setup.sql、日志目录及 `--stop`。
+- [X] T042 [P] [US3] 在 `test/native/remote_session_test.cpp` 验证 HTTP/S3 会话身份、取消、范围和强版本协议错误，错误信息与事件均不包含密钥/签名。
+- [X] T043 [US3] 在 `test/tools/duckomo_remote_validation.cpp` 实现 G3 的三来源固定样本/真实 OM 完整结果差分、HTTP/S3 服务端 body 交叉核对及 403/404/无 HEAD/200/错范围/短读/超时/替换故障恢复。
+- [X] T044 [US3] 在 `test/CMakeLists.txt` 注册 T042–T043 和配套 httpfs 加载测试；缺远程服务、真实样本或审计日志时 G3 必须非零退出。
 
 **Checkpoint**: G3 通过且网络计量由服务端证实；远程串行查询已可独立使用。
 
@@ -121,8 +121,8 @@ description: "Task list for Phase 4–5 dimension semantics, remote and parallel
 - [X] T049 [US4] 在 `src/scan/read_om.cpp` 实现 QueryEnd 与 local/global 析构的终止顺序、首错保留、资源释放和再次查询恢复；LIMIT 可成功但标记 scan 未完成。
 - [X] T050 [P] [US4] 在 `test/native/parallel_scan_test.cpp` 覆盖任务少于上限、空选择、跨批次、实际 worker 身份、故障和取消后的再次有效查询。
 - [X] T051 [P] [US4] 在 `test/sql/parallel_scan.test` 用 `EXCEPT ALL` 比较 1/2/4 上限的无序本地结果、坐标/值/NULL 与空/窄选择，不假设输出顺序。
-- [ ] T052 [US4] 在 `test/tools/duckomo_remote_validation.cpp` 扩展 G4 到本地/HTTP/S3 的任务覆盖及 1/2/4 工作者，并在固定 release 样本、相同缓存条件下各测五次、记录全部耗时及独立进程 RSS。
-- [ ] T053 [US4] 在 `test/CMakeLists.txt` 注册 T050–T052 与 sanitizer 并行生命周期入口；中位数未下降或实际 worker 不足时 G4 不通过。
+- [X] T052 [US4] 在 `test/tools/duckomo_remote_validation.cpp` 扩展 G4 到本地/HTTP/S3 的任务覆盖及 1/2/4 工作者，并在固定 release 样本、相同缓存条件下各测五次、记录全部耗时及独立进程 RSS。
+- [X] T053 [US4] 在 `test/CMakeLists.txt` 注册 T050–T052 与 sanitizer 并行生命周期入口；中位数未下降或实际 worker 不足时 G4 不通过。
 
 **Checkpoint**: G4 证明任务真实并行且结果等价，性能收益有预先固定条件下的原始记录。
 
@@ -135,18 +135,18 @@ description: "Task list for Phase 4–5 dimension semantics, remote and parallel
 **Independent Test**: G5/G6：同连接冷/热/禁用/清理/淘汰结果相同且热缓存远程成本下降；版本/权限变化不命中旧数据；失败/取消/并发扫描记录隔离并与服务端日志核对。
 
 - [X] T054 [US5] 在 `src/include/duckomo/range_cache.hpp` 和 `src/om/range_cache.cpp` 实现 ClientContextState 拥有的精确/包含范围 LRU、copy-out、先淘汰后分配及 payload/键/条目/索引统一 checked 容量计费；超额直读。
-- [ ] T055 [US5] 在 `src/om/range_cache.cpp` 以完整对象身份、强版本和盐化访问分区作 key；弱/无版本、本地首版或撤权查询不得跨查询复用，失败响应不得插入。
+- [X] T055 [US5] 在 `src/om/range_cache.cpp` 以完整对象身份、强版本和盐化访问分区作 key；弱/无版本、本地首版或撤权查询不得跨查询复用，失败响应不得插入。
 - [X] T056 [US5] 在 `src/scan/read_om.cpp` 注册会话级 `duckomo_cache_enabled`、`duckomo_cache_capacity` 与 `duckomo_clear_cache()`；关闭即清空、减容立即淘汰、0 禁存储，清理仅影响当前连接。
-- [ ] T057 [US5] 在 `src/om/reader.cpp` 和 `src/om/remote_file.cpp` 将缓存置于 OM reader 准确 ReadAt 与 range-session 之间，命中仍执行每查询 HEAD/范围授权探测，miss 不扩大或预取值范围。
-- [ ] T058 [US5] 在 `src/include/duckomo/metrics.hpp` 将 v2 扩为 v3 的 scan_id、coordinate、逻辑/底层/响应字节、缓存、任务/worker、候选/扫描行数、完整性、耗时与内存 scope；保留 v2 字段含义并在证据读取器分版。
-- [ ] T059 [US5] 在 `src/scan/read_om.cpp` 把 bind/scan metadata、坐标及各值变量的 index/data/decode、cache 和每 attempt 网络事件计入所属 scan；测量查询归属缓冲/decoder/selection 分配峰值及标为 process 的 RSS，失败/取消保留已发生成本与未知字段的 NULL。
+- [X] T057 [US5] 在 `src/om/reader.cpp` 和 `src/om/remote_file.cpp` 将缓存置于 OM reader 准确 ReadAt 与 range-session 之间，命中仍执行每查询 HEAD/范围授权探测，miss 不扩大或预取值范围。
+- [X] T058 [US5] 在 `src/include/duckomo/metrics.hpp` 将 v2 扩为 v3 的 scan_id、coordinate、逻辑/底层/响应字节、缓存、任务/worker、候选/扫描行数、完整性、耗时与内存 scope；保留 v2 字段含义并在证据读取器分版。
+- [X] T059 [US5] 在 `src/scan/read_om.cpp` 把 bind/scan metadata、坐标及各值变量的 index/data/decode、cache 和每 attempt 网络事件计入所属 scan；测量查询归属缓冲/decoder/selection 分配峰值及标为 process 的 RSS，失败/取消保留已发生成本与未知字段的 NULL。
 - [X] T060 [US5] 在 `src/scan/read_om.cpp` 以 QueryEnd 唯一发布同一 SQL 的各 scan 最终状态和不可变快照，支持下游错误/LIMIT/多 scan/多连接隔离，析构只做未发布兜底与资源释放。
 - [X] T061 [US5] 在 `src/scan/read_om.cpp` 实现 `duckomo_last_scan_metrics()` 每 scan 一行的 v3 JSON 查询；读取/清理函数不覆盖最近扫描记录，SQL/URI、凭据和签名脱敏。
 - [X] T062 [P] [US5] 在 `test/native/range_cache_test.cpp` 验证精确/包含命中、并发 miss、容量上限/淘汰/单条旁路、禁用/清理、强弱版本及访问分区隔离。
-- [ ] T063 [P] [US5] 在 `test/native/scan_metrics_v3_test.cpp` 验证类别总量、每 worker/attempt 去重、失败完整性、LIMIT、QueryEnd 一次发布、双 scan/双连接隔离和脱敏。
+- [X] T063 [P] [US5] 在 `test/native/scan_metrics_v3_test.cpp` 验证类别总量、每 worker/attempt 去重、失败完整性、LIMIT、QueryEnd 一次发布、双 scan/双连接隔离和脱敏。
 - [X] T064 [US5] 在 `test/sql/cache_metrics.test` 验证三项会话设置、clear/last_scan_metrics 的行与类型契约、无扫描零行及错误后可读的终态。
-- [ ] T065 [US5] 在 `test/tools/duckomo_remote_validation.cpp` 扩展 G5/G6：同连接冷/热/禁用/清理、小容量/淘汰、等长替换/撤权/弱版本、失败/取消/并发，并核对服务器 body 与逐查询 v3 JSON。
-- [ ] T066 [US5] 在 `test/CMakeLists.txt` 和 `scripts/validate.sh` 注册 T062–T065、sanitizer 资源回收及本地 v3 回归入口。
+- [X] T065 [US5] 在 `test/tools/duckomo_remote_validation.cpp` 扩展 G5/G6：同连接冷/热/禁用/清理、小容量/淘汰、等长替换/撤权/弱版本、失败/取消/并发，并核对服务器 body 与逐查询 v3 JSON。
+- [X] T066 [US5] 在 `test/CMakeLists.txt` 和 `scripts/validate.sh` 注册 T062–T065、sanitizer 资源回收及本地 v3 回归入口。
 
 **Checkpoint**: G5/G6 通过；缓存收益、访问隔离和每次查询成本均有独立证据。
 
@@ -156,12 +156,12 @@ description: "Task list for Phase 4–5 dimension semantics, remote and parallel
 
 **Purpose**: 完整验收、文档和发布证据；仅在对应真实门禁通过后更新路线图状态。
 
-- [ ] T067 在 `README.md` 和 `README.en.md` 更新五类轴含义、UTC/单位与现有 valid_time 兼容、HTTP(S)/S3 配套加载、并行/缓存控制及最小可运行 SQL 示例。
-- [ ] T068 [P] 在 `docs/spec.md` 和 `specs/003-dimensions-remote-parallel/contracts/sql-interface.md` 同步最终字段/类型、拒绝规则、过滤回退、设置和指标函数的实际行为。
-- [ ] T069 [P] 在 `docs/architecture.md` 和 `specs/003-dimensions-remote-parallel/contracts/remote-io.md` 记录 httpfs 补丁 ABI、范围/版本/授权边界、global/local 生命周期和缓存所有权。
+- [X] T067 在 `README.md` 和 `README.en.md` 更新五类轴含义、UTC/单位与现有 valid_time 兼容、HTTP(S)/S3 配套加载、并行/缓存控制及最小可运行 SQL 示例。
+- [X] T068 [P] 在 `docs/spec.md` 和 `specs/003-dimensions-remote-parallel/contracts/sql-interface.md` 同步最终字段/类型、拒绝规则、过滤回退、设置和指标函数的实际行为。
+- [X] T069 [P] 在 `docs/architecture.md` 和 `specs/003-dimensions-remote-parallel/contracts/remote-io.md` 记录 httpfs 补丁 ABI、范围/版本/授权边界、global/local 生命周期和缓存所有权。
 - [ ] T070 在 `scripts/setup-remote-fixtures.py` 和 `specs/003-dimensions-remote-parallel/quickstart.md` 核对四项可复现操作的实际命令、依赖 hash、服务启动/停止与预期结果，交给未参与实现者执行。
-- [ ] T071 在 `scripts/validate.sh` 和 `test/CMakeLists.txt` 串接 G0–G2 的 `make test`、关键 native ASan/UBSan，以及外部服务就绪时独立运行 G3–G6 的明确非零门禁。
-- [ ] T072 在 `evidence/003-dimensions-remote-parallel/final.md` 保存 G0–G7 的命令、退出码、固定样本/服务/构建身份、结果差分、服务器对账、五次计时及内存原始值，逐项对应 FR-001–020、SC-001–008；未执行项明确标未通过。
+- [X] T071 在 `scripts/validate.sh` 和 `test/CMakeLists.txt` 串接 G0–G2 的 `make test`、关键 native ASan/UBSan，以及外部服务就绪时独立运行 G3–G6 的明确非零门禁。
+- [X] T072 在 `evidence/003-dimensions-remote-parallel/final.md` 保存 G0–G7 的命令、退出码、固定样本/服务/构建身份、结果差分、服务器对账、五次计时及内存原始值，逐项对应 FR-001–020、SC-001–008；未执行项明确标未通过。
 - [ ] T073 在 `docs/roadmap.md` 依据 T072 的真实 G0–G7 结果更新 Phase 4–5 状态；G7 需有未参与实现者的 quickstart 四项复现记录。
 
 **Checkpoint**: 完整发布声明仅在全部 G0–G7、真实样本和独立复现证据齐备时成立。

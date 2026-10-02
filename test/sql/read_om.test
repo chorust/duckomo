@@ -14,7 +14,7 @@ LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
 statement error
 SELECT * FROM read_om('https://example.invalid/file.om?X-Amz-Signature=must-not-appear');
 ----
-<REGEX>:(?i).*paired httpfs range-session extension.*
+<REGEX>:(?i).*matching DuckOMO range ABI.*
 
 # A single root array has the stable value column and does not need dimensions.
 query T

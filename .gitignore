@@ -67,4 +67,15 @@ vcpkg_installed/
 
 # test output & cache
 Testing/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+node_modules/
+coverage/
+.env*
 .cache/
+.venv/
+venv/
+__pycache__/
+*.py[cod]

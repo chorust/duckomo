@@ -389,5 +389,33 @@ bool SpatialBatchCursor::Exhausted() const noexcept {
 	return exhausted_;
 }
 
+std::uint64_t SpatialBatchCursor::EstimatedBytes() const noexcept {
+	std::uint64_t bytes = sizeof(*this);
+	const auto add = [&bytes](std::uint64_t value) {
+		bytes = bytes > std::numeric_limits<std::uint64_t>::max() - value
+		            ? std::numeric_limits<std::uint64_t>::max()
+		            : bytes + value;
+	};
+	const auto count = [&add](std::size_t capacity, std::size_t element_size) {
+		if (element_size != 0 && capacity > std::numeric_limits<std::uint64_t>::max() / element_size) {
+			add(std::numeric_limits<std::uint64_t>::max());
+		} else {
+			add(static_cast<std::uint64_t>(capacity * element_size));
+		}
+	};
+	count(layout_.shape.capacity(), sizeof(std::uint64_t));
+	count(layout_.axes.capacity(), sizeof(std::string));
+	for (const auto &axis : layout_.axes) add(axis.size());
+	count(layout_.strides.capacity(), sizeof(std::uint64_t));
+	count(layout_.non_spatial_axes.capacity(), sizeof(std::uint64_t));
+	count(selection_.latitude_ranges.capacity(), sizeof(AxisRange));
+	count(selection_.longitude_ranges.capacity(), sizeof(AxisRange));
+	count(selection_.fallback_reasons.capacity(), sizeof(std::string));
+	for (const auto &reason : selection_.fallback_reasons) add(reason.size());
+	count(axis_ranges_.capacity(), sizeof(std::vector<AxisRange>));
+	for (const auto &ranges : axis_ranges_) count(ranges.capacity(), sizeof(AxisRange));
+	return bytes;
+}
+
 } // namespace duckomo
 } // namespace duckdb

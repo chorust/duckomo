@@ -73,6 +73,26 @@ void CopySelection(const std::vector<std::uint64_t> &source, std::vector<std::ui
 	std::copy(source.begin(), source.end(), destination.begin());
 }
 
+void RefreshDecoderMemoryAccount(OmDecoderState &state, const std::shared_ptr<ScanMetrics> &metrics) {
+	if (!metrics) return;
+	if (!state.memory_account) state.memory_account = std::make_shared<ScanMemoryAccount>(metrics);
+	const auto vector_bytes = [](std::size_t capacity, std::size_t element_size) {
+		if (element_size != 0 && capacity > std::numeric_limits<std::uint64_t>::max() / element_size) {
+			throw ReaderError(ReaderErrorCode::ShapeOverflow, "OM decoder memory accounting size overflows");
+		}
+		return static_cast<std::uint64_t>(capacity * element_size);
+	};
+	std::uint64_t bytes = sizeof(state);
+	for (const auto capacity : {state.read_offset.capacity(), state.read_count.capacity(),
+	                            state.cube_offset.capacity(), state.cube_dimensions.capacity()}) {
+		bytes += vector_bytes(capacity, sizeof(std::uint64_t));
+	}
+	bytes += vector_bytes(state.index_bytes.capacity(), sizeof(std::uint8_t));
+	bytes += vector_bytes(state.data_bytes.capacity(), sizeof(std::uint8_t));
+	bytes += vector_bytes(state.chunk_scratch.capacity(), sizeof(std::uint8_t));
+	state.memory_account->Set(bytes);
+}
+
 std::uint64_t CheckedByteSize(std::uint64_t elements, std::uint64_t bytes_per_element, const char *description) {
 	if (bytes_per_element != 0 && elements > std::numeric_limits<std::uint64_t>::max() / bytes_per_element) {
 		throw ReaderError(ReaderErrorCode::ShapeOverflow, std::string(description) + " byte size overflows 64 bits");
@@ -141,9 +161,9 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::vector<std::u
 	                              const std::vector<std::uint64_t> &cube_offset,
 	                              const std::vector<std::uint64_t> &cube_dimensions, void *output,
 	                              std::uint64_t output_bytes, std::uint64_t io_size_merge,
-	                              std::uint64_t io_size_max) const {
+	                              std::uint64_t io_size_max, ScanDecodePurpose purpose) const {
 	DecodeSelection(state, std::string(), read_offset, read_count, cube_offset, cube_dimensions, output,
-	                output_bytes, io_size_merge, io_size_max);
+	                output_bytes, io_size_merge, io_size_max, purpose);
 }
 
 void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &variable_path,
@@ -152,7 +172,9 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 	                              const std::vector<std::uint64_t> &cube_offset,
 	                              const std::vector<std::uint64_t> &cube_dimensions, void *output,
 	                              std::uint64_t output_bytes, std::uint64_t io_size_merge,
-	                              std::uint64_t io_size_max) const {
+	                              std::uint64_t io_size_max, ScanDecodePurpose purpose) const {
+	const auto metrics = file_->Metrics();
+	RefreshDecoderMemoryAccount(state, metrics);
 	const auto *variable = state.variable_owner.Get();
 	if (variable == nullptr || !state.variable_owner.MetadataOwner()) {
 		throw ReaderError(ReaderErrorCode::InvalidMetadata, "OM decoder has no owned variable metadata");
@@ -222,6 +244,7 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 	CopySelection(read_count, state.read_count, state.decoder.dimensions_count, "read count");
 	CopySelection(cube_offset, state.cube_offset, state.decoder.dimensions_count, "cube offset");
 	CopySelection(cube_dimensions, state.cube_dimensions, state.decoder.dimensions_count, "cube dimensions");
+	RefreshDecoderMemoryAccount(state, metrics);
 
 	const auto init_error = om_decoder_init(&state.decoder, variable, rank, state.read_offset.data(),
 	                                        state.read_count.data(), state.cube_offset.data(),
@@ -251,17 +274,24 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 	} catch (const std::length_error &) {
 		ThrowAllocationError("OM decoder chunk scratch exceeds addressable memory");
 	}
+	RefreshDecoderMemoryAccount(state, metrics);
+	const auto index_phase = purpose == ScanDecodePurpose::Coordinate ? ScanReadPhase::CoordinateIndex
+	                                                                 : ScanReadPhase::Index;
+	const auto data_phase = purpose == ScanDecodePurpose::Coordinate ? ScanReadPhase::CoordinateData
+	                                                                : ScanReadPhase::Data;
+	const auto &metric_variable_path = purpose == ScanDecodePurpose::Coordinate ? std::string() : variable_path;
 
 	OmDecoder_indexRead_t index_read{};
 	om_decoder_init_index_read(&state.decoder, &index_read);
 	while (om_decoder_next_index_read(&state.decoder, &index_read)) {
 		ValidateBodyRange(index_read.offset, index_read.count, "index");
 		try {
-			state.index_bytes = file_->ReadRange(index_read.offset, index_read.count, ScanReadPhase::Index,
-			                                   variable_path);
+			state.index_bytes = file_->ReadRange(index_read.offset, index_read.count, index_phase,
+			                                   metric_variable_path);
 		} catch (const std::bad_alloc &) {
 			ThrowAllocationError("unable to allocate OM index buffer");
 		}
+		RefreshDecoderMemoryAccount(state, metrics);
 		if (state.index_bytes.size() != index_read.count || state.index_bytes.empty()) {
 			throw ReaderError(ReaderErrorCode::IndexRead,
 			                  "official OM decoder requested an empty or incomplete index read");
@@ -274,11 +304,12 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 		                                 state.index_bytes.size(), &read_error)) {
 			ValidateBodyRange(data_read.offset, data_read.count, "data");
 			try {
-				state.data_bytes = file_->ReadRange(data_read.offset, data_read.count, ScanReadPhase::Data,
-				                                 variable_path);
+				state.data_bytes = file_->ReadRange(data_read.offset, data_read.count, data_phase,
+				                                 metric_variable_path);
 			} catch (const std::bad_alloc &) {
 				ThrowAllocationError("unable to allocate OM data buffer");
 			}
+			RefreshDecoderMemoryAccount(state, metrics);
 			if (state.data_bytes.size() != data_read.count || state.data_bytes.empty()) {
 				throw ReaderError(ReaderErrorCode::DataRead,
 				                  "official OM decoder requested an empty or incomplete data read");
@@ -287,14 +318,16 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 			OmError_t decode_error = ERROR_OK;
 			if (!om_decoder_decode_chunks(&state.decoder, data_read.chunkIndex, state.data_bytes.data(),
 			                              data_read.count, output, state.chunk_scratch.data(), &decode_error)) {
-				if (file_->Metrics()) {
-					file_->Metrics()->MarkDecodeCountIncomplete(variable_path);
+				if (metrics) {
+					if (purpose == ScanDecodePurpose::Coordinate) metrics->MarkCoordinateDecodeCountIncomplete();
+					else metrics->MarkDecodeCountIncomplete(variable_path);
 				}
 				ThrowOmError(decode_error, ReaderErrorCode::Decode, file_->Path(), "OM chunk decode");
 			}
-			if (file_->Metrics()) {
-				file_->Metrics()->RecordSuccessfulDecode(variable_path,
-				                                       data_read.chunkIndex.upperBound - data_read.chunkIndex.lowerBound);
+			if (metrics) {
+				const auto decoded_ranges = data_read.chunkIndex.upperBound - data_read.chunkIndex.lowerBound;
+				if (purpose == ScanDecodePurpose::Coordinate) metrics->RecordSuccessfulCoordinateDecode(decoded_ranges);
+				else metrics->RecordSuccessfulDecode(variable_path, decoded_ranges);
 			}
 		}
 		if (read_error != ERROR_OK) {
@@ -353,7 +386,7 @@ std::shared_ptr<const OwnedMetadataBuffer> OmV3Reader::ReadAndValidateMetadata(s
 		                  "OM array metadata is shorter than the official v3 array header");
 	}
 	try {
-		return std::make_shared<const OwnedMetadataBuffer>(std::move(bytes));
+		return std::make_shared<const OwnedMetadataBuffer>(std::move(bytes), file_->Metrics());
 	} catch (const std::bad_alloc &) {
 		ThrowAllocationError("unable to retain OM variable metadata");
 	}

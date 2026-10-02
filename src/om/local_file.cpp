@@ -167,6 +167,10 @@ void LocalFile::ReadRangeInternal(std::uint64_t offset, std::uint64_t size, void
 		throw ReaderError(ReaderErrorCode::InvalidSelection, "local OM read range exceeds DuckDB positional I/O limits");
 	}
 	try {
+		if (metrics && phase != nullptr) {
+			metrics->RecordLogicalRead(*phase, size, variable_path,
+			                           *phase == ScanReadPhase::Metadata ? metadata_stage : ScanMetadataStage::Scan);
+		}
 		file_system->Read(*handle, destination, static_cast<std::int64_t>(size), static_cast<idx_t>(offset));
 	} catch (const std::exception &exception) {
 		throw ReaderError(ReaderErrorCode::FileIo, FileErrorMessage("could not read", path, exception));
@@ -174,6 +178,8 @@ void LocalFile::ReadRangeInternal(std::uint64_t offset, std::uint64_t size, void
 	if (metrics && phase != nullptr) {
 		if (*phase == ScanReadPhase::Metadata) {
 			metrics->RecordMetadataRead(metadata_stage, size);
+		} else if (*phase == ScanReadPhase::Coordinate) {
+			metrics->RecordCoordinateRead(size);
 		} else {
 			metrics->RecordSuccessfulRead(*phase, size, variable_path);
 		}

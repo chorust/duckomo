@@ -1,6 +1,7 @@
 #include "duckomo/metrics.hpp"
 
 #include <iostream>
+#include <memory>
 #include <stdexcept>
 #include <string>
 
@@ -17,39 +18,152 @@ int main() {
 		ScanMetrics metrics;
 		metrics.SetQueryIdentity("connection-7-query-2", "v3-test", "SELECT * FROM read_om('https://secret.invalid/object?sig=do-not-leak')");
 		metrics.SetScanId(3);
-		metrics.DeclareVariable("/temperature");
+		metrics.SetScanComplete(true);
+		metrics.SetTransportAvailable(true);
+			metrics.DeclareVariable("/temperature");
+			metrics.RecordLogicalRead(ScanReadPhase::Metadata, 20, "", ScanMetadataStage::Bind);
+			metrics.RecordMetadataRead(ScanMetadataStage::Bind, 20);
 		metrics.SetSpatialSelection("axis_restricted", true, {}, 12);
+		metrics.RecordLogicalRead(ScanReadPhase::Index, 7, "/temperature");
 		metrics.RecordSuccessfulRead(ScanReadPhase::Index, 7, "/temperature");
-		metrics.RecordSuccessfulRead(ScanReadPhase::Data, 21, "/temperature");
+		metrics.RecordLogicalRead(ScanReadPhase::Data, 21, "/temperature");
+			metrics.RecordSuccessfulRead(ScanReadPhase::Data, 21, "/temperature");
+			metrics.RecordLogicalRead(ScanReadPhase::Data, 5, "/temperature"); // cached logical read
+		metrics.RecordLogicalRead(ScanReadPhase::Coordinate, 16);
 		metrics.RecordCoordinateRead(16);
 		metrics.RecordCacheLookup(true, 21);
 		metrics.RecordCacheLookup(false);
+		metrics.SetCacheState(true, 4096, 64, 96, 32, 2, "", "strong_etag");
+		metrics.RecordScanTaskCreated();
 		metrics.RecordScanTaskClaimed();
+		metrics.RecordScanTaskCompleted();
 		metrics.RecordWorkerActive(11);
+			metrics.BeginWorkerExecution(11);
+			metrics.BeginWorkerExecution(12);
+			metrics.EndWorkerExecution(12);
+		metrics.EndWorkerExecution(11);
 		metrics.RecordScannedRows(12);
-		metrics.RecordTransportResponse(28);
+		metrics.RecordTransportAttempt(5, 1, 206, 28, true, true);
+			metrics.RecordTransportAttempt(5, 1, 206, 99, true, true);
+			metrics.RecordTransportAttempt(5, 2, 503, 3, true, true);
 		metrics.SetStatus(ScanStatus::Succeeded);
 		metrics.SetElapsedMilliseconds(1.25);
 		const auto json = metrics.ToMetricsV3Json();
 		Require(json.find("\"schema_version\":3") != std::string::npos, "SQL profile must use schema version 3");
 		Require(json.find("\"scan_id\":3") != std::string::npos, "SQL profile must retain its scan id");
-		Require(json.find("\"coordinate_bytes\":16") != std::string::npos,
+		Require(json.find("\"coordinate\":{\"logical_bytes\":16,\"logical_requests\":1,\"physical_bytes\":16") != std::string::npos,
 		        "coordinate costs must be independently visible");
-		Require(json.find("\"response_body_bytes\":28") != std::string::npos,
-		        "transport response bytes must be actual observer input");
+		Require(json.find("\"response_body_bytes\":31") != std::string::npos,
+		        "transport body bytes must include deduplicated complete and partial attempts");
 		Require(json.find("\"legacy_v2\":{\"schema_version\":2") != std::string::npos,
 		        "v2 evidence field meanings must remain available");
 		Require(json.find("do-not-leak") == std::string::npos &&
 		            json.find("secret.invalid") == std::string::npos,
 		        "SQL profile must not expose remote URI credentials or signature parameters");
-		Require(json.find("\"cache\":{\"hits\":1,\"misses\":1,\"hit_bytes\":21}") != std::string::npos,
-		        "cache counters must preserve hit/miss and byte totals");
+			Require(json.find("\"logical_requested_bytes\":69") != std::string::npos &&
+			            json.find("\"physical_read_bytes\":64") != std::string::npos,
+			        "logical reads must include cache hits while below-cache reads exclude them");
+			Require(json.find("\"bind\":{\"logical_bytes\":20,\"logical_requests\":1,\"physical_bytes\":20") !=
+			            std::string::npos,
+			        "metadata logical and physical totals must be separated by bind stage");
+			Require(json.find("\"logical_data_bytes\":26") != std::string::npos &&
+			            json.find("\"data_bytes\":21") != std::string::npos &&
+			            json.find("\"bytes_fetched\":48") != std::string::npos,
+			        "per-variable totals and legacy v2 totals must preserve their prior meanings");
+		Require(json.find("\"cache\":{\"enabled\":true,\"capacity_bytes\":4096") != std::string::npos &&
+		            json.find("\"hits\":1,\"misses\":1,\"hit_bytes\":21,\"evictions\":2") != std::string::npos,
+		        "cache controls and query hit/miss totals must be visible");
+			Require(json.find("\"transport_attempts\":2") != std::string::npos &&
+			            json.find("\"transport_responses\":2") != std::string::npos &&
+			            json.find("\"response_statuses\":{\"206\":1,\"503\":1}") != std::string::npos,
+			        "transport attempts must be deduplicated by request and attempt");
+			Require(json.find("\"active_workers\":2") != std::string::npos &&
+			            json.find("\"max_active_workers\":2") != std::string::npos,
+			        "worker identities and overlapping activity must be retained");
+		Require(json.find("\"scan_complete\":true") != std::string::npos &&
+		            json.find("\"result_rows_state\":\"unobserved\"") != std::string::npos &&
+		            json.find("\"peak_query_owned_bytes\":null") != std::string::npos,
+			        "completion and unobserved product memory/result fields must be explicit");
+
+		ScanMetrics coordinate_metrics;
+		coordinate_metrics.EnableQueryMemoryAccounting();
+		coordinate_metrics.RecordLogicalRead(ScanReadPhase::CoordinateIndex, 8);
+		coordinate_metrics.RecordSuccessfulRead(ScanReadPhase::CoordinateIndex, 8);
+		coordinate_metrics.RecordLogicalRead(ScanReadPhase::CoordinateData, 32);
+		coordinate_metrics.RecordSuccessfulRead(ScanReadPhase::CoordinateData, 32);
+		coordinate_metrics.RecordSuccessfulCoordinateDecode(2);
+		const auto coordinate_json = coordinate_metrics.ToMetricsV3Json();
+		Require(coordinate_json.find("\"coordinate\":{\"logical_bytes\":40") != std::string::npos &&
+		            coordinate_json.find("\"logical_index_bytes\":8") != std::string::npos &&
+		            coordinate_json.find("\"data_bytes\":32") != std::string::npos &&
+		            coordinate_json.find("\"decoded_chunks\":2") != std::string::npos,
+		        "coordinate decoder index/data/decode costs must stay separate from value variables");
+		ScanMetrics failed_coordinate_metrics;
+		failed_coordinate_metrics.RecordSuccessfulCoordinateDecode(1);
+		failed_coordinate_metrics.MarkCoordinateDecodeCountIncomplete();
+		const auto failed_coordinate_snapshot = failed_coordinate_metrics.Snapshot();
+		Require(!failed_coordinate_snapshot.decode_count_complete &&
+		            !failed_coordinate_snapshot.coordinate.decode_count_complete,
+		        "a failed coordinate decode must mark both coordinate and aggregate decode counts incomplete");
+
+		auto memory_metrics = std::make_shared<ScanMetrics>();
+		memory_metrics->EnableQueryMemoryAccounting();
+		auto bind_memory = std::make_shared<ScanMemoryAccount>(memory_metrics);
+		auto scan_memory = std::make_shared<ScanMemoryAccount>(memory_metrics);
+		bind_memory->Set(128);
+		scan_memory->Set(64);
+		scan_memory->Set(192);
+		bind_memory->Set(32);
+		memory_metrics->FinalizeQueryMemoryAccounting(true);
+		const auto accounted_json = memory_metrics->ToMetricsV3Json();
+		Require(accounted_json.find("\"peak_query_owned_bytes\":320") != std::string::npos &&
+		            accounted_json.find("\"query_memory_count_complete\":true") != std::string::npos,
+		        "concurrent bind/scan memory accounts must publish their aggregate high-water mark");
+
+		ScanMetrics limited_metrics;
+		limited_metrics.SetStatus(ScanStatus::Succeeded);
+		limited_metrics.SetScanComplete(false);
+		const auto limited_json = limited_metrics.ToMetricsV3Json();
+		Require(limited_json.find("\"status\":\"success\"") != std::string::npos &&
+		            limited_json.find("\"scan_complete\":false") != std::string::npos,
+		        "successful LIMIT completion must preserve an incomplete physical scan state");
 
 		ScanMetrics local_metrics;
 		local_metrics.SetQueryIdentity("local", "", "SELECT 1");
+		local_metrics.SetTransportAvailable(false);
 		const auto local_json = local_metrics.ToMetricsV3Json();
-		Require(local_json.find("\"response_body_bytes\":null") != std::string::npos,
-		        "unknown transport body costs must remain null for local scans");
+		Require(local_json.find("\"response_body_bytes\":0") != std::string::npos &&
+		            local_json.find("\"transport_count_complete\":true") != std::string::npos,
+		        "local transport body costs must be known zero rather than unknown");
+
+		ScanMetrics eviction_metrics;
+		eviction_metrics.SetCacheEvictionBaseline(5);
+		eviction_metrics.SetCacheState(true, 4096, 0, 4096, 64, 8, "", "strong_etag");
+		Require(eviction_metrics.ToMetricsV3Json().find("\"evictions\":3") != std::string::npos,
+		        "cache eviction evidence must be scoped to this scan rather than prior connection activity");
+
+		ScanMetrics failed_metrics;
+		failed_metrics.EnableQueryMemoryAccounting();
+		auto failed_memory = std::make_shared<ScanMemoryAccount>(
+		    std::shared_ptr<ScanMetrics>(&failed_metrics, [](ScanMetrics *) {}));
+		failed_memory->Set(128);
+		failed_metrics.SetTransportAvailable(true);
+		failed_metrics.RecordLogicalRead(ScanReadPhase::Data, 12, "/temperature");
+		failed_metrics.MarkDecodeCountIncomplete("/temperature");
+		failed_metrics.RecordTransportAttempt(8, 1, 504, 3, true, false);
+		failed_metrics.MarkTransportCountIncomplete();
+		failed_metrics.SetStatus(ScanStatus::Failed, "transport_error");
+		failed_metrics.FinalizeQueryMemoryAccounting(false);
+		const auto failed_json = failed_metrics.ToMetricsV3Json();
+			Require(failed_json.find("\"transport_count_complete\":false") != std::string::npos &&
+			            failed_json.find("\"response_body_bytes\":3") != std::string::npos &&
+			            failed_json.find("\"logical_requested_bytes\":12") != std::string::npos &&
+			            failed_json.find("\"physical_read_bytes\":0") != std::string::npos &&
+			            failed_json.find("\"decode_count_complete\":false") != std::string::npos,
+				        "failed transport profiles must retain observed cost and mark incomplete counts");
+		Require(failed_json.find("\"peak_query_owned_bytes\":null") != std::string::npos &&
+		            failed_json.find("\"query_memory_count_complete\":false") != std::string::npos,
+		        "failed queries must keep memory unknown when the final peak cannot be proven");
 
 		std::cout << "scan_metrics_v3_test: v3 fields, v2 compatibility, unknown values, and URI redaction passed\n";
 		return 0;

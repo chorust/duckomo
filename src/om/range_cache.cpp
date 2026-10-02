@@ -23,7 +23,7 @@ bool ObjectIdentity::operator==(const ObjectIdentity &other) const noexcept {
 
 std::uint64_t ObjectIdentity::AccountedBytes() const {
 	std::uint64_t total = sizeof(ObjectIdentity) + 4 * sizeof(void *);
-	for (const auto *field : {&canonical_uri, &endpoint, &access_partition, &version_token}) {
+	for (const auto *field : {&canonical_uri, &endpoint, &redacted_display_id, &access_partition, &version_token}) {
 		if (field->size() > std::numeric_limits<std::uint64_t>::max() - total) {
 			throw std::overflow_error("range cache key size overflow");
 		}
@@ -87,6 +87,7 @@ void RangeCache::EvictToFit(std::uint64_t cost) {
 	while (!entries_.empty() && (cost > capacity_bytes_ || accounted_bytes_ > capacity_bytes_ - cost)) {
 		accounted_bytes_ -= entries_.back().accounted_bytes;
 		entries_.pop_back();
+		++evictions_;
 	}
 }
 
@@ -116,6 +117,7 @@ bool RangeCache::Insert(const ObjectIdentity &identity, std::uint64_t offset, co
 	std::memcpy(incoming.bytes.data(), source, static_cast<std::size_t>(size));
 	entries_.push_front(std::move(incoming));
 	accounted_bytes_ += cost;
+	peak_charged_bytes_ = std::max(peak_charged_bytes_, accounted_bytes_);
 	return true;
 }
 
@@ -134,6 +136,7 @@ void RangeCache::SetCapacity(std::uint64_t capacity_bytes) {
 	while (accounted_bytes_ > capacity_bytes_ && !entries_.empty()) {
 		accounted_bytes_ -= entries_.back().accounted_bytes;
 		entries_.pop_back();
+		++evictions_;
 	}
 }
 
@@ -147,7 +150,12 @@ RangeCacheClearResult RangeCache::Clear() {
 
 RangeCacheStats RangeCache::Stats() const {
 	std::lock_guard<std::mutex> guard(mutex_);
-	return {static_cast<std::uint64_t>(entries_.size()), accounted_bytes_, hits_, misses_, hit_bytes_};
+	std::uint64_t control_bytes = 0;
+	for (const auto &entry : entries_) {
+		control_bytes += entry.accounted_bytes - entry.bytes.size();
+	}
+	return {static_cast<std::uint64_t>(entries_.size()), accounted_bytes_, control_bytes, capacity_bytes_,
+	        peak_charged_bytes_, hits_, misses_, hit_bytes_, evictions_, enabled_};
 }
 
 } // namespace duckomo

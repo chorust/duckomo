@@ -1,6 +1,6 @@
 # SQL Interface Contract
 
-状态：拟实现。保留既有本地、空间及 valid_time 接口；以下新增行为尚未实现。
+状态：实现已接入源码和配套构建；G3–G7 的外部验收及独立复现尚未全部完成。保留既有本地、空间及 `valid_time` 接口。
 
 ## 读取入口
 
@@ -92,7 +92,11 @@ CALL duckomo_clear_cache();
 SELECT * FROM duckomo_last_scan_metrics();
 ```
 
-clear_cache 返回一行 `cleared_entries UBIGINT, cleared_bytes UBIGINT`；仅清理本会话缓存。last_scan_metrics 返回最近一次已结束、含 read_om 的 SQL query 的每个扫描一行：`query_id VARCHAR, scan_id UBIGINT, metrics VARCHAR`。metrics 为 v3 JSON 文本，不依赖 JSON 扩展；首次扫描前为零行。读取或清理操作不覆盖最近扫描记录；失败和取消记录仍可读取。默认不保存原始含凭据的 SQL/URI。
+clear_cache 返回一行 `cleared_entries UBIGINT, cleared_bytes UBIGINT`；仅清理本会话缓存。last_scan_metrics 返回最近一次已结束、含 read_om 的 SQL query 的每个扫描一行：`query_id VARCHAR, scan_id UBIGINT, metrics VARCHAR`。metrics 为 v3 JSON 文本，不依赖 JSON 扩展；首次扫描前为零行。读取或清理操作不覆盖最近扫描记录；失败和取消记录仍可读取。metrics 的 SQL/URI 始终脱敏；嵌套 `legacy_v2` 保留 v2 字段的原统计含义。
+
+v3 JSON 包含 `scan_id`、`status`、`scan_complete`、axes/fallback、bind/scan metadata、coordinate、逐值变量逻辑/底层 index/data/decode、总逻辑/底层读取、transport response body/attempt/status/completeness、cache、task/worker、candidate/scanner/result rows、decode completeness、elapsed 和 memory scope。coordinate 单独包含 logical/physical index/data 请求与 `decoded_chunks`；`variables` 只列值数组。逻辑读取包含缓存命中；`physical_read_*` 只计缓存以下成功的 OM 读取；`response_body_bytes` 只来自 httpfs observer，未加载远程 observer 的本地结果为已知 0。旧版 `bytes_fetched` / `read_requests` 留在 `legacy_v2` 并维持 v2 含义。
+
+`scan_complete=false` 与 `status=success` 可同时出现，表示 SQL 成功但下游消费者（例如 LIMIT）提前停止扫描。`peak_rss_bytes` 使用进程 scope。`peak_query_owned_bytes` 汇总 DuckOMO 元数据 payload、decoder 状态及其参数/index/data/scratch vector capacity、坐标向量、选择游标和活跃批次 position/segment capacity；`query_memory_scope` 为 `duckomo_owned_buffer_decoder_selection_capacities`，不含共享会话缓存、DuckDB 输出 vector、httpfs/引擎内部内存及 allocator bookkeeping。正常结束且计数完整时提供峰值；失败、取消或计数不完整时为 JSON `null`、`query_memory_count_complete=false`，表示未知而不是零。进程 RSS 和查询归属内存是两个独立字段。
 
 ## 错误
 

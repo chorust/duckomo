@@ -10,6 +10,17 @@ OVERRIDE_GIT_DESCRIBE=v1.5.4
 DUCKDB_SRCDIR := $(PROJ_DIR)duckdb/
 include $(PROJ_DIR)extension-ci-tools/makefiles/duckdb_extension.Makefile
 
+.PHONY: stage-httpfs
+stage-httpfs:
+	"$(PROJ_DIR)scripts/stage-httpfs.sh" --output "$(PROJ_DIR)build/httpfs-stage-v2"
+
+release: stage-httpfs
+extension_configuration: stage-httpfs
+debug relassert reldebug clangd: stage-httpfs
+extension_configuration_default extension_configuration_wasm: stage-httpfs
+wasm_mvp wasm_eh wasm_threads: stage-httpfs
+build/extension_configuration/vcpkg.json: stage-httpfs
+
 # The shared makefile assigns quoted defaults intended for its own layout.
 # These paths match this repository's DuckDB test runner and SQLLogicTests.
 TEST_PATH := test/unittest

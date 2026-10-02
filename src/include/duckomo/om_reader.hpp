@@ -9,6 +9,8 @@
 #include <utility>
 #include <vector>
 
+#include "duckomo/metrics.hpp"
+
 extern "C" {
 #include "om_decoder.h"
 #include "om_variable.h"
@@ -89,7 +91,13 @@ inline std::uint64_t CheckedShapeProduct(const std::vector<std::uint64_t> &shape
 // metadata bytes. This immutable owner is shared by every borrowed view.
 class OwnedMetadataBuffer final {
 public:
-	explicit OwnedMetadataBuffer(std::vector<std::uint8_t> buffer) : bytes_(std::move(buffer)) {
+	explicit OwnedMetadataBuffer(std::vector<std::uint8_t> buffer,
+	                             std::shared_ptr<ScanMetrics> metrics = nullptr)
+	    : bytes_(std::move(buffer)) {
+		if (metrics) {
+			memory_account_ = std::make_shared<ScanMemoryAccount>(std::move(metrics));
+			memory_account_->Set(sizeof(*this) + bytes_.capacity());
+		}
 	}
 
 	const void *Data() const noexcept {
@@ -100,8 +108,13 @@ public:
 		return bytes_.size();
 	}
 
+	std::size_t Capacity() const noexcept {
+		return bytes_.capacity();
+	}
+
 private:
 	std::vector<std::uint8_t> bytes_;
+	std::shared_ptr<ScanMemoryAccount> memory_account_;
 };
 
 // The OM handle itself is borrowed. Retaining the shared owner in the same
@@ -157,6 +170,7 @@ struct OmDecoderState final {
 	std::vector<std::uint8_t> index_bytes;
 	std::vector<std::uint8_t> data_bytes;
 	std::vector<std::uint8_t> chunk_scratch;
+	std::shared_ptr<ScanMemoryAccount> memory_account;
 };
 
 // Mutable state belongs to one bound/executing query. No decoder, cursor, or

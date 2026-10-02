@@ -122,6 +122,17 @@ void Reject(duckdb::Connection &connection, const std::string &sql, const std::s
 	        "expected rejection containing '" + message + "': " + sql + "\n" +
 	            (result ? result->ToString() : "no result"));
 }
+bool PositiveJsonField(const std::string &json, const std::string &object, const std::string &field) {
+	const auto object_start = json.find("\"" + object + "\":{");
+	if (object_start == std::string::npos) return false;
+	const auto object_end = json.find('}', object_start);
+	const auto field_start = json.find("\"" + field + "\":", object_start);
+	if (field_start == std::string::npos || field_start > object_end) return false;
+	const auto value_start = field_start + field.size() + 3;
+	const auto value_end = json.find_first_not_of("0123456789", value_start);
+	if (value_start == value_end) return false;
+	return std::stoull(json.substr(value_start, value_end - value_start)) > 0;
+}
 void Run(const std::filesystem::path &dir) {
 	duckdb::DBConfig config;
 	config.SetOptionByName("allow_unsigned_extensions", true);
@@ -134,6 +145,20 @@ void Run(const std::filesystem::path &dir) {
 	Fixture(run, {2, 2, 3}, "lat lon time", {start, start + 3600, start + 10800});
 	Expect(connection, "SELECT value, valid_time FROM " + Read(run) + " WHERE value BETWEEN 6 AND 8 ORDER BY value",
 	       {"6.0", "2026-09-21 00:00:00", "7.0", "2026-09-21 01:00:00", "8.0", "2026-09-21 03:00:00"});
+	auto metric_rows = connection.Query("SELECT metrics FROM duckomo_last_scan_metrics()");
+	Require(metric_rows && !metric_rows->HasError() && metric_rows->RowCount() == 1,
+	        "time array scan must publish one v3 metrics row");
+	const auto time_metrics = metric_rows->GetValue(0, 0).GetValue<std::string>();
+	Require(PositiveJsonField(time_metrics, "coordinate", "index_bytes") &&
+	            PositiveJsonField(time_metrics, "coordinate", "data_bytes") &&
+	            PositiveJsonField(time_metrics, "coordinate", "decoded_chunks"),
+	        "time coordinate index/data/decode costs must be attributed to coordinate metrics");
+	Require(time_metrics.find("\"variables\":{\"/\":{") != std::string::npos &&
+	            time_metrics.find("\"/time\":") == std::string::npos,
+	        "time coordinate reads must not be attributed to the value variable map");
+	Require(time_metrics.find("\"query_memory_count_complete\":true") != std::string::npos &&
+	            time_metrics.find("\"peak_query_owned_bytes\":null") == std::string::npos,
+	        "successful local scans must publish the tracked query-owned buffer high-water mark");
 	Expect(connection,
 	       "SELECT value, valid_time FROM " + Read(run, Spatial()) +
 	           " WHERE latitude=11 AND longitude=100 ORDER BY valid_time",

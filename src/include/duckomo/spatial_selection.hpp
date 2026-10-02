@@ -41,6 +41,7 @@ public:
 	bool Next(std::uint64_t vector_size, SpatialBatch &batch,
 	          const std::function<void()> &interrupt_check = {});
 	bool Exhausted() const noexcept;
+	std::uint64_t EstimatedBytes() const noexcept;
 
 private:
 	std::optional<std::uint64_t> NextAllowedIndex(std::size_t axis, std::uint64_t minimum) const;

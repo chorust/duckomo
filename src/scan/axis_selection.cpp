@@ -158,6 +158,29 @@ std::uint64_t AxisSelectionCursor::CandidateCount() const noexcept {
 	return candidate_count;
 }
 
+std::uint64_t AxisSelectionCursor::EstimatedBytes() const noexcept {
+	std::uint64_t bytes = sizeof(*this);
+	const auto add = [&bytes](std::uint64_t value) {
+		bytes = bytes > std::numeric_limits<std::uint64_t>::max() - value
+		            ? std::numeric_limits<std::uint64_t>::max()
+		            : bytes + value;
+	};
+	const auto count = [&add](std::size_t capacity, std::size_t element_size) {
+		if (element_size != 0 && capacity > std::numeric_limits<std::uint64_t>::max() / element_size) {
+			add(std::numeric_limits<std::uint64_t>::max());
+		} else {
+			add(static_cast<std::uint64_t>(capacity * element_size));
+		}
+	};
+	count(ranges.capacity(), sizeof(std::vector<LogicalAxisRange>));
+	for (const auto &axis_ranges : ranges) count(axis_ranges.capacity(), sizeof(LogicalAxisRange));
+	count(strides.capacity(), sizeof(std::uint64_t));
+	count(indices.capacity(), sizeof(std::uint64_t));
+	count(range_indices.capacity(), sizeof(std::size_t));
+	count(axis_lengths.capacity(), sizeof(std::uint64_t));
+	return bytes;
+}
+
 bool AxisSelectionCursor::Contains(std::uint64_t logical_position) const {
 	if (empty) return false;
 	for (std::size_t axis = 0; axis < ranges.size(); axis++) {

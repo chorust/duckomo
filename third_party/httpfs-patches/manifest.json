@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "duckdb_version": "v1.5.4",
+  "duckdb_commit": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+  "httpfs": {
+    "repository": "https://github.com/duckdb/duckdb-httpfs.git",
+    "source_path": "third_party/duckdb-httpfs",
+    "upstream_commit": "c3f215ab360f04dc3d3d5305fa81849c0121f111",
+    "license": "MIT (see third_party/duckdb-httpfs/LICENSE)",
+    "patch_revision": "duckomo-httpfs-range-v2",
+    "patches": [
+      {
+        "order": 1,
+        "file": "third_party/httpfs-patches/0001-om-range-session.patch",
+        "sha256": "df21c2cf77ee53c80b797f2a65e7b687e9a27dbe1e69214366ab5710a1e3b6a3"
+      },
+      {
+        "order": 2,
+        "file": "third_party/httpfs-patches/0002-om-capabilities.patch",
+        "sha256": "cb5c7fd65134c7b35bb2f3b862dcc1004fdd9396f2cd8a91a11d948448c8b995"
+      }
+    ],
+    "shared_header": {
+      "file": "third_party/httpfs-patches/httpfs_om_range.hpp",
+      "sha256": "68c9662ac14eac515695bfe5cdc7c6dfc92a2d287ba3cf09f9aefcb6ca01bffb"
+    }
+  },
+  "paired_extensions": {
+    "required": true,
+    "extensions": [
+      "httpfs",
+      "duckomo"
+    ],
+    "constraint": "Ship/load the httpfs and duckomo artifacts built from this exact DuckDB v1.5.4 source identity, httpfs commit, patch revision, and shared ABI header. Reject an unpatched or differently patched httpfs for remote read_om; local read_om and read_om_raw remain independent of httpfs."
+  }
+}

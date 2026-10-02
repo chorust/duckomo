@@ -23,6 +23,7 @@ public:
 	bool IsEmpty() const noexcept;
 	bool IsExhausted() const noexcept;
 	std::uint64_t CandidateCount() const noexcept;
+	std::uint64_t EstimatedBytes() const noexcept;
 	bool Contains(std::uint64_t logical_position) const;
 	idx_t Next(idx_t limit, std::vector<std::uint64_t> &logical_positions,
 	           const std::function<bool(std::uint64_t)> &include = {});
