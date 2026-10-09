@@ -131,3 +131,7 @@ test/CMakeLists.txt         # native/SQL/harness targets
 - **性能与内存计量**：网络响应 body 独立于逻辑/底层字节；并发时 RSS 标为 process，单查询工作内存单列；失败完整性单列。
 
 本轮只验证设计一致性、引用、接口与需求覆盖；没有执行尚未实现功能的性能或正确性验收。
+
+## 2026-10-08 官方 HTTPFS 契约修订
+
+当前未发布版本以 [官方 HTTPFS 迁移契约](../004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md) 为准。历史专用 ABI、LRU 与 G5 证据保留历史状态；新 gate 单独记录。

@@ -1,0 +1,12 @@
+{
+  "schema_version":1,
+  "gate":"G6",
+  "status":"pass",
+  "fixture_sha256":"47a803a4769ab5a8c6622f9be5cc05b53b96152443917b7603d78dab94e1ec13",
+  "failed_protocol_query_profiles":0,
+  "failed_protocol_costs_reconciled":true,
+  "concurrent_profiles":[{"audit":"g6-concurrent-a","body_bytes":1107120},{"audit":"g6-concurrent-b","body_bytes":1107120}],
+  "cancelled_profile_status":"cancelled",
+  "cancelled_profile_body_bytes":1,
+  "recovery_status":"success"
+}

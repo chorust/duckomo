@@ -1,9 +1,9 @@
 #pragma once
 
-#include <atomic>
 #include <cmath>
 #include <cstdint>
 #include <algorithm>
+#include <array>
 #include <iomanip>
 #include <map>
 #include <memory>
@@ -27,6 +27,40 @@ enum class ScanDecodePurpose : std::uint8_t { Value, Coordinate };
 
 enum class ScanStatus : std::uint8_t { Unknown, Succeeded, Failed, Cancelled };
 enum class ScanMetadataStage : std::uint8_t { Bind, Scan };
+enum class ScanMemoryComponent : std::uint8_t {
+	Bind,
+	GlobalControl,
+	Selector,
+	TaskPositions,
+	BatchSegments,
+	Definitions,
+	CoordinateBuffers,
+	Decoder,
+	Coalescing,
+	TransportControl,
+	Unclassified,
+	Count
+};
+
+inline constexpr std::size_t ScanMemoryComponentCount = static_cast<std::size_t>(ScanMemoryComponent::Count);
+
+inline const char *ScanMemoryComponentName(ScanMemoryComponent component) noexcept {
+	switch (component) {
+	case ScanMemoryComponent::Bind: return "bind";
+	case ScanMemoryComponent::GlobalControl: return "global_control";
+	case ScanMemoryComponent::Selector: return "selector";
+	case ScanMemoryComponent::TaskPositions: return "task_positions";
+	case ScanMemoryComponent::BatchSegments: return "batch_segments";
+	case ScanMemoryComponent::Definitions: return "definitions";
+	case ScanMemoryComponent::CoordinateBuffers: return "coordinate_buffers";
+	case ScanMemoryComponent::Decoder: return "decoder";
+	case ScanMemoryComponent::Coalescing: return "coalescing";
+	case ScanMemoryComponent::TransportControl: return "transport_control";
+	case ScanMemoryComponent::Unclassified: return "unclassified";
+	case ScanMemoryComponent::Count: break;
+	}
+	return "unknown";
+}
 
 inline const char *ScanStatusName(ScanStatus status) noexcept {
 	switch (status) {
@@ -107,6 +141,9 @@ struct ScanMetricsSnapshot final {
 	bool filter_callback_invoked = false;
 	std::vector<std::string> fallback_reasons;
 	std::uint64_t candidate_rows = 0;
+	std::uint64_t selection_windows = 0;
+	std::uint64_t selection_ranges = 0;
+	std::uint64_t selection_fallback_windows = 0;
 	std::uint64_t scan_tasks_claimed = 0;
 	std::uint64_t active_workers = 0;
 	std::uint64_t scanned_rows = 0;
@@ -121,13 +158,13 @@ struct ScanMetricsSnapshot final {
 	std::optional<std::uint64_t> transport_responses;
 	std::optional<bool> transport_count_complete;
 	std::map<std::string, std::uint64_t> response_statuses;
-	bool cache_enabled = true;
+	bool cache_enabled = false;
 	std::uint64_t cache_capacity_bytes = 0;
 	std::uint64_t cache_charged_bytes = 0;
 	std::uint64_t cache_peak_charged_bytes = 0;
 	std::uint64_t cache_control_bytes = 0;
 	std::uint64_t cache_evictions = 0;
-	std::string cache_bypass_reason;
+	std::string cache_bypass_reason = "removed";
 	std::string version_strength = "unverified";
 	std::uint64_t scan_tasks_created = 0;
 	std::uint64_t scan_tasks_completed = 0;
@@ -135,6 +172,10 @@ struct ScanMetricsSnapshot final {
 	std::uint64_t scan_tasks_cancelled = 0;
 	std::uint64_t max_active_workers = 0;
 	std::optional<std::uint64_t> peak_query_owned_bytes;
+	std::optional<std::uint64_t> peak_query_owned_upper_bound_bytes;
+	std::optional<bool> query_owned_released_at_terminal;
+	std::array<std::uint64_t, ScanMemoryComponentCount> memory_component_peak_bytes{};
+	std::array<std::uint64_t, ScanMemoryComponentCount> memory_component_upper_bound_peak_bytes{};
 	bool query_memory_count_complete = false;
 	bool optimizer_empty = false;
 	std::string reference_identity;
@@ -150,6 +191,18 @@ struct ScanMetricsSnapshot final {
 	std::map<std::string, std::string> cache_policy;
 	std::optional<std::uint64_t> peak_rss_bytes;
 	std::string error_category;
+	std::string operation = "read_om";
+	std::optional<std::uint64_t> exact_candidate_records;
+	std::optional<std::uint64_t> observed_candidate_records;
+	std::optional<std::uint64_t> candidate_upper_bound_records;
+	std::optional<bool> candidate_count_complete;
+	std::optional<std::uint64_t> coordinate_preparation_evaluations;
+	std::optional<bool> coordinate_preparation_complete;
+	std::uint64_t coordinate_evaluations = 0;
+	std::optional<bool> value_decode_complete;
+	std::optional<bool> coordinate_decode_complete;
+	std::optional<bool> memory_accounting_complete;
+	bool query_terminal_published = false;
 };
 
 // Per-query counters with no global registry or persistence. Instances may be
@@ -195,6 +248,10 @@ public:
 		std::lock_guard<std::mutex> guard(mutex_);
 		status_ = status;
 		error_category_ = std::move(error_category);
+		if (status != ScanStatus::Succeeded || !scan_complete_) {
+			exact_candidate_records_.reset();
+			candidate_count_complete_ = false;
+		}
 	}
 
 	void SetScanComplete(bool complete) {
@@ -223,7 +280,9 @@ public:
 
 	void SetPeakQueryOwnedBytes(std::optional<std::uint64_t> peak_bytes, bool complete) {
 		std::lock_guard<std::mutex> guard(mutex_);
+		query_memory_accounting_enabled_ = true;
 		peak_query_owned_bytes_ = peak_bytes;
+		peak_query_owned_upper_bound_bytes_ = peak_bytes;
 		query_memory_count_complete_ = complete;
 	}
 
@@ -232,34 +291,71 @@ public:
 		query_memory_accounting_enabled_ = true;
 		query_memory_count_complete_ = true;
 		peak_query_owned_bytes_ = 0;
+		peak_query_owned_upper_bound_bytes_ = 0;
 	}
 
-	std::uint64_t RegisterMemoryAccount() {
+	std::uint64_t RegisterMemoryAccount(ScanMemoryComponent component = ScanMemoryComponent::Unclassified) {
 		std::lock_guard<std::mutex> guard(mutex_);
+		if (next_memory_account_id_ == 0 || next_memory_account_id_ == UINT64_MAX) {
+			query_memory_count_complete_ = false;
+			peak_query_owned_bytes_.reset();
+			peak_query_owned_upper_bound_bytes_.reset();
+			return 0;
+		}
+		if (static_cast<std::size_t>(component) >= ScanMemoryComponentCount) {
+			component = ScanMemoryComponent::Unclassified;
+		}
 		const auto id = next_memory_account_id_++;
-		memory_accounts_.emplace(id, 0);
+		memory_accounts_.emplace(id, MemoryAccountState{0, 0, component});
 		return id;
 	}
 
-	void UpdateMemoryAccount(std::uint64_t id, std::uint64_t bytes) {
+	void UpdateMemoryAccount(std::uint64_t id, std::uint64_t bytes, std::uint64_t upper_bound_bytes) {
 		std::lock_guard<std::mutex> guard(mutex_);
 		auto entry = memory_accounts_.find(id);
-		if (entry == memory_accounts_.end()) return;
-		if (bytes >= entry->second) {
-			const auto delta = bytes - entry->second;
-			if (memory_current_bytes_ > UINT64_MAX - delta) {
-				query_memory_count_complete_ = false;
-				peak_query_owned_bytes_.reset();
-				return;
-			}
-			memory_current_bytes_ += delta;
-		} else {
-			memory_current_bytes_ -= entry->second - bytes;
+		if (entry == memory_accounts_.end()) {
+			query_memory_count_complete_ = false;
+			peak_query_owned_bytes_.reset();
+			peak_query_owned_upper_bound_bytes_.reset();
+			return;
 		}
-		entry->second = bytes;
+		upper_bound_bytes = std::max(bytes, upper_bound_bytes);
+		if (bytes == UINT64_MAX || upper_bound_bytes == UINT64_MAX) {
+			query_memory_count_complete_ = false;
+			peak_query_owned_bytes_.reset();
+			peak_query_owned_upper_bound_bytes_.reset();
+			return;
+		}
+		auto next_current = memory_current_bytes_;
+		auto next_bound = memory_current_upper_bound_bytes_;
+		auto next_component_current = memory_component_current_bytes_[static_cast<std::size_t>(entry->second.component)];
+		auto next_component_bound =
+		    memory_component_current_upper_bound_bytes_[static_cast<std::size_t>(entry->second.component)];
+		if (!ApplyMemoryDelta(next_current, entry->second.bytes, bytes) ||
+		    !ApplyMemoryDelta(next_bound, entry->second.upper_bound_bytes, upper_bound_bytes) ||
+		    !ApplyMemoryDelta(next_component_current, entry->second.bytes, bytes) ||
+		    !ApplyMemoryDelta(next_component_bound, entry->second.upper_bound_bytes, upper_bound_bytes)) {
+			query_memory_count_complete_ = false;
+			peak_query_owned_bytes_.reset();
+			peak_query_owned_upper_bound_bytes_.reset();
+			return;
+		}
+		memory_current_bytes_ = next_current;
+		memory_current_upper_bound_bytes_ = next_bound;
+		const auto component_index = static_cast<std::size_t>(entry->second.component);
+		memory_component_current_bytes_[component_index] = next_component_current;
+		memory_component_current_upper_bound_bytes_[component_index] = next_component_bound;
+		entry->second.bytes = bytes;
+		entry->second.upper_bound_bytes = upper_bound_bytes;
 		memory_peak_bytes_ = std::max(memory_peak_bytes_, memory_current_bytes_);
+		memory_peak_upper_bound_bytes_ = std::max(memory_peak_upper_bound_bytes_, memory_current_upper_bound_bytes_);
+		memory_component_peak_bytes_[component_index] =
+		    std::max(memory_component_peak_bytes_[component_index], next_component_current);
+		memory_component_upper_bound_peak_bytes_[component_index] =
+		    std::max(memory_component_upper_bound_peak_bytes_[component_index], next_component_bound);
 		if (query_memory_accounting_enabled_ && query_memory_count_complete_) {
 			peak_query_owned_bytes_ = memory_peak_bytes_;
+			peak_query_owned_upper_bound_bytes_ = memory_peak_upper_bound_bytes_;
 		}
 	}
 
@@ -267,7 +363,20 @@ public:
 		std::lock_guard<std::mutex> guard(mutex_);
 		auto entry = memory_accounts_.find(id);
 		if (entry == memory_accounts_.end()) return;
-		memory_current_bytes_ -= entry->second;
+		const auto component_index = static_cast<std::size_t>(entry->second.component);
+		if (entry->second.bytes > memory_current_bytes_ ||
+		    entry->second.upper_bound_bytes > memory_current_upper_bound_bytes_ ||
+		    entry->second.bytes > memory_component_current_bytes_[component_index] ||
+		    entry->second.upper_bound_bytes > memory_component_current_upper_bound_bytes_[component_index]) {
+			query_memory_count_complete_ = false;
+			peak_query_owned_bytes_.reset();
+			peak_query_owned_upper_bound_bytes_.reset();
+		} else {
+			memory_current_bytes_ -= entry->second.bytes;
+			memory_current_upper_bound_bytes_ -= entry->second.upper_bound_bytes;
+			memory_component_current_bytes_[component_index] -= entry->second.bytes;
+			memory_component_current_upper_bound_bytes_[component_index] -= entry->second.upper_bound_bytes;
+		}
 		memory_accounts_.erase(entry);
 	}
 
@@ -275,16 +384,21 @@ public:
 		std::lock_guard<std::mutex> guard(mutex_);
 		query_memory_count_complete_ = false;
 		peak_query_owned_bytes_.reset();
+		peak_query_owned_upper_bound_bytes_.reset();
 	}
 
 	void FinalizeQueryMemoryAccounting(bool query_succeeded) {
 		std::lock_guard<std::mutex> guard(mutex_);
 		if (!query_memory_accounting_enabled_) return;
+		query_owned_released_at_terminal_ =
+		    memory_accounts_.empty() && memory_current_bytes_ == 0 && memory_current_upper_bound_bytes_ == 0;
 		if (!query_succeeded) query_memory_count_complete_ = false;
 		if (query_memory_count_complete_) {
 			peak_query_owned_bytes_ = memory_peak_bytes_;
+			peak_query_owned_upper_bound_bytes_ = memory_peak_upper_bound_bytes_;
 		} else {
 			peak_query_owned_bytes_.reset();
+			peak_query_owned_upper_bound_bytes_.reset();
 		}
 	}
 
@@ -384,6 +498,13 @@ public:
 		AddChecked(scan_tasks_cancelled_, 1);
 	}
 
+	void RecordSelectionWindow(std::uint64_t ranges, bool fallback) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		AddChecked(selection_windows_, 1);
+		AddChecked(selection_ranges_, ranges);
+		if (fallback) AddChecked(selection_fallback_windows_, 1);
+	}
+
 	void RecordWorkerActive(std::uint64_t worker_id) {
 		std::lock_guard<std::mutex> guard(mutex_);
 		active_worker_ids_.insert(worker_id);
@@ -401,42 +522,26 @@ public:
 		active_worker_execution_ids_.erase(worker_id);
 	}
 
-	void SetCacheState(bool enabled, std::uint64_t capacity_bytes, std::uint64_t charged_bytes,
-	                    std::uint64_t peak_charged_bytes, std::uint64_t control_bytes,
-	                    std::uint64_t evictions, std::string bypass_reason, std::string version_strength) {
+	void SetCacheRemoved() {
 		std::lock_guard<std::mutex> guard(mutex_);
-		cache_enabled_ = enabled;
-		cache_capacity_bytes_ = capacity_bytes;
-		cache_charged_bytes_ = charged_bytes;
-		cache_peak_charged_bytes_ = peak_charged_bytes;
-		cache_control_bytes_ = control_bytes;
-		cache_evictions_ = cache_eviction_baseline_set_ && evictions >= cache_eviction_baseline_
-		                       ? evictions - cache_eviction_baseline_
-		                       : evictions;
-		cache_bypass_reason_ = std::move(bypass_reason);
-		version_strength_ = std::move(version_strength);
+		cache_bypass_reason_ = "removed";
 	}
 
-	void SetCacheEvictionBaseline(std::uint64_t evictions) {
+	// Standard HTTPFS does not expose transport events to DuckOMO.
+	void SetTransportUnobserved() {
 		std::lock_guard<std::mutex> guard(mutex_);
-		cache_eviction_baseline_ = evictions;
-		cache_eviction_baseline_set_ = true;
-		cache_evictions_ = 0;
+		response_body_bytes_.reset();
+		transport_requests_.reset();
+		transport_responses_.reset();
+		transport_count_complete_ = false;
 	}
 
-	void SetTransportAvailable(bool available) {
+	void SetTransportNotApplicable() {
 		std::lock_guard<std::mutex> guard(mutex_);
-		if (!available) {
-			response_body_bytes_ = 0;
-			transport_requests_ = 0;
-			transport_responses_ = 0;
-			transport_count_complete_ = true;
-		} else if (!transport_count_complete_) {
-			response_body_bytes_ = 0;
-			transport_requests_ = 0;
-			transport_responses_ = 0;
-			transport_count_complete_ = true;
-		}
+		response_body_bytes_ = 0;
+		transport_requests_ = 0;
+		transport_responses_ = 0;
+		transport_count_complete_ = true;
 	}
 
 	void RecordScannedRows(std::uint64_t rows) {
@@ -452,43 +557,6 @@ public:
 		AddChecked(physical_read_requests_, 1);
 	}
 
-	void RecordCacheLookup(bool hit, std::uint64_t bytes = 0) {
-		std::lock_guard<std::mutex> guard(mutex_);
-		if (hit) {
-			AddChecked(cache_hits_, 1);
-			AddChecked(cache_hit_bytes_, bytes);
-		} else {
-			AddChecked(cache_misses_, 1);
-		}
-	}
-
-	void RecordTransportAttempt(std::uint64_t request_id, std::uint64_t attempt, int status,
-	                            std::uint64_t body_bytes, bool response_received, bool complete) {
-		std::lock_guard<std::mutex> guard(mutex_);
-		if (!response_body_bytes_) response_body_bytes_ = 0;
-		if (!transport_requests_) transport_requests_ = 0;
-		if (!transport_responses_) transport_responses_ = 0;
-		if (!transport_count_complete_) transport_count_complete_ = true;
-		if (!transport_attempt_ids_.emplace(request_id, attempt).second) return;
-		AddChecked(*response_body_bytes_, body_bytes);
-		AddChecked(*transport_requests_, 1);
-		if (response_received) {
-			AddChecked(*transport_responses_, 1);
-			AddChecked(response_statuses_[std::to_string(status)], 1);
-		}
-		if (!complete) transport_count_complete_ = false;
-	}
-
-	void RecordTransportResponse(std::uint64_t body_bytes) {
-		const auto id = synthetic_transport_id_.fetch_add(1, std::memory_order_relaxed);
-		RecordTransportAttempt(id, 1, 200, body_bytes, true, true);
-	}
-
-	void MarkTransportCountIncomplete() {
-		std::lock_guard<std::mutex> guard(mutex_);
-		transport_count_complete_ = false;
-	}
-
 	void SetSpatialSelection(std::string selection_mode, bool residual_filter_retained,
 	                         std::vector<std::string> fallback_reasons, std::uint64_t candidate_rows,
 	                         bool optimizer_empty = false) {
@@ -498,6 +566,11 @@ public:
 		fallback_reasons_ = std::move(fallback_reasons);
 		candidate_rows_ = candidate_rows;
 		optimizer_empty_ = optimizer_empty;
+	}
+
+	void SetCandidateRows(std::uint64_t candidate_rows) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		candidate_rows_ = candidate_rows;
 	}
 
 	void SetSpatialReference(std::string reference_identity, double coordinate_tolerance,
@@ -510,6 +583,62 @@ public:
 		coordinate_tolerance_ = coordinate_tolerance;
 		logical_positions_match_ = logical_positions_match;
 		null_positions_match_ = null_positions_match;
+	}
+
+	void SetOperation(std::string operation) {
+		if (operation.empty()) throw std::invalid_argument("metrics operation must not be empty");
+		std::lock_guard<std::mutex> guard(mutex_);
+		operation_ = std::move(operation);
+	}
+
+	void SetCandidateCountEvidence(std::optional<std::uint64_t> exact_records,
+	                               std::optional<std::uint64_t> upper_bound_records,
+	                               std::optional<std::uint64_t> observed_records,
+	                               std::optional<bool> count_complete) {
+		if (exact_records && upper_bound_records && *exact_records > *upper_bound_records) {
+			throw std::invalid_argument("exact candidate records cannot exceed their upper bound");
+		}
+		if (observed_records && upper_bound_records && *observed_records > *upper_bound_records) {
+			throw std::invalid_argument("observed candidate records cannot exceed their upper bound");
+		}
+		if (count_complete.value_or(false) && !exact_records) {
+			throw std::invalid_argument("complete candidate count requires an exact count");
+		}
+		std::lock_guard<std::mutex> guard(mutex_);
+		exact_candidate_records_ = exact_records;
+		candidate_upper_bound_records_ = upper_bound_records;
+		observed_candidate_records_ = observed_records;
+		candidate_count_complete_ = count_complete;
+	}
+
+	void RecordObservedCandidateRecords(std::uint64_t records) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		if (!observed_candidate_records_) observed_candidate_records_ = 0;
+		AddChecked(*observed_candidate_records_, records);
+		if (candidate_upper_bound_records_ && *observed_candidate_records_ > *candidate_upper_bound_records_) {
+			observed_candidate_records_.reset();
+			candidate_count_complete_ = false;
+			throw std::logic_error("observed candidate records exceeded their registered upper bound");
+		}
+	}
+
+	void RecordCoordinatePreparation(std::uint64_t evaluations, bool complete) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		AddChecked(coordinate_evaluations_, evaluations);
+		if (!coordinate_preparation_evaluations_) coordinate_preparation_evaluations_ = 0;
+		AddChecked(*coordinate_preparation_evaluations_, evaluations);
+		if (!coordinate_preparation_complete_) coordinate_preparation_complete_ = complete;
+		else coordinate_preparation_complete_ = *coordinate_preparation_complete_ && complete;
+	}
+
+	void RecordCoordinateEvaluations(std::uint64_t evaluations) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		AddChecked(coordinate_evaluations_, evaluations);
+	}
+
+	void PublishQueryTerminal() {
+		std::lock_guard<std::mutex> guard(mutex_);
+		query_terminal_published_ = true;
 	}
 
 	void RecordSuccessfulRead(ScanReadPhase phase, std::uint64_t returned_bytes,
@@ -554,11 +683,13 @@ public:
 	void RecordSuccessfulCoordinateDecode(std::uint64_t successful_ranges) {
 		std::lock_guard<std::mutex> guard(mutex_);
 		AddChecked(coordinate_metrics_.decoded_chunks, successful_ranges);
+		coordinate_decode_evidence_observed_ = true;
 	}
 
 	void MarkCoordinateDecodeCountIncomplete() {
 		std::lock_guard<std::mutex> guard(mutex_);
 		coordinate_metrics_.decode_count_complete = false;
+		coordinate_decode_evidence_observed_ = true;
 	}
 
 	// `successful_ranges` is the number of actual chunk ranges successfully
@@ -568,12 +699,14 @@ public:
 		std::lock_guard<std::mutex> guard(mutex_);
 		auto &metrics = variables_[variable_path];
 		AddChecked(metrics.decoded_chunks, successful_ranges);
+		value_decode_evidence_observed_ = true;
 	}
 
 	void MarkDecodeCountIncomplete(const std::string &variable_path) {
 		RequireVariablePath(variable_path);
 		std::lock_guard<std::mutex> guard(mutex_);
 		variables_[variable_path].decode_count_complete = false;
+		value_decode_evidence_observed_ = true;
 	}
 
 	ScanMetricsSnapshot Snapshot() const {
@@ -616,6 +749,9 @@ public:
 		snapshot.filter_callback_invoked = filter_callback_invoked_;
 		snapshot.fallback_reasons = fallback_reasons_;
 		snapshot.candidate_rows = candidate_rows_;
+		snapshot.selection_windows = selection_windows_;
+		snapshot.selection_ranges = selection_ranges_;
+		snapshot.selection_fallback_windows = selection_fallback_windows_;
 		snapshot.scan_tasks_claimed = scan_tasks_claimed_;
 		snapshot.active_workers = active_worker_ids_.size();
 		snapshot.scanned_rows = scanned_rows_;
@@ -642,9 +778,13 @@ public:
 		snapshot.scan_tasks_completed = scan_tasks_completed_;
 		snapshot.scan_tasks_failed = scan_tasks_failed_;
 		snapshot.scan_tasks_cancelled = scan_tasks_cancelled_;
-	snapshot.max_active_workers = max_active_workers_;
-	snapshot.peak_query_owned_bytes = peak_query_owned_bytes_;
-	snapshot.query_memory_count_complete = query_memory_count_complete_;
+		snapshot.max_active_workers = max_active_workers_;
+		snapshot.peak_query_owned_bytes = peak_query_owned_bytes_;
+		snapshot.peak_query_owned_upper_bound_bytes = peak_query_owned_upper_bound_bytes_;
+		snapshot.query_owned_released_at_terminal = query_owned_released_at_terminal_;
+		snapshot.memory_component_peak_bytes = memory_component_peak_bytes_;
+		snapshot.memory_component_upper_bound_peak_bytes = memory_component_upper_bound_peak_bytes_;
+		snapshot.query_memory_count_complete = query_memory_count_complete_;
 		snapshot.optimizer_empty = optimizer_empty_;
 		snapshot.reference_identity = reference_identity_;
 		snapshot.coordinate_tolerance = coordinate_tolerance_;
@@ -656,6 +796,25 @@ public:
 		snapshot.cache_policy = cache_policy_;
 		snapshot.peak_rss_bytes = peak_rss_bytes_;
 		snapshot.error_category = error_category_;
+		snapshot.operation = operation_;
+		snapshot.exact_candidate_records = exact_candidate_records_;
+		snapshot.observed_candidate_records = observed_candidate_records_;
+		snapshot.candidate_upper_bound_records = candidate_upper_bound_records_;
+		snapshot.candidate_count_complete = candidate_count_complete_;
+		snapshot.coordinate_preparation_evaluations = coordinate_preparation_evaluations_;
+		snapshot.coordinate_preparation_complete = coordinate_preparation_complete_;
+		snapshot.coordinate_evaluations = coordinate_evaluations_;
+		snapshot.value_decode_complete = value_decode_evidence_observed_
+		                                     ? std::optional<bool>(std::all_of(variables_.begin(), variables_.end(),
+		                                          [](const auto &entry) { return entry.second.decode_count_complete; }))
+		                                     : std::nullopt;
+		snapshot.coordinate_decode_complete = coordinate_decode_evidence_observed_
+		                                          ? std::optional<bool>(coordinate_metrics_.decode_count_complete)
+		                                          : std::nullopt;
+		snapshot.memory_accounting_complete = query_memory_accounting_enabled_
+		                                          ? std::optional<bool>(query_memory_count_complete_)
+		                                          : std::nullopt;
+		snapshot.query_terminal_published = query_terminal_published_;
 		snapshot.decode_count_complete = coordinate_metrics_.decode_count_complete;
 		snapshot.bytes_fetched = snapshot.metadata_bytes;
 		snapshot.read_requests = snapshot.metadata_requests;
@@ -670,7 +829,7 @@ public:
 		return snapshot;
 	}
 
-	std::string ToEvidenceJson() const {
+	std::string ToEvidenceJson(bool redact_sql = false) const {
 		const auto snapshot = Snapshot();
 		auto normalized_sql = snapshot.sql;
 		std::transform(normalized_sql.begin(), normalized_sql.end(), normalized_sql.begin(),
@@ -682,7 +841,7 @@ public:
 		json << "{\"schema_version\":" << snapshot.schema_version
 		     << ",\"query_id\":" << JsonString(snapshot.query_id)
 		     << ",\"scenario\":" << JsonString(snapshot.scenario)
-		     << ",\"sql\":" << JsonString(contains_remote_uri ? "<redacted>" : snapshot.sql)
+		     << ",\"sql\":" << JsonString(redact_sql || contains_remote_uri ? "<redacted>" : snapshot.sql)
 		     << ",\"fixture_id\":" << JsonString(snapshot.fixture_id)
 		     << ",\"fixture_sha256\":" << JsonString(snapshot.fixture_sha256)
 		     << ",\"dependency_commits\":" << JsonStringMap(snapshot.dependency_commits)
@@ -736,30 +895,11 @@ public:
 		return json.str();
 	}
 
-	// v3 is the stable SQL-facing profile. The prior evidence shape remains
-	// available to the existing release harness through ToEvidenceJson().
+	// v3 is the frozen legacy profile embedded in v4 and retained for the
+	// existing release harness through ToEvidenceJson()/the v3 sidecar.
 	std::string ToMetricsV3Json() const {
 		const auto snapshot = Snapshot();
-		auto legacy = ToEvidenceJson();
-		const auto sql_key = legacy.find("\"sql\":");
-		if (sql_key != std::string::npos) {
-			const auto value_start = legacy.find('"', sql_key + 6);
-			if (value_start != std::string::npos) {
-				bool escaped = false;
-				std::size_t value_end = value_start + 1;
-				for (; value_end < legacy.size(); value_end++) {
-					const auto ch = legacy[value_end];
-					if (escaped) {
-						escaped = false;
-					} else if (ch == '\\') {
-						escaped = true;
-					} else if (ch == '"') {
-						break;
-					}
-				}
-				if (value_end < legacy.size()) legacy.replace(value_start, value_end - value_start + 1, "\"<redacted>\"");
-			}
-		}
+		const auto legacy = ToEvidenceJson(true);
 		std::ostringstream json;
 		json << "{\"schema_version\":3,\"scan_id\":" << snapshot.scan_id
 		     << ",\"query_id\":" << JsonString(snapshot.query_id)
@@ -856,7 +996,135 @@ public:
 		return json.str();
 	}
 
+	std::string ToMetricsV4Json() const {
+		const auto snapshot = Snapshot();
+		const auto legacy_v3 = ToMetricsV3Json();
+		const auto legacy_v2 = ToEvidenceJson(true);
+		std::ostringstream json;
+		json << "{\"schema_version\":4"
+		     << ",\"scan_id\":" << snapshot.scan_id
+		     << ",\"query_id\":" << JsonString(snapshot.query_id)
+		     << ",\"operation\":" << JsonString(snapshot.operation)
+		     << ",\"outcome\":{\"status\":" << JsonString(ScanStatusName(snapshot.status))
+		     << ",\"scan_complete\":" << JsonBool(snapshot.scan_complete)
+		     << ",\"terminal_published\":" << JsonBool(snapshot.query_terminal_published)
+		     << ",\"error_category\":" << JsonString(snapshot.error_category) << '}'
+		     << ",\"grid\":{\"definition\":" << JsonString(snapshot.grid_definition)
+		     << ",\"layout\":" << JsonString(snapshot.spatial_layout)
+		     << ",\"source\":" << JsonString(snapshot.grid_source) << '}'
+		     << ",\"selection\":{\"mode\":" << JsonString(snapshot.selection_mode)
+	     << ",\"residual_filter_retained\":" << JsonBool(snapshot.residual_filter_retained)
+	     << ",\"fallback_reasons\":" << JsonStringArray(snapshot.fallback_reasons)
+	     << ",\"exact_candidate_records\":" << JsonOptionalUint(snapshot.exact_candidate_records)
+	     << ",\"observed_candidate_records\":" << JsonOptionalUint(snapshot.observed_candidate_records)
+	     << ",\"candidate_upper_bound_records\":" << JsonOptionalUint(snapshot.candidate_upper_bound_records)
+	     << ",\"count_complete\":" << JsonOptionalBool(snapshot.candidate_count_complete)
+	     << ",\"windows\":" << snapshot.selection_windows
+	     << ",\"ranges\":" << snapshot.selection_ranges
+	     << ",\"fallback_windows\":" << snapshot.selection_fallback_windows
+	     << ",\"coordinate_evaluations\":" << JsonOptionalUint(snapshot.coordinate_preparation_evaluations) << '}'
+	     << ",\"coordinate_preparation\":{\"evaluations\":"
+	     << JsonOptionalUint(snapshot.coordinate_preparation_evaluations)
+	     << ",\"complete\":" << JsonOptionalBool(snapshot.coordinate_preparation_complete) << '}'
+	     << ",\"reads\":{\"metadata\":{\"bind_bytes\":" << snapshot.bind_metadata_bytes
+	     << ",\"bind_requests\":" << snapshot.bind_metadata_requests
+	     << ",\"scan_bytes\":" << snapshot.scan_metadata_bytes
+	     << ",\"scan_requests\":" << snapshot.scan_metadata_requests << "},\"coordinates\":{\"physical_bytes\":"
+	     << snapshot.coordinate_bytes << ",\"physical_requests\":" << snapshot.coordinate_requests
+	     << ",\"logical_bytes\":" << snapshot.logical_coordinate_bytes
+	     << ",\"logical_requests\":" << snapshot.logical_coordinate_requests
+	     << ",\"index_bytes\":" << snapshot.coordinate.index_bytes
+	     << ",\"index_requests\":" << snapshot.coordinate.index_requests
+	     << ",\"data_bytes\":" << snapshot.coordinate.data_bytes
+	     << ",\"data_requests\":" << snapshot.coordinate.data_requests
+	     << ",\"decoded_chunks\":" << snapshot.coordinate.decoded_chunks
+	     << ",\"decode_complete\":" << JsonOptionalBool(snapshot.coordinate_decode_complete) << "},\"variables\":{";
+		bool first_variable = true;
+		std::uint64_t total_value_index_bytes = 0, total_value_index_requests = 0;
+		std::uint64_t total_value_data_bytes = 0, total_value_data_requests = 0, total_value_decoded_chunks = 0;
+		for (const auto &entry : snapshot.variables) {
+			if (!first_variable) json << ',';
+			first_variable = false;
+			const auto &metrics = entry.second;
+			json << JsonString(entry.first) << ":{\"logical_index_bytes\":" << metrics.logical_index_bytes
+			     << ",\"logical_index_requests\":" << metrics.logical_index_requests
+			     << ",\"logical_data_bytes\":" << metrics.logical_data_bytes
+			     << ",\"logical_data_requests\":" << metrics.logical_data_requests
+			     << ",\"index_bytes\":" << metrics.index_bytes
+			     << ",\"index_requests\":" << metrics.index_requests
+			     << ",\"data_bytes\":" << metrics.data_bytes
+			     << ",\"data_requests\":" << metrics.data_requests
+			     << ",\"decoded_chunks\":" << metrics.decoded_chunks
+			     << ",\"decode_complete\":" << JsonBool(metrics.decode_count_complete) << '}';
+			AddChecked(total_value_index_bytes, metrics.index_bytes);
+			AddChecked(total_value_index_requests, metrics.index_requests);
+			AddChecked(total_value_data_bytes, metrics.data_bytes);
+			AddChecked(total_value_data_requests, metrics.data_requests);
+			AddChecked(total_value_decoded_chunks, metrics.decoded_chunks);
+		}
+		json << "},\"value_totals\":{\"index_bytes\":" << total_value_index_bytes
+		     << ",\"index_requests\":" << total_value_index_requests
+		     << ",\"data_bytes\":" << total_value_data_bytes
+		     << ",\"data_requests\":" << total_value_data_requests
+		     << ",\"decoded_chunks\":" << total_value_decoded_chunks
+		     << ",\"decode_complete\":" << JsonOptionalBool(snapshot.value_decode_complete) << "}}"
+		     << ",\"transport\":{\"response_body_bytes\":" << JsonOptionalUint(snapshot.response_body_bytes)
+		     << ",\"attempts\":" << JsonOptionalUint(snapshot.transport_requests)
+		     << ",\"responses\":" << JsonOptionalUint(snapshot.transport_responses)
+		     << ",\"complete\":" << JsonOptionalBool(snapshot.transport_count_complete) << "}"
+		     << ",\"memory\":{\"query_owned_peak_bytes\":" << JsonOptionalUint(snapshot.peak_query_owned_bytes)
+		     << ",\"query_owned_upper_bound_peak_bytes\":"
+		     << JsonOptionalUint(snapshot.peak_query_owned_upper_bound_bytes)
+		     << ",\"query_owned_complete\":" << JsonOptionalBool(snapshot.memory_accounting_complete)
+		     << ",\"query_owned_released_at_terminal\":"
+		     << JsonOptionalBool(snapshot.query_owned_released_at_terminal)
+		     << ",\"query_owned_scope\":\"DuckOMO-owned buffers and conservative container/string capacity estimates; allocator metadata excluded\""
+		     << ",\"component_peak_scope\":\"independent component high-water marks; total peak captures concurrent live accounts\""
+		     << ",\"components\":{";
+		for (std::size_t index = 0; index < ScanMemoryComponentCount; index++) {
+			if (index != 0) json << ',';
+			const auto component = static_cast<ScanMemoryComponent>(index);
+			json << JsonString(ScanMemoryComponentName(component)) << ":{\"peak_owned_capacity_bytes\":"
+			     << snapshot.memory_component_peak_bytes[index] << ",\"upper_bound_peak_bytes\":"
+			     << snapshot.memory_component_upper_bound_peak_bytes[index] << '}';
+		}
+		json << "},\"repeated_work\":{\"coordinate_evaluations\":"
+		     << snapshot.coordinate_evaluations
+		     << ",\"value_decoded_chunks\":" << total_value_decoded_chunks
+		     << ",\"coordinate_decoded_chunks\":" << snapshot.coordinate.decoded_chunks
+		     << ",\"deduplicated\":false}"
+		     << ",\"coalescing_scope\":\"no coalescing buffers are currently allocated\""
+		     << ",\"decoder_upper_bound_basis\":\"control+min(object_size,lut_size)+object_size+chunk_scratch per active decoder; engine output reported separately\""
+		     << ",\"engine_output_vector_bytes\":null"
+		     << ",\"engine_output_vector_scope\":\"DuckDB-owned; not included in query-owned totals\""
+		     << ",\"shared_cache_peak_charged_bytes\":" << snapshot.cache_peak_charged_bytes
+		     << ",\"shared_cache_control_bytes\":" << snapshot.cache_control_bytes
+		     << ",\"shared_cache_scope\":\"connection\",\"process_peak_rss_bytes\":"
+		     << JsonOptionalUint(snapshot.peak_rss_bytes) << "}"
+		     << ",\"legacy_v3\":" << legacy_v3 << ",\"legacy_v2\":" << legacy_v2 << '}';
+		return json.str();
+	}
+
 private:
+	struct MemoryAccountState final {
+		std::uint64_t bytes;
+		std::uint64_t upper_bound_bytes;
+		ScanMemoryComponent component;
+	};
+
+	static bool ApplyMemoryDelta(std::uint64_t &current, std::uint64_t old_value, std::uint64_t new_value) noexcept {
+		if (new_value >= old_value) {
+			const auto delta = new_value - old_value;
+			if (current > UINT64_MAX - delta) return false;
+			current += delta;
+			return true;
+		}
+		const auto delta = old_value - new_value;
+		if (current < delta) return false;
+		current -= delta;
+		return true;
+	}
+
 	void RecordCoordinateRangeLocked(std::uint64_t &bytes, std::uint64_t &requests,
 	                                 std::uint64_t returned_bytes) {
 		AddChecked(bytes, returned_bytes);
@@ -1003,6 +1271,9 @@ private:
 	bool filter_callback_invoked_ = false;
 	std::vector<std::string> fallback_reasons_;
 	std::uint64_t candidate_rows_ = 0;
+	std::uint64_t selection_windows_ = 0;
+	std::uint64_t selection_ranges_ = 0;
+	std::uint64_t selection_fallback_windows_ = 0;
 	std::uint64_t scan_tasks_claimed_ = 0;
 	std::uint64_t scan_tasks_created_ = 0;
 	std::uint64_t scan_tasks_completed_ = 0;
@@ -1020,28 +1291,32 @@ private:
 	std::optional<std::uint64_t> transport_responses_;
 	std::optional<bool> transport_count_complete_;
 	std::map<std::string, std::uint64_t> response_statuses_;
-	std::set<std::pair<std::uint64_t, std::uint64_t>> transport_attempt_ids_;
-	std::atomic<std::uint64_t> synthetic_transport_id_{1};
-	bool cache_enabled_ = true;
+	bool cache_enabled_ = false;
 	std::uint64_t cache_capacity_bytes_ = 0;
 	std::uint64_t cache_charged_bytes_ = 0;
 	std::uint64_t cache_peak_charged_bytes_ = 0;
 	std::uint64_t cache_control_bytes_ = 0;
 	std::uint64_t cache_evictions_ = 0;
-	std::uint64_t cache_eviction_baseline_ = 0;
-	bool cache_eviction_baseline_set_ = false;
-	std::string cache_bypass_reason_;
+	std::string cache_bypass_reason_ = "removed";
 	std::string version_strength_ = "unverified";
 	std::set<std::uint64_t> active_worker_ids_;
 	std::set<std::uint64_t> active_worker_execution_ids_;
 	std::uint64_t max_active_workers_ = 0;
 	std::optional<std::uint64_t> peak_query_owned_bytes_;
+	std::optional<std::uint64_t> peak_query_owned_upper_bound_bytes_;
+	std::optional<bool> query_owned_released_at_terminal_;
 	bool query_memory_count_complete_ = false;
 	bool query_memory_accounting_enabled_ = false;
 	std::uint64_t next_memory_account_id_ = 1;
 	std::uint64_t memory_current_bytes_ = 0;
 	std::uint64_t memory_peak_bytes_ = 0;
-	std::map<std::uint64_t, std::uint64_t> memory_accounts_;
+	std::uint64_t memory_current_upper_bound_bytes_ = 0;
+	std::uint64_t memory_peak_upper_bound_bytes_ = 0;
+	std::array<std::uint64_t, ScanMemoryComponentCount> memory_component_current_bytes_{};
+	std::array<std::uint64_t, ScanMemoryComponentCount> memory_component_peak_bytes_{};
+	std::array<std::uint64_t, ScanMemoryComponentCount> memory_component_current_upper_bound_bytes_{};
+	std::array<std::uint64_t, ScanMemoryComponentCount> memory_component_upper_bound_peak_bytes_{};
+	std::map<std::uint64_t, MemoryAccountState> memory_accounts_;
 	bool optimizer_empty_ = false;
 	std::string reference_identity_;
 	double coordinate_tolerance_ = 1e-9;
@@ -1053,6 +1328,17 @@ private:
 	std::map<std::string, std::string> cache_policy_;
 	std::optional<std::uint64_t> peak_rss_bytes_;
 	std::string error_category_;
+	std::string operation_ = "read_om";
+	std::optional<std::uint64_t> exact_candidate_records_;
+	std::optional<std::uint64_t> observed_candidate_records_;
+	std::optional<std::uint64_t> candidate_upper_bound_records_;
+	std::optional<bool> candidate_count_complete_;
+	std::optional<std::uint64_t> coordinate_preparation_evaluations_;
+	std::optional<bool> coordinate_preparation_complete_;
+	std::uint64_t coordinate_evaluations_ = 0;
+	bool value_decode_evidence_observed_ = false;
+	bool coordinate_decode_evidence_observed_ = false;
+	bool query_terminal_published_ = false;
 };
 
 // Accounts the vector payload capacities owned by one bind/scan/decoder scope.
@@ -1060,8 +1346,9 @@ private:
 // mark until QueryEnd publishes the final snapshot.
 class ScanMemoryAccount final {
 public:
-	explicit ScanMemoryAccount(std::shared_ptr<ScanMetrics> metrics)
-	    : metrics_(std::move(metrics)), id_(metrics_ ? metrics_->RegisterMemoryAccount() : 0) {
+	explicit ScanMemoryAccount(std::shared_ptr<ScanMetrics> metrics,
+	                           ScanMemoryComponent component = ScanMemoryComponent::Unclassified)
+	    : metrics_(std::move(metrics)), id_(metrics_ ? metrics_->RegisterMemoryAccount(component) : 0) {
 	}
 	~ScanMemoryAccount() {
 		if (metrics_) metrics_->ReleaseMemoryAccount(id_);
@@ -1070,7 +1357,10 @@ public:
 	ScanMemoryAccount &operator=(const ScanMemoryAccount &) = delete;
 
 	void Set(std::uint64_t bytes) const {
-		if (metrics_) metrics_->UpdateMemoryAccount(id_, bytes);
+		Set(bytes, bytes);
+	}
+	void Set(std::uint64_t bytes, std::uint64_t upper_bound_bytes) const {
+		if (metrics_) metrics_->UpdateMemoryAccount(id_, bytes, upper_bound_bytes);
 	}
 	const std::shared_ptr<ScanMetrics> &Metrics() const noexcept {
 		return metrics_;

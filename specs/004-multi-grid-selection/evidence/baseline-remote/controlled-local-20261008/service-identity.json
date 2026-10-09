@@ -1,0 +1,9 @@
+{
+  "container": "duckomo-grid-s3-1791442493",
+  "image_id": "sha256:8c63bce99de77850e9189e54a93fce1ac9ba189c4995be3fb3927bcd39ae3ab9",
+  "image_version": "version 30GB 4.48 56fbc3deb linux arm64",
+  "endpoint": "http://127.0.0.1:32768",
+  "bucket": "duckomo-grid-tests",
+  "source": "existing local Docker image, pinned by content ID",
+  "service_identity_verified_by": "docker image inspect and weed version"
+}

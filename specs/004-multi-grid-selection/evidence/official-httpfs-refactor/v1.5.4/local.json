@@ -1,0 +1,421 @@
+[
+  {
+    "case": "axis_filter.test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "test/sql/axis_filter.test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "cache_metrics.test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "test/sql/cache_metrics.test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "grid_info.test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "test/sql/grid_info.test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "grid_selection.test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "test/sql/grid_selection.test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "grid_version_compat.test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "test/sql/grid_version_compat.test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "grid_zero_io.test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "test/sql/grid_zero_io.test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "multi_grid.test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "test/sql/multi_grid.test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "parallel_scan.test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "test/sql/parallel_scan.test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "projection.test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "test/sql/projection.test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "raw.test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "test/sql/raw.test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "read_om.test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "test/sql/read_om.test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "semantic_axes.test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "test/sql/semantic_axes.test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "source_identity.test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "test/sql/source_identity.test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "spatial.test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "test/sql/spatial.test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "spatial_composition.test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "test/sql/spatial_composition.test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "spatial_pushdown.test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "test/sql/spatial_pushdown.test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "axis_selection_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/axis_selection_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "batch_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/batch_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "domain_reference_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/domain_reference_test",
+      "/home/blizhan/repo/github/duckomo/build/s3-samples/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om",
+      "/home/blizhan/repo/github/duckomo/test/data/domain-manifest.json",
+      "/home/blizhan/repo/github/duckomo/build/evidence/spatial/reference"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "gaussian_grid_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/gaussian_grid_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "grid_identity_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/grid_identity_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "grid_selection_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/grid_selection_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "grid_version_compat_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/grid_version_compat_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "grid_zero_io_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/grid_zero_io_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "lifecycle_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/lifecycle_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "official_httpfs_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/official_httpfs_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "parallel_scan_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/parallel_scan_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "projected_grid_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/projected_grid_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "projection_evidence_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/projection_evidence_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "raw_reader_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/raw_reader_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "reader_capacity_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/reader_capacity_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "regular_grid_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/regular_grid_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "remote_session_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/remote_session_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "scan_metrics_v3_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/scan_metrics_v3_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "scan_metrics_v4_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/scan_metrics_v4_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "schema_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/schema_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "semantic_axes_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/semantic_axes_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "session_metrics_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/session_metrics_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "source_identity_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/source_identity_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "spatial_callback_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/spatial_callback_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "spatial_io_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/spatial_io_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "spatial_layout_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/spatial_layout_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "spatial_lifecycle_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/spatial_lifecycle_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "spatial_metrics_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/spatial_metrics_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "spatial_selection_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/spatial_selection_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  },
+  {
+    "case": "time_test",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/test/native/time_test"
+    ],
+    "exit": 0,
+    "no_tests": false
+  }
+]

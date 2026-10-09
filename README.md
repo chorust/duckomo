@@ -6,9 +6,23 @@ duckomo 是一个 DuckDB C++ 扩展，将本地 [Open-Meteo OM](https://github.c
 
 - **读取**：支持 OM v3、FPX_XOR2D / PFOR_DELTA2D_INT16 压缩、根数组和层级变量；NaN 转为 SQL `NULL`。
 - **按需读取**：只读取输出和过滤需要的值变量；安全的经纬度条件可进一步缩小读取范围。
-- **坐标**：可用显式规则网格或 [68 个已登记的 domain](docs/regular-domains.md) 生成 `latitude`、`longitude`。
+- **坐标**：可用显式规则网格、[68 个规则 domain](docs/regular-domains.md)，或 version=1 的旋转、Lambert、stereographic 与 reduced Gaussian 定义生成 `latitude`、`longitude`。
 
-读取器支持单个本地 OM 文件，以及通过配套 `httpfs` 扩展进行 HTTP(S)/S3 范围读取。扫描可由 DuckDB 并行调度，并提供连接级线程上限和有界范围缓存。支持 time、level、lead_time、member、run 语义轴；投影/Gaussian 网格尚未实现。实现代码已经提供，但完整的远程性能、服务审计和独立复现门禁仍待执行。验收平台为 Linux AArch64，Linux x86_64 支持与验证暂缓。
+读取器支持单个本地 OM 文件，以及通过官方 `httpfs` 扩展进行 HTTP(S)/S3 范围读取。扫描可由 DuckDB 并行调度，并提供连接级线程上限。支持 time、level、lead_time、member、run 语义轴。新投影/Gaussian 网格、`om_source` 与 `om_grid_info` 已进入实现，但 004 的真实网格坐标/值、远程收益、完整内存账和独立复现门禁尚未通过；当前不据此声明生产支持。已固定的 HRES O1280 样本是 Gaussian 补充证据，不能替代 N160、N320 或 N320 区域样本。验收平台为 Linux AArch64，Linux x86_64 支持与验证暂缓；本轮版本范围为 DuckDB v1.5.4、v1.5.5、v1.5.6。
+
+## 社区安装（待收录）
+
+DuckOMO 正在准备提交到 DuckDB Community Extensions，当前尚未收录。首发目标为 **DuckDB v1.5.6 / Linux AArch64（glibc）**。社区收录并发布后，可在普通 DuckDB 中执行：
+
+```sql
+INSTALL duckomo FROM community;
+LOAD duckomo;
+-- HTTP(S)/S3 读取还需官方 HTTPFS：
+INSTALL httpfs;
+LOAD httpfs;
+```
+
+社区负责从源码编译、签名和托管；加载其签名产物无需 `-unsigned`。源码仓库不保存扩展 `.gz`，提交登记也不要求先上传 GitHub Release。[登记草案、CI 与发布步骤](docs/community-extensions.md)。
 
 ## 构建与加载
 
@@ -20,7 +34,7 @@ make release
 ./build/release/duckdb -unsigned :memory:
 ```
 
-`make release` 会构建配套的 httpfs 产物。读取本地文件只需加载 duckomo；远程读取时必须先加载同一次构建生成的 httpfs，再加载 duckomo。不要用其他版本的 httpfs 替代。
+`make release` 构建本地 DuckDB、DuckOMO 和开发验证工具。读取本地文件只需加载 duckomo；远程读取使用 `INSTALL httpfs; LOAD httpfs;` 安装并加载对应 DuckDB 版本及平台的官方扩展。DuckOMO 尚未签名时以 `duckdb -unsigned` 启动。
 
 在 CLI 中加载扩展并查询仓库样本：
 
@@ -33,14 +47,16 @@ SELECT value FROM read_om('test/data/raw.om') ORDER BY value;
 
 输出为 `value FLOAT` 列，值为 `0` 到 `5`。以上路径均相对于仓库根目录。
 
-仓库固定 DuckDB **v1.5.4**。扩展也可加载到同版本、同平台的官方 DuckDB 中；本地扩展未签名，CLI 需加 `-unsigned`。为其他正式版本构建并运行 SQL 用例：
+开发用 DuckDB 子模块仍固定 **v1.5.4**；社区目标为 **v1.5.6**，社区 CI 会切换到目标引擎版本。Makefile 不再覆盖实际引擎的版本标记。固定版本矩阵支持 v1.5.4、v1.5.5、v1.5.6，默认 `make matrix-release` 构建 v1.5.6：
 
 ```sh
-./scripts/build-version.sh v1.5.5
-./build/versions/v1.5.5/release/duckdb -unsigned :memory:
+./scripts/build-version.sh v1.5.6
+python3 scripts/version_matrix.py fetch-runtime --root . \
+  --matrix test/data/grids/version-matrix.json --pair v1.5.6
+./build/official-matrix/v1.5.6/official/duckdb -unsigned :memory:
 ```
 
-随后加载 `build/versions/v1.5.5/release/extension/duckomo/duckomo.duckdb_extension`。脚本接受 `vX.Y.Z` tag，源码和产物放在 `build/versions/<版本>/`。每个目标 DuckDB 版本需分别编译；脚本成功运行的 SQL 用例是该次构建的兼容性依据。
+`fetch-runtime` 获取匹配的官方 CLI/HTTPFS 包。随后加载 `build/official-matrix/v1.5.6/release/extension/duckomo/duckomo.duckdb_extension`。各版本分别编译，源码和产物保存在忽略的 `build/official-matrix/<版本>/`。本地产物未签名，开发加载需 `-unsigned`；三版本验证与社区签名发布的状态分别记录。
 
 ## `data/`、`data_run/` 与 `data_spatial/` 的读取
 
@@ -134,6 +150,26 @@ WHERE latitude BETWEEN 30 AND 40 AND longitude BETWEEN 110 AND 120;
 
 缺少 `coordinates` 时仍需完整 `dimensions`；`coordinates = 'lat lon'` 本身也不足以定义地理网格。名称、轴、shape 和文件中存在的 WKT BBOX 会在返回数据前校验。样本下载、目录差异和兼容范围见 [规则网格 domain](docs/regular-domains.md)。
 
+## 投影与 Gaussian 网格（实现中）
+
+version=1 `grid` 可声明旋转经纬度、球面 Lambert、stereographic 或 reduced Gaussian 网格。声明使用封闭字段集，必须匹配数组的空间轴顺序和长度；未知或冲突的 CRS 会拒绝绑定。Gaussian 必须给出完整逐行表，区域网格还要给出局部到 parent 的行段。参数和示例见 [多网格接口契约](specs/004-multi-grid-selection/contracts/sql-interface.md)。
+
+```sql
+SELECT value, latitude, longitude, om_source.logical_index
+FROM read_om('test/data/raw.om',
+  dimensions := map(['value'], [['y','x']]),
+  grid := {'version':1,'type':'rotated_latlon','numeric_policy':'float64_v1',
+           'earth':{'model':'sphere','radius_m':6371229.0},
+           'layout':{'nx':3,'ny':2,'order':'separate'},
+           'parameters':{'x0':0.0,'y0':0.0,'dx':1.0,'dy':1.0,
+                         'north_pole_latitude':39.25,'north_pole_longitude':-162.0,
+                         'rotation':0.0}},
+  spatial_axes := ['y','x'], include_source := true)
+ORDER BY om_source.logical_index;
+```
+
+`om_source` 是 opt-in 的最后一列，保留对象、网格/布局和原数组位置身份。`om_grid_info(path, ...同一组网格参数...)` 返回一行定义、轴/stride、CRS、能力和 provenance 描述，不读取值数组。当前逐 domain 证据等级和 O1280 的边界见 [多网格证据表](docs/grid-domains.md)。代码和合成回归已存在，但上面的演示不构成真实生产网格验收。
+
 经度统一为 `[-180,180)`。有限常量的 `=`, `<`, `<=`, `>`, `>=`, `BETWEEN` 和安全的 `AND` 可缩小扫描；完整 `WHERE` 始终由 DuckDB 执行。跨经线区域写为：
 
 ```sql
@@ -144,10 +180,11 @@ WHERE longitude >= 170 OR longitude < -170
 
 ## 远程、并行与缓存
 
-HTTP(S) 与 S3 通过固定提交构建的配套 httpfs 范围读取。服务必须支持 HEAD、单字节范围探测和精确的 `206 Content-Range`；S3 凭据通过 DuckDB secret/既有 httpfs 配置提供。远程 SQL 示例：
+HTTP(S) 与 S3 使用官方 HTTPFS。对象需在扫描期间保持稳定且支持范围读取；标准文件接口比较可观察长度/版本，不承诺强制新鲜 HEAD 或扫描快照。S3 凭据通过 DuckDB secret/HTTPFS 配置提供。远程 SQL 示例：
 
 ```sql
-LOAD 'build/release/extension/httpfs/httpfs.duckdb_extension';
+INSTALL httpfs;
+LOAD httpfs;
 LOAD 'build/release/extension/duckomo/duckomo.duckdb_extension';
 
 SELECT value
@@ -162,25 +199,22 @@ S3 读取前应配置 secret，例如 `CREATE SECRET ... (TYPE s3, KEY_ID ..., S
 ```sql
 SET threads=4;
 SET duckomo_max_threads=2;        -- 0 使用 DuckDB 线程上限；正数限制工作者
-SET duckomo_cache_capacity=67108864;
-SET duckomo_cache_enabled=true;
-CALL duckomo_clear_cache();       -- 当前连接，返回清理条目数和字节数
 ```
 
-缓存容量以字节计，容量缩小时立即淘汰；设置为 0 不存储。用 `duckomo_last_scan_metrics()` 查看最近一次已结束 SQL 中每个扫描的 v3 JSON：
+缓存容量以字节计，容量缩小时立即淘汰；设置为 0 不存储。用 `duckomo_last_scan_metrics()` 查看最近一次已结束 SQL 中每个扫描的 v4 JSON：
 
 ```sql
 SELECT query_id, scan_id, metrics::JSON
 FROM duckomo_last_scan_metrics();
 ```
 
-指标分开记录逻辑请求、缓存以下的成功读取和 httpfs observer 收到的响应 body；时间坐标数组的 index/data/decode 与值变量分开统计。`scan_complete=false` 表示查询成功结束但扫描被 LIMIT 等消费者提前停止。`peak_rss_bytes` 的范围是进程；`peak_query_owned_bytes` 记录 DuckOMO 元数据、decoder 和选择缓冲 vector capacity 的峰值，不包括共享范围缓存、DuckDB 输出向量或 httpfs/引擎内部内存。失败、取消或计数失效时峰值为 `null`，`query_memory_count_complete=false`。读取接口和 v3 字段见 [接口说明](docs/spec.md)。
+指标分开记录逻辑请求与文件接口成功读取；远程 transport body/attempts/responses 为 `NULL`、`complete=false`，本地为 0/true。自有 cache 字段为 false/0，原 cache SQL 项已移除。网络发送量由验收侧服务日志独立记录；时间坐标数组的 index/data/decode 与值变量分开统计。`scan_complete=false` 表示查询成功结束但扫描被 LIMIT 等消费者提前停止。`peak_rss_bytes` 的范围是进程；`peak_query_owned_bytes` 记录当前接入账本的 DuckOMO-owned vector 容量峰值，不包括DuckDB 输出向量或 httpfs/引擎内部内存。完整逐项内存 ledger 和远程控制内存审计仍在进行。失败、取消或计数失效时峰值为 `null`，`query_memory_count_complete=false`。v4 字段与边界见 [接口说明](docs/spec.md)。
 
 ## 开发与验证
 
 ```sh
-make test                            # 构建 release 并执行 validate.sh
-./scripts/validate.sh build/release   # 验证已有构建：SQL/native、维度、本地指标与固定样本
+make test                            # 构建 release 并运行本地验证
+./scripts/validate.sh build/release --local-only  # 验证已有构建，不需要远程服务
 make sanitizer-test                  # ASan/UBSan 检查
 ```
 
@@ -192,9 +226,20 @@ make sanitizer-test                  # ASan/UBSan 检查
 |---|---|
 | 参数、输出、支持范围 | [接口说明](docs/spec.md) · [完整 SQL 契约](specs/002-spatial-pushdown/contracts/sql-interface.md) |
 | 网格定义与真实样本覆盖 | [规则网格 domain](docs/regular-domains.md) |
+| 投影/Gaussian 定义与逐项证据等级 | [多网格证据表](docs/grid-domains.md) |
 | 扫描流程与读取指标 | [技术架构](docs/architecture.md) |
 | 后续能力 | [Roadmap](docs/roadmap.md) |
 | 查询绑定与扫描 / 网格 / 本地 OM 读取 | `src/scan/` / `src/grid/` / `src/om/` |
 | SQL 用例 / 原生检查 / 样本 | `test/sql/` / `test/native/` / `test/data/` |
 
 `read_om_raw` 保留为仅支持 FPX 根数组的早期验证入口；日常查询使用 `read_om`。
+
+## 官方版本构建与验证
+
+```bash
+scripts/build-version.sh v1.5.4  # 同样支持 v1.5.5、v1.5.6
+python3 scripts/version_matrix.py fetch-runtime --root . --matrix test/data/grids/version-matrix.json --pair v1.5.4
+scripts/validate.sh --matrix test/data/grids/version-matrix.json --pair v1.5.4 --local-only
+```
+
+远程完整验证还需受控 HTTP/HTTPS/签名 S3 服务。配置、命令和证据见 [官方 HTTPFS 复现说明](docs/official-httpfs.md)。原 `duckomo_cache_enabled`、`duckomo_cache_capacity`、`duckomo_clear_cache()` 已删除，请移除对应 SQL；上游缓存不提供原 LRU 的容量/撤权语义。

@@ -100,6 +100,64 @@ void TestWktBboxWhitespace() {
 	             "malformed BBOX coordinates reject");
 }
 
+void TestClosedGaussianWgs84SourceProfile() {
+	const std::string wkt =
+	    "GEOGCRS[\"Reduced Gaussian Grid\",\n"
+	    "  DATUM[\"World Geodetic System 1984\", ELLIPSOID[\"WGS 84\", 6378137, 298.257223563]],\n"
+	    "  CS[ellipsoidal,2], AXIS[\"latitude\",north], AXIS[\"longitude\",east],\n"
+	    "  ANGLEUNIT[\"degree\",0.0174532925199433],\n"
+	    "  REMARK[\"Reduced Gaussian Grid O1280 (ECMWF)\"],\n"
+	    "  USAGE[SCOPE[\"grid\"], BBOX[-90,-180.0,90,180]]]";
+	const auto profile = ClassifySourceCrsProfile(wkt);
+	Require(profile.kind == SourceCrsProfileKind::ReducedGaussianWgs84V1 && profile.gaussian_order == 1280,
+	        "the public ECMWF Gaussian WKT matches the closed WGS84 geographic profile");
+	Require(CheckSourceCrsProfile(profile, true, true, 1280) == SourceCrsBindingStatus::Compatible,
+	        "the recognized Gaussian WGS84 profile binds to a WGS84 Gaussian definition");
+	Require(CheckSourceCrsProfile(profile, true, true, 320) == SourceCrsBindingStatus::ConflictsWithGrid,
+	        "an O1280 source WKT rejects a different declared Gaussian order");
+	Require(CheckSourceCrsProfile(profile, true, false, 1280) == SourceCrsBindingStatus::ConflictsWithGrid,
+	        "the recognized WGS84 Gaussian profile rejects a spherical-earth declaration");
+	Require(CheckSourceCrsProfile(profile, false, true, std::nullopt) == SourceCrsBindingStatus::ConflictsWithGrid,
+	        "the recognized Gaussian profile rejects a non-Gaussian geometry");
+	Require(ClassifySourceCrsProfile(" ").kind == SourceCrsProfileKind::NotSpecified,
+	        "an absent source WKT remains distinct from an unknown profile");
+	std::string generic_order = wkt;
+	const auto remark_clause = generic_order.find("  REMARK[\"Reduced Gaussian Grid O1280 (ECMWF)\"],\n");
+	Require(remark_clause != std::string::npos, "the fixed ECMWF WKT contains its expected order remark");
+	generic_order.erase(remark_clause, std::string("  REMARK[\"Reduced Gaussian Grid O1280 (ECMWF)\"],\n").size());
+	const auto generic_profile = ClassifySourceCrsProfile(generic_order);
+	Require(generic_profile.kind == SourceCrsProfileKind::ReducedGaussianWgs84V1 && !generic_profile.gaussian_order,
+	        "a generic Gaussian CRS profile does not invent a source order");
+	Require(CheckSourceCrsProfile(generic_profile, true, true, 1) == SourceCrsBindingStatus::Compatible,
+	        "a generic Gaussian CRS profile can bind when no order was declared in WKT");
+
+	std::string wrong_earth = wkt;
+	wrong_earth.replace(wrong_earth.find("6378137"), std::string("6378137").size(), "6371000");
+	Require(ClassifySourceCrsProfile(wrong_earth).kind == SourceCrsProfileKind::Unrecognized,
+	        "a different ellipsoid is not accepted as the WGS84 source profile");
+	std::string wrong_axis_order = wkt;
+	const auto latitude_axis = wrong_axis_order.find("AXIS[\"latitude\",north]");
+	const auto longitude_axis = wrong_axis_order.find("AXIS[\"longitude\",east]");
+	const auto latitude_clause = wrong_axis_order.substr(latitude_axis, std::string("AXIS[\"latitude\",north]").size());
+	const auto longitude_clause = wrong_axis_order.substr(longitude_axis, std::string("AXIS[\"longitude\",east]").size());
+	wrong_axis_order.replace(longitude_axis, longitude_clause.size(), latitude_clause);
+	wrong_axis_order.replace(latitude_axis, latitude_clause.size(), longitude_clause);
+	Require(ClassifySourceCrsProfile(wrong_axis_order).kind == SourceCrsProfileKind::Unrecognized,
+	        "longitude-first WKT is not accepted as the latitude-first Gaussian source profile");
+	std::string unknown_order_remark = wkt;
+	unknown_order_remark.replace(unknown_order_remark.find("(ECMWF)"), std::string("(ECMWF)").size(), "(OTHER)");
+	Require(ClassifySourceCrsProfile(unknown_order_remark).kind == SourceCrsProfileKind::Unrecognized,
+	        "an unknown Gaussian order-remark profile fails closed");
+	std::string diagnostic_bbox = wkt;
+	diagnostic_bbox.replace(diagnostic_bbox.find("BBOX[-90,-180.0,90,180]"),
+	                        std::string("BBOX[-90,-180.0,90,180]").size(), "BBOX[0,0,1,1]");
+	Require(ClassifySourceCrsProfile(diagnostic_bbox).kind == SourceCrsProfileKind::ReducedGaussianWgs84V1,
+	        "WKT BBOX remains diagnostic and does not define the Gaussian CRS profile");
+	Require(CheckSourceCrsProfile({SourceCrsProfileKind::Unrecognized, std::nullopt}, true, true, 1280) ==
+	            SourceCrsBindingStatus::Unrecognized,
+	        "an unknown non-empty source WKT fails closed");
+}
+
 } // namespace
 
 int main() {
@@ -108,6 +166,7 @@ int main() {
 		TestSingleCellAndSeamDuplicates();
 		TestInvalidDefinitions();
 		TestWktBboxWhitespace();
+		TestClosedGaussianWgs84SourceProfile();
 		std::cout << "regular grid checks passed\n";
 		return 0;
 	} catch (const std::exception &exception) {

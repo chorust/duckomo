@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "platform": {
+    "target": "Linux AArch64",
+    "compiler_observed": "GCC 13.3.0",
+    "cmake_observed": "3.28.3",
+    "build_type_observed": "Release",
+    "vcpkg_triplet_observed": "arm64-linux",
+    "cxx_abi": "libstdc++_cxx11abi=1_gcc=13.3.0_cxx17"
+  },
+  "build_identity_policy": "Inputs determine pair_id/build_id. Artifact hashes, runtime-reported source_id, and gate results are added only after each isolated build exists.",
+  "pairs": [
+    {
+      "pair_id": "baseline-1.5.4",
+      "release_state": "target",
+      "duckdb": {
+        "repository": "https://github.com/duckdb/duckdb.git",
+        "commit": "08e34c447bae34eaee3723cac61f2878b6bdf787"
+      },
+      "httpfs": {
+        "repository": "https://github.com/duckdb/duckdb-httpfs.git",
+        "commit": "c3f215ab360f04dc3d3d5305fa81849c0121f111"
+      },
+      "om_c": {
+        "repository": "https://github.com/open-meteo/om-file-format.git",
+        "commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+      },
+      "extension_ci_tools": {
+        "repository": "https://github.com/duckdb/extension-ci-tools.git",
+        "commit": "b777c70d30942cca5bef62d6d4fa23a13362f398"
+      },
+      "official_overlays": [],
+      "duckomo_patchset": {
+        "status": "implemented",
+        "scope_note": "isolated baseline patchset; build verification is recorded in the pair build data",
+        "manifest": "third_party/httpfs-patches/baseline-1.5.4/manifest.json",
+        "revision": "duckomo-httpfs-range-v3-baseline-1.5.4",
+        "hashes": [
+          "38b0354801f0934a59153f6e1d6d1a1bb3d1ec22cb66b136ae4c65f1422e683f",
+          "5aae730e8c6ba505ae688fe3dffa59e7a5872525e8c374bfc1f360673b9057e8"
+        ]
+      },
+      "shared_header_abi": {
+        "target": 3,
+        "status": "implemented",
+        "scope_note": "pair values substituted only in isolated stage",
+        "path": "third_party/httpfs-patches/httpfs_om_range_v3.hpp",
+        "sha256": "5b751573f5b24d03ff241e56916271906590f6d7c7569a172ed15160fef80181"
+      },
+      "required_features": [
+        "exact-range",
+        "attempt-body-observer",
+        "provider-pair-identity"
+      ],
+      "build_options": {
+        "cmake": {
+          "CMAKE_BUILD_TYPE": "Release",
+          "BUILD_UNITTESTS": "TRUE",
+          "BUILD_SHELL": "TRUE",
+          "NATIVE_ARCH": "FALSE",
+          "ENABLE_UNITTEST_CPP_TESTS": "FALSE",
+          "ENABLE_EXTENSION_AUTOLOADING": "FALSE",
+          "ENABLE_EXTENSION_AUTOINSTALL": "FALSE"
+        }
+      },
+      "build": {
+        "status": "build-verified",
+        "output_root": "build/grid-matrix/baseline-1.5.4",
+        "build_id": "1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b",
+        "runtime_cli_version": "v1.5.4 (Variegata) 08e34c447b",
+        "runtime_source_id": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+        "artifact_hashes": {
+          "duckdb": "a14227ed7881622ef88aa70d9633015541216f3506b2e0e2e2ea11075cc87565",
+          "duckomo": "602f7bc1f1df27333de437239e746ce6b4290afd35e95903e51c5c0680585582",
+          "httpfs": "cb91520f7bb021e4ec3128659a613cf96dc49dfbd5fb1710f39493fd80596356"
+        },
+        "scope_note": "2026-10-08 failed-body repair: matched native Range/bounds/S3 XML retry, ABI/zero-I/O/source/version native, four SQL regressions, paired load; CLI failure accounting and signed S3. Full H0-H8 and combined G5 not passed. See specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/.",
+        "gate_commands": [
+          "cmake --build /home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release --target httpfs_range_test duckomo_remote_validation httpfs_abi_test grid_zero_io_test source_identity_test grid_version_compat_test duckomo_grid_validation core_functions_loadable_extension --parallel 4",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/test/native/httpfs_range_test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/test/native/httpfs_abi_test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/test/native/grid_zero_io_test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/test/native/source_identity_test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/test/native/grid_version_compat_test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/test/unittest --test-dir /home/blizhan/repo/github/duckomo test/sql/grid_version_compat.test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/test/unittest --test-dir /home/blizhan/repo/github/duckomo test/sql/grid_zero_io.test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/test/unittest --test-dir /home/blizhan/repo/github/duckomo test/sql/source_identity.test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/test/unittest --test-dir /home/blizhan/repo/github/duckomo test/sql/grid_info.test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/duckdb -unsigned -csv -noheader -c \"LOAD '/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/extension/httpfs/httpfs.duckdb_extension'; LOAD '/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/extension/duckomo/duckomo.duckdb_extension'; SELECT * FROM httpfs_om_range_capabilities(); SELECT source_id FROM pragma_version();\""
+        ],
+        "gate_exit_codes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "pair_id": "prerelease-2.0-dev",
+      "release_state": "target",
+      "duckdb": {
+        "repository": "https://github.com/duckdb/duckdb.git",
+        "commit": "7264a9f0e5b487358100f408826b8ae9e868b031"
+      },
+      "httpfs": {
+        "repository": "https://github.com/duckdb/duckdb-httpfs.git",
+        "commit": "5e34903685e4d429cbb19b063406abdd8ce30591"
+      },
+      "om_c": {
+        "repository": "https://github.com/open-meteo/om-file-format.git",
+        "commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+      },
+      "extension_ci_tools": {
+        "repository": "https://github.com/duckdb/extension-ci-tools.git",
+        "commit": "9b1020499dc85966be3342541f98c8e8e4aada89"
+      },
+      "official_overlays": [
+        {
+          "order": 1,
+          "file": "0002-collection-get-value.patch",
+          "sha256": "3833250e557ee83c0a85e8fa93a1d11c04f72ea3a62277c0d2e560661bd9b289"
+        },
+        {
+          "order": 2,
+          "file": "0003-duplicate-secret-option-error.patch",
+          "sha256": "7e8b3efe0247b26a7c2e5ab5e978fe53de1a6b22bf8d4be50091f98793d3ce16"
+        }
+      ],
+      "duckomo_patchset": {
+        "status": "implemented",
+        "scope_note": "independent ABI3 patchset; git apply checked after the fixed official overlays; build verification is recorded in the pair build data",
+        "manifest": "third_party/httpfs-patches/prerelease-2.0-dev/manifest.json",
+        "revision": "duckomo-httpfs-range-v3-prerelease-2.0-dev",
+        "hashes": [
+          "ea9bea30aad16315f110ba3bd2c51c6760e981edff32c30ccf89c70e319808d1"
+        ]
+      },
+      "shared_header_abi": {
+        "target": 3,
+        "status": "implemented",
+        "scope_note": "pair values substituted only in the isolated stage",
+        "path": "third_party/httpfs-patches/httpfs_om_range_v3.hpp",
+        "sha256": "5b751573f5b24d03ff241e56916271906590f6d7c7569a172ed15160fef80181"
+      },
+      "required_features": [
+        "exact-range",
+        "attempt-body-observer",
+        "provider-pair-identity"
+      ],
+      "build_options": {
+        "cmake": {
+          "CMAKE_BUILD_TYPE": "Release",
+          "BUILD_UNITTESTS": "TRUE",
+          "BUILD_SHELL": "TRUE",
+          "NATIVE_ARCH": "FALSE",
+          "ENABLE_UNITTEST_CPP_TESTS": "FALSE",
+          "ENABLE_EXTENSION_AUTOLOADING": "FALSE",
+          "ENABLE_EXTENSION_AUTOINSTALL": "FALSE"
+        }
+      },
+      "build": {
+        "status": "build-verified",
+        "output_root": "build/grid-matrix/prerelease-2.0-dev",
+        "build_id": "0f7c8170eee3c93906f3a0e6352890736b19b08f2b12941779d003555ab9724a",
+        "runtime_cli_version": "v2.0.0-dev86261 (Development Version) 7264a9f0e5",
+        "runtime_source_id": "7264a9f0e5b487358100f408826b8ae9e868b031",
+        "artifact_hashes": {
+          "duckdb": "bcbcd4222a462d34cf17d15959dac8119ca7024371d1ffa669d760b1eb8512f7",
+          "duckomo": "2690e58ab1c95d9d1e38edeb693e8750233acb6b0f41e368d74418ccb20f2b8f",
+          "httpfs": "505e0796f2de77ac68d0342d83515cdba3e92efd2b9b12d66ee2b137f1e7d073"
+        },
+        "scope_note": "2026-10-08 failed-body repair: matched native Range/bounds/S3 XML retry, ABI/zero-I/O/source/version native, four SQL regressions, paired load; CLI failure accounting and signed S3. Full H0-H8 and combined G5 not passed. See specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/.",
+        "gate_commands": [
+          "cmake --build /home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/0f7c8170eee3c93906f3a0e6352890736b19b08f2b12941779d003555ab9724a/release --target httpfs_range_test duckomo_remote_validation httpfs_abi_test grid_zero_io_test source_identity_test grid_version_compat_test duckomo_grid_validation core_functions_loadable_extension --parallel 4",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/0f7c8170eee3c93906f3a0e6352890736b19b08f2b12941779d003555ab9724a/release/test/native/httpfs_range_test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/0f7c8170eee3c93906f3a0e6352890736b19b08f2b12941779d003555ab9724a/release/test/native/httpfs_abi_test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/0f7c8170eee3c93906f3a0e6352890736b19b08f2b12941779d003555ab9724a/release/test/native/grid_zero_io_test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/0f7c8170eee3c93906f3a0e6352890736b19b08f2b12941779d003555ab9724a/release/test/native/source_identity_test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/0f7c8170eee3c93906f3a0e6352890736b19b08f2b12941779d003555ab9724a/release/test/native/grid_version_compat_test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/0f7c8170eee3c93906f3a0e6352890736b19b08f2b12941779d003555ab9724a/release/test/unittest --test-dir /home/blizhan/repo/github/duckomo test/sql/grid_version_compat.test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/0f7c8170eee3c93906f3a0e6352890736b19b08f2b12941779d003555ab9724a/release/test/unittest --test-dir /home/blizhan/repo/github/duckomo test/sql/grid_zero_io.test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/0f7c8170eee3c93906f3a0e6352890736b19b08f2b12941779d003555ab9724a/release/test/unittest --test-dir /home/blizhan/repo/github/duckomo test/sql/source_identity.test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/0f7c8170eee3c93906f3a0e6352890736b19b08f2b12941779d003555ab9724a/release/test/unittest --test-dir /home/blizhan/repo/github/duckomo test/sql/grid_info.test",
+          "/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/0f7c8170eee3c93906f3a0e6352890736b19b08f2b12941779d003555ab9724a/release/duckdb -unsigned -csv -noheader -c \"LOAD '/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/0f7c8170eee3c93906f3a0e6352890736b19b08f2b12941779d003555ab9724a/release/extension/httpfs/httpfs.duckdb_extension'; LOAD '/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/0f7c8170eee3c93906f3a0e6352890736b19b08f2b12941779d003555ab9724a/release/extension/duckomo/duckomo.duckdb_extension'; SELECT * FROM httpfs_om_range_capabilities(); SELECT source_id FROM pragma_version();\""
+        ],
+        "gate_exit_codes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  ]
+}

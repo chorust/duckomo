@@ -1,370 +1,58 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
-
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
-REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd -P)"
-
-usage() {
-	cat <<'USAGE'
-Usage: scripts/validate.sh [release-build-directory]
-
-Run the DuckOMO SQLLogicTests, spatial/raw/projection native checks, fixture
-validation, projection metrics harness, and evidence schema checks. The real
-domain release gate runs when DUCKOMO_DOMAIN_FILE points to the pinned sample.
-The default release build is build/release. Set DUCKOMO_EVIDENCE_DIR to change
-the evidence output directory. Requires jq, sha256sum, diff, and release tools.
-USAGE
-}
-
-die() {
-	printf 'validate.sh: error: %s\n' "$*" >&2
-	exit 1
-}
-
-case "${1:-}" in
-	-h|--help)
-		usage
-		exit 0
-		;;
-esac
-[[ $# -le 1 ]] || { usage >&2; die "expected at most one build directory"; }
-
-BUILD_INPUT="${1:-$REPO_ROOT/build/release}"
-if [[ "$BUILD_INPUT" != /* ]]; then
-	BUILD_INPUT="$PWD/$BUILD_INPUT"
-fi
-[[ -d "$BUILD_INPUT" ]] || die "release build directory does not exist: $BUILD_INPUT (run make release first)"
-BUILD_DIR="$(cd -- "$BUILD_INPUT" && pwd -P)"
-
-EVIDENCE_INPUT="${DUCKOMO_EVIDENCE_DIR:-$REPO_ROOT/build/evidence}"
-if [[ "$EVIDENCE_INPUT" != /* ]]; then
-	EVIDENCE_INPUT="$REPO_ROOT/$EVIDENCE_INPUT"
-fi
-EVIDENCE_DIR="$EVIDENCE_INPUT"
-FIXTURE_DIR="$REPO_ROOT/test/data"
-MANIFEST="$FIXTURE_DIR/manifest.json"
-DOMAIN_MANIFEST="$FIXTURE_DIR/domain-manifest.json"
-
-for tool in jq sha256sum diff mktemp cmake; do
-	command -v "$tool" >/dev/null 2>&1 || die "required command not found: $tool"
+ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
+BUILD="$ROOT/build/release"
+MATRIX=""; PAIR=""; OUT_ROOT="$ROOT/build/official-matrix"
+LOCAL_ONLY=false
+while (($#)); do
+    case "$1" in
+        --matrix) MATRIX="$2"; shift 2;;
+        --pair) PAIR="$2"; shift 2;;
+        --output-root) OUT_ROOT="$2"; shift 2;;
+        --local-only) LOCAL_ONLY=true; shift;;
+        -h|--help) echo 'validate.sh [BUILD] [--local-only] | --matrix MANIFEST --pair v1.5.x [--output-root DIR]'; exit 0;;
+        --*) echo "unknown option: $1" >&2;exit 2;;
+        *) BUILD="$1";shift;;
+    esac
 done
-
-REQUIRED_EXECUTABLES=(
-	"$BUILD_DIR/duckdb"
-	"$BUILD_DIR/test/unittest"
-	"$BUILD_DIR/test/tools/duckomo_fixture_tool"
-	"$BUILD_DIR/test/tools/duckomo_validation"
-	"$BUILD_DIR/test/tools/duckomo_spatial_validation"
-	"$BUILD_DIR/test/tools/duckomo_dimensions_validation"
-	"$BUILD_DIR/test/native/batch_test"
-	"$BUILD_DIR/test/native/raw_reader_test"
-	"$BUILD_DIR/test/native/lifecycle_test"
-	"$BUILD_DIR/test/native/schema_test"
-	"$BUILD_DIR/test/native/time_test"
-	"$BUILD_DIR/test/native/axis_selection_test"
-	"$BUILD_DIR/test/native/parallel_scan_test"
-	"$BUILD_DIR/test/native/semantic_axes_test"
-	"$BUILD_DIR/test/native/range_cache_test"
-	"$BUILD_DIR/test/native/scan_metrics_v3_test"
-	"$BUILD_DIR/test/native/session_metrics_test"
-	"$BUILD_DIR/test/native/projection_evidence_test"
-	"$BUILD_DIR/test/native/regular_grid_test"
-	"$BUILD_DIR/test/native/spatial_layout_test"
-	"$BUILD_DIR/test/native/spatial_metrics_test"
-	"$BUILD_DIR/test/native/spatial_callback_test"
-	"$BUILD_DIR/test/native/spatial_selection_test"
-	"$BUILD_DIR/test/native/spatial_io_test"
-	"$BUILD_DIR/test/native/spatial_lifecycle_test"
-	"$BUILD_DIR/test/native/domain_reference_test"
-	"$BUILD_DIR/test/native/httpfs_abi_test"
-	"$BUILD_DIR/test/native/httpfs_range_test"
-	"$BUILD_DIR/test/native/remote_session_test"
-	"$BUILD_DIR/test/tools/duckomo_remote_validation"
-	"$BUILD_DIR/extension/httpfs/httpfs.duckdb_extension"
-	"$BUILD_DIR/extension/duckomo/duckomo.duckdb_extension"
-)
-for executable in "${REQUIRED_EXECUTABLES[@]}"; do
-	[[ -x "$executable" ]] || die "required release artifact is missing or not executable: $executable"
-done
-[[ -f "$MANIFEST" ]] || die "fixture manifest is missing: $MANIFEST"
-
-run() {
-	local description="$1"
-	shift
-	printf '\n== %s ==\n+' "$description"
-	printf ' %q' "$@"
-	printf '\n'
-	"$@"
-}
-
-run_sqllogictest() {
-	local description="$1"
-	shift
-	local output exit_code
-	printf '\n== %s ==\n+' "$description"
-	printf ' %q' "$@"
-	printf '\n'
-	if output="$("$@" 2>&1)"; then
-		printf '%s\n' "$output"
-	else
-		exit_code=$?
-		printf '%s\n' "$output" >&2
-		die "$description failed with exit code $exit_code"
-	fi
-	[[ "$output" == *"All tests passed ("* && "$output" != *"All tests passed (0 assertions"* ]] || die "$description completed without running assertions"
-}
-
-cd -- "$REPO_ROOT"
-
-check_fixture_hashes() {
-	local entries relative expected actual count=0 expected_count
-	jq -e '
-		.schema_version == 1 and
-		([.fixtures[].fixture_id] | index("raw") != null) and
-		([.fixtures[].fixture_id] | index("multi") != null) and
-		([.fixtures[].fixture_id] | index("nested") != null) and
-		([.fixtures[].fixture_id] | index("special") != null) and
-		([.fixtures[].fixture_id] | index("raw_large") != null) and
-		([.fixtures[].fixture_id] | index("projection") != null) and
-		([.fixtures[].fixture_id] | index("pfor_attributes") != null) and
-		([.fixtures[].fixture_id] | index("spatial_flat") != null) and
-		([.fixtures[].fixture_id] | index("spatial_axes") != null) and
-		([.fixtures[].fixture_id] | index("spatial_single") != null) and
-		([.fixtures[].fixture_id] | index("spatial_conflict") != null) and
-		([.projection_scenarios.scenarios[].scenario_id] | sort) ==
-			["count", "full_scan", "output_plus_filter", "single_variable"] and
-		([.negative_assets | length] >= 7)
-	' "$MANIFEST" >/dev/null || die "fixture manifest is invalid or lacks required fixture/scenario entries"
-
-	entries="$(jq -er '
-		[(.fixtures[] | [.path, .sha256]),
-		 (.fixtures[] | select(.reference_csv? != null) | [.reference_csv, .reference_csv_sha256]),
-		 (.fixtures[].variables[]? | [.reference_csv, .reference_csv_sha256]),
-		 (.negative_assets[] | [.path, .sha256])]
-		| .[] | @tsv
-	' "$MANIFEST")" || die "cannot enumerate fixture checksums from $MANIFEST"
-	expected_count="$(jq -er '
-		[(.fixtures[] | [.path, .sha256]),
-		 (.fixtures[] | select(.reference_csv? != null) | [.reference_csv, .reference_csv_sha256]),
-		 (.fixtures[].variables[]? | [.reference_csv, .reference_csv_sha256]),
-		 (.negative_assets[] | [.path, .sha256])]
-		| length
-	' "$MANIFEST")" || die "cannot count fixture checksum entries from $MANIFEST"
-	while IFS=$'\t' read -r relative expected; do
-		[[ -n "$relative" && -n "$expected" ]] || die "manifest contains an empty checksum entry"
-		[[ "$relative" != /* && "/$relative/" != *"/../"* ]] || die "manifest path is not a safe relative path: $relative"
-		[[ "$expected" =~ ^[0-9a-f]{64}$ ]] || die "manifest has an invalid SHA-256 for $relative"
-		[[ -f "$FIXTURE_DIR/$relative" ]] || die "fixture asset is missing: $relative"
-		actual="$(sha256sum -- "$FIXTURE_DIR/$relative")"
-		actual="${actual%% *}"
-		[[ "$actual" == "$expected" ]] || die "SHA-256 mismatch for $relative: expected $expected, got $actual"
-		count=$((count + 1))
-	done <<< "$entries"
-	[[ "$count" -eq "$expected_count" ]] || die "expected $expected_count fixture/reference/negative checksums, verified $count"
-	printf 'Verified %s fixture, reference, and negative asset SHA-256 values.\n' "$count"
-}
-
-check_domain_manifest() {
-	[[ -s "$DOMAIN_MANIFEST" ]] || die "real-domain identity manifest is missing: $DOMAIN_MANIFEST"
-	jq -e '
-		type == "object" and .schema_version == 1 and .domain == "ncep_gfswave025" and
-		.sample.bytes == 5812040 and
-		.sample.sha256 == "0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd" and
-		.upstream.commit == "34b9cea169395be9b4686f2b5b23eca26dfef7a2" and
-		.layout.shape == [721, 1440] and .layout.axes == ["lat", "lon"] and
-		.layout.grid.nx == 1440 and .layout.grid.ny == 721 and
-		.layout.grid.order == "separate" and
-		.layout.expected_bbox == [-90, -180, 90, 179.75] and
-		.oracle.rows_per_variable == 1038240 and
-		.oracle.coordinate_absolute_tolerance_degrees == 1e-9 and
-		.oracle.value_tolerance == 0 and
-		([.oracle.variables[].path] | length == 15) and
-		([.oracle.variables[].path] | unique | length == 15) and
-		all(.oracle.variables[]; (.sha256 | test("^[0-9a-f]{64}$")))
-	' "$DOMAIN_MANIFEST" >/dev/null || die "real-domain identity manifest is invalid or differs from the pinned sample contract"
-	printf 'Validated the separate ncep_gfswave025 source identity manifest.\n'
-}
-
-check_evidence() {
-	local summary="$EVIDENCE_DIR/summary.json"
-	local fixture_sha scenario scenario_file
-	local scenarios=(full_scan single_variable output_plus_filter count)
-
-	[[ -s "$summary" ]] || die "validation harness did not produce $summary"
-	jq -e '
-		type == "object" and
-		.schema_version == 1 and .status == "success" and .fixture_id == "projection" and
-		(.fixture_sha256 | type == "string" and test("^[0-9a-f]{64}$")) and
-		(.dependency_commits | type == "object" and
-			.duckdb == "08e34c447bae34eaee3723cac61f2878b6bdf787" and
-			.["om-file-format"] == "d8855e418e2231ae8439f0c7e840fa3f93b371e3" and
-			.["extension-ci-tools"] == "b777c70d30942cca5bef62d6d4fa23a13362f398") and
-		.scenario_count == 4 and
-		(.required_scenarios | sort) == ["count", "full_scan", "output_plus_filter", "single_variable"] and
-		(.scenarios | type == "object" and (keys | sort) == ["count", "full_scan", "output_plus_filter", "single_variable"]) and
-		(.full_scan_variable_data_bytes | type == "number" and . > 0) and
-		(.single_variable_data_bytes | type == "number" and . > 0) and
-		.single_variable_data_bytes_reduced == true and
-		(.single_variable_data_bytes < .full_scan_variable_data_bytes) and
-		(.environment | type == "object" and .build == "release" and .threads == "1") and
-		(.cache_policy | type == "object" and (.application_cache | type == "string" and length > 0) and (.os_page_cache | type == "string" and length > 0))
-	' "$summary" >/dev/null || die "summary.json is invalid or lacks required success, dependency, scenario, or comparison evidence"
-	fixture_sha="$(jq -r '.fixture_sha256' "$summary")"
-
-	for scenario in "${scenarios[@]}"; do
-		scenario_file="$EVIDENCE_DIR/$scenario.json"
-		[[ -s "$scenario_file" ]] || die "required scenario evidence is missing: $scenario_file"
-		jq -e --arg scenario "$scenario" --arg fixture_sha "$fixture_sha" '
-			type == "object" and
-			.schema_version == 2 and .query_id == ("projection_" + $scenario) and .scenario == $scenario and
-			(.sql | type == "string" and length > 0) and
-			.fixture_id == "projection" and .fixture_sha256 == $fixture_sha and .status == "success" and
-			(.dependency_commits | type == "object" and
-				.duckdb == "08e34c447bae34eaee3723cac61f2878b6bdf787" and
-				.["om-file-format"] == "d8855e418e2231ae8439f0c7e840fa3f93b371e3" and
-				.["extension-ci-tools"] == "b777c70d30942cca5bef62d6d4fa23a13362f398") and
-			(.result_rows | type == "number" and . >= 0) and
-			.comparison_passed == true and (.comparison | type == "string" and length > 0) and
-			(.metadata_bytes | type == "number" and . >= 0) and
-			(.metadata_requests | type == "number" and . >= 0) and
-			(.variables | type == "object" and all(.[];
-				(.index_bytes | type == "number" and . >= 0) and
-				(.index_requests | type == "number" and . >= 0) and
-				(.data_bytes | type == "number" and . >= 0) and
-				(.data_requests | type == "number" and . >= 0) and
-				(.decoded_chunks | type == "number" and . >= 0) and .decode_count_complete == true)) and
-			.decode_count_complete == true and
-			(.bytes_fetched == (.metadata_bytes + ([.variables[].index_bytes] | add // 0) + ([.variables[].data_bytes] | add // 0))) and
-			(.read_requests == (.metadata_requests + ([.variables[].index_requests] | add // 0) + ([.variables[].data_requests] | add // 0))) and
-			(.elapsed_ms | type == "number" and . >= 0) and
-			(.peak_rss_bytes | type == "number" and . > 0) and
-			(.environment | type == "object" and .build == "release" and .threads == "1" and (.system | type == "string" and length > 0) and (.machine | type == "string" and length > 0)) and
-			(.cache_policy | type == "object" and (.application_cache | type == "string" and length > 0) and (.os_page_cache | type == "string" and length > 0)) and
-			.error_category == "" and .child_exit_code == 0 and
-			(.command | type == "array" and length > 0)
-		' "$scenario_file" >/dev/null || die "scenario evidence has missing/invalid required fields or inconsistent metrics: $scenario_file"
-		jq -e --arg scenario "$scenario" '.scenarios[$scenario] == ($scenario + ".json")' "$summary" >/dev/null || die "summary.json does not reference $scenario.json"
-		case "$scenario" in
-			full_scan)
-				jq -e '
-					.result_rows == 10541 and
-					.variables["/humidity"].data_bytes > 0 and .variables["/humidity"].decoded_chunks > 0 and
-					.variables["/pressure"].data_bytes > 0 and .variables["/pressure"].decoded_chunks > 0 and
-					.variables["/temperature"].data_bytes > 0 and .variables["/temperature"].decoded_chunks > 0
-				' "$scenario_file" >/dev/null || die "full_scan evidence does not show all 10,541 expected rows and all three decoded variables"
-				;;
-			single_variable)
-				jq -e '
-					.result_rows == 10541 and
-					.variables["/temperature"].data_bytes > 0 and .variables["/temperature"].decoded_chunks > 0 and
-					(.variables["/humidity"].data_bytes // 0) == 0 and (.variables["/humidity"].decoded_chunks // 0) == 0 and
-					(.variables["/pressure"].data_bytes // 0) == 0 and (.variables["/pressure"].decoded_chunks // 0) == 0
-				' "$scenario_file" >/dev/null || die "single_variable evidence violates row or projection-read requirements"
-				;;
-			output_plus_filter)
-				jq -e '
-					.result_rows == 108 and
-					.variables["/humidity"].data_bytes > 0 and .variables["/humidity"].decoded_chunks > 0 and
-					.variables["/temperature"].data_bytes > 0 and .variables["/temperature"].decoded_chunks > 0 and
-					(.variables["/pressure"].data_bytes // 0) == 0 and (.variables["/pressure"].decoded_chunks // 0) == 0
-				' "$scenario_file" >/dev/null || die "output_plus_filter evidence violates row or filter-dependency requirements"
-				;;
-			count)
-				jq -e '(.result_rows == 1) and all(.variables[]; .index_bytes == 0 and .index_requests == 0 and .data_bytes == 0 and .data_requests == 0 and .decoded_chunks == 0)' "$scenario_file" >/dev/null || die "count evidence shows value/index reads, decoded chunks, or an incorrect result-row count"
-				;;
-		esac
-	done
-
-	jq -e --slurpfile full "$EVIDENCE_DIR/full_scan.json" --slurpfile single "$EVIDENCE_DIR/single_variable.json" '
-		.full_scan_variable_data_bytes == ([$full[0].variables[].data_bytes] | add // 0) and
-		.single_variable_data_bytes == ([$single[0].variables[].data_bytes] | add // 0)
-	' "$summary" >/dev/null || die "summary data-byte totals do not match their scenario evidence"
-	printf 'Validated summary and all four scenario evidence files.\n'
-}
-
-for sql_test in raw read_om semantic_axes axis_filter parallel_scan cache_metrics projection spatial spatial_pushdown spatial_composition; do
-	run_sqllogictest "SQLLogicTest: $sql_test.test" "$BUILD_DIR/test/unittest" "$REPO_ROOT/test/sql/$sql_test.test"
-done
-
-for native_test in batch_test raw_reader_test lifecycle_test schema_test time_test axis_selection_test parallel_scan_test semantic_axes_test range_cache_test scan_metrics_v3_test session_metrics_test projection_evidence_test regular_grid_test spatial_layout_test \
-	spatial_metrics_test spatial_callback_test spatial_selection_test spatial_io_test spatial_lifecycle_test \
-	httpfs_abi_test httpfs_range_test remote_session_test; do
-	if [[ "$native_test" == projection_evidence_test ]]; then
-		run "Native check: $native_test" env \
-			DUCKOMO_TEST_EXTENSION="$BUILD_DIR/extension/duckomo/duckomo.duckdb_extension" \
-			"$BUILD_DIR/test/native/$native_test"
-	else
-		run "Native check: $native_test" "$BUILD_DIR/test/native/$native_test"
-	fi
-done
-
-run "Critical native ASan/UBSan lifecycle and metrics checks" \
-	cmake --build "$BUILD_DIR" --target duckomo_sanitizer_checks --parallel 2
-
-check_fixture_hashes
-check_domain_manifest
-
-TEMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/duckomo-validate.XXXXXX")" || die "cannot create fixture regeneration directory"
-trap 'rm -rf -- "$TEMP_DIR"' EXIT
-run "Regenerate fixtures using the pinned official writer" "$BUILD_DIR/test/tools/duckomo_fixture_tool" --output "$TEMP_DIR/fixtures"
-# domain-manifest.json is intentionally pinned separately from regenerable
-# synthetic fixtures; real-domain references are produced by the dedicated
-# domain harness and are never regenerated from the synthetic fixture tool.
-run "Compare regenerated synthetic fixtures and manifest" diff -qr --exclude=domain-manifest.json -- "$FIXTURE_DIR" "$TEMP_DIR/fixtures"
-
-mkdir -p -- "$EVIDENCE_DIR"
-run "Release projection metrics harness" \
-	"$BUILD_DIR/test/tools/duckomo_validation" \
-	--root "$REPO_ROOT" \
-	--fixtures "$FIXTURE_DIR" \
-	--output "$EVIDENCE_DIR" \
-	--duckdb "$BUILD_DIR/duckdb" \
-	--extension "$BUILD_DIR/extension/duckomo/duckomo.duckdb_extension"
-check_evidence
-
-run "Release dimensions/selection/parallel validation harness" \
-	"$BUILD_DIR/test/tools/duckomo_dimensions_validation" \
-	--root "$REPO_ROOT" \
-	--fixtures "$FIXTURE_DIR" \
-	--output "$EVIDENCE_DIR/dimensions" \
-	--duckdb "$BUILD_DIR/duckdb" \
-	--extension "$BUILD_DIR/extension/duckomo/duckomo.duckdb_extension"
-
-if [[ -n "${DUCKOMO_DOMAIN_FILE:-}" ]]; then
-	[[ -f "$DUCKOMO_DOMAIN_FILE" ]] || die "DUCKOMO_DOMAIN_FILE is not a regular file: $DUCKOMO_DOMAIN_FILE"
-	run "Complete spatial/domain validation harness" \
-		"$BUILD_DIR/test/tools/duckomo_spatial_validation" \
-		--root "$REPO_ROOT" \
-		--fixtures "$FIXTURE_DIR" \
-		--output "$EVIDENCE_DIR/spatial" \
-		--duckdb "$BUILD_DIR/duckdb" \
-		--extension "$BUILD_DIR/extension/duckomo/duckomo.duckdb_extension" \
-		--domain-file "$DUCKOMO_DOMAIN_FILE"
+if [[ -n "$MATRIX" ]]; then
+    [[ -n "$PAIR" ]] || { echo '--pair required' >&2;exit 2; }
+    [[ "$MATRIX" = /* ]] || MATRIX="$ROOT/$MATRIX"
+    [[ "$OUT_ROOT" = /* ]] || OUT_ROOT="$ROOT/$OUT_ROOT"
+    BUILD="$OUT_ROOT/$PAIR/release"
+    python3 "$ROOT/scripts/version_matrix.py" fetch-runtime --root "$ROOT" --matrix "$MATRIX" --pair "$PAIR" --output-root "$OUT_ROOT" > /dev/null
+    CLI="$OUT_ROOT/$PAIR/official/duckdb"
+    HTTPFS="$OUT_ROOT/$PAIR/official/httpfs.duckdb_extension"
 else
-	printf '\nReal-domain release gate not run. Set DUCKOMO_DOMAIN_FILE to the pinned sample path to run it.\n'
+    [[ "$BUILD" = /* ]] || BUILD="$PWD/$BUILD"
+    CLI="${DUCKOMO_OFFICIAL_DUCKDB:-$BUILD/duckdb}"
+    HTTPFS="${DUCKOMO_HTTPFS:-}"
 fi
-
-remote_configured=false
-for remote_value in "${DUCKOMO_HTTP_BASE:-}" "${DUCKOMO_S3_BASE:-}" "${DUCKOMO_S3_SETUP:-}" \
-	"${DUCKOMO_SERVER_LOG:-}" "${DUCKOMO_HTTPFS:-}" "${DUCKOMO_REAL_FILE:-}" "${DUCKOMO_REAL_MANIFEST:-}"; do
-	if [[ -n "$remote_value" ]]; then
-		remote_configured=true
-	fi
+if [[ -n "${HTTPFS:-}" ]];then export DUCKOMO_HTTPFS="$HTTPFS";fi
+cd "$ROOT"
+[[ -x "$BUILD/test/unittest" ]] || { echo 'SQL runner missing: build shell/unittest and native targets first' >&2;exit 2; }
+REQUIRED_EXECUTABLES="$BUILD/test/duckomo-validation-executables.txt"
+[[ -s "$REQUIRED_EXECUTABLES" ]] || { echo 'Validation executable manifest missing: configure with DUCKOMO_BUILD_DEVELOPER_TOOLS=ON and build duckomo_developer_tools' >&2;exit 2; }
+while IFS= read -r executable; do
+    [[ -x "$BUILD/test/$executable" ]] || { echo "Required validation executable missing: $BUILD/test/$executable (build duckomo_developer_tools)" >&2;exit 2; }
+done < "$REQUIRED_EXECUTABLES"
+export DUCKOMO_CORE_FUNCTIONS_EXTENSION="$BUILD/extension/core_functions/core_functions.duckdb_extension"
+export DUCKOMO_TEST_EXTENSION="$BUILD/extension/duckomo/duckomo.duckdb_extension"
+for file in test/sql/*.test; do "$BUILD/test/unittest" --test-dir "$ROOT" "$file";done
+for path in "$BUILD"/test/native/*; do
+    [[ -f "$path" && -x "$path" ]] || continue
+    if [[ "$(basename "$path")" == domain_reference_test ]];then
+        if [[ -n "${DUCKOMO_DOMAIN_FILE:-}" && -d "${DUCKOMO_DOMAIN_REFERENCE:-}" ]];then
+            "$path" "$DUCKOMO_DOMAIN_FILE" "$ROOT/test/data/domain-manifest.json" "$DUCKOMO_DOMAIN_REFERENCE"
+        else echo 'domain_reference_test: not-run (DUCKOMO_DOMAIN_FILE/DUCKOMO_DOMAIN_REFERENCE required)';fi
+        continue
+    fi
+    [[ "$(basename "$path")" != official_httpfs_test ]] || { [[ "$LOCAL_ONLY" == false ]] || continue; }
+    DUCKOMO_EXTENSION_PATH="$BUILD/extension/duckomo/duckomo.duckdb_extension" "$path"
 done
-if [[ "$remote_configured" == true ]]; then
-	for remote_name in DUCKOMO_HTTP_BASE DUCKOMO_S3_BASE DUCKOMO_S3_SETUP DUCKOMO_SERVER_LOG \
-		DUCKOMO_HTTPFS DUCKOMO_REAL_FILE DUCKOMO_REAL_MANIFEST; do
-		[[ -n "${!remote_name:-}" ]] || die "remote gate configuration is incomplete: $remote_name is empty"
-	done
-	run "Release HTTP/S3 remote validation gate" \
-		"$BUILD_DIR/test/tools/duckomo_remote_validation" \
-		--root "$REPO_ROOT" --fixtures "$FIXTURE_DIR" --output "$EVIDENCE_DIR/remote" \
-		--duckdb "$BUILD_DIR/duckdb" --extension "$BUILD_DIR/extension/duckomo/duckomo.duckdb_extension" \
-		--httpfs "$DUCKOMO_HTTPFS" --http-base "$DUCKOMO_HTTP_BASE" --s3-base "$DUCKOMO_S3_BASE" \
-		--s3-setup "$DUCKOMO_S3_SETUP" --server-log "$DUCKOMO_SERVER_LOG" \
-		--real-file "$DUCKOMO_REAL_FILE" --real-manifest "$DUCKOMO_REAL_MANIFEST"
-else
-	printf '\nRemote G3–G6 validation not run. Source setup-remote-fixtures.py run.env after provisioning S3.\n'
-fi
-
-printf '\nDuckOMO validation passed. Evidence: %s\n' "$EVIDENCE_DIR"
+for file in test/tools/*_test.py;do python3 "$file";done
+[[ "$LOCAL_ONLY" == false ]] || exit 0
+[[ -x "$CLI" && -f "$HTTPFS" ]] || { echo 'Official CLI/HTTPFS required for remote validation; use --matrix or DUCKOMO_OFFICIAL_DUCKDB/DUCKOMO_HTTPFS' >&2;exit 2; }
+OUTPUT="${DUCKOMO_EVIDENCE_DIR:-$ROOT/build/official-validation-${PAIR:-release}}"
+python3 "$ROOT/scripts/validate-official-httpfs.py" --root "$ROOT" --duckdb "$CLI" --httpfs "$HTTPFS" \
+    --extension "$BUILD/extension/duckomo/duckomo.duckdb_extension" --output "$OUTPUT"

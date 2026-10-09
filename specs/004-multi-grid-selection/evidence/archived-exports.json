@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "archived_at_utc": "2026-10-08T06:09:27.188735+00:00",
+  "scope": "Regenerable full-scan comparison exports only; OM inputs, reference data, metrics, commands and comparison summaries remain in place.",
+  "storage": "Local Git-ignored build archive; not included in a commit.",
+  "audit_note": "Historical evidence manifests retain original paths. Restore exports to those paths before rerunning artifact hash audits, or regenerate using the commands in each run directory.",
+  "files": [
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/lambert_chmi_aladin_central_europe_2km_cape_chunk_4135.duckomo-coordinates.csv",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/h1-20261008-5dac993/h1-reference-checks/lambert_chmi_aladin_central_europe_2km_cape_chunk_4135.duckomo-coordinates.csv",
+      "size_bytes": 38462415,
+      "sha256": "0b6bb06d3c3918030741546f12f89613de26d410a9755ed7165b4a2b3e59946d"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/lambert_chmi_aladin_central_europe_2km_cape_chunk_4135.duckomo-values.csv",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/h1-20261008-5dac993/h1-reference-checks/lambert_chmi_aladin_central_europe_2km_cape_chunk_4135.duckomo-values.csv",
+      "size_bytes": 1494366433,
+      "sha256": "f607a34e8f3b135d0ce345add396243ca4829971be9ccd59ba179aa4344c9b57"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/rotated_cmc_gem_rdps_10km_cape_chunk_4337.duckomo-coordinates.csv",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/h1-20261008-5dac993/h1-reference-checks/rotated_cmc_gem_rdps_10km_cape_chunk_4337.duckomo-coordinates.csv",
+      "size_bytes": 52909546,
+      "sha256": "4bcc8dc8fccbb98fe3716e36f95584829b827090c519724a08d45f439dc8211a"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/rotated_cmc_gem_rdps_10km_cape_chunk_4337.duckomo-values.csv",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/h1-20261008-5dac993/h1-reference-checks/rotated_cmc_gem_rdps_10km_cape_chunk_4337.duckomo-values.csv",
+      "size_bytes": 1790958190,
+      "sha256": "7e1b94f351c2ed721192e4d53b15055128b131b01e00f607d43c9911a7211dab"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/stereographic_cmc_gem_rdps_cape_chunk_4337.duckomo-coordinates.csv",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/h1-20261008-5dac993/h1-reference-checks/stereographic_cmc_gem_rdps_cape_chunk_4337.duckomo-coordinates.csv",
+      "size_bytes": 33947224,
+      "sha256": "a35f7f3dcf470a742497f7e825cecf2ac2ae1a45a6b477217306146fc5c2b1a7"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/stereographic_cmc_gem_rdps_cape_chunk_4337.duckomo-values.csv",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/h1-20261008-5dac993/h1-reference-checks/stereographic_cmc_gem_rdps_cape_chunk_4337.duckomo-values.csv",
+      "size_bytes": 968686001,
+      "sha256": "b840acb10288ea1053a299591bfc2a4b5a2a2588fe90c4ababfb937e2b1b24e1"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-all-public-source-positions-5dac993-h3-local/h3-local/public-source/aladin_central_europe_2km.domain-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-all-public-source-positions-5dac993-h3-local/h3-local/public-source/aladin_central_europe_2km.domain-full-source.csv.gz",
+      "size_bytes": 26154517,
+      "sha256": "46bf8a69e4f9d54c40a51d249168f01a1bc4b642cb66312a6a0d461b1eec1ad6"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-all-public-source-positions-5dac993-h3-local/h3-local/public-source/aladin_central_europe_2km.explicit-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-all-public-source-positions-5dac993-h3-local/h3-local/public-source/aladin_central_europe_2km.explicit-full-source.csv.gz",
+      "size_bytes": 26154517,
+      "sha256": "46bf8a69e4f9d54c40a51d249168f01a1bc4b642cb66312a6a0d461b1eec1ad6"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-all-public-source-positions-5dac993-h3-local/h3-local/public-source/gem_rdps_10km.domain-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-all-public-source-positions-5dac993-h3-local/h3-local/public-source/gem_rdps_10km.domain-full-source.csv.gz",
+      "size_bytes": 34802154,
+      "sha256": "51d7b2b39ff2686b9467234f8d2dba553e21f64547c469eef18ecf2606c78992"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-all-public-source-positions-5dac993-h3-local/h3-local/public-source/gem_rdps_10km.explicit-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-all-public-source-positions-5dac993-h3-local/h3-local/public-source/gem_rdps_10km.explicit-full-source.csv.gz",
+      "size_bytes": 34802154,
+      "sha256": "51d7b2b39ff2686b9467234f8d2dba553e21f64547c469eef18ecf2606c78992"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-all-public-source-positions-5dac993-h3-local/h3-local/public-source/gem_regional.domain-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-all-public-source-positions-5dac993-h3-local/h3-local/public-source/gem_regional.domain-full-source.csv.gz",
+      "size_bytes": 21583322,
+      "sha256": "a2e80a94db2bb2ef00eb233f54cead758f98b9cdc06e250931524665f2cae8fd"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-all-public-source-positions-5dac993-h3-local/h3-local/public-source/gem_regional.explicit-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-all-public-source-positions-5dac993-h3-local/h3-local/public-source/gem_regional.explicit-full-source.csv.gz",
+      "size_bytes": 21583322,
+      "sha256": "a2e80a94db2bb2ef00eb233f54cead758f98b9cdc06e250931524665f2cae8fd"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.domain-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.domain-full-source.csv.gz",
+      "size_bytes": 26860467,
+      "sha256": "83c74af86017290e50f6ff40d024f3e1a93262fc307a71cbe0504cbbd3c501bf"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.explicit-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.explicit-full-source.csv.gz",
+      "size_bytes": 26860467,
+      "sha256": "83c74af86017290e50f6ff40d024f3e1a93262fc307a71cbe0504cbbd3c501bf"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.domain-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.domain-full-source.csv.gz",
+      "size_bytes": 35799550,
+      "sha256": "6cd23e9b685b8c1d8131c24305a9223c1dfcb57a5e5c522fc573a07d40886697"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.explicit-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.explicit-full-source.csv.gz",
+      "size_bytes": 35799550,
+      "sha256": "6cd23e9b685b8c1d8131c24305a9223c1dfcb57a5e5c522fc573a07d40886697"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.domain-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.domain-full-source.csv.gz",
+      "size_bytes": 22216702,
+      "sha256": "7cd0ccbeb10d559565cf9ac149eb771d282fccdeaaeab9991a60d710d42b4a30"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.explicit-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.explicit-full-source.csv.gz",
+      "size_bytes": 22216702,
+      "sha256": "7cd0ccbeb10d559565cf9ac149eb771d282fccdeaaeab9991a60d710d42b4a30"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-https/aladin_central_europe_2km.domain-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-https/aladin_central_europe_2km.domain-full-source.csv.gz",
+      "size_bytes": 26854055,
+      "sha256": "416f888ecaa9b3b81bf6d76cc6337151d23f5bac964e0ee73b5e45c581f7df26"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-https/aladin_central_europe_2km.explicit-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-https/aladin_central_europe_2km.explicit-full-source.csv.gz",
+      "size_bytes": 26854055,
+      "sha256": "416f888ecaa9b3b81bf6d76cc6337151d23f5bac964e0ee73b5e45c581f7df26"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-https/gem_rdps_10km.domain-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-https/gem_rdps_10km.domain-full-source.csv.gz",
+      "size_bytes": 35801935,
+      "sha256": "ab484aaad37d802a8495a077360c9d111106ad3620c7ad2dbbd5205021c282dd"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-https/gem_rdps_10km.explicit-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-https/gem_rdps_10km.explicit-full-source.csv.gz",
+      "size_bytes": 35801935,
+      "sha256": "ab484aaad37d802a8495a077360c9d111106ad3620c7ad2dbbd5205021c282dd"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-https/gem_regional.domain-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-https/gem_regional.domain-full-source.csv.gz",
+      "size_bytes": 22218399,
+      "sha256": "d8a24da0c305303f597e2484bd09bffad941ea9e84d4fba47b72ec2b0a3c97f5"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-https/gem_regional.explicit-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-https/gem_regional.explicit-full-source.csv.gz",
+      "size_bytes": 22218399,
+      "sha256": "d8a24da0c305303f597e2484bd09bffad941ea9e84d4fba47b72ec2b0a3c97f5"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-s3/aladin_central_europe_2km.domain-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-s3/aladin_central_europe_2km.domain-full-source.csv.gz",
+      "size_bytes": 26856422,
+      "sha256": "e17f7753053aa90ee3c6a37583e7b0cff24ef7c8d9359f547369e8a7dc93eb08"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-s3/aladin_central_europe_2km.explicit-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-s3/aladin_central_europe_2km.explicit-full-source.csv.gz",
+      "size_bytes": 26856422,
+      "sha256": "e17f7753053aa90ee3c6a37583e7b0cff24ef7c8d9359f547369e8a7dc93eb08"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-s3/gem_rdps_10km.domain-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-s3/gem_rdps_10km.domain-full-source.csv.gz",
+      "size_bytes": 35808896,
+      "sha256": "7f3dfcffdef1930ba927738fb5244b9e1c0584e0bf70f8d7e8b43ffda73424a7"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-s3/gem_rdps_10km.explicit-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-s3/gem_rdps_10km.explicit-full-source.csv.gz",
+      "size_bytes": 35808896,
+      "sha256": "7f3dfcffdef1930ba927738fb5244b9e1c0584e0bf70f8d7e8b43ffda73424a7"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-s3/gem_regional.domain-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-s3/gem_regional.domain-full-source.csv.gz",
+      "size_bytes": 22223721,
+      "sha256": "4098c963bb6b1a9243e766af1bb596e02a0abae4b298834d758c667b5910f624"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-s3/gem_regional.explicit-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-public-remote-source-corrected-proxy-5dac993-s3/gem_regional.explicit-full-source.csv.gz",
+      "size_bytes": 22223721,
+      "sha256": "4098c963bb6b1a9243e766af1bb596e02a0abae4b298834d758c667b5910f624"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-spatial-selection-scan-baseline/h3-local/public-source/aladin_central_europe_2km.domain-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-spatial-selection-scan-baseline/h3-local/public-source/aladin_central_europe_2km.domain-full-source.csv.gz",
+      "size_bytes": 26860467,
+      "sha256": "83c74af86017290e50f6ff40d024f3e1a93262fc307a71cbe0504cbbd3c501bf"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-spatial-selection-scan-baseline/h3-local/public-source/aladin_central_europe_2km.explicit-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-spatial-selection-scan-baseline/h3-local/public-source/aladin_central_europe_2km.explicit-full-source.csv.gz",
+      "size_bytes": 26860467,
+      "sha256": "83c74af86017290e50f6ff40d024f3e1a93262fc307a71cbe0504cbbd3c501bf"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-spatial-selection-scan-baseline/h3-local/public-source/gem_rdps_10km.domain-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-spatial-selection-scan-baseline/h3-local/public-source/gem_rdps_10km.domain-full-source.csv.gz",
+      "size_bytes": 35799550,
+      "sha256": "6cd23e9b685b8c1d8131c24305a9223c1dfcb57a5e5c522fc573a07d40886697"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-spatial-selection-scan-baseline/h3-local/public-source/gem_rdps_10km.explicit-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-spatial-selection-scan-baseline/h3-local/public-source/gem_rdps_10km.explicit-full-source.csv.gz",
+      "size_bytes": 35799550,
+      "sha256": "6cd23e9b685b8c1d8131c24305a9223c1dfcb57a5e5c522fc573a07d40886697"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-spatial-selection-scan-baseline/h3-local/public-source/gem_regional.domain-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-spatial-selection-scan-baseline/h3-local/public-source/gem_regional.domain-full-source.csv.gz",
+      "size_bytes": 22216702,
+      "sha256": "7cd0ccbeb10d559565cf9ac149eb771d282fccdeaaeab9991a60d710d42b4a30"
+    },
+    {
+      "original_path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-spatial-selection-scan-baseline/h3-local/public-source/gem_regional.explicit-full-source.csv.gz",
+      "archive_path": "build/evidence-archive/004-multi-grid-selection/baseline-local/us5-20261008-spatial-selection-scan-baseline/h3-local/public-source/gem_regional.explicit-full-source.csv.gz",
+      "size_bytes": 22216702,
+      "sha256": "7cd0ccbeb10d559565cf9ac149eb771d282fccdeaaeab9991a60d710d42b4a30"
+    }
+  ]
+}

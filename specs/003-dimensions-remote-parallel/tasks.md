@@ -264,3 +264,11 @@ Then: T064 SQL contract → T065 G5/G6 evidence → T066 register gates
 - `[P]` 指完成列出的前置任务后，可在不同文件上同时执行的工作。
 - 本期只处理单个 OM 对象；不加入目录发现、跨文件拼接、科学插值或新格式。
 - HTTP/S3 没有可靠版本时仍可扫描静态对象，但不得跨查询缓存；缺少服务或真实样本时远程完整门禁未通过。
+
+## 2026-10-08 官方 HTTPFS 契约修订
+
+当前未发布版本以 [官方 HTTPFS 迁移契约](../004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md) 为准。历史专用 ABI、LRU 与 G5 证据保留历史状态；新 gate 单独记录。
+
+### 官方 HTTPFS 重构执行状态
+
+R01–R19 已执行（性能门槛见独立报告）；R20 的三版本冻结产物验收已保存；完整 004 门禁的原有缺口保留。R21 独立验证者复现仍未执行。旧 T049/G5 失败保留且 superseded，不因缓存删除标为通过；004 完整真实网格 H0–H9 的未闭环项仍未完成。

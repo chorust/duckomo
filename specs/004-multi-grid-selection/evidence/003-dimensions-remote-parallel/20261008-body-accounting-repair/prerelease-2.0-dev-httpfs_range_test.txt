@@ -1,0 +1,3 @@
+httpfs_range_test: curl passed
+httpfs_range_test: httplib passed
+httpfs_range_test: exact 206/body observer, auth/not-found/HEAD, encoding, retry, version, and redirect checks passed

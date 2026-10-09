@@ -6,27 +6,12 @@
 #include <vector>
 
 #include "duckdb/common/file_system.hpp"
-#include "duckomo/metrics.hpp"
+#include "duckomo/read_at_file.hpp"
 
 namespace duckdb {
 class ClientContext;
 
 namespace duckomo {
-
-// Checked positional-read boundary shared by local and query-scoped remote
-// OM sessions. Implementations own the handle and report only completed reads.
-class ReadAtFile {
-public:
-	virtual ~ReadAtFile() = default;
-	virtual std::uint64_t Size() const noexcept = 0;
-	virtual const std::string &Path() const noexcept = 0;
-	virtual void ReadRange(std::uint64_t offset, std::uint64_t size, void *destination,
-	                       ScanReadPhase phase, const std::string &variable_path = std::string()) const = 0;
-	virtual std::vector<std::uint8_t> ReadRange(std::uint64_t offset, std::uint64_t size,
-	                                            ScanReadPhase phase,
-	                                            const std::string &variable_path = std::string()) const = 0;
-	virtual const std::shared_ptr<ScanMetrics> &Metrics() const noexcept = 0;
-};
 
 // Owns one read-only local file handle. OM's Sans-I/O requests are serviced by
 // exact positional reads so the reader never discovers paths or byte ranges.
@@ -56,6 +41,7 @@ public:
 private:
 	LocalFile(FileSystem &file_system, std::unique_ptr<FileHandle> handle, std::string path,
 	          std::uint64_t file_size, std::shared_ptr<ScanMetrics> metrics, ScanMetadataStage metadata_stage);
+	void RefreshMemoryAccount() const;
 	void ReadRangeInternal(std::uint64_t offset, std::uint64_t size, void *destination,
 	                       const ScanReadPhase *phase, const std::string &variable_path) const;
 
@@ -65,6 +51,7 @@ private:
 	std::uint64_t file_size;
 	std::shared_ptr<ScanMetrics> metrics;
 	ScanMetadataStage metadata_stage = ScanMetadataStage::Scan;
+	std::shared_ptr<ScanMemoryAccount> memory_account;
 };
 
 // Reject URL-like inputs and shell-style glob patterns before asking the local

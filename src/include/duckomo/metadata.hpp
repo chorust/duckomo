@@ -42,8 +42,15 @@ struct OmTimeCoordinate final {
 	}
 	void RefreshMemoryAccount() {
 		if (!memory_metrics) return;
-		if (!memory_account) memory_account = std::make_shared<ScanMemoryAccount>(memory_metrics);
-		memory_account->Set(sizeof(*this) + epoch_seconds.capacity() * sizeof(std::int64_t));
+		if (!memory_account) {
+			memory_account = std::make_shared<ScanMemoryAccount>(memory_metrics,
+			                                                    ScanMemoryComponent::CoordinateBuffers);
+		}
+		const auto capacity = static_cast<std::uint64_t>(epoch_seconds.capacity());
+		const auto payload = capacity > UINT64_MAX / sizeof(std::int64_t)
+		                        ? UINT64_MAX
+		                        : capacity * sizeof(std::int64_t);
+		memory_account->Set(payload);
 	}
 	bool operator==(const OmTimeCoordinate &other) const {
 		return scalar == other.scalar && epoch_seconds == other.epoch_seconds;
@@ -65,9 +72,27 @@ struct MetadataVariable final {
 	std::shared_ptr<const OwnedMetadataBuffer> metadata_owner;
 };
 
+// A source CRS profile is only promoted after its complete WKT structure,
+// earth model, axis order, and angular unit match a closed profile. Unknown
+// WKT remains preserved separately and is never interpreted heuristically.
+enum class SourceCrsProfileKind : std::uint8_t { NotSpecified, Unrecognized, ReducedGaussianWgs84V1 };
+
+struct SourceCrsProfile final {
+	SourceCrsProfileKind kind = SourceCrsProfileKind::NotSpecified;
+	// ECMWF's recognized "Reduced Gaussian Grid O<n> (ECMWF)" remark fixes
+	// the Gaussian order. The CRS geometry is checked against this when present.
+	std::optional<std::uint64_t> gaussian_order;
+
+	bool operator==(const SourceCrsProfile &other) const noexcept {
+		return kind == other.kind && gaussian_order == other.gaussian_order;
+	}
+	bool operator!=(const SourceCrsProfile &other) const noexcept { return !(*this == other); }
+};
+
 struct OmMetadataTree final {
 	std::vector<MetadataVariable> arrays;
 	std::string crs_wkt;
+	SourceCrsProfile crs_profile;
 };
 
 // Reads and validates all metadata nodes through the official OM v3 reader.

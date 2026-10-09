@@ -9,6 +9,7 @@
 #include "duckdb/common/exception/binder_exception.hpp"
 #include "duckdb/common/string_util.hpp"
 #include "duckdb/common/types/interval.hpp"
+#include "duckomo/compat/duckdb_api.hpp"
 
 namespace duckdb {
 namespace duckomo {
@@ -28,8 +29,9 @@ FieldMap ReadFields(const Value &value, const std::string &where) {
 	}
 	FieldMap result;
 	for (idx_t index = 0; index < names.size(); index++) {
-		if (!result.emplace(names[index].first, &values[index]).second) {
-			throw BinderException(where + "contains duplicate field '" + names[index].first + "'");
+		const auto name = IdentifierNameString(names[index].first);
+		if (!result.emplace(name, &values[index]).second) {
+			throw BinderException(where + "contains duplicate field '" + name + "'");
 		}
 	}
 	return result;
@@ -82,11 +84,11 @@ timestamp_t ReadTimestamp(const Value &value, const std::string &where) {
 	if (value.type().id() == LogicalTypeId::TIMESTAMP) {
 		result = value.GetValue<timestamp_t>();
 	} else if (value.type().id() == LogicalTypeId::TIMESTAMP_TZ) {
-		result = value.GetValue<timestamp_tz_t>();
+		result = timestamp_t(value.GetValue<timestamp_tz_t>().value);
 	} else {
 		throw BinderException(where + " must be TIMESTAMP or TIMESTAMPTZ");
 	}
-	if (!Timestamp::IsFinite(result)) {
+	if (!Value::IsFinite(result)) {
 		throw BinderException(where + " must be finite");
 	}
 	return result;
@@ -168,7 +170,7 @@ void AppendRegular(SemanticAxis &axis, const Value &start, const Value &step, co
 		const auto increment = IntervalMicros(step, where + "field 'step'");
 		const __int128 last = static_cast<__int128>(initial) + static_cast<__int128>(increment) * last_index;
 		if (last < std::numeric_limits<std::int64_t>::min() || last > std::numeric_limits<std::int64_t>::max() ||
-		    !Timestamp::IsFinite(timestamp_t(static_cast<std::int64_t>(last)))) {
+		    !Value::IsFinite(timestamp_t(static_cast<std::int64_t>(last)))) {
 			throw BinderException(where + "regular timestamp coordinate overflows at index " +
 			                      std::to_string(last_index));
 		}
@@ -472,7 +474,7 @@ SemanticAxes BindSemanticAxes(const Value *value, const BoundSchema &schema, con
 	std::unordered_set<std::string> used_names;
 	std::unordered_set<std::string> used_axes;
 	for (idx_t index = 0; index < names.size(); index++) {
-		const auto &semantic_name = names[index].first;
+		const auto semantic_name = IdentifierNameString(names[index].first);
 		const auto kind = ParseKind(semantic_name);
 		(void)kind;
 		if (!used_names.emplace(semantic_name).second) {

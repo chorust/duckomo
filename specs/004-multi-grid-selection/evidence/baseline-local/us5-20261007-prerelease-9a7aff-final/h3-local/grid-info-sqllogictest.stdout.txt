@@ -1,0 +1,64 @@
+Filters: /home/blizhan/repo/github/duckomo/test/sql/grid_info.test
+
+[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/grid_info.testReplacing deprecated __BUILD_DIRECTORY__ in test /home/blizhan/repo/github/duckomo/test/sql/grid_info.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "DESCRIBE SELECT * FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT descriptor_version, grid_type, parent_grid_id IS NULL,
+       starts_with(object_id, 'sha256:'), object_version IS NULL,
+       version_strength, content_verified,
+       definition::VARCHAR LIKE '%"grid_id":"%' AND definition::VARCHAR LIKE '%"parameters":{"nx":3,"ny":2%',
+       layout::VARCHAR LIKE '%"shape":[2,3],"axes":["row","column"],"strides":[3,1]%',
+       layout::VARCHAR LIKE '%"point_axis":null%',
+       crs::VARCHAR LIKE '%"earth":{"model":"sphere","radius_m":6371229}%' AND
+           crs::VARCHAR LIKE '%"output_crs":"OGC:CRS84"%',
+       capabilities::VARCHAR LIKE '%"point_semantics":{"status":"defined","name":"native_point_sample"%',
+       provenance::VARCHAR LIKE '%identity_hash_excludes_provenance%'
+FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT capabilities::VARCHAR LIKE '%"adjacency":{"status":"unsupported","reason"%',
+       capabilities::VARCHAR LIKE '%"cell_boundary":{"status":"unsupported","reason"%',
+       capabilities::VARCHAR LIKE '%"area":{"status":"unsupported","reason"%',
+       capabilities::VARCHAR LIKE '%"distance":{"status":"unsupported","reason"%',
+       capabilities::VARCHAR LIKE '%"vector_orientation":{"status":"unsupported","reason"%'
+FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM om_grid_info('__WORKING_DIRECTORY__/test/data/raw.om');" - please replace with {WORKING_DIRECTORY}
+
+[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/grid_info.test took 0.048s
+===============================================================================
+All tests passed (100 assertions in 1 test case)
+

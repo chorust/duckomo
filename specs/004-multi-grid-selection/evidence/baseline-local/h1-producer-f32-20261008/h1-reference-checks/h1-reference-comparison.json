@@ -1,0 +1,52 @@
+{
+  "coordinate_reference_manifest_sha256": "47712d94197d708b7ef1d48a4679d4eb5a38aecc324cc95d60d7b613314d33c7",
+  "covered_targets": [],
+  "full_h1_status": "not-run",
+  "missing_targets": [
+    "gaussian_n160_v3",
+    "gaussian_n320_region_v3",
+    "gaussian_n320_v3",
+    "lambert_v3",
+    "rotated_v3",
+    "stereographic_v3"
+  ],
+  "results": [
+    {
+      "reason": "[Errno 2] No such file or directory: '/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h1-producer-f32-20261008/h1-reference-checks/rotated_cmc_gem_rdps_10km_cape_chunk_4337.values.sql'",
+      "sample_id": "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+      "status": "fail",
+      "target": "rotated_v3"
+    },
+    {
+      "reason": "[Errno 2] No such file or directory: '/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h1-producer-f32-20261008/h1-reference-checks/lambert_chmi_aladin_central_europe_2km_cape_chunk_4135.coordinates.sql'",
+      "sample_id": "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+      "status": "fail",
+      "target": "lambert_v3"
+    },
+    {
+      "reason": "[Errno 2] No such file or directory: '/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h1-producer-f32-20261008/h1-reference-checks/stereographic_cmc_gem_rdps_cape_chunk_4337.coordinates.sql'",
+      "sample_id": "stereographic_cmc_gem_rdps_cape_chunk_4337",
+      "status": "fail",
+      "target": "stereographic_v3"
+    },
+    {
+      "reason": "coordinate and official full-value references are both required",
+      "status": "not-run",
+      "target": "gaussian_n160_v3"
+    },
+    {
+      "reason": "coordinate and official full-value references are both required",
+      "status": "not-run",
+      "target": "gaussian_n320_v3"
+    },
+    {
+      "reason": "coordinate and official full-value references are both required",
+      "status": "not-run",
+      "target": "gaussian_n320_region_v3"
+    }
+  ],
+  "sample_manifest_sha256": "72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f",
+  "schema_version": 1,
+  "status": "fail",
+  "value_reference_manifest_sha256": "9ed46b9664c6023ee14e0fb2e5543d6829125e7dbfaeb0b0760e4906c9272e44"
+}

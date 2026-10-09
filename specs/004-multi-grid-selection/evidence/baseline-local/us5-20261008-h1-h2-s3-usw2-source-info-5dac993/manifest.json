@@ -1,0 +1,81 @@
+{
+  "command": {
+    "argv": [
+      "python3",
+      "/home/blizhan/repo/github/duckomo/test/tools/grid_spatial_reference.py",
+      "--validate-public-sources",
+      "--public-source-uri-kind",
+      "s3",
+      "--httpfs",
+      "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/extension/httpfs/httpfs.duckdb_extension",
+      "--duckdb",
+      "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/duckdb",
+      "--extension",
+      "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/extension/duckomo/duckomo.duckdb_extension",
+      "--root",
+      "/home/blizhan/repo/github/duckomo",
+      "--output-dir",
+      "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-h2-s3-usw2-source-info-5dac993/remote-source"
+    ],
+    "elapsed_ms": 219.748,
+    "exit_code": 1
+  },
+  "duckdb_build_id": "5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d",
+  "full_H1_H2_H6_status": "not-run",
+  "gate": "T070 H1/H2 public Open-Meteo S3 source/info subcheck",
+  "inputs": [
+    {
+      "path": "test/tools/grid_spatial_reference.py",
+      "sha256": "63d1f2a9b92cdf2c688433cf6bde870fe2b01e06a020313301d161f48be71b92"
+    },
+    {
+      "path": "test/data/grids/sample-manifest.json",
+      "sha256": "72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f"
+    },
+    {
+      "path": "test/data/grids/sample-queries.sql",
+      "sha256": "e15cfbca10b325e2126e4a69c4479a8879af0f809046e7e4ac8de2c280a54b5d"
+    },
+    {
+      "path": "test/data/grids/coordinate-reference.json",
+      "sha256": "47712d94197d708b7ef1d48a4679d4eb5a38aecc324cc95d60d7b613314d33c7"
+    },
+    {
+      "path": "build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/duckdb",
+      "sha256": "e55df7beb476ef350383509b564a47485d72d8438cea7097be9c52e318484f55"
+    },
+    {
+      "path": "build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/extension/duckomo/duckomo.duckdb_extension",
+      "sha256": "d4c79f729a096dba8dc0824b6e452b53ebeccdfb438ad2c7f0e514afc6a67ddc"
+    },
+    {
+      "path": "build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/extension/httpfs/httpfs.duckdb_extension",
+      "sha256": "3dd0711dbe2e9e00f1d4afc76acf8afbe6db1414c700ec371e45dcaf06d35857"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-h2-s3-usw2-source-info-5dac993/runner.stderr.txt",
+      "sha256": "752a956b7a212a58c9bdbf4e7a3ff87c70b5f1346abb3f018fad714913722a99"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-h2-s3-usw2-source-info-5dac993/runner.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-h2-s3-usw2-source-info-5dac993/remote-source/public-source.sql",
+      "sha256": "2dd016856423d04e59bc84ff4543f750195f9f7bd467cb3b02a2c76cb88f3308"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-h2-s3-usw2-source-info-5dac993/remote-source/runner.stderr.txt",
+      "sha256": "9e6c5f799d44f533a82ceb98a1ba73c3d9facf2ef834be303aaf29df195a87c0"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-h2-s3-usw2-source-info-5dac993/remote-source/runner.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "schema_version": 1,
+  "source_scope": "existing Open-Meteo OM v3 S3 URIs; first four source positions and info only; no conversion/full object download",
+  "status": "fail"
+}

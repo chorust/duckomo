@@ -97,9 +97,10 @@ void TestMetricsRecordCallback() {
 	config.SetOptionByName("allow_unsigned_extensions", true);
 	duckdb::DuckDB database(nullptr, &config);
 	duckdb::Connection connection(database);
-	std::filesystem::path core_functions_path;
+	const auto *core_override = std::getenv("DUCKOMO_CORE_FUNCTIONS_EXTENSION");
+	std::filesystem::path core_functions_path = core_override ? core_override : "";
 	const std::filesystem::path repository("build/release/repository/v1.5.4");
-	if (std::filesystem::exists(repository)) {
+	if (core_functions_path.empty() && std::filesystem::exists(repository)) {
 		for (const auto &entry : std::filesystem::recursive_directory_iterator(repository)) {
 			if (entry.is_regular_file() && entry.path().filename() == "core_functions.duckdb_extension") {
 				core_functions_path = entry.path();
@@ -109,7 +110,11 @@ void TestMetricsRecordCallback() {
 	}
 	Require(!core_functions_path.empty(), "cannot find core_functions extension in release repository");
 	RequireSuccess(connection, "LOAD '" + core_functions_path.string() + "'");
-	RequireSuccess(connection, "LOAD './build/release/extension/duckomo/duckomo.duckdb_extension'");
+	const auto *extension_override = std::getenv("DUCKOMO_EXTENSION_PATH");
+	const auto extension_path = extension_override && extension_override[0] != '\0'
+	                                ? extension_override
+	                                : "./build/release/extension/duckomo/duckomo.duckdb_extension";
+	RequireSuccess(connection, "LOAD '" + std::string(extension_path) + "'");
 	TestCallbackRetainsFilterAndProjection(connection);
 
 	std::ifstream input(metrics_path, std::ios::binary);

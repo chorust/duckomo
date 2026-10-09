@@ -1,6 +1,7 @@
 #include "duckomo/batch.hpp"
 
 #include <algorithm>
+#include <limits>
 #include <utility>
 
 namespace duckdb {
@@ -60,6 +61,33 @@ std::vector<BatchSegment> BuildBatchSegments(const std::vector<std::uint64_t> &s
 		remaining -= segment_count;
 	}
 	return segments;
+}
+
+std::uint64_t WorstCaseBatchMappingBytes(std::size_t rank, std::uint64_t position_count) noexcept {
+	constexpr auto MAX_VALUE = std::numeric_limits<std::uint64_t>::max();
+	const auto vector_headers = static_cast<std::uint64_t>(sizeof(std::vector<std::uint64_t>) +
+	                                                       sizeof(std::vector<BatchSegment>));
+	if (rank > (MAX_VALUE - sizeof(std::uint64_t) - sizeof(BatchSegment)) /
+	                (2 * sizeof(std::uint64_t))) {
+		return MAX_VALUE;
+	}
+	const auto per_position = static_cast<std::uint64_t>(sizeof(std::uint64_t) + sizeof(BatchSegment)) +
+	                          static_cast<std::uint64_t>(2 * rank * sizeof(std::uint64_t));
+	if (position_count != 0 && per_position > (MAX_VALUE - vector_headers) / position_count) {
+		return MAX_VALUE;
+	}
+	return vector_headers + position_count * per_position;
+}
+
+std::uint64_t MaxBatchPositionCount(std::size_t rank) noexcept {
+	const auto per_position = WorstCaseBatchMappingBytes(rank, 1) -
+	                          static_cast<std::uint64_t>(sizeof(std::vector<std::uint64_t>) +
+	                                                     sizeof(std::vector<BatchSegment>));
+	if (per_position == 0 || per_position >= MAX_BATCH_MAPPING_BYTES) return 1;
+	const auto available = MAX_BATCH_MAPPING_BYTES -
+	                       static_cast<std::uint64_t>(sizeof(std::vector<std::uint64_t>) +
+	                                                  sizeof(std::vector<BatchSegment>));
+	return std::max<std::uint64_t>(1, std::min<std::uint64_t>(STANDARD_VECTOR_SIZE, available / per_position));
 }
 
 } // namespace duckomo

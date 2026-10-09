@@ -1,0 +1,25 @@
+{
+  "schema_version":1,
+  "status":"not-run",
+  "created_at_utc":"2026-10-08T01:02:31Z",
+  "requested_cases":["H3"],
+  "requested_gates":["H3"],
+  "command_redacted":["build/release-vcpkg/test/tools/duckomo_grid_validation","--root","/home/blizhan/repo/github/duckomo","--manifest","/home/blizhan/repo/github/duckomo/test/data/grids/sample-manifest.json","--cases","H3","--duckdb","/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/duckdb","--extension","/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/extension/duckomo/duckomo.duckdb_extension","--output","/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-spatial-selection-scan-baseline"],
+  "inputs":{
+    "sample_manifest":{"path":"/home/blizhan/repo/github/duckomo/test/data/grids/sample-manifest.json","exists":true,"executable":true,"sha256":"72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f"},
+    "checked_in_sample_queries":{"path":"/home/blizhan/repo/github/duckomo/test/data/grids/sample-queries.sql","exists":true,"executable":true,"sha256":"e15cfbca10b325e2126e4a69c4479a8879af0f809046e7e4ac8de2c280a54b5d"},
+    "evidence_contract_test":{"path":"/home/blizhan/repo/github/duckomo/test/tools/grid_evidence_test.py","exists":true,"executable":true,"sha256":"163210193bf223b5aad5d9fd69573269671ab5c2f01e129256d34db5ffca10a4"},
+    "duckdb":{"path":"/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/duckdb","exists":true,"executable":true,"sha256":"e55df7beb476ef350383509b564a47485d72d8438cea7097be9c52e318484f55"},
+    "extension":{"path":"/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/extension/duckomo/duckomo.duckdb_extension","exists":true,"executable":true,"sha256":"d4c79f729a096dba8dc0824b6e452b53ebeccdfb438ad2c7f0e514afc6a67ddc"},
+    "httpfs":{"path":"/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/extension/httpfs/httpfs.duckdb_extension","exists":true,"executable":true,"sha256":"3dd0711dbe2e9e00f1d4afc76acf8afbe6db1414c700ec371e45dcaf06d35857"},
+    "matrix":{"path":"/home/blizhan/repo/github/duckomo/test/data/grids/version-matrix.json","exists":true,"executable":true,"sha256":"eba72ab473ec1fb66b5ac4a1ff66fa49f051feb2f30acf9403132e2e88d04a41"},
+    "h8_matrix_auditor":{"path":"/home/blizhan/repo/github/duckomo/scripts/audit-grid-version-matrix.py","exists":true,"executable":true,"sha256":"62a649c1876dc59181e73dcf1f0ca5fc983a4752d272ea74b96cc1778f659a7e"}
+  },
+  "frozen_input_snapshot":{"path":"/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-spatial-selection-scan-baseline/frozen-input-snapshot.json","sha256":"60fb491c1da60cd0c9da70b3b6964a7f795953c9d6daaee2d1cb7a4d302d6a0e"},
+  "frozen_input_set_sha256":"60fb491c1da60cd0c9da70b3b6964a7f795953c9d6daaee2d1cb7a4d302d6a0e",
+  "remote_inputs_present":{"http_base":false,"https_base":false,"s3_base":false},
+  "gates":[{"id":"H3","status":"not-run","reason":"synthetic local zero-I/O/source-identity checks, all spatial positions, and bounded spatial subsets for three hash-pinned public projected samples passed at valid_time index 0; independent OM axis mapping and full H3 remain not-run"}],
+  "h3_local_audit":{"manifest":{"path":"/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-spatial-selection-scan-baseline/h3-local/manifest.json","sha256":"b24611316fa31ec5bd3d95eac99128139480d965c57cb656cabdd5725da70bbf"},"public_source_report":{"path":"/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-spatial-selection-scan-baseline/h3-local/public-source/public-source-report.json","sha256":"aabfecf35d101872dec77ea6dc5668579799e9e2ca109abc4b1c415fa38378f0"},"command":{"argv":["python3","/home/blizhan/repo/github/duckomo/test/tools/grid_spatial_reference.py","--validate-public-sources","--all-public-source-positions","--public-spatial-selection","--duckdb","/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/duckdb","--extension","/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/extension/duckomo/duckomo.duckdb_extension","--root","/home/blizhan/repo/github/duckomo","--output-dir","/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-spatial-selection-scan-baseline/h3-local/public-source"],"exit_code":0,"elapsed_ms":76852.374,"peak_rss_bytes":40505344}},
+  "gate_status_audit":{"status":"pass","errors":[]},
+  "exit_code":2
+}

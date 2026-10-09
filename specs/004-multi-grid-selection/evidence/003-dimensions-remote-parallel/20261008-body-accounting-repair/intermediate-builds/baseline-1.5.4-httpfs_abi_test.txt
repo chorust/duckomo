@@ -1,0 +1,1 @@
+httpfs_abi_test: static/loadable capability and local independence checks passed

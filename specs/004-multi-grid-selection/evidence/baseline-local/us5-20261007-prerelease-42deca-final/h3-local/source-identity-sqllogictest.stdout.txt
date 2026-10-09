@@ -1,0 +1,62 @@
+Filters: /home/blizhan/repo/github/duckomo/test/sql/source_identity.test
+
+[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/source_identity.testReplacing deprecated __BUILD_DIRECTORY__ in test /home/blizhan/repo/github/duckomo/test/sql/source_identity.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "DESCRIBE SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT typeof(om_source)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column'], include_source := true)
+LIMIT 1;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "DESCRIBE SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {'nx': 3, 'ny': 2, 'lat0': 0.0, 'lon0': 0.0,
+             'dlat': 1.0, 'dlon': 1.0, 'order': 'separate'},
+    spatial_axes := ['row', 'column'], include_source := true);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/source-conflict.om',
+    dimensions := map(['om_source'], [['row', 'column']]),
+    grid := {'nx': 3, 'ny': 2, 'lat0': 0.0, 'lon0': 0.0,
+             'dlat': 1.0, 'dlon': 1.0, 'order': 'separate'},
+    spatial_axes := ['row', 'column'], include_source := true);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT om_source FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT om_source.logical_index
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column'], include_source := true)
+WHERE om_source.logical_index > 2
+ORDER BY om_source.logical_index DESC;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*)::INTEGER, count(DISTINCT om_source.logical_index)::INTEGER
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/interleaved.om',
+    dimensions := map(
+        ['interleaved/temperature', 'interleaved/humidity'],
+        [['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run'],
+         ['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['latitude_axis', 'longitude_axis'], include_source := true)
+WHERE latitude BETWEEN 0.99 AND 1.01 AND longitude BETWEEN 1.99 AND 2.01;" - please replace with {WORKING_DIRECTORY}
+
+[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/source_identity.test took 0.044s
+===============================================================================
+All tests passed (40 assertions in 1 test case)
+

@@ -1,0 +1,146 @@
+{
+  "authorized_s3_bucket_match": true,
+  "credentials_written_to_evidence": false,
+  "fixtures": {
+    "duckomo/dimensions.om": {
+      "sha256": "6a34044749250c0de21d65d40d4f6c270c3ae31d16ac623626bc6b2f7a01ced3",
+      "size_bytes": 120
+    },
+    "duckomo/dimensions_axis_order.om": {
+      "sha256": "54ca57549b9f00c14e8ec3997f3ed84b1970fbbf74aca2d91375932f4d6bf4f2",
+      "size_bytes": 120
+    },
+    "duckomo/dimensions_five_axes.om": {
+      "sha256": "09269b7b67db5ed317c4ece0cbee5aa84486c925ef8e6617a049e9d1c5e92680",
+      "size_bytes": 216
+    },
+    "duckomo/dimensions_perf.om": {
+      "sha256": "47a803a4769ab5a8c6622f9be5cc05b53b96152443917b7603d78dab94e1ec13",
+      "size_bytes": 31624
+    },
+    "duckomo/grids/ecmwf_ifs_hres_temperature_2m_chunk_817_o1280_supplemental.om": {
+      "sha256": "483dd0be2096d3e3fff6731509400f97591ebcfc237a941a37460f42a7a10e7f",
+      "size_bytes": 353999720
+    },
+    "duckomo/grids/ecmwf_ifs_static_hsurf_reduced_gaussian_o1280.om": {
+      "sha256": "2e8279f8bd12052ba5be5a0bcba2293dc4316097e434d6691f9e6711249e1fd3",
+      "size_bytes": 2482560
+    },
+    "duckomo/grids/lambert_chmi_aladin_central_europe_2km_cape_chunk_4135.om": {
+      "sha256": "cef407b0aae43498485b8f6e25907c1ecf8a82c6cb8aa2185fe860f0c491132c",
+      "size_bytes": 48727672
+    },
+    "duckomo/grids/rotated_cmc_gem_rdps_10km_cape_chunk_4337.om": {
+      "sha256": "3db637197d27c65051e417b850f8c3656d1c5371ab78dcbd9fc05d0e440956f7",
+      "size_bytes": 68016448
+    },
+    "duckomo/grids/stereographic_cmc_gem_rdps_cape_chunk_4337.om": {
+      "sha256": "1d701b188c8c264532f0d8fa917400a66cf28aa1c8e53a7b40781a775333c7c1",
+      "size_bytes": 23835720
+    },
+    "duckomo/multi.om": {
+      "sha256": "49aad03bf849d858f46708aba34f673ac3d4176be996f359b47736157d60f25f",
+      "size_bytes": 288
+    },
+    "duckomo/nested.om": {
+      "sha256": "dc2b75fa770f9b2814a15cb0223538953006608a8f6343923ad5d7f20eb273ae",
+      "size_bytes": 752
+    },
+    "duckomo/pfor_attributes.om": {
+      "sha256": "4801cee70d8a1b1e52dd6c17865966ecdadfaa790dbf6eddcd97620e917c0550",
+      "size_bytes": 480
+    },
+    "duckomo/projection.om": {
+      "sha256": "fb36284bf8f932c82b171c7bce28b6e767b95321d1d986dc0a1dbd3b84d88a43",
+      "size_bytes": 64088
+    },
+    "duckomo/raw.om": {
+      "sha256": "6a34044749250c0de21d65d40d4f6c270c3ae31d16ac623626bc6b2f7a01ced3",
+      "size_bytes": 120
+    },
+    "duckomo/raw_large.om": {
+      "sha256": "fb6ef03698432659f539b7ea4476c8a017fb3a4a59266e017ecd19112ccadc8f",
+      "size_bytes": 10392
+    },
+    "duckomo/source-conflict.om": {
+      "sha256": "e6ff6ad3a001cc3ae13ddcfa46aec1b27cd54a80cc6849af12573812d69171a9",
+      "size_bytes": 168
+    },
+    "duckomo/spatial_axes.om": {
+      "sha256": "74a506a754bff6c65c19e8db68de04e841d2d0eb84ac1084c4df402a35c2759a",
+      "size_bytes": 160
+    },
+    "duckomo/spatial_conflict.om": {
+      "sha256": "a2080cf4b1ff65788a240af69afc793a5981e3596ff195b4338405ed6305169f",
+      "size_bytes": 160
+    },
+    "duckomo/spatial_flat.om": {
+      "sha256": "9ae730ced86cadd9348d1c9f0e86ac09b9dad99a0b6d6e2ac20884145c3dd7e3",
+      "size_bytes": 136
+    },
+    "duckomo/spatial_single.om": {
+      "sha256": "21207eeca2b44f4e647bf0df88ca065f2c61b9da1d5feabf907044d8f8ad5b2a",
+      "size_bytes": 112
+    },
+    "duckomo/special.om": {
+      "sha256": "e2b29274a1ac920cb8fad7db177aa07dd4c51f480c94803f2ab0492a767595c0",
+      "size_bytes": 128
+    }
+  },
+  "grid_manifest_sha256": "72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f",
+  "http_base": "http://127.0.0.1:40097",
+  "http_bind": "127.0.0.1",
+  "http_control": "http://127.0.0.1:40097/__control",
+  "http_grid_paths": {
+    "ecmwf_ifs_hres_temperature_2m_chunk_817_o1280_supplemental": "/ecmwf_ifs_hres_temperature_2m_chunk_817_o1280_supplemental.om",
+    "ecmwf_ifs_static_hsurf_reduced_gaussian_o1280": "/ecmwf_ifs_static_hsurf_reduced_gaussian_o1280.om",
+    "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135": "/lambert_chmi_aladin_central_europe_2km_cape_chunk_4135.om",
+    "rotated_cmc_gem_rdps_10km_cape_chunk_4337": "/rotated_cmc_gem_rdps_10km_cape_chunk_4337.om",
+    "stereographic_cmc_gem_rdps_cape_chunk_4337": "/stereographic_cmc_gem_rdps_cape_chunk_4337.om"
+  },
+  "http_tls_ca_sha256": "63a77e8a6e5ac81ff37a6da8cb1b76c9b9fb57817695d9ce77d8b7e90e608b50",
+  "http_tls_certificate_sha256": "63a77e8a6e5ac81ff37a6da8cb1b76c9b9fb57817695d9ce77d8b7e90e608b50",
+  "https_base": "https://127.0.0.1:41007",
+  "log_directory": "/tmp/duckomo-s3-local-004/fixtures-live/logs",
+  "paired_httpfs": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/extension/httpfs/httpfs.duckdb_extension",
+  "public_grid_samples": {
+    "ecmwf_ifs_hres_temperature_2m_chunk_817_o1280_supplemental": {
+      "key": "duckomo/grids/ecmwf_ifs_hres_temperature_2m_chunk_817_o1280_supplemental.om",
+      "sha256": "483dd0be2096d3e3fff6731509400f97591ebcfc237a941a37460f42a7a10e7f",
+      "size_bytes": 353999720
+    },
+    "ecmwf_ifs_static_hsurf_reduced_gaussian_o1280": {
+      "key": "duckomo/grids/ecmwf_ifs_static_hsurf_reduced_gaussian_o1280.om",
+      "sha256": "2e8279f8bd12052ba5be5a0bcba2293dc4316097e434d6691f9e6711249e1fd3",
+      "size_bytes": 2482560
+    },
+    "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135": {
+      "key": "duckomo/grids/lambert_chmi_aladin_central_europe_2km_cape_chunk_4135.om",
+      "sha256": "cef407b0aae43498485b8f6e25907c1ecf8a82c6cb8aa2185fe860f0c491132c",
+      "size_bytes": 48727672
+    },
+    "rotated_cmc_gem_rdps_10km_cape_chunk_4337": {
+      "key": "duckomo/grids/rotated_cmc_gem_rdps_10km_cape_chunk_4337.om",
+      "sha256": "3db637197d27c65051e417b850f8c3656d1c5371ab78dcbd9fc05d0e440956f7",
+      "size_bytes": 68016448
+    },
+    "stereographic_cmc_gem_rdps_cape_chunk_4337": {
+      "key": "duckomo/grids/stereographic_cmc_gem_rdps_cape_chunk_4337.om",
+      "sha256": "1d701b188c8c264532f0d8fa917400a66cf28aa1c8e53a7b40781a775333c7c1",
+      "size_bytes": 23835720
+    }
+  },
+  "real_manifest_sha256": null,
+  "s3_audit_bind": "127.0.0.1",
+  "s3_audit_endpoint": "127.0.0.1:43457",
+  "s3_bucket": "duckomo-004-grid-fixtures",
+  "s3_client_tls_to_proxy": false,
+  "s3_region": "us-east-1",
+  "s3_service_digest": "sha256:aacd79fc54acd838dc904a84d3107355ca2b11c8ad502a0a2e01550431158c1f",
+  "s3_service_identity_independently_verified": false,
+  "s3_service_identity_source": "caller_supplied",
+  "s3_service_version": "56fbc3deb5aa832c6ed38854b0c31ec4c8acad7f",
+  "s3_upstream_endpoint": "http://127.0.0.1:8333",
+  "s3_upstream_scheme": "http",
+  "schema_version": 1
+}

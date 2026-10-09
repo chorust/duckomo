@@ -1,0 +1,3819 @@
+{
+  "status": "pass",
+  "fixture_sha256": "0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd",
+  "scope": "fixed real ncep_gfswave025 object, wind_wave_period and geographic coordinates, selected region",
+  "records": [
+    {
+      "name": "real-local",
+      "status": "pass",
+      "elapsed_seconds": 0.009542495012283325,
+      "peak_process_rss_bytes": 55005184,
+      "workers": 1,
+      "query": "SELECT wind_wave_period, latitude, longitude FROM read_om('/home/blizhan/repo/github/duckomo/build/s3-samples/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om', domain := 'ncep_gfswave025') WHERE latitude BETWEEN 10 AND 12 AND longitude BETWEEN 100 AND 103 ORDER BY ALL",
+      "expected_error": false,
+      "result_sha256": "89f21f1f96f2fb6e6bb06bbc750bbaea2eba668f0bf4b917c5fbf491f83df9a6",
+      "metrics": [
+        {
+          "schema_version": 4,
+          "scan_id": 0,
+          "query_id": "2-0",
+          "operation": "read_om",
+          "outcome": {
+            "status": "success",
+            "scan_complete": true,
+            "terminal_published": true,
+            "error_category": ""
+          },
+          "grid": {
+            "definition": "nx=1440,ny=721,lat0=-90,lon0=-180,dlat=0.25,dlon=0.25,order=separate",
+            "layout": "separate:lat,lon",
+            "source": "domain:ncep_gfswave025;upstream=b06f4760fd1f997e5559bb380f64c5e496b4a509;source=Sources/App/Gfs/GfsDomain.swift;sample_sha256=0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd"
+          },
+          "selection": {
+            "mode": "restricted",
+            "residual_filter_retained": true,
+            "fallback_reasons": [],
+            "exact_candidate_records": 117,
+            "observed_candidate_records": 117,
+            "candidate_upper_bound_records": 1038240,
+            "count_complete": true,
+            "windows": 721,
+            "ranges": 9,
+            "fallback_windows": 0,
+            "coordinate_evaluations": 1051200
+          },
+          "coordinate_preparation": {
+            "evaluations": 1051200,
+            "complete": true
+          },
+          "reads": {
+            "metadata": {
+              "bind_bytes": 2767,
+              "bind_requests": 38,
+              "scan_bytes": 5534,
+              "scan_requests": 76
+            },
+            "coordinates": {
+              "physical_bytes": 0,
+              "physical_requests": 0,
+              "logical_bytes": 0,
+              "logical_requests": 0,
+              "index_bytes": 0,
+              "index_requests": 0,
+              "data_bytes": 0,
+              "data_requests": 0,
+              "decoded_chunks": 0,
+              "decode_complete": null
+            },
+            "variables": {
+              "/secondary_swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/secondary_swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/secondary_swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/tertiary_swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/tertiary_swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/tertiary_swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wind_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wind_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wind_wave_period": {
+                "logical_index_bytes": 1602,
+                "logical_index_requests": 9,
+                "logical_data_bytes": 5139,
+                "logical_data_requests": 9,
+                "index_bytes": 1602,
+                "index_requests": 9,
+                "data_bytes": 5139,
+                "data_requests": 9,
+                "decoded_chunks": 9,
+                "decode_complete": true
+              }
+            },
+            "value_totals": {
+              "index_bytes": 1602,
+              "index_requests": 9,
+              "data_bytes": 5139,
+              "data_requests": 9,
+              "decoded_chunks": 9,
+              "decode_complete": true
+            }
+          },
+          "transport": {
+            "response_body_bytes": 0,
+            "attempts": 0,
+            "responses": 0,
+            "complete": true
+          },
+          "memory": {
+            "query_owned_peak_bytes": 41531,
+            "query_owned_upper_bound_peak_bytes": 5909528,
+            "query_owned_complete": true,
+            "query_owned_released_at_terminal": true,
+            "query_owned_scope": "DuckOMO-owned buffers and conservative container/string capacity estimates; allocator metadata excluded",
+            "component_peak_scope": "independent component high-water marks; total peak captures concurrent live accounts",
+            "components": {
+              "bind": {
+                "peak_owned_capacity_bytes": 11261,
+                "upper_bound_peak_bytes": 11261
+              },
+              "global_control": {
+                "peak_owned_capacity_bytes": 9551,
+                "upper_bound_peak_bytes": 9551
+              },
+              "selector": {
+                "peak_owned_capacity_bytes": 902,
+                "upper_bound_peak_bytes": 66422
+              },
+              "task_positions": {
+                "peak_owned_capacity_bytes": 104,
+                "upper_bound_peak_bytes": 524288
+              },
+              "batch_segments": {
+                "peak_owned_capacity_bytes": 1160,
+                "upper_bound_peak_bytes": 1544
+              },
+              "definitions": {
+                "peak_owned_capacity_bytes": 19037,
+                "upper_bound_peak_bytes": 19037
+              },
+              "coordinate_buffers": {
+                "peak_owned_capacity_bytes": 600,
+                "upper_bound_peak_bytes": 600
+              },
+              "decoder": {
+                "peak_owned_capacity_bytes": 5413,
+                "upper_bound_peak_bytes": 5818345
+              },
+              "coalescing": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              },
+              "transport_control": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              },
+              "unclassified": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              }
+            },
+            "repeated_work": {
+              "coordinate_evaluations": 1051434,
+              "value_decoded_chunks": 9,
+              "coordinate_decoded_chunks": 0,
+              "deduplicated": false
+            },
+            "coalescing_scope": "no coalescing buffers are currently allocated",
+            "decoder_upper_bound_basis": "control+min(object_size,lut_size)+object_size+chunk_scratch per active decoder; engine output reported separately",
+            "engine_output_vector_bytes": null,
+            "engine_output_vector_scope": "DuckDB-owned; not included in query-owned totals",
+            "shared_cache_peak_charged_bytes": 0,
+            "shared_cache_control_bytes": 0,
+            "shared_cache_scope": "connection",
+            "process_peak_rss_bytes": 52871168
+          },
+          "legacy_v3": {
+            "schema_version": 3,
+            "scan_id": 0,
+            "query_id": "2-0",
+            "status": "success",
+            "scan_complete": true,
+            "axes": {
+              "selection_mode": "restricted",
+              "fallback_reasons": [],
+              "optimizer_empty": false
+            },
+            "metadata": {
+              "bind": {
+                "logical_bytes": 2767,
+                "logical_requests": 38,
+                "physical_bytes": 2767,
+                "physical_requests": 38
+              },
+              "scan": {
+                "logical_bytes": 5534,
+                "logical_requests": 76,
+                "physical_bytes": 5534,
+                "physical_requests": 76
+              }
+            },
+            "coordinate": {
+              "logical_bytes": 0,
+              "logical_requests": 0,
+              "physical_bytes": 0,
+              "physical_requests": 0,
+              "logical_index_bytes": 0,
+              "logical_index_requests": 0,
+              "logical_data_bytes": 0,
+              "logical_data_requests": 0,
+              "index_bytes": 0,
+              "index_requests": 0,
+              "data_bytes": 0,
+              "data_requests": 0,
+              "decoded_chunks": 0,
+              "decode_count_complete": true
+            },
+            "variables": {
+              "/secondary_swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/secondary_swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/secondary_swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_period": {
+                "logical_index_bytes": 1602,
+                "logical_index_requests": 9,
+                "logical_data_bytes": 5139,
+                "logical_data_requests": 9,
+                "index_bytes": 1602,
+                "index_requests": 9,
+                "data_bytes": 5139,
+                "data_requests": 9,
+                "decoded_chunks": 9,
+                "decode_count_complete": true
+              }
+            },
+            "logical_requested_bytes": 15042,
+            "logical_requests": 132,
+            "physical_read_bytes": 15042,
+            "physical_read_requests": 132,
+            "bytes_fetched": 15042,
+            "read_requests": 132,
+            "response_body_bytes": 0,
+            "transport_attempts": 0,
+            "transport_responses": 0,
+            "transport_count_complete": true,
+            "response_statuses": {},
+            "cache": {
+              "enabled": false,
+              "capacity_bytes": 0,
+              "charged_bytes": 0,
+              "peak_charged_bytes": 0,
+              "control_bytes": 0,
+              "hits": 0,
+              "misses": 0,
+              "hit_bytes": 0,
+              "evictions": 0,
+              "bypass_reason": "removed",
+              "version_strength": "unverified",
+              "scope": "connection"
+            },
+            "tasks": {
+              "created": 721,
+              "claimed": 721,
+              "completed": 721,
+              "failed": 0,
+              "cancelled": 0,
+              "active_workers": 1,
+              "max_active_workers": 1
+            },
+            "candidate_rows": 117,
+            "scanner_rows": 117,
+            "result_rows": null,
+            "result_rows_state": "unobserved",
+            "decode_count_complete": true,
+            "elapsed_ms": 8.723877,
+            "peak_query_owned_bytes": 41531,
+            "query_memory_count_complete": true,
+            "query_memory_scope": "duckomo_owned_buffer_decoder_selection_capacities",
+            "peak_rss_bytes": 52871168,
+            "memory_scope": "process",
+            "legacy_v2": {
+              "schema_version": 2,
+              "query_id": "2-0",
+              "scenario": "",
+              "sql": "<redacted>",
+              "fixture_id": "",
+              "fixture_sha256": "",
+              "dependency_commits": {
+                "duckdb": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+                "extension-ci-tools": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+                "om-file-format": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+              },
+              "status": "success",
+              "result_rows": null,
+              "comparison_passed": null,
+              "metadata_bytes": 8301,
+              "metadata_requests": 114,
+              "bind_metadata_bytes": 2767,
+              "bind_metadata_requests": 38,
+              "scan_metadata_bytes": 5534,
+              "scan_metadata_requests": 76,
+              "grid_definition": "nx=1440,ny=721,lat0=-90,lon0=-180,dlat=0.25,dlon=0.25,order=separate",
+              "spatial_layout": "separate:lat,lon",
+              "grid_source": "domain:ncep_gfswave025;upstream=b06f4760fd1f997e5559bb380f64c5e496b4a509;source=Sources/App/Gfs/GfsDomain.swift;sample_sha256=0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd",
+              "selection_mode": "restricted",
+              "residual_filter_retained": true,
+              "filter_callback_invoked": true,
+              "fallback_reasons": [],
+              "candidate_rows": 117,
+              "scan_tasks_claimed": 721,
+              "active_workers": 1,
+              "optimizer_empty": false,
+              "reference_identity": "",
+              "coordinate_tolerance": 1e-09,
+              "logical_positions_match": null,
+              "null_positions_match": null,
+              "variables": {
+                "/secondary_swell_wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/secondary_swell_wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/secondary_swell_wave_period": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/swell_wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/swell_wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/swell_wave_period": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/tertiary_swell_wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/tertiary_swell_wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/tertiary_swell_wave_period": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wave_period": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wind_wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wind_wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wind_wave_period": {
+                  "index_bytes": 1602,
+                  "index_requests": 9,
+                  "data_bytes": 5139,
+                  "data_requests": 9,
+                  "decoded_chunks": 9,
+                  "decode_count_complete": true
+                }
+              },
+              "bytes_fetched": 15042,
+              "read_requests": 132,
+              "decode_count_complete": true,
+              "elapsed_ms": 8.723877,
+              "environment": {
+                "build": "v1.5.4",
+                "build_id": "53e9acc82a93cda5f89aaa93fcab62d891f1dd9bf40800161fa78df58be64c56",
+                "build_pair": "v1.5.4",
+                "cxx_abi": "libstdc++ cxx11abi=1;compiled=libstdcxx-20240904-dualabi-1",
+                "platform": "Linux AArch64;compiled=linux-aarch64"
+              },
+              "cache_policy": {
+                "application_cache": "removed"
+              },
+              "peak_rss_bytes": 52871168,
+              "error_category": ""
+            }
+          },
+          "legacy_v2": {
+            "schema_version": 2,
+            "query_id": "2-0",
+            "scenario": "",
+            "sql": "COPY (SELECT wind_wave_period, latitude, longitude FROM read_om('/home/blizhan/repo/github/duckomo/build/s3-samples/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om', domain := 'ncep_gfswave025') WHERE latitude BETWEEN 10 AND 12 AND longitude BETWEEN 100 AND 103 ORDER BY ALL) TO '/home/blizhan/repo/github/duckomo/build/official-httpfs-refactor/real-final/v1.5.4/real-local/rows.csv' (FORMAT CSV, HEADER false);",
+            "fixture_id": "",
+            "fixture_sha256": "",
+            "dependency_commits": {
+              "duckdb": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+              "extension-ci-tools": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+              "om-file-format": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+            },
+            "status": "success",
+            "result_rows": null,
+            "comparison_passed": null,
+            "metadata_bytes": 8301,
+            "metadata_requests": 114,
+            "bind_metadata_bytes": 2767,
+            "bind_metadata_requests": 38,
+            "scan_metadata_bytes": 5534,
+            "scan_metadata_requests": 76,
+            "grid_definition": "nx=1440,ny=721,lat0=-90,lon0=-180,dlat=0.25,dlon=0.25,order=separate",
+            "spatial_layout": "separate:lat,lon",
+            "grid_source": "domain:ncep_gfswave025;upstream=b06f4760fd1f997e5559bb380f64c5e496b4a509;source=Sources/App/Gfs/GfsDomain.swift;sample_sha256=0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd",
+            "selection_mode": "restricted",
+            "residual_filter_retained": true,
+            "filter_callback_invoked": true,
+            "fallback_reasons": [],
+            "candidate_rows": 117,
+            "scan_tasks_claimed": 721,
+            "active_workers": 1,
+            "optimizer_empty": false,
+            "reference_identity": "",
+            "coordinate_tolerance": 1e-09,
+            "logical_positions_match": null,
+            "null_positions_match": null,
+            "variables": {
+              "/secondary_swell_wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/secondary_swell_wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/secondary_swell_wave_period": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_period": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_period": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_period": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_period": {
+                "index_bytes": 1602,
+                "index_requests": 9,
+                "data_bytes": 5139,
+                "data_requests": 9,
+                "decoded_chunks": 9,
+                "decode_count_complete": true
+              }
+            },
+            "bytes_fetched": 15042,
+            "read_requests": 132,
+            "decode_count_complete": true,
+            "elapsed_ms": 8.723877,
+            "environment": {
+              "build": "v1.5.4",
+              "build_id": "53e9acc82a93cda5f89aaa93fcab62d891f1dd9bf40800161fa78df58be64c56",
+              "build_pair": "v1.5.4",
+              "cxx_abi": "libstdc++ cxx11abi=1;compiled=libstdcxx-20240904-dualabi-1",
+              "platform": "Linux AArch64;compiled=linux-aarch64"
+            },
+            "cache_policy": {
+              "application_cache": "removed"
+            },
+            "peak_rss_bytes": 52871168,
+            "error_category": ""
+          }
+        }
+      ],
+      "audit": {
+        "scope": "service sent bytes",
+        "available": false
+      }
+    },
+    {
+      "name": "real-http",
+      "status": "pass",
+      "elapsed_seconds": 0.115126415155828,
+      "peak_process_rss_bytes": 56516608,
+      "workers": 1,
+      "query": "SELECT wind_wave_period, latitude, longitude FROM read_om('http://127.0.0.1:45107/real.om', domain := 'ncep_gfswave025') WHERE latitude BETWEEN 10 AND 12 AND longitude BETWEEN 100 AND 103 ORDER BY ALL",
+      "expected_error": false,
+      "result_sha256": "89f21f1f96f2fb6e6bb06bbc750bbaea2eba668f0bf4b917c5fbf491f83df9a6",
+      "metrics": [
+        {
+          "schema_version": 4,
+          "scan_id": 0,
+          "query_id": "2-0",
+          "operation": "read_om",
+          "outcome": {
+            "status": "success",
+            "scan_complete": true,
+            "terminal_published": true,
+            "error_category": ""
+          },
+          "grid": {
+            "definition": "nx=1440,ny=721,lat0=-90,lon0=-180,dlat=0.25,dlon=0.25,order=separate",
+            "layout": "separate:lat,lon",
+            "source": "domain:ncep_gfswave025;upstream=b06f4760fd1f997e5559bb380f64c5e496b4a509;source=Sources/App/Gfs/GfsDomain.swift;sample_sha256=0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd"
+          },
+          "selection": {
+            "mode": "restricted",
+            "residual_filter_retained": true,
+            "fallback_reasons": [],
+            "exact_candidate_records": 117,
+            "observed_candidate_records": 117,
+            "candidate_upper_bound_records": 1038240,
+            "count_complete": true,
+            "windows": 721,
+            "ranges": 9,
+            "fallback_windows": 0,
+            "coordinate_evaluations": 1051200
+          },
+          "coordinate_preparation": {
+            "evaluations": 1051200,
+            "complete": true
+          },
+          "reads": {
+            "metadata": {
+              "bind_bytes": 2767,
+              "bind_requests": 38,
+              "scan_bytes": 5534,
+              "scan_requests": 76
+            },
+            "coordinates": {
+              "physical_bytes": 0,
+              "physical_requests": 0,
+              "logical_bytes": 0,
+              "logical_requests": 0,
+              "index_bytes": 0,
+              "index_requests": 0,
+              "data_bytes": 0,
+              "data_requests": 0,
+              "decoded_chunks": 0,
+              "decode_complete": null
+            },
+            "variables": {
+              "/secondary_swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/secondary_swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/secondary_swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/tertiary_swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/tertiary_swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/tertiary_swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wind_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wind_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wind_wave_period": {
+                "logical_index_bytes": 1602,
+                "logical_index_requests": 9,
+                "logical_data_bytes": 5139,
+                "logical_data_requests": 9,
+                "index_bytes": 1602,
+                "index_requests": 9,
+                "data_bytes": 5139,
+                "data_requests": 9,
+                "decoded_chunks": 9,
+                "decode_complete": true
+              }
+            },
+            "value_totals": {
+              "index_bytes": 1602,
+              "index_requests": 9,
+              "data_bytes": 5139,
+              "data_requests": 9,
+              "decoded_chunks": 9,
+              "decode_complete": true
+            }
+          },
+          "transport": {
+            "response_body_bytes": null,
+            "attempts": null,
+            "responses": null,
+            "complete": false
+          },
+          "memory": {
+            "query_owned_peak_bytes": 41535,
+            "query_owned_upper_bound_peak_bytes": 5909532,
+            "query_owned_complete": true,
+            "query_owned_released_at_terminal": true,
+            "query_owned_scope": "DuckOMO-owned buffers and conservative container/string capacity estimates; allocator metadata excluded",
+            "component_peak_scope": "independent component high-water marks; total peak captures concurrent live accounts",
+            "components": {
+              "bind": {
+                "peak_owned_capacity_bytes": 11091,
+                "upper_bound_peak_bytes": 11091
+              },
+              "global_control": {
+                "peak_owned_capacity_bytes": 9111,
+                "upper_bound_peak_bytes": 9111
+              },
+              "selector": {
+                "peak_owned_capacity_bytes": 902,
+                "upper_bound_peak_bytes": 66422
+              },
+              "task_positions": {
+                "peak_owned_capacity_bytes": 104,
+                "upper_bound_peak_bytes": 524288
+              },
+              "batch_segments": {
+                "peak_owned_capacity_bytes": 1160,
+                "upper_bound_peak_bytes": 1544
+              },
+              "definitions": {
+                "peak_owned_capacity_bytes": 19037,
+                "upper_bound_peak_bytes": 19037
+              },
+              "coordinate_buffers": {
+                "peak_owned_capacity_bytes": 600,
+                "upper_bound_peak_bytes": 600
+              },
+              "decoder": {
+                "peak_owned_capacity_bytes": 5413,
+                "upper_bound_peak_bytes": 5818345
+              },
+              "coalescing": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              },
+              "transport_control": {
+                "peak_owned_capacity_bytes": 529,
+                "upper_bound_peak_bytes": 529
+              },
+              "unclassified": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              }
+            },
+            "repeated_work": {
+              "coordinate_evaluations": 1051434,
+              "value_decoded_chunks": 9,
+              "coordinate_decoded_chunks": 0,
+              "deduplicated": false
+            },
+            "coalescing_scope": "no coalescing buffers are currently allocated",
+            "decoder_upper_bound_basis": "control+min(object_size,lut_size)+object_size+chunk_scratch per active decoder; engine output reported separately",
+            "engine_output_vector_bytes": null,
+            "engine_output_vector_scope": "DuckDB-owned; not included in query-owned totals",
+            "shared_cache_peak_charged_bytes": 0,
+            "shared_cache_control_bytes": 0,
+            "shared_cache_scope": "connection",
+            "process_peak_rss_bytes": 54566912
+          },
+          "legacy_v3": {
+            "schema_version": 3,
+            "scan_id": 0,
+            "query_id": "2-0",
+            "status": "success",
+            "scan_complete": true,
+            "axes": {
+              "selection_mode": "restricted",
+              "fallback_reasons": [],
+              "optimizer_empty": false
+            },
+            "metadata": {
+              "bind": {
+                "logical_bytes": 2767,
+                "logical_requests": 38,
+                "physical_bytes": 2767,
+                "physical_requests": 38
+              },
+              "scan": {
+                "logical_bytes": 5534,
+                "logical_requests": 76,
+                "physical_bytes": 5534,
+                "physical_requests": 76
+              }
+            },
+            "coordinate": {
+              "logical_bytes": 0,
+              "logical_requests": 0,
+              "physical_bytes": 0,
+              "physical_requests": 0,
+              "logical_index_bytes": 0,
+              "logical_index_requests": 0,
+              "logical_data_bytes": 0,
+              "logical_data_requests": 0,
+              "index_bytes": 0,
+              "index_requests": 0,
+              "data_bytes": 0,
+              "data_requests": 0,
+              "decoded_chunks": 0,
+              "decode_count_complete": true
+            },
+            "variables": {
+              "/secondary_swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/secondary_swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/secondary_swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_period": {
+                "logical_index_bytes": 1602,
+                "logical_index_requests": 9,
+                "logical_data_bytes": 5139,
+                "logical_data_requests": 9,
+                "index_bytes": 1602,
+                "index_requests": 9,
+                "data_bytes": 5139,
+                "data_requests": 9,
+                "decoded_chunks": 9,
+                "decode_count_complete": true
+              }
+            },
+            "logical_requested_bytes": 15042,
+            "logical_requests": 132,
+            "physical_read_bytes": 15042,
+            "physical_read_requests": 132,
+            "bytes_fetched": 15042,
+            "read_requests": 132,
+            "response_body_bytes": null,
+            "transport_attempts": null,
+            "transport_responses": null,
+            "transport_count_complete": false,
+            "response_statuses": {},
+            "cache": {
+              "enabled": false,
+              "capacity_bytes": 0,
+              "charged_bytes": 0,
+              "peak_charged_bytes": 0,
+              "control_bytes": 0,
+              "hits": 0,
+              "misses": 0,
+              "hit_bytes": 0,
+              "evictions": 0,
+              "bypass_reason": "removed",
+              "version_strength": "unverified",
+              "scope": "connection"
+            },
+            "tasks": {
+              "created": 721,
+              "claimed": 721,
+              "completed": 721,
+              "failed": 0,
+              "cancelled": 0,
+              "active_workers": 1,
+              "max_active_workers": 1
+            },
+            "candidate_rows": 117,
+            "scanner_rows": 117,
+            "result_rows": null,
+            "result_rows_state": "unobserved",
+            "decode_count_complete": true,
+            "elapsed_ms": 114.082359,
+            "peak_query_owned_bytes": 41535,
+            "query_memory_count_complete": true,
+            "query_memory_scope": "duckomo_owned_buffer_decoder_selection_capacities",
+            "peak_rss_bytes": 54566912,
+            "memory_scope": "process",
+            "legacy_v2": {
+              "schema_version": 2,
+              "query_id": "2-0",
+              "scenario": "",
+              "sql": "<redacted>",
+              "fixture_id": "",
+              "fixture_sha256": "",
+              "dependency_commits": {
+                "duckdb": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+                "extension-ci-tools": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+                "om-file-format": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+              },
+              "status": "success",
+              "result_rows": null,
+              "comparison_passed": null,
+              "metadata_bytes": 8301,
+              "metadata_requests": 114,
+              "bind_metadata_bytes": 2767,
+              "bind_metadata_requests": 38,
+              "scan_metadata_bytes": 5534,
+              "scan_metadata_requests": 76,
+              "grid_definition": "nx=1440,ny=721,lat0=-90,lon0=-180,dlat=0.25,dlon=0.25,order=separate",
+              "spatial_layout": "separate:lat,lon",
+              "grid_source": "domain:ncep_gfswave025;upstream=b06f4760fd1f997e5559bb380f64c5e496b4a509;source=Sources/App/Gfs/GfsDomain.swift;sample_sha256=0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd",
+              "selection_mode": "restricted",
+              "residual_filter_retained": true,
+              "filter_callback_invoked": true,
+              "fallback_reasons": [],
+              "candidate_rows": 117,
+              "scan_tasks_claimed": 721,
+              "active_workers": 1,
+              "optimizer_empty": false,
+              "reference_identity": "",
+              "coordinate_tolerance": 1e-09,
+              "logical_positions_match": null,
+              "null_positions_match": null,
+              "variables": {
+                "/secondary_swell_wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/secondary_swell_wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/secondary_swell_wave_period": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/swell_wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/swell_wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/swell_wave_period": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/tertiary_swell_wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/tertiary_swell_wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/tertiary_swell_wave_period": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wave_period": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wind_wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wind_wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wind_wave_period": {
+                  "index_bytes": 1602,
+                  "index_requests": 9,
+                  "data_bytes": 5139,
+                  "data_requests": 9,
+                  "decoded_chunks": 9,
+                  "decode_count_complete": true
+                }
+              },
+              "bytes_fetched": 15042,
+              "read_requests": 132,
+              "decode_count_complete": true,
+              "elapsed_ms": 114.082359,
+              "environment": {
+                "build": "v1.5.4",
+                "build_id": "53e9acc82a93cda5f89aaa93fcab62d891f1dd9bf40800161fa78df58be64c56",
+                "build_pair": "v1.5.4",
+                "cxx_abi": "libstdc++ cxx11abi=1;compiled=libstdcxx-20240904-dualabi-1",
+                "platform": "Linux AArch64;compiled=linux-aarch64"
+              },
+              "cache_policy": {
+                "application_cache": "removed"
+              },
+              "peak_rss_bytes": 54566912,
+              "error_category": ""
+            }
+          },
+          "legacy_v2": {
+            "schema_version": 2,
+            "query_id": "2-0",
+            "scenario": "",
+            "sql": "<redacted>",
+            "fixture_id": "",
+            "fixture_sha256": "",
+            "dependency_commits": {
+              "duckdb": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+              "extension-ci-tools": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+              "om-file-format": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+            },
+            "status": "success",
+            "result_rows": null,
+            "comparison_passed": null,
+            "metadata_bytes": 8301,
+            "metadata_requests": 114,
+            "bind_metadata_bytes": 2767,
+            "bind_metadata_requests": 38,
+            "scan_metadata_bytes": 5534,
+            "scan_metadata_requests": 76,
+            "grid_definition": "nx=1440,ny=721,lat0=-90,lon0=-180,dlat=0.25,dlon=0.25,order=separate",
+            "spatial_layout": "separate:lat,lon",
+            "grid_source": "domain:ncep_gfswave025;upstream=b06f4760fd1f997e5559bb380f64c5e496b4a509;source=Sources/App/Gfs/GfsDomain.swift;sample_sha256=0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd",
+            "selection_mode": "restricted",
+            "residual_filter_retained": true,
+            "filter_callback_invoked": true,
+            "fallback_reasons": [],
+            "candidate_rows": 117,
+            "scan_tasks_claimed": 721,
+            "active_workers": 1,
+            "optimizer_empty": false,
+            "reference_identity": "",
+            "coordinate_tolerance": 1e-09,
+            "logical_positions_match": null,
+            "null_positions_match": null,
+            "variables": {
+              "/secondary_swell_wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/secondary_swell_wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/secondary_swell_wave_period": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_period": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_period": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_period": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_period": {
+                "index_bytes": 1602,
+                "index_requests": 9,
+                "data_bytes": 5139,
+                "data_requests": 9,
+                "decoded_chunks": 9,
+                "decode_count_complete": true
+              }
+            },
+            "bytes_fetched": 15042,
+            "read_requests": 132,
+            "decode_count_complete": true,
+            "elapsed_ms": 114.082359,
+            "environment": {
+              "build": "v1.5.4",
+              "build_id": "53e9acc82a93cda5f89aaa93fcab62d891f1dd9bf40800161fa78df58be64c56",
+              "build_pair": "v1.5.4",
+              "cxx_abi": "libstdc++ cxx11abi=1;compiled=libstdcxx-20240904-dualabi-1",
+              "platform": "Linux AArch64;compiled=linux-aarch64"
+            },
+            "cache_policy": {
+              "application_cache": "removed"
+            },
+            "peak_rss_bytes": 54566912,
+            "error_category": ""
+          }
+        }
+      ],
+      "audit": {
+        "scope": "service sent bytes",
+        "available": false
+      }
+    },
+    {
+      "name": "real-https",
+      "status": "pass",
+      "elapsed_seconds": 0.1758238268084824,
+      "peak_process_rss_bytes": 57978880,
+      "workers": 1,
+      "query": "SELECT wind_wave_period, latitude, longitude FROM read_om('https://127.0.0.1:41225/real.om', domain := 'ncep_gfswave025') WHERE latitude BETWEEN 10 AND 12 AND longitude BETWEEN 100 AND 103 ORDER BY ALL",
+      "expected_error": false,
+      "result_sha256": "89f21f1f96f2fb6e6bb06bbc750bbaea2eba668f0bf4b917c5fbf491f83df9a6",
+      "metrics": [
+        {
+          "schema_version": 4,
+          "scan_id": 0,
+          "query_id": "2-0",
+          "operation": "read_om",
+          "outcome": {
+            "status": "success",
+            "scan_complete": true,
+            "terminal_published": true,
+            "error_category": ""
+          },
+          "grid": {
+            "definition": "nx=1440,ny=721,lat0=-90,lon0=-180,dlat=0.25,dlon=0.25,order=separate",
+            "layout": "separate:lat,lon",
+            "source": "domain:ncep_gfswave025;upstream=b06f4760fd1f997e5559bb380f64c5e496b4a509;source=Sources/App/Gfs/GfsDomain.swift;sample_sha256=0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd"
+          },
+          "selection": {
+            "mode": "restricted",
+            "residual_filter_retained": true,
+            "fallback_reasons": [],
+            "exact_candidate_records": 117,
+            "observed_candidate_records": 117,
+            "candidate_upper_bound_records": 1038240,
+            "count_complete": true,
+            "windows": 721,
+            "ranges": 9,
+            "fallback_windows": 0,
+            "coordinate_evaluations": 1051200
+          },
+          "coordinate_preparation": {
+            "evaluations": 1051200,
+            "complete": true
+          },
+          "reads": {
+            "metadata": {
+              "bind_bytes": 2767,
+              "bind_requests": 38,
+              "scan_bytes": 5534,
+              "scan_requests": 76
+            },
+            "coordinates": {
+              "physical_bytes": 0,
+              "physical_requests": 0,
+              "logical_bytes": 0,
+              "logical_requests": 0,
+              "index_bytes": 0,
+              "index_requests": 0,
+              "data_bytes": 0,
+              "data_requests": 0,
+              "decoded_chunks": 0,
+              "decode_complete": null
+            },
+            "variables": {
+              "/secondary_swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/secondary_swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/secondary_swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/tertiary_swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/tertiary_swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/tertiary_swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wind_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wind_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wind_wave_period": {
+                "logical_index_bytes": 1602,
+                "logical_index_requests": 9,
+                "logical_data_bytes": 5139,
+                "logical_data_requests": 9,
+                "index_bytes": 1602,
+                "index_requests": 9,
+                "data_bytes": 5139,
+                "data_requests": 9,
+                "decoded_chunks": 9,
+                "decode_complete": true
+              }
+            },
+            "value_totals": {
+              "index_bytes": 1602,
+              "index_requests": 9,
+              "data_bytes": 5139,
+              "data_requests": 9,
+              "decoded_chunks": 9,
+              "decode_complete": true
+            }
+          },
+          "transport": {
+            "response_body_bytes": null,
+            "attempts": null,
+            "responses": null,
+            "complete": false
+          },
+          "memory": {
+            "query_owned_peak_bytes": 41538,
+            "query_owned_upper_bound_peak_bytes": 5909535,
+            "query_owned_complete": true,
+            "query_owned_released_at_terminal": true,
+            "query_owned_scope": "DuckOMO-owned buffers and conservative container/string capacity estimates; allocator metadata excluded",
+            "component_peak_scope": "independent component high-water marks; total peak captures concurrent live accounts",
+            "components": {
+              "bind": {
+                "peak_owned_capacity_bytes": 11093,
+                "upper_bound_peak_bytes": 11093
+              },
+              "global_control": {
+                "peak_owned_capacity_bytes": 9111,
+                "upper_bound_peak_bytes": 9111
+              },
+              "selector": {
+                "peak_owned_capacity_bytes": 902,
+                "upper_bound_peak_bytes": 66422
+              },
+              "task_positions": {
+                "peak_owned_capacity_bytes": 104,
+                "upper_bound_peak_bytes": 524288
+              },
+              "batch_segments": {
+                "peak_owned_capacity_bytes": 1160,
+                "upper_bound_peak_bytes": 1544
+              },
+              "definitions": {
+                "peak_owned_capacity_bytes": 19037,
+                "upper_bound_peak_bytes": 19037
+              },
+              "coordinate_buffers": {
+                "peak_owned_capacity_bytes": 600,
+                "upper_bound_peak_bytes": 600
+              },
+              "decoder": {
+                "peak_owned_capacity_bytes": 5413,
+                "upper_bound_peak_bytes": 5818345
+              },
+              "coalescing": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              },
+              "transport_control": {
+                "peak_owned_capacity_bytes": 531,
+                "upper_bound_peak_bytes": 531
+              },
+              "unclassified": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              }
+            },
+            "repeated_work": {
+              "coordinate_evaluations": 1051434,
+              "value_decoded_chunks": 9,
+              "coordinate_decoded_chunks": 0,
+              "deduplicated": false
+            },
+            "coalescing_scope": "no coalescing buffers are currently allocated",
+            "decoder_upper_bound_basis": "control+min(object_size,lut_size)+object_size+chunk_scratch per active decoder; engine output reported separately",
+            "engine_output_vector_bytes": null,
+            "engine_output_vector_scope": "DuckDB-owned; not included in query-owned totals",
+            "shared_cache_peak_charged_bytes": 0,
+            "shared_cache_control_bytes": 0,
+            "shared_cache_scope": "connection",
+            "process_peak_rss_bytes": 55848960
+          },
+          "legacy_v3": {
+            "schema_version": 3,
+            "scan_id": 0,
+            "query_id": "2-0",
+            "status": "success",
+            "scan_complete": true,
+            "axes": {
+              "selection_mode": "restricted",
+              "fallback_reasons": [],
+              "optimizer_empty": false
+            },
+            "metadata": {
+              "bind": {
+                "logical_bytes": 2767,
+                "logical_requests": 38,
+                "physical_bytes": 2767,
+                "physical_requests": 38
+              },
+              "scan": {
+                "logical_bytes": 5534,
+                "logical_requests": 76,
+                "physical_bytes": 5534,
+                "physical_requests": 76
+              }
+            },
+            "coordinate": {
+              "logical_bytes": 0,
+              "logical_requests": 0,
+              "physical_bytes": 0,
+              "physical_requests": 0,
+              "logical_index_bytes": 0,
+              "logical_index_requests": 0,
+              "logical_data_bytes": 0,
+              "logical_data_requests": 0,
+              "index_bytes": 0,
+              "index_requests": 0,
+              "data_bytes": 0,
+              "data_requests": 0,
+              "decoded_chunks": 0,
+              "decode_count_complete": true
+            },
+            "variables": {
+              "/secondary_swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/secondary_swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/secondary_swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_period": {
+                "logical_index_bytes": 1602,
+                "logical_index_requests": 9,
+                "logical_data_bytes": 5139,
+                "logical_data_requests": 9,
+                "index_bytes": 1602,
+                "index_requests": 9,
+                "data_bytes": 5139,
+                "data_requests": 9,
+                "decoded_chunks": 9,
+                "decode_count_complete": true
+              }
+            },
+            "logical_requested_bytes": 15042,
+            "logical_requests": 132,
+            "physical_read_bytes": 15042,
+            "physical_read_requests": 132,
+            "bytes_fetched": 15042,
+            "read_requests": 132,
+            "response_body_bytes": null,
+            "transport_attempts": null,
+            "transport_responses": null,
+            "transport_count_complete": false,
+            "response_statuses": {},
+            "cache": {
+              "enabled": false,
+              "capacity_bytes": 0,
+              "charged_bytes": 0,
+              "peak_charged_bytes": 0,
+              "control_bytes": 0,
+              "hits": 0,
+              "misses": 0,
+              "hit_bytes": 0,
+              "evictions": 0,
+              "bypass_reason": "removed",
+              "version_strength": "unverified",
+              "scope": "connection"
+            },
+            "tasks": {
+              "created": 721,
+              "claimed": 721,
+              "completed": 721,
+              "failed": 0,
+              "cancelled": 0,
+              "active_workers": 1,
+              "max_active_workers": 1
+            },
+            "candidate_rows": 117,
+            "scanner_rows": 117,
+            "result_rows": null,
+            "result_rows_state": "unobserved",
+            "decode_count_complete": true,
+            "elapsed_ms": 174.698106,
+            "peak_query_owned_bytes": 41538,
+            "query_memory_count_complete": true,
+            "query_memory_scope": "duckomo_owned_buffer_decoder_selection_capacities",
+            "peak_rss_bytes": 55848960,
+            "memory_scope": "process",
+            "legacy_v2": {
+              "schema_version": 2,
+              "query_id": "2-0",
+              "scenario": "",
+              "sql": "<redacted>",
+              "fixture_id": "",
+              "fixture_sha256": "",
+              "dependency_commits": {
+                "duckdb": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+                "extension-ci-tools": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+                "om-file-format": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+              },
+              "status": "success",
+              "result_rows": null,
+              "comparison_passed": null,
+              "metadata_bytes": 8301,
+              "metadata_requests": 114,
+              "bind_metadata_bytes": 2767,
+              "bind_metadata_requests": 38,
+              "scan_metadata_bytes": 5534,
+              "scan_metadata_requests": 76,
+              "grid_definition": "nx=1440,ny=721,lat0=-90,lon0=-180,dlat=0.25,dlon=0.25,order=separate",
+              "spatial_layout": "separate:lat,lon",
+              "grid_source": "domain:ncep_gfswave025;upstream=b06f4760fd1f997e5559bb380f64c5e496b4a509;source=Sources/App/Gfs/GfsDomain.swift;sample_sha256=0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd",
+              "selection_mode": "restricted",
+              "residual_filter_retained": true,
+              "filter_callback_invoked": true,
+              "fallback_reasons": [],
+              "candidate_rows": 117,
+              "scan_tasks_claimed": 721,
+              "active_workers": 1,
+              "optimizer_empty": false,
+              "reference_identity": "",
+              "coordinate_tolerance": 1e-09,
+              "logical_positions_match": null,
+              "null_positions_match": null,
+              "variables": {
+                "/secondary_swell_wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/secondary_swell_wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/secondary_swell_wave_period": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/swell_wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/swell_wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/swell_wave_period": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/tertiary_swell_wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/tertiary_swell_wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/tertiary_swell_wave_period": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wave_period": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wind_wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wind_wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wind_wave_period": {
+                  "index_bytes": 1602,
+                  "index_requests": 9,
+                  "data_bytes": 5139,
+                  "data_requests": 9,
+                  "decoded_chunks": 9,
+                  "decode_count_complete": true
+                }
+              },
+              "bytes_fetched": 15042,
+              "read_requests": 132,
+              "decode_count_complete": true,
+              "elapsed_ms": 174.698106,
+              "environment": {
+                "build": "v1.5.4",
+                "build_id": "53e9acc82a93cda5f89aaa93fcab62d891f1dd9bf40800161fa78df58be64c56",
+                "build_pair": "v1.5.4",
+                "cxx_abi": "libstdc++ cxx11abi=1;compiled=libstdcxx-20240904-dualabi-1",
+                "platform": "Linux AArch64;compiled=linux-aarch64"
+              },
+              "cache_policy": {
+                "application_cache": "removed"
+              },
+              "peak_rss_bytes": 55848960,
+              "error_category": ""
+            }
+          },
+          "legacy_v2": {
+            "schema_version": 2,
+            "query_id": "2-0",
+            "scenario": "",
+            "sql": "<redacted>",
+            "fixture_id": "",
+            "fixture_sha256": "",
+            "dependency_commits": {
+              "duckdb": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+              "extension-ci-tools": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+              "om-file-format": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+            },
+            "status": "success",
+            "result_rows": null,
+            "comparison_passed": null,
+            "metadata_bytes": 8301,
+            "metadata_requests": 114,
+            "bind_metadata_bytes": 2767,
+            "bind_metadata_requests": 38,
+            "scan_metadata_bytes": 5534,
+            "scan_metadata_requests": 76,
+            "grid_definition": "nx=1440,ny=721,lat0=-90,lon0=-180,dlat=0.25,dlon=0.25,order=separate",
+            "spatial_layout": "separate:lat,lon",
+            "grid_source": "domain:ncep_gfswave025;upstream=b06f4760fd1f997e5559bb380f64c5e496b4a509;source=Sources/App/Gfs/GfsDomain.swift;sample_sha256=0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd",
+            "selection_mode": "restricted",
+            "residual_filter_retained": true,
+            "filter_callback_invoked": true,
+            "fallback_reasons": [],
+            "candidate_rows": 117,
+            "scan_tasks_claimed": 721,
+            "active_workers": 1,
+            "optimizer_empty": false,
+            "reference_identity": "",
+            "coordinate_tolerance": 1e-09,
+            "logical_positions_match": null,
+            "null_positions_match": null,
+            "variables": {
+              "/secondary_swell_wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/secondary_swell_wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/secondary_swell_wave_period": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_period": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_period": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_period": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_period": {
+                "index_bytes": 1602,
+                "index_requests": 9,
+                "data_bytes": 5139,
+                "data_requests": 9,
+                "decoded_chunks": 9,
+                "decode_count_complete": true
+              }
+            },
+            "bytes_fetched": 15042,
+            "read_requests": 132,
+            "decode_count_complete": true,
+            "elapsed_ms": 174.698106,
+            "environment": {
+              "build": "v1.5.4",
+              "build_id": "53e9acc82a93cda5f89aaa93fcab62d891f1dd9bf40800161fa78df58be64c56",
+              "build_pair": "v1.5.4",
+              "cxx_abi": "libstdc++ cxx11abi=1;compiled=libstdcxx-20240904-dualabi-1",
+              "platform": "Linux AArch64;compiled=linux-aarch64"
+            },
+            "cache_policy": {
+              "application_cache": "removed"
+            },
+            "peak_rss_bytes": 55848960,
+            "error_category": ""
+          }
+        }
+      ],
+      "audit": {
+        "scope": "service sent bytes",
+        "available": false
+      }
+    },
+    {
+      "name": "real-s3",
+      "status": "pass",
+      "elapsed_seconds": 0.20499620400369167,
+      "peak_process_rss_bytes": 56160256,
+      "workers": 1,
+      "query": "SELECT wind_wave_period, latitude, longitude FROM read_om('s3://duckomo-grid-tests/duckomo/real.om', domain := 'ncep_gfswave025') WHERE latitude BETWEEN 10 AND 12 AND longitude BETWEEN 100 AND 103 ORDER BY ALL",
+      "expected_error": false,
+      "result_sha256": "89f21f1f96f2fb6e6bb06bbc750bbaea2eba668f0bf4b917c5fbf491f83df9a6",
+      "metrics": [
+        {
+          "schema_version": 4,
+          "scan_id": 0,
+          "query_id": "2-0",
+          "operation": "read_om",
+          "outcome": {
+            "status": "success",
+            "scan_complete": true,
+            "terminal_published": true,
+            "error_category": ""
+          },
+          "grid": {
+            "definition": "nx=1440,ny=721,lat0=-90,lon0=-180,dlat=0.25,dlon=0.25,order=separate",
+            "layout": "separate:lat,lon",
+            "source": "domain:ncep_gfswave025;upstream=b06f4760fd1f997e5559bb380f64c5e496b4a509;source=Sources/App/Gfs/GfsDomain.swift;sample_sha256=0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd"
+          },
+          "selection": {
+            "mode": "restricted",
+            "residual_filter_retained": true,
+            "fallback_reasons": [],
+            "exact_candidate_records": 117,
+            "observed_candidate_records": 117,
+            "candidate_upper_bound_records": 1038240,
+            "count_complete": true,
+            "windows": 721,
+            "ranges": 9,
+            "fallback_windows": 0,
+            "coordinate_evaluations": 1051200
+          },
+          "coordinate_preparation": {
+            "evaluations": 1051200,
+            "complete": true
+          },
+          "reads": {
+            "metadata": {
+              "bind_bytes": 2767,
+              "bind_requests": 38,
+              "scan_bytes": 5534,
+              "scan_requests": 76
+            },
+            "coordinates": {
+              "physical_bytes": 0,
+              "physical_requests": 0,
+              "logical_bytes": 0,
+              "logical_requests": 0,
+              "index_bytes": 0,
+              "index_requests": 0,
+              "data_bytes": 0,
+              "data_requests": 0,
+              "decoded_chunks": 0,
+              "decode_complete": null
+            },
+            "variables": {
+              "/secondary_swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/secondary_swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/secondary_swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/tertiary_swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/tertiary_swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/tertiary_swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wind_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wind_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_complete": true
+              },
+              "/wind_wave_period": {
+                "logical_index_bytes": 1602,
+                "logical_index_requests": 9,
+                "logical_data_bytes": 5139,
+                "logical_data_requests": 9,
+                "index_bytes": 1602,
+                "index_requests": 9,
+                "data_bytes": 5139,
+                "data_requests": 9,
+                "decoded_chunks": 9,
+                "decode_complete": true
+              }
+            },
+            "value_totals": {
+              "index_bytes": 1602,
+              "index_requests": 9,
+              "data_bytes": 5139,
+              "data_requests": 9,
+              "decoded_chunks": 9,
+              "decode_complete": true
+            }
+          },
+          "transport": {
+            "response_body_bytes": null,
+            "attempts": null,
+            "responses": null,
+            "complete": false
+          },
+          "memory": {
+            "query_owned_peak_bytes": 41530,
+            "query_owned_upper_bound_peak_bytes": 5909527,
+            "query_owned_complete": true,
+            "query_owned_released_at_terminal": true,
+            "query_owned_scope": "DuckOMO-owned buffers and conservative container/string capacity estimates; allocator metadata excluded",
+            "component_peak_scope": "independent component high-water marks; total peak captures concurrent live accounts",
+            "components": {
+              "bind": {
+                "peak_owned_capacity_bytes": 11109,
+                "upper_bound_peak_bytes": 11109
+              },
+              "global_control": {
+                "peak_owned_capacity_bytes": 9111,
+                "upper_bound_peak_bytes": 9111
+              },
+              "selector": {
+                "peak_owned_capacity_bytes": 902,
+                "upper_bound_peak_bytes": 66422
+              },
+              "task_positions": {
+                "peak_owned_capacity_bytes": 104,
+                "upper_bound_peak_bytes": 524288
+              },
+              "batch_segments": {
+                "peak_owned_capacity_bytes": 1160,
+                "upper_bound_peak_bytes": 1544
+              },
+              "definitions": {
+                "peak_owned_capacity_bytes": 19037,
+                "upper_bound_peak_bytes": 19037
+              },
+              "coordinate_buffers": {
+                "peak_owned_capacity_bytes": 600,
+                "upper_bound_peak_bytes": 600
+              },
+              "decoder": {
+                "peak_owned_capacity_bytes": 5413,
+                "upper_bound_peak_bytes": 5818345
+              },
+              "coalescing": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              },
+              "transport_control": {
+                "peak_owned_capacity_bytes": 515,
+                "upper_bound_peak_bytes": 515
+              },
+              "unclassified": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              }
+            },
+            "repeated_work": {
+              "coordinate_evaluations": 1051434,
+              "value_decoded_chunks": 9,
+              "coordinate_decoded_chunks": 0,
+              "deduplicated": false
+            },
+            "coalescing_scope": "no coalescing buffers are currently allocated",
+            "decoder_upper_bound_basis": "control+min(object_size,lut_size)+object_size+chunk_scratch per active decoder; engine output reported separately",
+            "engine_output_vector_bytes": null,
+            "engine_output_vector_scope": "DuckDB-owned; not included in query-owned totals",
+            "shared_cache_peak_charged_bytes": 0,
+            "shared_cache_control_bytes": 0,
+            "shared_cache_scope": "connection",
+            "process_peak_rss_bytes": 54628352
+          },
+          "legacy_v3": {
+            "schema_version": 3,
+            "scan_id": 0,
+            "query_id": "2-0",
+            "status": "success",
+            "scan_complete": true,
+            "axes": {
+              "selection_mode": "restricted",
+              "fallback_reasons": [],
+              "optimizer_empty": false
+            },
+            "metadata": {
+              "bind": {
+                "logical_bytes": 2767,
+                "logical_requests": 38,
+                "physical_bytes": 2767,
+                "physical_requests": 38
+              },
+              "scan": {
+                "logical_bytes": 5534,
+                "logical_requests": 76,
+                "physical_bytes": 5534,
+                "physical_requests": 76
+              }
+            },
+            "coordinate": {
+              "logical_bytes": 0,
+              "logical_requests": 0,
+              "physical_bytes": 0,
+              "physical_requests": 0,
+              "logical_index_bytes": 0,
+              "logical_index_requests": 0,
+              "logical_data_bytes": 0,
+              "logical_data_requests": 0,
+              "index_bytes": 0,
+              "index_requests": 0,
+              "data_bytes": 0,
+              "data_requests": 0,
+              "decoded_chunks": 0,
+              "decode_count_complete": true
+            },
+            "variables": {
+              "/secondary_swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/secondary_swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/secondary_swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_period": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_direction": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_height": {
+                "logical_index_bytes": 0,
+                "logical_index_requests": 0,
+                "logical_data_bytes": 0,
+                "logical_data_requests": 0,
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_period": {
+                "logical_index_bytes": 1602,
+                "logical_index_requests": 9,
+                "logical_data_bytes": 5139,
+                "logical_data_requests": 9,
+                "index_bytes": 1602,
+                "index_requests": 9,
+                "data_bytes": 5139,
+                "data_requests": 9,
+                "decoded_chunks": 9,
+                "decode_count_complete": true
+              }
+            },
+            "logical_requested_bytes": 15042,
+            "logical_requests": 132,
+            "physical_read_bytes": 15042,
+            "physical_read_requests": 132,
+            "bytes_fetched": 15042,
+            "read_requests": 132,
+            "response_body_bytes": null,
+            "transport_attempts": null,
+            "transport_responses": null,
+            "transport_count_complete": false,
+            "response_statuses": {},
+            "cache": {
+              "enabled": false,
+              "capacity_bytes": 0,
+              "charged_bytes": 0,
+              "peak_charged_bytes": 0,
+              "control_bytes": 0,
+              "hits": 0,
+              "misses": 0,
+              "hit_bytes": 0,
+              "evictions": 0,
+              "bypass_reason": "removed",
+              "version_strength": "unverified",
+              "scope": "connection"
+            },
+            "tasks": {
+              "created": 721,
+              "claimed": 721,
+              "completed": 721,
+              "failed": 0,
+              "cancelled": 0,
+              "active_workers": 1,
+              "max_active_workers": 1
+            },
+            "candidate_rows": 117,
+            "scanner_rows": 117,
+            "result_rows": null,
+            "result_rows_state": "unobserved",
+            "decode_count_complete": true,
+            "elapsed_ms": 203.900851,
+            "peak_query_owned_bytes": 41530,
+            "query_memory_count_complete": true,
+            "query_memory_scope": "duckomo_owned_buffer_decoder_selection_capacities",
+            "peak_rss_bytes": 54628352,
+            "memory_scope": "process",
+            "legacy_v2": {
+              "schema_version": 2,
+              "query_id": "2-0",
+              "scenario": "",
+              "sql": "<redacted>",
+              "fixture_id": "",
+              "fixture_sha256": "",
+              "dependency_commits": {
+                "duckdb": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+                "extension-ci-tools": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+                "om-file-format": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+              },
+              "status": "success",
+              "result_rows": null,
+              "comparison_passed": null,
+              "metadata_bytes": 8301,
+              "metadata_requests": 114,
+              "bind_metadata_bytes": 2767,
+              "bind_metadata_requests": 38,
+              "scan_metadata_bytes": 5534,
+              "scan_metadata_requests": 76,
+              "grid_definition": "nx=1440,ny=721,lat0=-90,lon0=-180,dlat=0.25,dlon=0.25,order=separate",
+              "spatial_layout": "separate:lat,lon",
+              "grid_source": "domain:ncep_gfswave025;upstream=b06f4760fd1f997e5559bb380f64c5e496b4a509;source=Sources/App/Gfs/GfsDomain.swift;sample_sha256=0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd",
+              "selection_mode": "restricted",
+              "residual_filter_retained": true,
+              "filter_callback_invoked": true,
+              "fallback_reasons": [],
+              "candidate_rows": 117,
+              "scan_tasks_claimed": 721,
+              "active_workers": 1,
+              "optimizer_empty": false,
+              "reference_identity": "",
+              "coordinate_tolerance": 1e-09,
+              "logical_positions_match": null,
+              "null_positions_match": null,
+              "variables": {
+                "/secondary_swell_wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/secondary_swell_wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/secondary_swell_wave_period": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/swell_wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/swell_wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/swell_wave_period": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/tertiary_swell_wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/tertiary_swell_wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/tertiary_swell_wave_period": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wave_period": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wind_wave_direction": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wind_wave_height": {
+                  "index_bytes": 0,
+                  "index_requests": 0,
+                  "data_bytes": 0,
+                  "data_requests": 0,
+                  "decoded_chunks": 0,
+                  "decode_count_complete": true
+                },
+                "/wind_wave_period": {
+                  "index_bytes": 1602,
+                  "index_requests": 9,
+                  "data_bytes": 5139,
+                  "data_requests": 9,
+                  "decoded_chunks": 9,
+                  "decode_count_complete": true
+                }
+              },
+              "bytes_fetched": 15042,
+              "read_requests": 132,
+              "decode_count_complete": true,
+              "elapsed_ms": 203.900851,
+              "environment": {
+                "build": "v1.5.4",
+                "build_id": "53e9acc82a93cda5f89aaa93fcab62d891f1dd9bf40800161fa78df58be64c56",
+                "build_pair": "v1.5.4",
+                "cxx_abi": "libstdc++ cxx11abi=1;compiled=libstdcxx-20240904-dualabi-1",
+                "platform": "Linux AArch64;compiled=linux-aarch64"
+              },
+              "cache_policy": {
+                "application_cache": "removed"
+              },
+              "peak_rss_bytes": 54628352,
+              "error_category": ""
+            }
+          },
+          "legacy_v2": {
+            "schema_version": 2,
+            "query_id": "2-0",
+            "scenario": "",
+            "sql": "<redacted>",
+            "fixture_id": "",
+            "fixture_sha256": "",
+            "dependency_commits": {
+              "duckdb": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+              "extension-ci-tools": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+              "om-file-format": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+            },
+            "status": "success",
+            "result_rows": null,
+            "comparison_passed": null,
+            "metadata_bytes": 8301,
+            "metadata_requests": 114,
+            "bind_metadata_bytes": 2767,
+            "bind_metadata_requests": 38,
+            "scan_metadata_bytes": 5534,
+            "scan_metadata_requests": 76,
+            "grid_definition": "nx=1440,ny=721,lat0=-90,lon0=-180,dlat=0.25,dlon=0.25,order=separate",
+            "spatial_layout": "separate:lat,lon",
+            "grid_source": "domain:ncep_gfswave025;upstream=b06f4760fd1f997e5559bb380f64c5e496b4a509;source=Sources/App/Gfs/GfsDomain.swift;sample_sha256=0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd",
+            "selection_mode": "restricted",
+            "residual_filter_retained": true,
+            "filter_callback_invoked": true,
+            "fallback_reasons": [],
+            "candidate_rows": 117,
+            "scan_tasks_claimed": 721,
+            "active_workers": 1,
+            "optimizer_empty": false,
+            "reference_identity": "",
+            "coordinate_tolerance": 1e-09,
+            "logical_positions_match": null,
+            "null_positions_match": null,
+            "variables": {
+              "/secondary_swell_wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/secondary_swell_wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/secondary_swell_wave_period": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/swell_wave_period": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/tertiary_swell_wave_period": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wave_period": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_direction": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_height": {
+                "index_bytes": 0,
+                "index_requests": 0,
+                "data_bytes": 0,
+                "data_requests": 0,
+                "decoded_chunks": 0,
+                "decode_count_complete": true
+              },
+              "/wind_wave_period": {
+                "index_bytes": 1602,
+                "index_requests": 9,
+                "data_bytes": 5139,
+                "data_requests": 9,
+                "decoded_chunks": 9,
+                "decode_count_complete": true
+              }
+            },
+            "bytes_fetched": 15042,
+            "read_requests": 132,
+            "decode_count_complete": true,
+            "elapsed_ms": 203.900851,
+            "environment": {
+              "build": "v1.5.4",
+              "build_id": "53e9acc82a93cda5f89aaa93fcab62d891f1dd9bf40800161fa78df58be64c56",
+              "build_pair": "v1.5.4",
+              "cxx_abi": "libstdc++ cxx11abi=1;compiled=libstdcxx-20240904-dualabi-1",
+              "platform": "Linux AArch64;compiled=linux-aarch64"
+            },
+            "cache_policy": {
+              "application_cache": "removed"
+            },
+            "peak_rss_bytes": 54628352,
+            "error_category": ""
+          }
+        }
+      ],
+      "audit": {
+        "scope": "service sent bytes",
+        "available": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,251 @@
+{
+  "covered_targets": [
+    "lambert_v3",
+    "rotated_v3",
+    "stereographic_v3"
+  ],
+  "missing_targets": [
+    "gaussian_n160_v3",
+    "gaussian_n320_region_v3",
+    "gaussian_n320_v3"
+  ],
+  "reference_kind": "value",
+  "references": [
+    {
+      "artifact": {
+        "path": "build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.official-reference.csv",
+        "sha256": "7fc25500b7c6387f2408caf04322a2955f15f89cd401700016f26c4d8355e4dd",
+        "size_bytes": 1282839785
+      },
+      "command": [
+        "build/release-vcpkg/test/tools/duckomo_fixture_tool",
+        "--oracle",
+        "build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om",
+        "--csv",
+        "build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.official-reference.csv"
+      ],
+      "inputs": [
+        {
+          "path": "test/data/grids/sample-manifest.json",
+          "sha256": "e9d21cda0120fbe8ca77fc0d448ce46bfc8bfe0e8798062207905fe1ac199475",
+          "size_bytes": 35279
+        },
+        {
+          "path": "test/data/grids/source-manifest.json",
+          "sha256": "0a5ef2c284fd400ad6328b7db1fb18e531f851132064438d1e32461a9ebb1a5d",
+          "size_bytes": 7933
+        },
+        {
+          "path": "test/data/grids/definitions.json",
+          "sha256": "225caadf963c6f584850180f0e3c948cdbcebbf25a2a0d39aaef184b005f7da0",
+          "size_bytes": 222469
+        },
+        {
+          "path": "test/data/grids/version-matrix.json",
+          "sha256": "315de4aa10b2a66d1904f96b8f7b31942af4acf4f30ab5da83fe2de46763dcd1",
+          "size_bytes": 5113
+        },
+        {
+          "path": "build/release-vcpkg/test/tools/duckomo_fixture_tool",
+          "sha256": "5cc41b909d4915d21745c909e53b09855ac5172784f239aa28d6b30f7d612759",
+          "size_bytes": 3661312
+        },
+        {
+          "path": "build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om",
+          "sha256": "cef407b0aae43498485b8f6e25907c1ecf8a82c6cb8aa2185fe860f0c491132c",
+          "size_bytes": 48727672
+        }
+      ],
+      "method": "official_om_c_api",
+      "null_count": 0,
+      "official_library_commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+      "row_count": 105763320,
+      "sample_id": "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+      "target": "lambert_v3",
+      "variable_path": "/"
+    },
+    {
+      "artifact": {
+        "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.official-reference.csv",
+        "sha256": "cdcd6650b7d9acb6695886f7359ae2c8453e6b9ad972402a0699f35297be7f85",
+        "size_bytes": 1723440347
+      },
+      "command": [
+        "build/release-vcpkg/test/tools/duckomo_fixture_tool",
+        "--oracle",
+        "build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om",
+        "--csv",
+        "build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.official-reference.csv"
+      ],
+      "inputs": [
+        {
+          "path": "test/data/grids/sample-manifest.json",
+          "sha256": "e9d21cda0120fbe8ca77fc0d448ce46bfc8bfe0e8798062207905fe1ac199475",
+          "size_bytes": 35279
+        },
+        {
+          "path": "test/data/grids/source-manifest.json",
+          "sha256": "0a5ef2c284fd400ad6328b7db1fb18e531f851132064438d1e32461a9ebb1a5d",
+          "size_bytes": 7933
+        },
+        {
+          "path": "test/data/grids/definitions.json",
+          "sha256": "225caadf963c6f584850180f0e3c948cdbcebbf25a2a0d39aaef184b005f7da0",
+          "size_bytes": 222469
+        },
+        {
+          "path": "test/data/grids/version-matrix.json",
+          "sha256": "315de4aa10b2a66d1904f96b8f7b31942af4acf4f30ab5da83fe2de46763dcd1",
+          "size_bytes": 5113
+        },
+        {
+          "path": "build/release-vcpkg/test/tools/duckomo_fixture_tool",
+          "sha256": "5cc41b909d4915d21745c909e53b09855ac5172784f239aa28d6b30f7d612759",
+          "size_bytes": 3661312
+        },
+        {
+          "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om",
+          "sha256": "3db637197d27c65051e417b850f8c3656d1c5371ab78dcbd9fc05d0e440956f7",
+          "size_bytes": 68016448
+        }
+      ],
+      "method": "official_om_c_api",
+      "null_count": 40819713,
+      "official_library_commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+      "row_count": 135808200,
+      "sample_id": "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+      "target": "rotated_v3",
+      "variable_path": "/"
+    },
+    {
+      "artifact": {
+        "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.official-reference.csv",
+        "sha256": "ea70e1d945d885e2cc20159afb76db9e5a0c79effe45be2d50ddf018903ba467",
+        "size_bytes": 1106242733
+      },
+      "command": [
+        "build/release-vcpkg/test/tools/duckomo_fixture_tool",
+        "--oracle",
+        "build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.om",
+        "--csv",
+        "build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.official-reference.csv"
+      ],
+      "inputs": [
+        {
+          "path": "test/data/grids/sample-manifest.json",
+          "sha256": "e9d21cda0120fbe8ca77fc0d448ce46bfc8bfe0e8798062207905fe1ac199475",
+          "size_bytes": 35279
+        },
+        {
+          "path": "test/data/grids/source-manifest.json",
+          "sha256": "0a5ef2c284fd400ad6328b7db1fb18e531f851132064438d1e32461a9ebb1a5d",
+          "size_bytes": 7933
+        },
+        {
+          "path": "test/data/grids/definitions.json",
+          "sha256": "225caadf963c6f584850180f0e3c948cdbcebbf25a2a0d39aaef184b005f7da0",
+          "size_bytes": 222469
+        },
+        {
+          "path": "test/data/grids/version-matrix.json",
+          "sha256": "315de4aa10b2a66d1904f96b8f7b31942af4acf4f30ab5da83fe2de46763dcd1",
+          "size_bytes": 5113
+        },
+        {
+          "path": "build/release-vcpkg/test/tools/duckomo_fixture_tool",
+          "sha256": "5cc41b909d4915d21745c909e53b09855ac5172784f239aa28d6b30f7d612759",
+          "size_bytes": 3661312
+        },
+        {
+          "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.om",
+          "sha256": "1d701b188c8c264532f0d8fa917400a66cf28aa1c8e53a7b40781a775333c7c1",
+          "size_bytes": 23835720
+        }
+      ],
+      "method": "official_om_c_api",
+      "null_count": 62643412,
+      "official_library_commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+      "row_count": 87830160,
+      "sample_id": "stereographic_cmc_gem_rdps_cape_chunk_4337",
+      "target": "stereographic_v3",
+      "variable_path": "/"
+    }
+  ],
+  "required_target_gates": {
+    "gaussian_n160_v3": "no matching native OM v3 sample; not-run",
+    "gaussian_n320_region_v3": "no matching native OM v3 sample or independent local point-order reference; not-run",
+    "gaussian_n320_v3": "no full-grid N320 producer sample; not-run",
+    "lambert_v3": "official reference imported; DuckOMO comparison not-run",
+    "rotated_v3": "official reference imported; DuckOMO comparison not-run",
+    "stereographic_v3": "official reference imported; DuckOMO comparison not-run"
+  },
+  "required_targets": [
+    "rotated_v3",
+    "lambert_v3",
+    "stereographic_v3",
+    "gaussian_n160_v3",
+    "gaussian_n320_v3",
+    "gaussian_n320_region_v3"
+  ],
+  "schema_version": 1,
+  "status": "partial_not_run",
+  "supplemental_references": [
+    {
+      "acceptance_effect": "supplemental only; no O/F Gaussian support claim and no N160/N320/N-region gate is completed",
+      "classification": "real_public_open_meteo_om_v3",
+      "coordinate_reference": "not-run",
+      "duckomo_comparison": {
+        "command": "build/release-vcpkg/duckdb -unsigned -csv :memory: \"LOAD 'build/release-vcpkg/extension/duckomo/duckomo.duckdb_extension'; SET threads=1; COPY (SELECT row_number() OVER () - 1 AS index, value FROM read_om('build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.om')) TO 'build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.duckomo-output.csv' (HEADER, DELIMITER ',');\"",
+        "comparison": "every sequential DuckOMO output value equals the official OM C reference value at the same logical array index",
+        "engine": "DuckDB v1.5.4 (Variegata), source 08e34c447bae34eaee3723cac61f2878b6bdf787",
+        "exit_code": 0,
+        "extension_sha256": "21d8f662cb430ca91d1717abb2ffa2ace16db097067d9ff93775424b394e82ec",
+        "mismatches": 0,
+        "path": "build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.duckomo-output.csv",
+        "positions_compared": 6599680,
+        "sha256": "558dcb725586cb638bf129c2666c2c06be7f651bd0808e159f71ae095c9201be",
+        "size_bytes": 96204157
+      },
+      "grid_label": "Reduced Gaussian Grid O1280 (ECMWF)",
+      "grid_mapping": "not-run; the OM object does not embed axis names and its O1280 row/point mapping has not been independently established",
+      "official_reference": {
+        "columns": [
+          "index",
+          "value"
+        ],
+        "command": "build/release-vcpkg/test/tools/duckomo_fixture_tool --oracle build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.om --csv build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.official-reference.csv",
+        "exit_code": 0,
+        "om_source_commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+        "path": "build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.official-reference.csv",
+        "reader": "fixed official OM C API",
+        "rows": 6599680,
+        "sha256": "083300d4593e326236b76dfb2d55485058fdbf360a27bfab6a04a64d01eab91a",
+        "size_bytes": 83004797
+      },
+      "sample_id": "ecmwf_ifs_static_hsurf_reduced_gaussian_o1280",
+      "source": {
+        "chunk_shape": [
+          1,
+          400
+        ],
+        "object_sha256": "2e8279f8bd12052ba5be5a0bcba2293dc4316097e434d6691f9e6711249e1fd3",
+        "object_size_bytes": 2482560,
+        "shape": [
+          1,
+          6599680
+        ],
+        "uri": "s3://openmeteo/data/ecmwf_ifs/static/HSURF.om",
+        "version_id": null
+      },
+      "spatial_read_benefit": "not-run",
+      "summary": {
+        "maximum": 6366.0,
+        "minimum": -999.0,
+        "non_null_values": 6599680,
+        "null_values": 0,
+        "sum": -3285892933.0
+      }
+    }
+  ],
+  "supplemental_scope": "supplemental Gaussian-family value check only; this does not satisfy the required N160, N320, or N-region gates"
+}

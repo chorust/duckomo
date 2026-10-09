@@ -1,0 +1,18 @@
+{
+  "schema_version":1,
+  "status":"not-run",
+  "created_at_utc":"2026-10-06T20:31:35Z",
+  "requested_cases":["H0"],
+  "command_redacted":["build/release/test/tools/duckomo_grid_validation","--root","/home/blizhan/repo/github/duckomo","--manifest","/home/blizhan/repo/github/duckomo/test/data/grids/sample-manifest.json","--cases","H0","--duckdb","/home/blizhan/repo/github/duckomo/build/release/duckdb","--extension","/home/blizhan/repo/github/duckomo/build/release/extension/duckomo/duckomo.duckdb_extension","--output","/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h0-query-regeneration-20261007"],
+  "inputs":{
+    "sample_manifest":{"path":"/home/blizhan/repo/github/duckomo/test/data/grids/sample-manifest.json","exists":true,"executable":true,"sha256":"6d574eaca5a333d3370f27ff72697d7eab9f57da5ca1863463e31ee836533bce"},
+    "checked_in_sample_queries":{"path":"/home/blizhan/repo/github/duckomo/test/data/grids/sample-queries.sql","exists":true,"executable":true,"sha256":"d72ab6abce0d82778fde7b37ac872c181c1fc87f8f8a80b9f579b1e0d77f2475"},
+    "duckdb":{"path":"/home/blizhan/repo/github/duckomo/build/release/duckdb","exists":true,"executable":true,"sha256":"8ab1aa11abd5441ef4b30be13717d6db3172ef6f018821de15504c1280b22103"},
+    "extension":{"path":"/home/blizhan/repo/github/duckomo/build/release/extension/duckomo/duckomo.duckdb_extension","exists":true,"executable":true,"sha256":"3c9f91e096265939e9b58599475897476ef302e6743a36f8050a2a85d1aa8fb5"},
+    "httpfs":{"path":"","exists":false,"executable":false,"sha256":null},
+    "matrix":{"path":"","exists":false,"executable":false,"sha256":null}
+  },
+  "remote_inputs_present":{"http_base":false,"https_base":false,"s3_base":false},
+  "gates":[{"id":"H0","status":"not-run","reason":"query regeneration passed; independent coordinate/value H0 evidence is missing"}],
+  "exit_code":2
+}

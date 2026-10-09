@@ -1,0 +1,2 @@
+grid registry and canonical vectors verified: /home/blizhan/repo/github/duckomo/src/include/duckomo/generated_grid_registry.hpp
+sample queries verified: /home/blizhan/repo/github/duckomo/test/data/grids/sample-queries.sql

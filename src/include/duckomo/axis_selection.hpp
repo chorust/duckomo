@@ -1,10 +1,12 @@
 #pragma once
 
 #include <functional>
+#include <optional>
 #include <vector>
 
 #include "duckomo/axis_filter.hpp"
 #include "duckomo/batch.hpp"
+#include "duckomo/selection_budget.hpp"
 
 namespace duckdb {
 namespace duckomo {
@@ -23,7 +25,13 @@ public:
 	bool IsEmpty() const noexcept;
 	bool IsExhausted() const noexcept;
 	std::uint64_t CandidateCount() const noexcept;
+	bool MatchesShape(const std::vector<std::uint64_t> &shape) const noexcept;
+	std::uint64_t CandidateAxisCount(std::size_t axis) const;
+	std::uint64_t CandidateWindowCount(std::size_t axis, std::uint64_t window_size) const;
+	std::optional<std::uint64_t> NextSelectedAxisIndex(std::size_t axis, std::uint64_t minimum) const;
 	std::uint64_t EstimatedBytes() const noexcept;
+	std::uint64_t IntervalPayloadBytes() const noexcept;
+	bool BudgetFallback() const noexcept;
 	bool Contains(std::uint64_t logical_position) const;
 	idx_t Next(idx_t limit, std::vector<std::uint64_t> &logical_positions,
 	           const std::function<bool(std::uint64_t)> &include = {});
@@ -41,6 +49,7 @@ private:
 	bool empty = false;
 	bool exhausted = false;
 	std::uint64_t candidate_count = 0;
+	bool budget_fallback = false;
 };
 
 std::vector<BatchSegment> BuildSelectedBatchSegments(const std::vector<std::uint64_t> &shape,

@@ -1,6 +1,7 @@
 #include "duckdb.hpp"
 #include "duckdb/main/extension_helper.hpp"
 #include "duckomo_extension.hpp"
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -139,7 +140,9 @@ void Run(const std::filesystem::path &dir) {
 	duckdb::DuckDB db(nullptr, &config);
 	db.LoadStaticExtension<duckdb::DuckomoExtension>();
 	duckdb::Connection connection(db);
-	Expect(connection, "LOAD 'build/release/extension/core_functions/core_functions.duckdb_extension'", {});
+	const auto *core_override = std::getenv("DUCKOMO_CORE_FUNCTIONS_EXTENSION");
+	const std::string core_path = core_override ? core_override : "build/release/extension/core_functions/core_functions.duckdb_extension";
+	Expect(connection, "LOAD '" + core_path + "'", {});
 	const auto run = dir / "run.om", permuted = dir / "permuted.om", snapshot = dir / "snapshot.om";
 	const std::int64_t start = 1789948800; // 2026-09-21 00:00 UTC, independent known reference.
 	Fixture(run, {2, 2, 3}, "lat lon time", {start, start + 3600, start + 10800});

@@ -1,0 +1,28 @@
+Filters: /home/blizhan/repo/github/duckomo/test/sql/grid_zero_io.test
+
+[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/grid_zero_io.testReplacing deprecated __BUILD_DIRECTORY__ in test /home/blizhan/repo/github/duckomo/test/sql/grid_zero_io.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP VIEW interleaved_grid AS
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/interleaved.om',
+    dimensions := map(
+        ['interleaved/temperature','interleaved/humidity'],
+        [['time','latitude_axis','level','longitude_axis','lead_time','member','run'],
+         ['time','latitude_axis','level','longitude_axis','lead_time','member','run']]),
+    grid := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0
+        }
+    },
+    spatial_axes := ['latitude_axis','longitude_axis']);" - please replace with {WORKING_DIRECTORY}
+
+[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/grid_zero_io.test took 0.083s
+===============================================================================
+All tests passed (17 assertions in 1 test case)
+

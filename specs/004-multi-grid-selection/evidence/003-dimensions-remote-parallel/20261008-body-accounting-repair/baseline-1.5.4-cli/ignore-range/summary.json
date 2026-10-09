@@ -1,0 +1,10 @@
+{
+  "pair_id": "baseline-1.5.4",
+  "scenario": "ignore-range",
+  "query_exit": 1,
+  "status": "failure",
+  "client_body_bytes": 481,
+  "server_body_bytes": 481,
+  "transport_count_complete": true,
+  "parity": true
+}

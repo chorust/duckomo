@@ -1,0 +1,11 @@
+{
+  "schema_version":1,
+  "gate":"H3",
+  "local_synthetic_status":"pass",
+  "full_gate_status":"not-run",
+  "reason":"synthetic local zero-I/O checks passed; full H3 remains not-run until US5 source/info coverage is added",
+  "sample_manifest_sha256":"3174df44f3d9b806ad4fa50fbb5e7519b54054e915b703db6388c8c8a6f3b21c",
+  "coverage":["rotated_latlon","lambert_conformal_conic","stereographic","reduced_gaussian","interleaved_non_spatial_axes","large_value_chunk"],
+  "source_info_cases_included":false,
+  "commands":{"native":{"argv":["/home/blizhan/repo/github/duckomo/build/release-vcpkg/test/native/grid_zero_io_test"],"exit_code":0,"elapsed_ms":37.788,"peak_rss_bytes":34697216},"sql":{"argv":["/home/blizhan/repo/github/duckomo/build/release-vcpkg/test/unittest","/home/blizhan/repo/github/duckomo/test/sql/grid_zero_io.test"],"exit_code":0,"elapsed_ms":61.099,"peak_rss_bytes":45203456}}
+}

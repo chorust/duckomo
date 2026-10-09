@@ -220,6 +220,23 @@
       ]
     },
     {
+      "fixture_id": "source_conflict",
+      "path": "source-conflict.om",
+      "sha256": "e6ff6ad3a001cc3ae13ddcfa46aec1b27cd54a80cc6849af12573812d69171a9",
+      "source": "official OM C encoder and metadata writer",
+      "format_version": 3,
+      "variable_path": "/",
+      "type": "NONE container",
+      "compression": "NONE",
+      "shape": null,
+      "chunk_shape": null,
+      "axes": {"/om_source":["row","column"]},
+      "expected_schema": ["om_source FLOAT"],
+      "variables": [
+        {"variable_path": "/om_source", "type": "Float32", "compression": "FPX_XOR2D", "shape": [2,3], "chunk_shape": [1,2], "axes": ["row","column"], "expected_column": "om_source FLOAT", "null_positions": [], "reference_csv": "source_conflict.om_source.reference.csv", "reference_csv_sha256": "d877c8234157eba79c072172708c89a5a54d87aa83bd8a3307e0731dd1492ad3", "comparison": {"finite_float32_tolerance": 0, "roundtrip": "bitwise official decode"}}
+      ]
+    },
+    {
       "fixture_id": "pfor_attributes",
       "path": "pfor_attributes.om",
       "sha256": "4801cee70d8a1b1e52dd6c17865966ecdadfaa790dbf6eddcd97620e917c0550",

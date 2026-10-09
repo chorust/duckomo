@@ -1,9 +1,11 @@
 #pragma once
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
 #include <memory>
+#include <new>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -20,6 +22,71 @@ namespace duckdb {
 namespace duckomo {
 
 constexpr std::size_t OM_MAX_RANK = 8;
+
+// A byte buffer with an exact payload capacity. When it must grow, it releases
+// the old allocation before asking for the replacement, so a reader never
+// temporarily owns both old and new range buffers.
+class OmByteBuffer final {
+public:
+	OmByteBuffer() = default;
+	OmByteBuffer(const OmByteBuffer &) = delete;
+	OmByteBuffer &operator=(const OmByteBuffer &) = delete;
+	OmByteBuffer(OmByteBuffer &&) noexcept = default;
+	OmByteBuffer &operator=(OmByteBuffer &&) noexcept = default;
+
+	void EnsureSize(std::size_t size) {
+		if (size <= capacity_) {
+			size_ = size;
+			return;
+		}
+		storage_.reset();
+		size_ = 0;
+		capacity_ = 0;
+		if (size == 0) return;
+		storage_.reset(new std::uint8_t[size]);
+		size_ = size;
+		capacity_ = size;
+	}
+
+	void Release() noexcept {
+		storage_.reset();
+		size_ = 0;
+		capacity_ = 0;
+	}
+
+	std::uint8_t *Data() noexcept {
+		return storage_.get();
+	}
+	const std::uint8_t *Data() const noexcept {
+		return storage_.get();
+	}
+	std::size_t Size() const noexcept {
+		return size_;
+	}
+	std::size_t Capacity() const noexcept {
+		return capacity_;
+	}
+
+private:
+	std::unique_ptr<std::uint8_t[]> storage_;
+	std::size_t size_ = 0;
+	std::size_t capacity_ = 0;
+};
+
+// Per-decoder bounds computed from the variable metadata, selected output
+// shape, and object size. The data bound deliberately uses the complete object
+// size while the largest compressed block (Cmax) remains unknown; it does not
+// read the value LUT to estimate that bound.
+struct OmDecoderCapacityBounds final {
+	std::uint64_t decoder_control_bytes = 0;
+	std::uint64_t index_buffer_upper_bound_bytes = 0;
+	std::uint64_t data_buffer_upper_bound_bytes = 0;
+	std::uint64_t output_bytes = 0;
+	std::uint64_t chunk_scratch_bytes = 0;
+	std::uint64_t decoder_peak_upper_bound_bytes = 0;
+	std::uint64_t peak_including_output_upper_bound_bytes = 0;
+	bool data_bound_uses_object_size = false;
+};
 
 // Reader errors retain a stable category while allowing callers to include the
 // original OM error when a Sans-I/O or decode operation produced one.
@@ -92,11 +159,13 @@ inline std::uint64_t CheckedShapeProduct(const std::vector<std::uint64_t> &shape
 class OwnedMetadataBuffer final {
 public:
 	explicit OwnedMetadataBuffer(std::vector<std::uint8_t> buffer,
-	                             std::shared_ptr<ScanMetrics> metrics = nullptr)
-	    : bytes_(std::move(buffer)) {
-		if (metrics) {
-			memory_account_ = std::make_shared<ScanMemoryAccount>(std::move(metrics));
-			memory_account_->Set(sizeof(*this) + bytes_.capacity());
+	                             std::shared_ptr<ScanMemoryAccount> memory_account = nullptr)
+	    : bytes_(std::move(buffer)), memory_account_(std::move(memory_account)) {
+		if (memory_account_) {
+			const auto capacity = static_cast<std::uint64_t>(bytes_.capacity());
+			const auto payload = capacity > UINT64_MAX - sizeof(*this) ? UINT64_MAX
+			                                                        : sizeof(*this) + capacity;
+			memory_account_->Set(payload);
 		}
 	}
 
@@ -162,16 +231,19 @@ struct OmDecoderState final {
 	OmDecoderState &operator=(OmDecoderState &&) = delete;
 
 	BorrowedOmVariable variable_owner;
-	std::vector<std::uint64_t> read_offset;
-	std::vector<std::uint64_t> read_count;
-	std::vector<std::uint64_t> cube_offset;
-	std::vector<std::uint64_t> cube_dimensions;
+	std::array<std::uint64_t, OM_MAX_RANK> read_offset{};
+	std::array<std::uint64_t, OM_MAX_RANK> read_count{};
+	std::array<std::uint64_t, OM_MAX_RANK> cube_offset{};
+	std::array<std::uint64_t, OM_MAX_RANK> cube_dimensions{};
 	OmDecoder_t decoder{};
-	std::vector<std::uint8_t> index_bytes;
-	std::vector<std::uint8_t> data_bytes;
-	std::vector<std::uint8_t> chunk_scratch;
+	OmByteBuffer index_bytes;
+	OmByteBuffer data_bytes;
+	OmByteBuffer chunk_scratch;
+	OmDecoderCapacityBounds capacity_bounds;
 	std::shared_ptr<ScanMemoryAccount> memory_account;
 };
+
+void EnableOmDecoderMemoryAccounting(OmDecoderState &state, const std::shared_ptr<ScanMetrics> &metrics);
 
 // Mutable state belongs to one bound/executing query. No decoder, cursor, or
 // buffer is shared across independent scans.

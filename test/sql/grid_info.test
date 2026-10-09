@@ -1,0 +1,142 @@
+# name: test/sql/grid_info.test
+# description: Validate the one-row grid descriptor and zero-value-read contract
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+query TTTTTT
+DESCRIBE SELECT * FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);
+----
+descriptor_version	INTEGER	YES	NULL	NULL	NULL
+grid_id	VARCHAR	YES	NULL	NULL	NULL
+parent_grid_id	VARCHAR	YES	NULL	NULL	NULL
+grid_type	VARCHAR	YES	NULL	NULL	NULL
+definition	JSON	YES	NULL	NULL	NULL
+layout	JSON	YES	NULL	NULL	NULL
+crs	JSON	YES	NULL	NULL	NULL
+capabilities	JSON	YES	NULL	NULL	NULL
+provenance	JSON	YES	NULL	NULL	NULL
+object_id	VARCHAR	YES	NULL	NULL	NULL
+object_version	VARCHAR	YES	NULL	NULL	NULL
+version_strength	VARCHAR	YES	NULL	NULL	NULL
+content_verified	BOOLEAN	YES	NULL	NULL	NULL
+
+query TTTTTTTTTTTTT
+SELECT descriptor_version, grid_type, parent_grid_id IS NULL,
+       starts_with(object_id, 'sha256:'), object_version IS NULL,
+       version_strength, content_verified,
+       definition::VARCHAR LIKE '%"grid_id":"%' AND definition::VARCHAR LIKE '%"parameters":{"nx":3,"ny":2%',
+       layout::VARCHAR LIKE '%"shape":[2,3],"axes":["row","column"],"strides":[3,1]%',
+       layout::VARCHAR LIKE '%"point_axis":null%',
+       crs::VARCHAR LIKE '%"earth":{"model":"sphere","radius_m":6371229}%' AND
+           crs::VARCHAR LIKE '%"output_crs":"+proj=longlat +R=6371229 +type=crs"%' AND
+           crs::VARCHAR LIKE '%"axis_order":["longitude","latitude"]%',
+       capabilities::VARCHAR LIKE '%"point_semantics":{"status":"defined","name":"native_point_sample"%',
+       provenance::VARCHAR LIKE '%identity_hash_excludes_provenance%'
+FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);
+----
+1	rotated_latlon	true	true	true	unverifiable	false	true	true	true	true	true	true
+
+query TTTTT
+SELECT capabilities::VARCHAR LIKE '%"adjacency":{"status":"unsupported","reason"%',
+       capabilities::VARCHAR LIKE '%"cell_boundary":{"status":"unsupported","reason"%',
+       capabilities::VARCHAR LIKE '%"area":{"status":"unsupported","reason"%',
+       capabilities::VARCHAR LIKE '%"distance":{"status":"unsupported","reason"%',
+       capabilities::VARCHAR LIKE '%"vector_orientation":{"status":"unsupported","reason"%'
+FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);
+----
+true	true	true	true	true
+
+query I
+SELECT count(*) FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);
+----
+1
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE metrics LIKE '%"operation":"grid_info"%'
+  AND metrics LIKE '%"data_bytes":0,"data_requests":0,"decoded_chunks":0%'
+  AND metrics LIKE '%"terminal_published":true%';
+----
+1
+
+statement error
+SELECT * FROM om_grid_info('__WORKING_DIRECTORY__/test/data/raw.om');
+----
+<REGEX>:(?i).*om_grid_info requires a bound grid or domain.*
+
+# Spherical output carries the declared radius and explicit longitude/latitude
+# order; CRS84 is only used for a declared, source-compatible WGS84 model.
+query T
+SELECT crs::VARCHAR LIKE '%"output_crs":"+proj=longlat +R=6371000 +type=crs"%'
+FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371000.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);
+----
+true
+
+query TT
+SELECT crs::VARCHAR LIKE '%"output_crs":"OGC:CRS84"%',
+       crs::VARCHAR LIKE '%"axis_order":["longitude","latitude"]%'
+FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/grids/crs-wgs84-gaussian.om',
+    dimensions := map(['gaussian_wgs84/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'reduced_gaussian', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'wgs84', 'semi_major_m': 6378137.0, 'inverse_flattening': 298.257223563},
+        'layout': {'order': 'row_major'},
+        'parameters': {'n': 1, 'latitude_rule': 'explicit_v1',
+                       'rows': [{'latitude': 60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0},
+                                {'latitude': -60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0}],
+                       'subset_segments': NULL}
+    }, spatial_axes := ['point']);
+----
+true	true

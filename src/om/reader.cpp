@@ -1,4 +1,5 @@
 #include "duckomo/reader.hpp"
+#include "duckomo/local_file.hpp"
 
 #include <algorithm>
 #include <limits>
@@ -55,42 +56,37 @@ ReaderErrorCode TranslateOmError(OmError_t error, ReaderErrorCode fallback) {
 	throw ReaderError(ReaderErrorCode::Allocation, message);
 }
 
-void CopySelection(const std::vector<std::uint64_t> &source, std::vector<std::uint64_t> &destination,
+void CopySelection(const std::vector<std::uint64_t> &source,
+	               std::array<std::uint64_t, OM_MAX_RANK> &destination,
 	               std::uint64_t initialized_rank, const char *name) {
-	if (initialized_rank != 0 && destination.size() != source.size()) {
+	if (source.size() > destination.size()) {
+		throw ReaderError(ReaderErrorCode::InvalidSelection,
+		                  std::string("OM decoder ") + name + " rank exceeds the supported maximum");
+	}
+	if (initialized_rank != 0 && initialized_rank != source.size()) {
 		throw ReaderError(ReaderErrorCode::InvalidSelection,
 		                  std::string("OM decoder ") + name + " rank cannot change after initialization");
-	}
-	if (destination.size() != source.size()) {
-		try {
-			destination.resize(source.size());
-		} catch (const std::bad_alloc &) {
-			ThrowAllocationError("unable to allocate OM decoder selection parameters");
-		} catch (const std::length_error &) {
-			ThrowAllocationError("OM decoder selection parameters exceed addressable memory");
-		}
 	}
 	std::copy(source.begin(), source.end(), destination.begin());
 }
 
+std::uint64_t CheckedAddBytes(std::uint64_t left, std::uint64_t right, const char *description) {
+	if (left > std::numeric_limits<std::uint64_t>::max() - right) {
+		throw ReaderError(ReaderErrorCode::ShapeOverflow, std::string(description) + " byte size overflows 64 bits");
+	}
+	return left + right;
+}
+
 void RefreshDecoderMemoryAccount(OmDecoderState &state, const std::shared_ptr<ScanMetrics> &metrics) {
 	if (!metrics) return;
-	if (!state.memory_account) state.memory_account = std::make_shared<ScanMemoryAccount>(metrics);
-	const auto vector_bytes = [](std::size_t capacity, std::size_t element_size) {
-		if (element_size != 0 && capacity > std::numeric_limits<std::uint64_t>::max() / element_size) {
-			throw ReaderError(ReaderErrorCode::ShapeOverflow, "OM decoder memory accounting size overflows");
-		}
-		return static_cast<std::uint64_t>(capacity * element_size);
-	};
-	std::uint64_t bytes = sizeof(state);
-	for (const auto capacity : {state.read_offset.capacity(), state.read_count.capacity(),
-	                            state.cube_offset.capacity(), state.cube_dimensions.capacity()}) {
-		bytes += vector_bytes(capacity, sizeof(std::uint64_t));
+	if (!state.memory_account) {
+		state.memory_account = std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::Decoder);
 	}
-	bytes += vector_bytes(state.index_bytes.capacity(), sizeof(std::uint8_t));
-	bytes += vector_bytes(state.data_bytes.capacity(), sizeof(std::uint8_t));
-	bytes += vector_bytes(state.chunk_scratch.capacity(), sizeof(std::uint8_t));
-	state.memory_account->Set(bytes);
+	std::uint64_t bytes = CheckedAddBytes(sizeof(state), sizeof(ScanMemoryAccount), "OM decoder memory accounting");
+	bytes = CheckedAddBytes(bytes, state.index_bytes.Capacity(), "OM decoder memory accounting");
+	bytes = CheckedAddBytes(bytes, state.data_bytes.Capacity(), "OM decoder memory accounting");
+	bytes = CheckedAddBytes(bytes, state.chunk_scratch.Capacity(), "OM decoder memory accounting");
+	state.memory_account->Set(bytes, state.capacity_bounds.decoder_peak_upper_bound_bytes);
 }
 
 std::uint64_t CheckedByteSize(std::uint64_t elements, std::uint64_t bytes_per_element, const char *description) {
@@ -100,7 +96,46 @@ std::uint64_t CheckedByteSize(std::uint64_t elements, std::uint64_t bytes_per_el
 	return elements * bytes_per_element;
 }
 
+OmDecoderCapacityBounds CalculateCapacityBounds(const OmDecoderState &state, std::uint64_t file_size,
+	                                             std::uint64_t declared_lut_size,
+	                                             std::uint64_t output_bytes,
+	                                             std::uint64_t chunk_scratch_bytes) {
+	OmDecoderCapacityBounds bounds;
+	// Includes the fixed-rank selection arrays and OmDecoder_t in the state,
+	// the account object, and the official per-request control records. The OM
+	// metadata buffer is accounted separately by OwnedMetadataBuffer.
+	bounds.decoder_control_bytes = CheckedAddBytes(sizeof(state), sizeof(ScanMemoryAccount),
+	                                               "OM decoder control capacity");
+	bounds.decoder_control_bytes = CheckedAddBytes(bounds.decoder_control_bytes, sizeof(OmDecoder_indexRead_t),
+	                                               "OM decoder control capacity");
+	bounds.decoder_control_bytes = CheckedAddBytes(bounds.decoder_control_bytes, sizeof(OmDecoder_dataRead_t),
+	                                               "OM decoder control capacity");
+	bounds.index_buffer_upper_bound_bytes = std::min(file_size, declared_lut_size);
+	bounds.data_buffer_upper_bound_bytes = file_size;
+	bounds.output_bytes = output_bytes;
+	bounds.chunk_scratch_bytes = chunk_scratch_bytes;
+	bounds.data_bound_uses_object_size = true;
+	bounds.decoder_peak_upper_bound_bytes = bounds.decoder_control_bytes;
+	bounds.decoder_peak_upper_bound_bytes = CheckedAddBytes(bounds.decoder_peak_upper_bound_bytes,
+	                                                       bounds.index_buffer_upper_bound_bytes,
+	                                                       "OM decoder peak capacity");
+	bounds.decoder_peak_upper_bound_bytes = CheckedAddBytes(bounds.decoder_peak_upper_bound_bytes,
+	                                                       bounds.data_buffer_upper_bound_bytes,
+	                                                       "OM decoder peak capacity");
+	bounds.decoder_peak_upper_bound_bytes = CheckedAddBytes(bounds.decoder_peak_upper_bound_bytes,
+	                                                       bounds.chunk_scratch_bytes,
+	                                                       "OM decoder peak capacity");
+	bounds.peak_including_output_upper_bound_bytes = CheckedAddBytes(bounds.decoder_peak_upper_bound_bytes,
+	                                                                bounds.output_bytes,
+	                                                                "OM decoder peak including output");
+	return bounds;
+}
+
 } // namespace
+
+void EnableOmDecoderMemoryAccounting(OmDecoderState &state, const std::shared_ptr<ScanMetrics> &metrics) {
+	RefreshDecoderMemoryAccount(state, metrics);
+}
 
 OmV3Reader::OmV3Reader(LocalFile file)
 	: OmV3Reader(std::make_unique<LocalFile>(std::move(file))) {
@@ -115,7 +150,13 @@ OmV3Reader::OmV3Reader(std::unique_ptr<ReadAtFile> file) : file_(std::move(file)
 		throw ReaderError(ReaderErrorCode::TruncatedFile,
 		                  "OM file '" + file_->Path() + "' is shorter than a version header");
 	}
+	ScanMemoryAccount metadata_header_scratch(file_->Metrics(), ScanMemoryComponent::Definitions);
+	metadata_header_scratch.Set(0, CheckedAddBytes(sizeof(std::vector<std::uint8_t>), header_size,
+	                                               "OM reader header scratch upper bound"));
 	auto header = file_->ReadRange(0, header_size, ScanReadPhase::Metadata);
+	const auto header_bytes = CheckedAddBytes(sizeof(header), static_cast<std::uint64_t>(header.capacity()),
+	                                         "OM reader metadata scratch accounting");
+	metadata_header_scratch.Set(header_bytes);
 	const auto header_type = om_header_type(header.data());
 	if (header_type == OM_HEADER_INVALID) {
 		throw ReaderError(ReaderErrorCode::InvalidHeader,
@@ -132,7 +173,16 @@ OmV3Reader::OmV3Reader(std::unique_ptr<ReadAtFile> file) : file_(std::move(file)
 		                  "OM v3 file '" + file_->Path() + "' is too short to contain its trailer");
 	}
 	trailer_offset_ = file_->Size() - trailer_size;
+	metadata_header_scratch.Set(header_bytes,
+	                            CheckedAddBytes(header_bytes,
+	                                            CheckedAddBytes(sizeof(std::vector<std::uint8_t>), trailer_size,
+	                                                            "OM reader trailer scratch upper bound"),
+	                                            "OM reader header and trailer scratch upper bound"));
 	auto trailer = file_->ReadRange(trailer_offset_, trailer_size, ScanReadPhase::Metadata);
+	const auto trailer_bytes = CheckedAddBytes(sizeof(trailer), static_cast<std::uint64_t>(trailer.capacity()),
+	                                          "OM reader metadata scratch accounting");
+	metadata_header_scratch.Set(CheckedAddBytes(header_bytes, trailer_bytes,
+	                                           "OM reader metadata scratch accounting"));
 	if (!om_trailer_read(trailer.data(), &root_offset_, &root_size_)) {
 		throw ReaderError(ReaderErrorCode::InvalidHeader,
 		                  "OM file '" + file_->Path() + "' has an invalid version 3 trailer");
@@ -235,6 +285,10 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 	if (output == nullptr || output_bytes < required_output_bytes) {
 		throw ReaderError(ReaderErrorCode::InvalidSelection, "OM decoder output buffer is smaller than its cube");
 	}
+	const auto chunk_scratch_bytes = CheckedByteSize(chunk_product, element_size, "OM chunk scratch");
+	const auto *array_metadata = reinterpret_cast<const OmVariableArrayV3_t *>(variable);
+	state.capacity_bounds = CalculateCapacityBounds(state, file_->Size(), array_metadata->lut_size,
+	                                                 required_output_bytes, chunk_scratch_bytes);
 	if (io_size_max < sizeof(std::uint64_t) * 64) {
 		throw ReaderError(ReaderErrorCode::InvalidSelection,
 		                  "OM decoder maximum I/O size must be at least 512 bytes");
@@ -262,17 +316,14 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 	}
 
 	const auto scratch_size = om_decoder_read_buffer_size(&state.decoder);
-	const auto checked_scratch_size = CheckedByteSize(chunk_product, element_size, "OM chunk scratch");
-	if (scratch_size == 0 || scratch_size != checked_scratch_size ||
+	if (scratch_size == 0 || scratch_size != chunk_scratch_bytes ||
 	    scratch_size > static_cast<std::uint64_t>(std::numeric_limits<std::size_t>::max())) {
 		throw ReaderError(ReaderErrorCode::Allocation, "OM decoder reported an invalid chunk scratch size");
 	}
 	try {
-		state.chunk_scratch.resize(static_cast<std::size_t>(scratch_size));
+		state.chunk_scratch.EnsureSize(static_cast<std::size_t>(scratch_size));
 	} catch (const std::bad_alloc &) {
 		ThrowAllocationError("unable to allocate OM decoder chunk scratch");
-	} catch (const std::length_error &) {
-		ThrowAllocationError("OM decoder chunk scratch exceeds addressable memory");
 	}
 	RefreshDecoderMemoryAccount(state, metrics);
 	const auto index_phase = purpose == ScanDecodePurpose::Coordinate ? ScanReadPhase::CoordinateIndex
@@ -285,39 +336,63 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 	om_decoder_init_index_read(&state.decoder, &index_read);
 	while (om_decoder_next_index_read(&state.decoder, &index_read)) {
 		ValidateBodyRange(index_read.offset, index_read.count, "index");
+		if (index_read.count > state.capacity_bounds.index_buffer_upper_bound_bytes) {
+			throw ReaderError(ReaderErrorCode::IndexRead,
+			                  "official OM index request exceeds its declared lookup-table capacity bound");
+		}
+		if (index_read.count > static_cast<std::uint64_t>(std::numeric_limits<std::size_t>::max())) {
+			ThrowAllocationError("OM index buffer exceeds addressable memory");
+		}
 		try {
-			state.index_bytes = file_->ReadRange(index_read.offset, index_read.count, index_phase,
-			                                   metric_variable_path);
+			state.index_bytes.EnsureSize(static_cast<std::size_t>(index_read.count));
 		} catch (const std::bad_alloc &) {
 			ThrowAllocationError("unable to allocate OM index buffer");
 		}
 		RefreshDecoderMemoryAccount(state, metrics);
-		if (state.index_bytes.size() != index_read.count || state.index_bytes.empty()) {
+		if (state.index_bytes.Size() != index_read.count || state.index_bytes.Size() == 0) {
 			throw ReaderError(ReaderErrorCode::IndexRead,
 			                  "official OM decoder requested an empty or incomplete index read");
+		}
+		try {
+			file_->ReadRange(index_read.offset, index_read.count, state.index_bytes.Data(), index_phase,
+			                 metric_variable_path);
+		} catch (const std::bad_alloc &) {
+			ThrowAllocationError("unable to allocate OM index buffer");
 		}
 
 		OmDecoder_dataRead_t data_read{};
 		om_decoder_init_data_read(&data_read, &index_read);
 		OmError_t read_error = ERROR_OK;
-		while (om_decoder_next_data_read(&state.decoder, &data_read, state.index_bytes.data(),
-		                                 state.index_bytes.size(), &read_error)) {
+		while (om_decoder_next_data_read(&state.decoder, &data_read, state.index_bytes.Data(),
+		                                 state.index_bytes.Size(), &read_error)) {
 			ValidateBodyRange(data_read.offset, data_read.count, "data");
+			if (data_read.count > state.capacity_bounds.data_buffer_upper_bound_bytes) {
+				throw ReaderError(ReaderErrorCode::DataRead,
+				                  "official OM data request exceeds the object-size capacity bound");
+			}
+			if (data_read.count > static_cast<std::uint64_t>(std::numeric_limits<std::size_t>::max())) {
+				ThrowAllocationError("OM data buffer exceeds addressable memory");
+			}
 			try {
-				state.data_bytes = file_->ReadRange(data_read.offset, data_read.count, data_phase,
-				                                 metric_variable_path);
+				state.data_bytes.EnsureSize(static_cast<std::size_t>(data_read.count));
 			} catch (const std::bad_alloc &) {
 				ThrowAllocationError("unable to allocate OM data buffer");
 			}
 			RefreshDecoderMemoryAccount(state, metrics);
-			if (state.data_bytes.size() != data_read.count || state.data_bytes.empty()) {
+			if (state.data_bytes.Size() != data_read.count || state.data_bytes.Size() == 0) {
 				throw ReaderError(ReaderErrorCode::DataRead,
 				                  "official OM decoder requested an empty or incomplete data read");
 			}
+			try {
+				file_->ReadRange(data_read.offset, data_read.count, state.data_bytes.Data(), data_phase,
+				                 metric_variable_path);
+			} catch (const std::bad_alloc &) {
+				ThrowAllocationError("unable to allocate OM data buffer");
+			}
 
 			OmError_t decode_error = ERROR_OK;
-			if (!om_decoder_decode_chunks(&state.decoder, data_read.chunkIndex, state.data_bytes.data(),
-			                              data_read.count, output, state.chunk_scratch.data(), &decode_error)) {
+			if (!om_decoder_decode_chunks(&state.decoder, data_read.chunkIndex, state.data_bytes.Data(),
+			                              data_read.count, output, state.chunk_scratch.Data(), &decode_error)) {
 				if (metrics) {
 					if (purpose == ScanDecodePurpose::Coordinate) metrics->MarkCoordinateDecodeCountIncomplete();
 					else metrics->MarkDecodeCountIncomplete(variable_path);
@@ -364,7 +439,17 @@ std::shared_ptr<const OwnedMetadataBuffer> OmV3Reader::ReadAndValidateMetadata(s
 		throw ReaderError(ReaderErrorCode::InvalidMetadata,
 		                  "OM variable metadata is shorter than the official v3 variable header");
 	}
+	auto memory_account = std::make_shared<ScanMemoryAccount>(file_->Metrics(), ScanMemoryComponent::Definitions);
+	const auto metadata_upper_bound = CheckedAddBytes(
+	    CheckedAddBytes(sizeof(std::vector<std::uint8_t>), size, "OM metadata buffer upper bound"),
+	    sizeof(OwnedMetadataBuffer), "OM metadata owner upper bound");
+	memory_account->Set(0, metadata_upper_bound);
 	auto bytes = file_->ReadRange(offset, size, ScanReadPhase::Metadata);
+	const auto temporary_bytes = CheckedAddBytes(sizeof(bytes), static_cast<std::uint64_t>(bytes.capacity()),
+	                                            "OM metadata buffer accounting");
+	const auto transfer_upper_bound = CheckedAddBytes(temporary_bytes, sizeof(OwnedMetadataBuffer),
+	                                                  "OM metadata buffer accounting");
+	memory_account->Set(temporary_bytes, transfer_upper_bound);
 	const auto embedded_header_type = om_header_type(bytes.data());
 	if (embedded_header_type == OM_HEADER_LEGACY) {
 		throw ReaderError(ReaderErrorCode::UnsupportedVersion,
@@ -386,7 +471,7 @@ std::shared_ptr<const OwnedMetadataBuffer> OmV3Reader::ReadAndValidateMetadata(s
 		                  "OM array metadata is shorter than the official v3 array header");
 	}
 	try {
-		return std::make_shared<const OwnedMetadataBuffer>(std::move(bytes), file_->Metrics());
+		return std::make_shared<const OwnedMetadataBuffer>(std::move(bytes), std::move(memory_account));
 	} catch (const std::bad_alloc &) {
 		ThrowAllocationError("unable to retain OM variable metadata");
 	}

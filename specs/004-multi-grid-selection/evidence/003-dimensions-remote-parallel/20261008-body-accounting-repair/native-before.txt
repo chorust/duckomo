@@ -1,0 +1,1 @@
+httpfs_range_test: rejected response bodies, including all retries, must be counted as received bytes

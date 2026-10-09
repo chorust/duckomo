@@ -1,0 +1,290 @@
+{
+  "coordinate_reference_manifest_sha256": "47712d94197d708b7ef1d48a4679d4eb5a38aecc324cc95d60d7b613314d33c7",
+  "covered_targets": [
+    "lambert_v3",
+    "rotated_v3",
+    "stereographic_v3"
+  ],
+  "full_h1_status": "not-run",
+  "missing_targets": [
+    "gaussian_n160_v3",
+    "gaussian_n320_region_v3",
+    "gaussian_n320_v3"
+  ],
+  "results": [
+    {
+      "commands": {
+        "coordinates": {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/duckdb",
+            "-unsigned",
+            "-bail",
+            "-batch",
+            "-csv",
+            ":memory:",
+            "-f",
+            "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/rotated_cmc_gem_rdps_10km_cape_chunk_4337.coordinates.sql"
+          ],
+          "duckdb_sha256": "e55df7beb476ef350383509b564a47485d72d8438cea7097be9c52e318484f55",
+          "exit_code": 0,
+          "extension_sha256": "d4c79f729a096dba8dc0824b6e452b53ebeccdfb438ad2c7f0e514afc6a67ddc",
+          "sql_sha256": "a9e8808ff4db0b74fce2e7935176416c970bb8030afdea7a9c1f016816854882",
+          "stderr": "",
+          "stdout": ""
+        },
+        "values": {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/duckdb",
+            "-unsigned",
+            "-bail",
+            "-batch",
+            "-csv",
+            ":memory:",
+            "-f",
+            "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/rotated_cmc_gem_rdps_10km_cape_chunk_4337.values.sql"
+          ],
+          "duckdb_sha256": "e55df7beb476ef350383509b564a47485d72d8438cea7097be9c52e318484f55",
+          "exit_code": 0,
+          "extension_sha256": "d4c79f729a096dba8dc0824b6e452b53ebeccdfb438ad2c7f0e514afc6a67ddc",
+          "sql_sha256": "d8998c865d5e370358042d8c2b8d17b837914c2979a64a2abce646e0ae3bbd25",
+          "stderr": "",
+          "stdout": ""
+        }
+      },
+      "coordinate_output": {
+        "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/rotated_cmc_gem_rdps_10km_cape_chunk_4337.duckomo-coordinates.csv",
+        "sha256": "4bcc8dc8fccbb98fe3716e36f95584829b827090c519724a08d45f439dc8211a",
+        "size_bytes": 52909546
+      },
+      "coordinate_reference": {
+        "path": "/home/blizhan/repo/github/duckomo/build/grid-references/pinned-producer-f32-20261008/rotated-cmc-gem-rdps-10km-cape-chunk-4337.coordinates.csv",
+        "sha256": "be2598b5dd60b80248d58ee9f215732eafb8dd133e8305997cec90506e382552",
+        "size_bytes": 63233163
+      },
+      "coordinates": {
+        "first_exceeded_spatial_index": null,
+        "maximum_allowed_error_degrees": 0.0001,
+        "maximum_error_degrees": 1.52587890625e-05,
+        "positions_over_tolerance": 0,
+        "rows_compared": 1191300,
+        "status": "pass",
+        "worst_spatial_index": 0
+      },
+      "input_object": {
+        "path": "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om",
+        "sha256": "3db637197d27c65051e417b850f8c3656d1c5371ab78dcbd9fc05d0e440956f7"
+      },
+      "reason": null,
+      "sample_id": "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+      "scope": "expected [ny,nx,ntime] producer profile; coordinates are selected at a synthetic valid_time index zero; source-axis mapping remains separately unverified",
+      "status": "pass",
+      "target": "rotated_v3",
+      "value_output": {
+        "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/rotated_cmc_gem_rdps_10km_cape_chunk_4337.duckomo-values.csv",
+        "sha256": "7e1b94f351c2ed721192e4d53b15055128b131b01e00f607d43c9911a7211dab",
+        "size_bytes": 1790958190
+      },
+      "value_reference": {
+        "path": "/home/blizhan/repo/github/duckomo/build/grid-references/revalidated-20261007/rotated-cmc-gem-rdps-10km-cape-chunk-4337.official-reference.csv",
+        "sha256": "cdcd6650b7d9acb6695886f7359ae2c8453e6b9ad972402a0699f35297be7f85",
+        "size_bytes": 1723440347
+      },
+      "values": {
+        "comparison": "exact Float32 bit values keyed by original logical_index; NaNs compared as missing",
+        "null_count": 40819713,
+        "positions_compared": 135808200,
+        "scan_row_order": "arbitrary; unique, in-range logical indices required",
+        "status": "pass"
+      }
+    },
+    {
+      "commands": {
+        "coordinates": {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/duckdb",
+            "-unsigned",
+            "-bail",
+            "-batch",
+            "-csv",
+            ":memory:",
+            "-f",
+            "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/lambert_chmi_aladin_central_europe_2km_cape_chunk_4135.coordinates.sql"
+          ],
+          "duckdb_sha256": "e55df7beb476ef350383509b564a47485d72d8438cea7097be9c52e318484f55",
+          "exit_code": 0,
+          "extension_sha256": "d4c79f729a096dba8dc0824b6e452b53ebeccdfb438ad2c7f0e514afc6a67ddc",
+          "sql_sha256": "c495448d62a1a43f9b96660fa1380debd840d8c6d58c5ab17e4bf8bcd7fc0329",
+          "stderr": "",
+          "stdout": ""
+        },
+        "values": {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/duckdb",
+            "-unsigned",
+            "-bail",
+            "-batch",
+            "-csv",
+            ":memory:",
+            "-f",
+            "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/lambert_chmi_aladin_central_europe_2km_cape_chunk_4135.values.sql"
+          ],
+          "duckdb_sha256": "e55df7beb476ef350383509b564a47485d72d8438cea7097be9c52e318484f55",
+          "exit_code": 0,
+          "extension_sha256": "d4c79f729a096dba8dc0824b6e452b53ebeccdfb438ad2c7f0e514afc6a67ddc",
+          "sql_sha256": "997774eb8c0f5f6d8b683448e17b3411171174e45c229f161c34cbe209fbaf12",
+          "stderr": "",
+          "stdout": ""
+        }
+      },
+      "coordinate_output": {
+        "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/lambert_chmi_aladin_central_europe_2km_cape_chunk_4135.duckomo-coordinates.csv",
+        "sha256": "0b6bb06d3c3918030741546f12f89613de26d410a9755ed7165b4a2b3e59946d",
+        "size_bytes": 38462415
+      },
+      "coordinate_reference": {
+        "path": "/home/blizhan/repo/github/duckomo/build/grid-references/pinned-producer-f32-20261008/lambert-chmi-aladin-ce-cape-chunk-4135.coordinates.csv",
+        "sha256": "c9aebe8aa88a2ce11e3c7789be475b6051c90ebfeece7f2e5412bbfc2dbff719",
+        "size_bytes": 45735346
+      },
+      "coordinates": {
+        "first_exceeded_spatial_index": null,
+        "maximum_allowed_error_degrees": 0.0001,
+        "maximum_error_degrees": 1.52587890625e-05,
+        "positions_over_tolerance": 0,
+        "rows_compared": 881361,
+        "status": "pass",
+        "worst_spatial_index": 60
+      },
+      "input_object": {
+        "path": "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om",
+        "sha256": "cef407b0aae43498485b8f6e25907c1ecf8a82c6cb8aa2185fe860f0c491132c"
+      },
+      "reason": null,
+      "sample_id": "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+      "scope": "expected [ny,nx,ntime] producer profile; coordinates are selected at a synthetic valid_time index zero; source-axis mapping remains separately unverified",
+      "status": "pass",
+      "target": "lambert_v3",
+      "value_output": {
+        "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/lambert_chmi_aladin_central_europe_2km_cape_chunk_4135.duckomo-values.csv",
+        "sha256": "f607a34e8f3b135d0ce345add396243ca4829971be9ccd59ba179aa4344c9b57",
+        "size_bytes": 1494366433
+      },
+      "value_reference": {
+        "path": "/home/blizhan/repo/github/duckomo/build/grid-references/revalidated-20261007/lambert-chmi-aladin-ce-cape-chunk-4135.official-reference.csv",
+        "sha256": "7fc25500b7c6387f2408caf04322a2955f15f89cd401700016f26c4d8355e4dd",
+        "size_bytes": 1282839785
+      },
+      "values": {
+        "comparison": "exact Float32 bit values keyed by original logical_index; NaNs compared as missing",
+        "null_count": 0,
+        "positions_compared": 105763320,
+        "scan_row_order": "arbitrary; unique, in-range logical indices required",
+        "status": "pass"
+      }
+    },
+    {
+      "commands": {
+        "coordinates": {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/duckdb",
+            "-unsigned",
+            "-bail",
+            "-batch",
+            "-csv",
+            ":memory:",
+            "-f",
+            "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/stereographic_cmc_gem_rdps_cape_chunk_4337.coordinates.sql"
+          ],
+          "duckdb_sha256": "e55df7beb476ef350383509b564a47485d72d8438cea7097be9c52e318484f55",
+          "exit_code": 0,
+          "extension_sha256": "d4c79f729a096dba8dc0824b6e452b53ebeccdfb438ad2c7f0e514afc6a67ddc",
+          "sql_sha256": "416a6ee85ab37116001715eb6c9ddf0fc97ebb5170adb3ba82eef919736fdd3a",
+          "stderr": "",
+          "stdout": ""
+        },
+        "values": {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/duckdb",
+            "-unsigned",
+            "-bail",
+            "-batch",
+            "-csv",
+            ":memory:",
+            "-f",
+            "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/stereographic_cmc_gem_rdps_cape_chunk_4337.values.sql"
+          ],
+          "duckdb_sha256": "e55df7beb476ef350383509b564a47485d72d8438cea7097be9c52e318484f55",
+          "exit_code": 0,
+          "extension_sha256": "d4c79f729a096dba8dc0824b6e452b53ebeccdfb438ad2c7f0e514afc6a67ddc",
+          "sql_sha256": "06dbed34511a44a0d967e6bb351d779174fb9ab533b04e951bd1fe9187c30864",
+          "stderr": "",
+          "stdout": ""
+        }
+      },
+      "coordinate_output": {
+        "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/stereographic_cmc_gem_rdps_cape_chunk_4337.duckomo-coordinates.csv",
+        "sha256": "a35f7f3dcf470a742497f7e825cecf2ac2ae1a45a6b477217306146fc5c2b1a7",
+        "size_bytes": 33947224
+      },
+      "coordinate_reference": {
+        "path": "/home/blizhan/repo/github/duckomo/build/grid-references/pinned-producer-f32-20261008/stereographic-cmc-gem-rdps-cape-chunk-4337.coordinates.csv",
+        "sha256": "d6556760901be1a17873825f680c3df7e4e51b11704042ae8967653c232d61f0",
+        "size_bytes": 40327501
+      },
+      "coordinates": {
+        "first_exceeded_spatial_index": null,
+        "maximum_allowed_error_degrees": 0.0001,
+        "maximum_error_degrees": 3.0517578125e-05,
+        "positions_over_tolerance": 0,
+        "rows_compared": 770440,
+        "status": "pass",
+        "worst_spatial_index": 630187
+      },
+      "input_object": {
+        "path": "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.om",
+        "sha256": "1d701b188c8c264532f0d8fa917400a66cf28aa1c8e53a7b40781a775333c7c1"
+      },
+      "reason": null,
+      "sample_id": "stereographic_cmc_gem_rdps_cape_chunk_4337",
+      "scope": "expected [ny,nx,ntime] producer profile; coordinates are selected at a synthetic valid_time index zero; source-axis mapping remains separately unverified",
+      "status": "pass",
+      "target": "stereographic_v3",
+      "value_output": {
+        "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/stereographic_cmc_gem_rdps_cape_chunk_4337.duckomo-values.csv",
+        "sha256": "b840acb10288ea1053a299591bfc2a4b5a2a2588fe90c4ababfb937e2b1b24e1",
+        "size_bytes": 968686001
+      },
+      "value_reference": {
+        "path": "/home/blizhan/repo/github/duckomo/build/grid-references/revalidated-20261007/stereographic-cmc-gem-rdps-cape-chunk-4337.official-reference.csv",
+        "sha256": "ea70e1d945d885e2cc20159afb76db9e5a0c79effe45be2d50ddf018903ba467",
+        "size_bytes": 1106242733
+      },
+      "values": {
+        "comparison": "exact Float32 bit values keyed by original logical_index; NaNs compared as missing",
+        "null_count": 62643412,
+        "positions_compared": 87830160,
+        "scan_row_order": "arbitrary; unique, in-range logical indices required",
+        "status": "pass"
+      }
+    },
+    {
+      "reason": "coordinate and official full-value references are both required",
+      "status": "not-run",
+      "target": "gaussian_n160_v3"
+    },
+    {
+      "reason": "coordinate and official full-value references are both required",
+      "status": "not-run",
+      "target": "gaussian_n320_v3"
+    },
+    {
+      "reason": "coordinate and official full-value references are both required",
+      "status": "not-run",
+      "target": "gaussian_n320_region_v3"
+    }
+  ],
+  "sample_manifest_sha256": "72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f",
+  "schema_version": 1,
+  "status": "partial_pass",
+  "value_reference_manifest_sha256": "9ed46b9664c6023ee14e0fb2e5543d6829125e7dbfaeb0b0760e4906c9272e44"
+}

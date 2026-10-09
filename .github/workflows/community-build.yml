@@ -1,0 +1,64 @@
+name: Community build compatibility
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: community-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [v1.5.4, v1.5.5, v1.5.6]
+    uses: duckdb/extension-ci-tools/.github/workflows/_extension_distribution.yml@v1.5-variegata
+    with:
+      extension_name: duckomo
+      duckdb_version: ${{ matrix.version }}
+      ci_tools_version: v1.5-variegata
+      # Match the community workflow's vcpkg pins for each stable version.
+      vcpkg_commit: ${{ matrix.version == 'v1.5.6' && '84bab45d415d22042bd0b9081aea57f362da3f35' || 'cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3' }}
+      exclude_archs: "linux_amd64;linux_amd64_musl;linux_arm64_musl;osx_amd64;osx_arm64;windows_amd64;windows_arm64;windows_amd64_mingw;windows_amd64_rtools;wasm_mvp;wasm_eh;wasm_threads"
+      reduced_ci_mode: disabled
+
+  arm64-runtime:
+    needs: build
+    runs-on: ubuntu-24.04-arm
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [v1.5.4, v1.5.5, v1.5.6]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: duckomo-${{ matrix.version }}-extension-linux_arm64
+          path: build/community-artifact
+      - name: Fetch matching official CLI and HTTPFS
+        run: |
+          python3 scripts/version_matrix.py fetch-runtime --root . \
+            --matrix test/data/grids/version-matrix.json --pair '${{ matrix.version }}'
+      # The upstream distribution workflow skips tests on linux_arm64.
+      # Check its actual binary in the official engine on a native ARM runner.
+      - name: Verify community build artifact
+        run: |
+          python3 scripts/verify-community-artifact.py \
+            --version '${{ matrix.version }}' \
+            --duckdb 'build/official-matrix/${{ matrix.version }}/official/duckdb' \
+            --httpfs 'build/official-matrix/${{ matrix.version }}/official/httpfs.duckdb_extension' \
+            --extension build/community-artifact/duckomo.duckdb_extension \
+            --output 'build/community-check/${{ matrix.version }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: duckomo-${{ matrix.version }}-arm64-runtime
+          path: build/community-check/*.json
+          if-no-files-found: warn

@@ -846,7 +846,7 @@ ScenarioEvidence RunScenario(const Options &options, const JsonValue &manifest_s
 		platform["release"] = JsonValue::String(host.release);
 		platform["machine"] = JsonValue::String(host.machine);
 	}
-	platform["build"] = JsonValue::String("release");
+	platform["build"] = JsonValue::String(duckomo_validation_support::ExpectedBuildLabel());
 	platform["duckdb_cli"] = JsonValue::String(options.duckdb.string());
 	platform["extension"] = JsonValue::String(options.extension.string());
 	platform["threads"] = JsonValue::String("1");
@@ -879,9 +879,9 @@ void ValidateManifestHashes(const JsonValue &manifest, const fs::path &fixtures,
 
 void ValidatePinnedDependencies(const std::map<std::string, std::string> &dependencies) {
 	const std::map<std::string, std::string> expected = {
-	    {"duckdb", "08e34c447bae34eaee3723cac61f2878b6bdf787"},
-	    {"om-file-format", "d8855e418e2231ae8439f0c7e840fa3f93b371e3"},
-	    {"extension-ci-tools", "b777c70d30942cca5bef62d6d4fa23a13362f398"}};
+	    {"duckdb", duckomo_validation_support::ExpectedDependencyCommit("duckdb")},
+	    {"om-file-format", duckomo_validation_support::ExpectedDependencyCommit("om-file-format")},
+	    {"extension-ci-tools", duckomo_validation_support::ExpectedDependencyCommit("extension-ci-tools")}};
 	for (const auto &entry : expected) {
 		auto actual = dependencies.find(entry.first);
 		Require(actual != dependencies.end() && actual->second == entry.second,
@@ -923,10 +923,16 @@ int main(int argc, char **argv) {
 		ValidateRequiredScenarios(projection_scenarios);
 		std::string fixture_sha;
 		ValidateManifestHashes(manifest, options.fixtures, fixture_sha);
+		const auto &build_identity = duckdb::duckomo::BUILD_IDENTITY;
+		const auto resolved_dependency = [&options](const char *manifest_commit, const char *path) {
+			return manifest_commit != nullptr && manifest_commit[0] != '\0' ? std::string(manifest_commit)
+			                                                              : RunGit(options.root, path);
+		};
 		std::map<std::string, std::string> dependencies = {
-		    {"duckdb", RunGit(options.root, "duckdb")},
-		    {"om-file-format", RunGit(options.root, "third_party/om-file-format")},
-		    {"extension-ci-tools", RunGit(options.root, "extension-ci-tools")}};
+		    {"duckdb", resolved_dependency(build_identity.duckdb_commit, "duckdb")},
+		    {"om-file-format", resolved_dependency(build_identity.om_commit, "third_party/om-file-format")},
+		    {"extension-ci-tools", resolved_dependency(build_identity.extension_ci_tools_commit,
+	                                                 "extension-ci-tools")}};
 		ValidatePinnedDependencies(dependencies);
 		std::map<std::string, const JsonValue *> scenarios;
 		for (const auto &scenario : projection_scenarios.At("scenarios").array)
@@ -959,7 +965,7 @@ int main(int argc, char **argv) {
 			platform["release"] = JsonValue::String(host.release);
 			platform["machine"] = JsonValue::String(host.machine);
 		}
-		platform["build"] = JsonValue::String("release");
+		platform["build"] = JsonValue::String(duckomo_validation_support::ExpectedBuildLabel());
 		platform["threads"] = JsonValue::String("1");
 		summary["environment"] = std::move(platform);
 		auto cache_policy = JsonValue::Object();

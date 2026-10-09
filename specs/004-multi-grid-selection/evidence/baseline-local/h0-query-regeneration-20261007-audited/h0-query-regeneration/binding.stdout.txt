@@ -1,0 +1,30 @@
+{
+  "duckdb": {
+    "path": "/home/blizhan/repo/github/duckomo/build/release-vcpkg/duckdb",
+    "sha256": "3747a415e6e9d0b0c24bebab031683e4e7c5762738fe3d049e5d040affb4d015"
+  },
+  "exit_code": 0,
+  "extension": {
+    "path": "/home/blizhan/repo/github/duckomo/build/release-vcpkg/extension/duckomo/duckomo.duckdb_extension",
+    "sha256": "4c64b043fdbeb08e5b51d35030b2bb8efe47c7b9a02a3c6d27d39a50867ca2f2"
+  },
+  "mode": "bind-only; CREATE TEMP VIEW statements are prepared but never scanned",
+  "queries": {
+    "path": "/home/blizhan/repo/github/duckomo/test/data/grids/sample-queries.sql",
+    "sha256": "e6c597661f33175c06f89410b314e3e5421ade6c2a52234c17e3ed6df3020d54"
+  },
+  "stderr": "",
+  "stdout": "",
+  "view_count": 9,
+  "views": [
+    "explicit_gem_rdps_10km",
+    "domain_gem_rdps_10km",
+    "explicit_gem_regional",
+    "domain_gem_regional",
+    "explicit_aladin_central_europe_2km",
+    "domain_aladin_central_europe_2km",
+    "explicit_n160",
+    "domain_n160",
+    "values_ecmwf_hres_o1280"
+  ]
+}

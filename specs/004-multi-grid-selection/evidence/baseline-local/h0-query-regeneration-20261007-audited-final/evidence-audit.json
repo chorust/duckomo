@@ -1,0 +1,9 @@
+{
+  "schema_version":1,
+  "status":"pass",
+  "manifest_sha256":"11944437be4a187fc788b4a8a55c197d83c7dbcfbcbb871108ba20b9740163eb",
+  "validator_sha256":"3eb0594cb03df4835f2602ee56e9e923b775890335a61ee9c29d163edfb2dfd4",
+  "gate_status_errors":[],
+  "command":{"argv":["python3","/home/blizhan/repo/github/duckomo/test/tools/grid_evidence_test.py","--audit-manifest","/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h0-query-regeneration-20261007-audited-final/manifest.json","--root","/home/blizhan/repo/github/duckomo"],"exit_code":0,"elapsed_ms":43.832,"peak_rss_bytes":21671936},
+  "output":"grid evidence manifest passed: /home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h0-query-regeneration-20261007-audited-final/manifest.json\n"
+}

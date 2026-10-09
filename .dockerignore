@@ -15,6 +15,9 @@ Testing/
 *.dylib
 *.dll
 *.exe
+*.duckdb_extension
+*.duckdb_extension.gz
+specs/**/evidence/**/*.gz
 *.log
 *.tmp
 *.swp
@@ -26,3 +29,5 @@ __pycache__/
 node_modules/
 coverage/
 *.log*
+Dockerfile*
+.dockerignore

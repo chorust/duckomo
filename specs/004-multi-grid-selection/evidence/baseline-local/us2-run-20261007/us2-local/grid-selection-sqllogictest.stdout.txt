@@ -1,0 +1,46 @@
+Filters: /home/blizhan/repo/github/duckomo/test/sql/grid_selection.test
+
+[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/grid_selection.test
+1. /home/blizhan/repo/github/duckomo/test/sql/grid_selection.test:51
+================================================================================
+Query unexpectedly failed! (/home/blizhan/repo/github/duckomo/test/sql/grid_selection.test:51)!
+================================================================================
+CREATE TEMP VIEW lambert_grid AS
+SELECT temperature, latitude, longitude
+FROM read_om(
+    '/home/blizhan/repo/github/duckomo/test/data/projection.om',
+    dimensions := map(['temperature'], [['row','column']]),
+    grid := {
+        'version': 1, 'type': 'lambert_conformal_conic', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 127, 'ny': 83, 'order': 'separate'},
+        'parameters': {'x0': -63000.0, 'y0': -41000.0, 'dx': 1000.0, 'dy': 1000.0,
+                       'central_meridian': 10.0, 'latitude_of_origin': 46.244,
+                       'standard_parallel_1': 40.0, 'standard_parallel_2': 50.0}
+    }, spatial_axes := ['row','column']);
+================================================================================
+Binder Error: read_om dimensions parameter keys must exactly cover every array path
+
+LINE 3: FROM read_om(
+             ^
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+unittest is a Catch v2.13.7 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+/home/blizhan/repo/github/duckomo/test/sql/grid_selection.test
+-------------------------------------------------------------------------------
+/home/blizhan/repo/github/duckomo/duckdb/test/sqlite/test_sqllogictest.cpp:220
+...............................................................................
+
+/home/blizhan/repo/github/duckomo/test/sql/grid_selection.test:51: FAILED:
+explicitly with message:
+  0
+
+
+[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/grid_selection.test
+===============================================================================
+test cases: 1 | 1 failed
+assertions: 6 | 5 passed | 1 failed
+

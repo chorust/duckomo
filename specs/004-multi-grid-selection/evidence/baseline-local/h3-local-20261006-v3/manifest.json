@@ -1,0 +1,17 @@
+{
+  "schema_version":1,
+  "status":"not-run",
+  "created_at_utc":"2026-10-06T09:05:49Z",
+  "requested_cases":["H3"],
+  "command_redacted":["build/release-vcpkg/test/tools/duckomo_grid_validation","--root","/home/blizhan/repo/github/duckomo","--manifest","test/data/grids/sample-manifest.json","--cases","H3","--duckdb","build/release-vcpkg/duckdb","--extension","build/release-vcpkg/extension/duckomo/duckomo.duckdb_extension","--output","specs/004-multi-grid-selection/evidence/baseline-local/h3-local-20261006-v3"],
+  "inputs":{
+    "sample_manifest":{"path":"/home/blizhan/repo/github/duckomo/test/data/grids/sample-manifest.json","exists":true,"executable":true,"sha256":"3174df44f3d9b806ad4fa50fbb5e7519b54054e915b703db6388c8c8a6f3b21c"},
+    "duckdb":{"path":"/home/blizhan/repo/github/duckomo/build/release-vcpkg/duckdb","exists":true,"executable":true,"sha256":"c7649dca212e23511766bf6b865c39f6d3e7687b5e38b4ab949559a0eb70beba"},
+    "extension":{"path":"/home/blizhan/repo/github/duckomo/build/release-vcpkg/extension/duckomo/duckomo.duckdb_extension","exists":true,"executable":true,"sha256":"c2d2c4512b18f8dc4d59cb5adf032f844ed166758de86eaeff9daadc66eb4730"},
+    "httpfs":{"path":"","exists":false,"executable":false,"sha256":null},
+    "matrix":{"path":"","exists":false,"executable":false,"sha256":null}
+  },
+  "remote_inputs_present":{"http_base":false,"https_base":false,"s3_base":false},
+  "gates":[{"id":"H3","status":"not-run","reason":"synthetic local zero-I/O checks and per-variable cost audit passed; full H3 remains not-run until US5 source/info coverage is added"}],
+  "exit_code":2
+}

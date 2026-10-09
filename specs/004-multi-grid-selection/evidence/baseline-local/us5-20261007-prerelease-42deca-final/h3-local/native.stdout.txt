@@ -1,0 +1,5 @@
+grid zero-I/O checks failed: SELECT latitude, longitude FROM read_om('test/data/grids/interleaved.om', dimensions := map(['interleaved/temperature','interleaved/humidity'], [['time','latitude_axis','level','longitude_axis','lead_time','member','run'], ['time','latitude_axis','level','longitude_axis','lead_time','member','run']]), grid := {'version':1,'type':'rotated_latlon','numeric_policy':'float64_v1', 'earth':{'model':'sphere','radius_m':6371229.0}, 'layout':{'nx':4,'ny':3,'order':'separate'}, 'parameters':{'x0':0.0,'y0':0.0,'dx':1.0,'dy':1.0,'north_pole_latitude':90.0,'north_pole_longitude':0.0,'rotation':0.0}}, spatial_axes := ['latitude_axis','longitude_axis']) WHERE latitude BETWEEN 0.99 AND 1.01 AND longitude BETWEEN 1.99 AND 2.01: Catalog Error: Table Function with name read_om does not exist!
+Did you mean "read_blob"?
+
+LINE 1: SELECT latitude, longitude FROM read_om('test/data/grids/interleaved.om', dimensions :=...
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -1,0 +1,9 @@
+{
+  "schema_version":1,
+  "status":"pass",
+  "manifest_sha256":"47bb96d1777bc427342c2c65363dde07c0ef2a5a5b37a1cf87575b15ea9b10c8",
+  "validator_sha256":"097896f0593c9893b26579cd6f7fbf5dca33dc299b3496391afcd44f5633d592",
+  "gate_status_errors":[],
+  "command":{"argv":["python3","/home/blizhan/repo/github/duckomo/test/tools/grid_evidence_test.py","--audit-manifest","/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h6-loopback-protocol-final-20261008/manifest.json","--root","/home/blizhan/repo/github/duckomo"],"exit_code":0,"elapsed_ms":32.002,"peak_rss_bytes":22016000},
+  "output":"grid evidence manifest passed: /home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h6-loopback-protocol-final-20261008/manifest.json\n"
+}

@@ -1,0 +1,11 @@
+{
+  "pair_id": "prerelease-2.0-dev",
+  "scenario": "signed-s3-raw",
+  "query_exit": 0,
+  "status": "success",
+  "client_body_bytes": 324,
+  "server_body_bytes": 324,
+  "parity": true,
+  "transport_count_complete": true,
+  "result_sha256": "9c23371787f65fbf710c7c25376a4061e7a7bace941345ede7c9e5bab24c9b51"
+}

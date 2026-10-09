@@ -1,0 +1,51 @@
+{
+  "exit_code": 0,
+  "full_spatial_positions_checked": 2843101,
+  "full_spatial_positions_requested": true,
+  "limitations": [
+    "does not independently prove OM array-axis to producer point-order mapping",
+    "does not cover Gaussian N160, full N320, or N320-region OM objects",
+    "does not compare weather values or validate remote body cost against server logs"
+  ],
+  "samples": [
+    {
+      "explicit_domain_identity_matches_row_by_row": true,
+      "full_positions": 1191300,
+      "grid_definition_id": "gem_rdps_10km",
+      "pinned_coordinate_reference_matches": true,
+      "remote_local_positions_match": true,
+      "remote_object_ids_compared_across_uris": false,
+      "source_and_grid_info_value_index_data_decode_reads_zero": true,
+      "spatial_subset_matches_materialized_full_scan": true,
+      "spatial_subset_positions": 15
+    },
+    {
+      "explicit_domain_identity_matches_row_by_row": true,
+      "full_positions": 770440,
+      "grid_definition_id": "gem_regional",
+      "pinned_coordinate_reference_matches": true,
+      "remote_local_positions_match": true,
+      "remote_object_ids_compared_across_uris": false,
+      "source_and_grid_info_value_index_data_decode_reads_zero": true,
+      "spatial_subset_matches_materialized_full_scan": true,
+      "spatial_subset_positions": 12
+    },
+    {
+      "explicit_domain_identity_matches_row_by_row": true,
+      "full_positions": 881361,
+      "grid_definition_id": "aladin_central_europe_2km",
+      "pinned_coordinate_reference_matches": true,
+      "remote_local_positions_match": true,
+      "remote_object_ids_compared_across_uris": false,
+      "source_and_grid_info_value_index_data_decode_reads_zero": true,
+      "spatial_subset_matches_materialized_full_scan": true,
+      "spatial_subset_positions": 247
+    }
+  ],
+  "schema_version": 1,
+  "source_uri_kind": "https",
+  "status": "public_source_full_https_pass",
+  "summary_source": "grid_spatial_reference.py stdout observed during this run; per-sample raw CSV and v4 metrics are saved alongside this summary",
+  "time_axis_index": 0,
+  "time_labels": "validator-declared synthetic valid_time labels; not producer time evidence"
+}

@@ -1,0 +1,2 @@
+{"audit": null, "body_bytes": 0, "event": "started", "method": "HEAD", "object": "raw.om", "range": null, "request_id": "http-1197361"}
+{"audit": null, "body_bytes": 0, "etag": null, "event": "complete", "method": "HEAD", "object": "raw.om", "range": null, "request_id": "http-1197361", "status": 405}

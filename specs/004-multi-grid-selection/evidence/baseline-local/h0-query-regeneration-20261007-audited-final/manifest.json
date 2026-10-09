@@ -1,0 +1,21 @@
+{
+  "schema_version":1,
+  "status":"not-run",
+  "created_at_utc":"2026-10-06T20:42:57Z",
+  "requested_cases":["H0"],
+  "requested_gates":["H0"],
+  "command_redacted":["build/release-vcpkg/test/tools/duckomo_grid_validation","--root","/home/blizhan/repo/github/duckomo","--manifest","/home/blizhan/repo/github/duckomo/test/data/grids/sample-manifest.json","--cases","H0","--duckdb","/home/blizhan/repo/github/duckomo/build/release-vcpkg/duckdb","--extension","/home/blizhan/repo/github/duckomo/build/release-vcpkg/extension/duckomo/duckomo.duckdb_extension","--output","/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h0-query-regeneration-20261007-audited-final"],
+  "inputs":{
+    "sample_manifest":{"path":"/home/blizhan/repo/github/duckomo/test/data/grids/sample-manifest.json","exists":true,"executable":true,"sha256":"6d574eaca5a333d3370f27ff72697d7eab9f57da5ca1863463e31ee836533bce"},
+    "checked_in_sample_queries":{"path":"/home/blizhan/repo/github/duckomo/test/data/grids/sample-queries.sql","exists":true,"executable":true,"sha256":"e6c597661f33175c06f89410b314e3e5421ade6c2a52234c17e3ed6df3020d54"},
+    "evidence_contract_test":{"path":"/home/blizhan/repo/github/duckomo/test/tools/grid_evidence_test.py","exists":true,"executable":true,"sha256":"3eb0594cb03df4835f2602ee56e9e923b775890335a61ee9c29d163edfb2dfd4"},
+    "duckdb":{"path":"/home/blizhan/repo/github/duckomo/build/release-vcpkg/duckdb","exists":true,"executable":true,"sha256":"3747a415e6e9d0b0c24bebab031683e4e7c5762738fe3d049e5d040affb4d015"},
+    "extension":{"path":"/home/blizhan/repo/github/duckomo/build/release-vcpkg/extension/duckomo/duckomo.duckdb_extension","exists":true,"executable":true,"sha256":"4c64b043fdbeb08e5b51d35030b2bb8efe47c7b9a02a3c6d27d39a50867ca2f2"},
+    "httpfs":{"path":"","exists":false,"executable":false,"sha256":null},
+    "matrix":{"path":"","exists":false,"executable":false,"sha256":null}
+  },
+  "remote_inputs_present":{"http_base":false,"https_base":false,"s3_base":false},
+  "gates":[{"id":"H0","status":"not-run","reason":"query generation and sample-view binding passed; independent coordinate/value H0 evidence is missing"}],
+  "gate_status_audit":{"status":"pass","errors":[]},
+  "exit_code":2
+}

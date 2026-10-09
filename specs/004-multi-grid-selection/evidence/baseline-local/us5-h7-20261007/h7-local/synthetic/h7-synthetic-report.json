@@ -1,0 +1,90 @@
+{
+  "cases": [
+    {
+      "full_relation_multiset_matches": true,
+      "grid_id": "e3e4cad13ea8845b755223ec3660959a798a37fcca712246024c7c1f947a46dc",
+      "grid_info_csv": "rotated_latlon_small.info.csv",
+      "grid_info_metrics_csv": "rotated_latlon_small.info-metrics.csv",
+      "grid_info_value_reads_zero": true,
+      "grid_type": "rotated_latlon",
+      "id": "rotated_latlon_small",
+      "layout_id": "718e26006a40a61115fc67472079967a3490f66619bfefb23142247cfb000132",
+      "matched_positions": [
+        1,
+        4
+      ],
+      "object_id": "sha256:02af365861ce28042acf3a62f228d666fa31886a8c0f9547410f942d1eda2ff1",
+      "rows": 6,
+      "source_csv": "rotated_latlon_small.source.csv",
+      "source_metrics_csv": "rotated_latlon_small.source-metrics.csv",
+      "source_value_reads_zero": true
+    },
+    {
+      "full_relation_multiset_matches": true,
+      "grid_id": "87309a6d337785be6c07ffbc2afe17df5f5bb29fc7f3f8547be9aa0d205c9496",
+      "grid_info_csv": "lambert_small.info.csv",
+      "grid_info_metrics_csv": "lambert_small.info-metrics.csv",
+      "grid_info_value_reads_zero": true,
+      "grid_type": "lambert_conformal_conic",
+      "id": "lambert_small",
+      "layout_id": "13901fa4c3b648d94d54742016e60f8870dbad25225555e83051dd22044f94c9",
+      "matched_positions": [
+        1,
+        2,
+        4,
+        5
+      ],
+      "object_id": "sha256:02af365861ce28042acf3a62f228d666fa31886a8c0f9547410f942d1eda2ff1",
+      "rows": 6,
+      "source_csv": "lambert_small.source.csv",
+      "source_metrics_csv": "lambert_small.source-metrics.csv",
+      "source_value_reads_zero": true
+    },
+    {
+      "full_relation_multiset_matches": true,
+      "grid_id": "6b6215bffebc8a08a7623e7663566d9f4babf5b0673880cbb200ba5dd25b3633",
+      "grid_info_csv": "stereographic_small.info.csv",
+      "grid_info_metrics_csv": "stereographic_small.info-metrics.csv",
+      "grid_info_value_reads_zero": true,
+      "grid_type": "stereographic",
+      "id": "stereographic_small",
+      "layout_id": "5611a810f3f53015a557ef68fd1dfc5e4e185d4f992cd8a03f91fb7068927ef6",
+      "matched_positions": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "object_id": "sha256:02af365861ce28042acf3a62f228d666fa31886a8c0f9547410f942d1eda2ff1",
+      "rows": 6,
+      "source_csv": "stereographic_small.source.csv",
+      "source_metrics_csv": "stereographic_small.source-metrics.csv",
+      "source_value_reads_zero": true
+    },
+    {
+      "full_relation_multiset_matches": true,
+      "grid_id": "7061da46ba13f3532331b59e217ba874119765141cdc4ee6b04d501775ed35c7",
+      "grid_info_csv": "reduced_gaussian_small.info.csv",
+      "grid_info_metrics_csv": "reduced_gaussian_small.info-metrics.csv",
+      "grid_info_value_reads_zero": true,
+      "grid_type": "reduced_gaussian",
+      "id": "reduced_gaussian_small",
+      "layout_id": "3e7d5c155b1bf7a4ad71e06c16fda155b5aada90a9f08c65e0a04ccf827be0b2",
+      "matched_positions": [
+        1
+      ],
+      "object_id": "sha256:2261fc10f2a275cb7387781547f7280bb8c5255b727d46919cbf32f0649e7156",
+      "rows": 8,
+      "source_csv": "reduced_gaussian_small.source.csv",
+      "source_metrics_csv": "reduced_gaussian_small.source-metrics.csv",
+      "source_value_reads_zero": true
+    }
+  ],
+  "full_h7_status": "not-run",
+  "oracle_sha256": "3825e22f3ae882080cb585ac18eeb39fe993253217d96b374eb86312e02fcef6",
+  "schema_version": 1,
+  "scope": "four synthetic small grids; real producer axis-order/source mapping, required N160/N320 samples, and public remote source identity remain not-run",
+  "status": "synthetic_local_pass"
+}

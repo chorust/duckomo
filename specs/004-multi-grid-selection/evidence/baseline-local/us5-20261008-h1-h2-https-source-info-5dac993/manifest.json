@@ -1,0 +1,109 @@
+{
+  "command": {
+    "argv": [
+      "python3",
+      "/home/blizhan/repo/github/duckomo/test/tools/grid_spatial_reference.py",
+      "--validate-public-sources",
+      "--public-source-uri-kind",
+      "https",
+      "--httpfs",
+      "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/extension/httpfs/httpfs.duckdb_extension",
+      "--all-public-source-positions",
+      "--public-spatial-selection",
+      "--compare-local-source-dir",
+      "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source",
+      "--duckdb",
+      "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/duckdb",
+      "--extension",
+      "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/extension/duckomo/duckomo.duckdb_extension",
+      "--root",
+      "/home/blizhan/repo/github/duckomo",
+      "--output-dir",
+      "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-h2-https-source-info-5dac993/remote-source"
+    ],
+    "elapsed_ms": 200.51,
+    "exit_code": 1
+  },
+  "duckdb_build_id": "5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d",
+  "full_H1_H2_H6_status": "not-run",
+  "gate": "T070 H1/H2 public Open-Meteo HTTPS source/info and cross-URI position subcheck",
+  "inputs": [
+    {
+      "path": "test/tools/grid_spatial_reference.py",
+      "sha256": "714772bae625f08d9da52bd4bb59033e5a5bd4ad42e5ad8c12fa031877765f20"
+    },
+    {
+      "path": "test/data/grids/sample-manifest.json",
+      "sha256": "72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f"
+    },
+    {
+      "path": "test/data/grids/sample-queries.sql",
+      "sha256": "e15cfbca10b325e2126e4a69c4479a8879af0f809046e7e4ac8de2c280a54b5d"
+    },
+    {
+      "path": "test/data/grids/coordinate-reference.json",
+      "sha256": "47712d94197d708b7ef1d48a4679d4eb5a38aecc324cc95d60d7b613314d33c7"
+    },
+    {
+      "path": "build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/duckdb",
+      "sha256": "e55df7beb476ef350383509b564a47485d72d8438cea7097be9c52e318484f55"
+    },
+    {
+      "path": "build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/extension/duckomo/duckomo.duckdb_extension",
+      "sha256": "d4c79f729a096dba8dc0824b6e452b53ebeccdfb438ad2c7f0e514afc6a67ddc"
+    },
+    {
+      "path": "build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/extension/httpfs/httpfs.duckdb_extension",
+      "sha256": "3dd0711dbe2e9e00f1d4afc76acf8afbe6db1414c700ec371e45dcaf06d35857"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.explicit-full-source.csv.gz",
+      "sha256": "6cd23e9b685b8c1d8131c24305a9223c1dfcb57a5e5c522fc573a07d40886697"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.domain-full-source.csv.gz",
+      "sha256": "6cd23e9b685b8c1d8131c24305a9223c1dfcb57a5e5c522fc573a07d40886697"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.explicit-full-source.csv.gz",
+      "sha256": "7cd0ccbeb10d559565cf9ac149eb771d282fccdeaaeab9991a60d710d42b4a30"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.domain-full-source.csv.gz",
+      "sha256": "7cd0ccbeb10d559565cf9ac149eb771d282fccdeaaeab9991a60d710d42b4a30"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.explicit-full-source.csv.gz",
+      "sha256": "83c74af86017290e50f6ff40d024f3e1a93262fc307a71cbe0504cbbd3c501bf"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.domain-full-source.csv.gz",
+      "sha256": "83c74af86017290e50f6ff40d024f3e1a93262fc307a71cbe0504cbbd3c501bf"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-h2-https-source-info-5dac993/runner.stderr.txt",
+      "sha256": "cea4960300e106cf0fd931af993bc86b483ec81d855b210233453308c4d9d3b5"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-h2-https-source-info-5dac993/runner.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-h2-https-source-info-5dac993/remote-source/time-probe.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-h2-https-source-info-5dac993/remote-source/time-probe.stderr.txt",
+      "sha256": "4892c07dbb75c7a9cd4bb48c9d13ede627e90fb9a0b836baa51798eba9c9437d"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-h2-https-source-info-5dac993/remote-source/public-source-time-probe.sql",
+      "sha256": "c8630d0ab54cb98556cca0451535d9e79c0183c24a187ef4184fbe98c99fbb6c"
+    }
+  ],
+  "schema_version": 1,
+  "source_scope": "existing Open-Meteo OM v3 HTTPS objects; coordinate/source/info reads only; no conversion or full value download",
+  "status": "fail"
+}

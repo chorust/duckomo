@@ -663,6 +663,12 @@ void TestSpatialProjectionSlotsPreserveOrderAndDeduplicateValues() {
 	        "each value dependency is decoded once in first-use order");
 	Require(spatial.HasCardinalitySlot(), "the empty virtual column is represented without a value slot");
 
+	duckdb::duckomo::ProjectionPlan source_only(schema, {4}, true, false, {}, true);
+	Require(source_only.GetOutputSlots().size() == 1 &&
+	            source_only.GetOutputSlots()[0].kind == duckdb::duckomo::OutputColumnKind::Source &&
+	            source_only.GetRequiredVariableIds().empty(),
+	        "source-only projection appends the source slot without creating value decoder dependencies");
+
 	duckdb::duckomo::ProjectionPlan legacy(schema, {1, 0, 1});
 	Require(legacy.GetRequiredVariableIds() == std::vector<duckdb::idx_t>({1, 0}) &&
 	            legacy.GetOutputSlots()[0].source_index == 1 && legacy.GetOutputSlots()[2].source_index == 1,
@@ -906,9 +912,10 @@ void TestCancellationMetricsAndRecovery(duckdb::Connection &connection, MetricsO
 }
 
 void LoadExtension(duckdb::Connection &connection) {
-	fs::path core_functions_path;
+	const auto *core_override = std::getenv("DUCKOMO_CORE_FUNCTIONS_EXTENSION");
+	fs::path core_functions_path = core_override ? core_override : "";
 	const fs::path repository("build/release/repository/v1.5.4");
-	if (fs::exists(repository)) {
+	if (core_functions_path.empty() && fs::exists(repository)) {
 		for (const auto &entry : fs::recursive_directory_iterator(repository)) {
 			if (entry.is_regular_file() && entry.path().filename() == "core_functions.duckdb_extension") {
 				core_functions_path = entry.path();

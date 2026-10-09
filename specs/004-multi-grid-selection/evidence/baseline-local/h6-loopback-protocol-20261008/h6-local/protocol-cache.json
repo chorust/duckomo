@@ -1,0 +1,9 @@
+{
+  "schema_version":1,
+  "scope":"synthetic_loopback",
+  "weak_version_reuse_rejected":true,
+  "weak_version_second_query_body_bytes":324,
+  "same_uri_equal_length_replacement":{"status":"pass","bytes":120,"result_changed":true,"result_matches_replacement":true,"version_strength":"strong_etag","replacement_cache_hits":9,"response_body_bytes":122,"server_body_bytes":122,"response_body_covers_object":true},
+  "same_uri_short_body_recovery":{"status":"pass","initial_failure_rejected":true,"recovery_result_matches_local":true,"recovery_cache_hits":7,"file_bytes":120,"recovery_body_bytes":122,"recovery_body_covers_object":true,"server_body_bytes":122,"server_body_reconciled":true}
+,  "unranged_get_fallbacks":0
+}

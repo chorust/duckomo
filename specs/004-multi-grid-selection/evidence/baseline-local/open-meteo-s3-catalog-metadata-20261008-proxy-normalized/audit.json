@@ -1,0 +1,2612 @@
+{
+  "audit_status": "complete_catalog_metadata_scan",
+  "bucket_endpoint": "https://openmeteo.s3.us-west-2.amazonaws.com/",
+  "captured_at_utc": "2026-10-08T03:07:06.026324+00:00",
+  "metadata_errors": [],
+  "metadata_requests": 277,
+  "metadata_status_counts": {
+    "200": 267,
+    "404": 10
+  },
+  "n160_n320_metadata_hits": [],
+  "objects": [
+    {
+      "bytes": 217,
+      "grid_mentions": [],
+      "key": "data/bom_access_global/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "77feca88861dc759ad8d346eda2844d942046afcb203a19d57c60f7de3b6dd9f",
+      "status": 200
+    },
+    {
+      "bytes": 218,
+      "grid_mentions": [],
+      "key": "data/bom_access_global_ensemble/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "f0a3a6231bd7a2eb3ccd1ee3cff9a858d7d1092ce333771be10cd8784b29eea6",
+      "status": 200
+    },
+    {
+      "bytes": 599,
+      "grid_mentions": [],
+      "key": "data/cams_europe/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "a987d90bf5ca4614cfb52441dbdbfae934d484243678ab5a3edf85ae3ee9e0c9",
+      "status": 200
+    },
+    {
+      "bytes": 594,
+      "grid_mentions": [],
+      "key": "data/cams_global/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "eec87e4fa960a3198abdcade8d5dcddebbfb15732c0608a537750fec41decca7",
+      "status": 200
+    },
+    {
+      "bytes": 594,
+      "grid_mentions": [],
+      "key": "data/cams_global_greenhouse_gases/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "a45e64f89d0c274aa332b09e881c038aae6252d063696252f67c1841600ef8cb",
+      "status": 200
+    },
+    {
+      "bytes": 966,
+      "grid_mentions": [],
+      "key": "data/chmi_aladin_central_europe_2km/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "c59806b22e7fa5d3dca09779e16fa18c2ce00ebaa5cbbf03007543ce9e7e345b",
+      "status": 200
+    },
+    {
+      "bytes": 594,
+      "grid_mentions": [],
+      "key": "data/chmi_aladin_cz_1km/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "55efc0a68e3f4aba9321cb3dc3d373fafb4a7c8cf2b3724ce46008db21c50643",
+      "status": 200
+    },
+    {
+      "bytes": 603,
+      "grid_mentions": [],
+      "key": "data/cma_grapes_global/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "c7b9ddd75b6e017f0bd90d9fca32caecec33aea74ce45cd880b878da4c5d9486",
+      "status": 200
+    },
+    {
+      "bytes": 596,
+      "grid_mentions": [],
+      "key": "data/cmc_gem_gdps/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "9e904b9e1ce056231475ed25b77b68c723f9fd51c54e47db760b2f2dd7ce68f3",
+      "status": 200
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/cmc_gem_gdps_15km/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "fe3366e4ad49710e557bfcc35475890979d8326e1032becfa75013972ebaf1e7",
+      "status": 200
+    },
+    {
+      "bytes": 0,
+      "key": "data/cmc_gem_gdps_15km_upper_level/static/meta.json",
+      "status": 404
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/cmc_gem_geps/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "640be5dcbf092f136b2d85d0af786266fb2127b8e804c0c35f1a040b44856629",
+      "status": 200
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/cmc_gem_geps_ensemble_mean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "d431c159640c797032cb9200bebb602a2e53bfbd5b1598a2eeccfe4ed9aa5cc0",
+      "status": 200
+    },
+    {
+      "bytes": 848,
+      "grid_mentions": [],
+      "key": "data/cmc_gem_hrdps/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "69640d1b9627187582a2fe5b02ed081b872ebf097e782b2b75a22d069b05f6ca",
+      "status": 200
+    },
+    {
+      "bytes": 850,
+      "grid_mentions": [],
+      "key": "data/cmc_gem_hrdps_west/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "92019a935a5733a7816b8fad110163532689022a1cb5f79168a3f191e000a858",
+      "status": 200
+    },
+    {
+      "bytes": 956,
+      "grid_mentions": [],
+      "key": "data/cmc_gem_rdps/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "008a1236fc322a5b8c3017e970624a83c860169657c9b5387aa6deae3f17f837",
+      "status": 200
+    },
+    {
+      "bytes": 854,
+      "grid_mentions": [],
+      "key": "data/cmc_gem_rdps_10km/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "df3c8b9579ec662b538b1b457448d64c922a140e616a259f495c4d627d9cda96",
+      "status": 200
+    },
+    {
+      "bytes": 0,
+      "key": "data/copernicus_dem90/static/meta.json",
+      "status": 404
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/copernicus_era5/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "bafb7cbc4cbd26524b4944d45a3f76d17b61d34f30ea4472b1627bac518c550f",
+      "status": 200
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/copernicus_era5_ensemble/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "140fe2570f81c9b565d639e1a958b83656cbee888b04473e0fefa82a49899cbc",
+      "status": 200
+    },
+    {
+      "bytes": 594,
+      "grid_mentions": [],
+      "key": "data/copernicus_era5_land/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "75f0156d15e8d8bf8ae5a32068900ca4953d0c7350b5ca250670829e3c89b3a5",
+      "status": 200
+    },
+    {
+      "bytes": 594,
+      "grid_mentions": [],
+      "key": "data/copernicus_era5_ocean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "3275fc2b08044ee29a8b2d33e7047b6c201b18ed4521b920bc612d8a0f18850c",
+      "status": 200
+    },
+    {
+      "bytes": 961,
+      "grid_mentions": [],
+      "key": "data/dmi_harmonie_arome_europe/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "f90c7f63eb9569bff2cdcec5fdbc8f9b399bf45fd0484df60e60bfd793efce2d",
+      "status": 200
+    },
+    {
+      "bytes": 591,
+      "grid_mentions": [],
+      "key": "data/dwd_ewam/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "fe50f48fadcbb856222fc6eec7b812ab2a0f42903e8800fc1f3ce7904f68599b",
+      "status": 200
+    },
+    {
+      "bytes": 597,
+      "grid_mentions": [],
+      "key": "data/dwd_gwam/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "6a741537306caca84852ace0075f4cb60d39faf504cf06e283eae06a90e0c8e5",
+      "status": 200
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/dwd_icon/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "59df65ec016a1b08bf4107e7bd7ec2266dec4457e7237ebfd81631ec01d3e177",
+      "status": 200
+    },
+    {
+      "bytes": 598,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_d2/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "8380cadaa4483a7999bedbb0a5b70f4faa2d5aac6436c947616321bbf2885b0a",
+      "status": 200
+    },
+    {
+      "bytes": 597,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_d2_15min/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "cd475e198c0e20345cab43a01b94e339d5c2fa8f13b3917b52ab9e6d1f4db287",
+      "status": 200
+    },
+    {
+      "bytes": 594,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_d2_eps/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "6a54a1f2b354a1a99487f9403150135ae0d39ac8eb9c7425b6a4c09f25461596",
+      "status": 200
+    },
+    {
+      "bytes": 594,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_d2_eps_ensemble_mean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "2dd315aa4d238494a9645cbdabd1e9a615e8c2f325c4c2c1287fbcdd85db1925",
+      "status": 200
+    },
+    {
+      "bytes": 494,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_d2_eps_native/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "c90b5ed9ff249a1151b9897645fa3ca8735156bac3d194aaf24cfa873c0ee1c2",
+      "status": 200
+    },
+    {
+      "bytes": 494,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_d2_eps_native_ensemble_mean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "053fb7edeed146b47081c420997bdbe99bfe70b29bd4c383bb97eb4c50892bc8",
+      "status": 200
+    },
+    {
+      "bytes": 494,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_d2_native/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "ed46254fd05aa7dea1025560c10e45a26a5d8c9472bf8202fd6459d61474f1bc",
+      "status": 200
+    },
+    {
+      "bytes": 493,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_d2_native_15min/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "76e8471f8cc6baab9c8ad6f98eefd89d9552362d7e2e1491fee11335a7c65b95",
+      "status": 200
+    },
+    {
+      "bytes": 0,
+      "key": "data/dwd_icon_d2_native_model_level/static/meta.json",
+      "status": 404
+    },
+    {
+      "bytes": 594,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_eps/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "18ac824bab9fcd4f03fe4fcb46c7fbda942a7c50da671f2d97cb12c6ab803d0a",
+      "status": 200
+    },
+    {
+      "bytes": 594,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_eps_ensemble_mean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "3b1f1243dde1669b5981f5f097c2cf4353186acb1146361c87b7684f660e46fd",
+      "status": 200
+    },
+    {
+      "bytes": 494,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_eps_native/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "0fe07b2e368534f3b40a23032f43a0cae9af9ee82a2ce5372e014c9b580ea816",
+      "status": 200
+    },
+    {
+      "bytes": 494,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_eps_native_ensemble_mean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "482acd3ae06f3bb36ba935149f08b75f2a8b5aca0da7fb12e8628acdfe4d56f1",
+      "status": 200
+    },
+    {
+      "bytes": 591,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_eu/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "167dfd261bf35231b62b18d4b2bb967e114ce9a4841db1200b1fc606ede8952e",
+      "status": 200
+    },
+    {
+      "bytes": 591,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_eu_eps/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "d19287e15f008e238cec3b45825ea3ff4028dbebad329568ea6179718fd2b7ac",
+      "status": 200
+    },
+    {
+      "bytes": 591,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_eu_eps_ensemble_mean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "227a4fca10c5124b2683771a6c506b3b96064e06756d021b501e12449b196027",
+      "status": 200
+    },
+    {
+      "bytes": 494,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_eu_eps_native/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "0d40b0d9528eae90f2ef2e7d0975151ac7bf2e98009484c9cd5ed83b59f82857",
+      "status": 200
+    },
+    {
+      "bytes": 494,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_eu_eps_native_ensemble_mean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "8d9c06e724b16a967dca2202398deeb869f5f5da58ce044db43dd97d403e0b90",
+      "status": 200
+    },
+    {
+      "bytes": 494,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_eu_native/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "3da03f9aeba06aec53256ae1a15f6c06ff91b0d785b046069a3c82fe47e81972",
+      "status": 200
+    },
+    {
+      "bytes": 0,
+      "key": "data/dwd_icon_eu_native_model_level/static/meta.json",
+      "status": 404
+    },
+    {
+      "bytes": 494,
+      "grid_mentions": [],
+      "key": "data/dwd_icon_global_native/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "703215fa3b995c0eea1676f6a68bd5dfe62aac521d35d5c48e55da2c53e4e5d2",
+      "status": 200
+    },
+    {
+      "bytes": 0,
+      "key": "data/dwd_icon_global_native_model_level/static/meta.json",
+      "status": 404
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/ecmwf_aifs025_ensemble/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "c87b03e55bf0a76c4ec34d2c3923c73577bb74b256d651bb5a218befbe1dbc10",
+      "status": 200
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/ecmwf_aifs025_ensemble_mean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "62db871ee90f3d5e60a0f8ab26d49bf124a9de7a742c4d4739e03ea1f5c5f999",
+      "status": 200
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/ecmwf_aifs025_single/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "aec31307be3cae85399933c724d0386cbafd6e29daff7f4c1f7d1db603883109",
+      "status": 200
+    },
+    {
+      "bytes": 658,
+      "grid_mentions": [
+        {
+          "json_path": "$.crs_wkt",
+          "label": "O320",
+          "text": "GEOGCRS[\"Reduced Gaussian Grid\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north],\n        AXIS[\"longitude\",east],\n        ANGLEUNIT[\"degree\",0.0174532925199433],\n    REMARK[\"Reduced Gaussian Grid O320 (ECMWF)\"],\n    USAGE[\n        SCOPE[\"grid\"],\n        BBOX[-90,-180.0,90,180]]]"
+        }
+      ],
+      "key": "data/ecmwf_ec46/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "9597234707a31fba862b25e5e24013200ebab5e5f8f29b42c2ffed6b074c6716",
+      "status": 200
+    },
+    {
+      "bytes": 660,
+      "grid_mentions": [
+        {
+          "json_path": "$.crs_wkt",
+          "label": "O320",
+          "text": "GEOGCRS[\"Reduced Gaussian Grid\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north],\n        AXIS[\"longitude\",east],\n        ANGLEUNIT[\"degree\",0.0174532925199433],\n    REMARK[\"Reduced Gaussian Grid O320 (ECMWF)\"],\n    USAGE[\n        SCOPE[\"grid\"],\n        BBOX[-90,-180.0,90,180]]]"
+        }
+      ],
+      "key": "data/ecmwf_ec46_ensemble_mean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "a3c14d857014637f8b242cddc9ba8c2730a0ea56fc1672bc98b3b48db10a15a0",
+      "status": 200
+    },
+    {
+      "bytes": 0,
+      "key": "data/ecmwf_ec46_weekly/static/meta.json",
+      "status": 404
+    },
+    {
+      "bytes": 658,
+      "grid_mentions": [
+        {
+          "json_path": "$.crs_wkt",
+          "label": "O1280",
+          "text": "GEOGCRS[\"Reduced Gaussian Grid\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north],\n        AXIS[\"longitude\",east],\n        ANGLEUNIT[\"degree\",0.0174532925199433],\n    REMARK[\"Reduced Gaussian Grid O1280 (ECMWF)\"],\n    USAGE[\n        SCOPE[\"grid\"],\n        BBOX[-90,-180.0,90,180]]]"
+        }
+      ],
+      "key": "data/ecmwf_ifs/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "7520cf6e87fe5eb9cd4e541d5d19950f2095e97ef240da3a4ec47dfc6486aecc",
+      "status": 200
+    },
+    {
+      "bytes": 596,
+      "grid_mentions": [],
+      "key": "data/ecmwf_ifs025/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "3c984581a41d27360b03c5927a4e5d40863cff50719c4551fd4db5cd309e4fcc",
+      "status": 200
+    },
+    {
+      "bytes": 596,
+      "grid_mentions": [],
+      "key": "data/ecmwf_ifs025_ensemble/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "c343aba8033f9919cc8d59ce645a2837d317060352dd51fdc37a75d4a9542b74",
+      "status": 200
+    },
+    {
+      "bytes": 596,
+      "grid_mentions": [],
+      "key": "data/ecmwf_ifs025_ensemble_mean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "d7fb2135e40b6e15f4ebce94e779e7d7ca93fcf6dd0b92a25dc8980066a4507a",
+      "status": 200
+    },
+    {
+      "bytes": 659,
+      "grid_mentions": [
+        {
+          "json_path": "$.crs_wkt",
+          "label": "O1280",
+          "text": "GEOGCRS[\"Reduced Gaussian Grid\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north],\n        AXIS[\"longitude\",east],\n        ANGLEUNIT[\"degree\",0.0174532925199433],\n    REMARK[\"Reduced Gaussian Grid O1280 (ECMWF)\"],\n    USAGE[\n        SCOPE[\"grid\"],\n        BBOX[-90,-180.0,90,180]]]"
+        }
+      ],
+      "key": "data/ecmwf_ifs_analysis_long_window/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "ec6d2ead6a9d1bef16b0bf4f5dbfa36ff0e09dea87305c14489c97e654fe4d85",
+      "status": 200
+    },
+    {
+      "bytes": 660,
+      "grid_mentions": [
+        {
+          "json_path": "$.crs_wkt",
+          "label": "O320",
+          "text": "GEOGCRS[\"Reduced Gaussian Grid\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north],\n        AXIS[\"longitude\",east],\n        ANGLEUNIT[\"degree\",0.0174532925199433],\n    REMARK[\"Reduced Gaussian Grid O320 (ECMWF)\"],\n    USAGE[\n        SCOPE[\"grid\"],\n        BBOX[-90,-180.0,90,180]]]"
+        }
+      ],
+      "key": "data/ecmwf_seas5/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "a474ec82a13e5e2f58316a03d3941ad7db98d8fd4fcdca9e77c4118b88bc57d9",
+      "status": 200
+    },
+    {
+      "bytes": 0,
+      "key": "data/ecmwf_seas5_daily_ensemble_mean/static/meta.json",
+      "status": 404
+    },
+    {
+      "bytes": 660,
+      "grid_mentions": [
+        {
+          "json_path": "$.crs_wkt",
+          "label": "O320",
+          "text": "GEOGCRS[\"Reduced Gaussian Grid\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north],\n        AXIS[\"longitude\",east],\n        ANGLEUNIT[\"degree\",0.0174532925199433],\n    REMARK[\"Reduced Gaussian Grid O320 (ECMWF)\"],\n    USAGE[\n        SCOPE[\"grid\"],\n        BBOX[-90,-180.0,90,180]]]"
+        }
+      ],
+      "key": "data/ecmwf_seas5_ensemble_mean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "619705d137a3a12f96ab755dc781f7921e28477e14d878dcd0c818d7d9251b80",
+      "status": 200
+    },
+    {
+      "bytes": 0,
+      "key": "data/ecmwf_seas5_monthly/static/meta.json",
+      "status": 404
+    },
+    {
+      "bytes": 658,
+      "grid_mentions": [
+        {
+          "json_path": "$.crs_wkt",
+          "label": "O1280",
+          "text": "GEOGCRS[\"Reduced Gaussian Grid\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north],\n        AXIS[\"longitude\",east],\n        ANGLEUNIT[\"degree\",0.0174532925199433],\n    REMARK[\"Reduced Gaussian Grid O1280 (ECMWF)\"],\n    USAGE[\n        SCOPE[\"grid\"],\n        BBOX[-90,-180.0,90,180]]]"
+        }
+      ],
+      "key": "data/ecmwf_wam/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "879f8ecad2cba6d9e43da06efead36c945b43f84c15ce9910824c8952e6f9643",
+      "status": 200
+    },
+    {
+      "bytes": 596,
+      "grid_mentions": [],
+      "key": "data/ecmwf_wam025/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "3659ac473277ea9b29cca18965949c15adfd3abc7a230e84a93c496f5ce1b653",
+      "status": 200
+    },
+    {
+      "bytes": 600,
+      "grid_mentions": [],
+      "key": "data/geosphere_arome_austria/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "1fc2558ac957469d47463085ac474ea95e6f18a94ee429d71718efa9ec88e8f5",
+      "status": 200
+    },
+    {
+      "bytes": 588,
+      "grid_mentions": [],
+      "key": "data/italia_meteo_arpae_icon_2i/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "8bab1a87d602fb4d61204cf05bb590595840a168cf09c1703648cab6bed7028d",
+      "status": 200
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/jma_gsm/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "c32d45b1114bc2ce94f6535f5711c42de8eac183d86a10433737990fd1ba615d",
+      "status": 200
+    },
+    {
+      "bytes": 592,
+      "grid_mentions": [],
+      "key": "data/jma_msm/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "e62cbed6865d8192a31fb831a9d6afe9a33d332717226d0ca92f6594a1f275f1",
+      "status": 200
+    },
+    {
+      "bytes": 0,
+      "key": "data/jma_msm_upper_level/static/meta.json",
+      "status": 404
+    },
+    {
+      "bytes": 613,
+      "grid_mentions": [],
+      "key": "data/kma_gdps/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "aa10b322fc95731122e839abcf830857dec9e7522e521000862b93837a74c66d",
+      "status": 200
+    },
+    {
+      "bytes": 960,
+      "grid_mentions": [],
+      "key": "data/kma_ldps/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "aae59ea898edea12b898cb75f7fff2a046fd8e3cf66d4921b3e23cfb32563f6b",
+      "status": 200
+    },
+    {
+      "bytes": 844,
+      "grid_mentions": [],
+      "key": "data/knmi_harmonie_arome_europe/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "a11197a50004db30cee65be402f5ea62e7f5627aeade7025670189e5e3aa309c",
+      "status": 200
+    },
+    {
+      "bytes": 591,
+      "grid_mentions": [],
+      "key": "data/knmi_harmonie_arome_netherlands/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "e6d55ef2b6d53e9ba5e3cada21944131b89ba0d2707b0ed512704e80322c17f1",
+      "status": 200
+    },
+    {
+      "bytes": 591,
+      "grid_mentions": [],
+      "key": "data/meteofrance_arome_france0025/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "bc8634550fc80806648b5c841b1dc221ee478bce510bc6854df9b9853be029c3",
+      "status": 200
+    },
+    {
+      "bytes": 588,
+      "grid_mentions": [],
+      "key": "data/meteofrance_arome_france0025_15min/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "a88bc2c2b9d0276f88835cb3a8088941a10c8974e43b77532908a319b4820a67",
+      "status": 200
+    },
+    {
+      "bytes": 591,
+      "grid_mentions": [],
+      "key": "data/meteofrance_arome_france_hd/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "3ea81e66a35f38c1418b78b07c791ca5da0c9d3ae23875246f72dedc202ff7f3",
+      "status": 200
+    },
+    {
+      "bytes": 588,
+      "grid_mentions": [],
+      "key": "data/meteofrance_arome_france_hd_15min/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "df064acb2537a04d2518e2532bc7a6b0f4842db16149c8c4bb6cbf57c00c898f",
+      "status": 200
+    },
+    {
+      "bytes": 591,
+      "grid_mentions": [],
+      "key": "data/meteofrance_arpege_europe/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "067e92b4cc3da5dde0b4eda9923ea18eb6d2eb187caddf1b652c38fa658d2153",
+      "status": 200
+    },
+    {
+      "bytes": 591,
+      "grid_mentions": [],
+      "key": "data/meteofrance_arpege_europe_probabilities/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "0c91cfef3a4a9b6cf774e328c2bcefb9f15d1ee4118f97354d68813b2eaf1ea7",
+      "status": 200
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/meteofrance_arpege_world025/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "6dc96a6e6c684da41f37df5470c2599d13e5f4139228114f2c8b1d8e7bba2c8a",
+      "status": 200
+    },
+    {
+      "bytes": 612,
+      "grid_mentions": [],
+      "key": "data/meteofrance_currents/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "46ede8ee0b32a6e372c38a96b3f35256a7fec55e5f5d51ed4605be2c6bee3de4",
+      "status": 200
+    },
+    {
+      "bytes": 0,
+      "key": "data/meteofrance_sea_surface_temperature/static/meta.json",
+      "status": 404
+    },
+    {
+      "bytes": 613,
+      "grid_mentions": [],
+      "key": "data/meteofrance_wave/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "04c0d74d4e01f90be739fbbae269f5570f4f09b9586dd6acd70dff27eb735213",
+      "status": 200
+    },
+    {
+      "bytes": 842,
+      "grid_mentions": [],
+      "key": "data/meteoswiss_icon_ch1/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "a52ca44e56edbd9f5737a424f9395ec813d2c593df7b0375373dd4783deb4810",
+      "status": 200
+    },
+    {
+      "bytes": 842,
+      "grid_mentions": [],
+      "key": "data/meteoswiss_icon_ch1_ensemble/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "d340b0fc9bd1c92e1bb230b266ce43a64f9425b36a3d140e16be20e92c9244b5",
+      "status": 200
+    },
+    {
+      "bytes": 842,
+      "grid_mentions": [],
+      "key": "data/meteoswiss_icon_ch1_ensemble_mean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "742a6a7ad6d84ffc81e4cff6a052d96c8ac2e46bbc1aa6091de7feb68aa8dee7",
+      "status": 200
+    },
+    {
+      "bytes": 843,
+      "grid_mentions": [],
+      "key": "data/meteoswiss_icon_ch2/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "561664d5766d6385f960d83d1bd7cf8070b6646c8b85bcaf5c0b078eafda4303",
+      "status": 200
+    },
+    {
+      "bytes": 843,
+      "grid_mentions": [],
+      "key": "data/meteoswiss_icon_ch2_ensemble/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "0b1f56f390da05a1dad826ef46676aafdbf210e636a3597427e1fd4b0d2abf0a",
+      "status": 200
+    },
+    {
+      "bytes": 843,
+      "grid_mentions": [],
+      "key": "data/meteoswiss_icon_ch2_ensemble_mean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "4ad90e1df4c2135ddf5312e2e8fe217fdbc98b7d096d06d7923dee06fdef4123",
+      "status": 200
+    },
+    {
+      "bytes": 957,
+      "grid_mentions": [],
+      "key": "data/metno_nordic_pp/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "645ebd93af97ae440324f98b49d6801c805091740793c3c7d212ecc428cae163",
+      "status": 200
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/ncep_aigefs025/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "a4db0fbf1573af84b16e514c0b2960d2c921a9a21d805331e313e8641b45ebfc",
+      "status": 200
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/ncep_aigefs025_ensemble_mean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "32d54249da435d337763b48846d09c81fb98b77ffc51bd2c497958aa47897818",
+      "status": 200
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/ncep_aigfs025/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "586b1eb4838bb80226832b43c80ba852bd02dc2f446eec251e4271cd839b55f5",
+      "status": 200
+    },
+    {
+      "bytes": 596,
+      "grid_mentions": [],
+      "key": "data/ncep_gefs025/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "a7a36fe05195de701f1d2805d1f5de0761a737d5043c75df3f1130bddeaf94b4",
+      "status": 200
+    },
+    {
+      "bytes": 596,
+      "grid_mentions": [],
+      "key": "data/ncep_gefs025_ensemble_mean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "e3c51dd6d7119fde1f33abd9eb40dc0c8c1c9943ffc6339d0986f3459779d379",
+      "status": 200
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/ncep_gefs05/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "f80cded178d2682d2d95123c32c5e15cad5b00271a627dddda3765d07f2897f7",
+      "status": 200
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/ncep_gefs05_ensemble_mean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "31b7115d9301f659a767e094b6d28b08c3cebecd7bfeb846b77ead1b22c40758",
+      "status": 200
+    },
+    {
+      "bytes": 608,
+      "grid_mentions": [],
+      "key": "data/ncep_gfs013/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "137299cb07a2e97a44b5e4a85131c5d83d1493212fa0e1120efd965e43ca4f9e",
+      "status": 200
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/ncep_gfs025/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "fd566c5a5ef746944a34b64120766467b371c8ef578184998f23cda4b57084cf",
+      "status": 200
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/ncep_gfs_graphcast025/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "fc76bbbb3b478a9325da26133eea89bd48670aec5166ccb71c1342a890e46fb6",
+      "status": 200
+    },
+    {
+      "bytes": 598,
+      "grid_mentions": [],
+      "key": "data/ncep_gfswave016/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "bdb740c6af0cca209bfdcbb027dc0ac1f117fef33224ed5876f8e24d737c3f54",
+      "status": 200
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/ncep_gfswave025/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "91e66e886e3ce016dbac21f4478bbd7d30e375782f9e4dfc4f12f8f920a2d2e1",
+      "status": 200
+    },
+    {
+      "bytes": 595,
+      "grid_mentions": [],
+      "key": "data/ncep_hgefs025_ensemble_mean/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "132380b56bdc1f4603ea20aa72540ecbb2a272eddc9b541a21d25df70279391e",
+      "status": 200
+    },
+    {
+      "bytes": 955,
+      "grid_mentions": [],
+      "key": "data/ncep_hrrr_conus/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "50478e935b0c34fa539891c64caf782ba0e4fb5c9db39420a6b555367fd04bd9",
+      "status": 200
+    },
+    {
+      "bytes": 954,
+      "grid_mentions": [],
+      "key": "data/ncep_hrrr_conus_15min/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "25aea16bac6a78f069df91ad31f1cd5132042fb36160266804d9596eb8fee841",
+      "status": 200
+    },
+    {
+      "bytes": 956,
+      "grid_mentions": [],
+      "key": "data/ncep_nam_conus/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "d81597bddaa262de5118e3432d19c4197b43a29ac50cd3d5eb3928dc4988e5c6",
+      "status": 200
+    },
+    {
+      "bytes": 961,
+      "grid_mentions": [],
+      "key": "data/ncep_nbm_conus/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "3538d5be2ec1cb8c31f0de2bb122faafe1cf3ea01cab082eb54e6b91b9c9351e",
+      "status": 200
+    },
+    {
+      "bytes": 958,
+      "grid_mentions": [],
+      "key": "data/ncep_rrfs_conus/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "c9fd9e30a9d6b101e563c21651fbde078eb5cbf8f8d48378b39be8242a7f09eb",
+      "status": 200
+    },
+    {
+      "bytes": 956,
+      "grid_mentions": [],
+      "key": "data/ncep_rrfs_conus_15min/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "c77efa1b77a26995bf7ad86359b304393d5bcdf89fe8aae52db71010a59e006e",
+      "status": 200
+    },
+    {
+      "bytes": 850,
+      "grid_mentions": [],
+      "key": "data/ncep_rrfs_north_america/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "365ea43c70af7dc07be37200a7bfa2dc54b439a57a50c736d80d87622ebded6d",
+      "status": 200
+    },
+    {
+      "bytes": 602,
+      "grid_mentions": [],
+      "key": "data/ukmo_global_deterministic_10km/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "edfe7a7efe2344b8bede5259dd6308cccc4ea842e879e400b6e9f1b416f8729e",
+      "status": 200
+    },
+    {
+      "bytes": 601,
+      "grid_mentions": [],
+      "key": "data/ukmo_global_ensemble_20km/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "2e17d2ef5eb65dca6eff4c8a5bc9f474a65066210cbe7761b224feed6522d817",
+      "status": 200
+    },
+    {
+      "bytes": 601,
+      "grid_mentions": [],
+      "key": "data/ukmo_global_ensemble_mean_20km/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "a42d32fc4eb3cb6d3d9abc6441807425e0d4049077e1acaf3e7e85c659ca30fc",
+      "status": 200
+    },
+    {
+      "bytes": 936,
+      "grid_mentions": [],
+      "key": "data/ukmo_uk_deterministic_2km/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "1c4f1fba7a77de1f821e00ea48b51dc042e7d6f2053c2ca6e1b2d94000944ad9",
+      "status": 200
+    },
+    {
+      "bytes": 937,
+      "grid_mentions": [],
+      "key": "data/ukmo_uk_ensemble_2km/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "56478376e21abfc20d7e3790d5b0a01b5e97803e76455fee30d69790aa82ff44",
+      "status": 200
+    },
+    {
+      "bytes": 937,
+      "grid_mentions": [],
+      "key": "data/ukmo_uk_ensemble_mean_2km/static/meta.json",
+      "n_grid_mentions": [],
+      "sha256": "0e3ace4f66b8b120881a68318f9344295a1e2b8094722b9d88d44fbab3e8b2f7",
+      "status": 200
+    },
+    {
+      "bytes": 2880,
+      "grid_mentions": [],
+      "key": "data_spatial/cams_europe/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "ae85c5c3a49cd74be7419a68541bd77486767a28bfe7d9c725da78642d581a08",
+      "status": 200
+    },
+    {
+      "bytes": 2880,
+      "grid_mentions": [],
+      "key": "data_spatial/cams_europe/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "ae85c5c3a49cd74be7419a68541bd77486767a28bfe7d9c725da78642d581a08",
+      "status": 200
+    },
+    {
+      "bytes": 3132,
+      "grid_mentions": [],
+      "key": "data_spatial/cams_global/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "178f6b2cff2a3f5f2540094c625f275a41e09b79a28810446923f7fcb3219138",
+      "status": 200
+    },
+    {
+      "bytes": 3132,
+      "grid_mentions": [],
+      "key": "data_spatial/cams_global/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "178f6b2cff2a3f5f2540094c625f275a41e09b79a28810446923f7fcb3219138",
+      "status": 200
+    },
+    {
+      "bytes": 1350,
+      "grid_mentions": [],
+      "key": "data_spatial/cams_global_greenhouse_gases/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "48ad52a8a3b41fdca6150d00d4495231e735ad29552e6ec43a011777dca36e2f",
+      "status": 200
+    },
+    {
+      "bytes": 1350,
+      "grid_mentions": [],
+      "key": "data_spatial/cams_global_greenhouse_gases/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "48ad52a8a3b41fdca6150d00d4495231e735ad29552e6ec43a011777dca36e2f",
+      "status": 200
+    },
+    {
+      "bytes": 5353,
+      "grid_mentions": [],
+      "key": "data_spatial/chmi_aladin_central_europe_2km/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "acd17858e727c358c02876b0735e6901531dd330c9d70789d8f85f0187a4ef72",
+      "status": 200
+    },
+    {
+      "bytes": 5353,
+      "grid_mentions": [],
+      "key": "data_spatial/chmi_aladin_central_europe_2km/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "acd17858e727c358c02876b0735e6901531dd330c9d70789d8f85f0187a4ef72",
+      "status": 200
+    },
+    {
+      "bytes": 2323,
+      "grid_mentions": [],
+      "key": "data_spatial/chmi_aladin_cz_1km/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "b8d7223fcef83abe31c7fc7d554350ea96ee0ecd4421da5e07d01cdefa5c3f78",
+      "status": 200
+    },
+    {
+      "bytes": 2323,
+      "grid_mentions": [],
+      "key": "data_spatial/chmi_aladin_cz_1km/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "b8d7223fcef83abe31c7fc7d554350ea96ee0ecd4421da5e07d01cdefa5c3f78",
+      "status": 200
+    },
+    {
+      "bytes": 7646,
+      "grid_mentions": [],
+      "key": "data_spatial/cma_grapes_global/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "5c9025bbd9f25c549bd45c5e745557815eebeaf7919cc1e6036a14430e914ade",
+      "status": 200
+    },
+    {
+      "bytes": 7646,
+      "grid_mentions": [],
+      "key": "data_spatial/cma_grapes_global/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "5c9025bbd9f25c549bd45c5e745557815eebeaf7919cc1e6036a14430e914ade",
+      "status": 200
+    },
+    {
+      "bytes": 3665,
+      "grid_mentions": [],
+      "key": "data_spatial/cmc_gem_gdps_15km/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "3d17657821e80f498637e7885cea2e1e10acb2c1ea7de1054818251c4fc2ef4e",
+      "status": 200
+    },
+    {
+      "bytes": 3665,
+      "grid_mentions": [],
+      "key": "data_spatial/cmc_gem_gdps_15km/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "3d17657821e80f498637e7885cea2e1e10acb2c1ea7de1054818251c4fc2ef4e",
+      "status": 200
+    },
+    {
+      "bytes": 5847,
+      "grid_mentions": [],
+      "key": "data_spatial/cmc_gem_gdps_15km_upper_level/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "7e2f3f42b4868cdad8f00f6c735fbaa5e4b421815b272a68bf54921bdd328cd4",
+      "status": 200
+    },
+    {
+      "bytes": 5847,
+      "grid_mentions": [],
+      "key": "data_spatial/cmc_gem_gdps_15km_upper_level/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "7e2f3f42b4868cdad8f00f6c735fbaa5e4b421815b272a68bf54921bdd328cd4",
+      "status": 200
+    },
+    {
+      "bytes": 2453,
+      "grid_mentions": [],
+      "key": "data_spatial/cmc_gem_geps/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "06c5842842a7dd40b7c265cd199498e2575ad159d47bf89e98dae3349125f17a",
+      "status": 200
+    },
+    {
+      "bytes": 2453,
+      "grid_mentions": [],
+      "key": "data_spatial/cmc_gem_geps/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "06c5842842a7dd40b7c265cd199498e2575ad159d47bf89e98dae3349125f17a",
+      "status": 200
+    },
+    {
+      "bytes": 5559,
+      "grid_mentions": [],
+      "key": "data_spatial/cmc_gem_hrdps/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "43c56bbbbe4c05eb887ccc41575985eb493b6f1e279e32abd49763e8661ea095",
+      "status": 200
+    },
+    {
+      "bytes": 4640,
+      "grid_mentions": [],
+      "key": "data_spatial/cmc_gem_hrdps/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "e27f09947089b70987a312a074b83b461c27ea3fbf062b3c6ec7c057f735d36f",
+      "status": 200
+    },
+    {
+      "bytes": 2122,
+      "grid_mentions": [],
+      "key": "data_spatial/cmc_gem_hrdps_west/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "434c499744745f8a791e638ea90508b428269c67bc0e30105785c2a49d886e1d",
+      "status": 200
+    },
+    {
+      "bytes": 2122,
+      "grid_mentions": [],
+      "key": "data_spatial/cmc_gem_hrdps_west/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "434c499744745f8a791e638ea90508b428269c67bc0e30105785c2a49d886e1d",
+      "status": 200
+    },
+    {
+      "bytes": 6632,
+      "grid_mentions": [],
+      "key": "data_spatial/cmc_gem_rdps_10km/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "23d3d67cf24be760e213af9f32242671b8ec3538ce54a8f933d9962b5a92c0e5",
+      "status": 200
+    },
+    {
+      "bytes": 5673,
+      "grid_mentions": [],
+      "key": "data_spatial/cmc_gem_rdps_10km/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "ac67875c6dcf388878ebe3ebd514b686f286d247e8c13387288db34d40de5e18",
+      "status": 200
+    },
+    {
+      "bytes": 2792,
+      "grid_mentions": [],
+      "key": "data_spatial/dmi_harmonie_arome_europe/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "c679eb41e1fab31a282316fe4d9fa77c66ac8be910144d868cd22a2ecf579310",
+      "status": 200
+    },
+    {
+      "bytes": 2792,
+      "grid_mentions": [],
+      "key": "data_spatial/dmi_harmonie_arome_europe/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "c679eb41e1fab31a282316fe4d9fa77c66ac8be910144d868cd22a2ecf579310",
+      "status": 200
+    },
+    {
+      "bytes": 2279,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_ewam/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "f49b3b2de9c000ee05ba1bbd9c8b47bf1fdb75c5c822971d4c5195caa25effeb",
+      "status": 200
+    },
+    {
+      "bytes": 2279,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_ewam/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "f49b3b2de9c000ee05ba1bbd9c8b47bf1fdb75c5c822971d4c5195caa25effeb",
+      "status": 200
+    },
+    {
+      "bytes": 1885,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_gwam/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "1050f19b9e44d1b630d83647d029bb289637b6c52a25b1a384930cf7deaa5f61",
+      "status": 200
+    },
+    {
+      "bytes": 1885,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_gwam/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "1050f19b9e44d1b630d83647d029bb289637b6c52a25b1a384930cf7deaa5f61",
+      "status": 200
+    },
+    {
+      "bytes": 5313,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "c92906ec63eacf88e35c1fb488455a56a9234940f14740b89d6f433a030210ac",
+      "status": 200
+    },
+    {
+      "bytes": 5094,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "f7df9e24c2c01d63d78a0276bee1783a5feecadd57aab5361cfaffda1891bb7f",
+      "status": 200
+    },
+    {
+      "bytes": 3635,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_d2/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "a12940946b1f553cc58ad1183d40358fb9f03d989bd430310db9c435e146fc90",
+      "status": 200
+    },
+    {
+      "bytes": 3635,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_d2/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "a12940946b1f553cc58ad1183d40358fb9f03d989bd430310db9c435e146fc90",
+      "status": 200
+    },
+    {
+      "bytes": 1493,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_d2_eps/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "f64363b86698800b8154e894b49af373f2b453fe77684f84985943d068b78fa3",
+      "status": 200
+    },
+    {
+      "bytes": 1493,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_d2_eps/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "f64363b86698800b8154e894b49af373f2b453fe77684f84985943d068b78fa3",
+      "status": 200
+    },
+    {
+      "bytes": 1393,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_d2_eps_native/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "eb9e71a2c6fec6281bc9a4042e3f6ea4297b61b02a0fb6113848cd6b8d877b24",
+      "status": 200
+    },
+    {
+      "bytes": 1393,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_d2_eps_native/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "eb9e71a2c6fec6281bc9a4042e3f6ea4297b61b02a0fb6113848cd6b8d877b24",
+      "status": 200
+    },
+    {
+      "bytes": 3518,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_d2_native/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "b26bac49b247b3d87989b0cce25c2ad78d30a3eb0b9445e7c5c8a7405c370a91",
+      "status": 200
+    },
+    {
+      "bytes": 3518,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_d2_native/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "b26bac49b247b3d87989b0cce25c2ad78d30a3eb0b9445e7c5c8a7405c370a91",
+      "status": 200
+    },
+    {
+      "bytes": 1563,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_d2_native_model_level/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "03732f2316ef41eb670664deee5ca18c844ba0ed980a05e174cef57b0d1a7ba6",
+      "status": 200
+    },
+    {
+      "bytes": 1563,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_d2_native_model_level/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "03732f2316ef41eb670664deee5ca18c844ba0ed980a05e174cef57b0d1a7ba6",
+      "status": 200
+    },
+    {
+      "bytes": 1913,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_eps/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "91747cbead21615e9bdb001cdaf98388d3011eb7ffb2169c64c8b6c9d3ba10c0",
+      "status": 200
+    },
+    {
+      "bytes": 1913,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_eps/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "91747cbead21615e9bdb001cdaf98388d3011eb7ffb2169c64c8b6c9d3ba10c0",
+      "status": 200
+    },
+    {
+      "bytes": 1813,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_eps_native/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "63e0288f27fbf0aca76f63b856f3be493a726e1e84255ec756066b726bc83d5d",
+      "status": 200
+    },
+    {
+      "bytes": 1414,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_eps_native/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "00098e5aff947dfd9aa4ae501d49765e17484ed3ae21ad92f26fb4e52570c4c1",
+      "status": 200
+    },
+    {
+      "bytes": 4000,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_eu/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "1e86801e6508f3f753669f68940cef0defbd9531978086fb9caf756ad014a7c8",
+      "status": 200
+    },
+    {
+      "bytes": 4261,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_eu/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "63d3948df6664f5d443c35fc4d60b628280082f6ab856a6779331a257128f09f",
+      "status": 200
+    },
+    {
+      "bytes": 1810,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_eu_eps/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "2bf3a0eaeb5ffddd1fd7c690e6ea7707bc12574ce9b7ccfeab81d6d0d39bcf46",
+      "status": 200
+    },
+    {
+      "bytes": 1810,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_eu_eps/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "2bf3a0eaeb5ffddd1fd7c690e6ea7707bc12574ce9b7ccfeab81d6d0d39bcf46",
+      "status": 200
+    },
+    {
+      "bytes": 1713,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_eu_eps_native/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "910b2769febc26302d5a7ffddc9b6b50c3edbb098230f0bdb224143c6182cd04",
+      "status": 200
+    },
+    {
+      "bytes": 1454,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_eu_eps_native/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "8f74195d3d6104288ccbb8afc62808b7d8e233f9172f29574b1b14021af14e69",
+      "status": 200
+    },
+    {
+      "bytes": 3890,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_eu_native/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "ef2be2aebd06fd2d33b015a9cd3ad6755a747994d85fb74d1f03172768cd2628",
+      "status": 200
+    },
+    {
+      "bytes": 5011,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_eu_native/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "201990e8f9da74214c9c1ef79f0c578fbb59ef7dbcd4ff8a1362dc9f3fa48399",
+      "status": 200
+    },
+    {
+      "bytes": 1203,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_eu_native_model_level/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "9fc4283d9d24384cdb236b8e39b944b30e8aa5201e996b627ef08b785a749933",
+      "status": 200
+    },
+    {
+      "bytes": 2324,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_eu_native_model_level/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "f33d4683a47084ff78046aff434ed02dcd70974d4296761f29aeecf0c68c842d",
+      "status": 200
+    },
+    {
+      "bytes": 5212,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_global_native/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "d47102570b42a515e9dca3ac3c001cdc313d5e07f0b2b78a10b94959fd60e8c5",
+      "status": 200
+    },
+    {
+      "bytes": 4973,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_global_native/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "2ae2298d83bbd732e38e87b9eec334a00f381f7a87bed5c531c6702923fc4d5d",
+      "status": 200
+    },
+    {
+      "bytes": 2443,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_global_native_model_level/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "2ec79e402bd8bda977192dc62aa65126bad08ac75b61027274a74887cac82273",
+      "status": 200
+    },
+    {
+      "bytes": 2184,
+      "grid_mentions": [],
+      "key": "data_spatial/dwd_icon_global_native_model_level/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "4046ba374eb5b649db32d0617242e7acefd98ec66680feb2cd0d28058cb75a9c",
+      "status": 200
+    },
+    {
+      "bytes": 1734,
+      "grid_mentions": [],
+      "key": "data_spatial/ecmwf_aifs025_ensemble/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "0d8ac27ac97bbd3ccb65afee34df138c12b5ebda9def7ec0d945ccd3e1629452",
+      "status": 200
+    },
+    {
+      "bytes": 1734,
+      "grid_mentions": [],
+      "key": "data_spatial/ecmwf_aifs025_ensemble/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "0d8ac27ac97bbd3ccb65afee34df138c12b5ebda9def7ec0d945ccd3e1629452",
+      "status": 200
+    },
+    {
+      "bytes": 4282,
+      "grid_mentions": [],
+      "key": "data_spatial/ecmwf_aifs025_single/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "cd8f826c504f0ca7c0354bf6fa9c65170277317caf7154f82f500e9893526ece",
+      "status": 200
+    },
+    {
+      "bytes": 4282,
+      "grid_mentions": [],
+      "key": "data_spatial/ecmwf_aifs025_single/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "cd8f826c504f0ca7c0354bf6fa9c65170277317caf7154f82f500e9893526ece",
+      "status": 200
+    },
+    {
+      "bytes": 2126,
+      "grid_mentions": [
+        {
+          "json_path": "$.crs_wkt",
+          "label": "O320",
+          "text": "GEOGCRS[\"Reduced Gaussian Grid\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north],\n        AXIS[\"longitude\",east],\n        ANGLEUNIT[\"degree\",0.0174532925199433],\n    REMARK[\"Reduced Gaussian Grid O320 (ECMWF)\"],\n    USAGE[\n        SCOPE[\"grid\"],\n        BBOX[-90,-180.0,90,180]]]"
+        }
+      ],
+      "key": "data_spatial/ecmwf_ec46_weekly/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "3679fdd42f6e5dcef12de681485eb60f04c21457cc8e303ef03e8977ad594d3d",
+      "status": 200
+    },
+    {
+      "bytes": 2107,
+      "grid_mentions": [
+        {
+          "json_path": "$.crs_wkt",
+          "label": "O320",
+          "text": "GEOGCRS[\"Reduced Gaussian Grid\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north],\n        AXIS[\"longitude\",east],\n        ANGLEUNIT[\"degree\",0.0174532925199433],\n    REMARK[\"Reduced Gaussian Grid O320 (ECMWF)\"],\n    USAGE[\n        SCOPE[\"grid\"],\n        BBOX[-90,-180.0,90,180]]]"
+        }
+      ],
+      "key": "data_spatial/ecmwf_ec46_weekly/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "dcee2723a6ea311350522f52c4bce84960074850bffb128b86d5d426a0241127",
+      "status": 200
+    },
+    {
+      "bytes": 3498,
+      "grid_mentions": [
+        {
+          "json_path": "$.crs_wkt",
+          "label": "O1280",
+          "text": "GEOGCRS[\"Reduced Gaussian Grid\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north],\n        AXIS[\"longitude\",east],\n        ANGLEUNIT[\"degree\",0.0174532925199433],\n    REMARK[\"Reduced Gaussian Grid O1280 (ECMWF)\"],\n    USAGE[\n        SCOPE[\"grid\"],\n        BBOX[-90,-180.0,90,180]]]"
+        }
+      ],
+      "key": "data_spatial/ecmwf_ifs/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "5e44ff78eea6af94d41d8576431cced89b923c84e2a481abc62385a0e1e8529f",
+      "status": 200
+    },
+    {
+      "bytes": 3498,
+      "grid_mentions": [
+        {
+          "json_path": "$.crs_wkt",
+          "label": "O1280",
+          "text": "GEOGCRS[\"Reduced Gaussian Grid\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north],\n        AXIS[\"longitude\",east],\n        ANGLEUNIT[\"degree\",0.0174532925199433],\n    REMARK[\"Reduced Gaussian Grid O1280 (ECMWF)\"],\n    USAGE[\n        SCOPE[\"grid\"],\n        BBOX[-90,-180.0,90,180]]]"
+        }
+      ],
+      "key": "data_spatial/ecmwf_ifs/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "5e44ff78eea6af94d41d8576431cced89b923c84e2a481abc62385a0e1e8529f",
+      "status": 200
+    },
+    {
+      "bytes": 4418,
+      "grid_mentions": [],
+      "key": "data_spatial/ecmwf_ifs025/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "56dee627dc332ff5b3337196f844334c9f3360d8246e44cdb0f73f86a2507611",
+      "status": 200
+    },
+    {
+      "bytes": 4418,
+      "grid_mentions": [],
+      "key": "data_spatial/ecmwf_ifs025/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "56dee627dc332ff5b3337196f844334c9f3360d8246e44cdb0f73f86a2507611",
+      "status": 200
+    },
+    {
+      "bytes": 1494,
+      "grid_mentions": [],
+      "key": "data_spatial/ecmwf_ifs025_ensemble/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "bf02c3c35c83fe023191ff3d2a2bf82a740dc3e5d5d3796a5b6a80140ea3ef81",
+      "status": 200
+    },
+    {
+      "bytes": 1494,
+      "grid_mentions": [],
+      "key": "data_spatial/ecmwf_ifs025_ensemble/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "bf02c3c35c83fe023191ff3d2a2bf82a740dc3e5d5d3796a5b6a80140ea3ef81",
+      "status": 200
+    },
+    {
+      "bytes": 2635,
+      "grid_mentions": [
+        {
+          "json_path": "$.crs_wkt",
+          "label": "O320",
+          "text": "GEOGCRS[\"Reduced Gaussian Grid\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north],\n        AXIS[\"longitude\",east],\n        ANGLEUNIT[\"degree\",0.0174532925199433],\n    REMARK[\"Reduced Gaussian Grid O320 (ECMWF)\"],\n    USAGE[\n        SCOPE[\"grid\"],\n        BBOX[-90,-180.0,90,180]]]"
+        }
+      ],
+      "key": "data_spatial/ecmwf_seas5_monthly/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "862d985800f01d422b7a4d96fede1d4c46a48c6dce93575b8bd5d67a532b8d3a",
+      "status": 200
+    },
+    {
+      "bytes": 2635,
+      "grid_mentions": [
+        {
+          "json_path": "$.crs_wkt",
+          "label": "O320",
+          "text": "GEOGCRS[\"Reduced Gaussian Grid\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north],\n        AXIS[\"longitude\",east],\n        ANGLEUNIT[\"degree\",0.0174532925199433],\n    REMARK[\"Reduced Gaussian Grid O320 (ECMWF)\"],\n    USAGE[\n        SCOPE[\"grid\"],\n        BBOX[-90,-180.0,90,180]]]"
+        }
+      ],
+      "key": "data_spatial/ecmwf_seas5_monthly/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "862d985800f01d422b7a4d96fede1d4c46a48c6dce93575b8bd5d67a532b8d3a",
+      "status": 200
+    },
+    {
+      "bytes": 2793,
+      "grid_mentions": [
+        {
+          "json_path": "$.crs_wkt",
+          "label": "O1280",
+          "text": "GEOGCRS[\"Reduced Gaussian Grid\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north],\n        AXIS[\"longitude\",east],\n        ANGLEUNIT[\"degree\",0.0174532925199433],\n    REMARK[\"Reduced Gaussian Grid O1280 (ECMWF)\"],\n    USAGE[\n        SCOPE[\"grid\"],\n        BBOX[-90,-180.0,90,180]]]"
+        }
+      ],
+      "key": "data_spatial/ecmwf_wam/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "4dbe43fb2db1abd26523cb43dfc1eea7f571b54b7b5bc1758d8526f198259784",
+      "status": 200
+    },
+    {
+      "bytes": 2793,
+      "grid_mentions": [
+        {
+          "json_path": "$.crs_wkt",
+          "label": "O1280",
+          "text": "GEOGCRS[\"Reduced Gaussian Grid\",\n    DATUM[\"World Geodetic System 1984\",\n        ELLIPSOID[\"WGS 84\",6378137,298.257223563]],\n    CS[ellipsoidal,2],\n        AXIS[\"latitude\",north],\n        AXIS[\"longitude\",east],\n        ANGLEUNIT[\"degree\",0.0174532925199433],\n    REMARK[\"Reduced Gaussian Grid O1280 (ECMWF)\"],\n    USAGE[\n        SCOPE[\"grid\"],\n        BBOX[-90,-180.0,90,180]]]"
+        }
+      ],
+      "key": "data_spatial/ecmwf_wam/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "4dbe43fb2db1abd26523cb43dfc1eea7f571b54b7b5bc1758d8526f198259784",
+      "status": 200
+    },
+    {
+      "bytes": 1530,
+      "grid_mentions": [],
+      "key": "data_spatial/ecmwf_wam025/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "25030c5469b4ac2a780211ab4cc27639c25fb6dba8b03c3e44e05af01cf577d5",
+      "status": 200
+    },
+    {
+      "bytes": 1530,
+      "grid_mentions": [],
+      "key": "data_spatial/ecmwf_wam025/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "25030c5469b4ac2a780211ab4cc27639c25fb6dba8b03c3e44e05af01cf577d5",
+      "status": 200
+    },
+    {
+      "bytes": 2141,
+      "grid_mentions": [],
+      "key": "data_spatial/geosphere_arome_austria/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "1e413bb46426ccd07844aa2422c8e81ef9f7f635eb3949fb7f3949a8e6dec60f",
+      "status": 200
+    },
+    {
+      "bytes": 2141,
+      "grid_mentions": [],
+      "key": "data_spatial/geosphere_arome_austria/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "1e413bb46426ccd07844aa2422c8e81ef9f7f635eb3949fb7f3949a8e6dec60f",
+      "status": 200
+    },
+    {
+      "bytes": 3512,
+      "grid_mentions": [],
+      "key": "data_spatial/italia_meteo_arpae_icon_2i/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "f75800680cd9d6b6e640d5ff6d676e7426dffc3688ff39450edc983e210cec42",
+      "status": 200
+    },
+    {
+      "bytes": 3512,
+      "grid_mentions": [],
+      "key": "data_spatial/italia_meteo_arpae_icon_2i/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "f75800680cd9d6b6e640d5ff6d676e7426dffc3688ff39450edc983e210cec42",
+      "status": 200
+    },
+    {
+      "bytes": 3341,
+      "grid_mentions": [],
+      "key": "data_spatial/jma_gsm/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "98155b76643b02ddf40e0780809190c583cc251601d056d894263c77297f42b5",
+      "status": 200
+    },
+    {
+      "bytes": 3341,
+      "grid_mentions": [],
+      "key": "data_spatial/jma_gsm/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "98155b76643b02ddf40e0780809190c583cc251601d056d894263c77297f42b5",
+      "status": 200
+    },
+    {
+      "bytes": 1491,
+      "grid_mentions": [],
+      "key": "data_spatial/jma_msm/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "042ab6022c95f2a7ed04ac53a4ad9248797f13701be24e632bd5a5dfcd50e3bb",
+      "status": 200
+    },
+    {
+      "bytes": 1491,
+      "grid_mentions": [],
+      "key": "data_spatial/jma_msm/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "042ab6022c95f2a7ed04ac53a4ad9248797f13701be24e632bd5a5dfcd50e3bb",
+      "status": 200
+    },
+    {
+      "bytes": 3157,
+      "grid_mentions": [],
+      "key": "data_spatial/jma_msm_upper_level/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "38b345d40d688819e0a2b94fdf4e5bfee2bc32ee5b2af19be1154e2207a22c47",
+      "status": 200
+    },
+    {
+      "bytes": 3157,
+      "grid_mentions": [],
+      "key": "data_spatial/jma_msm_upper_level/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "38b345d40d688819e0a2b94fdf4e5bfee2bc32ee5b2af19be1154e2207a22c47",
+      "status": 200
+    },
+    {
+      "bytes": 3125,
+      "grid_mentions": [],
+      "key": "data_spatial/knmi_harmonie_arome_europe/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "b1ced5b7cce79c15e07bdeda76893fc76100f1f5ecd5c23b64788e2980e69e73",
+      "status": 200
+    },
+    {
+      "bytes": 3125,
+      "grid_mentions": [],
+      "key": "data_spatial/knmi_harmonie_arome_europe/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "b1ced5b7cce79c15e07bdeda76893fc76100f1f5ecd5c23b64788e2980e69e73",
+      "status": 200
+    },
+    {
+      "bytes": 2267,
+      "grid_mentions": [],
+      "key": "data_spatial/knmi_harmonie_arome_netherlands/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "d7770104c19529cb7a2eb39b4841d39d7607d0739916fd4c3cd0356a6bb43047",
+      "status": 200
+    },
+    {
+      "bytes": 2267,
+      "grid_mentions": [],
+      "key": "data_spatial/knmi_harmonie_arome_netherlands/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "d7770104c19529cb7a2eb39b4841d39d7607d0739916fd4c3cd0356a6bb43047",
+      "status": 200
+    },
+    {
+      "bytes": 5212,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_arome_france0025/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "98e8b37b5e4be5afb14c809e840bf49e8ede4b977199fe4c9637ad2b0de025dd",
+      "status": 200
+    },
+    {
+      "bytes": 5212,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_arome_france0025/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "98e8b37b5e4be5afb14c809e840bf49e8ede4b977199fe4c9637ad2b0de025dd",
+      "status": 200
+    },
+    {
+      "bytes": 1244,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_arome_france0025_15min/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "90760633d94ef87ba10a8e0caf1ad3f59f41ed82a18ee60616825f6659abbac4",
+      "status": 200
+    },
+    {
+      "bytes": 1244,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_arome_france0025_15min/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "90760633d94ef87ba10a8e0caf1ad3f59f41ed82a18ee60616825f6659abbac4",
+      "status": 200
+    },
+    {
+      "bytes": 1843,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_arome_france_hd/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "2f358932d99d7ac2e05afc45866ea6ed41e2ff75a753af14f84ccc6315f1ce4f",
+      "status": 200
+    },
+    {
+      "bytes": 1843,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_arome_france_hd/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "2f358932d99d7ac2e05afc45866ea6ed41e2ff75a753af14f84ccc6315f1ce4f",
+      "status": 200
+    },
+    {
+      "bytes": 1108,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_arome_france_hd_15min/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "f76e64802d41023e459ed5825b14a699893b245117860ab37567d4014bfb0737",
+      "status": 200
+    },
+    {
+      "bytes": 1108,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_arome_france_hd_15min/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "f76e64802d41023e459ed5825b14a699893b245117860ab37567d4014bfb0737",
+      "status": 200
+    },
+    {
+      "bytes": 2889,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_arpege_europe/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "2b3f58b2b1e6b430747df220dcb58b7cbe2beef8e87400d2f52d7c8224021d0c",
+      "status": 200
+    },
+    {
+      "bytes": 2889,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_arpege_europe/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "2b3f58b2b1e6b430747df220dcb58b7cbe2beef8e87400d2f52d7c8224021d0c",
+      "status": 200
+    },
+    {
+      "bytes": 6136,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_arpege_world025/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "238e04d7f00c33b03ad274ad2e72c6f0a526b30a85350fceb0a45a7c2b1a189e",
+      "status": 200
+    },
+    {
+      "bytes": 6136,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_arpege_world025/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "238e04d7f00c33b03ad274ad2e72c6f0a526b30a85350fceb0a45a7c2b1a189e",
+      "status": 200
+    },
+    {
+      "bytes": 5868,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_currents/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "a14b861e1816aa89ebee6550de635ded37f560d8df29e96e0f3f5bf279954a7c",
+      "status": 200
+    },
+    {
+      "bytes": 5868,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_currents/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "a14b861e1816aa89ebee6550de635ded37f560d8df29e96e0f3f5bf279954a7c",
+      "status": 200
+    },
+    {
+      "bytes": 1409,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_sea_surface_temperature/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "beaca8623733265d57c8bc73b5cb02e8ec4f5d575ee5990cddbc81d86cfdcc8c",
+      "status": 200
+    },
+    {
+      "bytes": 1409,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_sea_surface_temperature/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "beaca8623733265d57c8bc73b5cb02e8ec4f5d575ee5990cddbc81d86cfdcc8c",
+      "status": 200
+    },
+    {
+      "bytes": 2444,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_wave/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "33375c71e20ea034c1724bb28997ea017d8994f22f4e51980d66f49a6bba6267",
+      "status": 200
+    },
+    {
+      "bytes": 2444,
+      "grid_mentions": [],
+      "key": "data_spatial/meteofrance_wave/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "33375c71e20ea034c1724bb28997ea017d8994f22f4e51980d66f49a6bba6267",
+      "status": 200
+    },
+    {
+      "bytes": 1799,
+      "grid_mentions": [],
+      "key": "data_spatial/meteoswiss_icon_ch1/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "ae222603ef55b159c84033dc1bb270ae8217b36289b09c1cf92ccf61cdb26bb3",
+      "status": 200
+    },
+    {
+      "bytes": 1799,
+      "grid_mentions": [],
+      "key": "data_spatial/meteoswiss_icon_ch1/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "ae222603ef55b159c84033dc1bb270ae8217b36289b09c1cf92ccf61cdb26bb3",
+      "status": 200
+    },
+    {
+      "bytes": 1442,
+      "grid_mentions": [],
+      "key": "data_spatial/meteoswiss_icon_ch1_ensemble/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "0eb4d436b9baf30511b8b066b7c6daaafa14beb7a8e277d4d6c290b08dde7f3b",
+      "status": 200
+    },
+    {
+      "bytes": 1442,
+      "grid_mentions": [],
+      "key": "data_spatial/meteoswiss_icon_ch1_ensemble/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "0eb4d436b9baf30511b8b066b7c6daaafa14beb7a8e277d4d6c290b08dde7f3b",
+      "status": 200
+    },
+    {
+      "bytes": 3539,
+      "grid_mentions": [],
+      "key": "data_spatial/meteoswiss_icon_ch2/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "d05caafdb7be3c01ca8d2d2d1383f1a6f2c35aaf0534b0957db18382fd198408",
+      "status": 200
+    },
+    {
+      "bytes": 3539,
+      "grid_mentions": [],
+      "key": "data_spatial/meteoswiss_icon_ch2/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "d05caafdb7be3c01ca8d2d2d1383f1a6f2c35aaf0534b0957db18382fd198408",
+      "status": 200
+    },
+    {
+      "bytes": 3182,
+      "grid_mentions": [],
+      "key": "data_spatial/meteoswiss_icon_ch2_ensemble/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "8a42c358040b756e69bbc23614b49e41fcee809a3091bfbf138b6d5ddc016418",
+      "status": 200
+    },
+    {
+      "bytes": 3182,
+      "grid_mentions": [],
+      "key": "data_spatial/meteoswiss_icon_ch2_ensemble/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "8a42c358040b756e69bbc23614b49e41fcee809a3091bfbf138b6d5ddc016418",
+      "status": 200
+    },
+    {
+      "bytes": 2171,
+      "grid_mentions": [],
+      "key": "data_spatial/metno_nordic_pp/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "aa6f2c4fa86217b9363736df28b0ecd27a05dba82320cd6cbd9b47232b4d53e8",
+      "status": 200
+    },
+    {
+      "bytes": 2171,
+      "grid_mentions": [],
+      "key": "data_spatial/metno_nordic_pp/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "aa6f2c4fa86217b9363736df28b0ecd27a05dba82320cd6cbd9b47232b4d53e8",
+      "status": 200
+    },
+    {
+      "bytes": 1794,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_aigefs025/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "1a4cd7d0d6be25a9053e59a52d4b5254e5e17159ab6ad795f679d0265ab7f479",
+      "status": 200
+    },
+    {
+      "bytes": 1794,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_aigefs025/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "1a4cd7d0d6be25a9053e59a52d4b5254e5e17159ab6ad795f679d0265ab7f479",
+      "status": 200
+    },
+    {
+      "bytes": 3957,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_aigfs025/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "62e27fdd31df6c8df663d939e6604a6188c9f66158f5e44803544579f0b97d06",
+      "status": 200
+    },
+    {
+      "bytes": 3957,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_aigfs025/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "62e27fdd31df6c8df663d939e6604a6188c9f66158f5e44803544579f0b97d06",
+      "status": 200
+    },
+    {
+      "bytes": 2134,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_gefs025/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "b39a0af44d427c4355062687ed6fef3cd0cfc6c0cb91a021c86d9def97e5daf3",
+      "status": 200
+    },
+    {
+      "bytes": 2134,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_gefs025/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "b39a0af44d427c4355062687ed6fef3cd0cfc6c0cb91a021c86d9def97e5daf3",
+      "status": 200
+    },
+    {
+      "bytes": 2613,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_gefs05/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "1eaffae12bd941c17f9554fd241472fbe1b58a45cf82d6986279201ef11450a1",
+      "status": 200
+    },
+    {
+      "bytes": 2613,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_gefs05/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "1eaffae12bd941c17f9554fd241472fbe1b58a45cf82d6986279201ef11450a1",
+      "status": 200
+    },
+    {
+      "bytes": 5332,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_gfs013/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "4eabcb9fbbe1ac8f10e42aa917fb108cc229c081258d285676b2da6471c32290",
+      "status": 200
+    },
+    {
+      "bytes": 5332,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_gfs013/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "4eabcb9fbbe1ac8f10e42aa917fb108cc229c081258d285676b2da6471c32290",
+      "status": 200
+    },
+    {
+      "bytes": 12566,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_gfs025/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "01d6f5d80f8cb04ea3c283c80a6bb5049e2f16b011b13002c5fa1c27fd83ffcf",
+      "status": 200
+    },
+    {
+      "bytes": 12566,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_gfs025/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "01d6f5d80f8cb04ea3c283c80a6bb5049e2f16b011b13002c5fa1c27fd83ffcf",
+      "status": 200
+    },
+    {
+      "bytes": 5020,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_gfswave016/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "bf3bb64a5bedd6abac40a17e0274275700922b05288cf32a56df99a11a927dda",
+      "status": 200
+    },
+    {
+      "bytes": 5020,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_gfswave016/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "bf3bb64a5bedd6abac40a17e0274275700922b05288cf32a56df99a11a927dda",
+      "status": 200
+    },
+    {
+      "bytes": 5017,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_gfswave025/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "647c103f84507013bb4e7448caebce6a2f0790b2eb626b7c23faae2cc4c840cd",
+      "status": 200
+    },
+    {
+      "bytes": 5017,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_gfswave025/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "647c103f84507013bb4e7448caebce6a2f0790b2eb626b7c23faae2cc4c840cd",
+      "status": 200
+    },
+    {
+      "bytes": 5296,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_hgefs025_ensemble_mean/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "7c00102d42c7cc5119931211a89768a8fa1930ca9874f3d3315722202d00bdcc",
+      "status": 200
+    },
+    {
+      "bytes": 5296,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_hgefs025_ensemble_mean/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "7c00102d42c7cc5119931211a89768a8fa1930ca9874f3d3315722202d00bdcc",
+      "status": 200
+    },
+    {
+      "bytes": 7891,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_hrrr_conus/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "9124f618f5506673cc11576bb7b5a5a492cf4d6597637f2c39c3fe6d5178e903",
+      "status": 200
+    },
+    {
+      "bytes": 7692,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_hrrr_conus/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "3fa010d902c114ef0ba0faff1946400cbfcd86e1c42a6926668805f16445fe90",
+      "status": 200
+    },
+    {
+      "bytes": 2620,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_hrrr_conus_15min/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "5eedb69f81263304f95c7709712e5c9ff47655579b5c6e3fcf9027a0d19f22b3",
+      "status": 200
+    },
+    {
+      "bytes": 1821,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_hrrr_conus_15min/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "e7d58420338eb7dbcd21b523a463ec44d774c552f18cac00f491a3af8a02c5cb",
+      "status": 200
+    },
+    {
+      "bytes": 2808,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_nam_conus/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "36dd4df1be3cd31cec857a097aa0660d499e6677dcfa094226bf16d0867b9aa7",
+      "status": 200
+    },
+    {
+      "bytes": 2808,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_nam_conus/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "36dd4df1be3cd31cec857a097aa0660d499e6677dcfa094226bf16d0867b9aa7",
+      "status": 200
+    },
+    {
+      "bytes": 3226,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_nbm_conus/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "78ee7ef959ce926c06eae915db530bd00f53164e4fc176e6ea6c5c459439ea3b",
+      "status": 200
+    },
+    {
+      "bytes": 3226,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_nbm_conus/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "78ee7ef959ce926c06eae915db530bd00f53164e4fc176e6ea6c5c459439ea3b",
+      "status": 200
+    },
+    {
+      "bytes": 9798,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_rrfs_conus/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "ee4fb3741c882fb9e51288fede8a38f386678a232f963c9340dedebef3d74dfe",
+      "status": 200
+    },
+    {
+      "bytes": 9798,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_rrfs_conus/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "ee4fb3741c882fb9e51288fede8a38f386678a232f963c9340dedebef3d74dfe",
+      "status": 200
+    },
+    {
+      "bytes": 2653,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_rrfs_conus_15min/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "96d786d923a2d6cba1c9d8c8511d18eeca916fc3938211c09241fa1fc7080fe3",
+      "status": 200
+    },
+    {
+      "bytes": 2653,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_rrfs_conus_15min/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "96d786d923a2d6cba1c9d8c8511d18eeca916fc3938211c09241fa1fc7080fe3",
+      "status": 200
+    },
+    {
+      "bytes": 9690,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_rrfs_north_america/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "5f1c760e665ad1a7cd586fe8595552db6086692e91d55c856a08ef0769f8dfb7",
+      "status": 200
+    },
+    {
+      "bytes": 9690,
+      "grid_mentions": [],
+      "key": "data_spatial/ncep_rrfs_north_america/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "5f1c760e665ad1a7cd586fe8595552db6086692e91d55c856a08ef0769f8dfb7",
+      "status": 200
+    },
+    {
+      "bytes": 6802,
+      "grid_mentions": [],
+      "key": "data_spatial/ukmo_global_deterministic_10km/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "9bf8517d0bd456c6d3a67d9f907ca165569e359a607af215e49d84ebd2612a7b",
+      "status": 200
+    },
+    {
+      "bytes": 6802,
+      "grid_mentions": [],
+      "key": "data_spatial/ukmo_global_deterministic_10km/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "9bf8517d0bd456c6d3a67d9f907ca165569e359a607af215e49d84ebd2612a7b",
+      "status": 200
+    },
+    {
+      "bytes": 3940,
+      "grid_mentions": [],
+      "key": "data_spatial/ukmo_global_ensemble_20km/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "2f30950b2b9ee20e838bfd11fa40f5715551f06971a95ade204a90fa3fd8f91e",
+      "status": 200
+    },
+    {
+      "bytes": 2101,
+      "grid_mentions": [],
+      "key": "data_spatial/ukmo_global_ensemble_20km/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "734e2eb914b7a66f04f4b83781500444095bbe37f070ac73a8a741fd277a80b7",
+      "status": 200
+    },
+    {
+      "bytes": 9409,
+      "grid_mentions": [],
+      "key": "data_spatial/ukmo_uk_deterministic_2km/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "360b4477413d0d4bca99cadbd629a830e7638df876b4dca065e8778d6f74c4e8",
+      "status": 200
+    },
+    {
+      "bytes": 9409,
+      "grid_mentions": [],
+      "key": "data_spatial/ukmo_uk_deterministic_2km/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "360b4477413d0d4bca99cadbd629a830e7638df876b4dca065e8778d6f74c4e8",
+      "status": 200
+    },
+    {
+      "bytes": 3397,
+      "grid_mentions": [],
+      "key": "data_spatial/ukmo_uk_ensemble_2km/latest.json",
+      "n_grid_mentions": [],
+      "sha256": "dde9ac23987970ec988b7e73626c04d74e693316cb43454522e799f16a3f6593",
+      "status": 200
+    },
+    {
+      "bytes": 3397,
+      "grid_mentions": [],
+      "key": "data_spatial/ukmo_uk_ensemble_2km/in-progress.json",
+      "n_grid_mentions": [],
+      "sha256": "dde9ac23987970ec988b7e73626c04d74e693316cb43454522e799f16a3f6593",
+      "status": 200
+    }
+  ],
+  "proxy_normalization": {
+    "proxy_values_recorded": false,
+    "root_trailing_slash_removed_for_schemes": [
+      "all",
+      "http",
+      "https"
+    ]
+  },
+  "regional_candidate_prefixes": [
+    {
+      "child_prefixes": [],
+      "object_count": 0,
+      "object_keys": [],
+      "pages": [
+        {
+          "body_bytes": 296,
+          "objects_on_page": 0,
+          "prefixes_on_page": 0,
+          "sha256": "e8e40dfe6157db82fb64da3f750dedce77f9a8fbf22e94cc727ebbb3129e4219",
+          "status": 200,
+          "truncated": false
+        }
+      ],
+      "prefix": "data/ecmwf_aifs_europe_ensemble/",
+      "prefix_count": 0,
+      "truncated": false
+    },
+    {
+      "child_prefixes": [],
+      "object_count": 0,
+      "object_keys": [],
+      "pages": [
+        {
+          "body_bytes": 304,
+          "objects_on_page": 0,
+          "prefixes_on_page": 0,
+          "sha256": "dade35030ee5c622436aadb24c0c81b37b33accef39aea8d6bc6091e19da82fc",
+          "status": 200,
+          "truncated": false
+        }
+      ],
+      "prefix": "data_spatial/ecmwf_aifs_europe_ensemble/",
+      "prefix_count": 0,
+      "truncated": false
+    },
+    {
+      "child_prefixes": [],
+      "object_count": 0,
+      "object_keys": [],
+      "pages": [
+        {
+          "body_bytes": 301,
+          "objects_on_page": 0,
+          "prefixes_on_page": 0,
+          "sha256": "9ca19534c86a6df3080ff2c0f3bc4425c3a6965ceec66fa9d347657e77bacc8a",
+          "status": 200,
+          "truncated": false
+        }
+      ],
+      "prefix": "data/ecmwf_aifs_europe_ensemble_mean/",
+      "prefix_count": 0,
+      "truncated": false
+    },
+    {
+      "child_prefixes": [],
+      "object_count": 0,
+      "object_keys": [],
+      "pages": [
+        {
+          "body_bytes": 309,
+          "objects_on_page": 0,
+          "prefixes_on_page": 0,
+          "sha256": "8ce1b4395f4dae5045bcd7fad444bfe19137c202d6b84871b72a2557eb4874eb",
+          "status": 200,
+          "truncated": false
+        }
+      ],
+      "prefix": "data_spatial/ecmwf_aifs_europe_ensemble_mean/",
+      "prefix_count": 0,
+      "truncated": false
+    }
+  ],
+  "root_errors": [],
+  "root_listings": {
+    "data": {
+      "child_prefixes": [
+        "data/bom_access_global/",
+        "data/bom_access_global_ensemble/",
+        "data/cams_europe/",
+        "data/cams_global/",
+        "data/cams_global_greenhouse_gases/",
+        "data/chmi_aladin_central_europe_2km/",
+        "data/chmi_aladin_cz_1km/",
+        "data/cma_grapes_global/",
+        "data/cmc_gem_gdps/",
+        "data/cmc_gem_gdps_15km/",
+        "data/cmc_gem_gdps_15km_upper_level/",
+        "data/cmc_gem_geps/",
+        "data/cmc_gem_geps_ensemble_mean/",
+        "data/cmc_gem_hrdps/",
+        "data/cmc_gem_hrdps_west/",
+        "data/cmc_gem_rdps/",
+        "data/cmc_gem_rdps_10km/",
+        "data/copernicus_dem90/",
+        "data/copernicus_era5/",
+        "data/copernicus_era5_ensemble/",
+        "data/copernicus_era5_land/",
+        "data/copernicus_era5_ocean/",
+        "data/dmi_harmonie_arome_europe/",
+        "data/dwd_ewam/",
+        "data/dwd_gwam/",
+        "data/dwd_icon/",
+        "data/dwd_icon_d2/",
+        "data/dwd_icon_d2_15min/",
+        "data/dwd_icon_d2_eps/",
+        "data/dwd_icon_d2_eps_ensemble_mean/",
+        "data/dwd_icon_d2_eps_native/",
+        "data/dwd_icon_d2_eps_native_ensemble_mean/",
+        "data/dwd_icon_d2_native/",
+        "data/dwd_icon_d2_native_15min/",
+        "data/dwd_icon_d2_native_model_level/",
+        "data/dwd_icon_eps/",
+        "data/dwd_icon_eps_ensemble_mean/",
+        "data/dwd_icon_eps_native/",
+        "data/dwd_icon_eps_native_ensemble_mean/",
+        "data/dwd_icon_eu/",
+        "data/dwd_icon_eu_eps/",
+        "data/dwd_icon_eu_eps_ensemble_mean/",
+        "data/dwd_icon_eu_eps_native/",
+        "data/dwd_icon_eu_eps_native_ensemble_mean/",
+        "data/dwd_icon_eu_native/",
+        "data/dwd_icon_eu_native_model_level/",
+        "data/dwd_icon_global_native/",
+        "data/dwd_icon_global_native_model_level/",
+        "data/ecmwf_aifs025_ensemble/",
+        "data/ecmwf_aifs025_ensemble_mean/",
+        "data/ecmwf_aifs025_single/",
+        "data/ecmwf_ec46/",
+        "data/ecmwf_ec46_ensemble_mean/",
+        "data/ecmwf_ec46_weekly/",
+        "data/ecmwf_ifs/",
+        "data/ecmwf_ifs025/",
+        "data/ecmwf_ifs025_ensemble/",
+        "data/ecmwf_ifs025_ensemble_mean/",
+        "data/ecmwf_ifs_analysis_long_window/",
+        "data/ecmwf_seas5/",
+        "data/ecmwf_seas5_daily_ensemble_mean/",
+        "data/ecmwf_seas5_ensemble_mean/",
+        "data/ecmwf_seas5_monthly/",
+        "data/ecmwf_wam/",
+        "data/ecmwf_wam025/",
+        "data/geosphere_arome_austria/",
+        "data/italia_meteo_arpae_icon_2i/",
+        "data/jma_gsm/",
+        "data/jma_msm/",
+        "data/jma_msm_upper_level/",
+        "data/kma_gdps/",
+        "data/kma_ldps/",
+        "data/knmi_harmonie_arome_europe/",
+        "data/knmi_harmonie_arome_netherlands/",
+        "data/meteofrance_arome_france0025/",
+        "data/meteofrance_arome_france0025_15min/",
+        "data/meteofrance_arome_france_hd/",
+        "data/meteofrance_arome_france_hd_15min/",
+        "data/meteofrance_arpege_europe/",
+        "data/meteofrance_arpege_europe_probabilities/",
+        "data/meteofrance_arpege_world025/",
+        "data/meteofrance_currents/",
+        "data/meteofrance_sea_surface_temperature/",
+        "data/meteofrance_wave/",
+        "data/meteoswiss_icon_ch1/",
+        "data/meteoswiss_icon_ch1_ensemble/",
+        "data/meteoswiss_icon_ch1_ensemble_mean/",
+        "data/meteoswiss_icon_ch2/",
+        "data/meteoswiss_icon_ch2_ensemble/",
+        "data/meteoswiss_icon_ch2_ensemble_mean/",
+        "data/metno_nordic_pp/",
+        "data/ncep_aigefs025/",
+        "data/ncep_aigefs025_ensemble_mean/",
+        "data/ncep_aigfs025/",
+        "data/ncep_gefs025/",
+        "data/ncep_gefs025_ensemble_mean/",
+        "data/ncep_gefs05/",
+        "data/ncep_gefs05_ensemble_mean/",
+        "data/ncep_gfs013/",
+        "data/ncep_gfs025/",
+        "data/ncep_gfs_graphcast025/",
+        "data/ncep_gfswave016/",
+        "data/ncep_gfswave025/",
+        "data/ncep_hgefs025_ensemble_mean/",
+        "data/ncep_hrrr_conus/",
+        "data/ncep_hrrr_conus_15min/",
+        "data/ncep_nam_conus/",
+        "data/ncep_nbm_conus/",
+        "data/ncep_rrfs_conus/",
+        "data/ncep_rrfs_conus_15min/",
+        "data/ncep_rrfs_north_america/",
+        "data/ukmo_global_deterministic_10km/",
+        "data/ukmo_global_ensemble_20km/",
+        "data/ukmo_global_ensemble_mean_20km/",
+        "data/ukmo_uk_deterministic_2km/",
+        "data/ukmo_uk_ensemble_2km/",
+        "data/ukmo_uk_ensemble_mean_2km/"
+      ],
+      "object_count": 0,
+      "object_keys": [],
+      "pages": [
+        {
+          "body_bytes": 9237,
+          "objects_on_page": 0,
+          "prefixes_on_page": 117,
+          "sha256": "590ba8eb60091af90b6f85db1607734a180ae5192aec520556ef934b819ca661",
+          "status": 200,
+          "truncated": false
+        }
+      ],
+      "prefix": "data/",
+      "prefix_count": 117,
+      "truncated": false
+    },
+    "data_spatial": {
+      "child_prefixes": [
+        "data_spatial/cams_europe/",
+        "data_spatial/cams_global/",
+        "data_spatial/cams_global_greenhouse_gases/",
+        "data_spatial/chmi_aladin_central_europe_2km/",
+        "data_spatial/chmi_aladin_cz_1km/",
+        "data_spatial/cma_grapes_global/",
+        "data_spatial/cmc_gem_gdps_15km/",
+        "data_spatial/cmc_gem_gdps_15km_upper_level/",
+        "data_spatial/cmc_gem_geps/",
+        "data_spatial/cmc_gem_hrdps/",
+        "data_spatial/cmc_gem_hrdps_west/",
+        "data_spatial/cmc_gem_rdps_10km/",
+        "data_spatial/dmi_harmonie_arome_europe/",
+        "data_spatial/dwd_ewam/",
+        "data_spatial/dwd_gwam/",
+        "data_spatial/dwd_icon/",
+        "data_spatial/dwd_icon_d2/",
+        "data_spatial/dwd_icon_d2_eps/",
+        "data_spatial/dwd_icon_d2_eps_native/",
+        "data_spatial/dwd_icon_d2_native/",
+        "data_spatial/dwd_icon_d2_native_model_level/",
+        "data_spatial/dwd_icon_eps/",
+        "data_spatial/dwd_icon_eps_native/",
+        "data_spatial/dwd_icon_eu/",
+        "data_spatial/dwd_icon_eu_eps/",
+        "data_spatial/dwd_icon_eu_eps_native/",
+        "data_spatial/dwd_icon_eu_native/",
+        "data_spatial/dwd_icon_eu_native_model_level/",
+        "data_spatial/dwd_icon_global_native/",
+        "data_spatial/dwd_icon_global_native_model_level/",
+        "data_spatial/ecmwf_aifs025_ensemble/",
+        "data_spatial/ecmwf_aifs025_single/",
+        "data_spatial/ecmwf_ec46_weekly/",
+        "data_spatial/ecmwf_ifs/",
+        "data_spatial/ecmwf_ifs025/",
+        "data_spatial/ecmwf_ifs025_ensemble/",
+        "data_spatial/ecmwf_seas5_monthly/",
+        "data_spatial/ecmwf_wam/",
+        "data_spatial/ecmwf_wam025/",
+        "data_spatial/geosphere_arome_austria/",
+        "data_spatial/italia_meteo_arpae_icon_2i/",
+        "data_spatial/jma_gsm/",
+        "data_spatial/jma_msm/",
+        "data_spatial/jma_msm_upper_level/",
+        "data_spatial/knmi_harmonie_arome_europe/",
+        "data_spatial/knmi_harmonie_arome_netherlands/",
+        "data_spatial/meteofrance_arome_france0025/",
+        "data_spatial/meteofrance_arome_france0025_15min/",
+        "data_spatial/meteofrance_arome_france_hd/",
+        "data_spatial/meteofrance_arome_france_hd_15min/",
+        "data_spatial/meteofrance_arpege_europe/",
+        "data_spatial/meteofrance_arpege_world025/",
+        "data_spatial/meteofrance_currents/",
+        "data_spatial/meteofrance_sea_surface_temperature/",
+        "data_spatial/meteofrance_wave/",
+        "data_spatial/meteoswiss_icon_ch1/",
+        "data_spatial/meteoswiss_icon_ch1_ensemble/",
+        "data_spatial/meteoswiss_icon_ch2/",
+        "data_spatial/meteoswiss_icon_ch2_ensemble/",
+        "data_spatial/metno_nordic_pp/",
+        "data_spatial/ncep_aigefs025/",
+        "data_spatial/ncep_aigfs025/",
+        "data_spatial/ncep_gefs025/",
+        "data_spatial/ncep_gefs05/",
+        "data_spatial/ncep_gfs013/",
+        "data_spatial/ncep_gfs025/",
+        "data_spatial/ncep_gfswave016/",
+        "data_spatial/ncep_gfswave025/",
+        "data_spatial/ncep_hgefs025_ensemble_mean/",
+        "data_spatial/ncep_hrrr_conus/",
+        "data_spatial/ncep_hrrr_conus_15min/",
+        "data_spatial/ncep_nam_conus/",
+        "data_spatial/ncep_nbm_conus/",
+        "data_spatial/ncep_rrfs_conus/",
+        "data_spatial/ncep_rrfs_conus_15min/",
+        "data_spatial/ncep_rrfs_north_america/",
+        "data_spatial/ukmo_global_deterministic_10km/",
+        "data_spatial/ukmo_global_ensemble_20km/",
+        "data_spatial/ukmo_uk_deterministic_2km/",
+        "data_spatial/ukmo_uk_ensemble_2km/"
+      ],
+      "object_count": 0,
+      "object_keys": [],
+      "pages": [
+        {
+          "body_bytes": 6933,
+          "objects_on_page": 0,
+          "prefixes_on_page": 80,
+          "sha256": "94f286099727800e784ded9b326174de6969b788889fdf677d18dc556f926eb6",
+          "status": 200,
+          "truncated": false
+        }
+      ],
+      "prefix": "data_spatial/",
+      "prefix_count": 80,
+      "truncated": false
+    }
+  },
+  "schema_version": 1,
+  "scope": "anonymous read-only S3 root listings and catalog JSON; no weather OM chunks downloaded"
+}

@@ -1,0 +1,131 @@
+{
+  "completed_at_utc": "2026-10-08T10:18:17.506928+00:00",
+  "runtime_commands": [
+    {
+      "version": "v1.5.4",
+      "argv": [
+        "python3",
+        "scripts/validate-official-httpfs.py",
+        "--duckdb",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/official/duckdb",
+        "--httpfs",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/official/httpfs.duckdb_extension",
+        "--extension",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/extension/duckomo/duckomo.duckdb_extension",
+        "--output",
+        "/home/blizhan/repo/github/duckomo/build/official-httpfs-refactor/runtime-final/v1.5.4",
+        "--http-base",
+        "http://127.0.0.1:45107",
+        "--https-base",
+        "https://127.0.0.1:41225",
+        "--s3-base",
+        "s3://duckomo-grid-tests/duckomo",
+        "--s3-setup",
+        "/home/blizhan/repo/github/duckomo/build/grid-controlled-remote/fixtures/s3-setup.sql",
+        "--server-log",
+        "/home/blizhan/repo/github/duckomo/build/grid-controlled-remote/fixtures/logs",
+        "--https-ca-cert",
+        "/home/blizhan/repo/github/duckomo/build/grid-controlled-remote/private/tls.crt"
+      ],
+      "exit_code": 0
+    },
+    {
+      "version": "v1.5.5",
+      "argv": [
+        "python3",
+        "scripts/validate-official-httpfs.py",
+        "--duckdb",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/official/duckdb",
+        "--httpfs",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/official/httpfs.duckdb_extension",
+        "--extension",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/b21f21aea5971199c87b0a4739c2545e5c981e39f34daf4b1b82b8950e2836e4/release/extension/duckomo/duckomo.duckdb_extension",
+        "--output",
+        "/home/blizhan/repo/github/duckomo/build/official-httpfs-refactor/runtime-final/v1.5.5",
+        "--http-base",
+        "http://127.0.0.1:45107",
+        "--https-base",
+        "https://127.0.0.1:41225",
+        "--s3-base",
+        "s3://duckomo-grid-tests/duckomo",
+        "--s3-setup",
+        "/home/blizhan/repo/github/duckomo/build/grid-controlled-remote/fixtures/s3-setup.sql",
+        "--server-log",
+        "/home/blizhan/repo/github/duckomo/build/grid-controlled-remote/fixtures/logs",
+        "--https-ca-cert",
+        "/home/blizhan/repo/github/duckomo/build/grid-controlled-remote/private/tls.crt"
+      ],
+      "exit_code": 0
+    },
+    {
+      "version": "v1.5.6",
+      "argv": [
+        "python3",
+        "scripts/validate-official-httpfs.py",
+        "--duckdb",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/official/duckdb",
+        "--httpfs",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/official/httpfs.duckdb_extension",
+        "--extension",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/24d2012eb2c1f0a0bd5c737ce9c0cfebe4efbf646fead601280013869a74c52d/release/extension/duckomo/duckomo.duckdb_extension",
+        "--output",
+        "/home/blizhan/repo/github/duckomo/build/official-httpfs-refactor/runtime-final/v1.5.6",
+        "--http-base",
+        "http://127.0.0.1:45107",
+        "--https-base",
+        "https://127.0.0.1:41225",
+        "--s3-base",
+        "s3://duckomo-grid-tests/duckomo",
+        "--s3-setup",
+        "/home/blizhan/repo/github/duckomo/build/grid-controlled-remote/fixtures/s3-setup.sql",
+        "--server-log",
+        "/home/blizhan/repo/github/duckomo/build/grid-controlled-remote/fixtures/logs",
+        "--https-ca-cert",
+        "/home/blizhan/repo/github/duckomo/build/grid-controlled-remote/private/tls.crt"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "native_commands": "per-version local.json (official_httpfs_test includes actual HTTPFS cancellation); environment DUCKOMO_HTTPFS=matching official artifact, DUCKOMO_HTTP_BASE=controlled loopback service",
+  "performance_command": [
+    "python3",
+    "scripts/compare-official-httpfs-performance.py",
+    "--baseline",
+    "build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release",
+    "--official-root",
+    "build/official-httpfs-refactor/official",
+    "--matrix-output",
+    "build/official-matrix",
+    "--http-base",
+    "http://127.0.0.1:45107",
+    "--s3-base",
+    "s3://duckomo-grid-tests/duckomo",
+    "--s3-setup",
+    "build/grid-controlled-remote/fixtures/s3-setup.sql",
+    "--server-log",
+    "build/grid-controlled-remote/fixtures/logs",
+    "--output",
+    "build/official-httpfs-refactor/performance-final-fixed"
+  ],
+  "performance_exit_code": 0,
+  "h8_audit_exit_code": 2,
+  "h8_reason": "actual three official runtime identities passed; broad 004 H0-H7 incomplete, H8 not promoted",
+  "diff_check_exit_code": 0,
+  "validation_wrapper": {
+    "argv": [
+      "scripts/validate.sh",
+      "--matrix",
+      "test/data/grids/version-matrix.json",
+      "--pair",
+      "v1.5.4",
+      "--local-only"
+    ],
+    "exit_code": 0,
+    "environment": {
+      "DUCKOMO_DOMAIN_FILE": "build/s3-samples/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om",
+      "DUCKOMO_DOMAIN_REFERENCE": "build/evidence/spatial/reference"
+    },
+    "output_path": "build/official-httpfs-refactor/validate-wrapper-final.log",
+    "output_sha256": "35bffab3cfe8ac9a7cb32fd9973f9ca0f87592827e5b111d85d6eec9e4127389"
+  }
+}

@@ -1,3 +1,5 @@
+> 2026-10-08：当前未发布版本使用 [官方 HTTPFS 迁移契约](../../004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md)。下文专用 ABI、LRU 或 observer 的条款/命令为历史约定，已被本次契约替换。历史证据状态保持，当前复现请见 [官方流程](../../../docs/official-httpfs.md)。
+
 # Validation and Profiling Contract
 
 状态：本地实现已接入；远程门禁仍待受控服务验证。继承现有 [v2 观测契约](../../002-spatial-pushdown/contracts/validation-evidence.md) 的字段含义，新增 schema_version=3；旧 v2 验收读取器保留并显式分版，不静默重释 bytes_fetched。
@@ -61,3 +63,7 @@ fixture 规划（在计时前固定）：
 make test 纳入无外部服务的 SQL/native、fixture 重生和本地维度验证；remote gate 使用独立命令和具备配套 httpfs 的环境。缺外部服务只能写“远程未执行”，不能令完整发布 gate 为通过。ASan/UBSan 检查边界和资源回收，耗时只取 release。
 
 最终 evidence/final.md 逐项映射 FR-001–020 与 SC-001–008，记录命令、退出码、平台和限制。本阶段仅生成设计，没有任何新功能实测结果。
+
+## 2026-10-08 官方 HTTPFS 契约修订
+
+当前未发布版本以 [官方 HTTPFS 迁移契约](../../004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md) 为准。历史专用 ABI、LRU 与 G5 证据保留历史状态；新 gate 单独记录。

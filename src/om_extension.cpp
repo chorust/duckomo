@@ -16,33 +16,17 @@ void SetDuckomoMaxThreads(ClientContext &, SetScope, Value &parameter) {
 	}
 }
 
-void SetDuckomoCacheEnabledOption(ClientContext &context, SetScope, Value &parameter) {
-	duckomo::SetDuckomoCacheEnabled(context, parameter.GetValue<bool>());
-}
-
-void SetDuckomoCacheCapacityOption(ClientContext &context, SetScope, Value &parameter) {
-	const auto requested = parameter.GetValue<std::int64_t>();
-	if (requested < 0) {
-		throw InvalidInputException("duckomo_cache_capacity must be non-negative");
-	}
-	duckomo::SetDuckomoCacheCapacity(context, static_cast<std::uint64_t>(requested));
-}
-
 } // namespace
 
 void DuckomoExtension::Load(ExtensionLoader &loader) {
 	loader.RegisterFunction(duckomo::GetReadOmRawFunction());
 	loader.RegisterFunction(duckomo::GetReadOmFunction());
+	loader.RegisterFunction(duckomo::GetGridInfoFunction());
 	loader.RegisterFunction(duckomo::GetLastScanMetricsFunction());
-	loader.RegisterFunction(duckomo::GetClearCacheFunction());
 	auto &config = DBConfig::GetConfig(loader.GetDatabaseInstance());
 	config.AddExtensionOption("duckomo_max_threads", "Maximum workers used by read_om (0 uses DuckDB's thread limit)",
 	                          LogicalType::BIGINT, Value::BIGINT(0), SetDuckomoMaxThreads);
-	config.AddExtensionOption("duckomo_cache_enabled", "Enable the DuckOMO session range cache", LogicalType::BOOLEAN,
-	                          Value::BOOLEAN(true), SetDuckomoCacheEnabledOption, SetScope::SESSION);
-	config.AddExtensionOption("duckomo_cache_capacity", "Maximum DuckOMO session range cache size in bytes",
-	                          LogicalType::BIGINT, Value::BIGINT(67108864), SetDuckomoCacheCapacityOption,
-	                          SetScope::SESSION);
+
 }
 
 std::string DuckomoExtension::Name() {

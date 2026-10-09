@@ -29,7 +29,8 @@ struct AxisPredicate final {
 };
 
 AxisPredicate ExtractAxisPredicate(const LogicalGet &get, const vector<unique_ptr<Expression>> &filters,
-	                              idx_t output_column_base, const SemanticAxes &semantic_axes);
+	                              idx_t output_column_base, const SemanticAxes &semantic_axes,
+	                              const SemanticAxis *metadata_time_axis = nullptr);
 
 } // namespace duckomo
 } // namespace duckdb

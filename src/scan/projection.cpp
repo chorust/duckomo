@@ -23,10 +23,10 @@ ProjectionPlan::ProjectionPlan(const BoundSchema &schema, const std::vector<colu
 
 ProjectionPlan::ProjectionPlan(const BoundSchema &schema, const std::vector<column_t> &column_ids,
 	                           bool has_spatial_columns, bool has_time_column,
-	                           const SemanticAxes &semantic_axes) {
+	                           const SemanticAxes &semantic_axes, bool has_source_column) {
 	std::vector<OutputColumn> schema_slots;
 	schema_slots.reserve(schema.variables.size() + (has_spatial_columns ? 2 : 0) + (has_time_column ? 1 : 0) +
-	                     semantic_axes.size());
+	                     semantic_axes.size() + (has_source_column ? 1 : 0));
 	for (idx_t variable_index = 0; variable_index < schema.variables.size(); variable_index++) {
 		OutputColumn slot;
 		slot.source_index = variable_index;
@@ -51,6 +51,11 @@ ProjectionPlan::ProjectionPlan(const BoundSchema &schema, const std::vector<colu
 		coordinate.kind = OutputColumnKind::SemanticCoordinate;
 		coordinate.semantic_axis_index = semantic_index;
 		schema_slots.emplace_back(coordinate);
+	}
+	if (has_source_column) {
+		OutputColumn source;
+		source.kind = OutputColumnKind::Source;
+		schema_slots.emplace_back(source);
 	}
 
 	output_slots.reserve(column_ids.size());

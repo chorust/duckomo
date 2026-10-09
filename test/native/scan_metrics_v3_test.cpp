@@ -19,7 +19,7 @@ int main() {
 		metrics.SetQueryIdentity("connection-7-query-2", "v3-test", "SELECT * FROM read_om('https://secret.invalid/object?sig=do-not-leak')");
 		metrics.SetScanId(3);
 		metrics.SetScanComplete(true);
-		metrics.SetTransportAvailable(true);
+		metrics.SetTransportUnobserved();
 			metrics.DeclareVariable("/temperature");
 			metrics.RecordLogicalRead(ScanReadPhase::Metadata, 20, "", ScanMetadataStage::Bind);
 			metrics.RecordMetadataRead(ScanMetadataStage::Bind, 20);
@@ -28,12 +28,10 @@ int main() {
 		metrics.RecordSuccessfulRead(ScanReadPhase::Index, 7, "/temperature");
 		metrics.RecordLogicalRead(ScanReadPhase::Data, 21, "/temperature");
 			metrics.RecordSuccessfulRead(ScanReadPhase::Data, 21, "/temperature");
-			metrics.RecordLogicalRead(ScanReadPhase::Data, 5, "/temperature"); // cached logical read
+			metrics.RecordLogicalRead(ScanReadPhase::Data, 5, "/temperature"); // unfulfilled logical request
 		metrics.RecordLogicalRead(ScanReadPhase::Coordinate, 16);
 		metrics.RecordCoordinateRead(16);
-		metrics.RecordCacheLookup(true, 21);
-		metrics.RecordCacheLookup(false);
-		metrics.SetCacheState(true, 4096, 64, 96, 32, 2, "", "strong_etag");
+		metrics.SetCacheRemoved();
 		metrics.RecordScanTaskCreated();
 		metrics.RecordScanTaskClaimed();
 		metrics.RecordScanTaskCompleted();
@@ -43,9 +41,6 @@ int main() {
 			metrics.EndWorkerExecution(12);
 		metrics.EndWorkerExecution(11);
 		metrics.RecordScannedRows(12);
-		metrics.RecordTransportAttempt(5, 1, 206, 28, true, true);
-			metrics.RecordTransportAttempt(5, 1, 206, 99, true, true);
-			metrics.RecordTransportAttempt(5, 2, 503, 3, true, true);
 		metrics.SetStatus(ScanStatus::Succeeded);
 		metrics.SetElapsedMilliseconds(1.25);
 		const auto json = metrics.ToMetricsV3Json();
@@ -53,8 +48,8 @@ int main() {
 		Require(json.find("\"scan_id\":3") != std::string::npos, "SQL profile must retain its scan id");
 		Require(json.find("\"coordinate\":{\"logical_bytes\":16,\"logical_requests\":1,\"physical_bytes\":16") != std::string::npos,
 		        "coordinate costs must be independently visible");
-		Require(json.find("\"response_body_bytes\":31") != std::string::npos,
-		        "transport body bytes must include deduplicated complete and partial attempts");
+		Require(json.find("\"response_body_bytes\":null") != std::string::npos,
+		        "official remote transport must be unknown in v3");
 		Require(json.find("\"legacy_v2\":{\"schema_version\":2") != std::string::npos,
 		        "v2 evidence field meanings must remain available");
 		Require(json.find("do-not-leak") == std::string::npos &&
@@ -62,7 +57,7 @@ int main() {
 		        "SQL profile must not expose remote URI credentials or signature parameters");
 			Require(json.find("\"logical_requested_bytes\":69") != std::string::npos &&
 			            json.find("\"physical_read_bytes\":64") != std::string::npos,
-			        "logical reads must include cache hits while below-cache reads exclude them");
+			        "logical requests remain distinct from successful application reads");
 			Require(json.find("\"bind\":{\"logical_bytes\":20,\"logical_requests\":1,\"physical_bytes\":20") !=
 			            std::string::npos,
 			        "metadata logical and physical totals must be separated by bind stage");
@@ -70,13 +65,12 @@ int main() {
 			            json.find("\"data_bytes\":21") != std::string::npos &&
 			            json.find("\"bytes_fetched\":48") != std::string::npos,
 			        "per-variable totals and legacy v2 totals must preserve their prior meanings");
-		Require(json.find("\"cache\":{\"enabled\":true,\"capacity_bytes\":4096") != std::string::npos &&
-		            json.find("\"hits\":1,\"misses\":1,\"hit_bytes\":21,\"evictions\":2") != std::string::npos,
-		        "cache controls and query hit/miss totals must be visible");
-			Require(json.find("\"transport_attempts\":2") != std::string::npos &&
-			            json.find("\"transport_responses\":2") != std::string::npos &&
-			            json.find("\"response_statuses\":{\"206\":1,\"503\":1}") != std::string::npos,
-			        "transport attempts must be deduplicated by request and attempt");
+		Require(json.find("\"cache\":{\"enabled\":false,\"capacity_bytes\":0") != std::string::npos &&
+		            json.find("\"bypass_reason\":\"removed\"") != std::string::npos,
+		        "removed cache retains honest legacy shape");
+		Require(json.find("\"transport_attempts\":null") != std::string::npos &&
+		            json.find("\"transport_count_complete\":false") != std::string::npos,
+		        "transport unknown cannot become known zero");
 			Require(json.find("\"active_workers\":2") != std::string::npos &&
 			            json.find("\"max_active_workers\":2") != std::string::npos,
 			        "worker identities and overlapping activity must be retained");
@@ -130,37 +124,29 @@ int main() {
 
 		ScanMetrics local_metrics;
 		local_metrics.SetQueryIdentity("local", "", "SELECT 1");
-		local_metrics.SetTransportAvailable(false);
+		local_metrics.SetTransportNotApplicable();
 		const auto local_json = local_metrics.ToMetricsV3Json();
 		Require(local_json.find("\"response_body_bytes\":0") != std::string::npos &&
 		            local_json.find("\"transport_count_complete\":true") != std::string::npos,
 		        "local transport body costs must be known zero rather than unknown");
-
-		ScanMetrics eviction_metrics;
-		eviction_metrics.SetCacheEvictionBaseline(5);
-		eviction_metrics.SetCacheState(true, 4096, 0, 4096, 64, 8, "", "strong_etag");
-		Require(eviction_metrics.ToMetricsV3Json().find("\"evictions\":3") != std::string::npos,
-		        "cache eviction evidence must be scoped to this scan rather than prior connection activity");
 
 		ScanMetrics failed_metrics;
 		failed_metrics.EnableQueryMemoryAccounting();
 		auto failed_memory = std::make_shared<ScanMemoryAccount>(
 		    std::shared_ptr<ScanMetrics>(&failed_metrics, [](ScanMetrics *) {}));
 		failed_memory->Set(128);
-		failed_metrics.SetTransportAvailable(true);
+		failed_metrics.SetTransportUnobserved();
 		failed_metrics.RecordLogicalRead(ScanReadPhase::Data, 12, "/temperature");
 		failed_metrics.MarkDecodeCountIncomplete("/temperature");
-		failed_metrics.RecordTransportAttempt(8, 1, 504, 3, true, false);
-		failed_metrics.MarkTransportCountIncomplete();
 		failed_metrics.SetStatus(ScanStatus::Failed, "transport_error");
 		failed_metrics.FinalizeQueryMemoryAccounting(false);
 		const auto failed_json = failed_metrics.ToMetricsV3Json();
 			Require(failed_json.find("\"transport_count_complete\":false") != std::string::npos &&
-			            failed_json.find("\"response_body_bytes\":3") != std::string::npos &&
+			            failed_json.find("\"response_body_bytes\":null") != std::string::npos &&
 			            failed_json.find("\"logical_requested_bytes\":12") != std::string::npos &&
 			            failed_json.find("\"physical_read_bytes\":0") != std::string::npos &&
 			            failed_json.find("\"decode_count_complete\":false") != std::string::npos,
-				        "failed transport profiles must retain observed cost and mark incomplete counts");
+				        "failed remote profiles retain logical application costs and unknown transport");
 		Require(failed_json.find("\"peak_query_owned_bytes\":null") != std::string::npos &&
 		            failed_json.find("\"query_memory_count_complete\":false") != std::string::npos,
 		        "failed queries must keep memory unknown when the final peak cannot be proven");

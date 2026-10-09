@@ -1,0 +1,35 @@
+{
+  "captured_at_utc": "2026-10-08T02:36:45Z",
+  "head": {
+    "accept_ranges": "bytes",
+    "content_encoding": null,
+    "content_length": "68016448",
+    "etag": "\"a8983c4d6c56028dd1e3e7aa34ca8b36-9\"",
+    "last_modified": "Mon, 01 Jun 2026 10:05:30 GMT",
+    "status": 200
+  },
+  "interpretation": "The public endpoint serves the pinned object metadata and exact byte range; DuckOMO paired HTTPFS still fails to establish its strict range session for direct HTTPS and s3:// reads.",
+  "local_copy_hash_matches_manifest": true,
+  "local_copy_sha256": "3db637197d27c65051e417b850f8c3656d1c5371ab78dcbd9fc05d0e440956f7",
+  "manifest_snapshot": {
+    "etag": "\"a8983c4d6c56028dd1e3e7aa34ca8b36-9\"",
+    "last_modified": "2026-06-01T10:05:30Z",
+    "sha256": "3db637197d27c65051e417b850f8c3656d1c5371ab78dcbd9fc05d0e440956f7",
+    "size_bytes": 68016448
+  },
+  "range_get": {
+    "accept_ranges": "bytes",
+    "body_bytes_read": 16,
+    "content_length": "16",
+    "content_range": "bytes 0-15/68016448",
+    "etag": "\"a8983c4d6c56028dd1e3e7aa34ca8b36-9\"",
+    "last_modified": "Mon, 01 Jun 2026 10:05:30 GMT",
+    "om_v3_header": true,
+    "prefix_hex": "4f4d03c0ff7f4607c004402180928094",
+    "status": 206
+  },
+  "remote_etag_is_content_hash": false,
+  "remote_full_sha256_obtained": false,
+  "s3_uri": "s3://openmeteo/data/cmc_gem_rdps_10km/cape/chunk_4337.om",
+  "url": "https://openmeteo.s3.us-west-2.amazonaws.com/data/cmc_gem_rdps_10km/cape/chunk_4337.om"
+}

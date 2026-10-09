@@ -1,0 +1,5 @@
+Binder Error: Referenced column "valid_time" not found in FROM clause!
+Candidate bindings: "value"
+
+LINE 1: CREATE TEMP VIEW time_probe_gem_rdps_10km AS SELECT valid_time FROM read_om('build/s3-samples/openmeteo-v3/cmc...
+                                                            ^

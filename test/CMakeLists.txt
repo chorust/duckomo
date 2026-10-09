@@ -9,10 +9,12 @@ set(DUCKOMO_TOOL_SOURCES
     duckomo_spatial_validation
     duckomo_dimensions_validation
     duckomo_remote_validation
+    duckomo_grid_validation
 )
 set(DUCKOMO_NATIVE_TEST_SOURCES
     batch_test
     raw_reader_test
+    reader_capacity_test
     lifecycle_test
     schema_test
     time_test
@@ -22,18 +24,24 @@ set(DUCKOMO_NATIVE_TEST_SOURCES
     spatial_metrics_test
     spatial_callback_test
     spatial_selection_test
+    grid_selection_test
     axis_selection_test
     parallel_scan_test
     semantic_axes_test
-    range_cache_test
     scan_metrics_v3_test
+    scan_metrics_v4_test
     session_metrics_test
     spatial_io_test
+    grid_zero_io_test
     spatial_lifecycle_test
     domain_reference_test
-    httpfs_abi_test
-    httpfs_range_test
     remote_session_test
+    official_httpfs_test
+    projected_grid_test
+    gaussian_grid_test
+    grid_identity_test
+    source_identity_test
+    grid_version_compat_test
 )
 
 set(DUCKOMO_SQLLOGICTEST_FILES
@@ -47,6 +55,12 @@ set(DUCKOMO_SQLLOGICTEST_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/spatial.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/spatial_pushdown.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/spatial_composition.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/multi_grid.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/grid_selection.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/grid_zero_io.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/source_identity.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/grid_info.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/grid_version_compat.test"
 )
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
     ${DUCKOMO_SQLLOGICTEST_FILES}
@@ -59,6 +73,14 @@ foreach(sql_test IN LISTS DUCKOMO_SQLLOGICTEST_FILES)
 endforeach()
 add_custom_target(duckomo_sql_tests SOURCES ${DUCKOMO_EXISTING_SQLLOGICTEST_FILES})
 # The root Makefile runs these files through DuckDB's SQLLogicTest runner.
+set(DUCKOMO_GRID_REFERENCE_TOOLS
+    "${CMAKE_CURRENT_SOURCE_DIR}/../scripts/generate-grid-reference.py"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../scripts/generate-grid-coordinate-reference.py"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../scripts/compare-grid-sample-references.py"
+    "${CMAKE_CURRENT_SOURCE_DIR}/tools/grid_spatial_reference.py"
+    "${CMAKE_CURRENT_SOURCE_DIR}/data/grids/spatial-relations.json"
+)
+add_custom_target(duckomo_grid_reference_tools SOURCES ${DUCKOMO_GRID_REFERENCE_TOOLS})
 
 function(duckomo_add_source_target target source output_dir)
     set(source_path "${CMAKE_CURRENT_SOURCE_DIR}/${source}")
@@ -78,7 +100,14 @@ function(duckomo_add_source_target target source output_dir)
     target_include_directories(${target} PRIVATE
         "${PROJECT_SOURCE_DIR}/src/include"
         "${PROJECT_SOURCE_DIR}/third_party/om-file-format/c/include"
+        "${DUCKOMO_GENERATED_INCLUDE_DIR}"
     )
+endfunction()
+
+function(duckomo_link_generated_extension_loader target)
+    if(TARGET duckdb_generated_extension_loader)
+        target_link_libraries("${target}" PRIVATE duckdb_generated_extension_loader)
+    endif()
 endfunction()
 
 foreach(tool IN LISTS DUCKOMO_TOOL_SOURCES)
@@ -103,58 +132,41 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
         if(test STREQUAL "domain_reference_test")
             target_include_directories("${test}" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/tools")
         endif()
-        if(test STREQUAL "httpfs_abi_test")
-            target_include_directories("${test}" PRIVATE
-                "${PROJECT_SOURCE_DIR}/build/httpfs-stage-v2/source/src/include"
-                "${PROJECT_SOURCE_DIR}/third_party/httpfs-patches"
-            )
-            target_compile_definitions("${test}" PRIVATE
-                "DUCKOMO_HTTPFS_EXTENSION_PATH=\"${CMAKE_BINARY_DIR}/extension/httpfs/httpfs.duckdb_extension\""
-                "DUCKOMO_DUCKOMO_EXTENSION_PATH=\"${CMAKE_BINARY_DIR}/extension/duckomo/duckomo.duckdb_extension\""
-            )
-            target_link_libraries("${test}" PRIVATE
-                duckdb_static duckomo_extension duckomo_om httpfs_extension
-            )
-		elseif(test STREQUAL "httpfs_range_test")
-		    target_include_directories("${test}" PRIVATE
-		        "${PROJECT_SOURCE_DIR}/build/httpfs-stage-v2/source/src/include"
-		        "${PROJECT_SOURCE_DIR}/third_party/httpfs-patches"
-		    )
-		    target_link_libraries("${test}" PRIVATE duckdb_static httpfs_extension)
-		elseif(test STREQUAL "remote_session_test")
-		    target_include_directories("${test}" PRIVATE
-		        "${PROJECT_SOURCE_DIR}/build/httpfs-stage-v2/source/src/include"
-		        "${PROJECT_SOURCE_DIR}/third_party/httpfs-patches"
-		    )
-		    target_compile_definitions("${test}" PRIVATE
-		        "DUCKOMO_REMOTE_FIXTURE_PATH=\"${PROJECT_SOURCE_DIR}/test/data/raw.om\"")
-		    target_link_libraries("${test}" PRIVATE
-		        duckdb_static duckomo_extension duckomo_om httpfs_extension
-		    )
-        elseif(test STREQUAL "domain_reference_test")
-            target_include_directories("${test}" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/tools")
-        endif()
-		if(test STREQUAL "httpfs_abi_test" OR test STREQUAL "httpfs_range_test" OR
-		   test STREQUAL "remote_session_test")
-			# These tests have explicit paired-extension link configurations above.
-		elseif(test STREQUAL "range_cache_test")
-			target_sources("${test}" PRIVATE "${PROJECT_SOURCE_DIR}/src/om/range_cache.cpp")
-		elseif(test STREQUAL "scan_metrics_v3_test")
-			# The v3 profile is a value type and keeps this contract test independent of DuckDB.
+		if(test STREQUAL "scan_metrics_v3_test" OR test STREQUAL "scan_metrics_v4_test")
+			# Metrics profiles are value types and keep contract tests independent of DuckDB.
 		elseif(test STREQUAL "axis_selection_test" OR test STREQUAL "semantic_axes_test" OR
 		       test STREQUAL "parallel_scan_test")
             target_link_libraries("${test}" PRIVATE duckdb_static duckomo_extension duckomo_om)
+            if(test STREQUAL "axis_selection_test")
+                target_sources("${test}" PRIVATE "${PROJECT_SOURCE_DIR}/src/scan/spatial_selection.cpp")
+            endif()
         elseif(test STREQUAL "spatial_selection_test")
             target_sources("${test}" PRIVATE
                 "${PROJECT_SOURCE_DIR}/src/grid/regular_grid.cpp"
                 "${PROJECT_SOURCE_DIR}/src/grid/spatial_layout.cpp"
+                "${PROJECT_SOURCE_DIR}/src/grid/grid_definition.cpp"
+                "${PROJECT_SOURCE_DIR}/src/grid/projected_grid.cpp"
+                "${PROJECT_SOURCE_DIR}/src/grid/gaussian_grid.cpp"
                 "${PROJECT_SOURCE_DIR}/src/scan/spatial_selection.cpp"
                 "${PROJECT_SOURCE_DIR}/src/scan/batch.cpp"
                 "${PROJECT_SOURCE_DIR}/duckdb/extension/loader/dummy_static_extension_loader.cpp"
             )
-            target_link_libraries("${test}" PRIVATE duckdb_static duckomo_om)
+            target_link_libraries("${test}" PRIVATE duckdb_static duckomo_extension duckomo_om)
+        elseif(test STREQUAL "grid_selection_test")
+            target_sources("${test}" PRIVATE
+                "${PROJECT_SOURCE_DIR}/src/grid/regular_grid.cpp"
+                "${PROJECT_SOURCE_DIR}/src/grid/spatial_layout.cpp"
+                "${PROJECT_SOURCE_DIR}/src/grid/grid_definition.cpp"
+                "${PROJECT_SOURCE_DIR}/src/grid/projected_grid.cpp"
+                "${PROJECT_SOURCE_DIR}/src/grid/gaussian_grid.cpp"
+                "${PROJECT_SOURCE_DIR}/src/scan/grid_selection.cpp"
+                "${PROJECT_SOURCE_DIR}/duckdb/extension/loader/dummy_static_extension_loader.cpp"
+            )
+            target_link_libraries("${test}" PRIVATE duckdb_static duckomo_extension duckomo_om)
         elseif(test STREQUAL "regular_grid_test" OR test STREQUAL "spatial_layout_test" OR
-               test STREQUAL "spatial_metrics_test")
+               test STREQUAL "grid_identity_test" OR test STREQUAL "spatial_metrics_test" OR
+               test STREQUAL "projected_grid_test" OR
+               test STREQUAL "gaussian_grid_test")
             # Pure value/layout tests only need the implementation under test.
             # Avoid pulling DuckDB's static extension loader (and its optional
             # CoreFunctions/Parquet symbols) into these standalone binaries.
@@ -162,22 +174,62 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
                 target_sources("${test}" PRIVATE
                     "${PROJECT_SOURCE_DIR}/src/grid/regular_grid.cpp"
                     "${PROJECT_SOURCE_DIR}/src/grid/domain_bbox.cpp"
-                    "${PROJECT_SOURCE_DIR}/src/grid/domain_registry.cpp"
+                )
+            elseif(test STREQUAL "projected_grid_test")
+                target_sources("${test}" PRIVATE "${PROJECT_SOURCE_DIR}/src/grid/projected_grid.cpp")
+            elseif(test STREQUAL "gaussian_grid_test")
+                target_sources("${test}" PRIVATE
+                    "${PROJECT_SOURCE_DIR}/src/grid/gaussian_grid.cpp"
                 )
             elseif(test STREQUAL "spatial_layout_test")
                 target_sources("${test}" PRIVATE
                     "${PROJECT_SOURCE_DIR}/src/grid/regular_grid.cpp"
                     "${PROJECT_SOURCE_DIR}/src/grid/spatial_layout.cpp"
+                    "${PROJECT_SOURCE_DIR}/src/grid/grid_definition.cpp"
+                    "${PROJECT_SOURCE_DIR}/src/grid/projected_grid.cpp"
+                    "${PROJECT_SOURCE_DIR}/src/grid/gaussian_grid.cpp"
+                    "${PROJECT_SOURCE_DIR}/duckdb/extension/loader/dummy_static_extension_loader.cpp"
+                )
+                target_link_libraries("${test}" PRIVATE duckdb_static)
+            elseif(test STREQUAL "grid_identity_test")
+                target_sources("${test}" PRIVATE
+                    "${PROJECT_SOURCE_DIR}/src/grid/regular_grid.cpp"
+                    "${PROJECT_SOURCE_DIR}/src/grid/spatial_layout.cpp"
+                    "${PROJECT_SOURCE_DIR}/src/grid/domain_registry.cpp"
+                    "${PROJECT_SOURCE_DIR}/src/grid/grid_definition.cpp"
+                    "${PROJECT_SOURCE_DIR}/src/grid/grid_identity.cpp"
+                    "${PROJECT_SOURCE_DIR}/src/grid/projected_grid.cpp"
+                    "${PROJECT_SOURCE_DIR}/src/grid/gaussian_grid.cpp"
                     "${PROJECT_SOURCE_DIR}/duckdb/extension/loader/dummy_static_extension_loader.cpp"
                 )
                 target_link_libraries("${test}" PRIVATE duckdb_static)
             endif()
         else()
             target_link_libraries("${test}" PRIVATE duckdb_static duckomo_extension duckomo_om)
-            target_link_libraries("${test}" PRIVATE duckdb_generated_extension_loader)
+            duckomo_link_generated_extension_loader("${test}")
+            if(test STREQUAL "grid_zero_io_test" OR test STREQUAL "source_identity_test")
+                target_include_directories("${test}" PRIVATE
+                    "${CMAKE_SOURCE_DIR}/extension/core_functions/include"
+                )
+                target_link_libraries("${test}" PRIVATE core_functions_extension)
+            endif()
         endif()
     endif()
 endforeach()
+
+add_custom_target(duckomo_developer_tools
+    DEPENDS ${DUCKOMO_TOOL_SOURCES} ${DUCKOMO_NATIVE_TEST_SOURCES}
+)
+set(DUCKOMO_VALIDATION_EXECUTABLES "")
+foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
+    string(APPEND DUCKOMO_VALIDATION_EXECUTABLES "native/${test}\n")
+endforeach()
+foreach(tool IN LISTS DUCKOMO_TOOL_SOURCES)
+    string(APPEND DUCKOMO_VALIDATION_EXECUTABLES "tools/${tool}\n")
+endforeach()
+file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/test/duckomo-validation-executables.txt"
+    CONTENT "${DUCKOMO_VALIDATION_EXECUTABLES}"
+)
 
 # Sanitizer runs compile separate, instrumented copies of the extension's C++
 # translation units. Linking the regular duckomo_extension here would leave the
@@ -198,9 +250,6 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
         POSITION_INDEPENDENT_CODE ON
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED ON
-    )
-    target_include_directories(duckomo_extension_sanitized PRIVATE
-        "${PROJECT_SOURCE_DIR}/third_party/httpfs-patches"
     )
     target_compile_options(duckomo_extension_sanitized PRIVATE ${DUCKOMO_SANITIZER_COMPILE_OPTIONS})
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -234,9 +283,6 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED ON
     )
-    target_include_directories(duckomo_sanitizer_loadable_extension PRIVATE
-        "${PROJECT_SOURCE_DIR}/third_party/httpfs-patches"
-    )
     target_compile_options(duckomo_sanitizer_loadable_extension PRIVATE ${DUCKOMO_SANITIZER_COMPILE_OPTIONS})
     target_link_options(duckomo_sanitizer_loadable_extension PRIVATE ${DUCKOMO_SANITIZER_LINK_OPTIONS})
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -251,31 +297,19 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
     set(DUCKOMO_SANITIZER_TEST_TARGETS)
 
     foreach(test batch_test raw_reader_test schema_test axis_selection_test parallel_scan_test
-                 range_cache_test scan_metrics_v3_test session_metrics_test remote_session_test)
+                 scan_metrics_v3_test session_metrics_test)
         set(test_target "${test}_sanitizer")
         duckomo_add_source_target("${test_target}" "native/${test}.cpp" "sanitizer/native")
         if(TARGET "${test_target}")
             set_target_properties("${test_target}" PROPERTIES EXCLUDE_FROM_ALL TRUE)
             target_compile_options("${test_target}" PRIVATE ${DUCKOMO_SANITIZER_COMPILE_OPTIONS})
             target_link_options("${test_target}" PRIVATE ${DUCKOMO_SANITIZER_LINK_OPTIONS})
-            if(test STREQUAL "remote_session_test")
-                target_include_directories("${test_target}" PRIVATE
-                    "${PROJECT_SOURCE_DIR}/build/httpfs-stage-v2/source/src/include"
-                    "${PROJECT_SOURCE_DIR}/third_party/httpfs-patches"
-                )
-                target_compile_definitions("${test_target}" PRIVATE
-                    "DUCKOMO_REMOTE_FIXTURE_PATH=\"${PROJECT_SOURCE_DIR}/test/data/raw.om\"")
-                target_link_libraries("${test_target}" PRIVATE
-                    duckdb_static httpfs_extension duckomo_extension_sanitized duckomo_om
-                )
-            else()
                 target_link_libraries("${test_target}" PRIVATE
                     duckdb_static
-                    duckdb_generated_extension_loader
                     duckomo_extension_sanitized
                     duckomo_om
                 )
-            endif()
+                duckomo_link_generated_extension_loader("${test_target}")
             add_test(NAME "duckomo_sanitizer_${test}"
                 COMMAND "$<TARGET_FILE:${test_target}>"
             )
@@ -285,6 +319,24 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
             list(APPEND DUCKOMO_SANITIZER_TEST_TARGETS "${test_target}")
         endif()
     endforeach()
+
+    duckomo_add_source_target(
+        duckomo_grid_validation_sanitizer
+        "tools/duckomo_grid_validation.cpp"
+        "sanitizer/tools"
+    )
+    if(TARGET duckomo_grid_validation_sanitizer)
+        set_target_properties(duckomo_grid_validation_sanitizer PROPERTIES EXCLUDE_FROM_ALL TRUE)
+        target_compile_options(duckomo_grid_validation_sanitizer PRIVATE ${DUCKOMO_SANITIZER_COMPILE_OPTIONS})
+        target_link_options(duckomo_grid_validation_sanitizer PRIVATE ${DUCKOMO_SANITIZER_LINK_OPTIONS})
+        add_test(NAME duckomo_sanitizer_grid_validation
+            COMMAND "$<TARGET_FILE:duckomo_grid_validation_sanitizer>" --self-check
+        )
+        set_tests_properties(duckomo_sanitizer_grid_validation PROPERTIES
+            WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+        )
+        list(APPEND DUCKOMO_SANITIZER_TEST_TARGETS duckomo_grid_validation_sanitizer)
+    endif()
 
     duckomo_add_source_target(
         duckomo_lifecycle_sanitizer
@@ -297,9 +349,9 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
         target_link_options(duckomo_lifecycle_sanitizer PRIVATE ${DUCKOMO_SANITIZER_LINK_OPTIONS})
         target_link_libraries(duckomo_lifecycle_sanitizer PRIVATE
             duckdb_static
-            duckdb_generated_extension_loader
             duckomo_om
         )
+        duckomo_link_generated_extension_loader(duckomo_lifecycle_sanitizer)
         add_test(NAME duckomo_sanitizer_lifecycle
             COMMAND "$<TARGET_FILE:duckomo_lifecycle_sanitizer>"
         )
@@ -318,8 +370,17 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
         set_target_properties(duckomo_spatial_selection_sanitizer PROPERTIES EXCLUDE_FROM_ALL TRUE)
         target_sources(duckomo_spatial_selection_sanitizer PRIVATE
             "${PROJECT_SOURCE_DIR}/src/grid/regular_grid.cpp"
+            "${PROJECT_SOURCE_DIR}/src/grid/grid_definition.cpp"
+            "${PROJECT_SOURCE_DIR}/src/grid/grid_identity.cpp"
+            "${PROJECT_SOURCE_DIR}/src/grid/gaussian_grid.cpp"
+            "${PROJECT_SOURCE_DIR}/src/grid/projected_grid.cpp"
             "${PROJECT_SOURCE_DIR}/src/grid/spatial_layout.cpp"
+            "${PROJECT_SOURCE_DIR}/src/compat/duckdb_api.cpp"
+            "${PROJECT_SOURCE_DIR}/src/scan/axis_selection.cpp"
+            "${PROJECT_SOURCE_DIR}/src/scan/semantic_axes.cpp"
+            "${PROJECT_SOURCE_DIR}/src/scan/spatial_filter.cpp"
             "${PROJECT_SOURCE_DIR}/src/scan/spatial_selection.cpp"
+            "${PROJECT_SOURCE_DIR}/src/scan/grid_selection.cpp"
             "${PROJECT_SOURCE_DIR}/src/scan/batch.cpp"
             "${PROJECT_SOURCE_DIR}/duckdb/extension/loader/dummy_static_extension_loader.cpp"
         )
@@ -342,7 +403,8 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
             set_target_properties("${test_target}" PROPERTIES EXCLUDE_FROM_ALL TRUE)
             target_compile_options("${test_target}" PRIVATE ${DUCKOMO_SANITIZER_COMPILE_OPTIONS})
             target_link_options("${test_target}" PRIVATE ${DUCKOMO_SANITIZER_LINK_OPTIONS})
-            target_link_libraries("${test_target}" PRIVATE duckdb_static duckdb_generated_extension_loader duckomo_om)
+            target_link_libraries("${test_target}" PRIVATE duckdb_static duckomo_om)
+            duckomo_link_generated_extension_loader("${test_target}")
             add_test(NAME "duckomo_sanitizer_${test}"
                 COMMAND "$<TARGET_FILE:${test_target}>"
             )
@@ -364,8 +426,9 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
         target_compile_options(duckomo_projection_evidence_sanitizer PRIVATE ${DUCKOMO_SANITIZER_COMPILE_OPTIONS})
         target_link_options(duckomo_projection_evidence_sanitizer PRIVATE ${DUCKOMO_SANITIZER_LINK_OPTIONS})
         target_link_libraries(duckomo_projection_evidence_sanitizer PRIVATE
-            duckdb_static duckdb_generated_extension_loader duckomo_extension_sanitized duckomo_om
+            duckdb_static duckomo_extension_sanitized duckomo_om
         )
+        duckomo_link_generated_extension_loader(duckomo_projection_evidence_sanitizer)
         add_test(NAME duckomo_sanitizer_projection_evidence
             COMMAND "$<TARGET_FILE:duckomo_projection_evidence_sanitizer>"
         )

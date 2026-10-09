@@ -1,0 +1,19 @@
+{
+  "contract": "official-httpfs-20261008",
+  "scope": "v1.5.4/v1.5.5/v1.5.6 Linux AArch64, HTTPFS responsibility refactor; broad 004 completion not claimed",
+  "gates": {
+    "003 G0-G2": "affected local SQL/native regression, recorded per version",
+    "003 G3": "actual official CLI/HTTPFS same-content HTTP/HTTPS/signed S3 and errors/recovery; fixed real-object subset separately recorded",
+    "003 G4": "full result 1/2/4 worker coverage via official CLI; active worker observations in metrics",
+    "003 G5": "superseded; historical failure unchanged; O5 cold/repeat performance and same-URI access transitions recorded",
+    "003 G6": "remote NULL/local 0, terminal multi-scan/connection isolation, actual official HTTPFS cancellation/recovery in C++ tests",
+    "003 G7": "not-run: independent verifier required",
+    "004 H3": "local synthetic zero-value-reader tests retained; standard DIRECT_IO chosen; network benefit separately audited",
+    "004 H4/H5": "affected lifetime/memory regressions retained; official HTTPFS allocations unobserved, broad 004 bound evidence not promoted",
+    "004 H6": "official adapter fixed/real-object results and remote selection benefit recorded; all required producer-backed grid families remain old not-run/partial",
+    "004 H8": "three official runtime loading verified separately; complete same-input H0-H7 still required before full H8 pass",
+    "004 H9": "not-run: independent verifier required"
+  },
+  "historical_evidence": "../003-dimensions-remote-parallel/20261008-body-accounting-repair/",
+  "original_open_task": "T049 not reclassified as passed"
+}

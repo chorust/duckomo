@@ -1,0 +1,110 @@
+# name: test/sql/source_identity.test
+# description: Verify source identities retain original object and position information
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+# include_source is opt-in and appends one struct with the exact public fields.
+query TTTTTT
+DESCRIBE SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');
+----
+value	FLOAT	YES	NULL	NULL	NULL
+
+query T
+SELECT typeof(om_source)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column'], include_source := true)
+LIMIT 1;
+----
+STRUCT(object_id VARCHAR, object_version VARCHAR, version_strength VARCHAR, content_verified BOOLEAN, grid_id VARCHAR, layout_id VARCHAR, logical_index UBIGINT, point_index UBIGINT, parent_point_index UBIGINT, axis_indices UBIGINT[])
+
+# The opt-in source struct is appended after all ordinary read_om columns.
+query TTTTTT
+DESCRIBE SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {'nx': 3, 'ny': 2, 'lat0': 0.0, 'lon0': 0.0,
+             'dlat': 1.0, 'dlon': 1.0, 'order': 'separate'},
+    spatial_axes := ['row', 'column'], include_source := true);
+----
+value	FLOAT	YES	NULL	NULL	NULL
+latitude	DOUBLE	YES	NULL	NULL	NULL
+longitude	DOUBLE	YES	NULL	NULL	NULL
+om_source	STRUCT(object_id VARCHAR, object_version VARCHAR, version_strength VARCHAR, content_verified BOOLEAN, grid_id VARCHAR, layout_id VARCHAR, logical_index UBIGINT, point_index UBIGINT, parent_point_index UBIGINT, axis_indices UBIGINT[])	YES	NULL	NULL	NULL
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/source-conflict.om',
+    dimensions := map(['om_source'], [['row', 'column']]),
+    grid := {'nx': 3, 'ny': 2, 'lat0': 0.0, 'lon0': 0.0,
+             'dlat': 1.0, 'dlon': 1.0, 'order': 'separate'},
+    spatial_axes := ['row', 'column'], include_source := true);
+----
+<REGEX>:(?i).*om_source column name conflicts.*
+
+statement error
+SELECT om_source FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');
+----
+<REGEX>:(?i).*om_source.*
+
+# Filtering and ordering keep source positions from the original array.
+query I
+SELECT om_source.logical_index
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column'], include_source := true)
+WHERE om_source.logical_index > 2
+ORDER BY om_source.logical_index DESC;
+----
+5
+4
+3
+
+# One geographic coordinate retains every non-spatial source record.
+query II
+SELECT count(*)::INTEGER, count(DISTINCT om_source.logical_index)::INTEGER
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/interleaved.om',
+    dimensions := map(
+        ['interleaved/temperature', 'interleaved/humidity'],
+        [['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run'],
+         ['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['latitude_axis', 'longitude_axis'], include_source := true)
+WHERE latitude BETWEEN 0.99 AND 1.01 AND longitude BETWEEN 1.99 AND 2.01;
+----
+32	32
+
+# include_source-only projections do not read or decode any value variable.
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE metrics LIKE '%"schema_version":4%'
+  AND metrics LIKE '%"value_totals":{"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0%'
+  AND metrics LIKE '%"terminal_published":true%';
+----
+1

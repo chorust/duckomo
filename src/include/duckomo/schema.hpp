@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "duckdb/common/types.hpp"
+#include "duckomo/compat/duckdb_api.hpp"
 #include "duckomo/metadata.hpp"
 
 namespace duckdb {
@@ -30,6 +31,7 @@ struct BoundSchema final {
 	std::vector<std::uint64_t> shape;
 	std::uint64_t row_count = 0;
 	std::string crs_wkt;
+	SourceCrsProfile crs_profile;
 };
 
 // Builds the immutable, stable-column schema from every supported array in an
@@ -39,7 +41,7 @@ BoundSchema BuildBoundSchema(const OmMetadataTree &tree);
 // Append the optional, synthetic coordinate columns after every value array.
 // Name conflicts follow DuckDB's case-insensitive identifier rules.
 void AppendSpatialOutputColumns(const BoundSchema &schema, std::vector<LogicalType> &return_types,
-	                            std::vector<std::string> &names);
+	                            TableFunctionColumnNames &names);
 
 } // namespace duckomo
 } // namespace duckdb

@@ -43,6 +43,9 @@
 build/
 Build/
 build-*/
+bin/
+obj/
+out/
 
 # CMake generated files
 CMakeFiles/
@@ -67,6 +70,16 @@ vcpkg_installed/
 
 # test output & cache
 Testing/
+/duckdb_unittest_tempdir/
+# Regenerable full-scan exports; keep compact evidence and test inputs in Git.
+/specs/004-multi-grid-selection/evidence/**/*.gz
+*.duckdb_extension
+*.duckdb_extension.gz
+*.duckdb_extension.wasm
+/specs/004-multi-grid-selection/evidence/**/*.duckomo-values.csv
+/specs/004-multi-grid-selection/evidence/**/*.duckomo-coordinates.csv
+/specs/004-multi-grid-selection/evidence/**/*.explicit-full-source.csv.gz
+/specs/004-multi-grid-selection/evidence/**/*.domain-full-source.csv.gz
 .DS_Store
 Thumbs.db
 .vscode/

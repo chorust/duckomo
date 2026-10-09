@@ -1,0 +1,1 @@
+jq: Bad JSON in --slurpfile small /home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/us2-run-20261007/us2-local/work-peak-rotated_latlon/small.json: Could not open /home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/us2-run-20261007/us2-local/work-peak-rotated_latlon/small.json: No such file or directory

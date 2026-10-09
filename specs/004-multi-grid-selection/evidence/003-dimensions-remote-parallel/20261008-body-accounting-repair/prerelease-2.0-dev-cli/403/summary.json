@@ -1,0 +1,10 @@
+{
+  "pair_id": "prerelease-2.0-dev",
+  "scenario": "403",
+  "query_exit": 1,
+  "status": "failure",
+  "client_body_bytes": 0,
+  "server_body_bytes": 0,
+  "transport_count_complete": true,
+  "parity": true
+}

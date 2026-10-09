@@ -111,9 +111,9 @@ void TestEvidenceCompletenessAndFailureRejection() {
 	                          std::uint64_t bind_metadata_bytes = 1) {
 		return std::string("{\"schema_version\":2,\"fixture_id\":\"fixture\",\"fixture_sha256\":\"") +
 		       fixture_hash + "\",\"sql\":\"SELECT 1\",\"comparison\":\"reference match\","
-		       "\"dependency_commits\":{\"duckdb\":\"08e34c447bae34eaee3723cac61f2878b6bdf787\","
-	       "\"om-file-format\":\"d8855e418e2231ae8439f0c7e840fa3f93b371e3\","
-	       "\"extension-ci-tools\":\"b777c70d30942cca5bef62d6d4fa23a13362f398\"},"
+		       "\"dependency_commits\":{\"duckdb\":\"" + duckomo_validation_support::ExpectedDependencyCommit("duckdb") + "\","
+	       "\"om-file-format\":\"" + duckomo_validation_support::ExpectedDependencyCommit("om-file-format") + "\","
+	       "\"extension-ci-tools\":\"" + duckomo_validation_support::ExpectedDependencyCommit("extension-ci-tools") + "\"},"
 	       "\"status\":\"success\",\"comparison_passed\":true,\"result_rows\":1,"
 		       "\"elapsed_ms\":1,\"peak_rss_bytes\":4096,\"reference_identity\":\"reference#hash\","
 		       "\"coordinate_tolerance\":1e-9,\"command\":[\"duckdb\"],\"error_category\":\"\","
@@ -128,7 +128,7 @@ void TestEvidenceCompletenessAndFailureRejection() {
 	       ",\"decode_count_complete\":true,\"bytes_fetched\":" +
 	       (selection == "empty" ? "2" : "6") + ",\"read_requests\":" +
 	       (selection == "empty" ? "1" : "2") + ","
-	       "\"environment\":{\"build\":\"release\",\"threads\":\"1\",\"system\":\"Linux\","
+	       "\"environment\":{\"build\":\"" + duckomo_validation_support::ExpectedBuildLabel() + "\",\"threads\":\"1\",\"system\":\"Linux\","
 	       "\"machine\":\"aarch64\"},\"cache_policy\":{\"application_cache\":\"disabled\","
 	       "\"os_page_cache\":\"not cleared\"}}";
 	};

@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "canonical_format": "duckomo-grid-v1",
+  "hash": "SHA-256 lowercase hex",
+  "real_encoding": "IEEE-754 binary64 bit pattern as 16 lowercase hex digits; -0 normalized to +0; openmeteo_f32_v1 values are rounded to float32 then widened",
+  "vectors": [
+    {
+      "id": "regular_grid_negative_zero",
+      "kind": "grid",
+      "definition": {
+        "version": 1,
+        "coordinate_rule_id": "regular_grid_v1",
+        "numeric_policy": "float64_v1",
+        "earth": {"kind": "sphere", "radius_m": 6371229.0},
+        "geometry": {"type": "regular", "nx": 3, "ny": 2, "latitude_origin": 10.0, "longitude_origin": -0.0, "latitude_step": 1.0, "longitude_step": 2.0, "order": "separate", "allow_out_of_range_latitude": false}
+      },
+      "grid_id": "c21e0081c1de6e07ab01a16f8bfbda2f08a80a2dac2731757a7b442e31b9a7ca"
+    },
+    {
+      "id": "regular_grid_openmeteo_f32_rounding",
+      "kind": "grid",
+      "definition": {
+        "version": 1,
+        "coordinate_rule_id": "regular_grid_v1",
+        "numeric_policy": "openmeteo_f32_v1",
+        "earth": {"kind": "sphere", "radius_m": 6371229.0},
+        "geometry": {"type": "regular", "nx": 2, "ny": 1, "latitude_origin": 10.1234567, "longitude_origin": -0.0, "latitude_step": 0.1, "longitude_step": 0.2, "order": "separate", "allow_out_of_range_latitude": false}
+      },
+      "grid_id": "6fb96c6a579b71dde8f9525b7d258596e425252b90481f7036c05825856c2f5d"
+    },
+    {
+      "id": "gaussian_full_parent",
+      "kind": "grid",
+      "definition": {
+        "version": 1,
+        "coordinate_rule_id": "explicit_gaussian_v1",
+        "numeric_policy": "float64_v1",
+        "earth": {"kind": "wgs84_source", "semi_major_axis_m": 6378137.0, "inverse_flattening": 298.257223563},
+        "geometry": {
+          "type": "reduced_gaussian", "N": 2, "latitude_rule": "explicit_v1",
+          "rows": [[60.0, 4, 0.0, 90.0], [20.0, 6, 0.0, 60.0], [-20.0, 6, 0.0, 60.0], [-60.0, 4, 0.0, 90.0]],
+          "subset_segments": []
+        }
+      },
+      "grid_id": "0360bc6fb7f69b1d43fa210a67e91974c558653044e77f2768f21599e93ceb07"
+    },
+    {
+      "id": "gaussian_region_subset",
+      "kind": "grid",
+      "definition": {
+        "version": 1,
+        "coordinate_rule_id": "explicit_gaussian_v1",
+        "numeric_policy": "float64_v1",
+        "earth": {"kind": "wgs84_source", "semi_major_axis_m": 6378137.0, "inverse_flattening": 298.257223563},
+        "geometry": {
+          "type": "reduced_gaussian", "N": 2, "latitude_rule": "explicit_v1",
+          "rows": [[60.0, 4, 0.0, 90.0], [20.0, 6, 0.0, 60.0], [-20.0, 6, 0.0, 60.0], [-60.0, 4, 0.0, 90.0]],
+          "subset_segments": [[1, 1, 3]]
+        }
+      },
+      "grid_id": "7a2538b6491f8edf9026dbbbf75c0c624cba80aea39e447dfc4e31aa5baec961",
+      "parent_grid_id": "0360bc6fb7f69b1d43fa210a67e91974c558653044e77f2768f21599e93ceb07"
+    },
+    {
+      "id": "regular_separate_two_axis_layout",
+      "kind": "layout",
+      "definition": {
+        "version": 1,
+        "coordinate_rule_id": "regular_grid_v1",
+        "numeric_policy": "float64_v1",
+        "earth": {"kind": "sphere", "radius_m": 6371229.0},
+        "geometry": {"type": "regular", "nx": 3, "ny": 2, "latitude_origin": 10.0, "longitude_origin": 100.0, "latitude_step": 1.0, "longitude_step": 2.0, "order": "separate", "allow_out_of_range_latitude": false}
+      },
+      "grid_id": "14a136bc8f4e2607a0e84982d1abc6c7b7c187efeec0d4a066da6ea50692463d",
+      "shape": [2, 3],
+      "axes": ["lat", "lon"],
+      "strides": [3, 1],
+      "geometry": "regular",
+      "flattened": false,
+      "order": "separate",
+      "latitude_axis": 0,
+      "longitude_axis": 1,
+      "point_axis": 0,
+      "non_spatial_axes": [],
+      "layout_id": "f71f7cc64323b176a5024c2def52fc15e0899ee80e55b94342fdf353513ed8e2"
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "build_id": "e0b0ace43340e3d328d5ea25c7ab9359b5dc20fdf6376bdebcff5b59445afd09",
+  "inputs": {
+    "schema_version": 2,
+    "pair_id": "v1.5.5",
+    "commits": {
+      "duckdb": {
+        "repository": "https://github.com/duckdb/duckdb.git",
+        "commit": "d8cdaa33fda8df955cc76ef58a280f68f4cd43fa",
+        "version": "v1.5.5"
+      },
+      "om_c": {
+        "repository": "https://github.com/open-meteo/om-file-format.git",
+        "commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+      },
+      "extension_ci_tools": {
+        "repository": "https://github.com/duckdb/extension-ci-tools.git",
+        "commit": "b777c70d30942cca5bef62d6d4fa23a13362f398"
+      }
+    },
+    "platform": {
+      "target": "Linux AArch64",
+      "official_extension_platform": "linux_arm64",
+      "cxx_abi": "libstdc++ cxx11abi=1"
+    },
+    "build_options": {
+      "CMAKE_BUILD_TYPE": "Release",
+      "BUILD_UNITTESTS": "TRUE",
+      "BUILD_SHELL": "TRUE",
+      "NATIVE_ARCH": "FALSE",
+      "ENABLE_UNITTEST_CPP_TESTS": "FALSE",
+      "ENABLE_EXTENSION_AUTOLOADING": "FALSE",
+      "ENABLE_EXTENSION_AUTOINSTALL": "FALSE"
+    },
+    "extension_source_sha256": "67c163aa8833e18204acb4f2e834b606f39741d59b9c727b4e247d57ed4fefe9"
+  },
+  "release_dir": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/b21f21aea5971199c87b0a4739c2545e5c981e39f34daf4b1b82b8950e2836e4/release",
+  "build_manifest": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/e0b0ace43340e3d328d5ea25c7ab9359b5dc20fdf6376bdebcff5b59445afd09/build-manifest.json",
+  "build_root": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/e0b0ace43340e3d328d5ea25c7ab9359b5dc20fdf6376bdebcff5b59445afd09",
+  "official_runtime": {
+    "version": "v1.5.5",
+    "platform": "linux_arm64",
+    "cli_url": "https://github.com/duckdb/duckdb/releases/download/v1.5.5/duckdb_cli-linux-arm64.zip",
+    "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+    "httpfs_url": "https://extensions.duckdb.org/v1.5.5/linux_arm64/httpfs.duckdb_extension.gz",
+    "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9"
+  },
+  "commands": [
+    {
+      "argv": [
+        "cmake",
+        "-S",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb",
+        "-B",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/b21f21aea5971199c87b0a4739c2545e5c981e39f34daf4b1b82b8950e2836e4/release",
+        "-DDUCKDB_EXTENSION_CONFIGS=/home/blizhan/repo/github/duckomo/extension_config.cmake",
+        "-DOVERRIDE_GIT_DESCRIBE=v1.5.5",
+        "-DUNITTEST_ROOT_DIRECTORY=/home/blizhan/repo/github/duckomo",
+        "-DBENCHMARK_ROOT_DIRECTORY=/home/blizhan/repo/github/duckomo",
+        "-DDUCKOMO_BUILD_PAIR_ID=v1.5.5",
+        "-DDUCKOMO_BUILD_ID=b21f21aea5971199c87b0a4739c2545e5c981e39f34daf4b1b82b8950e2836e4",
+        "-DDUCKOMO_DUCKDB_COMMIT=d8cdaa33fda8df955cc76ef58a280f68f4cd43fa",
+        "-DDUCKOMO_OM_COMMIT=d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+        "-DDUCKOMO_EXTENSION_CI_TOOLS_COMMIT=b777c70d30942cca5bef62d6d4fa23a13362f398",
+        "-DDUCKOMO_MATRIX_PLATFORM=Linux AArch64",
+        "-DDUCKOMO_CXX_ABI=libstdc++ cxx11abi=1",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DBUILD_UNITTESTS=TRUE",
+        "-DBUILD_SHELL=TRUE",
+        "-DNATIVE_ARCH=FALSE",
+        "-DENABLE_UNITTEST_CPP_TESTS=FALSE",
+        "-DENABLE_EXTENSION_AUTOLOADING=FALSE",
+        "-DENABLE_EXTENSION_AUTOINSTALL=FALSE"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "cmake",
+        "-S",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb",
+        "-B",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/b21f21aea5971199c87b0a4739c2545e5c981e39f34daf4b1b82b8950e2836e4/release",
+        "-DDUCKOMO_BUILD_ID=e0b0ace43340e3d328d5ea25c7ab9359b5dc20fdf6376bdebcff5b59445afd09"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "cmake",
+        "--build",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/b21f21aea5971199c87b0a4739c2545e5c981e39f34daf4b1b82b8950e2836e4/release",
+        "--target",
+        "duckomo_loadable_extension",
+        "official_httpfs_test",
+        "remote_session_test",
+        "session_metrics_test",
+        "scan_metrics_v3_test",
+        "scan_metrics_v4_test",
+        "--parallel",
+        "8"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "schema_version": 2,
+  "status": "official-runtime-verified",
+  "pair_id": "v1.5.5",
+  "artifact_hashes": {
+    "duckomo": "707da08c1c3209316e51ced89406c35cd92496441429c10ab46fc6a5fab4a0ff",
+    "duckdb": "a9afea3a648f56d8ea1ffe6ccca9a1f17335bda30af74093cdfaa5893e522f2b",
+    "unittest": "4cf78aef9b37570004797d9f49c4321a4cb20260b9b8e79d40c8f6ddea3d6b8a"
+  },
+  "full_grid_status": "not-run (complete 004 H0-H7 evidence pending)",
+  "independent_reproduction": "not-run",
+  "runtime_evidence": {
+    "path": "specs/004-multi-grid-selection/evidence/official-httpfs-refactor/v1.5.5/runtime.json",
+    "sha256": "1da3db06b222de6637de4f4c2fd412b3a692b80df758d86c0d6b4bcb9b0f055f"
+  }
+}

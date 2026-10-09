@@ -1,0 +1,12 @@
+{"audit": null, "body_bytes": 0, "event": "started", "method": "HEAD", "object": "raw.om", "range": null, "request_id": "http-1197377"}
+{"audit": null, "body_bytes": 0, "etag": "\"6a34044749250c0de21d65d40d4f6c270c3ae31d16ac623626bc6b2f7a01ced3\"", "event": "complete", "method": "HEAD", "object": "raw.om", "range": null, "request_id": "http-1197377", "status": 200}
+{"audit": null, "body_bytes": 0, "event": "started", "method": "GET", "object": "raw.om", "range": "bytes=0-0", "request_id": "http-1197378"}
+{"audit": null, "body_bytes": 1, "etag": "\"6a34044749250c0de21d65d40d4f6c270c3ae31d16ac623626bc6b2f7a01ced3\"", "event": "complete", "method": "GET", "object": "raw.om", "range": "bytes=0-0", "request_id": "http-1197378", "status": 206}
+{"audit": null, "body_bytes": 0, "event": "started", "method": "GET", "object": "raw.om", "range": "bytes=0-2", "request_id": "http-1197379"}
+{"audit": null, "body_bytes": 3, "etag": "\"6a34044749250c0de21d65d40d4f6c270c3ae31d16ac623626bc6b2f7a01ced3\"", "event": "complete", "method": "GET", "object": "raw.om", "range": "bytes=0-2", "request_id": "http-1197379", "status": 206}
+{"audit": null, "body_bytes": 0, "event": "started", "method": "GET", "object": "raw.om", "range": "bytes=0-2", "request_id": "http-1197380"}
+{"audit": null, "body_bytes": 3, "etag": "\"6a34044749250c0de21d65d40d4f6c270c3ae31d16ac623626bc6b2f7a01ced3\"", "event": "complete", "method": "GET", "object": "raw.om", "range": "bytes=0-2", "request_id": "http-1197380", "status": 206}
+{"audit": null, "body_bytes": 0, "event": "started", "method": "GET", "object": "raw.om", "range": "bytes=0-2", "request_id": "http-1197381"}
+{"audit": null, "body_bytes": 3, "etag": "\"6a34044749250c0de21d65d40d4f6c270c3ae31d16ac623626bc6b2f7a01ced3\"", "event": "complete", "method": "GET", "object": "raw.om", "range": "bytes=0-2", "request_id": "http-1197381", "status": 206}
+{"audit": null, "body_bytes": 0, "event": "started", "method": "GET", "object": "raw.om", "range": "bytes=0-2", "request_id": "http-1197382"}
+{"audit": null, "body_bytes": 3, "etag": "\"6a34044749250c0de21d65d40d4f6c270c3ae31d16ac623626bc6b2f7a01ced3\"", "event": "complete", "method": "GET", "object": "raw.om", "range": "bytes=0-2", "request_id": "http-1197382", "status": 206}
