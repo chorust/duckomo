@@ -37,6 +37,6 @@ Open-Meteo 公共 AWS bucket `s3://openmeteo` 中有真实 ECMWF IFS HRES O1280 
 
 ## 构建、来源和支持边界
 
-004 当前本地证据对应 DuckDB v1.5.4、Linux AArch64 的工作树构建。固定 DuckDB 2.0 prerelease pair 尚未完成双组合构建和 gate；Linux x86_64 也不在当前验收平台范围。公开匿名 S3 能读不等于签名 S3 权限、Range attempt bookkeeping 或服务端审计通过。
+004 的真实网格本地证据对应 DuckDB v1.5.4、Linux AArch64 的 baseline 构建。官方 HTTPFS 路径另已通过 v1.5.4/v1.5.5/v1.5.6 的受控远程 runtime 和固定样本验证，见 [迁移记录](../specs/004-multi-grid-selection/evidence/official-httpfs-refactor/status.md)，但完整 004 H8 仍未通过；2.0 开发版已退出本轮范围，Linux x86_64 也不在当前验收平台范围。公开匿名 S3 能读不等于该网格的签名 S3 远程收益及服务端审计通过；当前 DuckOMO 不观测 HTTPFS transport attempts/body，网络证据由受控服务日志提供。
 
 截至 2026-10-08，匹配 baseline build `5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d` 的 H1 子比较已对三类真实投影样本全量核对坐标与官方 OM C 值并通过；比较依赖预期 `[ny,nx,ntime]` producer profile，独立 OM 对象轴映射仍未验证。真实 Gaussian 样本清单包含 ECMWF HRES O1280；N160、N320、N320 区域样本和独立点序参考门槛仍未满足，O1280 不替代这些目标。H0/H1/H6 的完整验收范围保持未通过。状态只有在该定义自己的 manifest、oracle、构建组合和 gate 证据齐全后才可提升。

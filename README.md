@@ -2,13 +2,19 @@
 
 中文 | [English](README.en.md)
 
-duckomo 是一个 DuckDB C++ 扩展，将本地 [Open-Meteo OM](https://github.com/open-meteo/om-file-format) 文件中的 Float32 数组直接作为 SQL 表查询，无需先转换格式。
+duckomo 是一个 DuckDB C++ 扩展，将 [Open-Meteo OM](https://github.com/open-meteo/om-file-format) 文件（本地或 HTTP(S)/S3）中的 Float32 数组直接作为 SQL 表查询，无需先转换格式。
 
 - **读取**：支持 OM v3、FPX_XOR2D / PFOR_DELTA2D_INT16 压缩、根数组和层级变量；NaN 转为 SQL `NULL`。
 - **按需读取**：只读取输出和过滤需要的值变量；安全的经纬度条件可进一步缩小读取范围。
 - **坐标**：可用显式规则网格、[68 个规则 domain](docs/regular-domains.md)，或 version=1 的旋转、Lambert、stereographic 与 reduced Gaussian 定义生成 `latitude`、`longitude`。
 
-读取器支持单个本地 OM 文件，以及通过官方 `httpfs` 扩展进行 HTTP(S)/S3 范围读取。扫描可由 DuckDB 并行调度，并提供连接级线程上限。支持 time、level、lead_time、member、run 语义轴。新投影/Gaussian 网格、`om_source` 与 `om_grid_info` 已进入实现，但 004 的真实网格坐标/值、远程收益、完整内存账和独立复现门禁尚未通过；当前不据此声明生产支持。已固定的 HRES O1280 样本是 Gaussian 补充证据，不能替代 N160、N320 或 N320 区域样本。验收平台为 Linux AArch64，Linux x86_64 支持与验证暂缓；本轮版本范围为 DuckDB v1.5.4、v1.5.5、v1.5.6。
+读取器支持单个本地 OM 文件，以及通过官方 `httpfs` 扩展进行 HTTP(S)/S3 范围读取。扫描可由 DuckDB 并行调度，并提供连接级线程上限。支持 time、level、lead_time、member、run 语义轴。新投影/Gaussian 网格、`om_source` 与 `om_grid_info` 已实现，但 004 的真实网格坐标/值、远程收益、完整内存账和独立复现门禁尚未通过；当前不据此声明生产支持。已固定的 HRES O1280 样本是 Gaussian 补充证据，不能替代 N160、N320 或 N320 区域样本。验收平台为 Linux AArch64，Linux x86_64 支持与验证暂缓；官方 HTTPFS 路径已在 DuckDB v1.5.4、v1.5.5、v1.5.6 通过本地/HTTP/HTTPS/签名 S3 一致性和受控远程回归，见 [迁移验证记录](specs/004-multi-grid-selection/evidence/official-httpfs-refactor/status.md)；这不替代 004 逐网格验收。
+
+## GitHub Release 安装
+
+新增 tag 发布流程覆盖 DuckDB **v1.5.4 / v1.5.5 / v1.5.6**，目标平台为 **Linux glibc x86_64 / ARM64、macOS Intel / Apple Silicon**。推送 `v0.1.0` 或 `v0.1.0-rc.1` 这样的 tag 后，全部 12 个组合构建和运行检查通过才发布 ZIP、manifest 和 SHA256SUMS；手动运行只预演，不发布。新增平台在实际 CI 通过前仍是配置目标，既有完整验收边界不变。
+
+发布完成后，从 [GitHub Releases](https://github.com/chorust/duckomo/releases) 选择与 `SELECT version(); PRAGMA platform;` 精确匹配的包，校验并解压，用 `duckdb -unsigned` 执行 `INSTALL '/path/to/duckomo.duckdb_extension'; LOAD duckomo;`。这些包尚未签名，也不是 DuckDB 扩展仓库，不能直接安装 Release ZIP。步骤和维护者打 tag 流程见 [自动发布与安装](docs/releases.md)。
 
 ## 社区安装（待收录）
 
@@ -150,7 +156,7 @@ WHERE latitude BETWEEN 30 AND 40 AND longitude BETWEEN 110 AND 120;
 
 缺少 `coordinates` 时仍需完整 `dimensions`；`coordinates = 'lat lon'` 本身也不足以定义地理网格。名称、轴、shape 和文件中存在的 WKT BBOX 会在返回数据前校验。样本下载、目录差异和兼容范围见 [规则网格 domain](docs/regular-domains.md)。
 
-## 投影与 Gaussian 网格（实现中）
+## 投影与 Gaussian 网格（已实现，完整验收待补齐）
 
 version=1 `grid` 可声明旋转经纬度、球面 Lambert、stereographic 或 reduced Gaussian 网格。声明使用封闭字段集，必须匹配数组的空间轴顺序和长度；未知或冲突的 CRS 会拒绝绑定。Gaussian 必须给出完整逐行表，区域网格还要给出局部到 parent 的行段。参数和示例见 [多网格接口契约](specs/004-multi-grid-selection/contracts/sql-interface.md)。
 
@@ -178,7 +184,7 @@ WHERE longitude >= 170 OR longitude < -170
 
 `OR` 及无法安全分析的表达式保留 SQL 过滤，可能读取全域。实际读取节省取决于 OM 块布局；仅坐标、纯空间 `COUNT(*)` 和可证明的空选择不读取值数组。
 
-## 远程、并行与缓存
+## 远程与并行
 
 HTTP(S) 与 S3 使用官方 HTTPFS。对象需在扫描期间保持稳定且支持范围读取；标准文件接口比较可观察长度/版本，不承诺强制新鲜 HEAD 或扫描快照。S3 凭据通过 DuckDB secret/HTTPFS 配置提供。远程 SQL 示例：
 
@@ -192,16 +198,16 @@ FROM read_om('https://example.invalid/path/object.om')
 LIMIT 10;
 ```
 
-S3 读取前应配置 secret，例如 `CREATE SECRET ... (TYPE s3, KEY_ID ..., SECRET ..., REGION ...)`。强 ETag 或 S3 VersionId 才允许跨查询缓存；每次查询仍会重新探测对象身份和范围权限。弱/无版本对象可以读取，但不会跨查询缓存。`read_om_raw(path)` 仍只支持本地文件。
+S3 读取前应配置 secret，例如 `CREATE SECRET ... (TYPE s3, KEY_ID ..., SECRET ..., REGION ...)`。DuckOMO 自有范围缓存及其 SQL 设置已移除；HTTPFS 的内部缓存、凭据和重试由官方依赖维护，不承诺每次查询强制刷新或即时撤权。`read_om_raw(path)` 仍只支持本地文件。
 
-线程上限和应用范围缓存按连接设置：
+线程上限按连接设置：
 
 ```sql
 SET threads=4;
 SET duckomo_max_threads=2;        -- 0 使用 DuckDB 线程上限；正数限制工作者
 ```
 
-缓存容量以字节计，容量缩小时立即淘汰；设置为 0 不存储。用 `duckomo_last_scan_metrics()` 查看最近一次已结束 SQL 中每个扫描的 v4 JSON：
+用 `duckomo_last_scan_metrics()` 查看最近一次已结束 SQL 中每个扫描的 v4 JSON：
 
 ```sql
 SELECT query_id, scan_id, metrics::JSON
@@ -218,7 +224,7 @@ make test                            # 构建 release 并运行本地验证
 make sanitizer-test                  # ASan/UBSan 检查
 ```
 
-`validate.sh` 还需 `jq`、`sha256sum`、`diff`、`mktemp`，证据默认写入 `build/evidence/`。设置 `DUCKOMO_DOMAIN_FILE=/path/to/pinned.om` 可额外运行真实样本的完整空间验证。外部远程服务就绪后，按 [003 Quickstart](specs/003-dimensions-remote-parallel/quickstart.md) 设置环境变量并运行 G3；缺少服务、真实样本或审计日志时远程 gate 不通过。
+`validate.sh` 还需 Python 3；远程报告默认写入 `build/official-validation-<pair或release>/`，可用 `DUCKOMO_EVIDENCE_DIR` 修改。额外运行真实 domain 验证时，同时设置 `DUCKOMO_DOMAIN_FILE=/path/to/pinned.om` 和 `DUCKOMO_DOMAIN_REFERENCE=/path/to/reference-dir`。当前远程验证按 [官方 HTTPFS 复现说明](docs/official-httpfs.md) 配置服务和运行矩阵；003 中专用 HTTPFS/缓存命令是历史约定。缺少服务、真实样本或审计日志时，对应 gate 不通过。
 
 ## 文档与源码
 
@@ -228,6 +234,7 @@ make sanitizer-test                  # ASan/UBSan 检查
 | 网格定义与真实样本覆盖 | [规则网格 domain](docs/regular-domains.md) |
 | 投影/Gaussian 定义与逐项证据等级 | [多网格证据表](docs/grid-domains.md) |
 | 扫描流程与读取指标 | [技术架构](docs/architecture.md) |
+| 自动发布、下载与安装 | [GitHub Releases 指南](docs/releases.md) |
 | 后续能力 | [Roadmap](docs/roadmap.md) |
 | 查询绑定与扫描 / 网格 / 本地 OM 读取 | `src/scan/` / `src/grid/` / `src/om/` |
 | SQL 用例 / 原生检查 / 样本 | `test/sql/` / `test/native/` / `test/data/` |

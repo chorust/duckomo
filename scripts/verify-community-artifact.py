@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check a community-toolchain binary in the matching official ARM64 runtime."""
+"""Check a distribution binary in the matching official version/platform runtime."""
 import argparse
 import hashlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -23,22 +23,36 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument('--version', required=True, choices=['v1.5.4', 'v1.5.5', 'v1.5.6'])
+    parser.add_argument('--platform', default='linux_arm64',
+                        choices=['linux_amd64', 'linux_arm64', 'osx_amd64', 'osx_arm64'])
+    parser.add_argument('--runtime-manifest', type=Path,
+                        help='multi-platform release runtime manifest; omitted uses historical ARM64 pins')
     for name in ('duckdb', 'httpfs', 'extension', 'output'):
         parser.add_argument('--' + name, type=Path, required=True)
     args = parser.parse_args()
     args.root = args.root.resolve()
     for name in ('duckdb', 'httpfs', 'extension', 'output'):
         setattr(args, name, getattr(args, name).resolve())
-    matrix = json.loads((args.root / 'test/data/grids/version-matrix.json').read_text())
-    runtime = next(p['official_runtime'] for p in matrix['pairs'] if p['pair_id'] == args.version)
-    report = dict(version=args.version, platform='linux_arm64', status='fail',
+    report = dict(version=args.version, platform=args.platform, status='fail',
                   checks=[], signed_community_install='not-run (local/CI verification uses -unsigned)')
     server = None
     try:
+        if args.runtime_manifest:
+            from release_tools import load_runtimes, find_runtime
+            runtime = find_runtime(load_runtimes(args.runtime_manifest), args.version, args.platform)
+        else:
+            if args.platform != 'linux_arm64':
+                raise ValueError('non-ARM64 validation requires --runtime-manifest')
+            matrix = json.loads((args.root / 'test/data/grids/version-matrix.json').read_text())
+            runtime = next(p['official_runtime'] for p in matrix['pairs'] if p['pair_id'] == args.version)
         assert sha(args.duckdb) == runtime['cli_sha256'], 'Official CLI hash mismatch'
         assert sha(args.httpfs) == runtime['httpfs_sha256'], 'Official HTTPFS hash mismatch'
         reported = subprocess.check_output([str(args.duckdb), '-version'], text=True).strip()
         assert reported.startswith(args.version + ' '), 'Engine version mismatch'
+        platform = subprocess.check_output(
+            [str(args.duckdb), '-batch', '-noheader', '-csv', ':memory:', '-c', 'PRAGMA platform;'],
+            text=True, timeout=30).strip()
+        assert platform == args.platform, 'Engine platform mismatch'
         report['runtime_version'] = reported
         report['artifact_hashes'] = {name: sha(getattr(args, name)) for name in ('duckdb', 'httpfs', 'extension')}
         fixtures = json.loads((args.root / 'test/data/manifest.json').read_text())['fixtures']

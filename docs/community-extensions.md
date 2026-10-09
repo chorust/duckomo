@@ -1,6 +1,8 @@
 # DuckDB Community Extensions 接入
 
-状态：**本地配置与检查已完成；GitHub CI、登记和签名发布待执行**。登记草案在 [`community/duckomo/description.yml.in`](../community/duckomo/description.yml.in)，首次版本暂定 `0.1.0`，维护者按源码仓库 owner 填写为 `chorust`。本次检查记录见 [`community/validation.json`](../community/validation.json)：三版本既有产物检查、新编译 v1.5.6 生产配置产物、登记解析、平台过滤和 manifest 校验通过；完整社区 Docker 构建尚未执行。
+状态：**现有 ARM64 GitHub CI 已通过；社区登记和签名发布待执行**，见 [main 构建记录](https://github.com/chorust/duckomo/actions/runs/37905479056)。登记草案在 [`community/duckomo/description.yml.in`](../community/duckomo/description.yml.in)，首次版本暂定 `0.1.0`，维护者按源码仓库 owner 填写为 `chorust`。本次检查记录见 [`community/validation.json`](../community/validation.json)：三版本既有产物检查、新编译 v1.5.6 生产配置产物、登记解析、平台过滤和 manifest 校验通过；完整社区 Docker 构建尚未执行。
+
+新增的 [GitHub tag 发布流程](releases.md) 独立于社区流程，目标为三个 DuckDB 版本 × Linux/macOS 双架构；新增平台须在各自 CI 实际通过后才能形成验证记录。GitHub 包未签名，不扩大本文件的社区首发平台范围，也不替代完整生产验收和独立复现。
 
 ## 发布契约
 
@@ -81,7 +83,7 @@ PY
 
 将生成文件加入 community-extensions 仓库的 PR，等待维护者审查、社区构建、签名和发布。维护更新时改 `repo.ref`；未来不兼容的新引擎适配可使用 `repo.ref_next`，此次不声明 DuckDB 2.0 支持。
 
-发布前仍需完成已有的 R21 独立复现条件。004 的真实网格、完整内存账及 H0–H9 未完成部分保持原状态；登记描述不把投影/Gaussian 的实现等同于生产验收完成。
+社区签名发布/完整验收声明前仍需完成已有的 R21 独立复现条件。GitHub 开发发行包可按 tag 流程供试用，建议未完成验收时使用 prerelease；包发布不代表 R21 通过。004 的真实网格、完整内存账及 H0–H9 未完成部分保持原状态；登记描述不把投影/Gaussian 的实现等同于生产验收完成。
 
 ## 核对来源（2026-10-08）
 

@@ -1,0 +1,175 @@
+name: Tagged multi-platform release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/release.yml'
+      - 'scripts/release_tools.py'
+      - 'scripts/version_matrix.py'
+      - 'scripts/verify-community-artifact.py'
+      - 'test/data/release-runtimes.json'
+      - 'test/tools/release_tools_test.py'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  # Manual runs on branches exercise the full pipeline without publishing.
+  RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'v0.0.0-dry-run' }}
+
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      versions: ${{ steps.matrix.outputs.versions }}
+      runtime: ${{ steps.matrix.outputs.runtime }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Lint release workflow
+        run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.7 -shellcheck= -pyflakes= .github/workflows/release.yml
+      - name: Test release contracts
+        run: python3 test/tools/release_tools_test.py
+      - name: Validate tag and emit pinned matrix
+        id: matrix
+        run: python3 scripts/release_tools.py matrix --tag "$RELEASE_TAG" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: prepare
+    if: github.event_name != 'pull_request'
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ${{ fromJSON(needs.prepare.outputs.versions) }}
+    # Same community toolchain, pinned rather than following a mutable tag.
+    uses: duckdb/extension-ci-tools/.github/workflows/_extension_distribution.yml@3fd6109fc01555673b7c7123eba8d0d143fe8ce4
+    with:
+      extension_name: duckomo
+      duckdb_version: ${{ matrix.version }}
+      ci_tools_version: 3fd6109fc01555673b7c7123eba8d0d143fe8ce4
+      vcpkg_commit: ${{ matrix.version == 'v1.5.6' && '84bab45d415d22042bd0b9081aea57f362da3f35' || 'cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3' }}
+      exclude_archs: "linux_amd64_musl;linux_arm64_musl;windows_amd64;windows_arm64;windows_amd64_mingw;windows_amd64_rtools;wasm_mvp;wasm_eh;wasm_threads"
+      reduced_ci_mode: disabled
+      skip_tests: false
+
+  verify-package:
+    needs: [prepare, build]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.prepare.outputs.runtime) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          name: duckomo-${{ matrix.version }}-extension-${{ matrix.platform }}
+          path: build/candidate
+      - name: Fetch hash-pinned official runtime
+        run: |
+          python3 scripts/release_tools.py fetch-runtime \
+            --version '${{ matrix.version }}' --platform '${{ matrix.platform }}' \
+            --output build/official-runtime
+      # Upstream skips linux_arm64 and osx_amd64 SQL tests. Every release
+      # candidate must additionally load in its native official runtime.
+      - name: Verify local and HTTP range reads in the native official engine
+        run: |
+          python3 scripts/verify-community-artifact.py \
+            --version '${{ matrix.version }}' --platform '${{ matrix.platform }}' \
+            --runtime-manifest test/data/release-runtimes.json \
+            --duckdb build/official-runtime/duckdb \
+            --httpfs build/official-runtime/httpfs.duckdb_extension \
+            --extension build/candidate/duckomo.duckdb_extension \
+            --output build/verification.json
+      - name: Package only the verified binary
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          python3 scripts/release_tools.py package \
+            --version '${{ matrix.version }}' --platform '${{ matrix.platform }}' \
+            --tag "$RELEASE_TAG" --commit "$SOURCE_COMMIT" \
+            --extension build/candidate/duckomo.duckdb_extension \
+            --verification build/verification.json --output build/package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-package-${{ matrix.version }}-${{ matrix.platform }}
+          path: build/package/*.zip
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: release-verification-${{ matrix.version }}-${{ matrix.platform }}
+          path: build/verification.json
+          if-no-files-found: warn
+
+  assemble:
+    needs: verify-package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: release-package-*
+          path: build/packages
+      - name: Require all pairs and recheck package provenance
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          python3 scripts/release_tools.py assemble \
+            --tag "$RELEASE_TAG" --commit "$SOURCE_COMMIT" \
+            --packages build/packages --output build/release-assets
+          (cd build/release-assets && sha256sum --check SHA256SUMS)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-assets
+          path: build/release-assets/*
+          if-no-files-found: error
+
+  publish:
+    needs: assemble
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-assets
+          path: release-assets
+      - name: Publish all assets together without overwriting a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          (cd release-assets && sha256sum --check SHA256SUMS)
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo '::error::Release already exists. Inspect any failed draft before deleting it and rerunning.'
+            exit 1
+          fi
+          flags=()
+          if [[ "$RELEASE_TAG" == *-* ]]; then flags+=(--prerelease); fi
+          # An interrupted upload leaves a draft, never a partially public release.
+          gh release create "$RELEASE_TAG" release-assets/* \
+            --verify-tag --draft --title "DuckOMO $RELEASE_TAG" \
+            --generate-notes "${flags[@]}" \
+            --notes 'Unsigned binaries for the exact DuckDB version and platform in each filename. Verify SHA256SUMS, unzip, and use duckdb -unsigned to INSTALL the local duckomo.duckdb_extension. Official HTTPFS is a separate runtime dependency. Release smoke checks do not constitute full production-grid or independent-reproduction acceptance; see docs/releases.md in the tagged source.'
+          gh release edit "$RELEASE_TAG" --draft=false

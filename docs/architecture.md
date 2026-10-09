@@ -1,6 +1,6 @@
 # duckomo 技术架构
 
-当前工作树实现本地 OM 扫描、语义维度选择、列裁剪、规则/投影/Gaussian 网格、native-window 空间选择、opt-in source 身份、grid-info 描述、DuckDB 并行任务及 v4 指标。004 的真实坐标/值、远程收益、完整内存 ledger、2.0 版本矩阵和独立复现仍未闭环。用户接口见 [接口说明](spec.md)，定义与证据等级见 [多网格证据表](grid-domains.md)。
+当前工作树实现本地 OM 扫描、语义维度选择、列裁剪、规则/投影/Gaussian 网格、native-window 空间选择、opt-in source 身份、grid-info 描述、DuckDB 并行任务及 v4 指标。004 的真实坐标/值、远程收益、完整内存 ledger 和独立复现仍未闭环。官方 HTTPFS 路径已通过 v1.5.4/v1.5.5/v1.5.6 的受控验证；2.0 开发版不在本轮范围。用户接口见 [接口说明](spec.md)，定义与证据等级见 [多网格证据表](grid-domains.md)。
 
 ## 模块职责
 
@@ -21,11 +21,11 @@
 ```text
 DuckDB SQL
   → Bind：读取元数据，校验语义轴、变量、grid/domain、CRS profile 与布局，确定 schema
-  → RemoteReadSession（远程）：HEAD + bytes=0-0 授权/范围探测并绑定对象身份
+  → RemoteReadSession（远程）：经当前 ClientContext 打开官方文件系统句柄，检查可观察长度/版本身份
   → 优化：收集安全空间/语义必要条件，保留完整 WHERE
   → GlobalInit：计算受检记录/window 上界，初始化共享惰性 cursor
   → DuckDB workers：短锁领取不重叠 native window；锁外做坐标 preflight；每个 local state 持有独立句柄和 decoder
-  → SessionRangeCache / ReadAt：精确读取，计量逻辑、底层和每 attempt body
+  → ReadAt：按 OM 请求范围读取，计量逻辑请求与标准文件接口成功读取；远程 transport 不可观测
   → 官方 OM C reader：请求 chunk 索引/数据范围并解码
   → DuckDB Vector/DataChunk
   → DuckDB 执行完整 WHERE 和上层 SQL 运算
@@ -46,7 +46,7 @@ DuckDB SQL
 
 网格/轴选择只提供逻辑切片。OM chunk 交集、LUT、字节范围和解码策略由官方 reader 负责。`ReadAtFile` 通过 DuckDB 标准文件系统读取。本地/远程 Adapter 携带 ClientContext；每 worker 独立句柄。远程使用 opener 局部配置禁止完整下载回退并保留 ETag 检查，使用标准 DIRECT_IO 让 OM reader 控制范围；比较打开时可观察长度/版本。HTTPFS 内部缓存和网络字节不由 DuckOMO 观测，远程 transport 为 NULL/false；服务端日志仅用于验收。
 
-RangeCache 属于 ClientContextState，强 ETag/S3 VersionId 与访问分区参与 key。只复用精确或包含范围，先淘汰再分配；弱/无版本对象禁止跨查询复用，每次查询仍执行权限探测。当前 004 尚未完成按每次绑定的 secret/endpoint/region fingerprint 变更失效和 ABI3 provider handshake 验收，不把这些能力描述为已关闭门禁。
+自有 RangeCache、provider/observer、授权 HMAC、专用 ABI handshake 和缓存 SQL 已删除。HTTPFS 的凭据、签名、重试及内部缓存由官方依赖维护；DuckOMO 不承诺固定 HEAD/探测顺序、扫描快照、每次查询强制刷新或任意缓存即时撤权。固定版本/配置的同 URI 允许→拒绝→恢复、取消及隔离有受控验证，见 [官方 HTTPFS 记录](../specs/004-multi-grid-selection/evidence/official-httpfs-refactor/status.md)。
 
 每个 query 的 v4 profile 保留完整 `legacy_v3`（含 `legacy_v2`），逐 scan 记录 bind/scan metadata、coordinate、逐变量 index/data、未知 transport、已移除 cache、任务/worker、exact/observed/upper candidate、完整性和终态。`peak_rss_bytes` 单列为进程峰值；`peak_query_owned_bytes` 是当前接入账本的 DuckOMO-owned capacity 峰值，不含DuckDB output vectors 和引擎/httpfs 内存。selector/task/batch/decoder 等的完整逐项 bound ledger、瞬时 reader buffer 及 transport-control 峰值仍在核对，不能据总数宣称全部查询工作集已闭环。QueryEnd 是最终发布点，失败/取消保留已观察成本；同 SQL 的多 scan 与不同连接分别隔离。详见 [004 selection/I/O 契约](../specs/004-multi-grid-selection/contracts/selection-and-io.md)。
 
@@ -54,8 +54,8 @@ RangeCache 属于 ClientContextState，强 ETag/S3 VersionId 与访问分区参�
 
 ## 网格来源与验证
 
-Registry 固定 68 个规则网格定义和 6 个 004 source-derived definition，不自动发现或扩展。004 目前有 rotated 与 stereographic 的真实 Open-Meteo OM v3 metadata-checked 样本；N160、N320、N320 区域仍为 definition-recorded。Open-Meteo 公共 bucket 确实有 ECMWF HRES O1280 reduced-Gaussian OM v3 对象，HSURF 全量值按 logical index 与官方 OM C reader 一致，但 O1280 行长/坐标点序未映射，不能替代 N-grid 覆盖。逐对象范围见 [多网格证据表](grid-domains.md) 和[样本获取记录](../specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-sample-acquisition.md)。
+Registry 固定 68 个规则网格定义和 6 个 004 source-derived definition，不自动发现或扩展。004 目前有 rotated、Lambert 与 stereographic 的真实 OM v3 metadata-checked 样本及全量坐标/值子比较；独立 producer 轴点序和完整 gate 仍未关闭；N160、N320、N320 区域仍为 definition-recorded。Open-Meteo 公共 bucket 确实有 ECMWF HRES O1280 reduced-Gaussian OM v3 对象，HSURF 全量值按 logical index 与官方 OM C reader 一致，但 O1280 行长/坐标点序未映射，不能替代 N-grid 覆盖。逐对象范围见 [多网格证据表](grid-domains.md) 和[样本获取记录](../specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-sample-acquisition.md)。
 
-`make test` 构建 release 并调用 `scripts/validate.sh`，覆盖既有 SQL/native、合成样本重生与哈希、本地维度与指标。004 所需真实 Gaussian/N-grid、签名远程服务端审计、完整内存 gate、2.0 矩阵和独立复现仍待补齐；设置 remote 环境不能替代缺失对象/oracle。`make sanitizer-test` 检查边界与生命周期；性能结论取普通 release 构建。
+`make test` 构建 release 并调用 `scripts/validate.sh`，覆盖 SQL/native、本地维度与指标以及 Python 契约/fixture 工具测试。官方 HTTPFS 三版本远程 runtime 及固定样本收益已有记录；004 所需真实 Gaussian/N-grid、逐网格远程收益/审计、完整内存 gate 和独立复现仍待补齐，2.0 已退出本轮范围；设置 remote 环境不能替代缺失对象/oracle。`make sanitizer-test` 检查边界与生命周期；性能结论取普通 release 构建。
 
 原完整验收与独立复现在 Linux AArch64 通过，x86_64 支持与验证暂缓。步骤见 [空间查询指南](../specs/002-spatial-pushdown/quickstart.md)，结果见 [最终验收](../specs/002-spatial-pushdown/evidence/final.md)。后续维度、网格、远程读取和科学算子见 [Roadmap](roadmap.md)。

@@ -2,13 +2,19 @@
 
 [中文](README.md) | English
 
-duckomo is a DuckDB C++ extension that queries Float32 arrays in local [Open-Meteo OM](https://github.com/open-meteo/om-file-format) files as SQL tables, without converting them first.
+duckomo is a DuckDB C++ extension that queries Float32 arrays in [Open-Meteo OM](https://github.com/open-meteo/om-file-format) files (local or HTTP(S)/S3) as SQL tables, without converting them first.
 
 - **Reading**: OM v3, FPX_XOR2D / PFOR_DELTA2D_INT16 compression, root arrays, and hierarchical variables; NaN becomes SQL `NULL`.
 - **Selective reads**: reads only value variables needed by output and filters; safe geographic predicates can further narrow the scan.
 - **Coordinates**: generates `latitude` and `longitude` from an explicit regular grid, [68 regular domains](docs/regular-domains.md), or a version-one rotated, Lambert, stereographic, or reduced Gaussian definition.
 
-The reader supports one local OM file, plus HTTP(S)/S3 range reads through the official `httpfs` extension. DuckDB can schedule scans in parallel; connection-level thread limits are available. Semantic axes include time, level, lead time, member, and run. Projected/Gaussian grids, opt-in `om_source`, and `om_grid_info` are implemented in the current work, but the 004 real-grid coordinate/value, remote-benefit, complete memory-ledger, and independent-reproduction gates have not passed; this is not a production-support claim. The public HRES O1280 object is supplemental Gaussian evidence and does not replace the required N160, N320, or N320-region samples. Linux AArch64 is the acceptance platform; Linux x86_64 support and validation are deferred. This refactor targets DuckDB v1.5.4, v1.5.5 and v1.5.6.
+The reader supports one local OM file, plus HTTP(S)/S3 range reads through the official `httpfs` extension. DuckDB can schedule scans in parallel; connection-level thread limits are available. Semantic axes include time, level, lead time, member, and run. Projected/Gaussian grids, opt-in `om_source`, and `om_grid_info` are implemented, but the 004 real-grid coordinate/value, remote-benefit, complete memory-ledger, and independent-reproduction gates have not passed; this is not a production-support claim. The public HRES O1280 object is supplemental Gaussian evidence and does not replace the required N160, N320, or N320-region samples. Linux AArch64 is the acceptance platform; Linux x86_64 support and validation are deferred. The official HTTPFS path has passed local/HTTP/HTTPS/signed-S3 consistency and controlled remote regressions on DuckDB v1.5.4, v1.5.5 and v1.5.6; see the [migration validation record](specs/004-multi-grid-selection/evidence/official-httpfs-refactor/status.md). This does not replace per-grid 004 acceptance.
+
+## GitHub Release installation
+
+The new tag-release workflow targets DuckDB **v1.5.4 / v1.5.5 / v1.5.6** on **Linux glibc x86_64 / ARM64 and macOS Intel / Apple Silicon**. Tags such as `v0.1.0` or `v0.1.0-rc.1` publish ZIPs, a manifest, and SHA256SUMS only after all 12 build/runtime pairs pass. Manual runs are dry runs and never publish. New platforms remain configured targets until CI actually passes; existing full-acceptance boundaries are unchanged.
+
+After publication, select a matching package from [GitHub Releases](https://github.com/chorust/duckomo/releases), using `SELECT version(); PRAGMA platform;` to identify your runtime. Verify and unzip it, then start `duckdb -unsigned` and run `INSTALL '/path/to/duckomo.duckdb_extension'; LOAD duckomo;`. These binaries are unsigned, and Release ZIPs are not extension repositories or directly installable extensions. See the [release and installation guide](docs/releases.md).
 
 ## Community installation (pending inclusion)
 
@@ -150,7 +156,7 @@ This example requires a file matching the domain's grid and containing `wave_hei
 
 Files without `coordinates` still need complete `dimensions`; `coordinates = 'lat lon'` alone does not define a geographic grid. Binding checks the name, axes, shape, and WKT BBOX when present. See [regular-grid domains](docs/regular-domains.md) for sample downloads, directory differences, and compatibility limits.
 
-## Projected and Gaussian grids (in progress)
+## Projected and Gaussian grids (implemented; full acceptance pending)
 
 A version-one `grid` declares rotated latitude/longitude, spherical Lambert, stereographic, or reduced Gaussian geometry. Its closed field set must match the array's spatial axis order and lengths; unknown or conflicting CRS metadata rejects binding. Gaussian definitions provide a complete row table, and regional grids also provide their local-to-parent segments. See the [multi-grid SQL contract](specs/004-multi-grid-selection/contracts/sql-interface.md) for the exact types and examples.
 
@@ -178,7 +184,7 @@ WHERE longitude >= 170 OR longitude < -170
 
 `OR` and expressions that cannot be safely analyzed retain SQL filtering and may read the full domain. Read savings depend on OM chunk layout. Coordinate-only queries, spatial `COUNT(*)`, and selections proven empty do not read value arrays.
 
-## Remote, parallel, and cached reads
+## Remote and parallel reads
 
 HTTP(S) and S3 use official HTTPFS for range reads. Objects must remain stable during scans. Standard file size/version evidence detects observable conflicts; DuckOMO does not promise a fresh HEAD or scan snapshot. Provide S3 credentials through a DuckDB secret or the existing httpfs configuration.
 
@@ -192,7 +198,7 @@ FROM read_om('https://example.invalid/path/object.om')
 LIMIT 10;
 ```
 
-Configure an S3 secret before reading an S3 URI, for example with `CREATE SECRET ... (TYPE s3, KEY_ID ..., SECRET ..., REGION ...)`. Cross-query caching requires a strong ETag or S3 VersionId. Every query still probes object identity and range authorization. Weak or unversioned objects can be read but are not reused across queries. `read_om_raw(path)` remains local-only.
+Configure an S3 secret before reading an S3 URI, for example with `CREATE SECRET ... (TYPE s3, KEY_ID ..., SECRET ..., REGION ...)`. DuckOMO's own range cache and its SQL settings have been removed. Official HTTPFS owns internal caching, credentials, and retries; DuckOMO does not promise a forced refresh or immediate revocation on every query. `read_om_raw(path)` remains local-only.
 
 Thread limits are connection settings:
 
@@ -201,7 +207,7 @@ SET threads=4;
 SET duckomo_max_threads=2;        -- 0 uses DuckDB's thread limit
 ```
 
-Cache capacity is in bytes; shrinking it evicts entries immediately, and capacity zero stores nothing. Inspect one v4 JSON row per scan from the most recently ended SQL query:
+Inspect one v4 JSON row per scan from the most recently ended SQL query:
 
 ```sql
 SELECT query_id, scan_id, metrics::JSON
@@ -218,7 +224,7 @@ make test                            # Build release and run local validation
 make sanitizer-test                  # ASan/UBSan checks
 ```
 
-`validate.sh` also requires `jq`, `sha256sum`, `diff`, and `mktemp`. Evidence defaults to `build/evidence/`. Set `DUCKOMO_DOMAIN_FILE=/path/to/pinned.om` to run complete spatial validation with the real sample. When remote services are available, follow the [003 Quickstart](specs/003-dimensions-remote-parallel/quickstart.md) to configure and run G3; the remote gate does not pass without its services, real sample, and audit logs.
+`validate.sh` also requires Python 3. Remote reports default to `build/official-validation-<pair-or-release>/`; override with `DUCKOMO_EVIDENCE_DIR`. To run additional real-domain validation, set both `DUCKOMO_DOMAIN_FILE=/path/to/pinned.om` and `DUCKOMO_DOMAIN_REFERENCE=/path/to/reference-dir`. For current remote validation, configure services and run the matrix using the [official HTTPFS reproduction guide](docs/official-httpfs.md). Private-HTTPFS/cache commands in 003 are historical. Relevant gates do not pass without their services, real samples, and audit logs.
 
 ## Documentation and source
 
@@ -228,6 +234,7 @@ make sanitizer-test                  # ASan/UBSan checks
 | Grid definitions and real sample coverage | [Regular-grid domains](docs/regular-domains.md) |
 | Projected/Gaussian definitions and evidence levels | [Grid evidence table](docs/grid-domains.md) |
 | Scan flow and read metrics | [Architecture](docs/architecture.md) |
+| Automated publishing, downloads, and installation | [GitHub Releases guide](docs/releases.md) |
 | Upcoming capabilities | [Roadmap](docs/roadmap.md) |
 | Query binding and scans / grids / local OM reads | `src/scan/` / `src/grid/` / `src/om/` |
 | SQL cases / native checks / fixtures | `test/sql/` / `test/native/` / `test/data/` |
