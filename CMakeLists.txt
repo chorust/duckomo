@@ -47,6 +47,18 @@ set_target_properties(duckomo_om PROPERTIES
 if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
     # Upstream generated bitpacking headers emit very large warning streams.
     target_compile_options(duckomo_om PRIVATE -w)
+    # The pinned OM codec needs SSSE3 helpers even in its baseline SSE path.
+    # Detect the compiler target, not the host (macOS can cross-compile x86_64).
+    include(CheckCSourceCompiles)
+    check_c_source_compiles("
+#if !defined(__x86_64__) && !defined(__i386__)
+#error Not an x86 compiler target
+#endif
+int main(void) { return 0; }
+" DUCKOMO_OM_TARGET_X86)
+    if(DUCKOMO_OM_TARGET_X86)
+        target_compile_options(duckomo_om PRIVATE -mssse3)
+    endif()
 endif()
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
     # GCC 14 promotes the pinned upstream NEON shim's pointer conversions to errors.

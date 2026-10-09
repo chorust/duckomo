@@ -12,6 +12,9 @@ on:
       - 'scripts/verify-community-artifact.py'
       - 'test/data/release-runtimes.json'
       - 'test/tools/release_tools_test.py'
+      - 'test/tools/om_build_test.py'
+      - 'CMakeLists.txt'
+      - 'third_party/om-file-format'
 
 permissions:
   contents: read
@@ -37,15 +40,33 @@ jobs:
         with:
           python-version: '3.11'
       - name: Lint release workflow
-        run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.7 -shellcheck= -pyflakes= .github/workflows/release.yml
+        run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12 -shellcheck= -pyflakes= .github/workflows/release.yml
       - name: Test release contracts
         run: python3 test/tools/release_tools_test.py
       - name: Validate tag and emit pinned matrix
         id: matrix
         run: python3 scripts/release_tools.py matrix --tag "$RELEASE_TAG" >> "$GITHUB_OUTPUT"
 
+  om-codec:
+    # Catch architecture/compiler failures before the expensive DuckDB builds.
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm, macos-15-intel, macos-15]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Fetch pinned OM sources
+        run: git submodule update --init third_party/om-file-format
+      - name: Build actual OM C target in isolation
+        run: python3 test/tools/om_build_test.py
+
   build:
-    needs: prepare
+    needs: [prepare, om-codec]
     if: github.event_name != 'pull_request'
     strategy:
       fail-fast: false

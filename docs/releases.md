@@ -10,6 +10,8 @@
 | v1.5.5 | `linux_amd64` | `linux_arm64` | `osx_amd64` | `osx_arm64` |
 | v1.5.6 | `linux_amd64` | `linux_arm64` | `osx_amd64` | `osx_arm64` |
 
+x86_64 产物的 OM C 库要求 CPU 支持 **SSSE3**；不要求 AVX2，也不使用构建机特定的 `-march=native`。ARM64 保持原有 NEON 路径。
+
 每次发布必须产生全部 12 份 ZIP；不发布部分成功的矩阵。Windows、musl、Wasm 和 DuckDB 2.0 不在此流程范围。社区登记仍只申请 v1.5.6 / Linux ARM64，不能把 GitHub 发布矩阵当作社区支持矩阵。
 
 原有深入验证记录主要来自 Linux ARM64。新增 Linux x86_64/macOS 平台在各自工作流实际通过前，仅是配置目标，不是已验证的支持声明。Release 的本地/HTTP 冒烟测试不替代完整 SQL/native 回归、HTTPS/签名 S3、真实网格、完整内存审计和独立验证者复现；既有 003/004 未完成门禁保持原状。未完成完整验收时，建议使用 `v0.1.0-rc.1` 等预发布 tag 供试用，不将 GitHub 包发布等同于生产就绪或 R21 通过。
@@ -20,7 +22,7 @@
 - 带后缀的 tag（如 `v0.1.0-rc.1`）发布为 GitHub **prerelease**。
 - `v*` 是触发过滤器，脚本进一步拒绝不符合版本格式的 tag。
 - 手动 `workflow_dispatch` 跑完整构建、验证、打包和聚合，但**不发布 Release**。在分支上预演时，包名使用 `v0.0.0-dry-run`。
-- 涉及发布脚本/配置的 PR 只运行发布契约检查；现有 community CI 继续运行，不授予 PR 发布权限。
+- 涉及发布脚本/配置、CMake 或 OM 子模块的 PR 运行发布契约检查及四平台 OM C 独立编译检查，不构建完整发布包；现有 community CI 继续运行，不授予 PR 发布权限。
 - 构建、原生运行验证或聚合检查任一失败，不运行发布步骤。
 - 先创建 draft 并上传全部资产，成功后才公开。已有 Release（含失败遗留 draft）明确拒绝覆盖；维护者核对 draft 后手动处理，再重跑。不会删除或移动 tag。
 - 只有最后的 `publish` job 有 `contents: write`；无需额外 PAT，使用仓库 `GITHUB_TOKEN`。仓库/组织策略须允许 Actions 创建 Release。
@@ -41,7 +43,7 @@ git push origin v0.1.0-rc.1
 
 ## 构建、验证和资产
 
-构建复用固定提交的 DuckDB 官方 extension-ci-tools 分发工作流，保持上游测试开启。所有候选产物还必须在匹配架构的 runner 中加载**实际官方 CLI + HTTPFS**：检查引擎版本、平台、二进制 SHA256、本地 6 行/总和 15、HTTP/local 局部 4 行一致，以及服务端 Range 发送量小于完整对象。原生运行检查补充了上游跳过 Linux ARM64/macOS Intel SQL 测试的缺口，但不声称等价于完整回归。
+先在四个平台独立构建实际 OM C target，尽早发现架构编译问题；通过后再复用固定提交的 DuckDB 官方 extension-ci-tools 分发工作流，保持上游测试开启。所有候选产物还必须在匹配架构的 runner 中加载**实际官方 CLI + HTTPFS**：检查引擎版本、平台、二进制 SHA256、本地 6 行/总和 15、HTTP/local 局部 4 行一致，以及服务端 Range 发送量小于完整对象。原生运行检查补充了上游跳过 Linux ARM64/macOS Intel SQL 测试的缺口，但不声称等价于完整回归。
 
 官方运行包地址和解压后哈希固定在 [`release-runtimes.json`](../test/data/release-runtimes.json)，不在每次发布时从“最新版本”推断。更新矩阵时须获取实际官方包并重新固定哈希。
 
