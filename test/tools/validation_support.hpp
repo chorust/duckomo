@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <cerrno>
 #include <chrono>
@@ -7,6 +8,9 @@
 #include <cstring>
 #include <filesystem>
 #include <map>
+#include <optional>
+#include <set>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <sys/resource.h>
@@ -15,7 +19,110 @@
 #include <unistd.h>
 #include <vector>
 
+#include "duckomo/build_identity.hpp"
+
 namespace duckomo_validation_support {
+
+inline std::string ExpectedDependencyCommit(const std::string &dependency) {
+	const auto &identity = duckdb::duckomo::BUILD_IDENTITY;
+	if (dependency == "duckdb" && identity.duckdb_commit[0] != '\0') return identity.duckdb_commit;
+	if (dependency == "om-file-format" && identity.om_commit[0] != '\0') return identity.om_commit;
+	if (dependency == "extension-ci-tools" && identity.extension_ci_tools_commit[0] != '\0') {
+		return identity.extension_ci_tools_commit;
+	}
+	if (dependency == "duckdb") return "08e34c447bae34eaee3723cac61f2878b6bdf787";
+	if (dependency == "om-file-format") return "d8855e418e2231ae8439f0c7e840fa3f93b371e3";
+	if (dependency == "extension-ci-tools") return "b777c70d30942cca5bef62d6d4fa23a13362f398";
+	return {};
+}
+
+inline std::string ExpectedBuildLabel() {
+	const auto &pair_id = duckdb::duckomo::BUILD_IDENTITY.pair_id;
+	return pair_id[0] == '\0' ? "release" : pair_id;
+}
+
+inline const std::vector<std::string> &GridValidationCaseIds() {
+	static const std::vector<std::string> cases{"H0", "H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9"};
+	return cases;
+}
+
+inline std::vector<std::string> ParseGridValidationCases(const std::string &value) {
+	std::vector<std::string> cases;
+	std::set<std::string> seen;
+	std::istringstream input(value);
+	std::string item;
+	while (std::getline(input, item, ',')) {
+		const auto begin = item.find_first_not_of(" \t\r\n");
+		if (begin == std::string::npos) throw std::invalid_argument("--cases contains an empty gate id");
+		const auto end = item.find_last_not_of(" \t\r\n");
+		item = item.substr(begin, end - begin + 1);
+		if (std::find(GridValidationCaseIds().begin(), GridValidationCaseIds().end(), item) ==
+		    GridValidationCaseIds().end()) {
+			throw std::invalid_argument("unknown validation gate " + item + "; expected H0 through H9");
+		}
+		if (!seen.insert(item).second) throw std::invalid_argument("duplicate validation gate " + item);
+		cases.push_back(item);
+	}
+	if (cases.empty()) throw std::invalid_argument("--cases must name at least one gate");
+	return cases;
+}
+
+inline std::string JsonEscape(const std::string &value) {
+	std::string result;
+	result.reserve(value.size() + 2);
+	for (const auto byte : value) {
+		switch (byte) {
+		case '"': result += "\\\""; break;
+		case '\\': result += "\\\\"; break;
+		case '\b': result += "\\b"; break;
+		case '\f': result += "\\f"; break;
+		case '\n': result += "\\n"; break;
+		case '\r': result += "\\r"; break;
+		case '\t': result += "\\t"; break;
+		default:
+			if (static_cast<unsigned char>(byte) < 0x20) {
+				static constexpr char HEX[] = "0123456789abcdef";
+				result += "\\u00";
+				result.push_back(HEX[(static_cast<unsigned char>(byte) >> 4) & 0x0f]);
+				result.push_back(HEX[static_cast<unsigned char>(byte) & 0x0f]);
+			} else {
+				result.push_back(byte);
+			}
+		}
+	}
+	return result;
+}
+
+inline std::string JsonString(const std::string &value) {
+	return "\"" + JsonEscape(value) + "\"";
+}
+
+struct GridGateResult final {
+	std::string gate_id;
+	std::string status = "not-run";
+	std::string reason;
+};
+
+inline std::vector<std::string> AuditGridGateResults(const std::vector<GridGateResult> &gates,
+	                                                const std::vector<std::string> &requested_gates) {
+	std::vector<std::string> errors;
+	const std::set<std::string> requested(requested_gates.begin(), requested_gates.end());
+	std::set<std::string> recorded;
+	if (requested.size() != requested_gates.size()) errors.emplace_back("requested gate list contains duplicates");
+	for (const auto &gate : gates) {
+		if (gate.gate_id.empty() || !recorded.insert(gate.gate_id).second) {
+			errors.emplace_back("gate list contains a missing or duplicate id");
+		}
+		if (gate.status != "pass" && gate.status != "fail" && gate.status != "not-run") {
+			errors.emplace_back("gate '" + gate.gate_id + "' has an invalid status");
+		}
+		if (gate.status != "pass" && gate.reason.empty()) {
+			errors.emplace_back("gate '" + gate.gate_id + "' needs a reason for its status");
+		}
+	}
+	if (requested != recorded) errors.emplace_back("recorded gates do not match the requested gate set");
+	return errors;
+}
 
 struct CommandResult {
 	int exit_code = -1;
@@ -134,9 +241,9 @@ inline bool ValidateSpatialMetricsEvidence(const std::filesystem::path &sidecar,
 	    "(.comparison | type == \"string\" and length > 0) and "
 	    "(.command | type == \"array\" and length > 0) and "
 	    "(.error_category == \"\" and .child_exit_code == 0) and "
-	    "(.dependency_commits.duckdb == \"08e34c447bae34eaee3723cac61f2878b6bdf787\" and "
-	    ".dependency_commits.\"om-file-format\" == \"d8855e418e2231ae8439f0c7e840fa3f93b371e3\" and "
-	    ".dependency_commits.\"extension-ci-tools\" == \"b777c70d30942cca5bef62d6d4fa23a13362f398\") and "
+	    "(.dependency_commits.duckdb == $expected_duckdb and "
+	    ".dependency_commits.\"om-file-format\" == $expected_om and "
+	    ".dependency_commits.\"extension-ci-tools\" == $expected_ci_tools) and "
 	    "(.bind_metadata_bytes | type == \"number\" and . >= 0) and "
 	    "(.bind_metadata_requests | type == \"number\" and . >= 0) and "
 	    "(.scan_metadata_bytes | type == \"number\" and . >= 0) and "
@@ -150,7 +257,7 @@ inline bool ValidateSpatialMetricsEvidence(const std::filesystem::path &sidecar,
 	    "(.fallback_reasons | type == \"array\") and "
 	    "(.candidate_rows | type == \"number\" and . >= 0) and "
 	    "(.optimizer_empty | type == \"boolean\") and "
-	    "(.environment | type == \"object\" and .build == \"release\" and .threads == \"1\" and "
+	    "(.environment | type == \"object\" and .build == $expected_build and .threads == \"1\" and "
 	    "(.system | type == \"string\" and length > 0) and (.machine | type == \"string\" and length > 0)) and "
 	    "(.cache_policy | type == \"object\" and (.application_cache | type == \"string\" and length > 0) and "
 	    "(.os_page_cache | type == \"string\" and length > 0)) and "
@@ -184,7 +291,10 @@ inline bool ValidateSpatialMetricsEvidence(const std::filesystem::path &sidecar,
 		          ".bind_metadata_bytes > 0 and $plan_is_empty_result == true and $query_succeeded == true";
 	}
 	const auto validation = RunProcess(
-	    {"jq", "-er", "--arg", "fixture_id", expectation.fixture_id, "--arg", "fixture_sha256",
+	    {"jq", "-er", "--arg", "expected_duckdb", ExpectedDependencyCommit("duckdb"), "--arg",
+	     "expected_om", ExpectedDependencyCommit("om-file-format"), "--arg", "expected_ci_tools",
+	     ExpectedDependencyCommit("extension-ci-tools"), "--arg", "expected_build", ExpectedBuildLabel(),
+	     "--arg", "fixture_id", expectation.fixture_id, "--arg", "fixture_sha256",
 	     expectation.fixture_sha256, "--arg", "selection_mode",
 	     expectation.selection_mode == "optimizer_empty" ? "empty" : expectation.selection_mode,
 	     "--argjson", "plan_is_empty_result", expectation.optimizer_plan_is_empty_result ? "true" : "false",

@@ -1,0 +1,26 @@
+{
+  "fixed_before_target_run": true,
+  "fixture": "test/data/dimensions_perf.om",
+  "sha256": "47a803a4769ab5a8c6622f9be5cc05b53b96152443917b7603d78dab94e1ec13",
+  "columns": [
+    "value"
+  ],
+  "selection": "valid_time = 2026-01-01 00:00:00 AND member BETWEEN 100 AND 103",
+  "workers": [
+    1,
+    2,
+    4
+  ],
+  "comparisons": [
+    "old disabled",
+    "old cold then repeat, same connection",
+    "official cold then repeat, same connection"
+  ],
+  "release_thresholds": {
+    "correct_results": "identical multiset",
+    "cold_selection_server_sent_bytes": "strictly less than full scan, HTTP and S3",
+    "cold_elapsed_regression": "<=2x old disabled median over 5 runs; report startup separately",
+    "repeat_regression": "report compared with old hot; no cache reuse promise"
+  },
+  "audit_scope": "service bytes sent; never client bytes received"
+}

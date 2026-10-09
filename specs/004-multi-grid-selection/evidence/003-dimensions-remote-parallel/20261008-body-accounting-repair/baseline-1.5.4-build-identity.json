@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "status": "build-verified",
+  "pair_id": "baseline-1.5.4",
+  "build_id": "1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b",
+  "build_root": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b",
+  "release_dir": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release",
+  "inputs": {
+    "schema_version": 1,
+    "pair_id": "baseline-1.5.4",
+    "release_state": "target",
+    "commits": {
+      "duckdb": {
+        "repository": "https://github.com/duckdb/duckdb.git",
+        "commit": "08e34c447bae34eaee3723cac61f2878b6bdf787"
+      },
+      "httpfs": {
+        "repository": "https://github.com/duckdb/duckdb-httpfs.git",
+        "commit": "c3f215ab360f04dc3d3d5305fa81849c0121f111"
+      },
+      "om_c": {
+        "repository": "https://github.com/open-meteo/om-file-format.git",
+        "commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+      },
+      "extension_ci_tools": {
+        "repository": "https://github.com/duckdb/extension-ci-tools.git",
+        "commit": "b777c70d30942cca5bef62d6d4fa23a13362f398"
+      }
+    },
+    "official_overlays": [],
+    "duckomo_patchset": {
+      "status": "implemented",
+      "scope_note": "isolated baseline patchset; build verification is recorded in the pair build data",
+      "manifest": "third_party/httpfs-patches/baseline-1.5.4/manifest.json",
+      "revision": "duckomo-httpfs-range-v3-baseline-1.5.4",
+      "hashes": [
+        "38b0354801f0934a59153f6e1d6d1a1bb3d1ec22cb66b136ae4c65f1422e683f",
+        "5aae730e8c6ba505ae688fe3dffa59e7a5872525e8c374bfc1f360673b9057e8"
+      ]
+    },
+    "shared_header_abi": {
+      "target": 3,
+      "status": "implemented",
+      "scope_note": "pair values substituted only in isolated stage",
+      "path": "third_party/httpfs-patches/httpfs_om_range_v3.hpp",
+      "sha256": "5b751573f5b24d03ff241e56916271906590f6d7c7569a172ed15160fef80181"
+    },
+    "required_features": [
+      "exact-range",
+      "attempt-body-observer",
+      "provider-pair-identity"
+    ],
+    "platform": {
+      "target": "Linux AArch64",
+      "compiler_observed": "GCC 13.3.0",
+      "cmake_observed": "3.28.3",
+      "build_type_observed": "Release",
+      "vcpkg_triplet_observed": "arm64-linux",
+      "cxx_abi": "libstdc++_cxx11abi=1_gcc=13.3.0_cxx17"
+    },
+    "build_options": {
+      "CMAKE_BUILD_TYPE": "Release",
+      "BUILD_UNITTESTS": "TRUE",
+      "BUILD_SHELL": "TRUE",
+      "NATIVE_ARCH": "FALSE",
+      "ENABLE_UNITTEST_CPP_TESTS": "FALSE",
+      "ENABLE_EXTENSION_AUTOLOADING": "FALSE",
+      "ENABLE_EXTENSION_AUTOINSTALL": "FALSE"
+    },
+    "extension_source_sha256": "b6df370d5bff206b2b9320acc98aff0d43d8ca1eac2caecc153d61d439eed52e",
+    "vcpkg": {
+      "root": "/tmp/duckomo-vcpkg",
+      "commit": "e06564091c10e0b042900800c9fd48aad7f00643",
+      "toolchain_sha256": "f911a8769d07e10b26ce651f3cef6f52f2d5e598e3504d7f19e70bcbd3b3b25b",
+      "target_triplet": "arm64-linux",
+      "manifest_source": "build/extension_configuration/vcpkg.json",
+      "manifest_sha256": "7144ef43d450fed6ebde29aead88ebfea671c45c5a67d9d29f660ccfaf2e9156",
+      "manifest_install": false,
+      "installed_source": "build/release-vcpkg/vcpkg_installed",
+      "installed_tree_sha256": "f714e04be3530efc4927e7e6f1e9d16d6eb1a5fd95b35668ce309b041f4d2292"
+    },
+    "duckomo_patch_manifest_sha256": "d628c06fd23da3ad74e2666e427b9e0d72447e0616c4fec7146d8f6bd94d143a",
+    "duckomo_patch_revision": "duckomo-httpfs-range-v3-baseline-1.5.4",
+    "duckomo_patchset_sha256": "768e7c40b47a3a9f457e1162da2d0362a46b327588200f903bd055691afe7f5f",
+    "matrix_platform": "Linux AArch64",
+    "cxx_abi": "libstdc++_cxx11abi=1_gcc=13.3.0_cxx17",
+    "required_features_csv": "exact-range,attempt-body-observer,provider-pair-identity"
+  },
+  "runtime_cli_version": "v1.5.4 (Variegata) 08e34c447b",
+  "runtime_source_id": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+  "stage_manifest": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/httpfs-stage/stage.json",
+  "commands": [
+    {
+      "argv": [
+        "cmake",
+        "-S",
+        "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/source/duckdb",
+        "-B",
+        "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release",
+        "-DDUCKDB_EXTENSION_CONFIGS=/home/blizhan/repo/github/duckomo/extension_config.cmake",
+        "-DUNITTEST_ROOT_DIRECTORY=/home/blizhan/repo/github/duckomo",
+        "-DBENCHMARK_ROOT_DIRECTORY=/home/blizhan/repo/github/duckomo",
+        "-DDUCKOMO_MATRIX_MANIFEST=/home/blizhan/repo/github/duckomo/test/data/grids/version-matrix.json",
+        "-DDUCKOMO_MATRIX_PAIR=baseline-1.5.4",
+        "-DDUCKOMO_BUILD_PAIR_ID=baseline-1.5.4",
+        "-DDUCKOMO_BUILD_ID=1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b",
+        "-DDUCKOMO_DUCKDB_COMMIT=08e34c447bae34eaee3723cac61f2878b6bdf787",
+        "-DDUCKOMO_HTTPFS_COMMIT=c3f215ab360f04dc3d3d5305fa81849c0121f111",
+        "-DDUCKOMO_OM_COMMIT=d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+        "-DDUCKOMO_EXTENSION_CI_TOOLS_COMMIT=b777c70d30942cca5bef62d6d4fa23a13362f398",
+        "-DDUCKOMO_HTTPFS_PATCH_REVISION=duckomo-httpfs-range-v3-baseline-1.5.4",
+        "-DDUCKOMO_HTTPFS_PATCHSET_SHA256=768e7c40b47a3a9f457e1162da2d0362a46b327588200f903bd055691afe7f5f",
+        "-DDUCKOMO_HTTPFS_HEADER_SHA256=5b751573f5b24d03ff241e56916271906590f6d7c7569a172ed15160fef80181",
+        "-DDUCKOMO_MATRIX_PLATFORM=Linux AArch64",
+        "-DDUCKOMO_CXX_ABI=libstdc++_cxx11abi=1_gcc=13.3.0_cxx17",
+        "-DDUCKOMO_REQUIRED_FEATURES=exact-range,attempt-body-observer,provider-pair-identity",
+        "-DDUCKOMO_HTTPFS_SOURCE_DIR=/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/httpfs-stage/source",
+        "-DCMAKE_TOOLCHAIN_FILE=/tmp/duckomo-vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "-DVCPKG_MANIFEST_DIR=/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/vcpkg-manifest",
+        "-DVCPKG_MANIFEST_MODE=ON",
+        "-DVCPKG_MANIFEST_INSTALL=OFF",
+        "-DVCPKG_INSTALLED_DIR=/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/vcpkg_installed",
+        "-DVCPKG_TARGET_TRIPLET=arm64-linux",
+        "-DBUILD_SHELL=TRUE",
+        "-DBUILD_UNITTESTS=TRUE",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DENABLE_EXTENSION_AUTOINSTALL=FALSE",
+        "-DENABLE_EXTENSION_AUTOLOADING=FALSE",
+        "-DENABLE_UNITTEST_CPP_TESTS=FALSE",
+        "-DNATIVE_ARCH=FALSE"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "cmake",
+        "--build",
+        "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release",
+        "--config",
+        "Release",
+        "--target",
+        "shell",
+        "duckomo_loadable_extension",
+        "httpfs_loadable_extension",
+        "unittest",
+        "--parallel",
+        "8"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "artifact_hashes": {
+    "duckdb": "a14227ed7881622ef88aa70d9633015541216f3506b2e0e2e2ea11075cc87565",
+    "duckomo": "602f7bc1f1df27333de437239e746ce6b4290afd35e95903e51c5c0680585582",
+    "httpfs": "cb91520f7bb021e4ec3128659a613cf96dc49dfbd5fb1710f39493fd80596356"
+  }
+}

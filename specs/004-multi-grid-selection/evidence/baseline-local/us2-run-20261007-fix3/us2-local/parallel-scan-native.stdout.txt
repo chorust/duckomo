@@ -1,0 +1,1 @@
+parallel_scan_test: worker limits, empty selection, cancellation, and recovery checks passed

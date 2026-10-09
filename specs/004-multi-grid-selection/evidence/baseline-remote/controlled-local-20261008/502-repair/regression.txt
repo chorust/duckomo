@@ -1,0 +1,7 @@
+$ python3 test/tools/remote_fixture_proxy_test.py
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 5.348s
+
+OK
+exit=0

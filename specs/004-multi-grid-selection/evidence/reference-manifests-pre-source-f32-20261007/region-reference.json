@@ -1,0 +1,23 @@
+{
+  "covered_targets": [],
+  "missing_targets": [
+    "gaussian_n160_v3",
+    "gaussian_n320_region_v3",
+    "gaussian_n320_v3",
+    "lambert_v3",
+    "rotated_v3",
+    "stereographic_v3"
+  ],
+  "reference_kind": "region",
+  "references": [],
+  "required_targets": [
+    "rotated_v3",
+    "lambert_v3",
+    "stereographic_v3",
+    "gaussian_n160_v3",
+    "gaussian_n320_v3",
+    "gaussian_n320_region_v3"
+  ],
+  "schema_version": 1,
+  "status": "partial_not_run"
+}

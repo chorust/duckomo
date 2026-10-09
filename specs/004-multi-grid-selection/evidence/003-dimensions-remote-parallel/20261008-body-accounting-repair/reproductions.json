@@ -1,0 +1,27 @@
+{
+  "original_reproduction": {
+    "scenario": "ignore-range",
+    "query_exit": 1,
+    "client_body_bytes": 1,
+    "server_body_bytes": 481,
+    "transport_count_complete": true,
+    "parity": false
+  },
+  "intermediate_repair": {
+    "scenario": "ignore-range",
+    "query_exit": 1,
+    "client_body_bytes": 481,
+    "server_body_bytes": 481,
+    "transport_count_complete": true,
+    "parity": true
+  },
+  "bounded_error_regression_before_fix": {
+    "error": "large rejected bodies must be bounded and must not claim complete transport accounting",
+    "exit_code": 1
+  },
+  "s3_xml_retry_before_preserving_bounded_body": {
+    "exit_code": 1,
+    "error": "HTTP 400 Bad Request; response_body empty"
+  },
+  "scope": "Intermediate diagnostic repros; final matched-build verification recorded separately."
+}

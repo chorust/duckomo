@@ -1,0 +1,167 @@
+{
+  "schema_version": 2,
+  "platform": {
+    "target": "Linux AArch64",
+    "official_extension_platform": "linux_arm64",
+    "cxx_abi": "libstdc++ cxx11abi=1"
+  },
+  "build_identity_policy": "Source inputs determine build_id; official runtime artifacts and results are recorded separately.",
+  "pairs": [
+    {
+      "pair_id": "v1.5.4",
+      "release_state": "target",
+      "duckdb": {
+        "repository": "https://github.com/duckdb/duckdb.git",
+        "commit": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+        "version": "v1.5.4"
+      },
+      "om_c": {
+        "repository": "https://github.com/open-meteo/om-file-format.git",
+        "commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+      },
+      "extension_ci_tools": {
+        "repository": "https://github.com/duckdb/extension-ci-tools.git",
+        "commit": "b777c70d30942cca5bef62d6d4fa23a13362f398"
+      },
+      "official_runtime": {
+        "version": "v1.5.4",
+        "platform": "linux_arm64",
+        "cli_url": "https://github.com/duckdb/duckdb/releases/download/v1.5.4/duckdb_cli-linux-arm64.zip",
+        "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+        "httpfs_url": "https://extensions.duckdb.org/v1.5.4/linux_arm64/httpfs.duckdb_extension.gz",
+        "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538"
+      },
+      "build_options": {
+        "cmake": {
+          "CMAKE_BUILD_TYPE": "Release",
+          "BUILD_UNITTESTS": "TRUE",
+          "BUILD_SHELL": "TRUE",
+          "NATIVE_ARCH": "FALSE",
+          "ENABLE_UNITTEST_CPP_TESTS": "FALSE",
+          "ENABLE_EXTENSION_AUTOLOADING": "FALSE",
+          "ENABLE_EXTENSION_AUTOINSTALL": "FALSE"
+        }
+      },
+      "build": {
+        "build_id": "53e9acc82a93cda5f89aaa93fcab62d891f1dd9bf40800161fa78df58be64c56",
+        "status": "official-runtime-verified",
+        "artifact_hashes": {
+          "duckomo": "c7d739397bc5e3a5257688be87ae6b5de0b239a01ca6aef5412fd9d529d68516",
+          "duckdb": "ba77302c7b5d6d98c540670f47ed85cd1693c4f4634bea638f90bd930d7df1cb",
+          "unittest": "b629e47ea051cffb272ce4cc6305e64f71d58edd0c6359a6db71564ef28653bf"
+        },
+        "full_grid_status": "not-run (complete 004 H0-H7 evidence pending)",
+        "independent_reproduction": "not-run",
+        "runtime_evidence": {
+          "path": "specs/004-multi-grid-selection/evidence/official-httpfs-refactor/v1.5.4/runtime.json",
+          "sha256": "41c709b2d727c72f640305c2e4bdbcdb1768887ad453650b144fd2e1adc62f03"
+        },
+        "output_root": "build/official-matrix/v1.5.4"
+      }
+    },
+    {
+      "pair_id": "v1.5.5",
+      "release_state": "target",
+      "duckdb": {
+        "repository": "https://github.com/duckdb/duckdb.git",
+        "commit": "d8cdaa33fda8df955cc76ef58a280f68f4cd43fa",
+        "version": "v1.5.5"
+      },
+      "om_c": {
+        "repository": "https://github.com/open-meteo/om-file-format.git",
+        "commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+      },
+      "extension_ci_tools": {
+        "repository": "https://github.com/duckdb/extension-ci-tools.git",
+        "commit": "b777c70d30942cca5bef62d6d4fa23a13362f398"
+      },
+      "official_runtime": {
+        "version": "v1.5.5",
+        "platform": "linux_arm64",
+        "cli_url": "https://github.com/duckdb/duckdb/releases/download/v1.5.5/duckdb_cli-linux-arm64.zip",
+        "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+        "httpfs_url": "https://extensions.duckdb.org/v1.5.5/linux_arm64/httpfs.duckdb_extension.gz",
+        "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9"
+      },
+      "build_options": {
+        "cmake": {
+          "CMAKE_BUILD_TYPE": "Release",
+          "BUILD_UNITTESTS": "TRUE",
+          "BUILD_SHELL": "TRUE",
+          "NATIVE_ARCH": "FALSE",
+          "ENABLE_UNITTEST_CPP_TESTS": "FALSE",
+          "ENABLE_EXTENSION_AUTOLOADING": "FALSE",
+          "ENABLE_EXTENSION_AUTOINSTALL": "FALSE"
+        }
+      },
+      "build": {
+        "build_id": "e0b0ace43340e3d328d5ea25c7ab9359b5dc20fdf6376bdebcff5b59445afd09",
+        "status": "official-runtime-verified",
+        "artifact_hashes": {
+          "duckomo": "707da08c1c3209316e51ced89406c35cd92496441429c10ab46fc6a5fab4a0ff",
+          "duckdb": "a9afea3a648f56d8ea1ffe6ccca9a1f17335bda30af74093cdfaa5893e522f2b",
+          "unittest": "4cf78aef9b37570004797d9f49c4321a4cb20260b9b8e79d40c8f6ddea3d6b8a"
+        },
+        "full_grid_status": "not-run (complete 004 H0-H7 evidence pending)",
+        "independent_reproduction": "not-run",
+        "runtime_evidence": {
+          "path": "specs/004-multi-grid-selection/evidence/official-httpfs-refactor/v1.5.5/runtime.json",
+          "sha256": "1da3db06b222de6637de4f4c2fd412b3a692b80df758d86c0d6b4bcb9b0f055f"
+        },
+        "output_root": "build/official-matrix/v1.5.5"
+      }
+    },
+    {
+      "pair_id": "v1.5.6",
+      "release_state": "target",
+      "duckdb": {
+        "repository": "https://github.com/duckdb/duckdb.git",
+        "commit": "069cc9f9b5be802405797faecc284961b07c70ef",
+        "version": "v1.5.6"
+      },
+      "om_c": {
+        "repository": "https://github.com/open-meteo/om-file-format.git",
+        "commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+      },
+      "extension_ci_tools": {
+        "repository": "https://github.com/duckdb/extension-ci-tools.git",
+        "commit": "b777c70d30942cca5bef62d6d4fa23a13362f398"
+      },
+      "official_runtime": {
+        "version": "v1.5.6",
+        "platform": "linux_arm64",
+        "cli_url": "https://github.com/duckdb/duckdb/releases/download/v1.5.6/duckdb_cli-linux-arm64.zip",
+        "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+        "httpfs_url": "https://extensions.duckdb.org/v1.5.6/linux_arm64/httpfs.duckdb_extension.gz",
+        "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d"
+      },
+      "build_options": {
+        "cmake": {
+          "CMAKE_BUILD_TYPE": "Release",
+          "BUILD_UNITTESTS": "TRUE",
+          "BUILD_SHELL": "TRUE",
+          "NATIVE_ARCH": "FALSE",
+          "ENABLE_UNITTEST_CPP_TESTS": "FALSE",
+          "ENABLE_EXTENSION_AUTOLOADING": "FALSE",
+          "ENABLE_EXTENSION_AUTOINSTALL": "FALSE"
+        }
+      },
+      "build": {
+        "build_id": "bb72e80e9596c63524d7e3c26c9a7e74d802c969be6d2e7cfe05397c02d8f6ea",
+        "status": "official-runtime-verified",
+        "artifact_hashes": {
+          "duckomo": "01b9ecbb47a9aeed1f6e7c2d24f5e868200a0aab3fefa818063d6f90f211f178",
+          "duckdb": "b0123b0a509881f8230116fa98c05d28b061b049c06d748cdb4391a925187ced",
+          "unittest": "6826b0d29ce77d5016e7671fbf310a6e4b412263640b8653c462c5f26803c76a"
+        },
+        "full_grid_status": "not-run (complete 004 H0-H7 evidence pending)",
+        "independent_reproduction": "not-run",
+        "runtime_evidence": {
+          "path": "specs/004-multi-grid-selection/evidence/official-httpfs-refactor/v1.5.6/runtime.json",
+          "sha256": "24db11cc1ec1448683f41941d4e576b48ff6e6a19940467cda679ac1f7d991c7"
+        },
+        "output_root": "build/official-matrix/v1.5.6"
+      }
+    }
+  ]
+}

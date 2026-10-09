@@ -1,0 +1,36 @@
+{
+  "status": "build-verified",
+  "output_root": "build/grid-matrix/prerelease-2.0-dev",
+  "build_id": "9a7aff37d7cc7c910cc0d29fc08a0fb51d6f199f3115791731d71eb00630312b",
+  "runtime_cli_version": "v2.0.0-dev86261 (Development Version) 7264a9f0e5",
+  "runtime_source_id": "7264a9f0e5b487358100f408826b8ae9e868b031",
+  "artifact_hashes": {
+    "duckdb": "d875b9d8c8791c7278fd475887736833d4d63af4c3dee937c031dedd6017de23",
+    "duckomo": "15e4175f3721d94e7be0095c1f96d7e07580f44ad806212f6e69586d828af277",
+    "httpfs": "b02a91514a307f64b301ccb4e92454636bd4dfa4ae841e2314559d2bbb69b6d1"
+  },
+  "gate_commands": [
+    "DUCKDB_COMMIT=7264a9f0e5b487358100f408826b8ae9e868b031 cmake --build build/grid-matrix/prerelease-2.0-dev/builds/9a7aff37d7cc7c910cc0d29fc08a0fb51d6f199f3115791731d71eb00630312b/release --target grid_zero_io_test source_identity_test core_functions_loadable_extension httpfs_abi_test grid_version_compat_test duckomo_grid_validation --parallel 2",
+    "B=\"$PWD/build/grid-matrix/prerelease-2.0-dev/builds/9a7aff37d7cc7c910cc0d29fc08a0fb51d6f199f3115791731d71eb00630312b/release\"; \"$B/test/native/grid_zero_io_test\"",
+    "B=\"$PWD/build/grid-matrix/prerelease-2.0-dev/builds/9a7aff37d7cc7c910cc0d29fc08a0fb51d6f199f3115791731d71eb00630312b/release\"; \"$B/test/native/source_identity_test\"",
+    "B=\"$PWD/build/grid-matrix/prerelease-2.0-dev/builds/9a7aff37d7cc7c910cc0d29fc08a0fb51d6f199f3115791731d71eb00630312b/release\"; \"$B/test/native/httpfs_abi_test\"",
+    "B=\"$PWD/build/grid-matrix/prerelease-2.0-dev/builds/9a7aff37d7cc7c910cc0d29fc08a0fb51d6f199f3115791731d71eb00630312b/release\"; \"$B/test/native/grid_version_compat_test\"",
+    "B=\"$PWD/build/grid-matrix/prerelease-2.0-dev/builds/9a7aff37d7cc7c910cc0d29fc08a0fb51d6f199f3115791731d71eb00630312b/release\"; \"$B/test/unittest\" --test-dir \"$PWD\" test/sql/grid_version_compat.test",
+    "B=\"$PWD/build/grid-matrix/prerelease-2.0-dev/builds/9a7aff37d7cc7c910cc0d29fc08a0fb51d6f199f3115791731d71eb00630312b/release\"; \"$B/test/unittest\" --test-dir \"$PWD\" test/sql/grid_zero_io.test",
+    "B=\"$PWD/build/grid-matrix/prerelease-2.0-dev/builds/9a7aff37d7cc7c910cc0d29fc08a0fb51d6f199f3115791731d71eb00630312b/release\"; \"$B/test/unittest\" --test-dir \"$PWD\" test/sql/source_identity.test",
+    "B=\"$PWD/build/grid-matrix/prerelease-2.0-dev/builds/9a7aff37d7cc7c910cc0d29fc08a0fb51d6f199f3115791731d71eb00630312b/release\"; \"$B/test/unittest\" --test-dir \"$PWD\" test/sql/grid_info.test",
+    "B=\"$PWD/build/grid-matrix/prerelease-2.0-dev/builds/9a7aff37d7cc7c910cc0d29fc08a0fb51d6f199f3115791731d71eb00630312b/release\"; \"$B/duckdb\" -unsigned -csv -noheader -c \"LOAD '$B/extension/httpfs/httpfs.duckdb_extension'; LOAD '$B/extension/duckomo/duckomo.duckdb_extension'; SELECT * FROM httpfs_om_range_capabilities();\""
+  ],
+  "gate_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ]
+}

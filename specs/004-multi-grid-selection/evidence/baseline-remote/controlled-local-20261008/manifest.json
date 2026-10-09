@@ -1,0 +1,247 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-10-08T07:06:23.546497+00:00",
+  "scope": "Controlled local environment, four-source smoke, real-file S3 502 diagnosis/repair, and attempted full remote validation",
+  "smoke_status": "pass",
+  "G3_status": "fail",
+  "G4_G5_G6_status": "not-run",
+  "full_H6_status": "not-run",
+  "real_local_http_results_equal": true,
+  "real_s3_failure": {
+    "source_metrics_status": "failure",
+    "response_body_bytes": 21975694,
+    "transport_count_complete": true,
+    "observed_proxy_status": 502,
+    "observed_range": "bytes=1461893-1462450",
+    "root_cause": "Subsequently reproduced: per-request upstream connections exhausted Docker forwarder temporary ports; repaired with bounded reuse and idle-close detection"
+  },
+  "metrics_compatibility_fix": {
+    "before": "validator rejected published schema v4",
+    "after": "extract legacy_v3 from published v4; SQL snapshot equals embedded legacy_v3 and QueryEnd v3 sidecar"
+  },
+  "reproduction_commands": [
+    "python3 build/grid-controlled-remote/smoke.py",
+    "python3 build/grid-controlled-remote/run-g3.py NEW_EMPTY_OUTPUT_NAME"
+  ],
+  "local_environment_file": "build/grid-controlled-remote/fixtures/run.env",
+  "raw_run_directory": "build/grid-controlled-remote/g3-second-attempt",
+  "artifacts": [
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/g3-real-s3.metrics.v3.sidecar.json",
+      "sha256": "c5a003d77d31e9244f94eedc61e87ea62a4428e01b310ddcb0a4615b3c8ece05",
+      "size_bytes": 10324
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/http.csv",
+      "sha256": "bfa87175b8a57265de3d7f81c3a37fb3da84946aa8f2acf0a76447d51824117a",
+      "size_bytes": 30
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/http.metrics.json",
+      "sha256": "60cb068f273f76eab3da823bbc95867f4d706560a36a1c7b8c42b9a1b4e31c7c",
+      "size_bytes": 11494
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/http.server.jsonl",
+      "sha256": "8fb555986edbd4f1de8be1e4460b59c41e11758fc8d820f9563b7ce9c301d042",
+      "size_bytes": 7194
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/https.csv",
+      "sha256": "bfa87175b8a57265de3d7f81c3a37fb3da84946aa8f2acf0a76447d51824117a",
+      "size_bytes": 30
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/https.metrics.json",
+      "sha256": "734ed3f3e654e3697b9208e3f987e0708dcccef0d8e43465d232a75351a2740e",
+      "size_bytes": 11497
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/https.server.jsonl",
+      "sha256": "7ecd259fa1f43358346fffb88c3e8c89742ccd5852c4a9948c513c0b98722af1",
+      "size_bytes": 7194
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/local.csv",
+      "sha256": "bfa87175b8a57265de3d7f81c3a37fb3da84946aa8f2acf0a76447d51824117a",
+      "size_bytes": 30
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/local.metrics.json",
+      "sha256": "b97456e0974e394cc5c8fd9b7c733f9eade477786f70e660985ebaed5c436d29",
+      "size_bytes": 11643
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/s3.csv",
+      "sha256": "bfa87175b8a57265de3d7f81c3a37fb3da84946aa8f2acf0a76447d51824117a",
+      "size_bytes": 30
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/s3.metrics.json",
+      "sha256": "f3c1b0113fe7bc9691842eb84af6475d65bd95022921c60e6e7c3cbddd072de4",
+      "size_bytes": 11497
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/s3.server.jsonl",
+      "sha256": "5638d386cbfb54b697289dc3cd9ba7241d8040525b103943394feb3635ba2dc4",
+      "size_bytes": 2783
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/service-identity.json",
+      "sha256": "0ddc0f23087b57da31344322e0c1fe444c9fbd3925774f20e7badbee285a9abb",
+      "size_bytes": 413
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/summary.json",
+      "sha256": "8805aa158254c4d42570c833c980202de4c907e85d28db0f178f2e29653ae170",
+      "size_bytes": 1183
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/502-repair/README.md",
+      "sha256": "d52d10f3abeab59689be710444cb71954367472ffa10f173d3fa466455e7a292",
+      "size_bytes": 5383
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/502-repair/connection-per-request.json",
+      "sha256": "af395924e3f40aee7b77a44375e72c33016b41645d59522177393f3383f5a49b",
+      "size_bytes": 217
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/502-repair/connection-reuse.json",
+      "sha256": "4c51d3c08dc3c9d8ad3bccbb0bb9161def629b2a1fc5c833dfca845792d529c2",
+      "size_bytes": 157
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/502-repair/final-harness-summary.json",
+      "sha256": "a0dcc84ce03dd3b88596659c67645c72bc0e0ad10703356c032651ef2d832b2f",
+      "size_bytes": 1575
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/502-repair/identities-initial.json",
+      "sha256": "24d914c24dbc2d6ef9c111a8aa8531a22a1e88d6144c2d2a3c691d350f42ada9",
+      "size_bytes": 1016
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/502-repair/identities.json",
+      "sha256": "011097f8a54892655d06f25c835e6772380c1ac131840ada36b8e0674e852bce",
+      "size_bytes": 1245
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/502-repair/initial-full-failure.json",
+      "sha256": "aa3214b5822142d338a044865a4d5d675357e14ceb2c418365028714b62ae654",
+      "size_bytes": 862
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/502-repair/initial-full-failure.metrics.v3.json",
+      "sha256": "2d28e14fb1bb288ddb0e0beb2c7622e720b49e65d55e7aa241795b403cc6c02d",
+      "size_bytes": 10522
+    },
+    {
+      "path": "build/community-preparation/audit/baseline-remote/controlled-local-20261008/502-repair/initial-full-failure.server.jsonl.gz",
+      "sha256": "5e594b79caeca5ea39e6118e274eb3fbbe54318bc2c49956e9a452e7ff226594",
+      "size_bytes": 2839447,
+      "storage": "ignored local audit"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/502-repair/real-s3-after.json",
+      "sha256": "d068348941c90b8e1a0463dea2da314beacbd4ec77b255d2d99bbe9c35d9bbb9",
+      "size_bytes": 458
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/502-repair/real-s3-after.metrics.v4.json",
+      "sha256": "93eb4497d6fcb12f31d30442deb075f217cebdccaa7555d4e49c424f2fe526e4",
+      "size_bytes": 30831
+    },
+    {
+      "path": "build/community-preparation/audit/baseline-remote/controlled-local-20261008/502-repair/real-s3-after.server.jsonl.gz",
+      "sha256": "c6be99531fcb250a3bfa3b2410f606f9b11bb57f5cc098ff50bb02766c88d567",
+      "size_bytes": 2463188,
+      "storage": "ignored local audit"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/502-repair/real-s3-before.json",
+      "sha256": "af19375b33c19cc53df38d383de1e6d22eb731331546da5a087790c894176101",
+      "size_bytes": 2853
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/502-repair/real-s3-before.metrics.v3.sidecar.json",
+      "sha256": "1b24c9babe8ab75b35b2bc9e98a07058652754a938ca600d60acbfca4246a0cf",
+      "size_bytes": 10300
+    },
+    {
+      "path": "build/community-preparation/audit/baseline-remote/controlled-local-20261008/502-repair/real-s3-before.server.jsonl.gz",
+      "sha256": "3c3f26f07cef019c8f36a0ff8126d3edc0577209ad855935941c70e167241660",
+      "size_bytes": 255443,
+      "storage": "ignored local audit"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/502-repair/real-s3-final.json",
+      "sha256": "7f5b32d17516b127a9574de89f3034233ded06620c3e562186e95c0aba5465b3",
+      "size_bytes": 561
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/502-repair/real-s3-final.metrics.v3.json",
+      "sha256": "e63c553113d8dfd8f09f5711b748d4a97e0cd5dd8e3ed65b123868d47dfb5a77",
+      "size_bytes": 10524
+    },
+    {
+      "path": "build/community-preparation/audit/baseline-remote/controlled-local-20261008/502-repair/real-s3-final.server.jsonl.gz",
+      "sha256": "83355b11ec9c061389df14327e13d14e0210d00869991cecf47003ed1d95d5a3",
+      "size_bytes": 2834393,
+      "storage": "ignored local audit"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/502-repair/regression.txt",
+      "sha256": "52eb03429dd35099daac647db60ead646b5a73d59f2f1a3a105e8d32868649b5",
+      "size_bytes": 162
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-remote/controlled-local-20261008/502-repair/remaining-ignore-range.metrics.v3.json",
+      "sha256": "868781f2b2c8a591f6b23e9a974c0e5f47d3eeab0f544df3bbe34aec71e35a08",
+      "size_bytes": 3366
+    },
+    {
+      "path": "build/community-preparation/audit/baseline-remote/controlled-local-20261008/502-repair/remaining-ignore-range.server.jsonl.gz",
+      "sha256": "e42ec769455c72cf741ac404acb0e70944c73eac26e4baea14c0fd101338544a",
+      "size_bytes": 288,
+      "storage": "ignored local audit"
+    }
+  ],
+  "updated_at_utc": "2026-10-08T07:41:21.937832+00:00",
+  "s3_502_repair": {
+    "schema_version": 1,
+    "native_exit": 1,
+    "G3_status": "fail",
+    "G4_status": "not-run",
+    "G5_status": "not-run",
+    "G6_status": "not-run",
+    "full_H6_status": "not-run",
+    "s3_502_repair_status": "pass",
+    "real_three_source_parity": "pass",
+    "real_s3_audit": {
+      "status": "pass",
+      "source": "final proxy, signed S3, cold complete real OM scan",
+      "requests": 226418,
+      "error_events": 0,
+      "client_body_bytes": 196376420,
+      "server_body_bytes": 196376420,
+      "scan_complete": true,
+      "transport_count_complete": true,
+      "result_bytes": 88261923,
+      "result_sha256": "9dd4deaeb523f00ea9416d85e537b2b5fa3f040b4936e88533442a385f07ab40",
+      "local_result_sha256": "9dd4deaeb523f00ea9416d85e537b2b5fa3f040b4936e88533442a385f07ab40",
+      "http_result_sha256": "9dd4deaeb523f00ea9416d85e537b2b5fa3f040b4936e88533442a385f07ab40"
+    },
+    "remaining_failure": {
+      "scenario": "g3-fault-ignore-range",
+      "reason": "server audit body exceeds the per-query v3 profile",
+      "client_response_body_bytes": 1,
+      "server_sent_body_bytes": 481,
+      "query_status": "failure",
+      "transport_count_complete_claim": true,
+      "diagnosis": "Companion HTTPFS rejects invalid 200 response in the header callback before invoking its body counter; failed-protocol transfer accounting remains unvalidated. Server-sent and client-observed costs must not be equated without a verified transport observation seam."
+    },
+    "command": "python3 build/grid-controlled-remote/run-g3.py g3-fixed-final",
+    "raw_run_directory": "build/grid-controlled-remote/g3-fixed-final"
+  }
+}

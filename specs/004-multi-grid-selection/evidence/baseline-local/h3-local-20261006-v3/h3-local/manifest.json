@@ -1,0 +1,12 @@
+{
+  "schema_version":1,
+  "gate":"H3",
+  "local_synthetic_status":"pass",
+  "full_gate_status":"not-run",
+  "reason":"synthetic local zero-I/O checks and per-variable cost audit passed; full H3 remains not-run until US5 source/info coverage is added",
+  "sample_manifest_sha256":"3174df44f3d9b806ad4fa50fbb5e7519b54054e915b703db6388c8c8a6f3b21c",
+  "coverage":["rotated_latlon","lambert_conformal_conic","stereographic","reduced_gaussian","interleaved_non_spatial_axes","large_value_chunk"],
+  "source_info_cases_included":false,
+  "metrics_file":"h3-local/zero-io-metrics.json",
+  "commands":{"native":{"argv":["/home/blizhan/repo/github/duckomo/build/release-vcpkg/test/native/grid_zero_io_test"],"exit_code":0,"elapsed_ms":39.599,"peak_rss_bytes":34594816},"sql":{"argv":["/home/blizhan/repo/github/duckomo/build/release-vcpkg/test/unittest","/home/blizhan/repo/github/duckomo/test/sql/grid_zero_io.test"],"exit_code":0,"elapsed_ms":48.607,"peak_rss_bytes":44617728},"metrics_validation":{"argv":["jq","-er","def zero: .index_bytes == 0 and .index_requests == 0 and .data_bytes == 0 and .data_requests == 0 and .decoded_chunks == 0 and .decode_complete == true; all(.scenarios[].metrics; .schema_version == 4 and .outcome.status == \"success\" and .outcome.terminal_published == true and .coordinate_preparation.complete == true and (.coordinate_preparation.evaluations | type == \"number\")) and ([.scenarios[] | select(.name == \"interleaved_value_filter\")] | length == 1) and all(.scenarios[] | select(.name != \"interleaved_value_filter\") | .metrics.reads.variables[]; zero) and (first(.scenarios[] | select(.name == \"interleaved_value_filter\")) | (.metrics.reads.variables[\"/interleaved/temperature\"] as $t | $t.data_bytes > 0 and $t.decoded_chunks > 0 and (.metrics.reads.variables[\"/interleaved/humidity\"] | zero))) and ([.scenarios[].name] | unique | length == 18)","/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h3-local-20261006-v3/h3-local/zero-io-metrics.json"],"exit_code":0,"elapsed_ms":5.363,"peak_rss_bytes":3362816}}
+}

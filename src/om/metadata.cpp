@@ -1,4 +1,5 @@
 #include "duckomo/metadata.hpp"
+#include "duckomo/domain_bbox.hpp"
 
 #include <algorithm>
 #include <cstddef>
@@ -312,6 +313,7 @@ OmMetadataTree ReadMetadataTree(const OmV3Reader &reader) {
 	std::unordered_map<std::string, OmTimeCoordinate> time_by_path;
 	Traverse(reader, reader.RootOffset(), reader.RootSize(), "", true, false, active_offsets, coordinates_by_path,
 	         time_by_path, result);
+	result.crs_profile = ClassifySourceCrsProfile(result.crs_wkt);
 	for (auto &array : result.arrays) {
 		auto time_owner_path = array.canonical_path;
 		while (true) {

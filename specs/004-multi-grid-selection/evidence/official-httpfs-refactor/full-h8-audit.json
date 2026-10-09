@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "contract": "official-httpfs-20261008",
+  "gate": "H8",
+  "status": "not-run",
+  "identity_status": "pass",
+  "reason": "official runtime compatibility is recorded separately; complete same-input H0-H7 evidence remains required for H8",
+  "matrix_sha256": "c8671ea88eae0cc734e373a7fa3f849ca63a61748cfddb1433b1365a100d931e",
+  "pairs": [
+    {
+      "pair_id": "v1.5.4",
+      "identity_status": "pass",
+      "compatibility_status": "pass",
+      "runtime_validation": {
+        "path": "build/official-httpfs-refactor/runtime-final/v1.5.4/summary.json",
+        "sha256": "b0d0b639dedd9d3d372fc59eec7d57457843df89f4fd5215dac7cebc00663329"
+      },
+      "full_grid_gates": "not-run"
+    },
+    {
+      "pair_id": "v1.5.5",
+      "identity_status": "pass",
+      "compatibility_status": "pass",
+      "runtime_validation": {
+        "path": "build/official-httpfs-refactor/runtime-final/v1.5.5/summary.json",
+        "sha256": "c0cd573ad59250aec30a7c4c525fa9e302c36d5e99a13305d1f33303a8e02c35"
+      },
+      "full_grid_gates": "not-run"
+    },
+    {
+      "pair_id": "v1.5.6",
+      "identity_status": "pass",
+      "compatibility_status": "pass",
+      "runtime_validation": {
+        "path": "build/official-httpfs-refactor/runtime-final/v1.5.6/summary.json",
+        "sha256": "80a1eef5611c4d5ac29e941717009e93fbc57cf6d4bc4c2439084d80cb4666a7"
+      },
+      "full_grid_gates": "not-run"
+    }
+  ]
+}

@@ -12,6 +12,7 @@
 #include "duckdb/common/vector.hpp"
 #include "duckdb/main/client_context.hpp"
 #include "duckomo/batch.hpp"
+#include "duckomo/compat/duckdb_api.hpp"
 #include "duckomo/local_file.hpp"
 #include "duckomo/reader.hpp"
 
@@ -116,7 +117,7 @@ struct RawGlobalState final : GlobalTableFunctionState {
 };
 
 unique_ptr<FunctionData> BindRaw(ClientContext &context, TableFunctionBindInput &input,
-	                             vector<LogicalType> &return_types, vector<std::string> &names) {
+	                             vector<LogicalType> &return_types, TableFunctionColumnNames &names) {
 	if (input.inputs.size() != 1) {
 		throw BinderException("read_om_raw expects one constant VARCHAR path");
 	}
@@ -150,8 +151,8 @@ void ScanRaw(ClientContext &context, TableFunctionInput &input, DataChunk &outpu
 	const auto count = std::min<std::uint64_t>(state.row_count - state.next_linear_index,
 	                                           static_cast<std::uint64_t>(STANDARD_VECTOR_SIZE));
 	auto segments = BuildBatchSegments(state.shape, state.next_linear_index, count);
-	auto *values = FlatVector::GetData<float>(output.data[0]);
-	auto &validity = FlatVector::Validity(output.data[0]);
+	auto *values = MutableVectorData<float>(output.data[0]);
+	auto &validity = MutableVectorValidity(output.data[0]);
 	validity.SetAllValid(static_cast<idx_t>(count));
 
 	for (const auto &segment : segments) {

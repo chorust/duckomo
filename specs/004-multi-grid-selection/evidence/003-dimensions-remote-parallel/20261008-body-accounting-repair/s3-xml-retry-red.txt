@@ -1,0 +1,2 @@
+httpfs_range_test: {"exception_type":"HTTP","exception_message":"HTTP GET error reading 's3://bucket/object.om' (HTTP 400 Bad Request)\n\nBad Request - this can be caused by the S3 region being set incorrectly.\n* Provided region is: \"us-east-1\"","header_Connection":"close","header_Content-Length":"66","response_body":"","reason":"Bad Request","status_code":"400"}
+

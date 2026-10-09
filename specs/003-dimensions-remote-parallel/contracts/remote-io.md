@@ -1,3 +1,5 @@
+> 2026-10-08：当前未发布版本使用 [官方 HTTPFS 迁移契约](../../004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md)。下文专用 ABI、LRU 或 observer 的条款/命令为历史约定，已被本次契约替换。历史证据状态保持，当前复现请见 [官方流程](../../../docs/official-httpfs.md)。
+
 # Remote I/O and HTTPFS Integration Contract
 
 状态：实现已接入源码和配套构建，适用于 FR-010–012、FR-016–018。上游固定为 [httpfs c3f215ab](https://github.com/duckdb/duckdb-httpfs/tree/c3f215ab360f04dc3d3d5305fa81849c0121f111)，配套 DuckDB v1.5.4。真实 HTTP/S3 服务上的 G3 及 G5/G6 body/缓存审计尚未执行；不能把上游未修改构建或任意 INSTALL httpfs 版本视为具备本契约。
@@ -53,3 +55,7 @@ Provider 向 httpfs 提供本次扫描的 object session、终止状态及每句
 HTTP 验证服务器记录 request_id、URI 的非敏感身份、range、响应状态、token 和 body 长度；可注入 200、错误范围、短读、超时、缺 token、版本替换及权限拒绝。S3 使用真实 S3-compatible 服务验证签名与权限，前置不改写请求的审计代理记录 body；单独的协议 mock 覆盖难以由服务注入的错误响应。
 
 固定服务版本或容器 digest 写入实验 manifest；测试中的 S3 凭据只访问临时测试桶，不放入仓库。完整验收同时覆盖 HTTP、TLS HTTP、本地 S3-compatible 服务和至少一个真实 OM 内容；不以真实云服务可用性替代可复现故障测试。
+
+## 2026-10-08 官方 HTTPFS 契约修订
+
+当前未发布版本以 [官方 HTTPFS 迁移契约](../../004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md) 为准。历史专用 ABI、LRU 与 G5 证据保留历史状态；新 gate 单独记录。

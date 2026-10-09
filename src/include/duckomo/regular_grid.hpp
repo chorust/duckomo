@@ -27,6 +27,7 @@ public:
 	double LongitudeOrigin() const noexcept;
 	double LatitudeStep() const noexcept;
 	double LongitudeStep() const noexcept;
+	bool AllowsOutOfRangeLatitude() const noexcept;
 	GridCoordinate Coordinate(std::uint64_t y, std::uint64_t x) const;
 
 private:

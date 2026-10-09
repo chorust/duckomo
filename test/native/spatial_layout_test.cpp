@@ -127,6 +127,48 @@ void TestRejectAmbiguousLayout() {
 	auto wrong_shape = MakeSchema({6}, {"point"});
 	RequireInvalid([&] { BindSpatialLayout(wrong_shape, {{"point"}}, grid, {"point"}); },
 	               "flattened product mismatch is rejected");
+
+	auto valid = BindSpatialLayout(MakeSchema({4, 2, 3}, {"member", "lat", "lon"}),
+	                               {{"member", "lat", "lon"}}, grid, {"lat", "lon"});
+	valid.strides[0] = 1;
+	RequireInvalid([&] { (void)valid.AxisIndices(0); }, "mutated non-row-major strides are rejected");
+	valid = BindSpatialLayout(MakeSchema({4, 2, 3}, {"member", "lat", "lon"}),
+	                          {{"member", "lat", "lon"}}, grid, {"lat", "lon"});
+	valid.axes[2] = valid.axes[1];
+	RequireInvalid([&] { (void)valid.AxisIndices(0); }, "mutated duplicate source axes are rejected");
+}
+
+void TestSharedProjectedAndGaussianPositionMapping() {
+	GridDefinition projected("rotated_latlon_v1", GridEarth{}, GridNumericPolicy::Float64V1,
+	                         ProjectedGrid(RotatedLatLonParameters{4, 3, -2, -1, 1, 1, 40, -20, 180,
+	                                                               GridStorageOrder::Separate}));
+	auto interleaved = MakeSchema({2, 3, 2, 4}, {"time", "y", "level", "x"});
+	auto projected_layout = BindGridSpatialLayout(interleaved, {{"time", "y", "level", "x"}}, projected, {"y", "x"});
+	Require(projected_layout.non_spatial_axes == std::vector<std::uint64_t>({0, 2}),
+	        "shared projected layout retains interleaved non-spatial axes");
+	const auto projected_position = projected_layout.NativePosition(projected, 9);
+	const auto projected_xy = std::get<NativeXYPosition>(projected_position);
+	Require(projected_xy.x == 1 && projected_xy.y == 1, "native projected coordinates follow ordered y/x identities");
+	Require(projected_layout.LocalPointIndex(projected, 9) == 5 && projected_layout.ParentPointIndex(projected, 9) == 5,
+	        "projected source and parent point identities use y*nx+x");
+	const auto mapped = projected_layout.Coordinate(projected, 9);
+	const auto expected = projected.Coordinate(NativeXYPosition{1, 1});
+	Require(mapped.latitude == expected.latitude && mapped.longitude == expected.longitude,
+	        "shared layout delegates to the grid's single coordinate implementation");
+
+	GaussianGrid gaussian(2, "explicit_v1", {{60, 4, 0, 90}, {20, 6, 0, 60}, {-20, 6, 0, 60}, {-60, 4, 0, 90}},
+	                       {{1, 1, 3}, {2, 4, 2}});
+	GridDefinition gaussian_definition("explicit_gaussian_v1", GridEarth{GridEarthKind::Wgs84Source},
+	                                   GridNumericPolicy::Float64V1, gaussian);
+	auto ragged = MakeSchema({2, 5, 3}, {"time", "point", "member"});
+	auto gaussian_layout = BindGridSpatialLayout(ragged, {{"time", "point", "member"}}, gaussian_definition, {"point"});
+	const auto gaussian_position = gaussian_layout.NativePosition(gaussian_definition, 22);
+	Require(std::get<NativePointPosition>(gaussian_position).point == 2,
+	        "Gaussian interleaved layout returns the local ragged point index");
+	Require(gaussian_layout.ParentPointIndex(gaussian_definition, 22) == 7,
+	        "Gaussian layout preserves the declared local-to-parent row mapping");
+	Require(gaussian_layout.Coordinate(gaussian_definition, 22).latitude == 20,
+	        "Gaussian coordinate lookup uses the local point's declared parent segment");
 }
 
 } // namespace
@@ -137,6 +179,7 @@ int main() {
 		TestFlattenedLayouts();
 		TestExtraAxisPositionsAndBatchBoundary();
 		TestRejectAmbiguousLayout();
+		TestSharedProjectedAndGaussianPositionMapping();
 		std::cout << "spatial layout checks passed\n";
 		return 0;
 	} catch (const std::exception &error) {

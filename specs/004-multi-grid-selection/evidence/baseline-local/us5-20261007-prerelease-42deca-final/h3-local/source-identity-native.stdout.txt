@@ -1,0 +1,5 @@
+source identity checks failed: SELECT om_source.object_id, om_source.object_version, om_source.version_strength, om_source.content_verified, om_source.grid_id, om_source.layout_id, om_source.logical_index, om_source.point_index, om_source.parent_point_index, om_source.axis_indices[1], om_source.axis_indices[2] FROM read_om('test/data/raw.om', dimensions := map(['value'], [['row','column']]), grid := {'version':1,'type':'rotated_latlon','numeric_policy':'float64_v1', 'earth':{'model':'sphere','radius_m':6371229.0}, 'layout':{'nx':3,'ny':2,'order':'separate'}, 'parameters':{'x0':0.0,'y0':0.0,'dx':1.0,'dy':1.0,'north_pole_latitude':90.0,'north_pole_longitude':0.0,'rotation':0.0}}, spatial_axes := ['row','column'], include_source := true) ORDER BY om_source.logical_index: Catalog Error: Table Function with name read_om does not exist!
+Did you mean "read_blob"?
+
+LINE 1: ..., om_source.axis_indices[1], om_source.axis_indices[2] FROM read_om('test/data/raw.om', dimensions := map(['value']...
+                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

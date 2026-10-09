@@ -11,6 +11,7 @@ extern "C" {
 #include <cctype>
 #include <chrono>
 #include <cstdint>
+#include <cstdlib>
 #include <dirent.h>
 #include <filesystem>
 #include <fstream>
@@ -32,7 +33,9 @@ constexpr const char *RAW_LARGE_FIXTURE = "test/data/raw_large.om";
 // archives into its link.
 namespace duckdb {
 void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
-	ExtensionHelper::LoadExternalExtension(*database.instance, database.GetFileSystem(), EXTENSION_PATH);
+	const auto *extension_override = std::getenv("DUCKOMO_EXTENSION_PATH");
+	const auto *extension_path = extension_override && extension_override[0] != '\0' ? extension_override : EXTENSION_PATH;
+	ExtensionHelper::LoadExternalExtension(*database.instance, database.GetFileSystem(), extension_path);
 }
 } // namespace duckdb
 

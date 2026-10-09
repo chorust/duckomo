@@ -1,0 +1,4 @@
+local spatial/source validation failed: DuckDB public source query failed with exit 1: Invalid Error: could not establish a strict range session for remote OM object 's3://openmeteo/data/cmc_gem_rdps_10km/cape/chunk_4337.om'
+
+LINE 2: SELECT * FROM read_om(
+                      ^

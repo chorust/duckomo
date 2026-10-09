@@ -1,0 +1,280 @@
+{
+  "schema_version": 1,
+  "status": "pending_external_oracles",
+  "status_note": "Independent double-precision coordinate references and official OM C API full-value references are imported for the three acquired projected-grid objects. Producer point-order for Gaussian subsets and required N160, full N320, and N320-region objects remain unavailable; empty region references are intentional and are not passing evidence.",
+  "coordinate": {
+    "references": [
+      {
+        "target": "rotated_v3",
+        "sample_id": "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+        "method": "independent_math",
+        "command": [
+          "python3",
+          "scripts/generate-grid-coordinate-reference.py",
+          "--sample-id",
+          "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+          "--output",
+          "build/grid-references/rotated-cmc-gem-rdps-10km-cape-chunk-4337.coordinates.csv"
+        ],
+        "inputs": [
+          {
+            "path": "test/data/grids/sample-manifest.json",
+            "sha256": "e9d21cda0120fbe8ca77fc0d448ce46bfc8bfe0e8798062207905fe1ac199475"
+          },
+          {
+            "path": "test/data/grids/definitions.json",
+            "sha256": "225caadf963c6f584850180f0e3c948cdbcebbf25a2a0d39aaef184b005f7da0"
+          },
+          {
+            "path": "test/data/grids/source-manifest.json",
+            "sha256": "0a5ef2c284fd400ad6328b7db1fb18e531f851132064438d1e32461a9ebb1a5d"
+          },
+          {
+            "path": "scripts/generate-grid-coordinate-reference.py",
+            "sha256": "286e84e1dc0366d66758fc5e34d742465ff8a7fdca4e538a139188efa2619532"
+          },
+          {
+            "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om",
+            "sha256": "3db637197d27c65051e417b850f8c3656d1c5371ab78dcbd9fc05d0e440956f7"
+          }
+        ],
+        "artifact": {
+          "path": "build/grid-references/rotated-cmc-gem-rdps-10km-cape-chunk-4337.coordinates.csv",
+          "sha256": "8d05866767e58173b20f6dd588b3f8766e81a8e85b9aa24b09fe17e2a496c57f"
+        },
+        "row_count": 1191300,
+        "numeric_policy": "openmeteo_f32_v1",
+        "tolerance_degrees": 0.0001
+      },
+      {
+        "target": "lambert_v3",
+        "sample_id": "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+        "method": "independent_math",
+        "command": [
+          "python3",
+          "scripts/generate-grid-coordinate-reference.py",
+          "--sample-id",
+          "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+          "--output",
+          "build/grid-references/lambert-chmi-aladin-ce-cape-chunk-4135.coordinates.csv"
+        ],
+        "inputs": [
+          {
+            "path": "test/data/grids/sample-manifest.json",
+            "sha256": "e9d21cda0120fbe8ca77fc0d448ce46bfc8bfe0e8798062207905fe1ac199475"
+          },
+          {
+            "path": "test/data/grids/definitions.json",
+            "sha256": "225caadf963c6f584850180f0e3c948cdbcebbf25a2a0d39aaef184b005f7da0"
+          },
+          {
+            "path": "test/data/grids/source-manifest.json",
+            "sha256": "0a5ef2c284fd400ad6328b7db1fb18e531f851132064438d1e32461a9ebb1a5d"
+          },
+          {
+            "path": "scripts/generate-grid-coordinate-reference.py",
+            "sha256": "286e84e1dc0366d66758fc5e34d742465ff8a7fdca4e538a139188efa2619532"
+          },
+          {
+            "path": "build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om",
+            "sha256": "cef407b0aae43498485b8f6e25907c1ecf8a82c6cb8aa2185fe860f0c491132c"
+          }
+        ],
+        "artifact": {
+          "path": "build/grid-references/lambert-chmi-aladin-ce-cape-chunk-4135.coordinates.csv",
+          "sha256": "dbc66a87803bb25e1a299ef63c8a0784f5006cd1999f953537b4fb81a0cf0762"
+        },
+        "row_count": 881361,
+        "numeric_policy": "openmeteo_f32_v1",
+        "tolerance_degrees": 0.0001
+      },
+      {
+        "target": "stereographic_v3",
+        "sample_id": "stereographic_cmc_gem_rdps_cape_chunk_4337",
+        "method": "independent_math",
+        "command": [
+          "python3",
+          "scripts/generate-grid-coordinate-reference.py",
+          "--sample-id",
+          "stereographic_cmc_gem_rdps_cape_chunk_4337",
+          "--output",
+          "build/grid-references/stereographic-cmc-gem-rdps-cape-chunk-4337.coordinates.csv"
+        ],
+        "inputs": [
+          {
+            "path": "test/data/grids/sample-manifest.json",
+            "sha256": "e9d21cda0120fbe8ca77fc0d448ce46bfc8bfe0e8798062207905fe1ac199475"
+          },
+          {
+            "path": "test/data/grids/definitions.json",
+            "sha256": "225caadf963c6f584850180f0e3c948cdbcebbf25a2a0d39aaef184b005f7da0"
+          },
+          {
+            "path": "test/data/grids/source-manifest.json",
+            "sha256": "0a5ef2c284fd400ad6328b7db1fb18e531f851132064438d1e32461a9ebb1a5d"
+          },
+          {
+            "path": "scripts/generate-grid-coordinate-reference.py",
+            "sha256": "286e84e1dc0366d66758fc5e34d742465ff8a7fdca4e538a139188efa2619532"
+          },
+          {
+            "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.om",
+            "sha256": "1d701b188c8c264532f0d8fa917400a66cf28aa1c8e53a7b40781a775333c7c1"
+          }
+        ],
+        "artifact": {
+          "path": "build/grid-references/stereographic-cmc-gem-rdps-cape-chunk-4337.coordinates.csv",
+          "sha256": "90f3cad43a1ef85e5e1c58c40b3a51c1b24fad801c4c0f818211377a591e7f62"
+        },
+        "row_count": 770440,
+        "numeric_policy": "openmeteo_f32_v1",
+        "tolerance_degrees": 0.0001
+      }
+    ]
+  },
+  "region": {
+    "references": []
+  },
+  "value": {
+    "references": [
+      {
+        "target": "rotated_v3",
+        "sample_id": "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+        "method": "official_om_c_api",
+        "command": [
+          "build/release-vcpkg/test/tools/duckomo_fixture_tool",
+          "--oracle",
+          "build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om",
+          "--csv",
+          "build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.official-reference.csv"
+        ],
+        "inputs": [
+          {
+            "path": "test/data/grids/sample-manifest.json",
+            "sha256": "e9d21cda0120fbe8ca77fc0d448ce46bfc8bfe0e8798062207905fe1ac199475"
+          },
+          {
+            "path": "test/data/grids/source-manifest.json",
+            "sha256": "0a5ef2c284fd400ad6328b7db1fb18e531f851132064438d1e32461a9ebb1a5d"
+          },
+          {
+            "path": "test/data/grids/definitions.json",
+            "sha256": "225caadf963c6f584850180f0e3c948cdbcebbf25a2a0d39aaef184b005f7da0"
+          },
+          {
+            "path": "test/data/grids/version-matrix.json",
+            "sha256": "315de4aa10b2a66d1904f96b8f7b31942af4acf4f30ab5da83fe2de46763dcd1"
+          },
+          {
+            "path": "build/release-vcpkg/test/tools/duckomo_fixture_tool",
+            "sha256": "5cc41b909d4915d21745c909e53b09855ac5172784f239aa28d6b30f7d612759"
+          },
+          {
+            "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om",
+            "sha256": "3db637197d27c65051e417b850f8c3656d1c5371ab78dcbd9fc05d0e440956f7"
+          }
+        ],
+        "artifact": {
+          "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.official-reference.csv",
+          "sha256": "cdcd6650b7d9acb6695886f7359ae2c8453e6b9ad972402a0699f35297be7f85"
+        },
+        "row_count": 135808200,
+        "variable_path": "/",
+        "official_library_commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+        "null_count": 40819713
+      },
+      {
+        "target": "lambert_v3",
+        "sample_id": "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+        "method": "official_om_c_api",
+        "command": [
+          "build/release-vcpkg/test/tools/duckomo_fixture_tool",
+          "--oracle",
+          "build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om",
+          "--csv",
+          "build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.official-reference.csv"
+        ],
+        "inputs": [
+          {
+            "path": "test/data/grids/sample-manifest.json",
+            "sha256": "e9d21cda0120fbe8ca77fc0d448ce46bfc8bfe0e8798062207905fe1ac199475"
+          },
+          {
+            "path": "test/data/grids/source-manifest.json",
+            "sha256": "0a5ef2c284fd400ad6328b7db1fb18e531f851132064438d1e32461a9ebb1a5d"
+          },
+          {
+            "path": "test/data/grids/definitions.json",
+            "sha256": "225caadf963c6f584850180f0e3c948cdbcebbf25a2a0d39aaef184b005f7da0"
+          },
+          {
+            "path": "test/data/grids/version-matrix.json",
+            "sha256": "315de4aa10b2a66d1904f96b8f7b31942af4acf4f30ab5da83fe2de46763dcd1"
+          },
+          {
+            "path": "build/release-vcpkg/test/tools/duckomo_fixture_tool",
+            "sha256": "5cc41b909d4915d21745c909e53b09855ac5172784f239aa28d6b30f7d612759"
+          },
+          {
+            "path": "build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om",
+            "sha256": "cef407b0aae43498485b8f6e25907c1ecf8a82c6cb8aa2185fe860f0c491132c"
+          }
+        ],
+        "artifact": {
+          "path": "build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.official-reference.csv",
+          "sha256": "7fc25500b7c6387f2408caf04322a2955f15f89cd401700016f26c4d8355e4dd"
+        },
+        "row_count": 105763320,
+        "variable_path": "/",
+        "official_library_commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+        "null_count": 0
+      },
+      {
+        "target": "stereographic_v3",
+        "sample_id": "stereographic_cmc_gem_rdps_cape_chunk_4337",
+        "method": "official_om_c_api",
+        "command": [
+          "build/release-vcpkg/test/tools/duckomo_fixture_tool",
+          "--oracle",
+          "build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.om",
+          "--csv",
+          "build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.official-reference.csv"
+        ],
+        "inputs": [
+          {
+            "path": "test/data/grids/sample-manifest.json",
+            "sha256": "e9d21cda0120fbe8ca77fc0d448ce46bfc8bfe0e8798062207905fe1ac199475"
+          },
+          {
+            "path": "test/data/grids/source-manifest.json",
+            "sha256": "0a5ef2c284fd400ad6328b7db1fb18e531f851132064438d1e32461a9ebb1a5d"
+          },
+          {
+            "path": "test/data/grids/definitions.json",
+            "sha256": "225caadf963c6f584850180f0e3c948cdbcebbf25a2a0d39aaef184b005f7da0"
+          },
+          {
+            "path": "test/data/grids/version-matrix.json",
+            "sha256": "315de4aa10b2a66d1904f96b8f7b31942af4acf4f30ab5da83fe2de46763dcd1"
+          },
+          {
+            "path": "build/release-vcpkg/test/tools/duckomo_fixture_tool",
+            "sha256": "5cc41b909d4915d21745c909e53b09855ac5172784f239aa28d6b30f7d612759"
+          },
+          {
+            "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.om",
+            "sha256": "1d701b188c8c264532f0d8fa917400a66cf28aa1c8e53a7b40781a775333c7c1"
+          }
+        ],
+        "artifact": {
+          "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.official-reference.csv",
+          "sha256": "ea70e1d945d885e2cc20159afb76db9e5a0c79effe45be2d50ddf018903ba467"
+        },
+        "row_count": 87830160,
+        "variable_path": "/",
+        "official_library_commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+        "null_count": 62643412
+      }
+    ]
+  }
+}

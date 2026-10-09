@@ -1,0 +1,4 @@
+Binder Error: read_om grid STRUCT must contain exactly nx, ny, lat0, lon0, dlat, dlon, and order
+
+LINE 1: CREATE TEMP TABLE work_small AS SELECT value FROM read_om('/home/blizhan/repo/github/duckomo/test/data/grids...
+                                                          ^

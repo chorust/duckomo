@@ -2,24 +2,33 @@ PROJ_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 EXT_NAME=duckomo
 EXT_CONFIG=$(PROJ_DIR)extension_config.cmake
-EXT_FLAGS=-DBUILD_UNITTESTS=TRUE -DBUILD_SHELL=TRUE -DNATIVE_ARCH=FALSE
-OVERRIDE_GIT_DESCRIBE=v1.5.4
+DUCKOMO_BUILD_DEVELOPER_TOOLS ?= $(if $(strip $(DUCKDB_PLATFORM)),OFF,ON)
+EXT_FLAGS=-DBUILD_UNITTESTS=TRUE -DBUILD_SHELL=$(if $(filter 0,$(BUILD_SHELL)),FALSE,TRUE) -DNATIVE_ARCH=FALSE -DDUCKOMO_BUILD_DEVELOPER_TOOLS=$(DUCKOMO_BUILD_DEVELOPER_TOOLS)
 
 # Build against the pinned DuckDB and extension-ci-tools submodule checkouts,
 # independent of the directory from which make is invoked.
 DUCKDB_SRCDIR := $(PROJ_DIR)duckdb/
+# Community CI checks out its target version before building. Let DuckDB
+# derive its version from that checkout. CI also supplies the selected tag,
+# which handles source checkouts without tags; callers can explicitly override.
+OVERRIDE_GIT_DESCRIBE ?= $(if $(filter v%,$(DUCKDB_GIT_VERSION)),$(DUCKDB_GIT_VERSION))
 include $(PROJ_DIR)extension-ci-tools/makefiles/duckdb_extension.Makefile
 
-.PHONY: stage-httpfs
-stage-httpfs:
-	"$(PROJ_DIR)scripts/stage-httpfs.sh" --output "$(PROJ_DIR)build/httpfs-stage-v2"
+# Version-matrix builds use isolated source/release paths and do not
+# switch the shared DuckDB submodule used by the default v1.5.4 Make targets.
+DUCKOMO_MATRIX ?= $(PROJ_DIR)test/data/grids/version-matrix.json
+DUCKOMO_MATRIX_PAIR ?= v1.5.6
+DUCKOMO_MATRIX_OUTPUT_ROOT ?= $(PROJ_DIR)build/official-matrix
 
-release: stage-httpfs
-extension_configuration: stage-httpfs
-debug relassert reldebug clangd: stage-httpfs
-extension_configuration_default extension_configuration_wasm: stage-httpfs
-wasm_mvp wasm_eh wasm_threads: stage-httpfs
-build/extension_configuration/vcpkg.json: stage-httpfs
+.PHONY: matrix-release matrix-test
+matrix-release:
+	"$(PROJ_DIR)scripts/build-version.sh" --matrix "$(DUCKOMO_MATRIX)" \
+		--pair "$(DUCKOMO_MATRIX_PAIR)" --output-root "$(DUCKOMO_MATRIX_OUTPUT_ROOT)"
+
+matrix-test:
+	"$(PROJ_DIR)scripts/validate.sh" --matrix "$(DUCKOMO_MATRIX)" \
+		--pair "$(DUCKOMO_MATRIX_PAIR)" --output-root "$(DUCKOMO_MATRIX_OUTPUT_ROOT)"
+
 
 # The shared makefile assigns quoted defaults intended for its own layout.
 # These paths match this repository's DuckDB test runner and SQLLogicTests.
@@ -28,7 +37,11 @@ TESTS_BASE_DIRECTORY := test/sql/
 
 .PHONY: test
 test: release
-	"$(PROJ_DIR)scripts/validate.sh" "$(PROJ_DIR)build/release"
+	"$(PROJ_DIR)scripts/validate.sh" "$(PROJ_DIR)build/release" --local-only
+
+.PHONY: grid-validation
+grid-validation: release
+	"$(PROJ_DIR)build/release/test/tools/duckomo_grid_validation" --self-check
 
 # Keep sanitizer builds and timings separate from the regular release tests.
 .PHONY: sanitizer-test

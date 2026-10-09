@@ -1,0 +1,617 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-08",
+  "scope": "Failed-response body repair; final paired regression/E2E pass; isolated G6 pass; complete G5 fail at signing-region rejection; no full spec promotion",
+  "files": [
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/README.md",
+      "bytes": 5106,
+      "sha256": "a1849732819124e3c46fe8219b4c15a48af650179e728274666811bb14183f9c"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-build-identity.json",
+      "bytes": 7708,
+      "sha256": "f4393dcccfdeefd218346634797c9902592af8544516a6be917e1945051368f8"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/403/metrics.v3.sidecar.json",
+      "bytes": 3338,
+      "sha256": "e41c7295217db7d6c88437d4983175d15529db01461004cfebc9e004e3119f23"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/403/server.jsonl",
+      "bytes": 302,
+      "sha256": "d04777d1af47f7ed94490aece70c919e869855a5dd0f9f930cd2de1699e97e8e"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/403/summary.json",
+      "bytes": 203,
+      "sha256": "a355cd9dadfcafe768bfac6392649160ddaa5650a27d5f085cb10972f3efa286"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/404/metrics.v3.sidecar.json",
+      "bytes": 3358,
+      "sha256": "2aa6b74144e05cbdcf332a60a1d7614c09cd9e8206e097385a37c615973e85a3"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/404/server.jsonl",
+      "bytes": 302,
+      "sha256": "8ab775ca44add7a1752eb036eaf7594b8c04cfdee28e46bfc456d4877b6fe66e"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/404/summary.json",
+      "bytes": 203,
+      "sha256": "d34ad512684919327dcca818e47f93ee6759b993732b1861ccb166560390b295"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/change-version/metrics.v3.sidecar.json",
+      "bytes": 3362,
+      "sha256": "152dbbd6607e610110eae3a74170cec42ac831028ce37c783b058361c958fc9e"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/change-version/server.jsonl",
+      "bytes": 2072,
+      "sha256": "361d17f2dad0bdf4a99934d3924d7dd7a262b7e8595d36c8d23cd513841ce13a"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/change-version/summary.json",
+      "bytes": 216,
+      "sha256": "3a41108d812a12f5a17f80ea85c8eb289bc207c217683127af514170dd899544"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/ignore-range/metrics.v3.sidecar.json",
+      "bytes": 3363,
+      "sha256": "64a1334652a9c3523a7018bb9dd03317019f31293ebacf8d176522ae6b2779a3"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/ignore-range/server.jsonl",
+      "bytes": 2276,
+      "sha256": "dde1d5abaf0a4417a20ddbd4b824fb2923cc76a489f170042dfd22bea09845db"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/ignore-range/summary.json",
+      "bytes": 216,
+      "sha256": "56917659c802a0683f516bd3cb3ea3205bfc1bccc72a92bb35af1a5db9690a87"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/no-head/metrics.v3.sidecar.json",
+      "bytes": 3358,
+      "sha256": "e3628f579dfc1973f3bf2eb09cd86d824d20f5ab56d2ca94c4df4df81ef1827c"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/no-head/server.jsonl",
+      "bytes": 302,
+      "sha256": "d35e874d76be0e246a5098a55c3d7621f2809285716a80b54ef67340d67ba731"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/no-head/summary.json",
+      "bytes": 207,
+      "sha256": "f0da4c442294a14dd9147851c6550dfd41a5d1747cac079395b54db8fcd92811"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/non-identity/metrics.v3.sidecar.json",
+      "bytes": 3362,
+      "sha256": "d6815d4a60c51d6d72b905723dd5883c3a5f551f3b7ca8f7cfad77d00f339e29"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/non-identity/server.jsonl",
+      "bytes": 2268,
+      "sha256": "641ac4085df6e237bbd2628180762c10046d61c6e314aeecc650ec03a333ecb4"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/non-identity/summary.json",
+      "bytes": 214,
+      "sha256": "2a70cabedfdcd2795b8d26cd01bb85036392086416fa253387026306de2aa1e0"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/redirect/metrics.v3.sidecar.json",
+      "bytes": 3369,
+      "sha256": "e43f57d8a9e6325a5f71c4490f85542dc3e88fb31147950003322630ad066daf"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/redirect/server.jsonl",
+      "bytes": 1062,
+      "sha256": "8f86d08f1a025814158dc83fd11251e9e5123aa7ae34894daa91fd494b390b11"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/redirect/summary.json",
+      "bytes": 208,
+      "sha256": "86782f884ff7945ebc3de42f5f9858c41c485db6cb52b6d5ebc17f13298de6f8"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/replace/metrics.v3.sidecar.json",
+      "bytes": 3362,
+      "sha256": "5e1830bb833fc0f23f49f47ee4ae67219bec38e8a9aef89d73d6281bb5ceabec"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/replace/server.jsonl",
+      "bytes": 2108,
+      "sha256": "3946bca4aaa78a586d9c43f9f126b6e1910beda085b54a19f46f2daeb96a7782"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/replace/summary.json",
+      "bytes": 209,
+      "sha256": "fff96d6140613350e472c348cf2a0bc9cfd37e0e99f756338e70c193382663ba"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/signed-s3/metrics.v3.json",
+      "bytes": 4700,
+      "sha256": "cd657b6a4ec4d058db6b34af47005606a167078ff7f3c02cb60d4e64356b2b9b"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/signed-s3/server.jsonl",
+      "bytes": 2802,
+      "sha256": "603d8fa5eba537f2f4ced99bf0cfc24f76bc0976378a1f486a987b8a4c8378ca"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/signed-s3/summary.json",
+      "bytes": 304,
+      "sha256": "cc6c6c7d49a41c7bc4050f5233ada2f29f3232ecb577d74ad507d832084b6894"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/wrong-range/metrics.v3.sidecar.json",
+      "bytes": 3361,
+      "sha256": "085a277c4433dd47306036937f86cd18672127c7e33e3066cd59377b884b6829"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/wrong-range/server.jsonl",
+      "bytes": 2268,
+      "sha256": "848dcdc8938d802750009855b478fefaac4447fbc2dcc294cb72f417ae815f35"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-cli/wrong-range/summary.json",
+      "bytes": 211,
+      "sha256": "3347c2b05806fab79b5fa8083d6494c5814d1e1b79623d3a800fb67d00014866"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-final-verification.json",
+      "bytes": 4921,
+      "sha256": "dfb939079bc22f2b4193dbc3da5381910bda83fec544a536ba7e8ea902ec7eed"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-httpfs_abi_test.txt",
+      "bytes": 81,
+      "sha256": "5dd027d15a145a5eac37a1e61200671c72bb87e3a41fea7a418952f4f2b171be"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-httpfs_range_test.txt",
+      "bytes": 152,
+      "sha256": "a6cb8b67375cfb2f5d7bf70b86dbeca86bc8e5c8951a6e0e576731e6ea6bc45e"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-paired-load.txt",
+      "bytes": 516,
+      "sha256": "a9c865fb7c6adcbbae12eb0c84adc99219235ca210bd4e083502aef387c4c87b"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-previous-matrix-build.json",
+      "bytes": 2859,
+      "sha256": "46002f6f2047d758583d58133fb9b545066070b4e4eac4ee82c5769436fee876"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/baseline-1.5.4-resolved.json",
+      "bytes": 4414,
+      "sha256": "79f9b9bd0c6451685638522af67f67dc2c06c5e4cbb9ce8186198d0e39736fce"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/diagnostic-before-eviction-fix/g4-performance.json",
+      "bytes": 9155,
+      "sha256": "a6da1ba1ad25b1a8c7f3dc1b0a16d90c6ff0010c0a20eb65ecee0f5e13e88fcb"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/diagnostic-before-eviction-fix/g5-http-small-capacity.metrics.v3.json",
+      "bytes": 3830,
+      "sha256": "1d8952c61bc5fa9f50b7b3476cc430de0da95f557f7aca25508fab7e5b7933ff"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/diagnostic-before-eviction-fix/runner.stdout.txt",
+      "bytes": 92,
+      "sha256": "e012ff2db03bb93b7e21709d12816d93734e41586893ff840a214ca74d78d005"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/diagnostic-before-eviction-fix/summary.json",
+      "bytes": 586,
+      "sha256": "90f33d8a37e52c3ea865c1ecd04d65124d1a46c0f507721864cae17f1da4c017"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/diagnostic-g5/g5-http-recovery-after-revocation.metrics.v3.json",
+      "bytes": 3730,
+      "sha256": "2152bf2a30ebc3f3ce023a47e5a16886a6a4786cff08254156fdb721baa83b54"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/diagnostic-g5/g5-http-replacement-cold-reference.metrics.v3.json",
+      "bytes": 3777,
+      "sha256": "3fcac6be34b06282d80bdb50576628f6d8f1e748c815925dade2be5d5d2f04f9"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/diagnostic-g5/g5-http-revoked-cache-entry.metrics.v3.json",
+      "bytes": 3383,
+      "sha256": "f43d7936e0dbfd51ba746725090921b8ab4bde97c89f2204d4986acb26d6fa8b"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/diagnostic-g5/g5-http-same-uri-replacement.metrics.v3.json",
+      "bytes": 3742,
+      "sha256": "e57b6f81da194571e2d3a80c868fc8e7e804286a6ead7f7e5c12170b9911686b"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/diagnostic-g5/g5-http-small-capacity.metrics.v3.json",
+      "bytes": 3876,
+      "sha256": "132517da8b4184b999bde6f99ea8982aa70de49a558f8895183f915c31613687"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/diagnostic-g5/g5-s3-invalid-region.metrics.v3.json",
+      "bytes": 3839,
+      "sha256": "9ced6949225d30aa17081638ce2adc53d7ccd0136f9d3d8f4ce2006c1ee4f501"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/diagnostic-g5/g5-s3-invalid-secret.metrics.v3.json",
+      "bytes": 3401,
+      "sha256": "7b080bf61e1decdabfbf692972442ccb4c7a5408aeb05213d6d78c38d29ad0af"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/diagnostic-g5/g5-s3-small-capacity.metrics.v3.json",
+      "bytes": 3874,
+      "sha256": "08ae34cac3a5911c7ebda3f60ead1e35e0f1a9578b7ca4e2a8e5fc0431d2ba51"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/diagnostic-g5/runner.stdout.txt",
+      "bytes": 77,
+      "sha256": "ea44012e581f596fdee186668c78d8283ee9de6bfd00c45ea2b08d32c510c00c"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/diagnostic-g6/g6-cancelled-v3.json",
+      "bytes": 3380,
+      "sha256": "3fc89a7c8b1833253291c9bd8e7fbc7f2bb4c213add1a5421e78026d3190439d"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/diagnostic-g6/g6-observation.json",
+      "bytes": 461,
+      "sha256": "ed45d61b4d50b29cb7bee9851a67224e7b3a727dc3c7b5b1cdfbc8f9816a27f8"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/diagnostic-g6/runner.stdout.txt",
+      "bytes": 58,
+      "sha256": "6a5846183616534752c328d2a8b314f8c7080d391c073c86cdfaaec31ab4f923"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/diagnostic-g6/scope.json",
+      "bytes": 125,
+      "sha256": "6cc6da11eda7f1a3c98dced77daf4c5ccc3f9c52e3ca7d0e4f1c168b402dfd91"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/e2e-final.json",
+      "bytes": 5353,
+      "sha256": "5d2a68d30a6bbe38fdbbe0eb00053569a1760beb456a5edcde676a2a67ab181e"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/g5-final-matched-baseline/g5-http-recovery-after-revocation.metrics.v3.json",
+      "bytes": 3730,
+      "sha256": "70bcb55839bf3d371572d9efbe24020056fe5dfd8285a67bff7ce9d53bc78080"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/g5-final-matched-baseline/g5-http-replacement-cold-reference.metrics.v3.json",
+      "bytes": 3777,
+      "sha256": "13ce9981e5912acfb09040be8aac5998bc85ac5c9868601d49d90be132615bfa"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/g5-final-matched-baseline/g5-http-revoked-cache-entry.metrics.v3.json",
+      "bytes": 3383,
+      "sha256": "b9edaf6247e2866a92264b0253fd20808eff13ac251b4fb6590fefa2961290e5"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/g5-final-matched-baseline/g5-http-same-uri-replacement.metrics.v3.json",
+      "bytes": 3742,
+      "sha256": "7aa8aa3c6279d77fa9c1403caf0788e70b12422ab39304e6114ea896d3c39e49"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/g5-final-matched-baseline/g5-http-small-capacity.metrics.v3.json",
+      "bytes": 3876,
+      "sha256": "54d9dd707a8ed600666802fabd0e296025db09ca2ec7234bc42f3a5a2236f58a"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/g5-final-matched-baseline/g5-s3-invalid-region.metrics.v3.json",
+      "bytes": 3839,
+      "sha256": "b85ec341798450c0b3b4a86bc1c3f6028dd3033915d9ead863775ada22c3cff1"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/g5-final-matched-baseline/g5-s3-invalid-secret.metrics.v3.json",
+      "bytes": 3381,
+      "sha256": "5af98a8a699b98a01f56b1aec8df56d88de60527f6483cca4a917c7d82cb177d"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/g5-final-matched-baseline/g5-s3-small-capacity.metrics.v3.json",
+      "bytes": 3874,
+      "sha256": "38217343160d2817d1afb920cff7ce603fb92bebd1e2dc18746e91ae2be66851"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/g5-final-matched-baseline/runner.stdout.txt",
+      "bytes": 77,
+      "sha256": "ea44012e581f596fdee186668c78d8283ee9de6bfd00c45ea2b08d32c510c00c"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/g5-final-matched-baseline/scope.json",
+      "bytes": 145,
+      "sha256": "88917405365252d9fa13526bac7984aae5d7eb72a23c1672dd5f29350802d2b0"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/g6-final-matched-baseline/g6-cancelled-v3.json",
+      "bytes": 3380,
+      "sha256": "7f5af8436293e88dd1d4e6632ffb4ecba7005899ddbc85b191c4e54f318dfb80"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/g6-final-matched-baseline/g6-observation.json",
+      "bytes": 461,
+      "sha256": "ed45d61b4d50b29cb7bee9851a67224e7b3a727dc3c7b5b1cdfbc8f9816a27f8"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/g6-final-matched-baseline/runner.stdout.txt",
+      "bytes": 58,
+      "sha256": "6a5846183616534752c328d2a8b314f8c7080d391c073c86cdfaaec31ab4f923"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/g6-final-matched-baseline/scope.json",
+      "bytes": 155,
+      "sha256": "b0252cdffe1e51e64ea2845db22bcdc843b701cd58de51022ed60d8deaa4af81"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/intermediate-builds/baseline-1.5.4-build-identity.json",
+      "bytes": 7708,
+      "sha256": "b4a9707e9b72952ad27e1eda1df103a9df8bf94f89000638c689cd4ed730ccf9"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/intermediate-builds/baseline-1.5.4-final-verification.json",
+      "bytes": 4921,
+      "sha256": "8a458f5e11f826cc5601d0acd565e27576b73223022aba1878e603e452bb7a5d"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/intermediate-builds/baseline-1.5.4-httpfs_abi_test.txt",
+      "bytes": 81,
+      "sha256": "5dd027d15a145a5eac37a1e61200671c72bb87e3a41fea7a418952f4f2b171be"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/intermediate-builds/baseline-1.5.4-httpfs_range_test.txt",
+      "bytes": 152,
+      "sha256": "a6cb8b67375cfb2f5d7bf70b86dbeca86bc8e5c8951a6e0e576731e6ea6bc45e"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/intermediate-builds/baseline-1.5.4-paired-load.txt",
+      "bytes": 516,
+      "sha256": "01aaa191775be20dd3cc4c15b24b34fad53772cfb0f2ccaff4723ae983097801"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/intermediate-builds/prerelease-2.0-dev-build-identity.json",
+      "bytes": 8134,
+      "sha256": "92d1bcb5533f0a445033ea7d0222eeaca7939d351444f5eac654db0618aacc45"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/intermediate-builds/prerelease-2.0-dev-final-verification.json",
+      "bytes": 4981,
+      "sha256": "3c8606828e7c53e5813d983bdc1c227225e28ae9dc32a1cc8f72801f34c24370"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/intermediate-builds/prerelease-2.0-dev-httpfs_abi_test.txt",
+      "bytes": 81,
+      "sha256": "5dd027d15a145a5eac37a1e61200671c72bb87e3a41fea7a418952f4f2b171be"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/intermediate-builds/prerelease-2.0-dev-httpfs_range_test.txt",
+      "bytes": 183,
+      "sha256": "babbeda0c1d3cec3727937d1cbd5a938a7c7ff09a10a7996918a5569aedc8387"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/intermediate-builds/prerelease-2.0-dev-paired-load.txt",
+      "bytes": 524,
+      "sha256": "ac79088fbc3e359875a9c2954299464077134b0024fa8535301e1f1f956c9088"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/native-before.txt",
+      "bytes": 102,
+      "sha256": "3a63bc349f631691377978e621545c8eaf8f38f82d9c30f374767c7cf0174e44"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-build-identity.json",
+      "bytes": 8134,
+      "sha256": "9da667ce8bf917959b4b9ab154ddcd32c6b3029d3aa15a60dcc50cf59a5fbe05"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/403/metrics.v3.sidecar.json",
+      "bytes": 3350,
+      "sha256": "441e6105415a09af8511b9ec1b5156ff35bfdcea546bd2ef09d3e13870fb0672"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/403/server.jsonl",
+      "bytes": 302,
+      "sha256": "5f730279517f30ce2df555e558bca567f59a872f52f2832e01bdcf670876fa2b"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/403/summary.json",
+      "bytes": 207,
+      "sha256": "54c8a31324198920bf9a99fb8da5e5d9997c2cf7afdfe0d86f1cf3dcca054a15"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/404/metrics.v3.sidecar.json",
+      "bytes": 3370,
+      "sha256": "5d48e6c0cb94dd0430c4aa4e9fab64254ab072f159723702b3a41f39918780c8"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/404/server.jsonl",
+      "bytes": 302,
+      "sha256": "5122ab069249cb27968ffde6ca5f28d6c41df33184691eef35b09622ed469e9c"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/404/summary.json",
+      "bytes": 207,
+      "sha256": "eba9c27dfd2a3c03074172112f5cf7b9dad852327ff2c20467ab903a228bc782"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/change-version/metrics.v3.sidecar.json",
+      "bytes": 3374,
+      "sha256": "47e8297baa8e5c034a403ee3ef4abaeb317975ed187d25e2e6821c4b8fd0b50d"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/change-version/server.jsonl",
+      "bytes": 2072,
+      "sha256": "6dbe393eda900451296f7d9cc36ed9cb07926efbab77c307a3a5362f440e0bc6"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/change-version/summary.json",
+      "bytes": 220,
+      "sha256": "8d042217927c8df0fc7b22c0503b7240b39ae2b500c7916efe3d262de84d6117"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/ignore-range/metrics.v3.sidecar.json",
+      "bytes": 3359,
+      "sha256": "3df5c4587da4c5fb1620a029fefe2b289db44f1a8ef65c44674b23b4f0a48e72"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/ignore-range/server.jsonl",
+      "bytes": 2276,
+      "sha256": "cb109bfe5e0aa3bcad2638a3ceaff6d3119629e4b925ac501dd31b4536fd655a"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/ignore-range/summary.json",
+      "bytes": 220,
+      "sha256": "623e66ec5e1bece07565196d52ca1e5611178b365506a676f77b9716e328b043"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/no-head/metrics.v3.sidecar.json",
+      "bytes": 3372,
+      "sha256": "d60a89b818483d990a3112299e86d447b5c284669e3205dc89f98999e8938017"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/no-head/server.jsonl",
+      "bytes": 302,
+      "sha256": "704ea2f2079a40134793e0de73fd91430f034e85aea9e0dfbc43ddf449d76331"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/no-head/summary.json",
+      "bytes": 211,
+      "sha256": "571776a96390632f0585047507eff5488e43055596a3494beebd8ad391104141"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/non-identity/metrics.v3.sidecar.json",
+      "bytes": 3374,
+      "sha256": "3e850019ecc8fe7027948e1794688b80bda87901e36f86d71cbebab8755297cc"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/non-identity/server.jsonl",
+      "bytes": 2268,
+      "sha256": "ba478bd4c3203738b4b57a2b173acb4c68f41001d222b24527ff0d4ee61ae15c"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/non-identity/summary.json",
+      "bytes": 218,
+      "sha256": "818efbd17dccaf921310292d53f2df059d7fbd3fbda4c775956e0a0f1aba02dc"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/redirect/metrics.v3.sidecar.json",
+      "bytes": 3381,
+      "sha256": "a0668679c389aedd0978d1818ae177d3bed4d78df154a1f9b7f02a7c21829233"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/redirect/server.jsonl",
+      "bytes": 1062,
+      "sha256": "691147e05036b0cd296e87d6b6330d4a1f80ffffb4e71fab98a3b560de0b2b96"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/redirect/summary.json",
+      "bytes": 212,
+      "sha256": "5db92e41cf9d328382257ab481dfa7cc582c51f8ef47162305f8a7adaa60468e"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/replace/metrics.v3.sidecar.json",
+      "bytes": 3374,
+      "sha256": "77dda59cd3bc829b8612c00908959ae684992231e3a60a8528a4c55bfe303be1"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/replace/server.jsonl",
+      "bytes": 2108,
+      "sha256": "26ab13fd343b47aeeaa317b1e95cbf338b25245d1138dda155425b5bb0f5d4f6"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/replace/summary.json",
+      "bytes": 213,
+      "sha256": "b1a2dacf4cdf90b5077b6242b8101505b70239b8c312eaf4981cd960a8dd0ec0"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/signed-s3/metrics.v3.json",
+      "bytes": 4712,
+      "sha256": "e1a453d42154630ba07ebee5dac312d33d94bec22da371d7aaa644ecbf1815c9"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/signed-s3/server.jsonl",
+      "bytes": 2802,
+      "sha256": "96278862dc6a7d3f1ab02ee15537e06dd9d6dadc578e47014d7ed10bd37260d5"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/signed-s3/summary.json",
+      "bytes": 308,
+      "sha256": "dd85ea01f3e31d6b7f5a5d03e61cf3f5484cdfcbf8de1901cd3c5f184ec2d19a"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/wrong-range/metrics.v3.sidecar.json",
+      "bytes": 3373,
+      "sha256": "d307e7e391ef00ad7457fce0d95517bdcf6bf5f1929727aa43328b6bd4073c8a"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/wrong-range/server.jsonl",
+      "bytes": 2268,
+      "sha256": "83088b375e4df0d4916e2a730965f804a510f8f0fe55e59e97fa74643b75564d"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-cli/wrong-range/summary.json",
+      "bytes": 215,
+      "sha256": "d209fd9ecbaf0f14be6936d8d2d2f5bd505bfd95c522a75f58aff3d2a4740622"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-final-verification.json",
+      "bytes": 4981,
+      "sha256": "5befea43c90add31d5eec89b83772eb028b5d5a04c30c334c60a1c8791b2ffa6"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-httpfs_abi_test.txt",
+      "bytes": 81,
+      "sha256": "5dd027d15a145a5eac37a1e61200671c72bb87e3a41fea7a418952f4f2b171be"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-httpfs_range_test.txt",
+      "bytes": 183,
+      "sha256": "babbeda0c1d3cec3727937d1cbd5a938a7c7ff09a10a7996918a5569aedc8387"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-paired-load.txt",
+      "bytes": 524,
+      "sha256": "a30337da5a63b5e30cf6f738a6132f850aabaf8e81518d6926a26d3ec3f6d242"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-previous-matrix-build.json",
+      "bytes": 2922,
+      "sha256": "5e94ce3a3253cf9eb3fcc0afbdbcbd72764cdf011a406d69af504ffb41f1a486"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/prerelease-2.0-dev-resolved.json",
+      "bytes": 4735,
+      "sha256": "736025daad8e3f3d2985cc78d09d4653376a0212e0ded6d6157651765286cb9c"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/proxy-final.txt",
+      "bytes": 105,
+      "sha256": "596a6b151281b9156ff46967e37801b7fbfefaabb60c3a4b2b2c00fd7f6d478a"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/reproductions.json",
+      "bytes": 811,
+      "sha256": "2cbdf006cbf40028ca1029e2b9f1220656f359bc7dc9b04a39f5cdea176bc45c"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/s3-xml-retry-red.txt",
+      "bytes": 370,
+      "sha256": "4bcb67d7bc1daa08ca2ab1205f856d609f15099fd6a4c0958927beb0a9fea638"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/003-dimensions-remote-parallel/20261008-body-accounting-repair/version-matrix-final.txt",
+      "bytes": 491,
+      "sha256": "d3251e0a2bbcbed624736f49da4bd42b7d90aa7bc70ddc9570c492b847dabf9a"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+local spatial/source validation failed: DuckDB valid_time probe failed with exit 1: Invalid Error: could not establish a strict range session for remote OM object 'https://openmeteo.s3.us-west-2.amazonaws.com/data/cmc_gem_rdps_10km/cape/chunk_4337.om'
+
+LINE 1: ... TEMP VIEW time_probe_gem_rdps_10km AS SELECT valid_time FROM read_om('https://openmeteo.s3.us-west-2.amazonaws.com/data...
+                                                                         ^

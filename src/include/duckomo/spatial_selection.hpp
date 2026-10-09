@@ -7,13 +7,72 @@
 #include <vector>
 
 #include "duckomo/batch.hpp"
+#include "duckomo/selection_budget.hpp"
 #include "duckomo/spatial_filter.hpp"
 #include "duckomo/spatial_layout.hpp"
 
 namespace duckdb {
 namespace duckomo {
 
+class AxisSelectionCursor;
+
 enum class SpatialSelectionMode : std::uint8_t { Full, Restricted, Empty, Fallback };
+
+// A bounded descriptor for one native scanline/window. Fixed axis indices are
+// source indices for every axis except `spatial_axis`, whose half-open range is
+// [begin, end). Construction validates shape, extent and payload before
+// allocating the copied indices.
+class NativeWindow final {
+public:
+	static NativeWindow Create(std::uint64_t spatial_axis, std::uint64_t begin, std::uint64_t count,
+	                           const std::vector<std::uint64_t> &shape,
+	                           const std::vector<std::uint64_t> &fixed_axis_indices);
+
+	std::uint64_t SpatialAxis() const noexcept { return spatial_axis_; }
+	std::uint64_t Begin() const noexcept { return begin_; }
+	std::uint64_t End() const noexcept { return end_; }
+	std::uint64_t Count() const noexcept { return end_ - begin_; }
+	const std::vector<std::uint64_t> &FixedAxisIndices() const noexcept { return fixed_axis_indices_; }
+	std::uint64_t LogicalPosition(const SpatialLayout &layout, std::uint64_t offset) const;
+	std::uint64_t EstimatedBytes() const noexcept;
+
+private:
+	std::uint64_t spatial_axis_ = 0;
+	std::uint64_t begin_ = 0;
+	std::uint64_t end_ = 0;
+	std::vector<std::uint64_t> fixed_axis_indices_;
+};
+
+// Lazily enumerates non-overlapping windows over the fastest spatial axis,
+// or the final storage axis when contiguous value reads are requested.
+// Advancing the cursor creates one O(rank) descriptor and never scans points.
+class NativeWindowCursor final {
+public:
+	explicit NativeWindowCursor(const SpatialLayout &layout, bool contiguous_reads = false);
+
+	bool Next(NativeWindow &window, const std::function<void()> &interrupt_check = {});
+	bool Next(NativeWindow &window, const AxisSelectionCursor &axis_selection,
+	          const std::function<void()> &interrupt_check = {});
+	std::uint64_t SpatialAxis() const noexcept { return spatial_axis_; }
+	std::uint64_t WindowUpperBound() const noexcept { return window_upper_bound_; }
+	std::uint64_t WindowUpperBound(const AxisSelectionCursor &axis_selection) const;
+	std::uint64_t EstimatedBytes() const noexcept;
+
+private:
+	bool NextInternal(NativeWindow &window, const AxisSelectionCursor *axis_selection,
+	                  const std::function<void()> &interrupt_check);
+	bool InitializeSelectedIndices(const AxisSelectionCursor *axis_selection);
+	bool AdvanceFixedIndices(const AxisSelectionCursor *axis_selection,
+	                         const std::function<void()> &interrupt_check);
+
+	SpatialLayout layout_;
+	std::vector<std::uint64_t> fixed_axis_indices_;
+	std::uint64_t spatial_axis_ = 0;
+	std::uint64_t next_begin_ = 0;
+	std::uint64_t window_upper_bound_ = 0;
+	bool initialized_ = false;
+	bool exhausted_ = false;
+};
 
 struct SpatialSelection final {
 	SpatialSelectionMode mode = SpatialSelectionMode::Full;
@@ -22,6 +81,7 @@ struct SpatialSelection final {
 	std::uint64_t candidate_rows = 0;
 	bool residual_filter_retained = true;
 	std::vector<std::string> fallback_reasons;
+	bool budget_fallback = false;
 };
 
 struct SpatialBatch final {
@@ -41,6 +101,7 @@ public:
 	bool Next(std::uint64_t vector_size, SpatialBatch &batch,
 	          const std::function<void()> &interrupt_check = {});
 	bool Exhausted() const noexcept;
+	const SpatialSelection &Selection() const noexcept;
 	std::uint64_t EstimatedBytes() const noexcept;
 
 private:

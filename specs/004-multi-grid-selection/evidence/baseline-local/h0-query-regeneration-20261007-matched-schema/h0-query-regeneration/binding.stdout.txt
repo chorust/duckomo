@@ -1,0 +1,371 @@
+{
+  "duckdb": {
+    "path": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5c339fc885aece52b0dddafc8cdbc90672ee6283303f1258cef684683f9bc94c/release/duckdb",
+    "sha256": "775ce9531f5652384a07817f61c14287501bf21ce9e12672ff2ac02e60883df3"
+  },
+  "exit_code": 0,
+  "extension": {
+    "path": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5c339fc885aece52b0dddafc8cdbc90672ee6283303f1258cef684683f9bc94c/release/extension/duckomo/duckomo.duckdb_extension",
+    "sha256": "bf8f6d9def749e4ac03e7a3f631a0f1007e4084d7065701f39a980b70e3d651b"
+  },
+  "identity_checks": [
+    {
+      "definition": "aladin_central_europe_2km",
+      "grid_id": "b675895862ac12a9cdab171e63f0c48443fce4584b9451a9d9054322a3c89277",
+      "grid_id_matches": true,
+      "layout": "{\"grid_id\":\"b675895862ac12a9cdab171e63f0c48443fce4584b9451a9d9054322a3c89277\",\"layout_id\":\"9adc2e038ce2134f8e409c70810704c8eb9a9fed953ebedfc70a711dccf0859f\",\"geometry\":\"projected\",\"shape\":[837,1053,120],\"axes\":[\"y\",\"x\",\"time\"],\"strides\":[126360,120,1],\"non_spatial_axes\":[2],\"flattened\":false,\"order\":\"separate\",\"latitude_axis\":0,\"longitude_axis\":1,\"point_axis\":null}",
+      "layout_matches": true
+    },
+    {
+      "definition": "gem_rdps_10km",
+      "grid_id": "caff4c995f734d067ebe4d2ae2f1dd2335b0cb417753dc7e4fe1decdb65fd062",
+      "grid_id_matches": true,
+      "layout": "{\"grid_id\":\"caff4c995f734d067ebe4d2ae2f1dd2335b0cb417753dc7e4fe1decdb65fd062\",\"layout_id\":\"759c395b7861271adbd98db86f0cae297f5b88e7b76584e0546f97ab50a9e5bd\",\"geometry\":\"projected\",\"shape\":[1045,1140,114],\"axes\":[\"y\",\"x\",\"time\"],\"strides\":[129960,114,1],\"non_spatial_axes\":[2],\"flattened\":false,\"order\":\"separate\",\"latitude_axis\":0,\"longitude_axis\":1,\"point_axis\":null}",
+      "layout_matches": true
+    },
+    {
+      "definition": "gem_regional",
+      "grid_id": "2d2245c4025f1f9d4ff2df7f2496e412d963727c82ee8ea066c56e4d3f23cc2a",
+      "grid_id_matches": true,
+      "layout": "{\"grid_id\":\"2d2245c4025f1f9d4ff2df7f2496e412d963727c82ee8ea066c56e4d3f23cc2a\",\"layout_id\":\"f5d252b10d76f9ce28024be7954eb7e4c7e28fcbf2ade7f8b53072bf4690677c\",\"geometry\":\"projected\",\"shape\":[824,935,114],\"axes\":[\"y\",\"x\",\"time\"],\"strides\":[106590,114,1],\"non_spatial_axes\":[2],\"flattened\":false,\"order\":\"separate\",\"latitude_axis\":0,\"longitude_axis\":1,\"point_axis\":null}",
+      "layout_matches": true
+    },
+    {
+      "definition": "n160",
+      "grid_id": "6d8dfcfc40b6a0b9ec35c85ac597c95de7a1a2a32186249fb44feec105ffa82e",
+      "grid_id_matches": true,
+      "layout": "{\"grid_id\":\"6d8dfcfc40b6a0b9ec35c85ac597c95de7a1a2a32186249fb44feec105ffa82e\",\"layout_id\":\"07ab66103ddd8edb9a39b48b5d572a2fbaec14c57f7db3c8333c60e652c2d8c2\",\"geometry\":\"gaussian\",\"shape\":[138346],\"axes\":[\"point\"],\"strides\":[1],\"non_spatial_axes\":[],\"flattened\":true,\"order\":\"separate\",\"latitude_axis\":null,\"longitude_axis\":null,\"point_axis\":0,\"subset_segments\":null}",
+      "layout_matches": true
+    }
+  ],
+  "mode": "bind-only; generated and default-schema views are prepared; pragma_table_info inspects schemas without scanning rows",
+  "queries": {
+    "path": "/home/blizhan/repo/github/duckomo/test/data/grids/sample-queries.sql",
+    "sha256": "4132820f4e80f0a1758cbd7f790634f9d61ae8ad0899009023d02f9e589fcecf"
+  },
+  "schema_checks": [
+    {
+      "default_columns": [
+        [
+          "value",
+          "FLOAT"
+        ],
+        [
+          "latitude",
+          "DOUBLE"
+        ],
+        [
+          "longitude",
+          "DOUBLE"
+        ]
+      ],
+      "include_source_columns": [
+        [
+          "value",
+          "FLOAT"
+        ],
+        [
+          "latitude",
+          "DOUBLE"
+        ],
+        [
+          "longitude",
+          "DOUBLE"
+        ],
+        [
+          "om_source",
+          "STRUCT(object_id VARCHAR, object_version VARCHAR, version_strength VARCHAR, content_verified BOOLEAN, grid_id VARCHAR, layout_id VARCHAR, logical_index UBIGINT, point_index UBIGINT, parent_point_index UBIGINT, axis_indices UBIGINT[])"
+        ]
+      ],
+      "source_appended": true,
+      "view": "explicit_gem_rdps_10km"
+    },
+    {
+      "default_columns": [
+        [
+          "value",
+          "FLOAT"
+        ],
+        [
+          "latitude",
+          "DOUBLE"
+        ],
+        [
+          "longitude",
+          "DOUBLE"
+        ]
+      ],
+      "include_source_columns": [
+        [
+          "value",
+          "FLOAT"
+        ],
+        [
+          "latitude",
+          "DOUBLE"
+        ],
+        [
+          "longitude",
+          "DOUBLE"
+        ],
+        [
+          "om_source",
+          "STRUCT(object_id VARCHAR, object_version VARCHAR, version_strength VARCHAR, content_verified BOOLEAN, grid_id VARCHAR, layout_id VARCHAR, logical_index UBIGINT, point_index UBIGINT, parent_point_index UBIGINT, axis_indices UBIGINT[])"
+        ]
+      ],
+      "source_appended": true,
+      "view": "domain_gem_rdps_10km"
+    },
+    {
+      "default_columns": [
+        [
+          "value",
+          "FLOAT"
+        ],
+        [
+          "latitude",
+          "DOUBLE"
+        ],
+        [
+          "longitude",
+          "DOUBLE"
+        ]
+      ],
+      "include_source_columns": [
+        [
+          "value",
+          "FLOAT"
+        ],
+        [
+          "latitude",
+          "DOUBLE"
+        ],
+        [
+          "longitude",
+          "DOUBLE"
+        ],
+        [
+          "om_source",
+          "STRUCT(object_id VARCHAR, object_version VARCHAR, version_strength VARCHAR, content_verified BOOLEAN, grid_id VARCHAR, layout_id VARCHAR, logical_index UBIGINT, point_index UBIGINT, parent_point_index UBIGINT, axis_indices UBIGINT[])"
+        ]
+      ],
+      "source_appended": true,
+      "view": "explicit_gem_regional"
+    },
+    {
+      "default_columns": [
+        [
+          "value",
+          "FLOAT"
+        ],
+        [
+          "latitude",
+          "DOUBLE"
+        ],
+        [
+          "longitude",
+          "DOUBLE"
+        ]
+      ],
+      "include_source_columns": [
+        [
+          "value",
+          "FLOAT"
+        ],
+        [
+          "latitude",
+          "DOUBLE"
+        ],
+        [
+          "longitude",
+          "DOUBLE"
+        ],
+        [
+          "om_source",
+          "STRUCT(object_id VARCHAR, object_version VARCHAR, version_strength VARCHAR, content_verified BOOLEAN, grid_id VARCHAR, layout_id VARCHAR, logical_index UBIGINT, point_index UBIGINT, parent_point_index UBIGINT, axis_indices UBIGINT[])"
+        ]
+      ],
+      "source_appended": true,
+      "view": "domain_gem_regional"
+    },
+    {
+      "default_columns": [
+        [
+          "value",
+          "FLOAT"
+        ],
+        [
+          "latitude",
+          "DOUBLE"
+        ],
+        [
+          "longitude",
+          "DOUBLE"
+        ]
+      ],
+      "include_source_columns": [
+        [
+          "value",
+          "FLOAT"
+        ],
+        [
+          "latitude",
+          "DOUBLE"
+        ],
+        [
+          "longitude",
+          "DOUBLE"
+        ],
+        [
+          "om_source",
+          "STRUCT(object_id VARCHAR, object_version VARCHAR, version_strength VARCHAR, content_verified BOOLEAN, grid_id VARCHAR, layout_id VARCHAR, logical_index UBIGINT, point_index UBIGINT, parent_point_index UBIGINT, axis_indices UBIGINT[])"
+        ]
+      ],
+      "source_appended": true,
+      "view": "explicit_aladin_central_europe_2km"
+    },
+    {
+      "default_columns": [
+        [
+          "value",
+          "FLOAT"
+        ],
+        [
+          "latitude",
+          "DOUBLE"
+        ],
+        [
+          "longitude",
+          "DOUBLE"
+        ]
+      ],
+      "include_source_columns": [
+        [
+          "value",
+          "FLOAT"
+        ],
+        [
+          "latitude",
+          "DOUBLE"
+        ],
+        [
+          "longitude",
+          "DOUBLE"
+        ],
+        [
+          "om_source",
+          "STRUCT(object_id VARCHAR, object_version VARCHAR, version_strength VARCHAR, content_verified BOOLEAN, grid_id VARCHAR, layout_id VARCHAR, logical_index UBIGINT, point_index UBIGINT, parent_point_index UBIGINT, axis_indices UBIGINT[])"
+        ]
+      ],
+      "source_appended": true,
+      "view": "domain_aladin_central_europe_2km"
+    },
+    {
+      "default_columns": [
+        [
+          "n160_identity/value",
+          "FLOAT"
+        ],
+        [
+          "latitude",
+          "DOUBLE"
+        ],
+        [
+          "longitude",
+          "DOUBLE"
+        ]
+      ],
+      "include_source_columns": [
+        [
+          "n160_identity/value",
+          "FLOAT"
+        ],
+        [
+          "latitude",
+          "DOUBLE"
+        ],
+        [
+          "longitude",
+          "DOUBLE"
+        ],
+        [
+          "om_source",
+          "STRUCT(object_id VARCHAR, object_version VARCHAR, version_strength VARCHAR, content_verified BOOLEAN, grid_id VARCHAR, layout_id VARCHAR, logical_index UBIGINT, point_index UBIGINT, parent_point_index UBIGINT, axis_indices UBIGINT[])"
+        ]
+      ],
+      "source_appended": true,
+      "view": "explicit_n160"
+    },
+    {
+      "default_columns": [
+        [
+          "n160_identity/value",
+          "FLOAT"
+        ],
+        [
+          "latitude",
+          "DOUBLE"
+        ],
+        [
+          "longitude",
+          "DOUBLE"
+        ]
+      ],
+      "include_source_columns": [
+        [
+          "n160_identity/value",
+          "FLOAT"
+        ],
+        [
+          "latitude",
+          "DOUBLE"
+        ],
+        [
+          "longitude",
+          "DOUBLE"
+        ],
+        [
+          "om_source",
+          "STRUCT(object_id VARCHAR, object_version VARCHAR, version_strength VARCHAR, content_verified BOOLEAN, grid_id VARCHAR, layout_id VARCHAR, logical_index UBIGINT, point_index UBIGINT, parent_point_index UBIGINT, axis_indices UBIGINT[])"
+        ]
+      ],
+      "source_appended": true,
+      "view": "domain_n160"
+    },
+    {
+      "explicit_domain_default_schema_match": true,
+      "explicit_domain_source_schema_match": true,
+      "pair": "aladin_central_europe_2km"
+    },
+    {
+      "explicit_domain_default_schema_match": true,
+      "explicit_domain_source_schema_match": true,
+      "pair": "gem_rdps_10km"
+    },
+    {
+      "explicit_domain_default_schema_match": true,
+      "explicit_domain_source_schema_match": true,
+      "pair": "gem_regional"
+    },
+    {
+      "explicit_domain_default_schema_match": true,
+      "explicit_domain_source_schema_match": true,
+      "pair": "n160"
+    }
+  ],
+  "schema_error": null,
+  "stderr": "",
+  "stdout": "",
+  "view_count": 9,
+  "views": [
+    "explicit_gem_rdps_10km",
+    "domain_gem_rdps_10km",
+    "explicit_gem_regional",
+    "domain_gem_regional",
+    "explicit_aladin_central_europe_2km",
+    "domain_aladin_central_europe_2km",
+    "explicit_n160",
+    "domain_n160",
+    "values_ecmwf_hres_o1280"
+  ]
+}

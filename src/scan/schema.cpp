@@ -35,6 +35,7 @@ BoundSchema BuildBoundSchema(const OmMetadataTree &tree) {
 
 	BoundSchema result;
 	result.crs_wkt = tree.crs_wkt;
+	result.crs_profile = tree.crs_profile;
 	result.variables.reserve(arrays.size());
 	std::vector<std::string> seen_names;
 	seen_names.reserve(arrays.size());
@@ -78,7 +79,7 @@ BoundSchema BuildBoundSchema(const OmMetadataTree &tree) {
 }
 
 void AppendSpatialOutputColumns(const BoundSchema &schema, std::vector<LogicalType> &return_types,
-	                            std::vector<std::string> &names) {
+	                            TableFunctionColumnNames &names) {
 	for (const auto &variable : schema.variables) {
 		if (StringUtil::CIEquals(variable.column_name, "latitude") ||
 		    StringUtil::CIEquals(variable.column_name, "longitude")) {

@@ -59,6 +59,10 @@ std::size_t OpenFileDescriptors() {
 }
 
 fs::path FindCoreFunctions() {
+	if (const auto *override_path = std::getenv("DUCKOMO_CORE_FUNCTIONS_EXTENSION")) {
+		const fs::path path(override_path);
+		return fs::is_regular_file(path) ? path : fs::path{};
+	}
 	const fs::path repository("build/release/repository/v1.5.4");
 	if (!fs::exists(repository)) return {};
 	for (const auto &entry : fs::recursive_directory_iterator(repository)) {

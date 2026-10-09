@@ -1,0 +1,10 @@
+{
+  "pair_id": "baseline-1.5.4",
+  "scenario": "non-identity",
+  "query_exit": 1,
+  "status": "failure",
+  "client_body_bytes": 13,
+  "server_body_bytes": 13,
+  "transport_count_complete": true,
+  "parity": true
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "classification": "synthetic selector stress inputs; not a real grid or source-order oracle",
+  "cases": [
+    {"id": "fragmented_4096", "fixture": "long-line.om", "point_count": 262145, "positions": "2*i for i in [0,4096)", "expected_disjoint_ranges": 4096},
+    {"id": "fragmented_4097", "fixture": "long-line.om", "point_count": 262145, "positions": "2*i for i in [0,4097)", "expected_disjoint_ranges": 4097},
+    {"id": "rotated_north_pole", "fixture": null, "native_only": true, "grid": {"type": "rotated_latlon", "nx": 1, "ny": 1, "x0": 0, "y0": 90, "dx": 1, "dy": -1, "north_pole_latitude": 90, "north_pole_longitude": 0, "rotation": 0}, "position": [0,0], "expected_coordinate": [90,0]},
+    {"id": "lambert_cone_apex", "fixture": null, "native_only": true, "grid": {"type": "lambert_conformal_conic", "nx": 1, "ny": 1, "x0": 0, "y0": 1.8649332100338825, "dx": 1, "dy": 1, "longitude_of_false_origin": 0, "latitude_of_false_origin": 0, "standard_parallel_1": 45, "standard_parallel_2": 45, "radius_m": 1}, "expected_error": "InvalidShape"},
+    {"id": "stereographic_pole_center", "fixture": null, "native_only": true, "grid": {"type": "stereographic", "nx": 1, "ny": 1, "x0": 0, "y0": 0, "dx": 1, "dy": 1, "latitude_of_origin": 90, "longitude_of_origin": 37, "radius_m": 6371229, "scale_factor": 1}, "position": [0,0], "expected_coordinate": [90,37]}
+  ]
+}

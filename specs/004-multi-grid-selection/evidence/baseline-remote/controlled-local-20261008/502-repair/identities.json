@@ -1,0 +1,32 @@
+{
+  "duckdb": {
+    "path": "build/grid-matrix/baseline-1.5.4/release/duckdb",
+    "sha256": "2941ce8e02fefb57e008bcb6652e2aa637d44881db15875a37a065c62a1450fb",
+    "size_bytes": 62003208
+  },
+  "duckomo": {
+    "path": "build/grid-matrix/baseline-1.5.4/release/extension/duckomo/duckomo.duckdb_extension",
+    "sha256": "a52c6576949e7fa099661113b548cc0eaf3355eb7a2a0e3f8a1cf9308c2ab70c",
+    "size_bytes": 39732606
+  },
+  "httpfs": {
+    "path": "build/grid-matrix/baseline-1.5.4/release/extension/httpfs/httpfs.duckdb_extension",
+    "sha256": "3e1521306b3947c2d38b70342a9e0cab9fcb88f46d305e7944af2ef6d993f5fa",
+    "size_bytes": 44631910
+  },
+  "proxy_source": {
+    "path": "scripts/setup-remote-fixtures.py",
+    "sha256": "63ddd756b69d6cd19d571de98e7d27eb49014f345cde1fcb959ca722d7767379",
+    "size_bytes": 43541
+  },
+  "regression_source": {
+    "path": "test/tools/remote_fixture_proxy_test.py",
+    "sha256": "0ed507dfeaa51b0af4cf46f0fed33df6969255d98ad750b8f2af934a077bbfc0",
+    "size_bytes": 7654
+  },
+  "remote_validator": {
+    "path": "build/grid-matrix/baseline-1.5.4/release/test/tools/duckomo_remote_validation",
+    "sha256": "b056d8025e14dd89e548597841375f64c0761b6e590da100f37617160980f232",
+    "size_bytes": 347720
+  }
+}

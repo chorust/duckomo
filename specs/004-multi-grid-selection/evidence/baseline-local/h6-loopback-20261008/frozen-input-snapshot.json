@@ -1,0 +1,16 @@
+{
+  "schema_version":1,
+  "files":[
+    {"name":"sample_manifest","path":"test/data/grids/sample-manifest.json","sha256":"72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f"},
+    {"name":"definitions","path":"test/data/grids/definitions.json","sha256":"225caadf963c6f584850180f0e3c948cdbcebbf25a2a0d39aaef184b005f7da0"},
+    {"name":"source_manifest","path":"test/data/grids/source-manifest.json","sha256":"0a5ef2c284fd400ad6328b7db1fb18e531f851132064438d1e32461a9ebb1a5d"},
+    {"name":"coordinate_reference","path":"test/data/grids/coordinate-reference.json","sha256":"ecac4905c62c8683f2513f94722e75fdc39d3be8e452418c76da28bcc1e82b39"},
+    {"name":"region_reference","path":"test/data/grids/region-reference.json","sha256":"2630ead0cccbb6fc8c4ded9a5551d56302a0af40a728a517ce8c7579893fe098"},
+    {"name":"value_reference","path":"test/data/grids/value-reference-manifest.json","sha256":"cfad10ef5e1095272185e11e3919a3153003861927a0caf6ffd7f281bf28b794"},
+    {"name":"canonical_vectors","path":"test/data/grids/canonical-vectors.json","sha256":"47e2d856a1a54a2d714b382fa0343e9ed0f940b95de837a6c2374d2cd0dbd7db"},
+    {"name":"spatial_relations","path":"test/data/grids/spatial-relations.json","sha256":"3825e22f3ae882080cb585ac18eeb39fe993253217d96b374eb86312e02fcef6"},
+    {"name":"sample_queries","path":"test/data/grids/sample-queries.sql","sha256":"e15cfbca10b325e2126e4a69c4479a8879af0f809046e7e4ac8de2c280a54b5d"},
+    {"name":"version_matrix","path":"test/data/grids/version-matrix.json","sha256":"eba72ab473ec1fb66b5ac4a1ff66fa49f051feb2f30acf9403132e2e88d04a41"}
+  ],
+  "complete":true
+}

@@ -1,0 +1,124 @@
+{
+  "current_build_id": "9a7aff37d7cc7c910cc0d29fc08a0fb51d6f199f3115791731d71eb00630312b",
+  "current_pair_id": "prerelease-2.0-dev",
+  "frozen_input_set_sha256": null,
+  "gate": "H8",
+  "identity_status": "pass",
+  "matrix_sha256": "eba72ab473ec1fb66b5ac4a1ff66fa49f051feb2f30acf9403132e2e88d04a41",
+  "pairs": [
+    {
+      "artifact_hashes": {
+        "duckdb": "dea62fdc3792705921f8326719a6aedf9927f949a0209411cd3c7211f8972c09",
+        "duckomo": "8bed889b8f9cf3947aab3b7d94620e0ea6c0d4f4a22c5d26ffc4214411309c3e",
+        "httpfs": "fe0c1f37b42023e0d60ccf3ec4fc1803e7bf9474bc0c2710959de601c28f292e"
+      },
+      "build_id": "15f751c1929b88adebbfe2a150a8c7987f92de29af7fc0b806a6af1cd80388c8",
+      "build_root": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/15f751c1929b88adebbfe2a150a8c7987f92de29af7fc0b806a6af1cd80388c8",
+      "compatibility_status": "pass",
+      "identity_status": "pass",
+      "pair_id": "baseline-1.5.4",
+      "run_evidence": {
+        "complete_h0_h7_run": null,
+        "observed_matching_runs": [
+          {
+            "accepted_as_complete_h0_h7": false,
+            "created_at_utc": null,
+            "frozen_input_set_sha256": null,
+            "gate_statuses": {},
+            "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/us5-20261007-current-15f751-final/h7-local/manifest.json",
+            "requested_gates": [],
+            "run_status": null
+          },
+          {
+            "accepted_as_complete_h0_h7": false,
+            "created_at_utc": "2026-10-07T13:07:42Z",
+            "frozen_input_set_sha256": null,
+            "gate_statuses": {
+              "H3": "not-run",
+              "H7": "not-run"
+            },
+            "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/us5-20261007-current-15f751-final/manifest.json",
+            "requested_gates": [
+              "H3",
+              "H7"
+            ],
+            "run_status": "not-run"
+          }
+        ]
+      },
+      "runtime_cli_version": "v1.5.4 (Variegata) 08e34c447b",
+      "runtime_source_id": "08e34c447bae34eaee3723cac61f2878b6bdf787"
+    },
+    {
+      "artifact_hashes": {
+        "duckdb": "d875b9d8c8791c7278fd475887736833d4d63af4c3dee937c031dedd6017de23",
+        "duckomo": "15e4175f3721d94e7be0095c1f96d7e07580f44ad806212f6e69586d828af277",
+        "httpfs": "b02a91514a307f64b301ccb4e92454636bd4dfa4ae841e2314559d2bbb69b6d1"
+      },
+      "build_id": "9a7aff37d7cc7c910cc0d29fc08a0fb51d6f199f3115791731d71eb00630312b",
+      "build_root": "/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/9a7aff37d7cc7c910cc0d29fc08a0fb51d6f199f3115791731d71eb00630312b",
+      "compatibility_status": "pass",
+      "identity_status": "pass",
+      "pair_id": "prerelease-2.0-dev",
+      "run_evidence": {
+        "complete_h0_h7_run": null,
+        "observed_matching_runs": [
+          {
+            "accepted_as_complete_h0_h7": false,
+            "created_at_utc": null,
+            "frozen_input_set_sha256": null,
+            "gate_statuses": {},
+            "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/version-matrix/prerelease-local-20261007-9a7aff/h7-local/manifest.json",
+            "requested_gates": [],
+            "run_status": null
+          },
+          {
+            "accepted_as_complete_h0_h7": false,
+            "created_at_utc": null,
+            "frozen_input_set_sha256": null,
+            "gate_statuses": {},
+            "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/us5-20261007-prerelease-9a7aff-final/h7-local/manifest.json",
+            "requested_gates": [],
+            "run_status": null
+          },
+          {
+            "accepted_as_complete_h0_h7": false,
+            "created_at_utc": "2026-10-07T13:17:40Z",
+            "frozen_input_set_sha256": null,
+            "gate_statuses": {
+              "H3": "not-run",
+              "H7": "not-run"
+            },
+            "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/version-matrix/prerelease-local-20261007-9a7aff/manifest.json",
+            "requested_gates": [
+              "H3",
+              "H7"
+            ],
+            "run_status": "not-run"
+          },
+          {
+            "accepted_as_complete_h0_h7": false,
+            "created_at_utc": "2026-10-07T13:16:10Z",
+            "frozen_input_set_sha256": null,
+            "gate_statuses": {
+              "H3": "not-run",
+              "H7": "not-run"
+            },
+            "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/us5-20261007-prerelease-9a7aff-final/manifest.json",
+            "requested_gates": [
+              "H3",
+              "H7"
+            ],
+            "run_status": "not-run"
+          }
+        ]
+      },
+      "runtime_cli_version": "v2.0.0-dev86261 (Development Version) 7264a9f0e5",
+      "runtime_source_id": "7264a9f0e5b487358100f408826b8ae9e868b031"
+    }
+  ],
+  "reason": "complete same-input H0-H7 evidence is missing for: baseline-1.5.4, prerelease-2.0-dev",
+  "sample_manifest_sha256": "72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f",
+  "schema_version": 1,
+  "status": "not-run"
+}

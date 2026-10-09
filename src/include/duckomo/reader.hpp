@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 
-#include "duckomo/local_file.hpp"
+#include "duckomo/read_at_file.hpp"
 
 // The pinned upstream headers are C headers without their own C++ linkage
 // guards. Include them here first so this adapter and its C++ callers link to
@@ -17,6 +17,7 @@ extern "C" {
 
 namespace duckdb {
 namespace duckomo {
+class LocalFile;
 
 // Local, read-only adapter around the official OM C Sans-I/O API. The file
 // handle and root metadata live with this object; each returned variable owns
@@ -39,7 +40,9 @@ public:
 
 	// Configure one logical slice and decode it into `output`. Decoder-owned
 	// selection arrays and scratch stay alive in `state` and may be reused for
-	// subsequent slices with the same rank.
+	// subsequent slices with the same rank. The official io_size_max argument
+	// guides request splitting/merging; it is not a hard cap on an encoded data
+	// block or the corresponding reader buffer.
 	void DecodeSelection(OmDecoderState &state, const std::string &variable_path,
 	                     const std::vector<std::uint64_t> &read_offset,
 	                     const std::vector<std::uint64_t> &read_count,

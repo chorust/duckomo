@@ -1,0 +1,359 @@
+{
+  "command": {
+    "argv": [
+      "python3",
+      "/home/blizhan/repo/github/duckomo/test/tools/grid_spatial_reference.py",
+      "--validate-public-sources",
+      "--all-public-source-positions",
+      "--public-spatial-selection",
+      "--duckdb",
+      "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/duckdb",
+      "--extension",
+      "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/extension/duckomo/duckomo.duckdb_extension",
+      "--root",
+      "/home/blizhan/repo/github/duckomo",
+      "--output-dir",
+      "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source"
+    ],
+    "elapsed_ms": 76379.109,
+    "exit_code": 0
+  },
+  "duckdb_build_id": "5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d",
+  "full_H1_status": "not-run",
+  "gate": "T070 H1 public Open-Meteo source/info and bounded spatial selection subcheck",
+  "inputs": [
+    {
+      "path": "test/tools/grid_spatial_reference.py",
+      "sha256": "83f9eb0d40f4b41c8cb744dfea7beb5e56ff87148d07b67d6592be0c2303c1a0"
+    },
+    {
+      "path": "test/data/grids/sample-manifest.json",
+      "sha256": "72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f"
+    },
+    {
+      "path": "test/data/grids/sample-queries.sql",
+      "sha256": "e15cfbca10b325e2126e4a69c4479a8879af0f809046e7e4ac8de2c280a54b5d"
+    },
+    {
+      "path": "test/data/grids/coordinate-reference.json",
+      "sha256": "47712d94197d708b7ef1d48a4679d4eb5a38aecc324cc95d60d7b613314d33c7"
+    },
+    {
+      "path": "build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/duckdb",
+      "sha256": "e55df7beb476ef350383509b564a47485d72d8438cea7097be9c52e318484f55"
+    },
+    {
+      "path": "build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/extension/duckomo/duckomo.duckdb_extension",
+      "sha256": "d4c79f729a096dba8dc0824b6e452b53ebeccdfb438ad2c7f0e514afc6a67ddc"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/final.md",
+      "sha256": "e2ddd8dcb25e9ec57873195f4013ad4db428d55be976aa3242dbb7de2af161a4"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.domain-full-source-metrics.csv",
+      "sha256": "fac4259966752dda291302bd0c291e61e2d614635fc51e33f067489681f50009"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.domain-full-source.csv.gz",
+      "sha256": "83c74af86017290e50f6ff40d024f3e1a93262fc307a71cbe0504cbbd3c501bf"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.domain-info-metrics.csv",
+      "sha256": "bb6383d97dc909c5b23d53e9139223f80c9a371e59534d6d70b16e5ef9ed30bd"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.domain-info.csv",
+      "sha256": "aa84964a34c4e2c3d0583f552b04c7133e385518f9045a9fe7b1aed37934d017"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.domain-source-metrics.csv",
+      "sha256": "46dcd286483c37ae467e77a58b1fa19c712c71b8b1dde3249331bf34caa7b2ba"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.domain-source.csv",
+      "sha256": "7a4f233513221d20cb4ddba74ff0925cd4770aaa077c04abcdc240a8d7aa2cc7"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.domain-spatial-source-metrics.csv",
+      "sha256": "751dbef67ea47e7466a589b16ecce22fd482e232ea40a35ce124a0bae69c6994"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.domain-spatial-source.csv",
+      "sha256": "ed49ff9a46b34b86cc16a30cced0b8221d267d548bef92241882447a95f91484"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.explicit-full-source-metrics.csv",
+      "sha256": "5443e1290060bc360d2173237bfa79c6da771dd569d3bf6157275913dbc64301"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.explicit-full-source.csv.gz",
+      "sha256": "83c74af86017290e50f6ff40d024f3e1a93262fc307a71cbe0504cbbd3c501bf"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.explicit-info-metrics.csv",
+      "sha256": "d3ee22414da9bd2482055e2b7aea5e829d11810c7aa8aa85aba37c19161a201e"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.explicit-info.csv",
+      "sha256": "aa84964a34c4e2c3d0583f552b04c7133e385518f9045a9fe7b1aed37934d017"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.explicit-source-metrics.csv",
+      "sha256": "15536c509ed61831677cd5cf3b0f3fdd68888855e2a0bc4cd6370646cb11fc0a"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.explicit-source.csv",
+      "sha256": "7a4f233513221d20cb4ddba74ff0925cd4770aaa077c04abcdc240a8d7aa2cc7"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.explicit-spatial-source-metrics.csv",
+      "sha256": "cac560e3eeec323dace92f6fe6f80ca5710d17fc20581803228d49be4733fec7"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.explicit-spatial-source.csv",
+      "sha256": "ed49ff9a46b34b86cc16a30cced0b8221d267d548bef92241882447a95f91484"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.first-valid-time-metrics.csv",
+      "sha256": "ae70cfe4467769a6adf9205e49ca2442f4ba89b27f4316414c9bf9376850a13c"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.first-valid-time.csv",
+      "sha256": "b71e5dec0c0b9f37482eea62c8cfaa5b945bbf8af8088efdad4f92d0fe506d2c"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.source-identity-metrics.csv",
+      "sha256": "7b467e29088d5342cc06c61f2a3399795704f992b03f3655c03d2a95d3f3af1d"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.source-identity.csv",
+      "sha256": "768e1e6a18d3b69302ceb862143bca61d23ff2f1c37bf9ba141507d28852c117"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.spatial-source-identity-metrics.csv",
+      "sha256": "9b97a25d05bdee87787b760f1f42ba26543c7fb1a76081e0d012bdfc8bac7b94"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/aladin_central_europe_2km.spatial-source-identity.csv",
+      "sha256": "b4b9000b36e55177c4cf52efc05b8bbfd4c272bb26c9dd2e92ce33b6c3612683"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.domain-full-source-metrics.csv",
+      "sha256": "18c16e12958b2cc2f3a8a63e0bd0db35d994b1becdd7a097cf9c1a0ca8fae24a"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.domain-full-source.csv.gz",
+      "sha256": "6cd23e9b685b8c1d8131c24305a9223c1dfcb57a5e5c522fc573a07d40886697"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.domain-info-metrics.csv",
+      "sha256": "30b1645836a292b0d6f51501f055f510f9d08693b258b035b9e6a73f8f05b207"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.domain-info.csv",
+      "sha256": "9eafdd048372303eaea2a9dc2ca53d4f665d6e734ac59889b88b460136ba3937"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.domain-source-metrics.csv",
+      "sha256": "8704ec76b63e7b25cde07bb8ec1a9eb8bec724c8a3176ab63120fee6e2f8be30"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.domain-source.csv",
+      "sha256": "6285bfca00f1fc6a22553858f9fdf874bd041bf957ea150860c76caeb40ac4b5"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.domain-spatial-source-metrics.csv",
+      "sha256": "f5af74b0d01e590bac04fd1d0c766b153d625b96d755fcedfc4483252ea61fbd"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.domain-spatial-source.csv",
+      "sha256": "212d791494597c92e8644d0c5d514918a911bde5134a57966e87022aa19c6034"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.explicit-full-source-metrics.csv",
+      "sha256": "afb286dda62ea9a4e2a009b772a02abf4ca3829886b2e7cc6c9e5cbea6c3ac63"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.explicit-full-source.csv.gz",
+      "sha256": "6cd23e9b685b8c1d8131c24305a9223c1dfcb57a5e5c522fc573a07d40886697"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.explicit-info-metrics.csv",
+      "sha256": "9f688b54c5f4ffc9252df242260a4b8058e0c0234944662624be641dce727532"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.explicit-info.csv",
+      "sha256": "9eafdd048372303eaea2a9dc2ca53d4f665d6e734ac59889b88b460136ba3937"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.explicit-source-metrics.csv",
+      "sha256": "d4045d562ea790cc8cbc27b1197a033454357d31498f5ae96e446b878c242d04"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.explicit-source.csv",
+      "sha256": "6285bfca00f1fc6a22553858f9fdf874bd041bf957ea150860c76caeb40ac4b5"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.explicit-spatial-source-metrics.csv",
+      "sha256": "ef9b231eacee0257f3d42ed473aa27fe5c88c970a8eb20f68f44b8dd6d338712"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.explicit-spatial-source.csv",
+      "sha256": "212d791494597c92e8644d0c5d514918a911bde5134a57966e87022aa19c6034"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.first-valid-time-metrics.csv",
+      "sha256": "fe73ff6efd5e8a745d45e75c39faaf49395f365b26db39e4706c44cc7ee4f784"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.first-valid-time.csv",
+      "sha256": "b71e5dec0c0b9f37482eea62c8cfaa5b945bbf8af8088efdad4f92d0fe506d2c"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.source-identity-metrics.csv",
+      "sha256": "a418ac9c1ef36baec4c789260ecdaba2200100d1997ef1dfa90be29e5a3cd5ef"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.source-identity.csv",
+      "sha256": "768e1e6a18d3b69302ceb862143bca61d23ff2f1c37bf9ba141507d28852c117"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.spatial-source-identity-metrics.csv",
+      "sha256": "84fdfc055c976e9289453c7cb39158af8d580457205fdd9a2d93bf4ac1f11419"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_rdps_10km.spatial-source-identity.csv",
+      "sha256": "d9ec60cd1e723003c457370eaa58cfae409fed906f2162d325d6cde9a9536e17"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.domain-full-source-metrics.csv",
+      "sha256": "695748ca10bb7d6721e617ad7cefdee68d1221fc1cbda4153ed5bd5bdbc9dc07"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.domain-full-source.csv.gz",
+      "sha256": "7cd0ccbeb10d559565cf9ac149eb771d282fccdeaaeab9991a60d710d42b4a30"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.domain-info-metrics.csv",
+      "sha256": "4122dc22b1f2b35407bbfa9c2fe1a7194cc199b26164893f5bd6746787f69f42"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.domain-info.csv",
+      "sha256": "0f208475ebe06ccce3bed93956f2996d12c200ce795b6171e5aaa80edaf8db28"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.domain-source-metrics.csv",
+      "sha256": "922e8635673575b38088c510506ab9e2019515a4b7ed1024ae9b2a93ed7e30cb"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.domain-source.csv",
+      "sha256": "81e6299f032b67fb8829f6266a5345d86d85bb6bd035cbb98efebb73368da5ca"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.domain-spatial-source-metrics.csv",
+      "sha256": "532dcb157832a4070ff58428cd6dbd60ed3985ee24b0c63f82cf47f1fb1fd7e7"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.domain-spatial-source.csv",
+      "sha256": "7564c2bbde951f7a674758fc957c267078bffb6ceb398fa28ed10127ec21bb97"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.explicit-full-source-metrics.csv",
+      "sha256": "2c908add332f9f855cd8e8f5c0e20b42001dc70f0f3340026c94786a9d42ff20"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.explicit-full-source.csv.gz",
+      "sha256": "7cd0ccbeb10d559565cf9ac149eb771d282fccdeaaeab9991a60d710d42b4a30"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.explicit-info-metrics.csv",
+      "sha256": "5515c7fa4fe875cdd571e2e113c8339beb2b038691000c7745f7dfae799834e4"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.explicit-info.csv",
+      "sha256": "0f208475ebe06ccce3bed93956f2996d12c200ce795b6171e5aaa80edaf8db28"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.explicit-source-metrics.csv",
+      "sha256": "8509a4e74f3a16cad6a7bbed2978bf1f8ddd90befb7e6bcd9a78b287c7c62d57"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.explicit-source.csv",
+      "sha256": "81e6299f032b67fb8829f6266a5345d86d85bb6bd035cbb98efebb73368da5ca"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.explicit-spatial-source-metrics.csv",
+      "sha256": "b057a7514c9ed1b18080bd745e19f1aefab84e80cc2d8676b5fcddb55c26a8a2"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.explicit-spatial-source.csv",
+      "sha256": "7564c2bbde951f7a674758fc957c267078bffb6ceb398fa28ed10127ec21bb97"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.first-valid-time-metrics.csv",
+      "sha256": "64ceffbdbdd53efd610ff2c74fa1b8f642c47173f79364135c701ab4b5a4de63"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.first-valid-time.csv",
+      "sha256": "b71e5dec0c0b9f37482eea62c8cfaa5b945bbf8af8088efdad4f92d0fe506d2c"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.source-identity-metrics.csv",
+      "sha256": "4287d4c94f58044f98d6f07449d1ac0766e25e685e27dc1444214a53e419361d"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.source-identity.csv",
+      "sha256": "768e1e6a18d3b69302ceb862143bca61d23ff2f1c37bf9ba141507d28852c117"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.spatial-source-identity-metrics.csv",
+      "sha256": "9f728a484c6264773893985c541c9ee9d21b5adecfac958b27b61fdcf5ba1023"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/gem_regional.spatial-source-identity.csv",
+      "sha256": "61f903c0d25c175b5d57cde638a5c84d236ac2dc14c427f16f74a6fc25a5c2ca"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/public-source-report.json",
+      "sha256": "aabfecf35d101872dec77ea6dc5668579799e9e2ca109abc4b1c415fa38378f0"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/public-source-time-probe.sql",
+      "sha256": "5dacdf3f4ab41cfff0251769628a01d18cfe9a9e7030b0ad7a855c47f422d585"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/public-source.sql",
+      "sha256": "d2b63383a46883bf2d23f9f9460d886cd6d531fd1f17c54c6ecd47ddef352892"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/runner.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/runner.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/time-probe.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/public-source/time-probe.stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/runner.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-public-source-info-5dac993/runner.stdout.txt",
+      "sha256": "aabfecf35d101872dec77ea6dc5668579799e9e2ca109abc4b1c415fa38378f0"
+    }
+  ],
+  "schema_version": 1,
+  "source_scope": "existing hash-pinned Open-Meteo OM v3 projected samples only; no source conversion",
+  "status": "pass"
+}

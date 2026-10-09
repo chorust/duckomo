@@ -1,0 +1,107 @@
+{
+  "exit": 1,
+  "elapsed_seconds": 18.96529130777344,
+  "requests": 28264,
+  "errors": [
+    {
+      "body_bytes": 0,
+      "error_errno": 104,
+      "error_type": "ConnectionResetError",
+      "method": "GET",
+      "object": "/duckomo-grid-tests/duckomo/real.om",
+      "range": "bytes=5793183-5793268",
+      "request_id": "s3-28256",
+      "status": 502
+    },
+    {
+      "body_bytes": 0,
+      "error_errno": 104,
+      "error_type": "ConnectionResetError",
+      "method": "GET",
+      "object": "/duckomo-grid-tests/duckomo/real.om",
+      "range": "bytes=4512078-4512881",
+      "request_id": "s3-28255",
+      "status": 502
+    },
+    {
+      "body_bytes": 0,
+      "error_errno": 104,
+      "error_type": "ConnectionResetError",
+      "method": "GET",
+      "object": "/duckomo-grid-tests/duckomo/real.om",
+      "range": "bytes=2854537-2855936",
+      "request_id": "s3-28259",
+      "status": 502
+    },
+    {
+      "body_bytes": 0,
+      "error_errno": 104,
+      "error_type": "ConnectionResetError",
+      "method": "GET",
+      "object": "/duckomo-grid-tests/duckomo/real.om",
+      "range": "bytes=4534033-4534806",
+      "request_id": "s3-28257",
+      "status": 502
+    },
+    {
+      "body_bytes": 0,
+      "error_errno": 104,
+      "error_type": "ConnectionResetError",
+      "method": "GET",
+      "object": "/duckomo-grid-tests/duckomo/real.om",
+      "range": "bytes=4947437-4948259",
+      "request_id": "s3-28258",
+      "status": 502
+    },
+    {
+      "body_bytes": 0,
+      "error_errno": 104,
+      "error_type": "ConnectionResetError",
+      "method": "GET",
+      "object": "/duckomo-grid-tests/duckomo/real.om",
+      "range": "bytes=5793183-5793268",
+      "request_id": "s3-28260",
+      "status": 502
+    },
+    {
+      "body_bytes": 0,
+      "error_errno": 104,
+      "error_type": "ConnectionResetError",
+      "method": "GET",
+      "object": "/duckomo-grid-tests/duckomo/real.om",
+      "range": "bytes=363801-364576",
+      "request_id": "s3-28261",
+      "status": 502
+    },
+    {
+      "body_bytes": 0,
+      "error_errno": 104,
+      "error_type": "ConnectionResetError",
+      "method": "GET",
+      "object": "/duckomo-grid-tests/duckomo/real.om",
+      "range": "bytes=2168106-2169052",
+      "request_id": "s3-28263",
+      "status": 502
+    },
+    {
+      "body_bytes": 0,
+      "error_errno": 104,
+      "error_type": "ConnectionResetError",
+      "method": "GET",
+      "object": "/duckomo-grid-tests/duckomo/real.om",
+      "range": "bytes=1481872-1482450",
+      "request_id": "s3-28264",
+      "status": 502
+    },
+    {
+      "body_bytes": 0,
+      "error_errno": 104,
+      "error_type": "ConnectionResetError",
+      "method": "GET",
+      "object": "/duckomo-grid-tests/duckomo/real.om",
+      "range": "bytes=4127067-4127616",
+      "request_id": "s3-28262",
+      "status": 502
+    }
+  ]
+}

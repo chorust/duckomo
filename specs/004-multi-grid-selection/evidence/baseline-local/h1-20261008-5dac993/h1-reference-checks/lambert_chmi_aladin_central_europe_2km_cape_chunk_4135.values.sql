@@ -1,0 +1,3 @@
+LOAD '/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d/release/extension/duckomo/duckomo.duckdb_extension';
+SET threads = 1;
+COPY (SELECT om_source.logical_index, value FROM read_om('/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om', dimensions := map(['value'], [['y','x','time']]), domain := 'aladin_central_europe_2km', include_source := true)) TO '/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h1-20261008-5dac993/h1-reference-checks/lambert_chmi_aladin_central_europe_2km_cape_chunk_4135.duckomo-values.csv' (FORMAT CSV, HEADER true);

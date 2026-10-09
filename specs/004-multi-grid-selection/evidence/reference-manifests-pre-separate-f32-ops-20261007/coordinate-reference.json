@@ -1,0 +1,198 @@
+{
+  "covered_targets": [
+    "lambert_v3",
+    "rotated_v3",
+    "stereographic_v3"
+  ],
+  "maximum_allowed_tolerance_degrees": {
+    "float64_v1": 1e-08,
+    "openmeteo_f32_v1": 0.0001
+  },
+  "missing_targets": [
+    "gaussian_n160_v3",
+    "gaussian_n320_region_v3",
+    "gaussian_n320_v3"
+  ],
+  "reference_kind": "coordinate",
+  "references": [
+    {
+      "artifact": {
+        "path": "build/grid-references/source-f32-points-20261007/lambert-chmi-aladin-ce-cape-chunk-4135.coordinates.csv",
+        "sha256": "dbc66a87803bb25e1a299ef63c8a0784f5006cd1999f953537b4fb81a0cf0762",
+        "size_bytes": 46324574
+      },
+      "command": [
+        "python3",
+        "/home/blizhan/repo/github/duckomo/scripts/generate-grid-coordinate-reference.py",
+        "--root",
+        "/home/blizhan/repo/github/duckomo",
+        "--sample-manifest",
+        "/home/blizhan/repo/github/duckomo/test/data/grids/sample-manifest.json",
+        "--definitions",
+        "/home/blizhan/repo/github/duckomo/test/data/grids/definitions.json",
+        "--source-manifest",
+        "/home/blizhan/repo/github/duckomo/test/data/grids/source-manifest.json",
+        "--sample-id",
+        "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+        "--output",
+        "/home/blizhan/repo/github/duckomo/build/grid-references/source-f32-points-20261007/lambert-chmi-aladin-ce-cape-chunk-4135.coordinates.csv"
+      ],
+      "inputs": [
+        {
+          "path": "test/data/grids/sample-manifest.json",
+          "sha256": "72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f",
+          "size_bytes": 35862
+        },
+        {
+          "path": "test/data/grids/definitions.json",
+          "sha256": "225caadf963c6f584850180f0e3c948cdbcebbf25a2a0d39aaef184b005f7da0",
+          "size_bytes": 222469
+        },
+        {
+          "path": "test/data/grids/source-manifest.json",
+          "sha256": "0a5ef2c284fd400ad6328b7db1fb18e531f851132064438d1e32461a9ebb1a5d",
+          "size_bytes": 7933
+        },
+        {
+          "path": "scripts/generate-grid-coordinate-reference.py",
+          "sha256": "88dc23434a639aaad008c520f24cbf7a53ca92b0131d7d8b18d435c4ed6003f3",
+          "size_bytes": 12168
+        },
+        {
+          "path": "build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om",
+          "sha256": "cef407b0aae43498485b8f6e25907c1ecf8a82c6cb8aa2185fe860f0c491132c",
+          "size_bytes": 48727672
+        }
+      ],
+      "method": "independent_math",
+      "numeric_policy": "openmeteo_f32_v1",
+      "row_count": 881361,
+      "sample_id": "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+      "target": "lambert_v3",
+      "tolerance_degrees": 0.0001
+    },
+    {
+      "artifact": {
+        "path": "build/grid-references/source-f32-points-20261007/rotated-cmc-gem-rdps-10km-cape-chunk-4337.coordinates.csv",
+        "sha256": "6631558d233a93f89d69b4c8504fac04ecacc28fc7525b92783ac8faeb00261c",
+        "size_bytes": 63896678
+      },
+      "command": [
+        "python3",
+        "/home/blizhan/repo/github/duckomo/scripts/generate-grid-coordinate-reference.py",
+        "--root",
+        "/home/blizhan/repo/github/duckomo",
+        "--sample-manifest",
+        "/home/blizhan/repo/github/duckomo/test/data/grids/sample-manifest.json",
+        "--definitions",
+        "/home/blizhan/repo/github/duckomo/test/data/grids/definitions.json",
+        "--source-manifest",
+        "/home/blizhan/repo/github/duckomo/test/data/grids/source-manifest.json",
+        "--sample-id",
+        "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+        "--output",
+        "/home/blizhan/repo/github/duckomo/build/grid-references/source-f32-points-20261007/rotated-cmc-gem-rdps-10km-cape-chunk-4337.coordinates.csv"
+      ],
+      "inputs": [
+        {
+          "path": "test/data/grids/sample-manifest.json",
+          "sha256": "72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f",
+          "size_bytes": 35862
+        },
+        {
+          "path": "test/data/grids/definitions.json",
+          "sha256": "225caadf963c6f584850180f0e3c948cdbcebbf25a2a0d39aaef184b005f7da0",
+          "size_bytes": 222469
+        },
+        {
+          "path": "test/data/grids/source-manifest.json",
+          "sha256": "0a5ef2c284fd400ad6328b7db1fb18e531f851132064438d1e32461a9ebb1a5d",
+          "size_bytes": 7933
+        },
+        {
+          "path": "scripts/generate-grid-coordinate-reference.py",
+          "sha256": "88dc23434a639aaad008c520f24cbf7a53ca92b0131d7d8b18d435c4ed6003f3",
+          "size_bytes": 12168
+        },
+        {
+          "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om",
+          "sha256": "3db637197d27c65051e417b850f8c3656d1c5371ab78dcbd9fc05d0e440956f7",
+          "size_bytes": 68016448
+        }
+      ],
+      "method": "independent_math",
+      "numeric_policy": "openmeteo_f32_v1",
+      "row_count": 1191300,
+      "sample_id": "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+      "target": "rotated_v3",
+      "tolerance_degrees": 0.0001
+    },
+    {
+      "artifact": {
+        "path": "build/grid-references/source-f32-points-20261007/stereographic-cmc-gem-rdps-cape-chunk-4337.coordinates.csv",
+        "sha256": "3a176e8ecad5f6768f8d094c0e50dab214604ff5e3aa97855cf2019bf8cbca4c",
+        "size_bytes": 41036356
+      },
+      "command": [
+        "python3",
+        "/home/blizhan/repo/github/duckomo/scripts/generate-grid-coordinate-reference.py",
+        "--root",
+        "/home/blizhan/repo/github/duckomo",
+        "--sample-manifest",
+        "/home/blizhan/repo/github/duckomo/test/data/grids/sample-manifest.json",
+        "--definitions",
+        "/home/blizhan/repo/github/duckomo/test/data/grids/definitions.json",
+        "--source-manifest",
+        "/home/blizhan/repo/github/duckomo/test/data/grids/source-manifest.json",
+        "--sample-id",
+        "stereographic_cmc_gem_rdps_cape_chunk_4337",
+        "--output",
+        "/home/blizhan/repo/github/duckomo/build/grid-references/source-f32-points-20261007/stereographic-cmc-gem-rdps-cape-chunk-4337.coordinates.csv"
+      ],
+      "inputs": [
+        {
+          "path": "test/data/grids/sample-manifest.json",
+          "sha256": "72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f",
+          "size_bytes": 35862
+        },
+        {
+          "path": "test/data/grids/definitions.json",
+          "sha256": "225caadf963c6f584850180f0e3c948cdbcebbf25a2a0d39aaef184b005f7da0",
+          "size_bytes": 222469
+        },
+        {
+          "path": "test/data/grids/source-manifest.json",
+          "sha256": "0a5ef2c284fd400ad6328b7db1fb18e531f851132064438d1e32461a9ebb1a5d",
+          "size_bytes": 7933
+        },
+        {
+          "path": "scripts/generate-grid-coordinate-reference.py",
+          "sha256": "88dc23434a639aaad008c520f24cbf7a53ca92b0131d7d8b18d435c4ed6003f3",
+          "size_bytes": 12168
+        },
+        {
+          "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.om",
+          "sha256": "1d701b188c8c264532f0d8fa917400a66cf28aa1c8e53a7b40781a775333c7c1",
+          "size_bytes": 23835720
+        }
+      ],
+      "method": "independent_math",
+      "numeric_policy": "openmeteo_f32_v1",
+      "row_count": 770440,
+      "sample_id": "stereographic_cmc_gem_rdps_cape_chunk_4337",
+      "target": "stereographic_v3",
+      "tolerance_degrees": 0.0001
+    }
+  ],
+  "required_targets": [
+    "rotated_v3",
+    "lambert_v3",
+    "stereographic_v3",
+    "gaussian_n160_v3",
+    "gaussian_n320_v3",
+    "gaussian_n320_region_v3"
+  ],
+  "schema_version": 1,
+  "status": "partial_not_run",
+  "tolerances_within_limit": true
+}

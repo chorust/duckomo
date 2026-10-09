@@ -1,0 +1,17 @@
+{
+  "schema_version":1,
+  "scope":"synthetic_local_only",
+  "full_gate_status":"not-run",
+  "inputs_ready":false,
+  "reason":"US2 local checks require core_functions from the same DuckDB build",
+  "local_checks":{
+    "H2_materialized_selection":"not-run",
+    "H4_parallel_lifecycle":"not-run",
+    "H5_reader_capacity":"not-run",
+    "H5_four_grid_work_peak":"not-run",
+    "H5_preparation_cancellation":"not-run"
+  },
+  "core_functions":null,
+  "commands":[],
+  "inputs":{"sample_manifest":{"path":"/home/blizhan/repo/github/duckomo/test/data/grids/sample-manifest.json","exists":true,"executable":true,"sha256":"72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f"},"selection_sql":{"path":"/home/blizhan/repo/github/duckomo/test/sql/grid_selection.test","exists":true,"executable":true,"sha256":"ad4a12f9c447a12e333a31c3e17b8a2cdae8fbde806ff2dd4dd4a7ecba02e554"},"memory_small_projected":{"path":"/home/blizhan/repo/github/duckomo/test/data/grids/memory-small.om","exists":true,"executable":true,"sha256":"b30726368c5528be93ae28711173a56300419215a375203d58ddb150e3199b5a"},"memory_large_projected":{"path":"/home/blizhan/repo/github/duckomo/test/data/grids/memory-large.om","exists":true,"executable":true,"sha256":"e6a2fad366365fd2a311b63a9b9cfa443a6854f2766c7927ce4b90815c27c0df"},"memory_small_gaussian":{"path":"/home/blizhan/repo/github/duckomo/test/data/grids/gaussian-work-small.om","exists":true,"executable":true,"sha256":"469d7bf866a286342fd53ec532be1c2b10b42096b673da39c40f8dfb4becf536"},"memory_large_gaussian":{"path":"/home/blizhan/repo/github/duckomo/test/data/grids/gaussian-work-large.om","exists":true,"executable":true,"sha256":"28131cce879f4c721b7247f9989e90495ddad13a8f67c20b0bf83c45abd2a3ff"}},
+  "work_peak_contract":{"minimum_spatial_point_growth":10,"maximum_work_peak_ratio":2,"threads":1,"cache_enabled":true,"cache_capacity_bytes":67108864,"compared_components":["global_control","selector","task_positions","batch_segments","decoder","coalescing","transport_control"],"reported_separately":["definitions","coordinate_buffers","shared_cache"]}}

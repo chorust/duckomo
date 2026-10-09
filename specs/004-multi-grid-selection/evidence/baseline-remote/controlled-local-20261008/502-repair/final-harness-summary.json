@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "native_exit": 1,
+  "G3_status": "fail",
+  "G4_status": "not-run",
+  "G5_status": "not-run",
+  "G6_status": "not-run",
+  "full_H6_status": "not-run",
+  "s3_502_repair_status": "pass",
+  "real_three_source_parity": "pass",
+  "real_s3_audit": {
+    "status": "pass",
+    "source": "final proxy, signed S3, cold complete real OM scan",
+    "requests": 226418,
+    "error_events": 0,
+    "client_body_bytes": 196376420,
+    "server_body_bytes": 196376420,
+    "scan_complete": true,
+    "transport_count_complete": true,
+    "result_bytes": 88261923,
+    "result_sha256": "9dd4deaeb523f00ea9416d85e537b2b5fa3f040b4936e88533442a385f07ab40",
+    "local_result_sha256": "9dd4deaeb523f00ea9416d85e537b2b5fa3f040b4936e88533442a385f07ab40",
+    "http_result_sha256": "9dd4deaeb523f00ea9416d85e537b2b5fa3f040b4936e88533442a385f07ab40"
+  },
+  "remaining_failure": {
+    "scenario": "g3-fault-ignore-range",
+    "reason": "server audit body exceeds the per-query v3 profile",
+    "client_response_body_bytes": 1,
+    "server_sent_body_bytes": 481,
+    "query_status": "failure",
+    "transport_count_complete_claim": true,
+    "diagnosis": "Companion HTTPFS rejects invalid 200 response in the header callback before invoking its body counter; failed-protocol transfer accounting remains unvalidated. Server-sent and client-observed costs must not be equated without a verified transport observation seam."
+  },
+  "command": "python3 build/grid-controlled-remote/run-g3.py g3-fixed-final",
+  "raw_run_directory": "build/grid-controlled-remote/g3-fixed-final"
+}

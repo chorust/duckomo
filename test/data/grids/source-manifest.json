@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/open-meteo/open-meteo",
+  "pinned_commit": "b06f4760fd1f997e5559bb380f64c5e496b4a509",
+  "source_prefix": "Sources/",
+  "source_files": [
+    {
+      "path": "Sources/App/Domains/GaussianGrid.swift",
+      "sha256": "b913a4ec63b5889466d44ffffccd38aa4f9288d07c4c3b6786df9aa9f9c6d516"
+    },
+    {
+      "path": "Sources/App/Domains/GaussianGridArea.swift",
+      "sha256": "67814e1d2e211f2bbc03c16a9b5866c63607b8861fda04c1ad58aafc7b66d493"
+    },
+    {
+      "path": "Sources/App/Domains/Gridable.swift",
+      "sha256": "939431d274047ec6d46695f43a839aeddb524646d3ab035e5a249aba6458b679"
+    },
+    {
+      "path": "Sources/OmTime/NumberExtensions.swift",
+      "sha256": "53eab0d10e3a682939a22a0ad8cfc28392db273fc7ccac12ba7a1ce398e50ad9"
+    },
+    {
+      "path": "Sources/App/Domains/ProjectionGrid.swift",
+      "sha256": "526cb8b4970898eb07cb55e33a2d9a81cd27271e195b9a767e1e4f9f87a77c69"
+    },
+    {
+      "path": "Sources/App/Domains/RotatedLatLon.swift",
+      "sha256": "b468d3cb70d3a92e17ada6b8c2c8de58e8fead46b15b8eca14bcd13067c1e09d"
+    },
+    {
+      "path": "Sources/App/Domains/LambertConformalConic.swift",
+      "sha256": "6f27864ff27eb4157548a61147eee5db00bed1ffa82779ec4a2a0b8db2306067"
+    },
+    {
+      "path": "Sources/App/Domains/Stereographic.swift",
+      "sha256": "225b3286b1161634810d41a920792d1fce5ee627f419cbf889cf1477428b8d81"
+    },
+    {
+      "path": "Sources/App/Gem/GemDomain.swift",
+      "sha256": "d452ba91071ff74c5d9cb7aec758ff16abd1aed50383ce545c0ad65e4713f431"
+    },
+    {
+      "path": "Sources/App/Chmi/ChmiDomain.swift",
+      "sha256": "c9d7dad690ae7a9ffb517e15ad67f97225b5ecfa6e12ec44df4ba3ec0cfd052c"
+    },
+    {
+      "path": "Sources/App/EcmwfEcpds/EcmwfEcpdsDomain.swift",
+      "sha256": "70cccf553cbeef823d8ac7da7df9e686e1761871dc079a90be0dabcfea258805"
+    },
+    {
+      "path": "Sources/App/EcmwfSeas/EcmwfSeasDomain.swift",
+      "sha256": "2588451da26c1def64bde88dd0ba8af0e3257e4865bb4c78ac7ac3e7099d0d16"
+    },
+    {
+      "path": "Sources/App/Domains/RegularGrid.swift",
+      "sha256": "861bc4b9a1f01f44f6030a2720446fa37f6c2678bd0a34067ae5da4966608171"
+    }
+  ],
+  "legacy_reference": {
+    "repository": "https://github.com/open-meteo/open-meteo",
+    "commit": "34b9cea169395be9b4686f2b5b23eca26dfef7a2",
+    "identity_role": "legacy mathematical/domain reference; distinct from the pinned b06f implementation source",
+    "source_files": [
+      {
+        "path": "Sources/App/Gfs/GfsDomain.swift",
+        "sha256": "89a20f743f91849d7d8627d7868b44ec1a4bddd02b8ab4ef41a17f0f27d7ed71"
+      },
+      {
+        "path": "Sources/App/Domains/RegularGrid.swift",
+        "sha256": "861bc4b9a1f01f44f6030a2720446fa37f6c2678bd0a34067ae5da4966608171"
+      }
+    ]
+  },
+  "existing_sample_reference": {
+    "path": "test/data/domain-manifest.json",
+    "upstream_commit": "34b9cea169395be9b4686f2b5b23eca26dfef7a2",
+    "sample_sha256": "0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd",
+    "role": "pre-existing regular-grid reference; not a multi-grid sample"
+  },
+  "sample_status": {
+    "rotated_v3": "public Open-Meteo S3 object acquired; OM v3 shape/chunks checked; pinned producer Float32 coordinate reference point-compared to a development DuckOMO CSV at the frozen 1e-4 degree limit; official OM C full-value reference frozen; actual object-axis mapping and fixed-pair H1 remain not-run",
+    "lambert_v3": "public Open-Meteo S3 object acquired and matched to the pinned CHMI ALADIN Lambert definition; OM v3 shape/chunks checked; pinned producer Float32 coordinate reference point-compared to a development DuckOMO CSV at the frozen 1e-4 degree limit; official OM C full-value reference frozen; actual object-axis mapping and fixed-pair H1 remain not-run",
+    "stereographic_v3": "public Open-Meteo S3 object acquired; OM v3 shape/chunks checked; pinned producer Float32 coordinate reference point-compared to a development DuckOMO CSV at the frozen 1e-4 degree limit; official OM C full-value reference frozen; actual object-axis mapping and fixed-pair H1 remain not-run",
+    "gaussian_o1280_supplemental": "public ECMWF IFS HRES/static OM v3 objects acquired; O1280 identity and static logical values checked; Gaussian row/point mapping not-run; not an N-grid target",
+    "n160_v3": "not-run; no matching N160 OM v3 sample found in the audited public prefixes; current ECMWF SEAS5 metadata identifies O320, not N160",
+    "n320_full_v3": "not-run; no full-grid N320 producer object fixed; current public ECMWF IFS metadata identifies O1280 and SEAS5/EC46 metadata identifies O320",
+    "n320_region_v3": "not-run; AIFS ensemble products are present in the public bucket, but current metadata identifies WGS 84 world coverage rather than the required N320 reduced-Gaussian Europe subset; exact ecmwf_aifs_europe_ensemble prefixes are empty"
+  },
+  "axis_profiles": "ProjectionGrid.getCoordinates maps producer gridpoint to y=gridpoint/nx and x=gridpoint%nx; reference rows follow that pinned source rule. The three gridded data/ samples have frozen [ny,nx,ntime] root shapes, but OM array metadata do not embed axis names, so mapping file axes to producer point order remains not independently verified. HRES O1280 axes and row/point order are not mapped.",
+  "coordinate_reference_execution": "pinned_producer_coordinates ports the Float32 operations from the fixed source commit and calls the host C Float32 math functions; hashes/results are platform-specific and do not claim cross-platform Float32 bit identity. The independent binary64 formulas remain archived as diagnostics and exceed 1e-4 degrees near projection singularities.",
+  "definition_inputs": [
+    {
+      "path": "test/data/grids/definitions.json",
+      "sha256": "225caadf963c6f584850180f0e3c948cdbcebbf25a2a0d39aaef184b005f7da0"
+    }
+  ],
+  "public_open_data_evidence": {
+    "repository": "https://github.com/open-meteo/open-data",
+    "commit": "4fd52ad16c417c49bff45fab4bf175e5ea5760f2",
+    "readme_sha256": "85c2b2bee77119dfaa7b09ff96fac49bd06b8bb7cbad54e50537fbb7267c75a1",
+    "bucket": "s3://openmeteo",
+    "region": "us-west-2",
+    "acquisition_evidence": "specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-sample-acquisition.md",
+    "real_target_grids_acquired": [
+      "rotated_v3",
+      "lambert_v3",
+      "stereographic_v3"
+    ],
+    "lambert_producer_definition": "aladin_central_europe_2km; ChmiDomain.swift at the pinned Open-Meteo commit",
+    "four_family_inventory": {
+      "status": "complete_sample_inventory_only",
+      "reduced_gaussian_example": "ecmwf_ifs_hres_temperature_2m_chunk_817_o1280_supplemental",
+      "reduced_gaussian_grid": "O1280; not a substitute for N160, full N320, or N320-region",
+      "skip_block_candidates": [
+        "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+        "stereographic_cmc_gem_rdps_cape_chunk_4337",
+        "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+        "ecmwf_ifs_static_hsurf_reduced_gaussian_o1280"
+      ],
+      "cold_full_local_performance": "not-run"
+    },
+    "supplemental_out_of_scope_sample": "ecmwf_ifs_static_hsurf_reduced_gaussian_o1280",
+    "supplemental_hres_timeseries_sample": "ecmwf_ifs_hres_temperature_2m_chunk_817_o1280_supplemental",
+    "supplemental_hres_timeseries_sample_sha256": "483dd0be2096d3e3fff6731509400f97591ebcfc237a941a37460f42a7a10e7f",
+    "supplemental_public_ensemble_presence": "ecmwf_aifs025_ensemble has public data/ and data_spatial/ objects; live WGS 84 world-coverage metadata does not identify the N320 regional Gaussian target",
+    "supplemental_o1280_value_reference": "official OM C full decode and DuckOMO sequential output compared at all 6599680 logical array indices with zero mismatches; coordinates, row/point mapping, and remote benefit not-run",
+    "live_bucket_audit": "specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-live-audit-20261006-1717z.md; captured 2026-10-06T17:17Z",
+    "live_bucket_audit_sha256": "08b70406b721e75fd6e9bd584405f71bda244f930d5385dffc59efee8fb6f493",
+    "versioning": "S3 HEAD reported no VersionId; multipart ETags are not content hashes; local SHA-256 values freeze each downloaded copy",
+    "limitations": [
+      "public anonymous S3 does not exercise signed-S3 authorization",
+      "required-target objects are metadata-checked only; their independent coordinate/value and spatial-read-benefit checks remain not-run",
+      "the O1280 static field has a full value comparison but no coordinate or point-order reference; an HRES temperature time-series object is metadata-checked only and neither O1280 object is an N160/N320/N-region sample",
+      "the pinned Open Data README says ensemble products are not published on AWS, but a 2026-10-06 live S3 audit found current ecmwf_aifs025_ensemble objects whose WGS 84 world-coverage metadata does not match the required N320 reduced-Gaussian regional subset"
+    ]
+  }
+}

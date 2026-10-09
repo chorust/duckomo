@@ -1,0 +1,13 @@
+{
+  "exit": 0,
+  "elapsed_seconds": 136.99325064616278,
+  "requests": 227178,
+  "errors": [],
+  "result_sha256": "9dd4deaeb523f00ea9416d85e537b2b5fa3f040b4936e88533442a385f07ab40",
+  "baseline_path": "/home/blizhan/repo/github/duckomo/build/grid-controlled-remote/g3-second-attempt/g3-real-local.csv",
+  "baseline_match": true,
+  "client_body_bytes": 196429012,
+  "server_body_bytes": 196429012,
+  "scan_complete": true,
+  "transport_count_complete": true
+}

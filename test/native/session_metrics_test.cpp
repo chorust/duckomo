@@ -32,8 +32,8 @@ int main() {
 		DuckDB database(nullptr);
 		Connection first(database);
 		Connection second(database);
-		Require(Scalar(first, "SELECT value FROM duckdb_settings() WHERE name='duckomo_cache_enabled'") == "true",
-		        "first connection should use its default session cache setting");
+		Require(first.Query("SET duckomo_cache_enabled=false")->HasError(), "removed cache setting must fail");
+		Require(first.Query("SET duckomo_cache_capacity=1024")->HasError(), "removed cache capacity must fail");
 		Require(Scalar(second, "SELECT count(*) FROM duckomo_last_scan_metrics()") == "0",
 		        "a new connection must start without scan metrics");
 		Require(!second.Query("PREPARE latest_metrics AS SELECT count(*) FROM duckomo_last_scan_metrics()")->HasError(),
@@ -41,14 +41,20 @@ int main() {
 		Require(!second.Query("PREPARE latest_metrics_id AS SELECT query_id FROM duckomo_last_scan_metrics()")->HasError(),
 		        "query ID should prepare before a scan");
 		Require(Scalar(second, "EXECUTE latest_metrics") == "0", "prepared metrics should initially be empty");
-		Require(!first.Query("SET duckomo_cache_enabled=false")->HasError(), "session cache setting should be accepted");
-		Require(Scalar(second, "SELECT value FROM duckdb_settings() WHERE name='duckomo_cache_enabled'") == "true",
-		        "changing one connection's cache setting must not affect another connection");
 
 		Require(Scalar(first, "SELECT count(*) FROM read_om('test/data/raw.om')") == "6",
 		        "first connection scan should succeed");
 		Require(Scalar(first, "SELECT count(*) FROM duckomo_last_scan_metrics()") == "1",
 		        "first connection should publish its scan metrics");
+		const auto first_metrics = Scalar(first, "SELECT metrics FROM duckomo_last_scan_metrics()");
+		Require(first_metrics.find("\"schema_version\":4") == 1,
+		        "the SQL profile should publish a v4 outer schema");
+		Require(first_metrics.find("\"legacy_v3\":{\"schema_version\":3") != std::string::npos,
+		        "the v4 SQL profile should retain the full v3 compatibility snapshot");
+		Require(first_metrics.find("\"terminal_published\":true") != std::string::npos,
+		        "the SQL profile should expose the authoritative QueryEnd terminal marker");
+		Require(first_metrics.find("\"query_owned_released_at_terminal\":true") != std::string::npos,
+		        "the SQL profile should confirm scoped memory accounts were released at QueryEnd");
 		Require(Scalar(second, "SELECT count(*) FROM duckomo_last_scan_metrics()") == "0",
 		        "first connection metrics must not leak to the second connection");
 
@@ -65,8 +71,7 @@ int main() {
 		        "second connection scan must not replace first connection metrics");
 		Require(Scalar(second, "SELECT count(*) FROM duckomo_last_scan_metrics()") == "1",
 		        "second connection should publish its own scan metrics");
-		Require(Scalar(first, "SELECT count(*) FROM duckomo_clear_cache()") == "1",
-		        "cache clear should return one row without overwriting scan history");
+		Require(first.Query("SELECT * FROM duckomo_clear_cache()")->HasError(), "removed clear function must fail");
 		Require(Scalar(first, "SELECT count(*) FROM duckomo_last_scan_metrics()") == "1",
 		        "cache clear must not clear the last scan profile");
 		Require(Scalar(first, "SELECT count(*) FROM read_om('test/data/raw.om') a, read_om('test/data/raw.om') b") == "36",
@@ -74,22 +79,23 @@ int main() {
 		Require(Scalar(first,
 		               "SELECT CASE WHEN count(*) = 2 AND count(DISTINCT query_id) = 1 AND "
 		               "count(DISTINCT scan_id) = 2 AND min(scan_id) = 0 AND max(scan_id) = 1 "
+		               "AND count(*) FILTER (WHERE metrics LIKE '%\"schema_version\":4%' "
+		               "AND metrics LIKE '%\"terminal_published\":true%') = 2 "
 		               "THEN 1 ELSE 0 END FROM duckomo_last_scan_metrics()") == "1",
-		        "QueryEnd must publish both scans once under one SQL query ID");
+		        "QueryEnd must publish both terminal v4 scans once under one SQL query ID");
 		Require(Scalar(first, "SELECT count(*) FROM duckomo_last_scan_metrics()") == "2",
 		        "reading metrics must not replace a two-scan query snapshot");
 		Require(Scalar(second, "SELECT count(*) FROM duckomo_last_scan_metrics()") == "1",
 		        "a multi-scan query on one connection must not replace another connection profile");
-		Require(Scalar(first, "SELECT count(*) FROM duckomo_clear_cache()") == "1",
-		        "cache clear should return one row after a multi-scan query");
+		Require(first.Query("SELECT * FROM duckomo_clear_cache()")->HasError(), "removed clear function must fail");
 		Require(Scalar(first, "SELECT count(*) FROM duckomo_last_scan_metrics()") == "2",
 		        "cache clearing must preserve all scan profiles from the latest query");
 		auto remote = first.Query(
 		    "SELECT * FROM read_om('https://example.invalid/file.om?X-Amz-Signature=secret-signature')");
-		Require(remote && remote->HasError(), "remote reads must stay unavailable without the paired range provider");
-		Require(remote->GetError().find("paired httpfs extension with the matching DuckOMO range ABI") !=
+		Require(remote && remote->HasError(), "remote reads must stay unavailable without the official httpfs");
+		Require(remote->GetError().find("matching official httpfs") !=
 		            std::string::npos,
-		        "unsupported remote input should explain the missing capability");
+		        "unsupported remote input should explain the missing runtime dependency");
 		Require(remote->GetError().find("secret-signature") == std::string::npos,
 		        "remote path errors must not expose signed URL query parameters");
 

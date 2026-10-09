@@ -1,0 +1,222 @@
+[
+  {
+    "pair_id": "baseline-1.5.4",
+    "scenario": "ignore-range",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 481,
+    "server_body_bytes": 481,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "baseline-1.5.4",
+    "scenario": "wrong-range",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 9,
+    "server_body_bytes": 9,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "baseline-1.5.4",
+    "scenario": "non-identity",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 13,
+    "server_body_bytes": 13,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "baseline-1.5.4",
+    "scenario": "change-version",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 13,
+    "server_body_bytes": 13,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "baseline-1.5.4",
+    "scenario": "replace",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 13,
+    "server_body_bytes": 13,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "baseline-1.5.4",
+    "scenario": "403",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 0,
+    "server_body_bytes": 0,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "baseline-1.5.4",
+    "scenario": "404",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 0,
+    "server_body_bytes": 0,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "baseline-1.5.4",
+    "scenario": "no-head",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 0,
+    "server_body_bytes": 0,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "baseline-1.5.4",
+    "scenario": "redirect",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 1,
+    "server_body_bytes": 1,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "baseline-1.5.4",
+    "scenario": "signed-s3-raw",
+    "query_exit": 0,
+    "status": "success",
+    "client_body_bytes": 324,
+    "server_body_bytes": 324,
+    "parity": true,
+    "transport_count_complete": true,
+    "result_sha256": "9c23371787f65fbf710c7c25376a4061e7a7bace941345ede7c9e5bab24c9b51"
+  },
+  {
+    "pair_id": "prerelease-2.0-dev",
+    "scenario": "ignore-range",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 481,
+    "server_body_bytes": 481,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "prerelease-2.0-dev",
+    "scenario": "wrong-range",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 9,
+    "server_body_bytes": 9,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "prerelease-2.0-dev",
+    "scenario": "non-identity",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 13,
+    "server_body_bytes": 13,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "prerelease-2.0-dev",
+    "scenario": "change-version",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 13,
+    "server_body_bytes": 13,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "prerelease-2.0-dev",
+    "scenario": "replace",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 13,
+    "server_body_bytes": 13,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "prerelease-2.0-dev",
+    "scenario": "403",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 0,
+    "server_body_bytes": 0,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "prerelease-2.0-dev",
+    "scenario": "404",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 0,
+    "server_body_bytes": 0,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "prerelease-2.0-dev",
+    "scenario": "no-head",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 0,
+    "server_body_bytes": 0,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "prerelease-2.0-dev",
+    "scenario": "redirect",
+    "query_exit": 1,
+    "status": "failure",
+    "client_body_bytes": 1,
+    "server_body_bytes": 1,
+    "transport_count_complete": true,
+    "parity": true,
+    "verification_exit": 0
+  },
+  {
+    "pair_id": "prerelease-2.0-dev",
+    "scenario": "signed-s3-raw",
+    "query_exit": 0,
+    "status": "success",
+    "client_body_bytes": 324,
+    "server_body_bytes": 324,
+    "parity": true,
+    "transport_count_complete": true,
+    "result_sha256": "9c23371787f65fbf710c7c25376a4061e7a7bace941345ede7c9e5bab24c9b51"
+  }
+]

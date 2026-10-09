@@ -11,10 +11,8 @@ namespace duckomo {
 // Full metadata-driven OM scanner. The dimensions map is validated during
 // binding; output columns are the metadata arrays themselves.
 TableFunction GetReadOmFunction();
+TableFunction GetGridInfoFunction();
 TableFunction GetLastScanMetricsFunction();
-TableFunction GetClearCacheFunction();
-void SetDuckomoCacheEnabled(ClientContext &context, bool enabled);
-void SetDuckomoCacheCapacity(ClientContext &context, std::uint64_t capacity_bytes);
 
 } // namespace duckomo
 } // namespace duckdb

@@ -1,0 +1,71 @@
+# name: test/sql/grid_version_compat.test
+# description: Preserve DuckDB API query semantics across the pinned version matrix
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+# Fixed query semantics are executed by every matrix build. The unsafe OR
+# branch keeps the full residual predicate even when the native candidate is
+# widened, so the returned rows must not change across DuckDB API generations.
+query I
+SELECT count(*)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0
+        }
+    },
+    spatial_axes := ['row', 'column'], include_source := true
+)
+WHERE (longitude >= 1 AND value % 2 = 1) OR value = 0;
+----
+3
+
+query I
+SELECT count(*)
+FROM duckomo_last_scan_metrics()
+WHERE metrics LIKE '%"residual_filter_retained":true%'
+  AND metrics LIKE '%"selection_mode":"fallback"%';
+----
+1
+
+# Case-insensitive Identifier/named-argument lookup must retain the same
+# output and filtering semantics as the baseline std::string API.
+query III
+SELECT value, latitude, longitude
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    DIMENSIONS := map(['value'], [['row', 'column']]),
+    GRID := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0
+        }
+    },
+    SPATIAL_AXES := ['row', 'column']
+)
+WHERE longitude BETWEEN 0.9 AND 2.1 AND value >= 3
+ORDER BY value;
+----
+4.000000	0.9999999999999964	0.9999999999999964
+5.000000	0.9999999999999964	1.9999999999999998

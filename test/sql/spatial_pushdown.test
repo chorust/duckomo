@@ -92,6 +92,13 @@ SELECT count(*) FROM read_om(
 ----
 4
 
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE metrics LIKE '%"selection_mode":"restricted"%'
+  AND metrics NOT LIKE '%unsupported_or_expression%';
+----
+1
+
 query III
 SELECT min(latitude), max(longitude), count(*) FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',

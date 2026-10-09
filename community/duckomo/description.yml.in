@@ -1,0 +1,35 @@
+# Draft: replace @DUCKOMO_SOURCE_REF@ with the public source commit before submission.
+extension:
+  name: duckomo
+  description: Query Open-Meteo OM arrays with selective reads and geographic coordinates
+  version: 0.1.0
+  language: C++
+  build: cmake
+  license: Apache-2.0
+  maintainers:
+    - chorust
+  # First release: Linux AArch64 (glibc) only. Expand after platform validation.
+  excluded_platforms: "linux_amd64;linux_amd64_musl;linux_arm64_musl;osx_amd64;osx_arm64;windows_amd64;windows_arm64;windows_amd64_mingw;windows_amd64_rtools;wasm_mvp;wasm_eh;wasm_threads"
+
+repo:
+  github: chorust/duckomo
+  ref: "@DUCKOMO_SOURCE_REF@"
+
+docs:
+  hello_world: |
+    LOAD duckomo;
+    SELECT DISTINCT function_name
+    FROM duckdb_functions()
+    WHERE function_name IN ('read_om', 'read_om_raw')
+    ORDER BY function_name;
+  extended_description: |
+    DuckOMO queries Float32 arrays in Open-Meteo OM v3 files as SQL tables.
+    It supports local files, selective value reads, geographic coordinates,
+    and explicitly declared semantic axes. HTTP(S) and S3 reads use DuckDB's
+    official httpfs extension: INSTALL httpfs; LOAD httpfs;
+
+    This first release targets DuckDB v1.5.6 on Linux AArch64 (glibc).
+    v1.5.4 and v1.5.5 have separate source compatibility checks; community
+    publication targets the latest stable DuckDB release.
+    Projected and reduced Gaussian grid acceptance is still in progress.
+    See https://github.com/chorust/duckomo for supported inputs and SQL examples.

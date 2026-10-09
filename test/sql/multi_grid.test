@@ -1,0 +1,752 @@
+# name: test/sql/multi_grid.test
+# description: Validate version=1 grid binding and native-position coordinates
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/json/json.duckdb_extension';
+
+# A rotated grid with its north pole at the geographic north pole is an
+# identity mapping. The fixture has six row-major values in [row, column].
+query RRR
+SELECT value, latitude, longitude
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0
+        }
+    },
+    spatial_axes := ['row', 'column']
+)
+ORDER BY value;
+----
+0.000000	0.000000	0.000000
+1.000000	0.000000	1.000000
+2.000000	0.000000	2.000000
+3.000000	1.000000	0.000000
+4.000000	1.000000	1.000000
+5.000000	1.000000	2.000000
+
+# Source positions remain the original row-major positions and object identity
+# is opaque; no content or version evidence is claimed for this fixture.
+query IIIIIIIIIII
+SELECT count(*), count(*) FILTER (WHERE om_source.version_strength = 'unverifiable'),
+       count(*) FILTER (WHERE om_source.content_verified), min(om_source.logical_index),
+       max(om_source.logical_index), min(om_source.point_index), max(om_source.point_index),
+       count(*) FILTER (WHERE om_source.object_version IS NULL),
+       count(*) FILTER (WHERE starts_with(om_source.object_id, 'sha256:')),
+       count(*) FILTER (WHERE om_source.grid_id IS NOT NULL AND om_source.layout_id IS NOT NULL),
+       count(*) FILTER (WHERE om_source.axis_indices[1] BETWEEN 0 AND 1 AND
+                              om_source.axis_indices[2] BETWEEN 0 AND 2)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0
+        }
+    },
+    spatial_axes := ['row', 'column'], include_source := true
+);
+----
+6	6	0	0	5	0	5	6	6	6	6
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', include_source := NULL);
+----
+<REGEX>:(?i).*(include_source|BOOLEAN|grid or domain).*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', include_source := true);
+----
+<REGEX>:(?i).*include_source.*(grid|domain).*
+
+query I
+SELECT count(*)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {'nx': 3, 'ny': 2, 'lat0': 0.0, 'lon0': 0.0,
+             'dlat': 1.0, 'dlon': 1.0, 'order': 'separate'},
+    spatial_axes := ['row', 'column']);
+----
+6
+
+query I
+SELECT count(*) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');
+----
+6
+
+# The legacy seven-field regular grid keeps the original coordinate columns
+# and row-major value positions after version=1 definitions are introduced.
+query RRR
+SELECT value, latitude, longitude
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {'nx': 3, 'ny': 2, 'lat0': 0.0, 'lon0': 0.0,
+             'dlat': 1.0, 'dlon': 1.0, 'order': 'separate'},
+    spatial_axes := ['row', 'column'])
+ORDER BY value;
+----
+0.000000	0.000000	0.000000
+1.000000	0.000000	1.000000
+2.000000	0.000000	2.000000
+3.000000	1.000000	0.000000
+4.000000	1.000000	1.000000
+5.000000	1.000000	2.000000
+
+# Version-one definitions evaluate copied spatial predicates on native source
+# positions while keeping the original SQL filter for exact result semantics.
+query RRR
+SELECT value, latitude, longitude
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0
+        }
+    },
+    spatial_axes := ['row', 'column'])
+WHERE longitude >= 1.5 OR longitude < 0.5
+ORDER BY value;
+----
+0.000000	0.000000	0.000000
+2.000000	0.000000	2.000000
+3.000000	1.000000	0.000000
+5.000000	1.000000	2.000000
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE metrics LIKE '%"selection_mode":"restricted"%'
+  AND metrics NOT LIKE '%unsafe_or_expression%';
+----
+1
+
+# One unsafe branch widens the whole OR candidate set and remains a residual.
+query I
+SELECT count(*)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0
+        }
+    },
+    spatial_axes := ['row', 'column'])
+WHERE longitude >= 1 OR value = 0;
+----
+4
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE metrics LIKE '%"selection_mode":"fallback"%'
+  AND metrics LIKE '%unsafe_or_expression%';
+----
+1
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 2, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);
+----
+<REGEX>:(?i).*version.*exactly 1.*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'unknown_grid_type', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0}
+    }, spatial_axes := ['row', 'column']);
+----
+<REGEX>:(?i).*grid type is unknown.*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0}
+    }, spatial_axes := ['row', 'column']);
+----
+<REGEX>:(?i).*(exactly|missing|declared fields).*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3.5, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);
+----
+<REGEX>:(?i).*must be an integer value.*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 9223372036854775808, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);
+----
+<REGEX>:(?i).*must fit in a signed 64-bit integer.*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'row']);
+----
+<REGEX>:(?i).*(duplicate|distinct|axis).*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/crs-conflict.om',
+    dimensions := map(['unknown_crs/value'], [['latitude_axis', 'longitude_axis']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['latitude_axis', 'longitude_axis']);
+----
+<REGEX>:(?i).*unrecognized source crs_wkt profile.*
+
+# A complete source Gaussian CRS profile is retained and checked against the
+# declared WGS84 earth model, ordered axes, and angular coordinate output.
+query RRR
+SELECT "gaussian_wgs84/value", latitude, longitude
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/crs-wgs84-gaussian.om',
+    dimensions := map(['gaussian_wgs84/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'reduced_gaussian', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'wgs84', 'semi_major_m': 6378137.0, 'inverse_flattening': 298.257223563},
+        'layout': {'order': 'row_major'},
+        'parameters': {
+            'n': 1, 'latitude_rule': 'explicit_v1',
+            'rows': [{'latitude': 60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0},
+                     {'latitude': -60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0}],
+            'subset_segments': NULL
+        }
+    }, spatial_axes := ['point'])
+ORDER BY "gaussian_wgs84/value";
+----
+0.000000	60.000000	0.000000
+1.000000	60.000000	60.000000
+2.000000	60.000000	120.000000
+3.000000	60.000000	-180.000000
+4.000000	60.000000	-120.000000
+5.000000	60.000000	-60.000000
+6.000000	-60.000000	0.000000
+7.000000	-60.000000	60.000000
+8.000000	-60.000000	120.000000
+9.000000	-60.000000	-180.000000
+10.000000	-60.000000	-120.000000
+11.000000	-60.000000	-60.000000
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/crs-wgs84-gaussian.om',
+    dimensions := map(['gaussian_wgs84/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'reduced_gaussian', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'order': 'row_major'},
+        'parameters': {
+            'n': 1, 'latitude_rule': 'explicit_v1',
+            'rows': [{'latitude': 60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0},
+                     {'latitude': -60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0}],
+            'subset_segments': NULL
+        }
+    }, spatial_axes := ['point']);
+----
+<REGEX>:(?i).*source crs_wkt profile conflicts with the declared grid geometry or earth model.*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column'], domain := 'ncep_gfswave025');
+----
+<REGEX>:(?i).*mutually exclusive.*
+
+# The source-derived registry is consumed by the binder and validates its
+# frozen Gaussian point-axis profile before any value decoding begins.
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    domain := 'n160');
+----
+<REGEX>:(?i).*domain 'n160'.*spatial axis 'point'.*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': NULL}
+    }, spatial_axes := ['row', 'column']);
+----
+<REGEX>:(?i).*rotation.*must not be NULL.*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/x-fastest.om',
+    dimensions := map(['flattened_x_fastest/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'reduced_gaussian', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'wgs84', 'semi_major_m': 6378137.0, 'inverse_flattening': 298.257223563},
+        'layout': {'order': 'row_major'},
+        'parameters': {
+            'n': 1, 'latitude_rule': 'explicit_v1',
+            'rows': [{'latitude': 60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0},
+                     {'latitude': -60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0}],
+            'subset_segments': [{'parent_row': 0, 'parent_begin': 0, 'count': 5},
+                                {'parent_row': 1, 'parent_begin': 0, 'count': 6}]
+        }
+    }, spatial_axes := ['point']);
+----
+<REGEX>:(?i).*(axis lengths|shape|layout|point axis).*
+
+statement error
+SELECT value FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/layouts.om',
+    dimensions := map(
+        ['reverse/value', 'flattened_x_fastest/value', 'flattened_y_fastest/value',
+         'interleaved/temperature', 'interleaved/humidity'],
+        [['latitude_axis', 'longitude_axis'], ['point'], ['point'],
+         ['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run'],
+         ['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['latitude_axis', 'longitude_axis']);
+----
+<REGEX>:(?i).*identical shapes.*
+
+# Each closed grid family binds through the same version=1 interface. The
+# synthetic arrays exercise separate, x-fastest, y-fastest, and row-major axes.
+query III
+SELECT count(*), count(*) FILTER (WHERE latitude IS NULL),
+       count(*) FILTER (WHERE longitude IS NULL)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/reverse.om',
+    dimensions := map(['reverse/value'], [['latitude_axis', 'longitude_axis']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    },
+    spatial_axes := ['latitude_axis', 'longitude_axis']
+);
+----
+12	0	0
+
+# Gaussian region segments define local logical order independently of parent
+# row/point positions.  Value decoding must use the object's local point offset.
+query IIII
+SELECT count(*)::INTEGER, sum("flattened_x_fastest/value")::INTEGER,
+       min("flattened_x_fastest/value")::INTEGER, max("flattened_x_fastest/value")::INTEGER
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/x-fastest.om',
+    dimensions := map(['flattened_x_fastest/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'reduced_gaussian', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'wgs84', 'semi_major_m': 6378137.0, 'inverse_flattening': 298.257223563},
+        'layout': {'order': 'row_major'},
+        'parameters': {
+            'n': 1, 'latitude_rule': 'explicit_v1',
+            'rows': [{'latitude': 60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0},
+                     {'latitude': -60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0}],
+            'subset_segments': [{'parent_row': 0, 'parent_begin': 3, 'count': 3},
+                                {'parent_row': 1, 'parent_begin': 0, 'count': 6},
+                                {'parent_row': 0, 'parent_begin': 0, 'count': 3}]
+        }
+    }, spatial_axes := ['point'])
+WHERE longitude BETWEEN -70 AND 70;
+----
+6	708	2	202
+
+query III
+SELECT count(*), count(*) FILTER (WHERE latitude IS NULL),
+       count(*) FILTER (WHERE longitude IS NULL)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/x-fastest.om',
+    dimensions := map(['flattened_x_fastest/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'lambert_conformal_conic', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'x_fastest'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1000.0, 'dy': 1000.0,
+                       'central_meridian': 10.0, 'latitude_of_origin': 45.0,
+                       'standard_parallel_1': 45.0, 'standard_parallel_2': 45.0}
+    },
+    spatial_axes := ['point']
+);
+----
+12	0	0
+
+query III
+SELECT count(*), count(*) FILTER (WHERE latitude IS NULL),
+       count(*) FILTER (WHERE longitude IS NULL)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/y-fastest.om',
+    dimensions := map(['flattened_y_fastest/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'stereographic', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'y_fastest'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1000.0, 'dy': 1000.0,
+                       'central_meridian': 0.0, 'latitude_of_origin': 90.0, 'scale_factor': 1.0}
+    },
+    spatial_axes := ['point']
+);
+----
+12	0	0
+
+query III
+SELECT count(*), count(*) FILTER (WHERE latitude IS NULL),
+       count(*) FILTER (WHERE longitude IS NULL)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/x-fastest.om',
+    dimensions := map(['flattened_x_fastest/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'reduced_gaussian', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'wgs84', 'semi_major_m': 6378137.0, 'inverse_flattening': 298.257223563},
+        'layout': {'order': 'row_major'},
+        'parameters': {
+            'n': 1, 'latitude_rule': 'explicit_v1',
+            'rows': [{'latitude': 60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0},
+                     {'latitude': -60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0}],
+            'subset_segments': NULL
+        }
+    },
+    spatial_axes := ['point']
+);
+----
+12	0	0
+
+query III
+SELECT count(*), count(*) FILTER (WHERE latitude IS NULL),
+       count(*) FILTER (WHERE longitude IS NULL)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/interleaved.om',
+    dimensions := map(
+        ['interleaved/temperature', 'interleaved/humidity'],
+        [['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run'],
+         ['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    },
+    spatial_axes := ['latitude_axis', 'longitude_axis']
+);
+----
+384	0	0
+
+# A spatially restricted value read with spatial axes separated by semantic
+# axes must map each logical point back to the official OM decoder offsets.
+query II
+SELECT count(*)::INTEGER, sum("interleaved/temperature")::INTEGER
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/interleaved.om',
+    dimensions := map(
+        ['interleaved/temperature', 'interleaved/humidity'],
+        [['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run'],
+         ['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['latitude_axis', 'longitude_axis'])
+WHERE latitude BETWEEN 0.99 AND 1.01 AND longitude BETWEEN 1.99 AND 2.01;
+----
+32	1910608
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0, 'unexpected': 1.0
+        }
+    },
+    spatial_axes := ['row', 'column']
+);
+----
+<REGEX>:(?i).*(unknown|exactly|parameters).*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 2, 'ny': 3, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0
+        }
+    },
+    spatial_axes := ['row', 'column']
+);
+----
+<REGEX>:(?i).*(axis lengths|shape|layout).*
+
+# A dimensions declaration may fill absent coordinate metadata, but it cannot
+# relabel an ordered coordinates attribute already carried by the OM variable.
+statement error
+SELECT temperature FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/multi.om',
+    dimensions := map(['temperature', 'humidity'], [['row', 'column'], ['column', 'row']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    },
+    spatial_axes := ['row', 'column']);
+----
+<REGEX>:(?i).*dimensions axis order differs.*
+
+# Column names added by geographic binding cannot collide with source arrays.
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/spatial_conflict.om',
+    dimensions := map(['Latitude'], [['lat', 'lon']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    },
+    spatial_axes := ['lat', 'lon']);
+----
+<REGEX>:(?i).*coordinate column name conflicts.*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);
+----
+<REGEX>:(?i).*(duplicate|unknown|layout).*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/multi.om',
+    dimensions := map(['temperature'], [['row', 'column']]),
+    grid := {'nx': 3, 'ny': 2, 'lat0': 0.0, 'lon0': 0.0,
+             'dlat': 1.0, 'dlon': 1.0, 'order': 'separate'},
+    spatial_axes := ['row', 'column']);
+----
+<REGEX>:(?i).*(exactly cover|all arrays|missing).*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/x-fastest.om',
+    dimensions := map(['flattened_x_fastest/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'reduced_gaussian', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'wgs84', 'semi_major_m': 6378137.0, 'inverse_flattening': 298.257223563},
+        'layout': {'order': 'row_major'},
+        'parameters': {
+            'n': 1, 'latitude_rule': 'explicit_v1',
+            'rows': [{'latitude': 60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0},
+                     {'latitude': -60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0}]
+        }
+    }, spatial_axes := ['point']);
+----
+<REGEX>:(?i).*(subset_segments|missing|parameters).*
+
+# A formula vector is not a producer domain, and a misspelled domain name
+# must fail before any array values are returned.
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['y', 'x']]),
+    domain := 'lambert_formula_vector');
+----
+<REGEX>:(?i).*formula identity vector, not a producer domain.*
+
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    domain := 'not_a_registered_domain');
+----
+<REGEX>:(?i).*domain is unknown or not verified.*
+
+# The actual producer ALADIN Lambert domain has its own frozen y/x axis
+# profile. It must not inherit the formula identity vector or accept relabeled
+# axes from a shape-compatible array.
+statement error
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    domain := 'aladin_central_europe_2km');
+----
+<REGEX>:(?i).*domain 'aladin_central_europe_2km' requires spatial axis 'y'.*
+
+# This synthetic identity-only fixture checks version=1 N160 binding against its
+# registered definition. It is not an N160 producer object or an O1280 mapping.
+statement ok
+CREATE MACRO n160_row_latitudes() AS from_json('[89.57877349853516,89.01715087890625,88.45552825927734,87.89390563964844,87.33228302001953,86.77066040039062,86.20903778076172,85.64741516113281,85.0857925415039,84.524169921875,83.96255493164062,83.40093231201172,82.83930969238281,82.2776870727539,81.716064453125,81.1544418334961,80.59281921386719,80.03119659423828,79.46957397460938,78.90795135498047,78.34632873535156,77.78470611572266,77.22308349609375,76.66146087646484,76.09983825683594,75.53821563720703,74.97659301757812,74.41497039794922,73.85334777832031,73.2917251586914,72.7301025390625,72.1684799194336,71.60685729980469,71.04523468017578,70.48361206054688,69.92198944091797,69.36036682128906,68.79874420166016,68.23712158203125,67.67549896240234,67.11387634277344,66.55225372314453,65.99063110351562,65.42900848388672,64.86738586425781,64.3057632446289,63.74414825439453,63.182525634765625,62.62090301513672,62.05928039550781,61.497657775878906,60.93603515625,60.374412536621094,59.81278991699219,59.25116729736328,58.689544677734375,58.12792205810547,57.56629943847656,57.004676818847656,56.44305419921875,55.881431579589844,55.31980895996094,54.75818634033203,54.19656753540039,53.634944915771484,53.07332229614258,52.51169967651367,51.950077056884766,51.38845443725586,50.82683181762695,50.26520919799805,49.70358657836914,49.141963958740234,48.58034133911133,48.01871871948242,47.457096099853516,46.89547348022461,46.3338508605957,45.7722282409668,45.21060562133789,44.648983001708984,44.08736038208008,43.52573776245117,42.964115142822266,42.40249252319336,41.84087371826172,41.27925109863281,40.717628479003906,40.156005859375,39.594383239746094,39.03276062011719,38.47113800048828,37.909515380859375,37.34789276123047,36.78627014160156,36.224647521972656,35.66302490234375,35.101402282714844,34.53977966308594,33.97815704345703,33.416534423828125,32.85491180419922,32.29328918457031,31.73166847229004,31.170045852661133,30.608423233032227,30.04680061340332,29.485177993774414,28.923555374145508,28.3619327545166,27.800310134887695,27.238689422607422,26.677066802978516,26.11544418334961,25.553821563720703,24.992198944091797,24.43057632446289,23.868953704833984,23.307331085205078,22.745708465576172,22.184085845947266,21.62246322631836,21.060842514038086,20.49921989440918,19.937597274780273,19.375974655151367,18.81435203552246,18.252729415893555,17.69110679626465,17.129484176635742,16.567861557006836,16.00623893737793,15.44461727142334,14.882994651794434,14.321372032165527,13.759750366210938,13.198127746582031,12.636505126953125,12.074882507324219,11.513259887695312,10.951637268066406,10.390015602111816,9.82839298248291,9.266770362854004,8.705147743225098,8.143525123596191,7.581902980804443,7.020280838012695,6.458658218383789,5.897035598754883,5.335413455963135,4.7737908363342285,4.212168216705322,3.650546073913574,3.088923454284668,2.527301073074341,1.9656785726547241,1.4040560722351074,0.8424336910247803,0.28081122040748596,-0.28081122040748596,-0.8424336910247803,-1.404056191444397,-1.9656785726547241,-2.5273008346557617,-3.088923454284668,-3.650545835494995,-4.212168216705322,-4.7737908363342285,-5.335412979125977,-5.897035598754883,-6.458658218383789,-7.020280361175537,-7.581902980804443,-8.143525123596191,-8.705147743225098,-9.266770362854004,-9.82839298248291,-10.3900146484375,-10.951637268066406,-11.513259887695312,-12.074882507324219,-12.636505126953125,-13.198127746582031,-13.759749412536621,-14.321372032165527,-14.882994651794434,-15.44461727142334,-16.00623893737793,-16.567861557006836,-17.129484176635742,-17.69110679626465,-18.252729415893555,-18.81435203552246,-19.375974655151367,-19.937597274780273,-20.49921989440918,-21.060840606689453,-21.62246322631836,-22.184085845947266,-22.745708465576172,-23.307331085205078,-23.868953704833984,-24.43057632446289,-24.992198944091797,-25.553821563720703,-26.11544418334961,-26.677066802978516,-27.23868751525879,-27.800310134887695,-28.3619327545166,-28.923555374145508,-29.485177993774414,-30.04680061340332,-30.608423233032227,-31.170045852661133,-31.731666564941406,-32.29328918457031,-32.85491180419922,-33.416534423828125,-33.97815704345703,-34.53977966308594,-35.101402282714844,-35.66302490234375,-36.224647521972656,-36.78627014160156,-37.34789276123047,-37.909515380859375,-38.47113800048828,-39.03276062011719,-39.594383239746094,-40.156005859375,-40.717628479003906,-41.27925109863281,-41.84086990356445,-42.40249252319336,-42.964115142822266,-43.52573776245117,-44.08736038208008,-44.648983001708984,-45.21060562133789,-45.7722282409668,-46.3338508605957,-46.89547348022461,-47.457096099853516,-48.01871871948242,-48.58034133911133,-49.141963958740234,-49.70358657836914,-50.26520919799805,-50.82683181762695,-51.38845443725586,-51.950077056884766,-52.51169967651367,-53.07332229614258,-53.634944915771484,-54.196563720703125,-54.75818634033203,-55.31980895996094,-55.881431579589844,-56.44305419921875,-57.004676818847656,-57.56629943847656,-58.12792205810547,-58.689544677734375,-59.25116729736328,-59.81278991699219,-60.374412536621094,-60.93603515625,-61.497657775878906,-62.05928039550781,-62.62090301513672,-63.182525634765625,-63.744144439697266,-64.30577087402344,-64.86739349365234,-65.42901611328125,-65.99063873291016,-66.55226135253906,-67.11388397216797,-67.67550659179688,-68.23712921142578,-68.79875183105469,-69.3603744506836,-69.9219970703125,-70.4836196899414,-71.04524230957031,-71.60686492919922,-72.16848754882812,-72.73011016845703,-73.29173278808594,-73.85335540771484,-74.41497802734375,-74.97660064697266,-75.53822326660156,-76.09984588623047,-76.66146850585938,-77.22309112548828,-77.78471374511719,-78.3463363647461,-78.907958984375,-79.4695816040039,-80.03120422363281,-80.59282684326172,-81.15444946289062,-81.71607208251953,-82.27769470214844,-82.83931732177734,-83.40093994140625,-83.96255493164062,-84.52417755126953,-85.08580017089844,-85.64742279052734,-86.20904541015625,-86.77066802978516,-87.33229064941406,-87.89391326904297,-88.45553588867188,-89.01715850830078,-89.57878112792969]', '["DOUBLE"]');
+
+statement ok
+CREATE MACRO n160_row_counts() AS from_json('[18,25,36,40,45,50,60,64,72,72,80,90,90,96,108,120,120,125,128,135,144,150,160,160,180,180,180,192,192,200,216,216,225,225,240,240,243,250,256,270,270,288,288,288,300,300,320,320,320,320,324,360,360,360,360,360,360,375,375,375,384,384,400,400,400,405,432,432,432,432,432,450,450,450,450,480,480,480,480,480,480,480,500,500,500,500,500,512,512,540,540,540,540,540,540,540,540,576,576,576,576,576,576,576,576,576,576,600,600,600,600,600,600,600,600,600,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,640,600,600,600,600,600,600,600,600,600,576,576,576,576,576,576,576,576,576,576,540,540,540,540,540,540,540,540,512,512,500,500,500,500,500,480,480,480,480,480,480,480,450,450,450,450,432,432,432,432,432,405,400,400,400,384,384,375,375,375,360,360,360,360,360,360,324,320,320,320,320,300,300,288,288,288,270,270,256,250,243,240,240,225,225,216,216,200,192,192,180,180,180,160,160,150,144,135,128,125,120,120,108,96,90,90,80,72,72,64,60,50,45,40,36,25,18]', '["BIGINT"]');
+
+statement ok
+CREATE MACRO n160_explicit_grid() AS struct_pack(
+    version := 1::BIGINT,
+    type := 'reduced_gaussian',
+    numeric_policy := 'openmeteo_f32_v1',
+    earth := struct_pack(model := 'wgs84', semi_major_m := 6378137.0, inverse_flattening := 298.257223563),
+    layout := struct_pack("order" := 'row_major'),
+    parameters := struct_pack(
+        n := 160::BIGINT,
+        latitude_rule := 'openmeteo_approx_v1',
+        rows := list_transform(range(0, 320), lambda index : struct_pack(
+            latitude := list_extract(n160_row_latitudes(), index + 1),
+            point_count := list_extract(n160_row_counts(), index + 1),
+            longitude_origin := 0.0::DOUBLE,
+            longitude_step := CAST(CAST(360.0 AS FLOAT) / CAST(list_extract(n160_row_counts(), index + 1) AS FLOAT) AS DOUBLE)
+        )),
+        subset_segments := NULL::STRUCT(parent_row BIGINT, parent_begin BIGINT, count BIGINT)[]
+    )
+);
+
+# Both declarations use the same synthetic shape. Matching identity and layout
+# tests the public explicit/domain binding contract, not producer coordinates.
+query II
+WITH domain_info AS (
+    SELECT grid_id, layout::VARCHAR AS layout
+    FROM om_grid_info(
+        '__WORKING_DIRECTORY__/test/data/grids/gaussian-n160-identity.om',
+        dimensions := map(['n160_identity/value'], [['point']]),
+        domain := 'n160'
+    )
+), explicit_info AS (
+    SELECT grid_id, layout::VARCHAR AS layout
+    FROM om_grid_info(
+        '__WORKING_DIRECTORY__/test/data/grids/gaussian-n160-identity.om',
+        dimensions := map(['n160_identity/value'], [['point']]),
+        grid := n160_explicit_grid(),
+        spatial_axes := ['point']
+    )
+)
+SELECT domain_info.grid_id = explicit_info.grid_id,
+       domain_info.layout = explicit_info.layout
+FROM domain_info CROSS JOIN explicit_info;
+----
+true	true

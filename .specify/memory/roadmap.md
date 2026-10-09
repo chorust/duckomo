@@ -62,10 +62,10 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 - **C-06 — 结果与收益分别举证：** 固定输入、参考、查询、列集合、构建、环境和缓存条件，完整消费结果。值参考来自独立官方 reader 路径，坐标参考不调用待测映射；收益以真实字节和解码计量判定。耗时和内存按实际值及作用范围记录；失败、不完整统计、输出行数或 `EXPLAIN` 不能充当成功性能证据。来源：[001 观测契约](../../specs/001-local-om-scanner/contracts/validation-evidence.md)、[002 观测契约](../../specs/002-spatial-pushdown/contracts/validation-evidence.md)、[003 观测契约](../../specs/003-dimensions-remote-parallel/contracts/validation-evidence.md)。
 - **C-07 — 平台范围：** 当前明确验收范围是 Linux AArch64；Linux x86_64 支持与验证已按 artifacts 记录的用户决定暂缓。001 原计划的 x86_64 目标是历史记录，不能据 AArch64 结果宣称其已通过。来源：[产品路线图验证范围](../../docs/roadmap.md#已完成部分的验证范围)、[001 quickstart](../../specs/001-local-om-scanner/quickstart.md#supported-behavior-and-current-platform)、[002 最终验收](../../specs/002-spatial-pushdown/evidence/final.md)、[003 plan](../../specs/003-dimensions-remote-parallel/plan.md#technical-context)。
 - **C-08 — 五类维度的类型与兼容：** `axes` 使用严格校验的原生 STRUCT；time 输出既有 `valid_time TIMESTAMP`，保留 `valid_times`、已识别时间元数据和标量快照。time/run 为 UTC 微秒时刻，lead_time 为无月分量 INTERVAL，level 为明确 kind/unit 的无损 DOUBLE，member 为精确保留的 BIGINT/VARCHAR。自动识别仅限已有时间证据，其余四类显式映射；不自动推导 `time = run + lead_time`。来源：[003 plan Summary](../../specs/003-dimensions-remote-parallel/plan.md#summary)、[003 SQL 契约](../../specs/003-dimensions-remote-parallel/contracts/sql-interface.md#axes-声明)。
-- **C-09 — 远程使用配套 httpfs 与严格范围：** 003 选择固定 httpfs（`c3f215ab360f04dc3d3d5305fa81849c0121f111`）和受控 range-session 补丁，版本化 ABI/capability 不匹配时拒绝远程入口。每次查询以当前权限重新 HEAD 和范围探测；验证 206、精确范围、长度和可用强版本，异常使整次查询失败，禁止隐式完整下载；凭据与签名仍由 httpfs 处理且须脱敏。本地入口无需加载 httpfs。来源：[003 plan 的风险与缓解](../../specs/003-dimensions-remote-parallel/plan.md#risks-and-mitigations)、[remote-io 契约](../../specs/003-dimensions-remote-parallel/contracts/remote-io.md)。
+- **C-09 — 远程使用官方 HTTPFS：标准文件接口、当前访问上下文、受检位置读取和可观察长度/版本比较。对象扫描期间稳定；不承诺专用 ABI、每查询新鲜探测或逐响应快照。** 来源：[2026-10-08 修订](../../specs/004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md)。
 - **C-10 — 由 DuckDB 调度并行：** global state 保存不可变 schema/selection、惰性任务分配及终止状态，worker local state 独占句柄、decoder 与缓冲。上限受 DuckDB threads、连接设置及可用任务数共同限制，不另建线程池；每个候选逻辑位置恰好处理一次，失败后停止后续任务。来源：[003 plan](../../specs/003-dimensions-remote-parallel/plan.md#implementation-sequence)、[003 data model](../../specs/003-dimensions-remote-parallel/data-model.md#scantask-与-globallocalstate)。
-- **C-11 — 会话缓存的容量与有效性：** ClientContextState 持有默认 64 MiB 的有界 LRU 范围缓存，可关闭、清理和减容。只复用准确/包含范围，不主动扩大或预取；容量包括 payload、键、条目及索引分配。跨查询复用要求对象强版本与访问分区匹配，缓存命中仍检查权限；弱/无版本和首版本地文件不跨查询复用。来源：[003 research §7](../../specs/003-dimensions-remote-parallel/research.md#7-缓存的范围和容量)、[003 data model](../../specs/003-dimensions-remote-parallel/data-model.md#sessionrangecache)、[remote-io 契约](../../specs/003-dimensions-remote-parallel/contracts/remote-io.md#范围缓存)。
-- **C-12 — 隔离且可核验的 profiling：** v3 保留 v2 字段含义，区分 reader 逻辑请求、缓存以下读取和实际响应 body；网络量由服务端日志交叉核验。QueryEnd 发布每个 scan 的权威终态，失败/取消保留已发生成本，未知字段为 NULL；进程 RSS 与查询归属内存分开。来源：[003 plan](../../specs/003-dimensions-remote-parallel/plan.md#implementation-sequence)、[003 观测契约](../../specs/003-dimensions-remote-parallel/contracts/validation-evidence.md#指标)。
+- **C-11 — 缓存归官方依赖：移除 DuckOMO 自有 LRU 和缓存 SQL 设置/函数，不承诺原容量、访问分区或即时撤权语义。旧 G5 superseded，保留历史失败。** 来源：[2026-10-08 修订](../../specs/004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md)。
+- **C-12 — 诚实的 profiling：自有应用读取/解码/选择/任务/终态保留；远程 transport NULL/complete=false，本地 0/complete=true；自有 cache false/0/removed。服务端发送量独立审计，HTTPFS 总内存不由自有账本约束。** 来源：[2026-10-08 修订](../../specs/004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md)。
 - **C-13 — 后续网格与科学算子的边界：** 更多网格须有上游定义、真实样本对照及可重生 registry；科学算子独立于扫描入口设计，普通 `read_om` 直接输出 DuckDB Vector。xtensor/xsimd 尚未接入，现有 artifacts 未确定它们的后续选型。来源：[产品路线图](../../docs/roadmap.md#后续实现约束)。
 
 ## Planned Specs
@@ -76,9 +76,10 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 | --- | --- | --- | --- | --- |
 | 001 | Phase 0–2 | `implemented` | 44/44 勾选 | AArch64 运行门禁有通过记录；SC-006 独立复现仍为 Partial |
 | 002 | Phase 3 | `verified` | 46/46 勾选 | 原始 Phase 3 / ncep_gfswave025 在 AArch64 独立验收；T042 为延期决定，未执行 |
-| 003 | Phase 4–5 | `in-progress` | 71/73 勾选，2 项未完成 | 本地 G0–G2 通过，G4 只有本地部分结果；G3、G5–G7 未完成，完整交付门禁未闭环 |
+| 003 | Phase 4–5 | `in-progress` | 本地 G0–G2 通过，G4 只有本地部分结果；G3、G5–G7 未完成，完整交付门禁未闭环 |
+| 004 | Phase 6 | `in-progress` | 任务仍在实施；本地网格/选择代码已有进展，真实定义覆盖、远程/内存/版本 gate 和独立复现未闭环 |
 
-任务数量来自各 [tasks.md](../../specs/003-dimensions-remote-parallel/tasks.md) 的采集时快照，不表示等权完成比例或运行门禁通过数量。001 与 003 的 spec 头部仍写 `Draft`；台账根据实施和验收 artifacts 归纳生命周期，原文件状态保留。
+生命周期根据实施和验收 artifacts 归纳；任务勾选不代表运行 gate 通过。001 与 003 的 spec 头部仍写 `Draft`；原文件状态保留。
 
 ### 001 — Phase 0–2 本地 OM 可用扫描器  [status: implemented]
 
@@ -121,14 +122,26 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 - **Notes:** 截至 2026-10-02，73 项中 71 项勾选；T059 已完成，T070（独立复现）和 T073（完整验收后的路线图收尾）仍未完成。[最终证据记录](../../evidence/003-dimensions-remote-parallel/final.md)显示 G0–G2 在 Linux AArch64 本地通过，G4 有本地部分结果；G3 未通过完整门禁，G5/G6 的受控远程运行未执行，G7 独立复现未执行。T059 的成功本地 v3 profile 记录 `peak_query_owned_bytes=528249` 且 `query_memory_count_complete=true`；RSS 标为 process scope，失败/取消时无法证明的内存值仍为 NULL。任务勾选和本地门禁不等同完整发布验收；因此保持 `in-progress`，不标 `implemented` 或 `verified`。
 - **Internal sequencing:** [tasks 的故事依赖](../../specs/003-dimensions-remote-parallel/tasks.md#user-story-dependencies)明确 US2 依赖 US1；完整 G3 待 US2 路径完成；本地与远程完整 G4 依赖 US3；G5/G6 并发集成依赖 US4。部分基础开发可提前进行，任务先行勾选不能替代这些集成门禁。产品路线图现记录本地已验收范围和远程验收缺口；T073 仍待 G0–G7 及独立复现齐备后完成最终收尾。
 
+### 004 — Phase 6 多类型网格与远程空间选择  [status: in-progress]
+
+- **Description:** 在既有单对象扫描器上增加封闭的 rotated/Lambert/stereographic/reduced-Gaussian 定义、保守 native-window 空间选择、可选 source 位置和 `om_grid_info` 描述。
+- **Outcome:** 对固定真实来源完整核对坐标、值、布局及源位置；空间条件结果与完整物化后过滤一致，并在真实可跳块输入上证明局部读取收益；内存/取消/并行/终态可审计；逐 definition/domain 标注实际 evidence 等级。
+- **Scope (in):** 固定 Open-Meteo 规则和数值来源；明示 N160/N320/N320 区域 Gaussian；有界选择与预算回退；source/grid-info；metrics v4；本地及远程、版本配套和独立复现门禁。公开 HRES O1280 对象为补充 Gaussian-family 证据，不替代 N-grid 样本。Evidence levels 按 definition 隔离。
+- **Scope (out):** 任意 CRS/PROJ、Gaussian O/F 接受、由 BBOX 重建区域点序、解码块缓存、写入、多文件拼接、邻接/单元边界/面积/距离/向量方向算子，以及未经 gate 支持的发布声明。
+- **Depends on:** 复用 001–003 的 OM v3 reader、DuckDB table function、轴和受检 ReadAtFile 框架。本地网格内核可继续实现；H6 远程收益按官方 HTTPFS 新契约和受控服务独立审计。外部真实样本和独立 oracle 是 Gaussian 完整验收输入门槛，不阻止已有输入下的内核实现。
+- **Governed by:** C-01–C-13；spec 自带的 SQL、selection/I/O 和 evidence contracts。
+- **Addresses:** [产品路线图 Phase 6](../../docs/roadmap.md#阶段)、[多网格 SQL 契约](../../specs/004-multi-grid-selection/contracts/sql-interface.md)、[逐 definition 证据表](../../docs/grid-domains.md)。
+- **Spec dir:** [specs/004-multi-grid-selection/](../../specs/004-multi-grid-selection/)；[spec](../../specs/004-multi-grid-selection/spec.md)、[plan](../../specs/004-multi-grid-selection/plan.md)、[tasks](../../specs/004-multi-grid-selection/tasks.md)。
+- **Key decisions:** canonical identity 不含 provenance；未知/冲突 CRS fail closed；候选使用与输出一致的函数且保留 DuckDB residual；任务惰性、有界并可取消；Gaussian 显式完整行表/局部 parent segments；O1280 与 N family 分开；完整 scan 才能发布 authoritative exact count/成功 memory evidence。
+- **Notes:** requirements checklist 全部通过。三类真实 Open-Meteo OM v3 投影样本已有独立坐标和官方 OM C 全量值参考；2026-10-08 匹配 baseline H1 子比较对全部可用投影坐标和值逐位置通过，但其 `[ny,nx,ntime]` 轴顺序仍来自 producer profile，OM 对象源轴映射尚无独立证明。HRES O1280 `HSURF.om` 全值参考仍是补充证据，行长/坐标 point order 未映射，不能提升 N160/N320/区域状态。T003/T004 对 N-grid真实对象、区域局部点序和完整验收参考仍未完成；本地合成选择回归不替代 H0/H1/H6。G3 的远程依赖、2.0 matrix 与 H9 独立复现仍待完成。因此保持 `in-progress`，不能只因实现代码或生成 registry 存在而标 `implemented` / `verified`。
+
 ### 尚未形成 spec 的既有方向
 
 | 产品方向 | 已有目标与范围依据 | 原产品阶段状态 | 尚待确认 |
 | --- | --- | --- | --- |
-| Phase 6 — 更多网格 | 旋转、Lambert、stereographic 等投影网格与 Gaussian N grids；每类有上游定义和真实样本对照，registry 可重生。[来源](../../docs/roadmap.md#阶段) | 计划中 | spec 拆分、编号、范围排除项、具体技术选择、验收细节及 spec 级前置依赖 |
 | Phase 7 — 科学计算 | 独立设计 `om_slice`、`om_reduce`、`om_interp`、`om_regrid`；算子与扫描入口的职责分开。[来源](../../docs/roadmap.md#阶段) | 计划中 | 单一或多个 specs、编号、各算子的语义与约束、技术选型、验收及 spec 级依赖 |
 
-以上是已有产品意图的保留记录，不预分配 004/005 等 spec 编号，不创建 spec dir。产品路线图描述“先其他维度，再远程与并行；扩展网格后科学算子独立实现”的阶段意图；它不足以确定未来每个 spec 的硬依赖边（Q-06）。
+以上只保留尚未形成 spec 的 Phase 7 意图；Phase 6 已由 004 承接。产品阶段顺序本身不足以确定未来科学算子的硬依赖边。
 
 ## Open Questions
 
@@ -137,13 +150,13 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 - **Q-03 — 003 各门禁的实际完成状态（已记录，完整验收仍待完成）：** [最终证据](../../evidence/003-dimensions-remote-parallel/final.md)记录了构建身份、命令/退出码、原始本地指标及各门禁状态。G0–G2 本地通过；G4 只有本地部分结果；G3 未通过完整门禁，G5/G6/G7 未执行。后续状态以该记录和新增运行证据为准，不将未执行推定为通过。
 - **Q-04 — 产品文档与已记录基线的差异（已同步）：** README、[接口说明](../../docs/spec.md)、[技术架构](../../docs/architecture.md)及[产品路线图](../../docs/roadmap.md)现描述语义轴、并行和远程功能及其验收边界；功能已有实现不代表 Phase 4–5 完整交付。
 - **Q-05 — 002 后续 domain 扩展的验收边界待确认：** 68 项 registry 的来源及元数据审计已记录，但[原始 final](../../specs/002-spatial-pushdown/evidence/final.md)明确不覆盖全部新增 domain。后续扩展需要何种完整值、坐标、异常及独立复现证据才能作更广的 `verified` 声明，需补充对应范围与记录；缺样本项保留未知，不推定可读或不可读。
-- **Q-06 — Phase 6–7 的 spec 结构与依赖待确认：** 两个方向均在[产品路线图](../../docs/roadmap.md#阶段)中计划，但未形成项目 spec 目录。待确定拆分、编号、outcome/范围细化、技术约束和明确前置依据；不从阶段顺序推定它们分别依赖 003 或某个尚不存在的 spec。
+- **Q-06 — Phase 7 的 spec 结构与依赖待确认：** 科学计算方向仍未形成项目 spec 目录。待确定算子拆分、编号、语义、技术约束和明确前置依据；不只凭阶段顺序推定其依赖边。Phase 6 已由 004 定义，生命周期见上文。
 - **Q-07 — 003 最终证据归档路径待统一：** T072 指定的仓库根 `evidence/003-dimensions-remote-parallel/final.md` 已存在；plan 的项目结构说明和[观测契约](../../specs/003-dimensions-remote-parallel/contracts/validation-evidence.md#执行范围与成功声明)使用 feature 级 `evidence/` 表述。当前记录可由 T072 路径访问，但设计文档与任务路径仍不一致，需后续明确唯一规范路径并同步引用。
 
 ## Cross-Cutting Notes
 
 - **已确认的 spec 依赖：** `002 → 001`；`003 → 001, 002`，箭头表示左侧依赖右侧。依据分别是 002、003 spec 的 Assumptions 及 tasks 的 Prerequisites；003 对 001 的直接列出来自明确的 Phase 0–3 依赖声明。001 的独立复现缺口不被解释为 002 尚未实施或 003 不能开始；依赖要求与整体验收分别记录。
-- **阶段映射：** 001 覆盖三个产品阶段（0–2），002 覆盖 Phase 3，003 同时覆盖 Phase 4 和 5。tasks 内部的 Phase 编号是任务分组，不能据此生成新的项目 spec 或依赖。
+- **阶段映射：** 001 覆盖产品阶段 0–2，002 覆盖 Phase 3，003 同时覆盖 Phase 4 和 5，004 覆盖 Phase 6。tasks 内部的 Phase 编号是任务分组，不能据此生成新的项目 spec 或依赖。
 - **历史与后续范围：** 001 原计划仅 FPX、显式轴、Linux x86_64；当前基础契约已有 PFOR 与 coordinates。002 原计划仅首个 domain；当前契约已有 68 项。003 从已有有效时间基线上继续扩展。历史设计、已发布行为、进行中的实现和验收样本覆盖分别以其来源说明为准，范围扩展不自动继承旧验收结论。
 - **证据快照：** 2026-10-02 更新依据为当前 003 tasks、仓库根 [final evidence](../../evidence/003-dimensions-remote-parallel/final.md) 与 `local-run/2026-10-02/` 的本地输出。重建后的 Linux AArch64 release 验证通过本地 SQL/native、14 项 sanitizer、fixture、G0–G2 与本地 G4；受控远程 G3/G5/G6 和 G7 未运行。工作树中的实现内容和本地门禁结果不等于完整发布验收。
 - **配置路径复核：** 从 duckomo 仓库根运行 `load-config.sh` 返回 `.specify/memory/roadmap.md`，且 `roadmap_exists=true`；本项目未配置 `docs/adr/`。执行路线图核对时仍应确认运行目录和加载器输出指向当前项目。
@@ -152,3 +165,7 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 ---
 
 **Version**: 1.0.1 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-02
+
+## 2026-10-08 官方 HTTPFS 接入
+
+用户指定 v1.5.4、v1.5.5、v1.5.6 / Linux AArch64。C-09/C-11/C-12 已按迁移契约修订；C-10 并行职责保留。官方运行兼容性证据另行记录，不提升 003/004 的 verified 状态。旧 G5 失败保留且 superseded，完整 004 真实网格门禁和独立验证仍未闭环。

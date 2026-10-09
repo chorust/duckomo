@@ -1,0 +1,31 @@
+{
+  "native_exit": 1,
+  "reason": "server audit body exceeds the per-query v3 profile",
+  "proxy_version": "initial connection pool without idle-close detection",
+  "client_body_bytes": 196376420,
+  "server_body_bytes": 196376474,
+  "difference": 54,
+  "error_events": [
+    {
+      "body_bytes": 27,
+      "error_errno": null,
+      "error_type": "RemoteDisconnected",
+      "method": "GET",
+      "object": "/duckomo-grid-tests/duckomo/real.om",
+      "range": "bytes=5800269-5800360",
+      "request_id": "s3-227532",
+      "status": 502
+    },
+    {
+      "body_bytes": 27,
+      "error_errno": null,
+      "error_type": "RemoteDisconnected",
+      "method": "GET",
+      "object": "/duckomo-grid-tests/duckomo/real.om",
+      "range": "bytes=3621139-3622152",
+      "request_id": "s3-430101",
+      "status": 502
+    }
+  ],
+  "result_matches_local": true
+}

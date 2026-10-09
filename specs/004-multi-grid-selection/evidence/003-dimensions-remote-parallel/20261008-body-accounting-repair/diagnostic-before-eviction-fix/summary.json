@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "gate": "G3",
+  "status": "pass",
+  "comparisons": ["raw-local-http","raw-local-s3","real-local-http","real-local-s3","recovery-after-403","recovery-after-404","recovery-after-no-head","recovery-after-ignore-range","recovery-after-wrong-range","recovery-after-short","recovery-after-non-identity","recovery-after-timeout","recovery-after-redirect","recovery-after-change-version","recovery-after-replace"],
+  "http_fault_cases_rejected": 11,
+  "server_audit": true,
+  "real_sample_sha256": "0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd"
+}

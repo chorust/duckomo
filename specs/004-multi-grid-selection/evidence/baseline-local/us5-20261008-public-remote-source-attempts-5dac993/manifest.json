@@ -1,0 +1,37 @@
+{
+  "inputs": [
+    {
+      "path": "test/data/grids/sample-manifest.json",
+      "sha256": "72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f"
+    },
+    {
+      "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om",
+      "sha256": "3db637197d27c65051e417b850f8c3656d1c5371ab78dcbd9fc05d0e440956f7"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-h2-https-source-info-5dac993/manifest.json",
+      "sha256": "ea5d28bda90b25c04be69041e1e576ab7971a6a987538ca893942acc5b128f29"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-h2-s3-source-info-5dac993/manifest.json",
+      "sha256": "fa6ed36a8e2b9ec376616bc5175965181e8dfcb52827ab021306643e09d2d2ed"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-h1-h2-s3-usw2-source-info-5dac993/manifest.json",
+      "sha256": "378c8c954f58f118286ec530122b8afe3bf46a85504c92750a2d40bf86dff6ed"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-public-remote-source-attempts-5dac993/remote-endpoint-range-check.json",
+      "sha256": "aeb2671dc42239a0bfcc45f13169ad4cc4dbf114b03bedee376d364b0056e6b5"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/baseline-local/us5-20261008-public-remote-source-attempts-5dac993/final.md",
+      "sha256": "de07fdf3ea56f7261c73366cbe93bce9b4fc7b519368294e7b7a2cda02717ff0"
+    }
+  ],
+  "schema_version": 1,
+  "source_scope": "existing Open-Meteo OM v3 object only; HEAD and one 16-byte range; no conversion/full download",
+  "status": "endpoint_range_pass_remote_duckomo_not_established"
+}

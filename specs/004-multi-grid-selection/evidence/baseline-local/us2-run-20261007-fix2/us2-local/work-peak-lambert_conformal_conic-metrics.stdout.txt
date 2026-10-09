@@ -1,0 +1,102 @@
+{
+  "small_rows": 12716,
+  "large_rows": 12716,
+  "result_sum": 1629296.0,
+  "result_min": 0.0,
+  "result_max": 255.75,
+  "small_work_peak_bytes": 16938,
+  "large_work_peak_bytes": 16940,
+  "work_peak_ratio": 1.0001180776951233,
+  "small_components": {
+    "bind": {
+      "peak_owned_capacity_bytes": 2616,
+      "upper_bound_peak_bytes": 2616
+    },
+    "global_control": {
+      "peak_owned_capacity_bytes": 2788,
+      "upper_bound_peak_bytes": 2788
+    },
+    "selector": {
+      "peak_owned_capacity_bytes": 902,
+      "upper_bound_peak_bytes": 66422
+    },
+    "task_positions": {
+      "peak_owned_capacity_bytes": 616,
+      "upper_bound_peak_bytes": 524288
+    },
+    "batch_segments": {
+      "peak_owned_capacity_bytes": 6280,
+      "upper_bound_peak_bytes": 8712
+    },
+    "definitions": {
+      "peak_owned_capacity_bytes": 1606,
+      "upper_bound_peak_bytes": 1606
+    },
+    "coordinate_buffers": {
+      "peak_owned_capacity_bytes": 80,
+      "upper_bound_peak_bytes": 80
+    },
+    "decoder": {
+      "peak_owned_capacity_bytes": 6352,
+      "upper_bound_peak_bytes": 31896
+    },
+    "coalescing": {
+      "peak_owned_capacity_bytes": 0,
+      "upper_bound_peak_bytes": 0
+    },
+    "transport_control": {
+      "peak_owned_capacity_bytes": 0,
+      "upper_bound_peak_bytes": 0
+    },
+    "unclassified": {
+      "peak_owned_capacity_bytes": 0,
+      "upper_bound_peak_bytes": 0
+    }
+  },
+  "large_components": {
+    "bind": {
+      "peak_owned_capacity_bytes": 2616,
+      "upper_bound_peak_bytes": 2616
+    },
+    "global_control": {
+      "peak_owned_capacity_bytes": 2788,
+      "upper_bound_peak_bytes": 2788
+    },
+    "selector": {
+      "peak_owned_capacity_bytes": 902,
+      "upper_bound_peak_bytes": 66422
+    },
+    "task_positions": {
+      "peak_owned_capacity_bytes": 616,
+      "upper_bound_peak_bytes": 524288
+    },
+    "batch_segments": {
+      "peak_owned_capacity_bytes": 6280,
+      "upper_bound_peak_bytes": 8712
+    },
+    "definitions": {
+      "peak_owned_capacity_bytes": 1606,
+      "upper_bound_peak_bytes": 1606
+    },
+    "coordinate_buffers": {
+      "peak_owned_capacity_bytes": 80,
+      "upper_bound_peak_bytes": 80
+    },
+    "decoder": {
+      "peak_owned_capacity_bytes": 6354,
+      "upper_bound_peak_bytes": 436246
+    },
+    "coalescing": {
+      "peak_owned_capacity_bytes": 0,
+      "upper_bound_peak_bytes": 0
+    },
+    "transport_control": {
+      "peak_owned_capacity_bytes": 0,
+      "upper_bound_peak_bytes": 0
+    },
+    "unclassified": {
+      "peak_owned_capacity_bytes": 0,
+      "upper_bound_peak_bytes": 0
+    }
+  }
+}

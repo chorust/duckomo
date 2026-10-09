@@ -9,11 +9,20 @@ require allow_unsigned_extensions
 statement ok
 LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
 
-query TT
-SELECT current_setting('duckomo_cache_enabled')::VARCHAR,
-       current_setting('duckomo_cache_capacity')::VARCHAR;
+statement error
+SET duckomo_cache_enabled=false;
 ----
-true	67108864
+<REGEX>:(?i).*(unrecognized configuration parameter|does not exist).*
+
+statement error
+SET duckomo_cache_capacity=1024;
+----
+<REGEX>:(?i).*(unrecognized configuration parameter|does not exist).*
+
+statement error
+SELECT * FROM duckomo_clear_cache();
+----
+<REGEX>:(?i).*(unrecognized configuration parameter|does not exist).*
 
 query I
 SELECT count(*) FROM duckomo_last_scan_metrics();
@@ -39,6 +48,27 @@ WHERE metrics LIKE '%"schema_version":3%'
 1
 
 query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE metrics LIKE '%"schema_version":4%'
+  AND metrics LIKE '%"legacy_v3":{"schema_version":3%'
+  AND metrics LIKE '%"terminal_published":true%';
+----
+1
+
+query I
+SELECT count(*) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om')
+WHERE concat('http', '://host/file.om?X-Amz-Signature=secret-token') IS NOT NULL;
+----
+6
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE metrics LIKE '%"sql":"<redacted>"%'
+  AND metrics NOT LIKE '%secret-token%';
+----
+1
+
+query I
 SELECT count(*) FROM (
   SELECT value FROM read_om('__WORKING_DIRECTORY__/test/data/dimensions_perf.om') LIMIT 1
 );
@@ -49,6 +79,15 @@ query I
 SELECT count(*) FROM duckomo_last_scan_metrics()
 WHERE metrics LIKE '%"status":"success"%'
   AND metrics LIKE '%"scan_complete":false%';
+----
+1
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE metrics LIKE '%"schema_version":4%'
+  AND metrics LIKE '%"outcome":{"status":"success","scan_complete":false,"terminal_published":true%'
+  AND metrics LIKE '%"exact_candidate_records":null%'
+  AND metrics LIKE '%"count_complete":false%';
 ----
 1
 
@@ -82,32 +121,25 @@ SELECT count(*) FROM duckomo_last_scan_metrics();
 ----
 1
 
-statement ok
+statement error
 SET duckomo_cache_enabled=false;
-
-statement ok
-SET duckomo_cache_capacity=0;
-
-query TT
-SELECT current_setting('duckomo_cache_enabled')::VARCHAR,
-       current_setting('duckomo_cache_capacity')::VARCHAR;
 ----
-false	0
+<REGEX>:(?i).*(unrecognized configuration parameter|does not exist).*
 
-query II
+statement error
+SET duckomo_cache_capacity=0;
+----
+<REGEX>:(?i).*(unrecognized configuration parameter|does not exist).*
+
+statement error
 CALL duckomo_clear_cache();
 ----
-0	0
+<REGEX>:(?i).*(unrecognized configuration parameter|does not exist).*
 
 query I
 SELECT count(*) FROM duckomo_last_scan_metrics();
 ----
 1
-
-statement error
-SET duckomo_cache_capacity=-1;
-----
-<REGEX>:(?i).*duckomo_cache_capacity must be non-negative.*
 
 statement error
 SET duckomo_max_threads=-1;

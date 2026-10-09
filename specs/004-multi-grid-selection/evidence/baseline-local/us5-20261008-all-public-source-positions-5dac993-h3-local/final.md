@@ -1,0 +1,12 @@
+# Grid validation run
+
+Status: **not-run**
+
+Requested gates:
+
+- H3: not-run — synthetic local zero-I/O/source-identity checks and all spatial positions for three hash-pinned public projected samples passed at valid_time index 0; independent OM axis mapping and full H3 remain not-run
+- H7: not-run — four synthetic grid types passed full relation/source-position and zero-value-read checks; three public projected samples passed explicit/domain identity, source/info zero-read, and first-four pinned-coordinate checks; full OM axis mapping, required Gaussian samples, and public remote source evidence remain not-run
+
+No requested gate passed in this run.
+
+Evidence manifest audit: **pass**.

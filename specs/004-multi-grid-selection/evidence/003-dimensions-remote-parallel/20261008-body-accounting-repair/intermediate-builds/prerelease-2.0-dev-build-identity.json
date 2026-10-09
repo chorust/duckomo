@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "status": "build-verified",
+  "pair_id": "prerelease-2.0-dev",
+  "build_id": "5523d5914fc1f6bb527d290cb19058ef380d543d26543d14902b155e98999c36",
+  "build_root": "/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/5523d5914fc1f6bb527d290cb19058ef380d543d26543d14902b155e98999c36",
+  "release_dir": "/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/5523d5914fc1f6bb527d290cb19058ef380d543d26543d14902b155e98999c36/release",
+  "inputs": {
+    "schema_version": 1,
+    "pair_id": "prerelease-2.0-dev",
+    "release_state": "target",
+    "commits": {
+      "duckdb": {
+        "repository": "https://github.com/duckdb/duckdb.git",
+        "commit": "7264a9f0e5b487358100f408826b8ae9e868b031"
+      },
+      "httpfs": {
+        "repository": "https://github.com/duckdb/duckdb-httpfs.git",
+        "commit": "5e34903685e4d429cbb19b063406abdd8ce30591"
+      },
+      "om_c": {
+        "repository": "https://github.com/open-meteo/om-file-format.git",
+        "commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+      },
+      "extension_ci_tools": {
+        "repository": "https://github.com/duckdb/extension-ci-tools.git",
+        "commit": "9b1020499dc85966be3342541f98c8e8e4aada89"
+      }
+    },
+    "official_overlays": [
+      {
+        "order": 1,
+        "file": "0002-collection-get-value.patch",
+        "sha256": "3833250e557ee83c0a85e8fa93a1d11c04f72ea3a62277c0d2e560661bd9b289"
+      },
+      {
+        "order": 2,
+        "file": "0003-duplicate-secret-option-error.patch",
+        "sha256": "7e8b3efe0247b26a7c2e5ab5e978fe53de1a6b22bf8d4be50091f98793d3ce16"
+      }
+    ],
+    "duckomo_patchset": {
+      "status": "implemented",
+      "scope_note": "independent ABI3 patchset; git apply checked after the fixed official overlays; build verification is recorded in the pair build data",
+      "manifest": "third_party/httpfs-patches/prerelease-2.0-dev/manifest.json",
+      "revision": "duckomo-httpfs-range-v3-prerelease-2.0-dev",
+      "hashes": [
+        "ea9bea30aad16315f110ba3bd2c51c6760e981edff32c30ccf89c70e319808d1"
+      ]
+    },
+    "shared_header_abi": {
+      "target": 3,
+      "status": "implemented",
+      "scope_note": "pair values substituted only in the isolated stage",
+      "path": "third_party/httpfs-patches/httpfs_om_range_v3.hpp",
+      "sha256": "5b751573f5b24d03ff241e56916271906590f6d7c7569a172ed15160fef80181"
+    },
+    "required_features": [
+      "exact-range",
+      "attempt-body-observer",
+      "provider-pair-identity"
+    ],
+    "platform": {
+      "target": "Linux AArch64",
+      "compiler_observed": "GCC 13.3.0",
+      "cmake_observed": "3.28.3",
+      "build_type_observed": "Release",
+      "vcpkg_triplet_observed": "arm64-linux",
+      "cxx_abi": "libstdc++_cxx11abi=1_gcc=13.3.0_cxx17"
+    },
+    "build_options": {
+      "CMAKE_BUILD_TYPE": "Release",
+      "BUILD_UNITTESTS": "TRUE",
+      "BUILD_SHELL": "TRUE",
+      "NATIVE_ARCH": "FALSE",
+      "ENABLE_UNITTEST_CPP_TESTS": "FALSE",
+      "ENABLE_EXTENSION_AUTOLOADING": "FALSE",
+      "ENABLE_EXTENSION_AUTOINSTALL": "FALSE"
+    },
+    "extension_source_sha256": "4fec184cc1f5f669d0837bde153ee340862befa9d244558d24f05eab22b1db68",
+    "vcpkg": {
+      "root": "/tmp/duckomo-vcpkg",
+      "commit": "e06564091c10e0b042900800c9fd48aad7f00643",
+      "toolchain_sha256": "f911a8769d07e10b26ce651f3cef6f52f2d5e598e3504d7f19e70bcbd3b3b25b",
+      "target_triplet": "arm64-linux",
+      "manifest_source": "build/extension_configuration/vcpkg.json",
+      "manifest_sha256": "7144ef43d450fed6ebde29aead88ebfea671c45c5a67d9d29f660ccfaf2e9156",
+      "manifest_install": false,
+      "installed_source": "build/release-vcpkg/vcpkg_installed",
+      "installed_tree_sha256": "f714e04be3530efc4927e7e6f1e9d16d6eb1a5fd95b35668ce309b041f4d2292"
+    },
+    "duckomo_patch_manifest_sha256": "6a6a09efad1ac281a489c49df1dcd532e5d6f9a571959f893b7980df7b081e87",
+    "duckomo_patch_revision": "duckomo-httpfs-range-v3-prerelease-2.0-dev",
+    "duckomo_patchset_sha256": "9fff0e2e834efa79a3fc37b7969196758150599053c1ee183c836c41e5d5f726",
+    "matrix_platform": "Linux AArch64",
+    "cxx_abi": "libstdc++_cxx11abi=1_gcc=13.3.0_cxx17",
+    "required_features_csv": "exact-range,attempt-body-observer,provider-pair-identity"
+  },
+  "runtime_cli_version": "v2.0.0-dev86261 (Development Version) 7264a9f0e5",
+  "runtime_source_id": "7264a9f0e5b487358100f408826b8ae9e868b031",
+  "stage_manifest": "/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/5523d5914fc1f6bb527d290cb19058ef380d543d26543d14902b155e98999c36/httpfs-stage/stage.json",
+  "commands": [
+    {
+      "argv": [
+        "cmake",
+        "-S",
+        "/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/source/duckdb",
+        "-B",
+        "/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/5523d5914fc1f6bb527d290cb19058ef380d543d26543d14902b155e98999c36/release",
+        "-DDUCKDB_EXTENSION_CONFIGS=/home/blizhan/repo/github/duckomo/extension_config.cmake",
+        "-DUNITTEST_ROOT_DIRECTORY=/home/blizhan/repo/github/duckomo",
+        "-DBENCHMARK_ROOT_DIRECTORY=/home/blizhan/repo/github/duckomo",
+        "-DDUCKOMO_MATRIX_MANIFEST=/home/blizhan/repo/github/duckomo/test/data/grids/version-matrix.json",
+        "-DDUCKOMO_MATRIX_PAIR=prerelease-2.0-dev",
+        "-DDUCKOMO_BUILD_PAIR_ID=prerelease-2.0-dev",
+        "-DDUCKOMO_BUILD_ID=5523d5914fc1f6bb527d290cb19058ef380d543d26543d14902b155e98999c36",
+        "-DDUCKOMO_DUCKDB_COMMIT=7264a9f0e5b487358100f408826b8ae9e868b031",
+        "-DDUCKOMO_HTTPFS_COMMIT=5e34903685e4d429cbb19b063406abdd8ce30591",
+        "-DDUCKOMO_OM_COMMIT=d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+        "-DDUCKOMO_EXTENSION_CI_TOOLS_COMMIT=9b1020499dc85966be3342541f98c8e8e4aada89",
+        "-DDUCKOMO_HTTPFS_PATCH_REVISION=duckomo-httpfs-range-v3-prerelease-2.0-dev",
+        "-DDUCKOMO_HTTPFS_PATCHSET_SHA256=9fff0e2e834efa79a3fc37b7969196758150599053c1ee183c836c41e5d5f726",
+        "-DDUCKOMO_HTTPFS_HEADER_SHA256=5b751573f5b24d03ff241e56916271906590f6d7c7569a172ed15160fef80181",
+        "-DDUCKOMO_MATRIX_PLATFORM=Linux AArch64",
+        "-DDUCKOMO_CXX_ABI=libstdc++_cxx11abi=1_gcc=13.3.0_cxx17",
+        "-DDUCKOMO_REQUIRED_FEATURES=exact-range,attempt-body-observer,provider-pair-identity",
+        "-DDUCKOMO_HTTPFS_SOURCE_DIR=/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/5523d5914fc1f6bb527d290cb19058ef380d543d26543d14902b155e98999c36/httpfs-stage/source",
+        "-DCMAKE_TOOLCHAIN_FILE=/tmp/duckomo-vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "-DVCPKG_MANIFEST_DIR=/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/vcpkg-manifest",
+        "-DVCPKG_MANIFEST_MODE=ON",
+        "-DVCPKG_MANIFEST_INSTALL=OFF",
+        "-DVCPKG_INSTALLED_DIR=/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/5523d5914fc1f6bb527d290cb19058ef380d543d26543d14902b155e98999c36/release/vcpkg_installed",
+        "-DVCPKG_TARGET_TRIPLET=arm64-linux",
+        "-DBUILD_SHELL=TRUE",
+        "-DBUILD_UNITTESTS=TRUE",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DENABLE_EXTENSION_AUTOINSTALL=FALSE",
+        "-DENABLE_EXTENSION_AUTOLOADING=FALSE",
+        "-DENABLE_UNITTEST_CPP_TESTS=FALSE",
+        "-DNATIVE_ARCH=FALSE"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "cmake",
+        "--build",
+        "/home/blizhan/repo/github/duckomo/build/grid-matrix/prerelease-2.0-dev/builds/5523d5914fc1f6bb527d290cb19058ef380d543d26543d14902b155e98999c36/release",
+        "--config",
+        "Release",
+        "--target",
+        "shell",
+        "duckomo_loadable_extension",
+        "httpfs_loadable_extension",
+        "unittest",
+        "--parallel",
+        "8"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "artifact_hashes": {
+    "duckdb": "6a2bd1e29c067bb0d463575ffe07d4969e21236ff71d6427f23088e930da2704",
+    "duckomo": "e808f9beb814a58f09665a58a6db8dacde96e6066ae23db93c8302a0e08f83aa",
+    "httpfs": "54623ada1c242d903191b233e5a90f7b639ee7a9d2d3956b3e7c053eff2f9e82"
+  }
+}

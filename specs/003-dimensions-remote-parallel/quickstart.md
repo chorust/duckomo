@@ -1,3 +1,5 @@
+> 2026-10-08：当前未发布版本使用 [官方 HTTPFS 迁移契约](../004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md)。下文专用 ABI、LRU 或 observer 的条款/命令为历史约定，已被本次契约替换。历史证据状态保持，当前复现请见 [官方流程](../../docs/official-httpfs.md)。
+
 # Quickstart: Phase 4–5 验证指南
 
 状态：本地维度、并行、缓存和 v3 指标入口已实现；G3–G6 的自动验收程序也已实现，但完整门禁必须在固定 S3-compatible 服务和真实 OM 样本可用时运行。G7 还需要未参与实现者按本指南独立复现。所有命令从仓库根目录执行，Linux AArch64 为验收平台；代码已实现不代表对应外部门禁通过。

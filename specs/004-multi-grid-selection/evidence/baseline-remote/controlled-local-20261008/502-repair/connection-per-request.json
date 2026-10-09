@@ -1,0 +1,11 @@
+{
+  "reuse_connection": false,
+  "completed": 28207,
+  "planned": 30000,
+  "response_status": 403,
+  "elapsed_seconds": 37.64032150199637,
+  "error": {
+    "error_type": "ConnectionResetError",
+    "errno": 104
+  }
+}

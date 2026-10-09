@@ -1,0 +1,1994 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "fixed_before_target_run": true,
+    "fixture": "test/data/dimensions_perf.om",
+    "sha256": "47a803a4769ab5a8c6622f9be5cc05b53b96152443917b7603d78dab94e1ec13",
+    "columns": [
+      "value"
+    ],
+    "selection": "valid_time = 2026-01-01 00:00:00 AND member BETWEEN 100 AND 103",
+    "workers": [
+      1,
+      2,
+      4
+    ],
+    "comparisons": [
+      "old disabled",
+      "old cold then repeat, same connection",
+      "official cold then repeat, same connection"
+    ],
+    "release_thresholds": {
+      "correct_results": "identical multiset",
+      "cold_selection_server_sent_bytes": "strictly less than full scan, HTTP and S3",
+      "cold_elapsed_regression": "<=2x old disabled median over 5 runs; report startup separately",
+      "repeat_regression": "report compared with old hot; no cache reuse promise"
+    },
+    "audit_scope": "service bytes sent; never client bytes received"
+  },
+  "fixture_sha256": "47a803a4769ab5a8c6622f9be5cc05b53b96152443917b7603d78dab94e1ec13",
+  "query": "SELECT value FROM read_om('s3://duckomo-grid-tests/duckomo/dimensions_perf.om', dimensions := map(['value'], [['time','member']]), axes := {'time': {'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},'member': {'axis':'member','start':0,'step':1}}) WHERE valid_time=TIMESTAMP '2026-01-01 00:00:00' AND member BETWEEN 100 AND 103 ORDER BY ALL",
+  "status": "pass",
+  "upstream_policy": "DIRECT_IO, NO_CACHING; no forced download, threshold=0, no fallback; official metadata caching uses its default; no own range cache",
+  "results": [
+    {
+      "source": "http",
+      "variant": "old-disabled",
+      "workers": 1,
+      "connection_lifetime": "two complete selected queries per fresh connection",
+      "identities": {
+        "duckdb": {
+          "path": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/duckdb",
+          "sha256": "a14227ed7881622ef88aa70d9633015541216f3506b2e0e2e2ea11075cc87565"
+        },
+        "httpfs": {
+          "path": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/extension/httpfs/httpfs.duckdb_extension",
+          "sha256": "cb91520f7bb021e4ec3128659a613cf96dc49dfbd5fb1710f39493fd80596356"
+        },
+        "duckomo": {
+          "path": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "602f7bc1f1df27333de437239e746ce6b4290afd35e95903e51c5c0680585582"
+        }
+      },
+      "observations": [
+        {
+          "repetition": 0,
+          "phase": "cold",
+          "elapsed_seconds": 0.0156516688875854,
+          "peak_process_rss_bytes": 34705408,
+          "startup_rss_bytes": 30584832,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 48,
+            "events_sha256": "50022fdc4d32ae27ae3cd292cf963e7117e82407624421170c197a7c75592ad8"
+          }
+        },
+        {
+          "repetition": 0,
+          "phase": "repeat",
+          "elapsed_seconds": 0.014989882241934538,
+          "peak_process_rss_bytes": 34766848,
+          "startup_rss_bytes": 30584832,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 48,
+            "events_sha256": "30ff997f64a8b4c7035b8d0c4bc3d771e023cd506cca41f8074c42c645e48d3c"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "cold",
+          "elapsed_seconds": 0.01164217572659254,
+          "peak_process_rss_bytes": 34451456,
+          "startup_rss_bytes": 30326784,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 48,
+            "events_sha256": "5910d904909804b99c721cff50ef17aa470772f520af1543d965a1689b779cdb"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "repeat",
+          "elapsed_seconds": 0.012736921198666096,
+          "peak_process_rss_bytes": 34516992,
+          "startup_rss_bytes": 30326784,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 48,
+            "events_sha256": "d7bf99d97fad453d891e4cfa1a8f7f9d6a373d3af6f3948e3537398f7e3478e0"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "cold",
+          "elapsed_seconds": 0.01440103817731142,
+          "peak_process_rss_bytes": 34447360,
+          "startup_rss_bytes": 30326784,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 48,
+            "events_sha256": "029977a0de0c931e20e9ef9ba181d1f50183f953cb7b5ed8508766718799e217"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "repeat",
+          "elapsed_seconds": 0.015173816122114658,
+          "peak_process_rss_bytes": 34500608,
+          "startup_rss_bytes": 30326784,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 48,
+            "events_sha256": "48b8a802542a420959adaf9536e05562cba960699104978943c04575ec1c9a9b"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "cold",
+          "elapsed_seconds": 0.013960672076791525,
+          "peak_process_rss_bytes": 34586624,
+          "startup_rss_bytes": 30466048,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 48,
+            "events_sha256": "bf696bddd51d7744c449c6be763dc6e4d54322ec9341d06c345e1932de85ce65"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "repeat",
+          "elapsed_seconds": 0.011944895144551992,
+          "peak_process_rss_bytes": 34643968,
+          "startup_rss_bytes": 30466048,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 48,
+            "events_sha256": "7569d5cf86f29e93c4106acbf52aaa2f5b80a4e436268457e2eefddfa228aed6"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "cold",
+          "elapsed_seconds": 0.018295970745384693,
+          "peak_process_rss_bytes": 34541568,
+          "startup_rss_bytes": 30416896,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 48,
+            "events_sha256": "612ebb8d805414ebd7c20adaae8d39db63a27c9895b10c4ee1854cb573d54cb2"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "repeat",
+          "elapsed_seconds": 0.01576437195762992,
+          "peak_process_rss_bytes": 34607104,
+          "startup_rss_bytes": 30416896,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 48,
+            "events_sha256": "2017de588299bed52f3b11341e3a330da97f48c9521a832d19b8c4d0cb456fa6"
+          }
+        }
+      ],
+      "medians": {
+        "cold": {
+          "elapsed_seconds": 0.01440103817731142,
+          "service_sent_body_bytes": 5061,
+          "service_requests": 24
+        },
+        "repeat": {
+          "elapsed_seconds": 0.014989882241934538,
+          "service_sent_body_bytes": 5061,
+          "service_requests": 24
+        }
+      }
+    },
+    {
+      "source": "http",
+      "variant": "old-cold-hot",
+      "workers": 1,
+      "connection_lifetime": "two complete selected queries per fresh connection",
+      "identities": {
+        "duckdb": {
+          "path": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/duckdb",
+          "sha256": "a14227ed7881622ef88aa70d9633015541216f3506b2e0e2e2ea11075cc87565"
+        },
+        "httpfs": {
+          "path": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/extension/httpfs/httpfs.duckdb_extension",
+          "sha256": "cb91520f7bb021e4ec3128659a613cf96dc49dfbd5fb1710f39493fd80596356"
+        },
+        "duckomo": {
+          "path": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "602f7bc1f1df27333de437239e746ce6b4290afd35e95903e51c5c0680585582"
+        }
+      },
+      "observations": [
+        {
+          "repetition": 0,
+          "phase": "cold",
+          "elapsed_seconds": 0.011919775046408176,
+          "peak_process_rss_bytes": 34779136,
+          "startup_rss_bytes": 30642176,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 4863,
+            "requests": 18,
+            "event_count": 36,
+            "events_sha256": "240ff394235b59c317a04a23f14211a75cc43061dddbb076d067f32f5dd7de1e"
+          }
+        },
+        {
+          "repetition": 0,
+          "phase": "repeat",
+          "elapsed_seconds": 0.0035690637305378914,
+          "peak_process_rss_bytes": 34824192,
+          "startup_rss_bytes": 30642176,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 3,
+            "requests": 6,
+            "event_count": 12,
+            "events_sha256": "a9d7a53ef690ad997f58a1350773205c9f90c511a10a897d2391d62694ec8c38"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "cold",
+          "elapsed_seconds": 0.012776984833180904,
+          "peak_process_rss_bytes": 34398208,
+          "startup_rss_bytes": 30261248,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 4863,
+            "requests": 18,
+            "event_count": 36,
+            "events_sha256": "38b5a8d136ac233c4af9f16b77924f7d17be1c7af6aa2c92812572a2a239cbfa"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "repeat",
+          "elapsed_seconds": 0.005124621093273163,
+          "peak_process_rss_bytes": 34447360,
+          "startup_rss_bytes": 30261248,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 3,
+            "requests": 6,
+            "event_count": 12,
+            "events_sha256": "d5d61e3f1c7d811a385737c21f80da17c0805c13318b1547fb208fbd541c0d46"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "cold",
+          "elapsed_seconds": 0.010829717852175236,
+          "peak_process_rss_bytes": 34476032,
+          "startup_rss_bytes": 30339072,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 4863,
+            "requests": 18,
+            "event_count": 36,
+            "events_sha256": "d016f3168e300347b87590cf9c31ccd73887eba2304c3e97932ab13e37b92091"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "repeat",
+          "elapsed_seconds": 0.0029309079982340336,
+          "peak_process_rss_bytes": 34529280,
+          "startup_rss_bytes": 30339072,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 3,
+            "requests": 6,
+            "event_count": 12,
+            "events_sha256": "1094f01477bbe4e5928a0d13b74b1927508b9deb10bf8a5f46cc53aca170dcc8"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "cold",
+          "elapsed_seconds": 0.007398734334856272,
+          "peak_process_rss_bytes": 34566144,
+          "startup_rss_bytes": 30441472,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 4863,
+            "requests": 18,
+            "event_count": 36,
+            "events_sha256": "28bff0305ec0253684164cd9a36eed01d053799d6b58bf4d9cfc4bc532d6905f"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "repeat",
+          "elapsed_seconds": 0.003966149408370256,
+          "peak_process_rss_bytes": 34615296,
+          "startup_rss_bytes": 30441472,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 3,
+            "requests": 6,
+            "event_count": 12,
+            "events_sha256": "4910c87851185b1f4cb44c07dd36d106c60b88c391dddeacbc7b3f5f8cb2e116"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "cold",
+          "elapsed_seconds": 0.010669862851500511,
+          "peak_process_rss_bytes": 34463744,
+          "startup_rss_bytes": 30330880,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 4863,
+            "requests": 18,
+            "event_count": 36,
+            "events_sha256": "2cfd50940cd41d6dae96c77456a6f55caececfd12e2b5ce14a3475cc5bf0fc8a"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "repeat",
+          "elapsed_seconds": 0.004466386046260595,
+          "peak_process_rss_bytes": 34516992,
+          "startup_rss_bytes": 30330880,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 3,
+            "requests": 6,
+            "event_count": 12,
+            "events_sha256": "8cd264b0f0975cec93ed6f4d422742005e7d70781b9fa4e457245f550a40c393"
+          }
+        }
+      ],
+      "medians": {
+        "cold": {
+          "elapsed_seconds": 0.010829717852175236,
+          "service_sent_body_bytes": 4863,
+          "service_requests": 18
+        },
+        "repeat": {
+          "elapsed_seconds": 0.003966149408370256,
+          "service_sent_body_bytes": 3,
+          "service_requests": 6
+        }
+      }
+    },
+    {
+      "source": "http",
+      "variant": "v1.5.4",
+      "workers": 1,
+      "connection_lifetime": "two complete selected queries per fresh connection",
+      "identities": {
+        "duckdb": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-httpfs-refactor/official/v1.5.4/duckdb",
+          "sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a"
+        },
+        "httpfs": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-httpfs-refactor/official/v1.5.4/httpfs.duckdb_extension",
+          "sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538"
+        },
+        "duckomo": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "c7d739397bc5e3a5257688be87ae6b5de0b239a01ca6aef5412fd9d529d68516"
+        }
+      },
+      "observations": [
+        {
+          "repetition": 0,
+          "phase": "cold",
+          "elapsed_seconds": 0.010715831071138382,
+          "peak_process_rss_bytes": 42057728,
+          "startup_rss_bytes": 37097472,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "2edd7eb35ad96668ea9d41ffb4ed5b3ddbeae233df1a0dafa4856464b0a87d74"
+          }
+        },
+        {
+          "repetition": 0,
+          "phase": "repeat",
+          "elapsed_seconds": 0.0076861390843987465,
+          "peak_process_rss_bytes": 42115072,
+          "startup_rss_bytes": 37097472,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "4fb151f298406067436bd667ba6562960a808bfd9f815159551a685b518f062d"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "cold",
+          "elapsed_seconds": 0.009226737078279257,
+          "peak_process_rss_bytes": 41996288,
+          "startup_rss_bytes": 36995072,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "d13602a3b13cc30995d9090119022544a2c3406b44ca1a1aed762b2c6be4faae"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "repeat",
+          "elapsed_seconds": 0.009825692977756262,
+          "peak_process_rss_bytes": 42053632,
+          "startup_rss_bytes": 36995072,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "7af9e8dd4af57931485905e73424432dd46c62342aaf5ddff25f402f9802a2c6"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "cold",
+          "elapsed_seconds": 0.011279027909040451,
+          "peak_process_rss_bytes": 41865216,
+          "startup_rss_bytes": 36933632,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "d3e69c04bc487b7bb5c033ab64a5585b003b8690fc88a307701dcd21ee9fa915"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "repeat",
+          "elapsed_seconds": 0.00702719995751977,
+          "peak_process_rss_bytes": 41926656,
+          "startup_rss_bytes": 36933632,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "4501e2b3b4d7d5917e743f5fdf8efcb43bed48bfda28f94c1031112fc9924486"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "cold",
+          "elapsed_seconds": 0.008886788040399551,
+          "peak_process_rss_bytes": 41873408,
+          "startup_rss_bytes": 36937728,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "28a077494a6e0ec31a850ce06a4dd1b4eda1fa9b2a3b715bb42349c93cc8b085"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "repeat",
+          "elapsed_seconds": 0.008631749078631401,
+          "peak_process_rss_bytes": 41947136,
+          "startup_rss_bytes": 36937728,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "8d68f8009fd221b3e1253598f253b47a62bf30d2a4b271b750a5e20258f5fd56"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "cold",
+          "elapsed_seconds": 0.009227072820067406,
+          "peak_process_rss_bytes": 41947136,
+          "startup_rss_bytes": 37011456,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "1936215d5cb6dbc1729211c8a70a0bd50f10f9b69140473ed7ff1836c62e7c9e"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "repeat",
+          "elapsed_seconds": 0.008663652930408716,
+          "peak_process_rss_bytes": 42012672,
+          "startup_rss_bytes": 37011456,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "2a634418cbfc20b250808079422eccf344e2da16716ff3cca11a1d0d1605e686"
+          }
+        }
+      ],
+      "medians": {
+        "cold": {
+          "elapsed_seconds": 0.009227072820067406,
+          "service_sent_body_bytes": 5058,
+          "service_requests": 19
+        },
+        "repeat": {
+          "elapsed_seconds": 0.008631749078631401,
+          "service_sent_body_bytes": 5058,
+          "service_requests": 19
+        }
+      },
+      "cold_elapsed_ratio_to_old_disabled": 0.6407227525168633,
+      "cold_threshold_pass": true
+    },
+    {
+      "source": "http",
+      "variant": "v1.5.5",
+      "workers": 1,
+      "connection_lifetime": "two complete selected queries per fresh connection",
+      "identities": {
+        "duckdb": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-httpfs-refactor/official/v1.5.5/duckdb",
+          "sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1"
+        },
+        "httpfs": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-httpfs-refactor/official/v1.5.5/httpfs.duckdb_extension",
+          "sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9"
+        },
+        "duckomo": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/b21f21aea5971199c87b0a4739c2545e5c981e39f34daf4b1b82b8950e2836e4/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "707da08c1c3209316e51ced89406c35cd92496441429c10ab46fc6a5fab4a0ff"
+        }
+      },
+      "observations": [
+        {
+          "repetition": 0,
+          "phase": "cold",
+          "elapsed_seconds": 0.008732660207897425,
+          "peak_process_rss_bytes": 41553920,
+          "startup_rss_bytes": 36732928,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "69c23a375436990760dc6839ae2ed6767c0a908c56ba4fac4546b40f2fa4cf7c"
+          }
+        },
+        {
+          "repetition": 0,
+          "phase": "repeat",
+          "elapsed_seconds": 0.009812205098569393,
+          "peak_process_rss_bytes": 41619456,
+          "startup_rss_bytes": 36732928,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "dcf0b4616ab7d93e66a92356795712cbfe131cdd8a3e8fa412284f92c6bd2a57"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "cold",
+          "elapsed_seconds": 0.009867788758128881,
+          "peak_process_rss_bytes": 41635840,
+          "startup_rss_bytes": 36831232,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "d586cd941d769131690697c5761c6c7f4b1e09e14f0ccc37a7cafda160a9b87d"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "repeat",
+          "elapsed_seconds": 0.007761867251247168,
+          "peak_process_rss_bytes": 41693184,
+          "startup_rss_bytes": 36831232,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "95a83068409cb52f498bb672475260f7ed44d0e969406ab0f123558fd379b989"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "cold",
+          "elapsed_seconds": 0.008975954726338387,
+          "peak_process_rss_bytes": 41750528,
+          "startup_rss_bytes": 36855808,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "283990ed34f19741ddbada8f582ccbc750818947d0e803ff8691084f89682773"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "repeat",
+          "elapsed_seconds": 0.007193183060735464,
+          "peak_process_rss_bytes": 41820160,
+          "startup_rss_bytes": 36855808,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "21b2f06e340fae110b13191a6775963875c5199f56362ff1d4013315914ad7a4"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "cold",
+          "elapsed_seconds": 0.009929611813277006,
+          "peak_process_rss_bytes": 41820160,
+          "startup_rss_bytes": 36954112,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "e151f9914180e5dfb0e44c52bd22b632e5b742735545881d53947cfb696cfe92"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "repeat",
+          "elapsed_seconds": 0.008938498795032501,
+          "peak_process_rss_bytes": 41881600,
+          "startup_rss_bytes": 36954112,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "fa5c1429ec3e2e4d4845088fab0ecad7d655f5fb40d1455dd8d8862a6e067ed8"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "cold",
+          "elapsed_seconds": 0.011325506027787924,
+          "peak_process_rss_bytes": 41783296,
+          "startup_rss_bytes": 36966400,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "9c2dbe46c9e39042d7af6c80fe3da8e2a211bf9c15b0b91b80d5f192f8b6ae4a"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "repeat",
+          "elapsed_seconds": 0.011443586088716984,
+          "peak_process_rss_bytes": 41861120,
+          "startup_rss_bytes": 36966400,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "f4a8c23d4d38822d22ee25ac9e631d25142dee7985a8c4c5876473ae1d0fe4bc"
+          }
+        }
+      ],
+      "medians": {
+        "cold": {
+          "elapsed_seconds": 0.009867788758128881,
+          "service_sent_body_bytes": 5058,
+          "service_requests": 19
+        },
+        "repeat": {
+          "elapsed_seconds": 0.008938498795032501,
+          "service_sent_body_bytes": 5058,
+          "service_requests": 19
+        }
+      },
+      "cold_elapsed_ratio_to_old_disabled": 0.685213707278091,
+      "cold_threshold_pass": true
+    },
+    {
+      "source": "http",
+      "variant": "v1.5.6",
+      "workers": 1,
+      "connection_lifetime": "two complete selected queries per fresh connection",
+      "identities": {
+        "duckdb": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-httpfs-refactor/official/v1.5.6/duckdb",
+          "sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48"
+        },
+        "httpfs": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-httpfs-refactor/official/v1.5.6/httpfs.duckdb_extension",
+          "sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d"
+        },
+        "duckomo": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/24d2012eb2c1f0a0bd5c737ce9c0cfebe4efbf646fead601280013869a74c52d/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "01b9ecbb47a9aeed1f6e7c2d24f5e868200a0aab3fefa818063d6f90f211f178"
+        }
+      },
+      "observations": [
+        {
+          "repetition": 0,
+          "phase": "cold",
+          "elapsed_seconds": 0.017779158893972635,
+          "peak_process_rss_bytes": 41660416,
+          "startup_rss_bytes": 36851712,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "daaf5a58529643afea0df22595528bfd7594425f9bed3cc812f2d9b97e84f525"
+          }
+        },
+        {
+          "repetition": 0,
+          "phase": "repeat",
+          "elapsed_seconds": 0.01592669216915965,
+          "peak_process_rss_bytes": 41725952,
+          "startup_rss_bytes": 36851712,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "d9430c7d74d3330c90f07a8f36d5c9237e0b0182cf092a572ea53e96018be913"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "cold",
+          "elapsed_seconds": 0.017171163111925125,
+          "peak_process_rss_bytes": 41762816,
+          "startup_rss_bytes": 36892672,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "bf5c7fb6e32b129c78f95b23a01c5c2cfa1324d192a3fdcdfcf2a9e465c91020"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "repeat",
+          "elapsed_seconds": 0.016492607071995735,
+          "peak_process_rss_bytes": 41836544,
+          "startup_rss_bytes": 36892672,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "a3519f347f9303610f0fdea1c64d52aab38d81ea3c05521d3105634c31f54700"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "cold",
+          "elapsed_seconds": 0.015273847617208958,
+          "peak_process_rss_bytes": 41893888,
+          "startup_rss_bytes": 36999168,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "7b3b64429f96ed2617b601bd51b8954866384a37c66e73b040a6581a7f4121ff"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "repeat",
+          "elapsed_seconds": 0.010158265940845013,
+          "peak_process_rss_bytes": 41951232,
+          "startup_rss_bytes": 36999168,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "1c5424a63e7dfcb7fadd309861c9bb6d883962f9039dbaf0d95030bcf90121b1"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "cold",
+          "elapsed_seconds": 0.01521936897188425,
+          "peak_process_rss_bytes": 41742336,
+          "startup_rss_bytes": 36859904,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "8c6c13bceb09950767b48c799df73193baceae67c86315b5e71e04b380ba4b7c"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "repeat",
+          "elapsed_seconds": 0.014272478874772787,
+          "peak_process_rss_bytes": 41811968,
+          "startup_rss_bytes": 36859904,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "dfd7a538ba5620bc5f9459e3fc9c47868a587365d2a709a31c0fd6ea4f626fa6"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "cold",
+          "elapsed_seconds": 0.013949905056506395,
+          "peak_process_rss_bytes": 41603072,
+          "startup_rss_bytes": 36798464,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "a74e2b2622de9976a4e4ff95ca07d9943b3f67cff7618dfc154d55cf8f2fb68a"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "repeat",
+          "elapsed_seconds": 0.013228134252130985,
+          "peak_process_rss_bytes": 41668608,
+          "startup_rss_bytes": 36798464,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 38,
+            "events_sha256": "f2637115e329921b28f5264e1a23eda70a71433870b8acdecfbabdb11b05fc46"
+          }
+        }
+      ],
+      "medians": {
+        "cold": {
+          "elapsed_seconds": 0.015273847617208958,
+          "service_sent_body_bytes": 5058,
+          "service_requests": 19
+        },
+        "repeat": {
+          "elapsed_seconds": 0.014272478874772787,
+          "service_sent_body_bytes": 5058,
+          "service_requests": 19
+        }
+      },
+      "cold_elapsed_ratio_to_old_disabled": 1.0606073971300647,
+      "cold_threshold_pass": true
+    },
+    {
+      "source": "s3",
+      "variant": "old-disabled",
+      "workers": 1,
+      "connection_lifetime": "two complete selected queries per fresh connection",
+      "identities": {
+        "duckdb": {
+          "path": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/duckdb",
+          "sha256": "a14227ed7881622ef88aa70d9633015541216f3506b2e0e2e2ea11075cc87565"
+        },
+        "httpfs": {
+          "path": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/extension/httpfs/httpfs.duckdb_extension",
+          "sha256": "cb91520f7bb021e4ec3128659a613cf96dc49dfbd5fb1710f39493fd80596356"
+        },
+        "duckomo": {
+          "path": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "602f7bc1f1df27333de437239e746ce6b4290afd35e95903e51c5c0680585582"
+        }
+      },
+      "observations": [
+        {
+          "repetition": 0,
+          "phase": "cold",
+          "elapsed_seconds": 0.03158245701342821,
+          "peak_process_rss_bytes": 34668544,
+          "startup_rss_bytes": 30461952,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 24,
+            "events_sha256": "8bb6833db62f0134a090ce4455d3b97ff161107aaf5755fb0a6e539b563edd1e"
+          }
+        },
+        {
+          "repetition": 0,
+          "phase": "repeat",
+          "elapsed_seconds": 0.036171370185911655,
+          "peak_process_rss_bytes": 34725888,
+          "startup_rss_bytes": 30461952,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 24,
+            "events_sha256": "63e289da5724bce26dbd738e4952bfefc8ad769030840b7bb1751fea01640100"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "cold",
+          "elapsed_seconds": 0.0379212936386466,
+          "peak_process_rss_bytes": 34586624,
+          "startup_rss_bytes": 30380032,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 24,
+            "events_sha256": "42bad23a546a7d59d2b0abe60b2a342fae3958fcaec3143522dd04c05fe03c44"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "repeat",
+          "elapsed_seconds": 0.034863587003201246,
+          "peak_process_rss_bytes": 34656256,
+          "startup_rss_bytes": 30380032,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 24,
+            "events_sha256": "f542a5b532285bca302f90fd8c4a3609636545b3005e9cecbc565086492d8b69"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "cold",
+          "elapsed_seconds": 0.03816598001867533,
+          "peak_process_rss_bytes": 34562048,
+          "startup_rss_bytes": 30351360,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 24,
+            "events_sha256": "e7c6e4eb144da61f85dc9d1db578f9ec8f5c152e78dde90c085032d1f357f3eb"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "repeat",
+          "elapsed_seconds": 0.03661383083090186,
+          "peak_process_rss_bytes": 34623488,
+          "startup_rss_bytes": 30351360,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 24,
+            "events_sha256": "da900b4daea06268e990415ff7357b271d6b4af22f21d027c5043817ba9d8f68"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "cold",
+          "elapsed_seconds": 0.03477966692298651,
+          "peak_process_rss_bytes": 34574336,
+          "startup_rss_bytes": 30367744,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 24,
+            "events_sha256": "68a5e6c91a17745e2f973a4142b332ffcbd8007bce9331010a3b6ac62875f65a"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "repeat",
+          "elapsed_seconds": 0.03450472513213754,
+          "peak_process_rss_bytes": 34635776,
+          "startup_rss_bytes": 30367744,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 24,
+            "events_sha256": "1588ff6254878891363c040521fb1b0bc50ff4cb79f9daba32c9e9bf92ee1347"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "cold",
+          "elapsed_seconds": 0.03426850214600563,
+          "peak_process_rss_bytes": 34590720,
+          "startup_rss_bytes": 30388224,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 24,
+            "events_sha256": "f7cd296261ce7fbd31ff7bc7db418ab56e585b67fbf79488c66c7ef98c9916f7"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "repeat",
+          "elapsed_seconds": 0.03527852799743414,
+          "peak_process_rss_bytes": 34648064,
+          "startup_rss_bytes": 30388224,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5061,
+            "requests": 24,
+            "event_count": 24,
+            "events_sha256": "c9c0c35c13291dc3f265446acf1eebfc9504bfc3a56018747a7ffd9c92b98af8"
+          }
+        }
+      ],
+      "medians": {
+        "cold": {
+          "elapsed_seconds": 0.03477966692298651,
+          "service_sent_body_bytes": 5061,
+          "service_requests": 24
+        },
+        "repeat": {
+          "elapsed_seconds": 0.03527852799743414,
+          "service_sent_body_bytes": 5061,
+          "service_requests": 24
+        }
+      }
+    },
+    {
+      "source": "s3",
+      "variant": "old-cold-hot",
+      "workers": 1,
+      "connection_lifetime": "two complete selected queries per fresh connection",
+      "identities": {
+        "duckdb": {
+          "path": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/duckdb",
+          "sha256": "a14227ed7881622ef88aa70d9633015541216f3506b2e0e2e2ea11075cc87565"
+        },
+        "httpfs": {
+          "path": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/extension/httpfs/httpfs.duckdb_extension",
+          "sha256": "cb91520f7bb021e4ec3128659a613cf96dc49dfbd5fb1710f39493fd80596356"
+        },
+        "duckomo": {
+          "path": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/1bc27ad01fdc1af3775975db8c5c19595e8323957bf04b059a706b3fbe33853b/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "602f7bc1f1df27333de437239e746ce6b4290afd35e95903e51c5c0680585582"
+        }
+      },
+      "observations": [
+        {
+          "repetition": 0,
+          "phase": "cold",
+          "elapsed_seconds": 0.029878996312618256,
+          "peak_process_rss_bytes": 34439168,
+          "startup_rss_bytes": 30220288,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 4863,
+            "requests": 18,
+            "event_count": 18,
+            "events_sha256": "db0e9a1c1a42db923db4b79be45ffe590bb826f16931d86b71aa58c72c3d5f7a"
+          }
+        },
+        {
+          "repetition": 0,
+          "phase": "repeat",
+          "elapsed_seconds": 0.009882557205855846,
+          "peak_process_rss_bytes": 34488320,
+          "startup_rss_bytes": 30220288,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 3,
+            "requests": 6,
+            "event_count": 6,
+            "events_sha256": "a63f8b415522564a933db83969eb5d2d186a6f16f093b6af0ae1e00d0fb22871"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "cold",
+          "elapsed_seconds": 0.027688626665621996,
+          "peak_process_rss_bytes": 34521088,
+          "startup_rss_bytes": 30314496,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 4863,
+            "requests": 18,
+            "event_count": 18,
+            "events_sha256": "e89f0bf0be93d7055ba4a3a4aa308c4ca4e353d17f0152fe1df5963aea15ed69"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "repeat",
+          "elapsed_seconds": 0.010345289949327707,
+          "peak_process_rss_bytes": 34574336,
+          "startup_rss_bytes": 30314496,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 3,
+            "requests": 6,
+            "event_count": 6,
+            "events_sha256": "b4ff33f0713660ba390f01b8ccf40db3a6dc9b3fcc7a40bb574df0d67fd125c6"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "cold",
+          "elapsed_seconds": 0.02751678926870227,
+          "peak_process_rss_bytes": 34574336,
+          "startup_rss_bytes": 30363648,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 4863,
+            "requests": 18,
+            "event_count": 18,
+            "events_sha256": "8c305a84e0739a43bdcfcafd5c9282d8ee474d991c3faa907d942d113065089b"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "repeat",
+          "elapsed_seconds": 0.007583677303045988,
+          "peak_process_rss_bytes": 34631680,
+          "startup_rss_bytes": 30363648,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 3,
+            "requests": 6,
+            "event_count": 6,
+            "events_sha256": "2831caaebbba35bd1c44144d12300afa931c1ae709e292be4815835a717507ff"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "cold",
+          "elapsed_seconds": 0.02455237740650773,
+          "peak_process_rss_bytes": 34537472,
+          "startup_rss_bytes": 30330880,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 4863,
+            "requests": 18,
+            "event_count": 18,
+            "events_sha256": "17cbcb5f47748de8ca26e02b7eb44e1edcbd857d7b3c85f31313a2ccf6a95a09"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "repeat",
+          "elapsed_seconds": 0.00945302378386259,
+          "peak_process_rss_bytes": 34594816,
+          "startup_rss_bytes": 30330880,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 3,
+            "requests": 6,
+            "event_count": 6,
+            "events_sha256": "a626563aea69b0116df508131ce8d78c975ed666e291145da461f9e2547e50dd"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "cold",
+          "elapsed_seconds": 0.026269997004419565,
+          "peak_process_rss_bytes": 34525184,
+          "startup_rss_bytes": 30322688,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 4863,
+            "requests": 18,
+            "event_count": 18,
+            "events_sha256": "5e5304d08889960ccea1b359567231ef41dcff2634b3ac97a86f4e0ce0023f3e"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "repeat",
+          "elapsed_seconds": 0.009416671935468912,
+          "peak_process_rss_bytes": 34582528,
+          "startup_rss_bytes": 30322688,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 3,
+            "requests": 6,
+            "event_count": 6,
+            "events_sha256": "a207a03e89e501de6b2243ceca97a331dfec7783cfe47cc0103b2a1afaa0c47e"
+          }
+        }
+      ],
+      "medians": {
+        "cold": {
+          "elapsed_seconds": 0.02751678926870227,
+          "service_sent_body_bytes": 4863,
+          "service_requests": 18
+        },
+        "repeat": {
+          "elapsed_seconds": 0.00945302378386259,
+          "service_sent_body_bytes": 3,
+          "service_requests": 6
+        }
+      }
+    },
+    {
+      "source": "s3",
+      "variant": "v1.5.4",
+      "workers": 1,
+      "connection_lifetime": "two complete selected queries per fresh connection",
+      "identities": {
+        "duckdb": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-httpfs-refactor/official/v1.5.4/duckdb",
+          "sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a"
+        },
+        "httpfs": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-httpfs-refactor/official/v1.5.4/httpfs.duckdb_extension",
+          "sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538"
+        },
+        "duckomo": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "c7d739397bc5e3a5257688be87ae6b5de0b239a01ca6aef5412fd9d529d68516"
+        }
+      },
+      "observations": [
+        {
+          "repetition": 0,
+          "phase": "cold",
+          "elapsed_seconds": 0.026797753293067217,
+          "peak_process_rss_bytes": 42172416,
+          "startup_rss_bytes": 36999168,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "7daa6b985a93663c65c0c2692fdd6319ecc41b068fcc85f632c8813bda909fdc"
+          }
+        },
+        {
+          "repetition": 0,
+          "phase": "repeat",
+          "elapsed_seconds": 0.028303183149546385,
+          "peak_process_rss_bytes": 42237952,
+          "startup_rss_bytes": 36999168,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "7e0ebf77150ebe839d5f65fc7c7e05016d4cad764c76df22b961c773fdf1020f"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "cold",
+          "elapsed_seconds": 0.02630756516009569,
+          "peak_process_rss_bytes": 42180608,
+          "startup_rss_bytes": 37031936,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "fd9afb01cad1eb382f6e2d686568a62ae638cf0ec02b435f1fdc3ad13cb1ad41"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "repeat",
+          "elapsed_seconds": 0.025034852791577578,
+          "peak_process_rss_bytes": 42246144,
+          "startup_rss_bytes": 37031936,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "8655a68b3b3a98c0ff4fdddccb84e6dc0fedebc6e17f3fead91c05906d0f83ec"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "cold",
+          "elapsed_seconds": 0.025910128373652697,
+          "peak_process_rss_bytes": 42180608,
+          "startup_rss_bytes": 37031936,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "b83615b604a8ccb218b51065fe82e4b2ab61ce14d95b62d052c764f83c63bed3"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "repeat",
+          "elapsed_seconds": 0.029758118093013763,
+          "peak_process_rss_bytes": 42250240,
+          "startup_rss_bytes": 37031936,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "5ee119b0f21028d01ac456cea511600e05cdba87dbe0320b22d0af07b7886b06"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "cold",
+          "elapsed_seconds": 0.029320775996893644,
+          "peak_process_rss_bytes": 42172416,
+          "startup_rss_bytes": 36954112,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "83ae8949fa7651afceff3253d313b85da13b48f43324775eff51dac8a2b4f009"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "repeat",
+          "elapsed_seconds": 0.025054693687707186,
+          "peak_process_rss_bytes": 42250240,
+          "startup_rss_bytes": 36954112,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "5a968a9f90f71795dcce25f9e5611006a9a54b893848160a402bf147bb25a76d"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "cold",
+          "elapsed_seconds": 0.029915508814156055,
+          "peak_process_rss_bytes": 42192896,
+          "startup_rss_bytes": 37048320,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "e3573bef7c0c521ae146e47dcc9a8683da8e66763dfec5c0f7c58c21677dbcb2"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "repeat",
+          "elapsed_seconds": 0.028680747840553522,
+          "peak_process_rss_bytes": 42258432,
+          "startup_rss_bytes": 37048320,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "de8e156c6fc7bd2bee34e07d8e9cf8aca9d9fbbfecd3b5d7c7b77d71470b2e8b"
+          }
+        }
+      ],
+      "medians": {
+        "cold": {
+          "elapsed_seconds": 0.026797753293067217,
+          "service_sent_body_bytes": 5058,
+          "service_requests": 19
+        },
+        "repeat": {
+          "elapsed_seconds": 0.028303183149546385,
+          "service_sent_body_bytes": 5058,
+          "service_requests": 19
+        }
+      },
+      "cold_elapsed_ratio_to_old_disabled": 0.7705005730045131,
+      "cold_threshold_pass": true
+    },
+    {
+      "source": "s3",
+      "variant": "v1.5.5",
+      "workers": 1,
+      "connection_lifetime": "two complete selected queries per fresh connection",
+      "identities": {
+        "duckdb": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-httpfs-refactor/official/v1.5.5/duckdb",
+          "sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1"
+        },
+        "httpfs": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-httpfs-refactor/official/v1.5.5/httpfs.duckdb_extension",
+          "sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9"
+        },
+        "duckomo": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/b21f21aea5971199c87b0a4739c2545e5c981e39f34daf4b1b82b8950e2836e4/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "707da08c1c3209316e51ced89406c35cd92496441429c10ab46fc6a5fab4a0ff"
+        }
+      },
+      "observations": [
+        {
+          "repetition": 0,
+          "phase": "cold",
+          "elapsed_seconds": 0.028195584192872047,
+          "peak_process_rss_bytes": 41820160,
+          "startup_rss_bytes": 36864000,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "394aeb08268725a78646e45ae1dc768d07f473cfc0545716b043290a66d9bb6e"
+          }
+        },
+        {
+          "repetition": 0,
+          "phase": "repeat",
+          "elapsed_seconds": 0.03196114208549261,
+          "peak_process_rss_bytes": 41889792,
+          "startup_rss_bytes": 36864000,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "ff9a44b94c8de6406a7bbca42bda16b77d5a2ef400632ef23c9d4988f4ff1c5e"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "cold",
+          "elapsed_seconds": 0.026005022693425417,
+          "peak_process_rss_bytes": 41857024,
+          "startup_rss_bytes": 36900864,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "e20ec58f4e1d7677a5269f508b9154c98f4c5c34b15f726cc8093859d8a213fc"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "repeat",
+          "elapsed_seconds": 0.023490208201110363,
+          "peak_process_rss_bytes": 41918464,
+          "startup_rss_bytes": 36900864,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "a5640b4a432165d21904b753c0d6b5ec3ca6ec7ee3caf0995e04cb0d9e806018"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "cold",
+          "elapsed_seconds": 0.02919808914884925,
+          "peak_process_rss_bytes": 42033152,
+          "startup_rss_bytes": 36995072,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "70f856508250de2a96be79a26c2a3811322ab6dc18640567eea450a02f65a4b4"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "repeat",
+          "elapsed_seconds": 0.02994902804493904,
+          "peak_process_rss_bytes": 42102784,
+          "startup_rss_bytes": 36995072,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "9c44940d1483182f4b9b102a1fedfc743597eccc4c2d77ef38f2c9b51769020c"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "cold",
+          "elapsed_seconds": 0.024941590148955584,
+          "peak_process_rss_bytes": 41787392,
+          "startup_rss_bytes": 36835328,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "aea2cb77f544bd5257234c24b05361f0dff61c48207fadcf14194043b43439e1"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "repeat",
+          "elapsed_seconds": 0.029405976179987192,
+          "peak_process_rss_bytes": 41857024,
+          "startup_rss_bytes": 36835328,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "f02bf7d7f2580a29236b12a936e26812b382b1c5906bd6b08039559de90381a5"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "cold",
+          "elapsed_seconds": 0.03220686875283718,
+          "peak_process_rss_bytes": 41844736,
+          "startup_rss_bytes": 36823040,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "6fe72027823838e17bf21179c861aa6839aa34bf4181033054e2839c8c7aff4d"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "repeat",
+          "elapsed_seconds": 0.03135044313967228,
+          "peak_process_rss_bytes": 41922560,
+          "startup_rss_bytes": 36823040,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "4c704a92e002801847ed0f5362519784aba8cd023d194302ae9c1f345c369f50"
+          }
+        }
+      ],
+      "medians": {
+        "cold": {
+          "elapsed_seconds": 0.028195584192872047,
+          "service_sent_body_bytes": 5058,
+          "service_requests": 19
+        },
+        "repeat": {
+          "elapsed_seconds": 0.02994902804493904,
+          "service_sent_body_bytes": 5058,
+          "service_requests": 19
+        }
+      },
+      "cold_elapsed_ratio_to_old_disabled": 0.8106916105696538,
+      "cold_threshold_pass": true
+    },
+    {
+      "source": "s3",
+      "variant": "v1.5.6",
+      "workers": 1,
+      "connection_lifetime": "two complete selected queries per fresh connection",
+      "identities": {
+        "duckdb": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-httpfs-refactor/official/v1.5.6/duckdb",
+          "sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48"
+        },
+        "httpfs": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-httpfs-refactor/official/v1.5.6/httpfs.duckdb_extension",
+          "sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d"
+        },
+        "duckomo": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/24d2012eb2c1f0a0bd5c737ce9c0cfebe4efbf646fead601280013869a74c52d/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "01b9ecbb47a9aeed1f6e7c2d24f5e868200a0aab3fefa818063d6f90f211f178"
+        }
+      },
+      "observations": [
+        {
+          "repetition": 0,
+          "phase": "cold",
+          "elapsed_seconds": 0.026786745991557837,
+          "peak_process_rss_bytes": 41742336,
+          "startup_rss_bytes": 36777984,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "64e7f48aacaeeaec4103106328e9210ef391baba8403f90b79f4d8f29abaa17f"
+          }
+        },
+        {
+          "repetition": 0,
+          "phase": "repeat",
+          "elapsed_seconds": 0.02853182191029191,
+          "peak_process_rss_bytes": 41811968,
+          "startup_rss_bytes": 36777984,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "e5253c21f1a65af9df36bced835768adc40c76b2c40cd1c8a366567cd17fc327"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "cold",
+          "elapsed_seconds": 0.03104644501581788,
+          "peak_process_rss_bytes": 41795584,
+          "startup_rss_bytes": 36843520,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "1728a59398371e3710bef0704bf0d23cb2fec0981eb7981eb25fb003857ffa9e"
+          }
+        },
+        {
+          "repetition": 1,
+          "phase": "repeat",
+          "elapsed_seconds": 0.03081561392173171,
+          "peak_process_rss_bytes": 41877504,
+          "startup_rss_bytes": 36843520,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "0fc670f7e0d2cc010b445a48623b0d14cbcc9b83bfa040d17ca6332ca0a958cf"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "cold",
+          "elapsed_seconds": 0.028475069906562567,
+          "peak_process_rss_bytes": 41959424,
+          "startup_rss_bytes": 37007360,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "cff308867b9903887120755945ab8a9e0df57c65e2805a8e32140fa4518ba1f5"
+          }
+        },
+        {
+          "repetition": 2,
+          "phase": "repeat",
+          "elapsed_seconds": 0.032421363051980734,
+          "peak_process_rss_bytes": 42033152,
+          "startup_rss_bytes": 37007360,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "6f907ecd46c9bde2ac249fa1c4eeb2b3f6a389873bf4f5f68e7a668c0e8f0947"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "cold",
+          "elapsed_seconds": 0.02697629714384675,
+          "peak_process_rss_bytes": 42029056,
+          "startup_rss_bytes": 36986880,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "0260459c867050b1ce83a4c49bef53781de3ae06c288088dd94dc7bc3fcd0e46"
+          }
+        },
+        {
+          "repetition": 3,
+          "phase": "repeat",
+          "elapsed_seconds": 0.02946563996374607,
+          "peak_process_rss_bytes": 42098688,
+          "startup_rss_bytes": 36986880,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "c2e1168dbee6ff99ed4328f33dd6e31246a3b146240ffc8f152eafb771ea599a"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "cold",
+          "elapsed_seconds": 0.028469661716371775,
+          "peak_process_rss_bytes": 41730048,
+          "startup_rss_bytes": 36761600,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "06eceffc355452fe0db73645f60a4a9eff6e333f83700b28c137ee0539342ca0"
+          }
+        },
+        {
+          "repetition": 4,
+          "phase": "repeat",
+          "elapsed_seconds": 0.030433648731559515,
+          "peak_process_rss_bytes": 41799680,
+          "startup_rss_bytes": 36761600,
+          "result_sha256": "2a7534deb0f710a5347f06a0617b618420a028e9bdd852de63276ea96c2cd3ec",
+          "audit": {
+            "scope": "service sent bytes, not client received bytes",
+            "available": true,
+            "sent_body_bytes": 5058,
+            "requests": 19,
+            "event_count": 19,
+            "events_sha256": "4f4e02a9d6ad393b84d90fafe7f8681b8982f9a6d89cca6e1dad7fcb8c77708b"
+          }
+        }
+      ],
+      "medians": {
+        "cold": {
+          "elapsed_seconds": 0.028469661716371775,
+          "service_sent_body_bytes": 5058,
+          "service_requests": 19
+        },
+        "repeat": {
+          "elapsed_seconds": 0.030433648731559515,
+          "service_sent_body_bytes": 5058,
+          "service_requests": 19
+        }
+      },
+      "cold_elapsed_ratio_to_old_disabled": 0.8185720058623006,
+      "cold_threshold_pass": true
+    }
+  ],
+  "full_audit_artifact": {
+    "path": "build/community-preparation/audit/official-httpfs-refactor/performance-full.json.gz",
+    "sha256": "aa086cb2ac0ebe87a81892d5c63b86ad6d1e6223797b1d67e6b772baee1fb875",
+    "uncompressed_sha256": "1234c55a778ca44a590d6116c657acbb643a02537e23e4f4dda4d0f431986595",
+    "path_base": "repository_root",
+    "storage": "ignored local build directory; regenerate with recorded validation commands"
+  }
+}

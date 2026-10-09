@@ -1,0 +1,40 @@
+{
+  "scope": "controlled local environment raw OM value/Range/TLS/signed-S3 smoke only",
+  "status": "pass",
+  "full_G3_G6_status": "not-run",
+  "full_H6_status": "not-run",
+  "cases": [
+    {
+      "source": "local",
+      "rows": 6,
+      "client_body_bytes": 0,
+      "server_body_bytes": 0,
+      "result_sha256": "bfa87175b8a57265de3d7f81c3a37fb3da84946aa8f2acf0a76447d51824117a",
+      "tls_verification_enabled": false
+    },
+    {
+      "source": "http",
+      "rows": 6,
+      "client_body_bytes": 324,
+      "server_body_bytes": 324,
+      "result_sha256": "bfa87175b8a57265de3d7f81c3a37fb3da84946aa8f2acf0a76447d51824117a",
+      "tls_verification_enabled": false
+    },
+    {
+      "source": "https",
+      "rows": 6,
+      "client_body_bytes": 324,
+      "server_body_bytes": 324,
+      "result_sha256": "bfa87175b8a57265de3d7f81c3a37fb3da84946aa8f2acf0a76447d51824117a",
+      "tls_verification_enabled": true
+    },
+    {
+      "source": "s3",
+      "rows": 6,
+      "client_body_bytes": 324,
+      "server_body_bytes": 324,
+      "result_sha256": "bfa87175b8a57265de3d7f81c3a37fb3da84946aa8f2acf0a76447d51824117a",
+      "tls_verification_enabled": false
+    }
+  ]
+}

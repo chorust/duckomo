@@ -111,6 +111,10 @@ double RegularGrid::LongitudeStep() const noexcept {
 	return dlon_;
 }
 
+bool RegularGrid::AllowsOutOfRangeLatitude() const noexcept {
+	return allow_out_of_range_latitude_;
+}
+
 GridCoordinate RegularGrid::Coordinate(std::uint64_t y, std::uint64_t x) const {
 	if (y >= ny_ || x >= nx_) {
 		throw ReaderError(ReaderErrorCode::InvalidSelection, "regular grid point index is outside the grid");

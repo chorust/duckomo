@@ -1,0 +1,119 @@
+{
+  "pair_id": "baseline-1.5.4",
+  "build_id": "ca899e93bb992c0b4156b2c99e58c6d100068fbc7fbb61492b3e116c2c00c38d",
+  "release_dir": "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/ca899e93bb992c0b4156b2c99e58c6d100068fbc7fbb61492b3e116c2c00c38d/release",
+  "commands": [
+    {
+      "label": "native-build",
+      "argv": [
+        "cmake",
+        "--build",
+        "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/ca899e93bb992c0b4156b2c99e58c6d100068fbc7fbb61492b3e116c2c00c38d/release",
+        "--target",
+        "httpfs_range_test",
+        "duckomo_remote_validation",
+        "httpfs_abi_test",
+        "grid_zero_io_test",
+        "source_identity_test",
+        "grid_version_compat_test",
+        "duckomo_grid_validation",
+        "core_functions_loadable_extension",
+        "--parallel",
+        "4"
+      ],
+      "exit_code": 0
+    },
+    {
+      "label": "httpfs_range_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/ca899e93bb992c0b4156b2c99e58c6d100068fbc7fbb61492b3e116c2c00c38d/release/test/native/httpfs_range_test"
+      ],
+      "exit_code": 0
+    },
+    {
+      "label": "httpfs_abi_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/ca899e93bb992c0b4156b2c99e58c6d100068fbc7fbb61492b3e116c2c00c38d/release/test/native/httpfs_abi_test"
+      ],
+      "exit_code": 0
+    },
+    {
+      "label": "grid_zero_io_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/ca899e93bb992c0b4156b2c99e58c6d100068fbc7fbb61492b3e116c2c00c38d/release/test/native/grid_zero_io_test"
+      ],
+      "exit_code": 0
+    },
+    {
+      "label": "source_identity_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/ca899e93bb992c0b4156b2c99e58c6d100068fbc7fbb61492b3e116c2c00c38d/release/test/native/source_identity_test"
+      ],
+      "exit_code": 0
+    },
+    {
+      "label": "grid_version_compat_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/ca899e93bb992c0b4156b2c99e58c6d100068fbc7fbb61492b3e116c2c00c38d/release/test/native/grid_version_compat_test"
+      ],
+      "exit_code": 0
+    },
+    {
+      "label": "sql-grid_version_compat",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/ca899e93bb992c0b4156b2c99e58c6d100068fbc7fbb61492b3e116c2c00c38d/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/grid_version_compat.test"
+      ],
+      "exit_code": 0
+    },
+    {
+      "label": "sql-grid_zero_io",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/ca899e93bb992c0b4156b2c99e58c6d100068fbc7fbb61492b3e116c2c00c38d/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/grid_zero_io.test"
+      ],
+      "exit_code": 0
+    },
+    {
+      "label": "sql-source_identity",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/ca899e93bb992c0b4156b2c99e58c6d100068fbc7fbb61492b3e116c2c00c38d/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/source_identity.test"
+      ],
+      "exit_code": 0
+    },
+    {
+      "label": "sql-grid_info",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/ca899e93bb992c0b4156b2c99e58c6d100068fbc7fbb61492b3e116c2c00c38d/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/grid_info.test"
+      ],
+      "exit_code": 0
+    },
+    {
+      "label": "paired-load",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/ca899e93bb992c0b4156b2c99e58c6d100068fbc7fbb61492b3e116c2c00c38d/release/duckdb",
+        "-unsigned",
+        "-csv",
+        "-noheader",
+        "-c",
+        "LOAD '/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/ca899e93bb992c0b4156b2c99e58c6d100068fbc7fbb61492b3e116c2c00c38d/release/extension/httpfs/httpfs.duckdb_extension'; LOAD '/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/ca899e93bb992c0b4156b2c99e58c6d100068fbc7fbb61492b3e116c2c00c38d/release/extension/duckomo/duckomo.duckdb_extension'; SELECT * FROM httpfs_om_range_capabilities(); SELECT source_id FROM pragma_version();"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "artifact_hashes": {
+    "duckdb": "34e9429e20beace0816395350eb7678536b0b1d141a5e10e247b2855827d9c15",
+    "duckomo": "0ec27a86862f3c63789ae8c5b1918c2229711cd0fabe6d56a94987dcc544d67f",
+    "httpfs": "2e9fea1f894fd9c2849ff8d39fbe672db3b048dccaa930515368e53a9224db24"
+  }
+}

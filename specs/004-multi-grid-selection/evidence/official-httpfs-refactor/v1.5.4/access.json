@@ -1,0 +1,1141 @@
+{
+  "status": "pass",
+  "scope": "same URI, same CLI connection; controlled service access transitions; no general cache revocation promise",
+  "records": [
+    {
+      "name": "allowed",
+      "status": "pass",
+      "elapsed_seconds": 0.01420259103178978,
+      "peak_process_rss_bytes": 55353344,
+      "workers": 1,
+      "query": "SELECT * FROM read_om('http://127.0.0.1:45107/raw.om?state_key=official-access-c0ee7c894c2242a3b6874927d081a9ef') ORDER BY ALL",
+      "expected_error": false,
+      "result_sha256": "26f6cefc7029d002e4ffe94b09d725578ac827ba3f8c4b9dfccd413bca132f5f",
+      "metrics": [
+        {
+          "schema_version": 4,
+          "scan_id": 0,
+          "query_id": "2-0",
+          "operation": "read_om",
+          "outcome": {
+            "status": "success",
+            "scan_complete": true,
+            "terminal_published": true,
+            "error_category": ""
+          },
+          "grid": {
+            "definition": "",
+            "layout": "",
+            "source": ""
+          },
+          "selection": {
+            "mode": "full",
+            "residual_filter_retained": true,
+            "fallback_reasons": [],
+            "exact_candidate_records": 6,
+            "observed_candidate_records": 6,
+            "candidate_upper_bound_records": 6,
+            "count_complete": true,
+            "windows": 0,
+            "ranges": 0,
+            "fallback_windows": 0,
+            "coordinate_evaluations": null
+          },
+          "coordinate_preparation": {
+            "evaluations": null,
+            "complete": null
+          },
+          "reads": {
+            "metadata": {
+              "bind_bytes": 99,
+              "bind_requests": 3,
+              "scan_bytes": 198,
+              "scan_requests": 6
+            },
+            "coordinates": {
+              "physical_bytes": 0,
+              "physical_requests": 0,
+              "logical_bytes": 0,
+              "logical_requests": 0,
+              "index_bytes": 0,
+              "index_requests": 0,
+              "data_bytes": 0,
+              "data_requests": 0,
+              "decoded_chunks": 0,
+              "decode_complete": null
+            },
+            "variables": {
+              "/": {
+                "logical_index_bytes": 8,
+                "logical_index_requests": 2,
+                "logical_data_bytes": 16,
+                "logical_data_requests": 2,
+                "index_bytes": 8,
+                "index_requests": 2,
+                "data_bytes": 16,
+                "data_requests": 2,
+                "decoded_chunks": 4,
+                "decode_complete": true
+              }
+            },
+            "value_totals": {
+              "index_bytes": 8,
+              "index_requests": 2,
+              "data_bytes": 16,
+              "data_requests": 2,
+              "decoded_chunks": 4,
+              "decode_complete": true
+            }
+          },
+          "transport": {
+            "response_body_bytes": null,
+            "attempts": null,
+            "responses": null,
+            "complete": false
+          },
+          "memory": {
+            "query_owned_peak_bytes": 531315,
+            "query_owned_upper_bound_peak_bytes": 531682,
+            "query_owned_complete": true,
+            "query_owned_released_at_terminal": true,
+            "query_owned_scope": "DuckOMO-owned buffers and conservative container/string capacity estimates; allocator metadata excluded",
+            "component_peak_scope": "independent component high-water marks; total peak captures concurrent live accounts",
+            "components": {
+              "bind": {
+                "peak_owned_capacity_bytes": 2122,
+                "upper_bound_peak_bytes": 2122
+              },
+              "global_control": {
+                "peak_owned_capacity_bytes": 2384,
+                "upper_bound_peak_bytes": 2384
+              },
+              "selector": {
+                "peak_owned_capacity_bytes": 392,
+                "upper_bound_peak_bytes": 392
+              },
+              "task_positions": {
+                "peak_owned_capacity_bytes": 524288,
+                "upper_bound_peak_bytes": 524288
+              },
+              "batch_segments": {
+                "peak_owned_capacity_bytes": 632,
+                "upper_bound_peak_bytes": 760
+              },
+              "definitions": {
+                "peak_owned_capacity_bytes": 1160,
+                "upper_bound_peak_bytes": 1160
+              },
+              "coordinate_buffers": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              },
+              "decoder": {
+                "peak_owned_capacity_bytes": 589,
+                "upper_bound_peak_bytes": 828
+              },
+              "coalescing": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              },
+              "transport_control": {
+                "peak_owned_capacity_bytes": 597,
+                "upper_bound_peak_bytes": 597
+              },
+              "unclassified": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              }
+            },
+            "repeated_work": {
+              "coordinate_evaluations": 0,
+              "value_decoded_chunks": 4,
+              "coordinate_decoded_chunks": 0,
+              "deduplicated": false
+            },
+            "coalescing_scope": "no coalescing buffers are currently allocated",
+            "decoder_upper_bound_basis": "control+min(object_size,lut_size)+object_size+chunk_scratch per active decoder; engine output reported separately",
+            "engine_output_vector_bytes": null,
+            "engine_output_vector_scope": "DuckDB-owned; not included in query-owned totals",
+            "shared_cache_peak_charged_bytes": 0,
+            "shared_cache_control_bytes": 0,
+            "shared_cache_scope": "connection",
+            "process_peak_rss_bytes": 53661696
+          },
+          "legacy_v3": {
+            "schema_version": 3,
+            "scan_id": 0,
+            "query_id": "2-0",
+            "status": "success",
+            "scan_complete": true,
+            "axes": {
+              "selection_mode": "full",
+              "fallback_reasons": [],
+              "optimizer_empty": false
+            },
+            "metadata": {
+              "bind": {
+                "logical_bytes": 99,
+                "logical_requests": 3,
+                "physical_bytes": 99,
+                "physical_requests": 3
+              },
+              "scan": {
+                "logical_bytes": 198,
+                "logical_requests": 6,
+                "physical_bytes": 198,
+                "physical_requests": 6
+              }
+            },
+            "coordinate": {
+              "logical_bytes": 0,
+              "logical_requests": 0,
+              "physical_bytes": 0,
+              "physical_requests": 0,
+              "logical_index_bytes": 0,
+              "logical_index_requests": 0,
+              "logical_data_bytes": 0,
+              "logical_data_requests": 0,
+              "index_bytes": 0,
+              "index_requests": 0,
+              "data_bytes": 0,
+              "data_requests": 0,
+              "decoded_chunks": 0,
+              "decode_count_complete": true
+            },
+            "variables": {
+              "/": {
+                "logical_index_bytes": 8,
+                "logical_index_requests": 2,
+                "logical_data_bytes": 16,
+                "logical_data_requests": 2,
+                "index_bytes": 8,
+                "index_requests": 2,
+                "data_bytes": 16,
+                "data_requests": 2,
+                "decoded_chunks": 4,
+                "decode_count_complete": true
+              }
+            },
+            "logical_requested_bytes": 321,
+            "logical_requests": 13,
+            "physical_read_bytes": 321,
+            "physical_read_requests": 13,
+            "bytes_fetched": 321,
+            "read_requests": 13,
+            "response_body_bytes": null,
+            "transport_attempts": null,
+            "transport_responses": null,
+            "transport_count_complete": false,
+            "response_statuses": {},
+            "cache": {
+              "enabled": false,
+              "capacity_bytes": 0,
+              "charged_bytes": 0,
+              "peak_charged_bytes": 0,
+              "control_bytes": 0,
+              "hits": 0,
+              "misses": 0,
+              "hit_bytes": 0,
+              "evictions": 0,
+              "bypass_reason": "removed",
+              "version_strength": "unverified",
+              "scope": "connection"
+            },
+            "tasks": {
+              "created": 1,
+              "claimed": 1,
+              "completed": 1,
+              "failed": 0,
+              "cancelled": 0,
+              "active_workers": 1,
+              "max_active_workers": 1
+            },
+            "candidate_rows": 6,
+            "scanner_rows": 6,
+            "result_rows": null,
+            "result_rows_state": "unobserved",
+            "decode_count_complete": true,
+            "elapsed_ms": 12.854697,
+            "peak_query_owned_bytes": 531315,
+            "query_memory_count_complete": true,
+            "query_memory_scope": "duckomo_owned_buffer_decoder_selection_capacities",
+            "peak_rss_bytes": 53661696,
+            "memory_scope": "process",
+            "legacy_v2": {
+              "schema_version": 2,
+              "query_id": "2-0",
+              "scenario": "",
+              "sql": "<redacted>",
+              "fixture_id": "",
+              "fixture_sha256": "",
+              "dependency_commits": {
+                "duckdb": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+                "extension-ci-tools": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+                "om-file-format": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+              },
+              "status": "success",
+              "result_rows": null,
+              "comparison_passed": null,
+              "metadata_bytes": 297,
+              "metadata_requests": 9,
+              "bind_metadata_bytes": 99,
+              "bind_metadata_requests": 3,
+              "scan_metadata_bytes": 198,
+              "scan_metadata_requests": 6,
+              "grid_definition": "",
+              "spatial_layout": "",
+              "grid_source": "",
+              "selection_mode": "full",
+              "residual_filter_retained": true,
+              "filter_callback_invoked": false,
+              "fallback_reasons": [],
+              "candidate_rows": 6,
+              "scan_tasks_claimed": 1,
+              "active_workers": 1,
+              "optimizer_empty": false,
+              "reference_identity": "",
+              "coordinate_tolerance": 1e-09,
+              "logical_positions_match": null,
+              "null_positions_match": null,
+              "variables": {
+                "/": {
+                  "index_bytes": 8,
+                  "index_requests": 2,
+                  "data_bytes": 16,
+                  "data_requests": 2,
+                  "decoded_chunks": 4,
+                  "decode_count_complete": true
+                }
+              },
+              "bytes_fetched": 321,
+              "read_requests": 13,
+              "decode_count_complete": true,
+              "elapsed_ms": 12.854697,
+              "environment": {
+                "build": "v1.5.4",
+                "build_id": "53e9acc82a93cda5f89aaa93fcab62d891f1dd9bf40800161fa78df58be64c56",
+                "build_pair": "v1.5.4",
+                "cxx_abi": "libstdc++ cxx11abi=1;compiled=libstdcxx-20240904-dualabi-1",
+                "platform": "Linux AArch64;compiled=linux-aarch64"
+              },
+              "cache_policy": {
+                "application_cache": "removed"
+              },
+              "peak_rss_bytes": 53661696,
+              "error_category": ""
+            }
+          },
+          "legacy_v2": {
+            "schema_version": 2,
+            "query_id": "2-0",
+            "scenario": "",
+            "sql": "<redacted>",
+            "fixture_id": "",
+            "fixture_sha256": "",
+            "dependency_commits": {
+              "duckdb": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+              "extension-ci-tools": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+              "om-file-format": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+            },
+            "status": "success",
+            "result_rows": null,
+            "comparison_passed": null,
+            "metadata_bytes": 297,
+            "metadata_requests": 9,
+            "bind_metadata_bytes": 99,
+            "bind_metadata_requests": 3,
+            "scan_metadata_bytes": 198,
+            "scan_metadata_requests": 6,
+            "grid_definition": "",
+            "spatial_layout": "",
+            "grid_source": "",
+            "selection_mode": "full",
+            "residual_filter_retained": true,
+            "filter_callback_invoked": false,
+            "fallback_reasons": [],
+            "candidate_rows": 6,
+            "scan_tasks_claimed": 1,
+            "active_workers": 1,
+            "optimizer_empty": false,
+            "reference_identity": "",
+            "coordinate_tolerance": 1e-09,
+            "logical_positions_match": null,
+            "null_positions_match": null,
+            "variables": {
+              "/": {
+                "index_bytes": 8,
+                "index_requests": 2,
+                "data_bytes": 16,
+                "data_requests": 2,
+                "decoded_chunks": 4,
+                "decode_count_complete": true
+              }
+            },
+            "bytes_fetched": 321,
+            "read_requests": 13,
+            "decode_count_complete": true,
+            "elapsed_ms": 12.854697,
+            "environment": {
+              "build": "v1.5.4",
+              "build_id": "53e9acc82a93cda5f89aaa93fcab62d891f1dd9bf40800161fa78df58be64c56",
+              "build_pair": "v1.5.4",
+              "cxx_abi": "libstdc++ cxx11abi=1;compiled=libstdcxx-20240904-dualabi-1",
+              "platform": "Linux AArch64;compiled=linux-aarch64"
+            },
+            "cache_policy": {
+              "application_cache": "removed"
+            },
+            "peak_rss_bytes": 53661696,
+            "error_category": ""
+          }
+        }
+      ],
+      "audit": {
+        "scope": "service sent bytes",
+        "available": false
+      }
+    },
+    {
+      "name": "denied",
+      "status": "pass",
+      "elapsed_seconds": 0.5038272589445114,
+      "peak_process_rss_bytes": 57397248,
+      "workers": 1,
+      "query": "SELECT * FROM read_om('http://127.0.0.1:45107/raw.om?state_key=official-access-c0ee7c894c2242a3b6874927d081a9ef') ORDER BY ALL",
+      "expected_error": true,
+      "result_sha256": null,
+      "metrics": [
+        {
+          "schema_version": 4,
+          "scan_id": 0,
+          "query_id": "2-1",
+          "operation": "read_om",
+          "outcome": {
+            "status": "failure",
+            "scan_complete": false,
+            "terminal_published": true,
+            "error_category": "query_error"
+          },
+          "grid": {
+            "definition": "",
+            "layout": "",
+            "source": ""
+          },
+          "selection": {
+            "mode": "",
+            "residual_filter_retained": true,
+            "fallback_reasons": [],
+            "exact_candidate_records": null,
+            "observed_candidate_records": null,
+            "candidate_upper_bound_records": null,
+            "count_complete": false,
+            "windows": 0,
+            "ranges": 0,
+            "fallback_windows": 0,
+            "coordinate_evaluations": null
+          },
+          "coordinate_preparation": {
+            "evaluations": null,
+            "complete": null
+          },
+          "reads": {
+            "metadata": {
+              "bind_bytes": 0,
+              "bind_requests": 0,
+              "scan_bytes": 0,
+              "scan_requests": 0
+            },
+            "coordinates": {
+              "physical_bytes": 0,
+              "physical_requests": 0,
+              "logical_bytes": 0,
+              "logical_requests": 0,
+              "index_bytes": 0,
+              "index_requests": 0,
+              "data_bytes": 0,
+              "data_requests": 0,
+              "decoded_chunks": 0,
+              "decode_complete": null
+            },
+            "variables": {},
+            "value_totals": {
+              "index_bytes": 0,
+              "index_requests": 0,
+              "data_bytes": 0,
+              "data_requests": 0,
+              "decoded_chunks": 0,
+              "decode_complete": null
+            }
+          },
+          "transport": {
+            "response_body_bytes": null,
+            "attempts": null,
+            "responses": null,
+            "complete": false
+          },
+          "memory": {
+            "query_owned_peak_bytes": null,
+            "query_owned_upper_bound_peak_bytes": null,
+            "query_owned_complete": false,
+            "query_owned_released_at_terminal": true,
+            "query_owned_scope": "DuckOMO-owned buffers and conservative container/string capacity estimates; allocator metadata excluded",
+            "component_peak_scope": "independent component high-water marks; total peak captures concurrent live accounts",
+            "components": {
+              "bind": {
+                "peak_owned_capacity_bytes": 121,
+                "upper_bound_peak_bytes": 121
+              },
+              "global_control": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              },
+              "selector": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              },
+              "task_positions": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              },
+              "batch_segments": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              },
+              "definitions": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              },
+              "coordinate_buffers": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              },
+              "decoder": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              },
+              "coalescing": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              },
+              "transport_control": {
+                "peak_owned_capacity_bytes": 354,
+                "upper_bound_peak_bytes": 354
+              },
+              "unclassified": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              }
+            },
+            "repeated_work": {
+              "coordinate_evaluations": 0,
+              "value_decoded_chunks": 0,
+              "coordinate_decoded_chunks": 0,
+              "deduplicated": false
+            },
+            "coalescing_scope": "no coalescing buffers are currently allocated",
+            "decoder_upper_bound_basis": "control+min(object_size,lut_size)+object_size+chunk_scratch per active decoder; engine output reported separately",
+            "engine_output_vector_bytes": null,
+            "engine_output_vector_scope": "DuckDB-owned; not included in query-owned totals",
+            "shared_cache_peak_charged_bytes": 0,
+            "shared_cache_control_bytes": 0,
+            "shared_cache_scope": "connection",
+            "process_peak_rss_bytes": 55992320
+          },
+          "legacy_v3": {
+            "schema_version": 3,
+            "scan_id": 0,
+            "query_id": "2-1",
+            "status": "failure",
+            "scan_complete": false,
+            "axes": {
+              "selection_mode": "",
+              "fallback_reasons": [],
+              "optimizer_empty": false
+            },
+            "metadata": {
+              "bind": {
+                "logical_bytes": 0,
+                "logical_requests": 0,
+                "physical_bytes": 0,
+                "physical_requests": 0
+              },
+              "scan": {
+                "logical_bytes": 0,
+                "logical_requests": 0,
+                "physical_bytes": 0,
+                "physical_requests": 0
+              }
+            },
+            "coordinate": {
+              "logical_bytes": 0,
+              "logical_requests": 0,
+              "physical_bytes": 0,
+              "physical_requests": 0,
+              "logical_index_bytes": 0,
+              "logical_index_requests": 0,
+              "logical_data_bytes": 0,
+              "logical_data_requests": 0,
+              "index_bytes": 0,
+              "index_requests": 0,
+              "data_bytes": 0,
+              "data_requests": 0,
+              "decoded_chunks": 0,
+              "decode_count_complete": true
+            },
+            "variables": {},
+            "logical_requested_bytes": 0,
+            "logical_requests": 0,
+            "physical_read_bytes": 0,
+            "physical_read_requests": 0,
+            "bytes_fetched": 0,
+            "read_requests": 0,
+            "response_body_bytes": null,
+            "transport_attempts": null,
+            "transport_responses": null,
+            "transport_count_complete": false,
+            "response_statuses": {},
+            "cache": {
+              "enabled": false,
+              "capacity_bytes": 0,
+              "charged_bytes": 0,
+              "peak_charged_bytes": 0,
+              "control_bytes": 0,
+              "hits": 0,
+              "misses": 0,
+              "hit_bytes": 0,
+              "evictions": 0,
+              "bypass_reason": "removed",
+              "version_strength": "unverified",
+              "scope": "connection"
+            },
+            "tasks": {
+              "created": 0,
+              "claimed": 0,
+              "completed": 0,
+              "failed": 0,
+              "cancelled": 0,
+              "active_workers": 0,
+              "max_active_workers": 0
+            },
+            "candidate_rows": 0,
+            "scanner_rows": 0,
+            "result_rows": null,
+            "result_rows_state": "unobserved",
+            "decode_count_complete": true,
+            "elapsed_ms": 502.798594,
+            "peak_query_owned_bytes": null,
+            "query_memory_count_complete": false,
+            "query_memory_scope": "duckomo_owned_buffer_decoder_selection_capacities",
+            "peak_rss_bytes": 55992320,
+            "memory_scope": "process",
+            "legacy_v2": {
+              "schema_version": 2,
+              "query_id": "2-1",
+              "scenario": "",
+              "sql": "<redacted>",
+              "fixture_id": "",
+              "fixture_sha256": "",
+              "dependency_commits": {
+                "duckdb": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+                "extension-ci-tools": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+                "om-file-format": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+              },
+              "status": "failure",
+              "result_rows": null,
+              "comparison_passed": null,
+              "metadata_bytes": 0,
+              "metadata_requests": 0,
+              "bind_metadata_bytes": 0,
+              "bind_metadata_requests": 0,
+              "scan_metadata_bytes": 0,
+              "scan_metadata_requests": 0,
+              "grid_definition": "",
+              "spatial_layout": "",
+              "grid_source": "",
+              "selection_mode": "",
+              "residual_filter_retained": true,
+              "filter_callback_invoked": false,
+              "fallback_reasons": [],
+              "candidate_rows": 0,
+              "scan_tasks_claimed": 0,
+              "active_workers": 0,
+              "optimizer_empty": false,
+              "reference_identity": "",
+              "coordinate_tolerance": 1e-09,
+              "logical_positions_match": null,
+              "null_positions_match": null,
+              "variables": {},
+              "bytes_fetched": 0,
+              "read_requests": 0,
+              "decode_count_complete": true,
+              "elapsed_ms": 502.798594,
+              "environment": {
+                "build": "v1.5.4",
+                "build_id": "53e9acc82a93cda5f89aaa93fcab62d891f1dd9bf40800161fa78df58be64c56",
+                "build_pair": "v1.5.4",
+                "cxx_abi": "libstdc++ cxx11abi=1;compiled=libstdcxx-20240904-dualabi-1",
+                "platform": "Linux AArch64;compiled=linux-aarch64"
+              },
+              "cache_policy": {
+                "application_cache": "removed"
+              },
+              "peak_rss_bytes": 55992320,
+              "error_category": "query_error"
+            }
+          },
+          "legacy_v2": {
+            "schema_version": 2,
+            "query_id": "2-1",
+            "scenario": "",
+            "sql": "<redacted>",
+            "fixture_id": "",
+            "fixture_sha256": "",
+            "dependency_commits": {
+              "duckdb": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+              "extension-ci-tools": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+              "om-file-format": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+            },
+            "status": "failure",
+            "result_rows": null,
+            "comparison_passed": null,
+            "metadata_bytes": 0,
+            "metadata_requests": 0,
+            "bind_metadata_bytes": 0,
+            "bind_metadata_requests": 0,
+            "scan_metadata_bytes": 0,
+            "scan_metadata_requests": 0,
+            "grid_definition": "",
+            "spatial_layout": "",
+            "grid_source": "",
+            "selection_mode": "",
+            "residual_filter_retained": true,
+            "filter_callback_invoked": false,
+            "fallback_reasons": [],
+            "candidate_rows": 0,
+            "scan_tasks_claimed": 0,
+            "active_workers": 0,
+            "optimizer_empty": false,
+            "reference_identity": "",
+            "coordinate_tolerance": 1e-09,
+            "logical_positions_match": null,
+            "null_positions_match": null,
+            "variables": {},
+            "bytes_fetched": 0,
+            "read_requests": 0,
+            "decode_count_complete": true,
+            "elapsed_ms": 502.798594,
+            "environment": {
+              "build": "v1.5.4",
+              "build_id": "53e9acc82a93cda5f89aaa93fcab62d891f1dd9bf40800161fa78df58be64c56",
+              "build_pair": "v1.5.4",
+              "cxx_abi": "libstdc++ cxx11abi=1;compiled=libstdcxx-20240904-dualabi-1",
+              "platform": "Linux AArch64;compiled=linux-aarch64"
+            },
+            "cache_policy": {
+              "application_cache": "removed"
+            },
+            "peak_rss_bytes": 55992320,
+            "error_category": "query_error"
+          }
+        }
+      ],
+      "audit": {
+        "scope": "service sent bytes",
+        "available": false
+      }
+    },
+    {
+      "name": "restored",
+      "status": "pass",
+      "elapsed_seconds": 0.010470343753695488,
+      "peak_process_rss_bytes": 57544704,
+      "workers": 1,
+      "query": "SELECT * FROM read_om('http://127.0.0.1:45107/raw.om?state_key=official-access-c0ee7c894c2242a3b6874927d081a9ef') ORDER BY ALL",
+      "expected_error": false,
+      "result_sha256": "26f6cefc7029d002e4ffe94b09d725578ac827ba3f8c4b9dfccd413bca132f5f",
+      "metrics": [
+        {
+          "schema_version": 4,
+          "scan_id": 0,
+          "query_id": "2-2",
+          "operation": "read_om",
+          "outcome": {
+            "status": "success",
+            "scan_complete": true,
+            "terminal_published": true,
+            "error_category": ""
+          },
+          "grid": {
+            "definition": "",
+            "layout": "",
+            "source": ""
+          },
+          "selection": {
+            "mode": "full",
+            "residual_filter_retained": true,
+            "fallback_reasons": [],
+            "exact_candidate_records": 6,
+            "observed_candidate_records": 6,
+            "candidate_upper_bound_records": 6,
+            "count_complete": true,
+            "windows": 0,
+            "ranges": 0,
+            "fallback_windows": 0,
+            "coordinate_evaluations": null
+          },
+          "coordinate_preparation": {
+            "evaluations": null,
+            "complete": null
+          },
+          "reads": {
+            "metadata": {
+              "bind_bytes": 99,
+              "bind_requests": 3,
+              "scan_bytes": 198,
+              "scan_requests": 6
+            },
+            "coordinates": {
+              "physical_bytes": 0,
+              "physical_requests": 0,
+              "logical_bytes": 0,
+              "logical_requests": 0,
+              "index_bytes": 0,
+              "index_requests": 0,
+              "data_bytes": 0,
+              "data_requests": 0,
+              "decoded_chunks": 0,
+              "decode_complete": null
+            },
+            "variables": {
+              "/": {
+                "logical_index_bytes": 8,
+                "logical_index_requests": 2,
+                "logical_data_bytes": 16,
+                "logical_data_requests": 2,
+                "index_bytes": 8,
+                "index_requests": 2,
+                "data_bytes": 16,
+                "data_requests": 2,
+                "decoded_chunks": 4,
+                "decode_complete": true
+              }
+            },
+            "value_totals": {
+              "index_bytes": 8,
+              "index_requests": 2,
+              "data_bytes": 16,
+              "data_requests": 2,
+              "decoded_chunks": 4,
+              "decode_complete": true
+            }
+          },
+          "transport": {
+            "response_body_bytes": null,
+            "attempts": null,
+            "responses": null,
+            "complete": false
+          },
+          "memory": {
+            "query_owned_peak_bytes": 531315,
+            "query_owned_upper_bound_peak_bytes": 531682,
+            "query_owned_complete": true,
+            "query_owned_released_at_terminal": true,
+            "query_owned_scope": "DuckOMO-owned buffers and conservative container/string capacity estimates; allocator metadata excluded",
+            "component_peak_scope": "independent component high-water marks; total peak captures concurrent live accounts",
+            "components": {
+              "bind": {
+                "peak_owned_capacity_bytes": 2122,
+                "upper_bound_peak_bytes": 2122
+              },
+              "global_control": {
+                "peak_owned_capacity_bytes": 2384,
+                "upper_bound_peak_bytes": 2384
+              },
+              "selector": {
+                "peak_owned_capacity_bytes": 392,
+                "upper_bound_peak_bytes": 392
+              },
+              "task_positions": {
+                "peak_owned_capacity_bytes": 524288,
+                "upper_bound_peak_bytes": 524288
+              },
+              "batch_segments": {
+                "peak_owned_capacity_bytes": 632,
+                "upper_bound_peak_bytes": 760
+              },
+              "definitions": {
+                "peak_owned_capacity_bytes": 1160,
+                "upper_bound_peak_bytes": 1160
+              },
+              "coordinate_buffers": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              },
+              "decoder": {
+                "peak_owned_capacity_bytes": 589,
+                "upper_bound_peak_bytes": 828
+              },
+              "coalescing": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              },
+              "transport_control": {
+                "peak_owned_capacity_bytes": 597,
+                "upper_bound_peak_bytes": 597
+              },
+              "unclassified": {
+                "peak_owned_capacity_bytes": 0,
+                "upper_bound_peak_bytes": 0
+              }
+            },
+            "repeated_work": {
+              "coordinate_evaluations": 0,
+              "value_decoded_chunks": 4,
+              "coordinate_decoded_chunks": 0,
+              "deduplicated": false
+            },
+            "coalescing_scope": "no coalescing buffers are currently allocated",
+            "decoder_upper_bound_basis": "control+min(object_size,lut_size)+object_size+chunk_scratch per active decoder; engine output reported separately",
+            "engine_output_vector_bytes": null,
+            "engine_output_vector_scope": "DuckDB-owned; not included in query-owned totals",
+            "shared_cache_peak_charged_bytes": 0,
+            "shared_cache_control_bytes": 0,
+            "shared_cache_scope": "connection",
+            "process_peak_rss_bytes": 55992320
+          },
+          "legacy_v3": {
+            "schema_version": 3,
+            "scan_id": 0,
+            "query_id": "2-2",
+            "status": "success",
+            "scan_complete": true,
+            "axes": {
+              "selection_mode": "full",
+              "fallback_reasons": [],
+              "optimizer_empty": false
+            },
+            "metadata": {
+              "bind": {
+                "logical_bytes": 99,
+                "logical_requests": 3,
+                "physical_bytes": 99,
+                "physical_requests": 3
+              },
+              "scan": {
+                "logical_bytes": 198,
+                "logical_requests": 6,
+                "physical_bytes": 198,
+                "physical_requests": 6
+              }
+            },
+            "coordinate": {
+              "logical_bytes": 0,
+              "logical_requests": 0,
+              "physical_bytes": 0,
+              "physical_requests": 0,
+              "logical_index_bytes": 0,
+              "logical_index_requests": 0,
+              "logical_data_bytes": 0,
+              "logical_data_requests": 0,
+              "index_bytes": 0,
+              "index_requests": 0,
+              "data_bytes": 0,
+              "data_requests": 0,
+              "decoded_chunks": 0,
+              "decode_count_complete": true
+            },
+            "variables": {
+              "/": {
+                "logical_index_bytes": 8,
+                "logical_index_requests": 2,
+                "logical_data_bytes": 16,
+                "logical_data_requests": 2,
+                "index_bytes": 8,
+                "index_requests": 2,
+                "data_bytes": 16,
+                "data_requests": 2,
+                "decoded_chunks": 4,
+                "decode_count_complete": true
+              }
+            },
+            "logical_requested_bytes": 321,
+            "logical_requests": 13,
+            "physical_read_bytes": 321,
+            "physical_read_requests": 13,
+            "bytes_fetched": 321,
+            "read_requests": 13,
+            "response_body_bytes": null,
+            "transport_attempts": null,
+            "transport_responses": null,
+            "transport_count_complete": false,
+            "response_statuses": {},
+            "cache": {
+              "enabled": false,
+              "capacity_bytes": 0,
+              "charged_bytes": 0,
+              "peak_charged_bytes": 0,
+              "control_bytes": 0,
+              "hits": 0,
+              "misses": 0,
+              "hit_bytes": 0,
+              "evictions": 0,
+              "bypass_reason": "removed",
+              "version_strength": "unverified",
+              "scope": "connection"
+            },
+            "tasks": {
+              "created": 1,
+              "claimed": 1,
+              "completed": 1,
+              "failed": 0,
+              "cancelled": 0,
+              "active_workers": 1,
+              "max_active_workers": 1
+            },
+            "candidate_rows": 6,
+            "scanner_rows": 6,
+            "result_rows": null,
+            "result_rows_state": "unobserved",
+            "decode_count_complete": true,
+            "elapsed_ms": 9.279393,
+            "peak_query_owned_bytes": 531315,
+            "query_memory_count_complete": true,
+            "query_memory_scope": "duckomo_owned_buffer_decoder_selection_capacities",
+            "peak_rss_bytes": 55992320,
+            "memory_scope": "process",
+            "legacy_v2": {
+              "schema_version": 2,
+              "query_id": "2-2",
+              "scenario": "",
+              "sql": "<redacted>",
+              "fixture_id": "",
+              "fixture_sha256": "",
+              "dependency_commits": {
+                "duckdb": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+                "extension-ci-tools": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+                "om-file-format": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+              },
+              "status": "success",
+              "result_rows": null,
+              "comparison_passed": null,
+              "metadata_bytes": 297,
+              "metadata_requests": 9,
+              "bind_metadata_bytes": 99,
+              "bind_metadata_requests": 3,
+              "scan_metadata_bytes": 198,
+              "scan_metadata_requests": 6,
+              "grid_definition": "",
+              "spatial_layout": "",
+              "grid_source": "",
+              "selection_mode": "full",
+              "residual_filter_retained": true,
+              "filter_callback_invoked": false,
+              "fallback_reasons": [],
+              "candidate_rows": 6,
+              "scan_tasks_claimed": 1,
+              "active_workers": 1,
+              "optimizer_empty": false,
+              "reference_identity": "",
+              "coordinate_tolerance": 1e-09,
+              "logical_positions_match": null,
+              "null_positions_match": null,
+              "variables": {
+                "/": {
+                  "index_bytes": 8,
+                  "index_requests": 2,
+                  "data_bytes": 16,
+                  "data_requests": 2,
+                  "decoded_chunks": 4,
+                  "decode_count_complete": true
+                }
+              },
+              "bytes_fetched": 321,
+              "read_requests": 13,
+              "decode_count_complete": true,
+              "elapsed_ms": 9.279393,
+              "environment": {
+                "build": "v1.5.4",
+                "build_id": "53e9acc82a93cda5f89aaa93fcab62d891f1dd9bf40800161fa78df58be64c56",
+                "build_pair": "v1.5.4",
+                "cxx_abi": "libstdc++ cxx11abi=1;compiled=libstdcxx-20240904-dualabi-1",
+                "platform": "Linux AArch64;compiled=linux-aarch64"
+              },
+              "cache_policy": {
+                "application_cache": "removed"
+              },
+              "peak_rss_bytes": 55992320,
+              "error_category": ""
+            }
+          },
+          "legacy_v2": {
+            "schema_version": 2,
+            "query_id": "2-2",
+            "scenario": "",
+            "sql": "<redacted>",
+            "fixture_id": "",
+            "fixture_sha256": "",
+            "dependency_commits": {
+              "duckdb": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+              "extension-ci-tools": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+              "om-file-format": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+            },
+            "status": "success",
+            "result_rows": null,
+            "comparison_passed": null,
+            "metadata_bytes": 297,
+            "metadata_requests": 9,
+            "bind_metadata_bytes": 99,
+            "bind_metadata_requests": 3,
+            "scan_metadata_bytes": 198,
+            "scan_metadata_requests": 6,
+            "grid_definition": "",
+            "spatial_layout": "",
+            "grid_source": "",
+            "selection_mode": "full",
+            "residual_filter_retained": true,
+            "filter_callback_invoked": false,
+            "fallback_reasons": [],
+            "candidate_rows": 6,
+            "scan_tasks_claimed": 1,
+            "active_workers": 1,
+            "optimizer_empty": false,
+            "reference_identity": "",
+            "coordinate_tolerance": 1e-09,
+            "logical_positions_match": null,
+            "null_positions_match": null,
+            "variables": {
+              "/": {
+                "index_bytes": 8,
+                "index_requests": 2,
+                "data_bytes": 16,
+                "data_requests": 2,
+                "decoded_chunks": 4,
+                "decode_count_complete": true
+              }
+            },
+            "bytes_fetched": 321,
+            "read_requests": 13,
+            "decode_count_complete": true,
+            "elapsed_ms": 9.279393,
+            "environment": {
+              "build": "v1.5.4",
+              "build_id": "53e9acc82a93cda5f89aaa93fcab62d891f1dd9bf40800161fa78df58be64c56",
+              "build_pair": "v1.5.4",
+              "cxx_abi": "libstdc++ cxx11abi=1;compiled=libstdcxx-20240904-dualabi-1",
+              "platform": "Linux AArch64;compiled=linux-aarch64"
+            },
+            "cache_policy": {
+              "application_cache": "removed"
+            },
+            "peak_rss_bytes": 55992320,
+            "error_category": ""
+          }
+        }
+      ],
+      "audit": {
+        "scope": "service sent bytes",
+        "available": false
+      }
+    }
+  ]
+}

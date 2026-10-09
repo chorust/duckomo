@@ -2,6 +2,7 @@
 #include "duckdb/main/extension_helper.hpp"
 
 #include <array>
+#include <cstdlib>
 #include <filesystem>
 #include <iostream>
 #include <string>
@@ -30,6 +31,9 @@ void RequireSuccess(duckdb::Connection &connection, const std::string &sql) {
 }
 
 std::string FindCoreFunctionsExtension() {
+	if (const auto *override_path = std::getenv("DUCKOMO_CORE_FUNCTIONS_EXTENSION")) {
+		return fs::absolute(override_path).string();
+	}
 	const fs::path repository("build/release/repository/v1.5.4");
 	if (!fs::exists(repository)) {
 		throw std::runtime_error("release extension repository is missing: " + repository.string());
@@ -52,7 +56,11 @@ void Run(const fs::path &sample_path, const fs::path &manifest_path, const fs::p
 	duckdb::DuckDB database(nullptr, &config);
 	duckdb::Connection connection(database);
 	RequireSuccess(connection, "LOAD " + SqlLiteral(FindCoreFunctionsExtension()));
-	RequireSuccess(connection, "LOAD " + SqlLiteral(fs::absolute("build/release/extension/duckomo/duckomo.duckdb_extension").string()));
+	const auto *duckomo_override = std::getenv("DUCKOMO_TEST_EXTENSION");
+	const auto duckomo_extension = duckomo_override == nullptr
+	                                   ? fs::absolute("build/release/extension/duckomo/duckomo.duckdb_extension").string()
+	                                   : fs::absolute(duckomo_override).string();
+	RequireSuccess(connection, "LOAD " + SqlLiteral(duckomo_extension));
 	RequireSuccess(connection, "SET threads=1");
 	Require(Sha256(connection, fs::absolute(sample_path).string()) == DOMAIN_SAMPLE_SHA256,
 	        "domain sample SHA-256 differs from the pinned source object");

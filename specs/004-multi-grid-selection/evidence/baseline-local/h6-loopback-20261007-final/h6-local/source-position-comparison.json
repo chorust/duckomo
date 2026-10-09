@@ -1,0 +1,12 @@
+{
+  "schema_version":1,
+  "case":"interleaved_local_loopback_http",
+  "scope":"synthetic_fixture",
+  "status":"pass",
+  "rows_compared":64,
+  "exact_result_match":true,
+  "opaque_object_id":{"local_present":true,"http_present":true,"cross_uri_equality_required":false},
+  "server_body_bytes":4414,
+  "http_metrics_body_bytes":4414,
+  "independent_server_body_match":true
+}

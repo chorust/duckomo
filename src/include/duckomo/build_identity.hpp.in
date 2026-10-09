@@ -1,0 +1,58 @@
+#pragma once
+
+#define DUCKOMO_BUILD_IDENTITY_STRINGIFY_IMPL(value) #value
+#define DUCKOMO_BUILD_IDENTITY_STRINGIFY(value) DUCKOMO_BUILD_IDENTITY_STRINGIFY_IMPL(value)
+#if defined(__GLIBCXX__)
+#if defined(_GLIBCXX_USE_CXX11_ABI)
+#define DUCKOMO_BUILD_IDENTITY_COMPILED_CXX_ABI \
+	"libstdcxx-" DUCKOMO_BUILD_IDENTITY_STRINGIFY(__GLIBCXX__) "-dualabi-" \
+		DUCKOMO_BUILD_IDENTITY_STRINGIFY(_GLIBCXX_USE_CXX11_ABI)
+#else
+#define DUCKOMO_BUILD_IDENTITY_COMPILED_CXX_ABI \
+	"libstdcxx-" DUCKOMO_BUILD_IDENTITY_STRINGIFY(__GLIBCXX__) "-dualabi-unknown"
+#endif
+#elif defined(_LIBCPP_VERSION)
+#define DUCKOMO_BUILD_IDENTITY_COMPILED_CXX_ABI "libcxx-" DUCKOMO_BUILD_IDENTITY_STRINGIFY(_LIBCPP_VERSION)
+#elif defined(_MSC_VER)
+#define DUCKOMO_BUILD_IDENTITY_COMPILED_CXX_ABI "msvc-" DUCKOMO_BUILD_IDENTITY_STRINGIFY(_MSC_VER)
+#else
+#define DUCKOMO_BUILD_IDENTITY_COMPILED_CXX_ABI "unknown"
+#endif
+
+#if defined(__linux__) && defined(__aarch64__)
+#define DUCKOMO_BUILD_IDENTITY_COMPILED_PLATFORM "linux-aarch64"
+#elif defined(__linux__) && defined(__x86_64__)
+#define DUCKOMO_BUILD_IDENTITY_COMPILED_PLATFORM "linux-x86_64"
+#elif defined(__APPLE__) && defined(__aarch64__)
+#define DUCKOMO_BUILD_IDENTITY_COMPILED_PLATFORM "darwin-arm64"
+#elif defined(__APPLE__) && defined(__x86_64__)
+#define DUCKOMO_BUILD_IDENTITY_COMPILED_PLATFORM "darwin-x86_64"
+#else
+#define DUCKOMO_BUILD_IDENTITY_COMPILED_PLATFORM "unknown"
+#endif
+
+namespace duckdb {
+namespace duckomo {
+
+struct GeneratedBuildIdentity final {
+	const char *pair_id;
+	const char *build_id;
+	const char *duckdb_commit;
+	const char *om_commit;
+	const char *extension_ci_tools_commit;
+	const char *platform;
+	const char *cxx_abi;
+};
+
+inline constexpr GeneratedBuildIdentity BUILD_IDENTITY{
+	"@DUCKOMO_BUILD_PAIR_ID@",
+	"@DUCKOMO_BUILD_ID@",
+	"@DUCKOMO_DUCKDB_COMMIT@",
+	"@DUCKOMO_OM_COMMIT@",
+	"@DUCKOMO_EXTENSION_CI_TOOLS_COMMIT@",
+	"@DUCKOMO_MATRIX_PLATFORM@;compiled=" DUCKOMO_BUILD_IDENTITY_COMPILED_PLATFORM,
+	"@DUCKOMO_CXX_ABI@;compiled=" DUCKOMO_BUILD_IDENTITY_COMPILED_CXX_ABI,
+};
+
+} // namespace duckomo
+} // namespace duckdb

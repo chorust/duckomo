@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "contract": "official-httpfs-20261008",
+  "files": [
+    {
+      "path": "acceptance-mapping.json",
+      "sha256": "3ed7a9992e75863e349b3a73895eac7766c611c32c609d133a3ca740f5317bce",
+      "bytes": 1611
+    },
+    {
+      "path": "access-change.py",
+      "sha256": "4fe5e9d047d79ff6321e1220399e31397f0073109aa50074b3968fc73c12e96d",
+      "bytes": 1849
+    },
+    {
+      "path": "baseline.json",
+      "sha256": "9ff019ed149039bfc82865e0cb185c398a1fcf2ff7c482f996d7ee35c4bca50f",
+      "bytes": 15241
+    },
+    {
+      "path": "commands.json",
+      "sha256": "a032beef8946bd39b8c850dc13b38d73bf5eefb2b1462b11ed239dc53b637f39",
+      "bytes": 5535
+    },
+    {
+      "path": "consumer-audit.md",
+      "sha256": "3c8be9568b1997ce28df21a90e7703968ae7307c250d5432b08f6a0aaee80d8f",
+      "bytes": 975
+    },
+    {
+      "path": "contract.md",
+      "sha256": "d9d143a613fe995f0c007b5da7217966258818b8972e07ab19225fe11f1d7b28",
+      "bytes": 2910
+    },
+    {
+      "path": "distribution.json",
+      "sha256": "ff961e22d22ad2657aa5e7a9d79b02c539f8e6e78f9d8d5ebb089f8f7ba05f91",
+      "bytes": 2518
+    },
+    {
+      "path": "full-h8-audit.json",
+      "sha256": "c91e5e355221e0e7896f70c217f04845e24177b1bee3e6a8ec22f87e8227cd3e",
+      "bytes": 1431
+    },
+    {
+      "path": "historical-version-matrix.json",
+      "sha256": "939f4991bcef57ba533b96e3d7641f5678ba01be7ed72b999234331c77989f97",
+      "bytes": 13498
+    },
+    {
+      "path": "performance-policy.json",
+      "sha256": "79d7ec08485e1d9e53f970e7f1e5490f4a6093f8c502cf831863c7427fc02aae",
+      "bytes": 862
+    },
+    {
+      "path": "performance.json",
+      "sha256": "dafb566a194cb508977d49661ecf632f57dea276e43af1429269911ffbdca89b",
+      "bytes": 80348
+    },
+    {
+      "path": "python-tests.json",
+      "sha256": "5679a08b8c5272e885cfabc78d21fe6448e6e766db9f58280228274fbc51ce9c",
+      "bytes": 1866
+    },
+    {
+      "path": "service.json",
+      "sha256": "f3d8ef99628ea5cf6e6428a6f3ca5943ca08a53efa0681ff1d69afbcf7186ae6",
+      "bytes": 5603
+    },
+    {
+      "path": "status.md",
+      "sha256": "5e839ace13d55afbd85f3f93f41ba55d169a9247b7c1adb92fbd0cffffd6710a",
+      "bytes": 4345
+    },
+    {
+      "path": "v1.5.4/access.json",
+      "sha256": "451a0fd2f680de2947e4c83fdc1786ad658dc9bbef027a40a568d98f7df34bf1",
+      "bytes": 41475
+    },
+    {
+      "path": "v1.5.4/build.json",
+      "sha256": "d7a9164d5ae52facf83f36b053c3b2fcba66242bf3dbe7e25ed1e708e4d59eb9",
+      "bytes": 4990
+    },
+    {
+      "path": "v1.5.4/local.json",
+      "sha256": "a17149af7b0b585f38ac11a232cce4aeaead127ad52c8c84962eb9eb9f2c1901",
+      "bytes": 14608
+    },
+    {
+      "path": "v1.5.4/official-runtime.json",
+      "sha256": "85ed4868bab19283eb72644f97e1daffb5b6bd90f6b60f54733f8af17b74fd13",
+      "bytes": 701
+    },
+    {
+      "path": "v1.5.4/real.json",
+      "sha256": "db0277d8992c727a786b9f34afa5e3c4d600c124deb2851fa6ef00f5efadeae2",
+      "bytes": 145309
+    },
+    {
+      "path": "v1.5.4/runtime.json",
+      "sha256": "41c709b2d727c72f640305c2e4bdbcdb1768887ad453650b144fd2e1adc62f03",
+      "bytes": 703327
+    },
+    {
+      "path": "v1.5.5/access.json",
+      "sha256": "228e5687dd9f3202b34be5bdee36f948922fa09346796b7cdc2ba7e8168de2b7",
+      "bytes": 41475
+    },
+    {
+      "path": "v1.5.5/build.json",
+      "sha256": "8d5c9d4d8177c2b27736fbbd682ef66771a70caf66be2af31ac85f21531c7b27",
+      "bytes": 5206
+    },
+    {
+      "path": "v1.5.5/local.json",
+      "sha256": "3d875e41fb98f35db66d2ef7ace1eca98b71a8a87916eb75981976570b07df4d",
+      "bytes": 7258
+    },
+    {
+      "path": "v1.5.5/official-runtime.json",
+      "sha256": "36c0f58c4ac5740eb59e0d20b06b540b81b122b2c5b900bc1435785505c0f859",
+      "bytes": 701
+    },
+    {
+      "path": "v1.5.5/real.json",
+      "sha256": "5f8bea6db870db05d6bcd466d2786acbbc2672aa132df322885d83e69b99814a",
+      "bytes": 145308
+    },
+    {
+      "path": "v1.5.5/runtime.json",
+      "sha256": "1da3db06b222de6637de4f4c2fd412b3a692b80df758d86c0d6b4bcb9b0f055f",
+      "bytes": 703324
+    },
+    {
+      "path": "v1.5.6/access.json",
+      "sha256": "4687d3d96df46327df3854c61e398bfbbca457f68440a8955fb7048ace8012a3",
+      "bytes": 41470
+    },
+    {
+      "path": "v1.5.6/build.json",
+      "sha256": "f514e7a0881765910d576707a9bdb1b5b5c4583759e9199908b6cfd45e0d9175",
+      "bytes": 5206
+    },
+    {
+      "path": "v1.5.6/local.json",
+      "sha256": "6b7c4efd63ead3403d429c6c76cc0f1d03645cc6cf14748c03db6fc7d258d7ce",
+      "bytes": 7258
+    },
+    {
+      "path": "v1.5.6/official-runtime.json",
+      "sha256": "8b73462659d5275f517cb730d4d528378a05abf0487dc47c991d4e3af67b824f",
+      "bytes": 701
+    },
+    {
+      "path": "v1.5.6/real.json",
+      "sha256": "9d6aeacdeb0c944052abb7fdf2b8d7567552a76c7e8a1fbc5ad26908361627a8",
+      "bytes": 145311
+    },
+    {
+      "path": "v1.5.6/runtime.json",
+      "sha256": "24db11cc1ec1448683f41941d4e576b48ff6e6a19940467cda679ac1f7d991c7",
+      "bytes": 703341
+    }
+  ],
+  "credentials_included": false,
+  "independent_reproduction": "not-run",
+  "external_audit_artifacts": [
+    {
+      "path": "build/community-preparation/audit/official-httpfs-refactor/performance-full.json.gz",
+      "sha256": "aa086cb2ac0ebe87a81892d5c63b86ad6d1e6223797b1d67e6b772baee1fb875",
+      "bytes": 25421,
+      "storage": "ignored local audit"
+    },
+    {
+      "path": "build/community-preparation/audit/official-httpfs-refactor/v1.5.4/runtime-full.json.gz",
+      "sha256": "41c4e91e9ca72ceeaabd853d30e8729755ac892262175ab104ac96fd9031d6c2",
+      "bytes": 179270,
+      "storage": "ignored local audit"
+    },
+    {
+      "path": "build/community-preparation/audit/official-httpfs-refactor/v1.5.5/runtime-full.json.gz",
+      "sha256": "bdb3a9f9416dcfcf1537a2e7fb5c7048faedc2b3df5b0f37d69012dca31f537b",
+      "bytes": 179155,
+      "storage": "ignored local audit"
+    },
+    {
+      "path": "build/community-preparation/audit/official-httpfs-refactor/v1.5.6/runtime-full.json.gz",
+      "sha256": "0d34b48e4f9970a54a28dbda35a0ed3b2cec397e9b8fc00cd06659af7baeb71f",
+      "bytes": 178933,
+      "storage": "ignored local audit"
+    }
+  ]
+}

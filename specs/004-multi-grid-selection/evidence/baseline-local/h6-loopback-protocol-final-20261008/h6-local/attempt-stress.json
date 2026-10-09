@@ -1,0 +1,17 @@
+{
+  "schema_version":1,
+  "case":"gaussian_multi_chunk_transport_stress",
+  "scope":"synthetic identity fixture; not a real N160 producer object",
+  "runs":[
+    {"run":0,"attempts":577,"response_body_bytes":646583,"query_owned_peak_bytes":1800918,"query_owned_upper_bound_bytes":2584092,"query_owned_released_at_terminal":true,"transport_control_peak_bytes":38404,"transport_control_upper_bound_bytes":38800},
+    {"run":1,"attempts":577,"response_body_bytes":646583,"query_owned_peak_bytes":1800918,"query_owned_upper_bound_bytes":2584092,"query_owned_released_at_terminal":true,"transport_control_peak_bytes":38404,"transport_control_upper_bound_bytes":38800},
+    {"run":2,"attempts":577,"response_body_bytes":646583,"query_owned_peak_bytes":1800918,"query_owned_upper_bound_bytes":2584092,"query_owned_released_at_terminal":true,"transport_control_peak_bytes":38404,"transport_control_upper_bound_bytes":38800},
+    {"run":3,"attempts":577,"response_body_bytes":646583,"query_owned_peak_bytes":1800918,"query_owned_upper_bound_bytes":2584092,"query_owned_released_at_terminal":true,"transport_control_peak_bytes":38404,"transport_control_upper_bound_bytes":38800},
+    {"run":4,"attempts":577,"response_body_bytes":646583,"query_owned_peak_bytes":1800918,"query_owned_upper_bound_bytes":2584092,"query_owned_released_at_terminal":true,"transport_control_peak_bytes":38404,"transport_control_upper_bound_bytes":38800},
+    {"run":5,"attempts":577,"response_body_bytes":646583,"query_owned_peak_bytes":1800918,"query_owned_upper_bound_bytes":2584092,"query_owned_released_at_terminal":true,"transport_control_peak_bytes":38404,"transport_control_upper_bound_bytes":38800}
+  ],
+  "completed_runs":6,
+  "total_attempts":3462,
+  "total_server_body_bytes":3879498,
+  "transport_control_peak_stable":true
+}

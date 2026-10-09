@@ -1,7 +1,12 @@
 #include "duckomo/domain_registry.hpp"
+#include "duckomo/generated_grid_registry.hpp"
+#include "duckomo/grid_identity.hpp"
 #include "duckomo/om_reader.hpp"
 
+#include <algorithm>
 #include <cstdint>
+#include <string_view>
+#include <utility>
 #include <vector>
 
 namespace duckdb {
@@ -139,6 +144,54 @@ const std::vector<VerifiedDomain> &Domains() {
 	return domains;
 }
 
+const std::vector<RegisteredGridDefinition> &GridDefinitions() {
+	static const std::vector<RegisteredGridDefinition> definitions = [] {
+		auto generated_definitions = generated::BuildGridRegistryDefinitions();
+		std::vector<RegisteredGridDefinition> result;
+		result.reserve(generated_definitions.size());
+		for (auto &record : generated_definitions) {
+			// Constructing the runtime identity here validates that the checked-in
+			// typed definition remains canonical and does not depend on provenance.
+			const auto runtime_grid_id = GridId(record.definition);
+			if (runtime_grid_id != record.grid_id) {
+				throw ReaderError(ReaderErrorCode::InvalidShape,
+				                  "generated grid registry runtime identity differs from its checked-in identity");
+			}
+			const auto runtime_parent_id = ParentGridId(record.definition).value_or("");
+			if (runtime_parent_id != record.parent_grid_id) {
+				throw ReaderError(ReaderErrorCode::InvalidShape,
+				                  "generated grid registry parent identity differs from its checked-in identity");
+			}
+			std::vector<std::string> axis_order;
+			axis_order.reserve(record.axis_count);
+			for (std::size_t index = 0; index < record.axis_count; index++) {
+				axis_order.emplace_back(record.axis_order[index]);
+			}
+			result.push_back({std::string(record.id), std::string(record.kind), std::move(record.definition),
+			                  std::string(generated::GRID_REGISTRY_UPSTREAM_COMMIT), std::string(record.source_path),
+			                  std::string(record.grid_id), std::string(record.parent_grid_id),
+			                  std::string(record.expected_layout), std::move(axis_order),
+			                  std::string(record.object_profile_status), std::string(record.evidence_level),
+			                  std::string(record.evidence_sample_id), std::string(record.evidence_source_uri),
+			                  std::string(record.evidence_build_pair), std::string(record.evidence_claims),
+			                  std::string(record.parent_definition),
+			                  record.domain_bindable});
+		}
+		for (const auto &definition : result) {
+			if (definition.parent_definition.empty()) continue;
+			const auto parent = std::find_if(result.begin(), result.end(), [&](const auto &candidate) {
+				return candidate.name == definition.parent_definition;
+			});
+			if (parent == result.end() || ParentGridId(definition.definition) != GridId(parent->definition)) {
+				throw ReaderError(ReaderErrorCode::InvalidShape,
+				                  "generated grid registry parent definition identity is inconsistent");
+			}
+		}
+		return result;
+	}();
+	return definitions;
+}
+
 } // namespace
 
 const VerifiedDomain *FindVerifiedDomain(const std::string &name) {
@@ -147,6 +200,14 @@ const VerifiedDomain *FindVerifiedDomain(const std::string &name) {
 		if (domain.name == name) {
 			return &domain;
 		}
+	}
+	return nullptr;
+}
+
+const RegisteredGridDefinition *FindRegisteredGridDefinition(const std::string &name) {
+	const auto &definitions = GridDefinitions();
+	for (const auto &definition : definitions) {
+		if (definition.name == name) return &definition;
 	}
 	return nullptr;
 }

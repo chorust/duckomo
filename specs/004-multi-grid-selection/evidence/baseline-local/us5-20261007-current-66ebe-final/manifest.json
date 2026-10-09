@@ -1,0 +1,21 @@
+{
+  "schema_version":1,
+  "status":"not-run",
+  "created_at_utc":"2026-10-07T12:52:25Z",
+  "requested_cases":["H3","H7"],
+  "requested_gates":["H3","H7"],
+  "command_redacted":["/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/66ebe609d3cf57ae1697844f7d98f390a5ecf111e02e5749959389cf685a03c2/release/test/tools/duckomo_grid_validation","--root","/home/blizhan/repo/github/duckomo","--manifest","/home/blizhan/repo/github/duckomo/test/data/grids/sample-manifest.json","--cases","H3,H7","--duckdb","/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/66ebe609d3cf57ae1697844f7d98f390a5ecf111e02e5749959389cf685a03c2/release/duckdb","--extension","/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/66ebe609d3cf57ae1697844f7d98f390a5ecf111e02e5749959389cf685a03c2/release/extension/duckomo/duckomo.duckdb_extension","--output","/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/us5-20261007-current-66ebe-final"],
+  "inputs":{
+    "sample_manifest":{"path":"/home/blizhan/repo/github/duckomo/test/data/grids/sample-manifest.json","exists":true,"executable":true,"sha256":"72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f"},
+    "checked_in_sample_queries":{"path":"/home/blizhan/repo/github/duckomo/test/data/grids/sample-queries.sql","exists":true,"executable":true,"sha256":"e15cfbca10b325e2126e4a69c4479a8879af0f809046e7e4ac8de2c280a54b5d"},
+    "evidence_contract_test":{"path":"/home/blizhan/repo/github/duckomo/test/tools/grid_evidence_test.py","exists":true,"executable":true,"sha256":"3eb0594cb03df4835f2602ee56e9e923b775890335a61ee9c29d163edfb2dfd4"},
+    "duckdb":{"path":"/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/66ebe609d3cf57ae1697844f7d98f390a5ecf111e02e5749959389cf685a03c2/release/duckdb","exists":true,"executable":true,"sha256":"cae6f4528cc3f257a0e2e583f3e4874e7d365f69cc57d6de820fd1816d64a82a"},
+    "extension":{"path":"/home/blizhan/repo/github/duckomo/build/grid-matrix/baseline-1.5.4/builds/66ebe609d3cf57ae1697844f7d98f390a5ecf111e02e5749959389cf685a03c2/release/extension/duckomo/duckomo.duckdb_extension","exists":true,"executable":true,"sha256":"ba9a2b097885f50deaf2c9f7e7f8fc69ce6827a05522a6fe87b651e25ea96c30"},
+    "httpfs":{"path":"","exists":false,"executable":false,"sha256":null},
+    "matrix":{"path":"","exists":false,"executable":false,"sha256":null}
+  },
+  "remote_inputs_present":{"http_base":false,"https_base":false,"s3_base":false},
+  "gates":[{"id":"H3","status":"not-run","reason":"synthetic local zero-I/O, source identity, grid_info, and per-variable cost checks passed; public-source H3 remains not-run"},{"id":"H7","status":"not-run","reason":"four synthetic grid types passed full relation/source-position and zero-value-read checks; real producer axis-order, required Gaussian sample, and public remote source evidence remain not-run"}],
+  "gate_status_audit":{"status":"pass","errors":[]},
+  "exit_code":2
+}

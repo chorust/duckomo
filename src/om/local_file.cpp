@@ -58,7 +58,7 @@ void ValidateLocalFilePath(const std::string &path) {
 		               [](unsigned char character) { return static_cast<char>(std::tolower(character)); });
 		if (scheme == "http" || scheme == "https" || scheme == "s3") {
 			throw ReaderError(ReaderErrorCode::InvalidPath,
-			                  "remote read_om requires the paired httpfs range-session extension; this build has no compatible remote range provider");
+			                  "remote paths must use read_om with the matching official httpfs extension");
 		}
 		throw ReaderError(ReaderErrorCode::InvalidPath, "URI paths are not supported by the local OM reader");
 	}
@@ -84,6 +84,18 @@ LocalFile::LocalFile(FileSystem &file_system_p, std::unique_ptr<FileHandle> hand
                      ScanMetadataStage metadata_stage_p)
 	: file_system(&file_system_p), handle(std::move(handle_p)), path(std::move(path_p)), file_size(file_size_p),
 	  metrics(std::move(metrics_p)), metadata_stage(metadata_stage_p) {
+	if (metrics) {
+		memory_account = std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::GlobalControl);
+		RefreshMemoryAccount();
+	}
+}
+
+void LocalFile::RefreshMemoryAccount() const {
+	if (!memory_account) return;
+	const auto capacity = static_cast<std::uint64_t>(path.capacity());
+	const auto path_bytes = capacity == UINT64_MAX ? UINT64_MAX : capacity + 1;
+	const auto object_bytes = static_cast<std::uint64_t>(sizeof(*this));
+	memory_account->Set(object_bytes > UINT64_MAX - path_bytes ? UINT64_MAX : object_bytes + path_bytes);
 }
 
 LocalFile LocalFile::Open(ClientContext &context, const std::string &path, std::shared_ptr<ScanMetrics> metrics,

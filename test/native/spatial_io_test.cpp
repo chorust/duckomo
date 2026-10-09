@@ -86,6 +86,7 @@ RunResult RunWithMetrics(duckdb::Connection &connection, const fs::path &metrics
 }
 
 fs::path FindCoreFunctions() {
+	if (const auto *override_path = std::getenv("DUCKOMO_CORE_FUNCTIONS_EXTENSION")) return override_path;
 	const fs::path repository("build/release/repository/v1.5.4");
 	if (!fs::exists(repository)) {
 		return {};
@@ -144,16 +145,17 @@ void TestSpatialIO(duckdb::Connection &connection) {
 	                          ("duckomo-spatial-io-" + std::to_string(static_cast<unsigned long long>(getpid())) + ".json");
 	const auto source = SpatialProjectionRead();
 	const auto full = RunWithMetrics(connection, metrics_path, "full",
-	                                 "SELECT temperature, latitude, longitude FROM " + source, false);
+	                                 "SELECT humidity, temperature, latitude, longitude FROM " + source, false);
 	Require(full.query->RowCount() == 83 * 127, "fixed projection fixture full scan has 10,541 rows");
 	Require(full.metrics.find("\"selection_mode\":\"full\"") != std::string::npos,
 	        "full scan is explicitly measured as full selection");
-	std::map<std::pair<double, double>, float> full_values;
+	std::map<std::pair<double, double>, std::pair<float, float>> full_values;
 	for (idx_t row = 0; row < full.query->RowCount(); row++) {
-		const auto temperature = full.query->GetValue(0, row).GetValue<float>();
-		const auto latitude = full.query->GetValue(1, row).GetValue<double>();
-		const auto longitude = full.query->GetValue(2, row).GetValue<double>();
-		full_values[{latitude, longitude}] = temperature;
+		const auto humidity = full.query->GetValue(0, row).GetValue<float>();
+		const auto temperature = full.query->GetValue(1, row).GetValue<float>();
+		const auto latitude = full.query->GetValue(2, row).GetValue<double>();
+		const auto longitude = full.query->GetValue(3, row).GetValue<double>();
+		full_values[{latitude, longitude}] = {humidity, temperature};
 	}
 
 	const auto restricted = RunWithMetrics(
@@ -170,7 +172,7 @@ void TestSpatialIO(duckdb::Connection &connection) {
 		const auto latitude = restricted.query->GetValue(1, row).GetValue<double>();
 		const auto longitude = restricted.query->GetValue(2, row).GetValue<double>();
 		const auto full_row = full_values.find({latitude, longitude});
-		Require(full_row != full_values.end() && full_row->second == temperature,
+		Require(full_row != full_values.end() && full_row->second.second == temperature,
 		        "restricted output matches the corresponding full-scan source position exactly");
 	}
 	const auto full_temperature = Counters(full.metrics, "/temperature");
@@ -216,21 +218,53 @@ void TestSpatialIO(duckdb::Connection &connection) {
 	RequireVariableRead(mixed.metrics, "/humidity", "mixed spatial/value filter");
 	RequireVariableZero(mixed.metrics, "/pressure", "mixed spatial/value filter");
 
-	const auto fallback = RunWithMetrics(
-	    connection, metrics_path, "fallback",
-	    "SELECT temperature FROM " + source + " WHERE longitude >= 124 OR longitude <= -124");
-	Require(fallback.query->RowCount() == 332, "seam OR fallback returns exact residual-filtered rows");
-	Require(fallback.metrics.find("\"selection_mode\":\"fallback\"") != std::string::npos &&
-	            fallback.metrics.find("unsupported_or_expression") != std::string::npos,
-	        "OR is reported as a full-scan fallback with an explicit reason");
-	Require(JsonUnsigned(fallback.metrics, "candidate_rows") == 10541,
-	        "OR fallback candidates cover the complete source relation");
+	const auto safe_or = RunWithMetrics(
+	    connection, metrics_path, "safe_or",
+	    "SELECT temperature, latitude, longitude FROM " + source +
+	        " WHERE longitude >= 124 OR longitude <= -124");
+	Require(safe_or.query->RowCount() == 332, "safe seam OR returns its exact residual-filtered rows");
+	Require(safe_or.metrics.find("\"selection_mode\":\"restricted\"") != std::string::npos &&
+	            safe_or.metrics.find("unsupported_or_expression") == std::string::npos,
+	        "a complete two-interval seam OR narrows the spatial candidate set");
+	Require(JsonUnsigned(safe_or.metrics, "candidate_rows") == 332,
+	        "safe seam OR reports the conservative selected row count");
+	for (idx_t row = 0; row < safe_or.query->RowCount(); row++) {
+		const auto temperature = safe_or.query->GetValue(0, row).GetValue<float>();
+		const auto latitude = safe_or.query->GetValue(1, row).GetValue<double>();
+		const auto longitude = safe_or.query->GetValue(2, row).GetValue<double>();
+		const auto full_row = full_values.find({latitude, longitude});
+		Require(full_row != full_values.end() && full_row->second.second == temperature,
+		        "safe OR output matches the corresponding full-scan source position exactly");
+	}
+
+	const auto unsafe_or = RunWithMetrics(
+	    connection, metrics_path, "unsafe_or",
+	    "SELECT temperature, latitude, longitude FROM " + source + " WHERE longitude >= 124 OR humidity = 96");
+	std::uint64_t expected_unsafe_or = 0;
+	for (const auto &[coordinate, values] : full_values) {
+		if (coordinate.second >= 124 || values.first == 96) expected_unsafe_or++;
+	}
+	Require(unsafe_or.query->RowCount() == expected_unsafe_or,
+	        "an OR with a value-variable branch retains complete SQL semantics");
+	Require(unsafe_or.metrics.find("\"selection_mode\":\"fallback\"") != std::string::npos &&
+	            unsafe_or.metrics.find("unsafe_or_expression") != std::string::npos,
+	        "an OR with an unsafe branch widens the spatial candidate set with a diagnostic");
+	Require(JsonUnsigned(unsafe_or.metrics, "candidate_rows") == 10541,
+	        "an unsafe OR candidate upper bound covers the complete source relation");
+	for (idx_t row = 0; row < unsafe_or.query->RowCount(); row++) {
+		const auto temperature = unsafe_or.query->GetValue(0, row).GetValue<float>();
+		const auto latitude = unsafe_or.query->GetValue(1, row).GetValue<double>();
+		const auto longitude = unsafe_or.query->GetValue(2, row).GetValue<double>();
+		const auto full_row = full_values.find({latitude, longitude});
+		Require(full_row != full_values.end() && full_row->second.second == temperature,
+		        "unsafe OR output matches the corresponding full-scan source position exactly");
+	}
 	std::cout << "spatial_io full_rows=" << full.query->RowCount() << " restricted_rows=" << restricted.query->RowCount()
 	          << " full_temperature_data_bytes=" << full_bytes << " restricted_temperature_data_bytes=" << restricted_bytes
 	          << " full_temperature_decoded_chunks=" << full_chunks
 	          << " restricted_temperature_decoded_chunks=" << restricted_chunks << " empty_rows=" << empty.query->RowCount()
 	          << " coordinates_rows=" << coordinates.query->RowCount() << " mixed_rows=" << mixed.query->RowCount()
-	          << " fallback_rows=" << fallback.query->RowCount() << " count="
+	          << " safe_or_rows=" << safe_or.query->RowCount() << " unsafe_or_rows=" << unsafe_or.query->RowCount() << " count="
 	          << count.query->GetValue(0, 0).GetValue<std::int64_t>() << '\n';
 	std::error_code ignored;
 	fs::remove(metrics_path, ignored);

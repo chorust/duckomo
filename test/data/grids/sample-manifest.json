@@ -1,0 +1,933 @@
+{
+  "schema_version": 1,
+  "classification": "synthetic_fixtures_plus_public_real_samples",
+  "fixture_classification": "synthetic_only",
+  "generated_by": "duckomo_fixture_tool --output",
+  "om_format_version": 3,
+  "oracle": "fixed OM C API full-array decode; generated values are not producer data",
+  "real_sample_coverage": {
+    "status": "three_projected_real_samples_have_official_full-value_references; required_n_grid_coordinates_and_values_not_validated",
+    "required": [
+      "rotated_v3",
+      "lambert_v3",
+      "stereographic_v3",
+      "gaussian_n160_v3",
+      "gaussian_n320_v3",
+      "gaussian_n320_region_v3"
+    ],
+    "acquired_metadata_checked": [
+      "rotated_v3",
+      "lambert_v3",
+      "stereographic_v3",
+      "gaussian_o1280_supplemental",
+      "gaussian_hres_o1280_timeseries_supplemental"
+    ],
+    "family_samples": {
+      "rotated_latlon": "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+      "lambert_conformal_conic": "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+      "stereographic": "stereographic_cmc_gem_rdps_cape_chunk_4337",
+      "reduced_gaussian": "ecmwf_ifs_hres_temperature_2m_chunk_817_o1280_supplemental"
+    },
+    "required_gaussian_coverage": {
+      "n160": "not-run: no matching native OM v3 object",
+      "n320_full": "not-run: O1280 HRES is a different grid identity",
+      "n320_region": "not-run: public AIFS product is WGS84 world grid; N320 local-to-parent order absent"
+    },
+    "skip_block_candidates": [
+      "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+      "stereographic_cmc_gem_rdps_cape_chunk_4337",
+      "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+      "ecmwf_ifs_static_hsurf_reduced_gaussian_o1280"
+    ],
+    "skip_block_performance": "not-run; candidate chunks are frozen but spatial mapping/cold full-local comparison is incomplete",
+    "supplemental_out_of_scope": [
+      "ecmwf_ifs_static_hsurf_reduced_gaussian_o1280",
+      "ecmwf_ifs_hres_temperature_2m_chunk_817_o1280_supplemental"
+    ],
+    "coordinate_reference": "not-run_for_required_target_grids",
+    "official_value_decode_reference": "partial_supplemental_o1280_only; see test/data/grids/value-reference-manifest.json",
+    "official_value_reference_completed": [
+      "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+      "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+      "stereographic_cmc_gem_rdps_cape_chunk_4337"
+    ],
+    "coordinate_reference_completed": [
+      "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+      "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+      "stereographic_cmc_gem_rdps_cape_chunk_4337"
+    ]
+  },
+  "public_open_meteo_samples": {
+    "registry": {
+      "name": "Open-Meteo AWS Open Data",
+      "repository": "https://github.com/open-meteo/open-data",
+      "commit": "4fd52ad16c417c49bff45fab4bf175e5ea5760f2",
+      "readme_path": "README.md",
+      "readme_sha256": "85c2b2bee77119dfaa7b09ff96fac49bd06b8bb7cbad54e50537fbb7267c75a1",
+      "bucket": "openmeteo",
+      "region": "us-west-2",
+      "registry_url": "https://registry.opendata.aws/open-meteo/",
+      "bucket_explorer_url": "https://openmeteo.s3.amazonaws.com/index.html#data/",
+      "shape_convention": "data/ arrays are [ny,nx,ntime]; data_spatial/ arrays are [ny,nx]"
+    },
+    "coverage": {
+      "status": "four_grid_family_samples_acquired; required_target_coordinates_and_values_not_validated",
+      "required": [
+        "rotated_v3",
+        "lambert_v3",
+        "stereographic_v3",
+        "gaussian_n160_v3",
+        "gaussian_n320_v3",
+        "gaussian_n320_region_v3"
+      ],
+      "acquired_metadata_checked": [
+        "rotated_v3",
+        "lambert_v3",
+        "stereographic_v3",
+        "gaussian_o1280_supplemental",
+        "gaussian_hres_o1280_timeseries_supplemental"
+      ],
+      "not_acquired": [
+        {
+          "id": "gaussian_n160_v3",
+          "reason": "No matching N160 OM v3 sample was found in the audited public prefixes; current ECMWF SEAS5 metadata identifies O320, not N160."
+        },
+        {
+          "id": "gaussian_n320_v3",
+          "reason": "No full-grid N320 producer object is fixed in the pinned source; current public ECMWF IFS metadata identifies O1280 and SEAS5/EC46 metadata identifies O320."
+        },
+        {
+          "id": "gaussian_n320_region_v3",
+          "reason": "Public ecmwf_aifs025_ensemble objects exist, but their current metadata identifies WGS 84 world coverage; the exact ecmwf_aifs_europe_ensemble prefixes are empty and no matching N320 Gaussian-region object was found."
+        }
+      ],
+      "coordinate_reference": "independent mathematical spatial coordinates available for rotated_v3, lambert_v3, and stereographic_v3; Gaussian N targets and independent object source-axis mapping remain not-run",
+      "official_value_decode_reference": "complete official full-value references for rotated_v3, lambert_v3, and stereographic_v3; supplemental O1280 references are separate; N160, full N320, and N320-region remain not-run",
+      "spatial_read_benefit": "not-run",
+      "signed_s3_authorization_and_server_audit": "not-run; public anonymous bucket access is not a substitute",
+      "official_value_reference_completed": [
+        "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+        "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+        "stereographic_cmc_gem_rdps_cape_chunk_4337"
+      ],
+      "independent_coordinate_reference_completed": [
+        "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+        "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+        "stereographic_cmc_gem_rdps_cape_chunk_4337"
+      ]
+    },
+    "objects": [
+      {
+        "id": "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+        "grid_definition_id": "gem_rdps_10km",
+        "classification": "real_public_open_meteo_om_v3",
+        "source_object": {
+          "s3_uri": "s3://openmeteo/data/cmc_gem_rdps_10km/cape/chunk_4337.om",
+          "https_url": "https://openmeteo.s3.us-west-2.amazonaws.com/data/cmc_gem_rdps_10km/cape/chunk_4337.om",
+          "key": "data/cmc_gem_rdps_10km/cape/chunk_4337.om",
+          "public_read": true,
+          "version_id": null,
+          "etag": "\"a8983c4d6c56028dd1e3e7aa34ca8b36-9\"",
+          "last_modified": "2026-06-01T10:05:30Z"
+        },
+        "size_bytes": 68016448,
+        "sha256": "3db637197d27c65051e417b850f8c3656d1c5371ab78dcbd9fc05d0e440956f7",
+        "format_version": 3,
+        "external_variable": "cape",
+        "array": {
+          "variable_path": "/",
+          "shape": [
+            1045,
+            1140,
+            114
+          ],
+          "chunk_shape": [
+            1,
+            26,
+            114
+          ],
+          "axes": [
+            "latitude",
+            "longitude",
+            "time"
+          ],
+          "axes_embedded_in_array_metadata": false,
+          "axis_order_evidence": "pinned open-meteo/open-data README [ny,nx,ntime] convention"
+        },
+        "grid_source": {
+          "repository": "https://github.com/open-meteo/open-meteo",
+          "commit": "b06f4760fd1f997e5559bb380f64c5e496b4a509",
+          "path": "Sources/App/Gem/GemDomain.swift"
+        },
+        "metadata_validation": "OM v3 header/trailer and root array validated with the official OM C metadata API; full values decoded by the fixed official OM C API and frozen by the referenced CSV hash; independent coordinates and producer source-axis mapping remain not-run; independent mathematical coordinates are frozen separately, but the OM object's source-axis mapping remains not-run",
+        "local_copy": {
+          "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om",
+          "fetch_command": "python3 scripts/fetch-openmeteo-grid-samples.py"
+        },
+        "remote_identity": "No S3 VersionId; multipart ETag is not a content hash. SHA-256 pins the downloaded local bytes; remote identity remains weak.",
+        "official_value_reference": {
+          "reader": "official OM C API",
+          "official_library_commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+          "command": [
+            "build/release-vcpkg/test/tools/duckomo_fixture_tool",
+            "--oracle",
+            "build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om",
+            "--csv",
+            "build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.official-reference.csv"
+          ],
+          "exit_code": 0,
+          "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.official-reference.csv",
+          "sha256": "cdcd6650b7d9acb6695886f7359ae2c8453e6b9ad972402a0699f35297be7f85",
+          "size_bytes": 1723440347,
+          "rows": 135808200,
+          "columns": [
+            "index",
+            "value"
+          ],
+          "position_column": "zero-based OM root-array linear index",
+          "null_count": 40819713,
+          "input_object_sha256": "3db637197d27c65051e417b850f8c3656d1c5371ab78dcbd9fc05d0e440956f7",
+          "tool_binary": "build/release-vcpkg/test/tools/duckomo_fixture_tool"
+        },
+        "independent_coordinate_reference": {
+          "method": "standalone double-precision spherical/projection equations",
+          "generator": "scripts/generate-grid-coordinate-reference.py",
+          "numeric_policy": "openmeteo_f32_v1",
+          "maximum_tolerance_degrees": 0.0001,
+          "command": [
+            "python3",
+            "scripts/generate-grid-coordinate-reference.py",
+            "--sample-id",
+            "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+            "--output",
+            "build/grid-references/rotated-cmc-gem-rdps-10km-cape-chunk-4337.coordinates.csv"
+          ],
+          "path": "build/grid-references/rotated-cmc-gem-rdps-10km-cape-chunk-4337.coordinates.csv",
+          "sha256": "8d05866767e58173b20f6dd588b3f8766e81a8e85b9aa24b09fe17e2a496c57f",
+          "spatial_rows": 1191300,
+          "columns": [
+            "spatial_index",
+            "row",
+            "column",
+            "longitude",
+            "latitude"
+          ],
+          "axis_mapping_scope": "coordinates follow the pinned producer [ny,nx,ntime] profile; OM does not embed axis names and object source-axis identity remains a separate unvalidated claim",
+          "input_object_sha256": "3db637197d27c65051e417b850f8c3656d1c5371ab78dcbd9fc05d0e440956f7"
+        }
+      },
+      {
+        "id": "stereographic_cmc_gem_rdps_cape_chunk_4337",
+        "grid_definition_id": "gem_regional",
+        "classification": "real_public_open_meteo_om_v3",
+        "source_object": {
+          "s3_uri": "s3://openmeteo/data/cmc_gem_rdps/cape/chunk_4337.om",
+          "https_url": "https://openmeteo.s3.us-west-2.amazonaws.com/data/cmc_gem_rdps/cape/chunk_4337.om",
+          "key": "data/cmc_gem_rdps/cape/chunk_4337.om",
+          "public_read": true,
+          "version_id": null,
+          "etag": "\"41caf313c49cbcddf586d29ca251e8b0-3\"",
+          "last_modified": "2026-05-26T10:02:24Z"
+        },
+        "size_bytes": 23835720,
+        "sha256": "1d701b188c8c264532f0d8fa917400a66cf28aa1c8e53a7b40781a775333c7c1",
+        "format_version": 3,
+        "external_variable": "cape",
+        "array": {
+          "variable_path": "/",
+          "shape": [
+            824,
+            935,
+            114
+          ],
+          "chunk_shape": [
+            1,
+            26,
+            114
+          ],
+          "axes": [
+            "latitude",
+            "longitude",
+            "time"
+          ],
+          "axes_embedded_in_array_metadata": false,
+          "axis_order_evidence": "pinned open-meteo/open-data README [ny,nx,ntime] convention"
+        },
+        "grid_source": {
+          "repository": "https://github.com/open-meteo/open-meteo",
+          "commit": "b06f4760fd1f997e5559bb380f64c5e496b4a509",
+          "path": "Sources/App/Gem/GemDomain.swift"
+        },
+        "metadata_validation": "OM v3 header/trailer and root array validated with the official OM C metadata API; full values decoded by the fixed official OM C API and frozen by the referenced CSV hash; independent coordinates and producer source-axis mapping remain not-run; independent mathematical coordinates are frozen separately, but the OM object's source-axis mapping remains not-run",
+        "local_copy": {
+          "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.om",
+          "fetch_command": "python3 scripts/fetch-openmeteo-grid-samples.py"
+        },
+        "remote_identity": "No S3 VersionId; multipart ETag is not a content hash. SHA-256 pins the downloaded local bytes; remote identity remains weak.",
+        "official_value_reference": {
+          "reader": "official OM C API",
+          "official_library_commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+          "command": [
+            "build/release-vcpkg/test/tools/duckomo_fixture_tool",
+            "--oracle",
+            "build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.om",
+            "--csv",
+            "build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.official-reference.csv"
+          ],
+          "exit_code": 0,
+          "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.official-reference.csv",
+          "sha256": "ea70e1d945d885e2cc20159afb76db9e5a0c79effe45be2d50ddf018903ba467",
+          "size_bytes": 1106242733,
+          "rows": 87830160,
+          "columns": [
+            "index",
+            "value"
+          ],
+          "position_column": "zero-based OM root-array linear index",
+          "null_count": 62643412,
+          "input_object_sha256": "1d701b188c8c264532f0d8fa917400a66cf28aa1c8e53a7b40781a775333c7c1",
+          "tool_binary": "build/release-vcpkg/test/tools/duckomo_fixture_tool"
+        },
+        "independent_coordinate_reference": {
+          "method": "standalone double-precision spherical/projection equations",
+          "generator": "scripts/generate-grid-coordinate-reference.py",
+          "numeric_policy": "openmeteo_f32_v1",
+          "maximum_tolerance_degrees": 0.0001,
+          "command": [
+            "python3",
+            "scripts/generate-grid-coordinate-reference.py",
+            "--sample-id",
+            "stereographic_cmc_gem_rdps_cape_chunk_4337",
+            "--output",
+            "build/grid-references/stereographic-cmc-gem-rdps-cape-chunk-4337.coordinates.csv"
+          ],
+          "path": "build/grid-references/stereographic-cmc-gem-rdps-cape-chunk-4337.coordinates.csv",
+          "sha256": "90f3cad43a1ef85e5e1c58c40b3a51c1b24fad801c4c0f818211377a591e7f62",
+          "spatial_rows": 770440,
+          "columns": [
+            "spatial_index",
+            "row",
+            "column",
+            "longitude",
+            "latitude"
+          ],
+          "axis_mapping_scope": "coordinates follow the pinned producer [ny,nx,ntime] profile; OM does not embed axis names and object source-axis identity remains a separate unvalidated claim",
+          "input_object_sha256": "1d701b188c8c264532f0d8fa917400a66cf28aa1c8e53a7b40781a775333c7c1"
+        }
+      },
+      {
+        "id": "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+        "grid_definition_id": "aladin_central_europe_2km",
+        "classification": "real_public_open_meteo_om_v3",
+        "source_object": {
+          "s3_uri": "s3://openmeteo/data/chmi_aladin_central_europe_2km/cape/chunk_4135.om",
+          "https_url": "https://openmeteo.s3.us-west-2.amazonaws.com/data/chmi_aladin_central_europe_2km/cape/chunk_4135.om",
+          "key": "data/chmi_aladin_central_europe_2km/cape/chunk_4135.om",
+          "public_read": true,
+          "version_id": null,
+          "etag": "\"fc8408a0e10f2d569522dc95848781c9-6\"",
+          "last_modified": "2026-08-14T22:50:39Z"
+        },
+        "size_bytes": 48727672,
+        "sha256": "cef407b0aae43498485b8f6e25907c1ecf8a82c6cb8aa2185fe860f0c491132c",
+        "format_version": 3,
+        "external_variable": "cape",
+        "array": {
+          "variable_path": "/",
+          "shape": [
+            837,
+            1053,
+            120
+          ],
+          "chunk_shape": [
+            1,
+            25,
+            120
+          ],
+          "axes": [
+            "latitude",
+            "longitude",
+            "time"
+          ],
+          "axes_embedded_in_array_metadata": false,
+          "axis_order_evidence": "pinned open-meteo/open-data README [ny,nx,ntime] convention"
+        },
+        "grid_source": {
+          "repository": "https://github.com/open-meteo/open-meteo",
+          "commit": "b06f4760fd1f997e5559bb380f64c5e496b4a509",
+          "path": "Sources/App/Chmi/ChmiDomain.swift"
+        },
+        "metadata_validation": "OM v3 header/trailer and root array validated with the official OM C metadata API; full values decoded by the fixed official OM C API and frozen by the referenced CSV hash; independent coordinates and producer source-axis mapping remain not-run; independent mathematical coordinates are frozen separately, but the OM object's source-axis mapping remains not-run",
+        "local_copy": {
+          "path": "build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om",
+          "fetch_command": "python3 scripts/fetch-openmeteo-grid-samples.py"
+        },
+        "remote_identity": "No S3 VersionId; multipart ETag is not a content hash. SHA-256 pins the downloaded local bytes; remote identity remains weak.",
+        "official_value_reference": {
+          "reader": "official OM C API",
+          "official_library_commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+          "command": [
+            "build/release-vcpkg/test/tools/duckomo_fixture_tool",
+            "--oracle",
+            "build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om",
+            "--csv",
+            "build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.official-reference.csv"
+          ],
+          "exit_code": 0,
+          "path": "build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.official-reference.csv",
+          "sha256": "7fc25500b7c6387f2408caf04322a2955f15f89cd401700016f26c4d8355e4dd",
+          "size_bytes": 1282839785,
+          "rows": 105763320,
+          "columns": [
+            "index",
+            "value"
+          ],
+          "position_column": "zero-based OM root-array linear index",
+          "null_count": 0,
+          "input_object_sha256": "cef407b0aae43498485b8f6e25907c1ecf8a82c6cb8aa2185fe860f0c491132c",
+          "tool_binary": "build/release-vcpkg/test/tools/duckomo_fixture_tool"
+        },
+        "independent_coordinate_reference": {
+          "method": "standalone double-precision spherical/projection equations",
+          "generator": "scripts/generate-grid-coordinate-reference.py",
+          "numeric_policy": "openmeteo_f32_v1",
+          "maximum_tolerance_degrees": 0.0001,
+          "command": [
+            "python3",
+            "scripts/generate-grid-coordinate-reference.py",
+            "--sample-id",
+            "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+            "--output",
+            "build/grid-references/lambert-chmi-aladin-ce-cape-chunk-4135.coordinates.csv"
+          ],
+          "path": "build/grid-references/lambert-chmi-aladin-ce-cape-chunk-4135.coordinates.csv",
+          "sha256": "dbc66a87803bb25e1a299ef63c8a0784f5006cd1999f953537b4fb81a0cf0762",
+          "spatial_rows": 881361,
+          "columns": [
+            "spatial_index",
+            "row",
+            "column",
+            "longitude",
+            "latitude"
+          ],
+          "axis_mapping_scope": "coordinates follow the pinned producer [ny,nx,ntime] profile; OM does not embed axis names and object source-axis identity remains a separate unvalidated claim",
+          "input_object_sha256": "cef407b0aae43498485b8f6e25907c1ecf8a82c6cb8aa2185fe860f0c491132c"
+        }
+      },
+      {
+        "id": "ecmwf_ifs_static_hsurf_reduced_gaussian_o1280",
+        "grid_definition_id": null,
+        "scope": "supplemental_gaussian_family_example; O1280 is not the required N160/N320/N-region and O/F grids are excluded from 004 acceptance",
+        "classification": "real_public_open_meteo_om_v3",
+        "source_object": {
+          "s3_uri": "s3://openmeteo/data/ecmwf_ifs/static/HSURF.om",
+          "https_url": "https://openmeteo.s3.us-west-2.amazonaws.com/data/ecmwf_ifs/static/HSURF.om",
+          "key": "data/ecmwf_ifs/static/HSURF.om",
+          "public_read": true,
+          "version_id": null,
+          "etag": "\"91286afefb256fd70a8e34b18fd4ddf7\"",
+          "last_modified": "2025-10-21T09:36:01Z"
+        },
+        "size_bytes": 2482560,
+        "sha256": "2e8279f8bd12052ba5be5a0bcba2293dc4316097e434d6691f9e6711249e1fd3",
+        "format_version": 3,
+        "external_variable": "HSURF",
+        "array": {
+          "variable_path": "/",
+          "shape": [
+            1,
+            6599680
+          ],
+          "chunk_shape": [
+            1,
+            400
+          ],
+          "axes": null,
+          "axes_embedded_in_array_metadata": false,
+          "mapping_status": "not mapped; do not infer O1280 point order from shape"
+        },
+        "grid_metadata_object": {
+          "s3_uri": "s3://openmeteo/data/ecmwf_ifs/static/meta.json",
+          "sha256": "c8dd4aa8e6eb07e1708742fc0e28e23e2516857ca156f55596e97bad65d86bd0",
+          "size_bytes": 658,
+          "last_modified": "2026-10-06T06:50:24Z",
+          "etag": "\"203586194241279275a8cff6dcbb54fb\"",
+          "crs_wkt_remark": "Reduced Gaussian Grid O1280 (ECMWF)"
+        },
+        "metadata_validation": "OM v3 header/trailer and root array validated; Open-Meteo WKT metadata identifies O1280; the full value array matches an official OM C API decode by logical index; O1280 row/point mapping and coordinates remain not-run",
+        "full_value_reference": {
+          "manifest": "test/data/grids/value-reference-manifest.json",
+          "official_csv": "build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.official-reference.csv",
+          "official_csv_sha256": "083300d4593e326236b76dfb2d55485058fdbf360a27bfab6a04a64d01eab91a",
+          "duckomo_csv": "build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.duckomo-output.csv",
+          "duckomo_csv_sha256": "558dcb725586cb638bf129c2666c2c06be7f651bd0808e159f71ae095c9201be",
+          "positions_compared": 6599680,
+          "mismatches": 0
+        },
+        "local_copy": {
+          "path": "build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.om",
+          "fetch_command": "python3 scripts/fetch-openmeteo-grid-samples.py"
+        },
+        "remote_identity": "No S3 VersionId; SHA-256 pins the downloaded local bytes. This sample is supplemental Gaussian-family evidence and does not satisfy N160/N320/N-region requirements."
+      },
+      {
+        "id": "ecmwf_ifs_hres_temperature_2m_chunk_817_o1280_supplemental",
+        "grid_definition_id": null,
+        "scope": "supplemental_real_hres_timeseries; ECMWF IFS HRES O1280 is a reduced Gaussian grid but not the required N160/N320/N-region",
+        "classification": "real_public_open_meteo_om_v3",
+        "source_object": {
+          "s3_uri": "s3://openmeteo/data/ecmwf_ifs/temperature_2m/chunk_817.om",
+          "https_url": "https://openmeteo.s3.us-west-2.amazonaws.com/data/ecmwf_ifs/temperature_2m/chunk_817.om",
+          "key": "data/ecmwf_ifs/temperature_2m/chunk_817.om",
+          "public_read": true,
+          "version_id": null,
+          "etag": "\"8aacc014058aca39a7a1ae9800fbef58-43\"",
+          "last_modified": "2025-04-03T01:11:58Z"
+        },
+        "size_bytes": 353999720,
+        "sha256": "483dd0be2096d3e3fff6731509400f97591ebcfc237a941a37460f42a7a10e7f",
+        "format_version": 3,
+        "external_variable": "temperature_2m",
+        "array": {
+          "variable_path": "/",
+          "shape": [
+            1,
+            6599680,
+            504
+          ],
+          "chunk_shape": [
+            1,
+            6,
+            504
+          ],
+          "axes": null,
+          "axes_embedded_in_array_metadata": false,
+          "mapping_status": "OM metadata shape/chunks checked; axis semantics and O1280 row/point order not mapped"
+        },
+        "grid_metadata_object": {
+          "s3_uri": "s3://openmeteo/data/ecmwf_ifs/static/meta.json",
+          "sha256": "c8dd4aa8e6eb07e1708742fc0e28e23e2516857ca156f55596e97bad65d86bd0",
+          "size_bytes": 658,
+          "last_modified": "2026-10-06T06:50:24Z",
+          "etag": "\"203586194241279275a8cff6dcbb54fb\"",
+          "crs_wkt_remark": "Reduced Gaussian Grid O1280 (ECMWF); WGS84 ellipsoid 6378137/298.257223563"
+        },
+        "metadata_validation": "OM v3 header/trailer and root array metadata validated with official OM C API: shape [1,6599680,504], chunks [1,6,504]; DuckDB read_om binds as value FLOAT; no value decode, coordinate, or axis-order reference claimed",
+        "local_copy": {
+          "path": "build/s3-samples/openmeteo-v3/ecmwf-ifs-temperature-2m-chunk-817.om",
+          "fetch_command": "python3 scripts/fetch-openmeteo-grid-samples.py"
+        },
+        "remote_identity": "No S3 VersionId; multipart ETag is not a content hash. SHA-256 pins the downloaded local bytes; remote identity remains weak."
+      }
+    ]
+  },
+  "fixtures": [
+    {
+      "id": "layouts",
+      "path": "layouts.om",
+      "sha256": "2067ea75bbb596b194d89e7c9bf97fc8f985098d4be56bb431771e0700cc78a6",
+      "size_bytes": 3560,
+      "grid_kind": "synthetic_layout_input",
+      "description": "reverse, both flattened orders, five semantic axes, and two aligned variables",
+      "variables": [
+        {
+          "path": "/reverse/value",
+          "shape": [
+            3,
+            4
+          ],
+          "chunk_shape": [
+            2,
+            2
+          ]
+        },
+        {
+          "path": "/flattened_x_fastest/value",
+          "shape": [
+            12
+          ],
+          "chunk_shape": [
+            5
+          ]
+        },
+        {
+          "path": "/flattened_y_fastest/value",
+          "shape": [
+            12
+          ],
+          "chunk_shape": [
+            5
+          ]
+        },
+        {
+          "path": "/interleaved/temperature",
+          "shape": [
+            2,
+            3,
+            2,
+            4,
+            2,
+            2,
+            2
+          ],
+          "chunk_shape": [
+            1,
+            2,
+            1,
+            3,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/interleaved/humidity",
+          "shape": [
+            2,
+            3,
+            2,
+            4,
+            2,
+            2,
+            2
+          ],
+          "chunk_shape": [
+            1,
+            2,
+            1,
+            3,
+            1,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reverse_layout",
+      "path": "reverse.om",
+      "sha256": "59917db155efbac8b2fc2b05da64029b6d73e2c5ccc217e6f8cdf958620b64c2",
+      "size_bytes": 208,
+      "grid_kind": "synthetic_layout_input",
+      "description": "separate [latitude,longitude] axes with negative source direction",
+      "variables": [
+        {
+          "path": "/reverse/value",
+          "shape": [
+            3,
+            4
+          ],
+          "chunk_shape": [
+            2,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "x_fastest_layout",
+      "path": "x-fastest.om",
+      "sha256": "dfb2a41faa2d8632ca0e34dcbdd24850a751b50dbc07cddccd902c74cc462d84",
+      "size_bytes": 208,
+      "grid_kind": "synthetic_layout_input",
+      "description": "flattened longitude-fastest source order",
+      "variables": [
+        {
+          "path": "/flattened_x_fastest/value",
+          "shape": [
+            12
+          ],
+          "chunk_shape": [
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "id": "y_fastest_layout",
+      "path": "y-fastest.om",
+      "sha256": "a617a8ef5d686ef7407fadaae423d94c3a9876ad0c39dcc718f06da9a6f53f7f",
+      "size_bytes": 208,
+      "grid_kind": "synthetic_layout_input",
+      "description": "flattened latitude-fastest source order",
+      "variables": [
+        {
+          "path": "/flattened_y_fastest/value",
+          "shape": [
+            12
+          ],
+          "chunk_shape": [
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "id": "interleaved_axes",
+      "path": "interleaved.om",
+      "sha256": "ea1e85fed4dff84ae75345d87df3dea06a1b16c0877434a620eab8dab92bf8ca",
+      "size_bytes": 3080,
+      "grid_kind": "synthetic_layout_input",
+      "description": "five semantic axes interleaved with two spatial axes and two aligned variables",
+      "variables": [
+        {
+          "path": "/interleaved/temperature",
+          "shape": [
+            2,
+            3,
+            2,
+            4,
+            2,
+            2,
+            2
+          ],
+          "chunk_shape": [
+            1,
+            2,
+            1,
+            3,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/interleaved/humidity",
+          "shape": [
+            2,
+            3,
+            2,
+            4,
+            2,
+            2,
+            2
+          ],
+          "chunk_shape": [
+            1,
+            2,
+            1,
+            3,
+            1,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unknown_crs",
+      "path": "crs-conflict.om",
+      "sha256": "74b4811d1710a9ac29bb2b7adef95878741eca71e7df43235a5254cc8d2348f4",
+      "size_bytes": 280,
+      "grid_kind": "synthetic_layout_input",
+      "description": "explicit unknown CRS profile is retained and rejected by version-one geographic binding",
+      "variables": [
+        {
+          "path": "/unknown_crs/value",
+          "shape": [
+            2,
+            3
+          ],
+          "chunk_shape": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gaussian_wgs84_crs",
+      "path": "crs-wgs84-gaussian.om",
+      "sha256": "1d26f42fc9ba76a6ce84331f39a31ce5fb35d19ad0089c17885c5a856ef1e7d9",
+      "size_bytes": 496,
+      "grid_kind": "synthetic_layout_input",
+      "description": "closed WGS84 Reduced Gaussian source profile with axis and angular-unit evidence",
+      "variables": [
+        {
+          "path": "/gaussian_wgs84/value",
+          "shape": [
+            12
+          ],
+          "chunk_shape": [
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gaussian_n160_identity",
+      "path": "gaussian-n160-identity.om",
+      "sha256": "72430be2af7ae5985594381f27bc8d807f7a29476d7fc35a89ec70243df73692",
+      "size_bytes": 251592,
+      "grid_kind": "synthetic_layout_input",
+      "description": "synthetic point-axis fixture for N160 registered-versus-explicit SQL identity checks",
+      "variables": [
+        {
+          "path": "/n160_identity/value",
+          "shape": [
+            138346
+          ],
+          "chunk_shape": [
+            1024
+          ]
+        }
+      ]
+    },
+    {
+      "id": "long_line",
+      "path": "long-line.om",
+      "sha256": "01be9d70495970734bf2929c98b0c87da353a5bc02048919e79de7908fefea32",
+      "size_bytes": 309288,
+      "grid_kind": "synthetic_layout_input",
+      "description": "one scanline larger than four 65536-position selector windows",
+      "variables": [
+        {
+          "path": "/long_line/value",
+          "shape": [
+            1,
+            262145
+          ],
+          "chunk_shape": [
+            1,
+            4096
+          ]
+        }
+      ]
+    },
+    {
+      "id": "memory_small",
+      "path": "memory-small.om",
+      "sha256": "b30726368c5528be93ae28711173a56300419215a375203d58ddb150e3199b5a",
+      "size_bytes": 27096,
+      "grid_kind": "synthetic_layout_input",
+      "description": "16x baseline for fixed 32x32 chunk, four projected-grid work-memory comparisons",
+      "variables": [
+        {
+          "path": "/value",
+          "shape": [
+            256,
+            256
+          ],
+          "chunk_shape": [
+            32,
+            32
+          ]
+        }
+      ]
+    },
+    {
+      "id": "memory_large",
+      "path": "memory-large.om",
+      "sha256": "e6a2fad366365fd2a311b63a9b9cfa443a6854f2766c7927ce4b90815c27c0df",
+      "size_bytes": 431352,
+      "grid_kind": "synthetic_layout_input",
+      "description": "16x spatial point count with identical 32x32 compressed chunks",
+      "variables": [
+        {
+          "path": "/value",
+          "shape": [
+            1024,
+            1024
+          ],
+          "chunk_shape": [
+            32,
+            32
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gaussian_work_small",
+      "path": "gaussian-work-small.om",
+      "sha256": "469d7bf866a286342fd53ec532be1c2b10b42096b673da39c40f8dfb4becf536",
+      "size_bytes": 568,
+      "grid_kind": "synthetic_layout_input",
+      "description": "reduced-Gaussian work-memory baseline; explicit two-row grid, 256 points",
+      "variables": [
+        {
+          "path": "/gaussian_work/value",
+          "shape": [
+            256
+          ],
+          "chunk_shape": [
+            32
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gaussian_work_large",
+      "path": "gaussian-work-large.om",
+      "sha256": "28131cce879f4c721b7247f9989e90495ddad13a8f67c20b0bf83c45abd2a3ff",
+      "size_bytes": 6376,
+      "grid_kind": "synthetic_layout_input",
+      "description": "15.5x reduced-Gaussian spatial point count with the same chunk and narrow output row",
+      "variables": [
+        {
+          "path": "/gaussian_work/value",
+          "shape": [
+            3968
+          ],
+          "chunk_shape": [
+            32
+          ]
+        }
+      ]
+    },
+    {
+      "id": "large_value_chunk",
+      "path": "large-value-chunk.om",
+      "sha256": "26501603c5bf7994d02a3f3a1f5369c85fb0adc95c7da1390172135caf973b52",
+      "size_bytes": 8112,
+      "grid_kind": "synthetic_layout_input",
+      "description": "one 256 KiB value chunk for coordinate-only decoder isolation",
+      "variables": [
+        {
+          "path": "/large_chunk/value",
+          "shape": [
+            256,
+            256
+          ],
+          "chunk_shape": [
+            256,
+            256
+          ]
+        }
+      ]
+    },
+    {
+      "id": "spatial_relation_gaussian",
+      "path": "spatial-relations-gaussian.om",
+      "sha256": "47831ff46fe623695dfcb35dc220c29cb1352e9d54586cfe300cdb00a25b26dd",
+      "size_bytes": 200,
+      "grid_kind": "synthetic_layout_input",
+      "description": "eight-point synthetic Gaussian source matching the independent full point/polygon relation example",
+      "variables": [
+        {
+          "path": "/spatial_relations/gaussian_value",
+          "shape": [
+            8
+          ],
+          "chunk_shape": [
+            4
+          ]
+        }
+      ]
+    }
+  ],
+  "selection_cases": {
+    "path": "selection-cases.json",
+    "sha256": "7601365a245f06e03752d0126dcc3202ac7a48d5d0e35fef92980e0145d2a5d0",
+    "size_bytes": 1393,
+    "scope": "synthetic selector inputs; pole/singularity vectors are native-only"
+  },
+  "coordinate_reference": null,
+  "value_reference": "per-fixture CSVs in the enclosing test/data/manifest.json",
+  "limitations": [
+    "real public samples are metadata-checked only; independent coordinate and official full-value references remain not-run",
+    "public ECMWF IFS metadata identifies an O1280 Gaussian sample, which cannot substitute for required N160/N320/N320-region samples",
+    "public anonymous S3 access does not satisfy signed-S3 authorization or server-audit gates",
+    "synthetic fixtures do not satisfy real-sample acceptance",
+    "selection-case position formulas do not prove SQL candidate completeness"
+  ]
+}

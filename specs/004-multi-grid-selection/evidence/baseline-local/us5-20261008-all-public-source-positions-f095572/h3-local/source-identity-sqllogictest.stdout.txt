@@ -1,0 +1,7 @@
+Filters: /home/blizhan/repo/github/duckomo/test/sql/source_identity.test
+
+[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/source_identity.test
+[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/source_identity.test
+===============================================================================
+All tests passed (40 assertions in 1 test case)
+

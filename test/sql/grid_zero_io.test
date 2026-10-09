@@ -1,0 +1,136 @@
+# name: test/sql/grid_zero_io.test
+# description: Verify version-one spatial coordinates and COUNT avoid value decoding
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+statement ok
+CREATE TEMP VIEW interleaved_grid AS
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/interleaved.om',
+    dimensions := map(
+        ['interleaved/temperature','interleaved/humidity'],
+        [['time','latitude_axis','level','longitude_axis','lead_time','member','run'],
+         ['time','latitude_axis','level','longitude_axis','lead_time','member','run']]),
+    grid := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0
+        }
+    },
+    spatial_axes := ['latitude_axis','longitude_axis']);
+
+# Coordinate values are produced for the local spatial subset.
+query RR
+SELECT latitude, longitude FROM interleaved_grid
+WHERE latitude BETWEEN 0.99 AND 1.01 AND longitude BETWEEN 1.99 AND 2.01
+ORDER BY latitude, longitude LIMIT 1;
+----
+1.000000	2.000000
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE scan_id = (SELECT max(scan_id) FROM duckomo_last_scan_metrics())
+  AND metrics LIKE '%"/interleaved/temperature":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_count_complete":true}%'
+  AND metrics LIKE '%"/interleaved/humidity":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_count_complete":true}%';
+----
+1
+
+# COUNT(*) preserves every non-spatial record at the same geographic point.
+query I
+SELECT count(*) FROM interleaved_grid;
+----
+384
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE scan_id = (SELECT max(scan_id) FROM duckomo_last_scan_metrics())
+  AND metrics LIKE '%"/interleaved/temperature":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_count_complete":true}%'
+  AND metrics LIKE '%"/interleaved/humidity":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_count_complete":true}%';
+----
+1
+
+# A proven full-domain coordinate condition produces every source record.
+# Preparation validates the 12 spatial points at bind time, with no extra
+# preflight transformations across the 384 records and five non-spatial axes.
+query I
+SELECT count(latitude) + count(longitude) FROM interleaved_grid
+WHERE latitude >= -90 AND latitude <= 90
+  AND longitude >= -180 AND longitude < 180;
+----
+768
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE scan_id = (SELECT max(scan_id) FROM duckomo_last_scan_metrics())
+  AND metrics LIKE '%"coordinate_preparation":{"evaluations":12,"complete":true}%'
+  AND metrics LIKE '%"/interleaved/temperature":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_count_complete":true}%'
+  AND metrics LIKE '%"/interleaved/humidity":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_count_complete":true}%';
+----
+1
+
+# Coordinate-filtered COUNT also preserves the five non-spatial axes.
+query I
+SELECT count(*) FROM interleaved_grid
+WHERE latitude BETWEEN 0.99 AND 1.01 AND longitude BETWEEN 1.99 AND 2.01;
+----
+32
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE scan_id = (SELECT max(scan_id) FROM duckomo_last_scan_metrics())
+  AND metrics LIKE '%"/interleaved/temperature":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_count_complete":true}%'
+  AND metrics LIKE '%"/interleaved/humidity":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_count_complete":true}%';
+----
+1
+
+# Contradictory and reversed predicates remain exact SQL filters and read no values.
+query I
+SELECT count(*) FROM interleaved_grid WHERE latitude > 0 AND latitude < 0;
+----
+0
+
+query I
+SELECT count(*) FROM interleaved_grid WHERE latitude BETWEEN 2 AND 0;
+----
+0
+
+query I
+SELECT count(*) FROM interleaved_grid WHERE latitude > 90;
+----
+0
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE scan_id = (SELECT max(scan_id) FROM duckomo_last_scan_metrics())
+  AND metrics LIKE '%"/interleaved/temperature":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_count_complete":true}%'
+  AND metrics LIKE '%"/interleaved/humidity":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_count_complete":true}%';
+----
+1
+
+# Value residuals are still applied, but unrelated variables stay untouched.
+query I
+SELECT count(*) FROM interleaved_grid
+WHERE latitude BETWEEN 0.99 AND 1.01 AND longitude BETWEEN 1.99 AND 2.01
+  AND "interleaved/temperature" > 10000;
+----
+24
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE scan_id = (SELECT max(scan_id) FROM duckomo_last_scan_metrics())
+  AND metrics LIKE '%"/interleaved/humidity":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_count_complete":true}%'
+  AND metrics NOT LIKE '%"/interleaved/temperature":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_count_complete":true}%';
+----
+1

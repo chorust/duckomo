@@ -1,0 +1,7 @@
+Filters: /home/blizhan/repo/github/duckomo/test/sql/grid_info.test
+
+[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/grid_info.test
+[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/grid_info.test
+===============================================================================
+All tests passed (100 assertions in 1 test case)
+

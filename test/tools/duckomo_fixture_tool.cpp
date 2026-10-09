@@ -13,6 +13,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 extern "C" {
@@ -916,6 +917,18 @@ std::vector<TreeArray> BuildSpatialConflictArrays() {
 	return {std::move(latitude)};
 }
 
+std::vector<TreeArray> BuildSourceConflictArrays() {
+	TreeArray source;
+	source.fixture.id = "source_conflict.om_source";
+	source.fixture.shape = {2, 3};
+	source.fixture.chunks = {1, 2};
+	source.fixture.values = {0.0F, 1.0F, 2.0F, 3.0F, 4.0F, 5.0F};
+	source.segments = {"om_source"};
+	source.axes = {"row", "column"};
+	source.reference_name = "source_conflict.om_source.reference.csv";
+	return {std::move(source)};
+}
+
 std::vector<TreeArray> BuildPforAttributeArrays() {
 	TreeArray temperature;
 	temperature.fixture.id = "pfor_attributes.temperature";
@@ -1346,6 +1359,8 @@ void WriteManifest(const std::filesystem::path &directory, const std::vector<Fix
 	               const std::vector<TreeArray> &multi_arrays, const std::vector<DecodedVariable> &multi_decoded,
 	               const std::vector<TreeArray> &spatial_conflict_arrays,
 	               const std::vector<DecodedVariable> &spatial_conflict_decoded,
+	               const std::vector<TreeArray> &source_conflict_arrays,
+	               const std::vector<DecodedVariable> &source_conflict_decoded,
 	               const std::vector<TreeArray> &pfor_arrays, const std::vector<DecodedVariable> &pfor_decoded,
 	               const std::vector<TreeArray> &nested_arrays, const std::vector<DecodedVariable> &nested_decoded,
 	               const std::vector<TreeArray> &projection_arrays,
@@ -1390,6 +1405,9 @@ void WriteManifest(const std::filesystem::path &directory, const std::vector<Fix
 	manifest << ",\n";
 	WriteTreeFixtureManifestEntry(manifest, directory, "spatial_conflict", "spatial_conflict.om",
 	                              spatial_conflict_arrays, spatial_conflict_decoded);
+	manifest << ",\n";
+	WriteTreeFixtureManifestEntry(manifest, directory, "source_conflict", "source-conflict.om",
+	                              source_conflict_arrays, source_conflict_decoded);
 	manifest << ",\n";
 	WriteTreeFixtureManifestEntry(manifest, directory, "pfor_attributes", "pfor_attributes.om", pfor_arrays,
 	                              pfor_decoded);
@@ -1592,6 +1610,436 @@ std::vector<Fixture> BuildInitialFixtures() {
 	        std::move(dimensions_axis_order), std::move(dimensions_five_axes), std::move(dimensions_perf)};
 }
 
+TreeArray MakeGridArray(const std::string &id, std::vector<std::string> segments, std::vector<std::string> axes,
+                        std::vector<std::uint64_t> shape, std::vector<std::uint64_t> chunks,
+                        const std::string &reference_name) {
+	TreeArray array;
+	array.fixture.id = id;
+	array.fixture.shape = std::move(shape);
+	array.fixture.chunks = std::move(chunks);
+	array.segments = std::move(segments);
+	array.axes = std::move(axes);
+	array.reference_name = reference_name;
+	return array;
+}
+
+std::vector<TreeArray> BuildGridLayoutArrays() {
+	// The value at every logical location identifies its row and column.  The
+	// sample manifest supplies negative native steps for this [y,x] payload.
+	auto reverse = MakeGridArray("grids.reverse", {"reverse", "value"},
+	                             {"latitude_axis", "longitude_axis"}, {3, 4}, {2, 2},
+	                             "grids/layouts.reverse.csv");
+	for (std::uint64_t y = 0; y < 3; y++) {
+		for (std::uint64_t x = 0; x < 4; x++) {
+			reverse.fixture.values.push_back(static_cast<float>(y * 100 + x));
+		}
+	}
+
+	auto x_fastest = MakeGridArray("grids.x_fastest", {"flattened_x_fastest", "value"}, {"point"},
+	                               {12}, {5}, "grids/layouts.x_fastest.csv");
+	for (std::uint64_t point = 0; point < 12; point++) {
+		const auto y = point / 4;
+		const auto x = point % 4;
+		x_fastest.fixture.values.push_back(static_cast<float>(y * 100 + x));
+	}
+
+	auto y_fastest = MakeGridArray("grids.y_fastest", {"flattened_y_fastest", "value"}, {"point"},
+	                               {12}, {5}, "grids/layouts.y_fastest.csv");
+	for (std::uint64_t point = 0; point < 12; point++) {
+		const auto y = point % 3;
+		const auto x = point / 3;
+		y_fastest.fixture.values.push_back(static_cast<float>(y * 100 + x));
+	}
+
+	// Keep the spatial axes apart in source order while carrying every semantic
+	// axis category through the same multi-variable source layout.
+	constexpr std::uint64_t TIME = 2;
+	constexpr std::uint64_t NY = 3;
+	constexpr std::uint64_t LEVEL = 2;
+	constexpr std::uint64_t NX = 4;
+	constexpr std::uint64_t LEAD_TIME = 2;
+	constexpr std::uint64_t MEMBER = 2;
+	constexpr std::uint64_t RUN = 2;
+	const std::vector<std::uint64_t> interleaved_shape{TIME, NY, LEVEL, NX, LEAD_TIME, MEMBER, RUN};
+	const std::vector<std::uint64_t> interleaved_chunks{1, 2, 1, 3, 1, 2, 1};
+	const std::vector<std::string> interleaved_axes{
+	    "time", "latitude_axis", "level", "longitude_axis", "lead_time", "member", "run"};
+	auto temperature = MakeGridArray("grids.interleaved.temperature", {"interleaved", "temperature"},
+	                                 interleaved_axes, interleaved_shape, interleaved_chunks,
+	                                 "grids/layouts.interleaved.temperature.csv");
+	auto humidity = MakeGridArray("grids.interleaved.humidity", {"interleaved", "humidity"},
+	                              interleaved_axes, interleaved_shape, interleaved_chunks,
+	                              "grids/layouts.interleaved.humidity.csv");
+	const auto interleaved_rows = CheckedProduct(interleaved_shape);
+	for (std::uint64_t logical = 0; logical < interleaved_rows; logical++) {
+		auto remainder = logical;
+		const auto run = remainder % RUN;
+		remainder /= RUN;
+		const auto member = remainder % MEMBER;
+		remainder /= MEMBER;
+		const auto lead_time = remainder % LEAD_TIME;
+		remainder /= LEAD_TIME;
+		const auto x = remainder % NX;
+		remainder /= NX;
+		const auto level = remainder % LEVEL;
+		remainder /= LEVEL;
+		const auto y = remainder % NY;
+		const auto time = remainder / NY;
+		const auto tagged_position = time * 100000 + y * 10000 + level * 1000 + x * 100 +
+		                             lead_time * 10 + member * 2 + run;
+		temperature.fixture.values.push_back(static_cast<float>(tagged_position) - 1000.0F);
+		humidity.fixture.values.push_back(static_cast<float>(tagged_position) + 2000.0F);
+	}
+	return {std::move(reverse), std::move(x_fastest), std::move(y_fastest), std::move(temperature),
+	        std::move(humidity)};
+}
+
+std::vector<TreeArray> BuildGridLongLineArrays() {
+	constexpr std::uint64_t POINTS = 262145;
+	auto line = MakeGridArray("grids.long_line", {"long_line", "value"},
+	                          {"latitude_axis", "longitude_axis"}, {1, POINTS}, {1, 4096},
+	                          "grids/long-line.reference.csv");
+	line.fixture.values.reserve(static_cast<std::size_t>(POINTS));
+	for (std::uint64_t point = 0; point < POINTS; point++) {
+		line.fixture.values.push_back(static_cast<float>(point) * 0.25F - 32768.0F);
+	}
+	return {std::move(line)};
+}
+
+std::vector<TreeArray> BuildGridUnknownCrsArrays() {
+	auto array = MakeGridArray("grids.unknown_crs", {"unknown_crs", "value"},
+	                           {"latitude_axis", "longitude_axis"}, {2, 3}, {1, 2},
+	                           "grids/crs-conflict.reference.csv");
+	array.fixture.values = {0.0F, 1.0F, 2.0F, 3.0F, 4.0F, 5.0F};
+	array.string_attributes = {{"crs_wkt", "LOCAL_CS[\"unrecognized test profile\"]"}};
+	return {std::move(array)};
+}
+
+std::vector<TreeArray> BuildGridGaussianWgs84CrsArrays() {
+	auto array = MakeGridArray("grids.gaussian_wgs84_crs", {"gaussian_wgs84", "value"}, {"point"},
+	                           {12}, {6}, "grids/crs-wgs84-gaussian.reference.csv");
+	for (std::uint64_t point = 0; point < 12; point++) {
+		array.fixture.values.push_back(static_cast<float>(point));
+	}
+	array.string_attributes = {{"crs_wkt",
+	    "GEOGCRS[\"Reduced Gaussian Grid\", DATUM[\"World Geodetic System 1984\", "
+	    "ELLIPSOID[\"WGS 84\",6378137,298.257223563]], CS[ellipsoidal,2], "
+	    "AXIS[\"latitude\",north], AXIS[\"longitude\",east], "
+	    "ANGLEUNIT[\"degree\",0.0174532925199433], "
+	    "USAGE[SCOPE[\"grid\"],BBOX[-90,-180.0,90,180]]]"}};
+	return {std::move(array)};
+}
+
+std::vector<TreeArray> BuildGridN160IdentityArrays() {
+	constexpr std::uint64_t POINT_COUNT = 138346;
+	auto array = MakeGridArray("grids.n160_identity", {"n160_identity", "value"}, {"point"},
+	                           {POINT_COUNT}, {1024}, "grids/gaussian-n160-identity.reference.csv");
+	array.fixture.values.reserve(static_cast<std::size_t>(POINT_COUNT));
+	for (std::uint64_t point = 0; point < POINT_COUNT; point++) {
+		array.fixture.values.push_back(static_cast<float>((point * 17) % 1009));
+	}
+	return {std::move(array)};
+}
+
+std::vector<TreeArray> BuildGridMemoryArrays(bool large) {
+	constexpr std::uint64_t CHUNK = 32;
+	const std::uint64_t side = large ? 1024 : 256;
+	const std::string id = large ? "grids.memory_large" : "grids.memory_small";
+	const std::string name = large ? "memory-large" : "memory-small";
+	auto array = MakeGridArray(id, {"value"}, {"latitude_axis", "longitude_axis"},
+	                           {side, side}, {CHUNK, CHUNK}, "grids/" + name + ".reference.csv");
+	const auto point_count = CheckedProduct(array.fixture.shape);
+	array.fixture.values.reserve(static_cast<std::size_t>(point_count));
+	for (std::uint64_t row = 0; row < side; row++) {
+		for (std::uint64_t column = 0; column < side; column++) {
+			// Every fixed 32x32 chunk has identical values in both objects. This
+			// freezes the same maximum compressed chunk size for the work-peak pair.
+			const auto within_chunk = (row % CHUNK) * CHUNK + (column % CHUNK);
+			array.fixture.values.push_back(static_cast<float>(within_chunk) * 0.25F);
+		}
+	}
+	return {std::move(array)};
+}
+
+std::vector<TreeArray> BuildGaussianWorkArrays(bool large) {
+	constexpr std::uint64_t SMALL_POINTS = 256;
+	constexpr std::uint64_t LARGE_POINTS = 3968;
+	constexpr std::uint64_t CHUNK = 32;
+	const auto point_count = large ? LARGE_POINTS : SMALL_POINTS;
+	const auto id = large ? "grids.gaussian_work_large" : "grids.gaussian_work_small";
+	const auto name = large ? "gaussian-work-large" : "gaussian-work-small";
+	auto array = MakeGridArray(id, {"gaussian_work", "value"}, {"point"}, {point_count}, {CHUNK},
+	                           "grids/" + std::string(name) + ".reference.csv");
+	array.fixture.values.reserve(static_cast<std::size_t>(point_count));
+	for (std::uint64_t point = 0; point < point_count; point++) {
+		// Each 32-point compressed chunk repeats the same sequence in both files.
+		array.fixture.values.push_back(static_cast<float>(point % CHUNK) * 0.25F);
+	}
+	return {std::move(array)};
+}
+
+std::vector<TreeArray> BuildSpatialRelationGaussianArrays() {
+	auto array = MakeGridArray("grids.spatial_relation_gaussian", {"spatial_relations", "gaussian_value"},
+	                           {"point"}, {8}, {4}, "grids/spatial-relations-gaussian.reference.csv");
+	for (std::uint64_t point = 0; point < 8; point++) {
+		array.fixture.values.push_back(static_cast<float>(point));
+	}
+	return {std::move(array)};
+}
+
+std::vector<TreeArray> BuildGridLargeChunkArrays() {
+	constexpr std::uint64_t SIDE = 256;
+	auto array = MakeGridArray("grids.large_chunk", {"large_chunk", "value"},
+	                           {"latitude_axis", "longitude_axis"}, {SIDE, SIDE}, {SIDE, SIDE},
+	                           "grids/large-value-chunk.reference.csv");
+	const auto point_count = CheckedProduct(array.fixture.shape);
+	array.fixture.values.reserve(static_cast<std::size_t>(point_count));
+	for (std::uint64_t point = 0; point < point_count; point++) {
+		array.fixture.values.push_back(static_cast<float>(point) * 0.25F - 8192.0F);
+	}
+	return {std::move(array)};
+}
+
+void WriteGridSampleManifest(const std::filesystem::path &output_directory) {
+	const auto grids_directory = output_directory / "grids";
+	const std::string selection_cases =
+	    "{\n"
+	    "  \"schema_version\": 1,\n"
+	    "  \"classification\": \"synthetic selector stress inputs; not a real grid or source-order oracle\",\n"
+	    "  \"cases\": [\n"
+	    "    {\"id\": \"fragmented_4096\", \"fixture\": \"long-line.om\", \"point_count\": 262145, \"positions\": \"2*i for i in [0,4096)\", \"expected_disjoint_ranges\": 4096},\n"
+	    "    {\"id\": \"fragmented_4097\", \"fixture\": \"long-line.om\", \"point_count\": 262145, \"positions\": \"2*i for i in [0,4097)\", \"expected_disjoint_ranges\": 4097},\n"
+	    "    {\"id\": \"rotated_north_pole\", \"fixture\": null, \"native_only\": true, \"grid\": {\"type\": \"rotated_latlon\", \"nx\": 1, \"ny\": 1, \"x0\": 0, \"y0\": 90, \"dx\": 1, \"dy\": -1, \"north_pole_latitude\": 90, \"north_pole_longitude\": 0, \"rotation\": 0}, \"position\": [0,0], \"expected_coordinate\": [90,0]},\n"
+	    "    {\"id\": \"lambert_cone_apex\", \"fixture\": null, \"native_only\": true, \"grid\": {\"type\": \"lambert_conformal_conic\", \"nx\": 1, \"ny\": 1, \"x0\": 0, \"y0\": 1.8649332100338825, \"dx\": 1, \"dy\": 1, \"longitude_of_false_origin\": 0, \"latitude_of_false_origin\": 0, \"standard_parallel_1\": 45, \"standard_parallel_2\": 45, \"radius_m\": 1}, \"expected_error\": \"InvalidShape\"},\n"
+	    "    {\"id\": \"stereographic_pole_center\", \"fixture\": null, \"native_only\": true, \"grid\": {\"type\": \"stereographic\", \"nx\": 1, \"ny\": 1, \"x0\": 0, \"y0\": 0, \"dx\": 1, \"dy\": 1, \"latitude_of_origin\": 90, \"longitude_of_origin\": 37, \"radius_m\": 6371229, \"scale_factor\": 1}, \"position\": [0,0], \"expected_coordinate\": [90,37]}\n"
+	    "  ]\n"
+	    "}\n";
+	WriteFile(grids_directory / "selection-cases.json",
+	          std::vector<std::uint8_t>(selection_cases.begin(), selection_cases.end()));
+
+	struct FixtureRecord final {
+		const char *id;
+		const char *file;
+		std::vector<std::vector<std::uint64_t>> shapes;
+		std::vector<std::vector<std::uint64_t>> chunks;
+		std::vector<std::string> variables;
+		const char *layout;
+	};
+	const std::vector<FixtureRecord> records = {
+	    {"layouts", "layouts.om", {{3, 4}, {12}, {12}, {2, 3, 2, 4, 2, 2, 2}, {2, 3, 2, 4, 2, 2, 2}},
+	     {{2, 2}, {5}, {5}, {1, 2, 1, 3, 1, 2, 1}, {1, 2, 1, 3, 1, 2, 1}},
+	     {"reverse/value", "flattened_x_fastest/value", "flattened_y_fastest/value",
+	      "interleaved/temperature", "interleaved/humidity"}, "reverse, both flattened orders, five semantic axes, and two aligned variables"},
+	    {"reverse_layout", "reverse.om", {{3, 4}}, {{2, 2}}, {"reverse/value"},
+	     "separate [latitude,longitude] axes with negative source direction"},
+	    {"x_fastest_layout", "x-fastest.om", {{12}}, {{5}}, {"flattened_x_fastest/value"},
+	     "flattened longitude-fastest source order"},
+	    {"y_fastest_layout", "y-fastest.om", {{12}}, {{5}}, {"flattened_y_fastest/value"},
+	     "flattened latitude-fastest source order"},
+	    {"interleaved_axes", "interleaved.om", {{2, 3, 2, 4, 2, 2, 2}, {2, 3, 2, 4, 2, 2, 2}},
+	     {{1, 2, 1, 3, 1, 2, 1}, {1, 2, 1, 3, 1, 2, 1}},
+	     {"interleaved/temperature", "interleaved/humidity"},
+	     "five semantic axes interleaved with two spatial axes and two aligned variables"},
+	    {"unknown_crs", "crs-conflict.om", {{2, 3}}, {{1, 2}}, {"unknown_crs/value"},
+	     "explicit unknown CRS profile is retained and rejected by version-one geographic binding"},
+	    {"gaussian_wgs84_crs", "crs-wgs84-gaussian.om", {{12}}, {{6}}, {"gaussian_wgs84/value"},
+	     "closed WGS84 Reduced Gaussian source profile with axis and angular-unit evidence"},
+	    {"gaussian_n160_identity", "gaussian-n160-identity.om", {{138346}}, {{1024}}, {"n160_identity/value"},
+	     "synthetic point-axis fixture for N160 registered-versus-explicit SQL identity checks"},
+	    {"long_line", "long-line.om", {{1, 262145}}, {{1, 4096}}, {"long_line/value"},
+	     "one scanline larger than four 65536-position selector windows"},
+		{"memory_small", "memory-small.om", {{256, 256}}, {{32, 32}}, {"value"},
+		 "16x baseline for fixed 32x32 chunk, four projected-grid work-memory comparisons"},
+		{"memory_large", "memory-large.om", {{1024, 1024}}, {{32, 32}}, {"value"},
+		 "16x spatial point count with identical 32x32 compressed chunks"},
+	    {"gaussian_work_small", "gaussian-work-small.om", {{256}}, {{32}}, {"gaussian_work/value"},
+	     "reduced-Gaussian work-memory baseline; explicit two-row grid, 256 points"},
+	    {"gaussian_work_large", "gaussian-work-large.om", {{3968}}, {{32}}, {"gaussian_work/value"},
+	     "15.5x reduced-Gaussian spatial point count with the same chunk and narrow output row"},
+	    {"spatial_relation_gaussian", "spatial-relations-gaussian.om", {{8}}, {{4}},
+	     {"spatial_relations/gaussian_value"},
+	     "eight-point synthetic Gaussian source matching the independent full point/polygon relation example"},
+	    {"large_value_chunk", "large-value-chunk.om", {{256, 256}}, {{256, 256}}, {"large_chunk/value"},
+		 "one 256 KiB value chunk for coordinate-only decoder isolation"},
+	};
+	const std::string public_open_meteo_samples = R"json({
+  "registry": {
+    "name": "Open-Meteo AWS Open Data",
+    "repository": "https://github.com/open-meteo/open-data",
+    "commit": "4fd52ad16c417c49bff45fab4bf175e5ea5760f2",
+    "readme_path": "README.md",
+    "readme_sha256": "85c2b2bee77119dfaa7b09ff96fac49bd06b8bb7cbad54e50537fbb7267c75a1",
+    "bucket": "openmeteo",
+    "region": "us-west-2",
+    "registry_url": "https://registry.opendata.aws/open-meteo/",
+    "bucket_explorer_url": "https://openmeteo.s3.amazonaws.com/index.html#data/",
+    "shape_convention": "data/ arrays are [ny,nx,ntime]; data_spatial/ arrays are [ny,nx]"
+  },
+  "coverage": {
+    "status": "four_grid_family_samples_acquired; required_target_coordinates_and_values_not_validated",
+    "required": ["rotated_v3", "lambert_v3", "stereographic_v3", "gaussian_n160_v3", "gaussian_n320_v3", "gaussian_n320_region_v3"],
+    "acquired_metadata_checked": ["rotated_v3", "lambert_v3", "stereographic_v3", "gaussian_o1280_supplemental", "gaussian_hres_o1280_timeseries_supplemental"],
+    "not_acquired": [
+      {"id":"gaussian_n160_v3","reason":"No matching N160 OM v3 sample was found in the audited public prefixes; current ECMWF SEAS5 metadata identifies O320, not N160."},
+      {"id":"gaussian_n320_v3","reason":"No full-grid N320 producer object is fixed in the pinned source; current public ECMWF IFS metadata identifies O1280 and SEAS5/EC46 metadata identifies O320."},
+      {"id":"gaussian_n320_region_v3","reason":"Public ecmwf_aifs025_ensemble objects exist, but their current metadata identifies WGS 84 world coverage; the exact ecmwf_aifs_europe_ensemble prefixes are empty and no matching N320 Gaussian-region object was found."}
+    ],
+    "coordinate_reference": "not-run_for_required_target_grids",
+    "official_value_decode_reference": "partial_supplemental_o1280_only; see test/data/grids/value-reference-manifest.json",
+    "spatial_read_benefit": "not-run",
+    "signed_s3_authorization_and_server_audit": "not-run; public anonymous bucket access is not a substitute"
+  },
+  "objects": [
+    {
+      "id":"rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+      "grid_definition_id":"gem_rdps_10km",
+      "classification":"real_public_open_meteo_om_v3",
+      "source_object":{"s3_uri":"s3://openmeteo/data/cmc_gem_rdps_10km/cape/chunk_4337.om","https_url":"https://openmeteo.s3.us-west-2.amazonaws.com/data/cmc_gem_rdps_10km/cape/chunk_4337.om","key":"data/cmc_gem_rdps_10km/cape/chunk_4337.om","public_read":true,"version_id":null,"etag":"\"a8983c4d6c56028dd1e3e7aa34ca8b36-9\"","last_modified":"2026-06-01T10:05:30Z"},
+      "size_bytes":68016448,
+      "sha256":"3db637197d27c65051e417b850f8c3656d1c5371ab78dcbd9fc05d0e440956f7",
+      "format_version":3,
+      "external_variable":"cape",
+      "array":{"variable_path":"/","shape":[1045,1140,114],"chunk_shape":[1,26,114],"axes":["latitude","longitude","time"],"axes_embedded_in_array_metadata":false,"axis_order_evidence":"pinned open-meteo/open-data README [ny,nx,ntime] convention"},
+      "grid_source":{"repository":"https://github.com/open-meteo/open-meteo","commit":"b06f4760fd1f997e5559bb380f64c5e496b4a509","path":"Sources/App/Gem/GemDomain.swift"},
+      "metadata_validation":"OM v3 header/trailer and root array validated with the official OM C metadata API; DuckDB binding accepts the local object; full value decode and coordinate comparison not-run",
+      "local_copy":{"path":"build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om","fetch_command":"python3 scripts/fetch-openmeteo-grid-samples.py"},
+      "remote_identity":"No S3 VersionId; multipart ETag is not a content hash. SHA-256 pins the downloaded local bytes; remote identity remains weak."
+    },
+    {
+      "id":"stereographic_cmc_gem_rdps_cape_chunk_4337",
+      "grid_definition_id":"gem_regional",
+      "classification":"real_public_open_meteo_om_v3",
+      "source_object":{"s3_uri":"s3://openmeteo/data/cmc_gem_rdps/cape/chunk_4337.om","https_url":"https://openmeteo.s3.us-west-2.amazonaws.com/data/cmc_gem_rdps/cape/chunk_4337.om","key":"data/cmc_gem_rdps/cape/chunk_4337.om","public_read":true,"version_id":null,"etag":"\"41caf313c49cbcddf586d29ca251e8b0-3\"","last_modified":"2026-05-26T10:02:24Z"},
+      "size_bytes":23835720,
+      "sha256":"1d701b188c8c264532f0d8fa917400a66cf28aa1c8e53a7b40781a775333c7c1",
+      "format_version":3,
+      "external_variable":"cape",
+      "array":{"variable_path":"/","shape":[824,935,114],"chunk_shape":[1,26,114],"axes":["latitude","longitude","time"],"axes_embedded_in_array_metadata":false,"axis_order_evidence":"pinned open-meteo/open-data README [ny,nx,ntime] convention"},
+      "grid_source":{"repository":"https://github.com/open-meteo/open-meteo","commit":"b06f4760fd1f997e5559bb380f64c5e496b4a509","path":"Sources/App/Gem/GemDomain.swift"},
+      "metadata_validation":"OM v3 header/trailer and root array validated with the official OM C metadata API; DuckDB binding accepts the local object; full value decode and coordinate comparison not-run",
+      "local_copy":{"path":"build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.om","fetch_command":"python3 scripts/fetch-openmeteo-grid-samples.py"},
+      "remote_identity":"No S3 VersionId; multipart ETag is not a content hash. SHA-256 pins the downloaded local bytes; remote identity remains weak."
+    },
+    {
+      "id":"lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+      "grid_definition_id":"aladin_central_europe_2km",
+      "classification":"real_public_open_meteo_om_v3",
+      "source_object":{"s3_uri":"s3://openmeteo/data/chmi_aladin_central_europe_2km/cape/chunk_4135.om","https_url":"https://openmeteo.s3.us-west-2.amazonaws.com/data/chmi_aladin_central_europe_2km/cape/chunk_4135.om","key":"data/chmi_aladin_central_europe_2km/cape/chunk_4135.om","public_read":true,"version_id":null,"etag":"\"fc8408a0e10f2d569522dc95848781c9-6\"","last_modified":"2026-08-14T22:50:39Z"},
+      "size_bytes":48727672,
+      "sha256":"cef407b0aae43498485b8f6e25907c1ecf8a82c6cb8aa2185fe860f0c491132c",
+      "format_version":3,
+      "external_variable":"cape",
+      "array":{"variable_path":"/","shape":[837,1053,120],"chunk_shape":[1,25,120],"axes":["latitude","longitude","time"],"axes_embedded_in_array_metadata":false,"axis_order_evidence":"pinned open-meteo/open-data README [ny,nx,ntime] convention"},
+      "grid_source":{"repository":"https://github.com/open-meteo/open-meteo","commit":"b06f4760fd1f997e5559bb380f64c5e496b4a509","path":"Sources/App/Chmi/ChmiDomain.swift"},
+      "metadata_validation":"OM v3 header/trailer and root array validated with the official OM C metadata API; DuckDB binding accepts the local object; full value decode and coordinate comparison not-run",
+      "local_copy":{"path":"build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om","fetch_command":"python3 scripts/fetch-openmeteo-grid-samples.py"},
+      "remote_identity":"No S3 VersionId; multipart ETag is not a content hash. SHA-256 pins the downloaded local bytes; remote identity remains weak."
+    },
+    {
+      "id":"ecmwf_ifs_static_hsurf_reduced_gaussian_o1280",
+      "grid_definition_id":null,
+      "scope":"supplemental_gaussian_family_example; O1280 is not the required N160/N320/N-region and O/F grids are excluded from 004 acceptance",
+      "classification":"real_public_open_meteo_om_v3",
+      "source_object":{"s3_uri":"s3://openmeteo/data/ecmwf_ifs/static/HSURF.om","https_url":"https://openmeteo.s3.us-west-2.amazonaws.com/data/ecmwf_ifs/static/HSURF.om","key":"data/ecmwf_ifs/static/HSURF.om","public_read":true,"version_id":null,"etag":"\"91286afefb256fd70a8e34b18fd4ddf7\"","last_modified":"2025-10-21T09:36:01Z"},
+      "size_bytes":2482560,
+      "sha256":"2e8279f8bd12052ba5be5a0bcba2293dc4316097e434d6691f9e6711249e1fd3",
+      "format_version":3,
+      "external_variable":"HSURF",
+      "array":{"variable_path":"/","shape":[1,6599680],"chunk_shape":[1,400],"axes":null,"axes_embedded_in_array_metadata":false,"mapping_status":"not mapped; do not infer O1280 point order from shape"},
+      "grid_metadata_object":{"s3_uri":"s3://openmeteo/data/ecmwf_ifs/static/meta.json","sha256":"c8dd4aa8e6eb07e1708742fc0e28e23e2516857ca156f55596e97bad65d86bd0","size_bytes":658,"last_modified":"2026-10-06T06:50:24Z","etag":"\"203586194241279275a8cff6dcbb54fb\"","crs_wkt_remark":"Reduced Gaussian Grid O1280 (ECMWF)"},
+      "metadata_validation":"OM v3 header/trailer and root array validated; Open-Meteo WKT metadata identifies O1280; the full value array matches an official OM C API decode by logical index; O1280 row/point mapping and coordinates remain not-run",
+      "full_value_reference":{"manifest":"test/data/grids/value-reference-manifest.json","official_csv":"build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.official-reference.csv","official_csv_sha256":"083300d4593e326236b76dfb2d55485058fdbf360a27bfab6a04a64d01eab91a","duckomo_csv":"build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.duckomo-output.csv","duckomo_csv_sha256":"558dcb725586cb638bf129c2666c2c06be7f651bd0808e159f71ae095c9201be","positions_compared":6599680,"mismatches":0},
+      "local_copy":{"path":"build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.om","fetch_command":"python3 scripts/fetch-openmeteo-grid-samples.py"},
+      "remote_identity":"No S3 VersionId; SHA-256 pins the downloaded local bytes. This sample is supplemental Gaussian-family evidence and does not satisfy N160/N320/N-region requirements."
+    },
+    {
+      "id":"ecmwf_ifs_hres_temperature_2m_chunk_817_o1280_supplemental",
+      "grid_definition_id":null,
+      "scope":"supplemental_real_hres_timeseries; ECMWF IFS HRES O1280 is a reduced Gaussian grid but not the required N160/N320/N-region",
+      "classification":"real_public_open_meteo_om_v3",
+      "source_object":{"s3_uri":"s3://openmeteo/data/ecmwf_ifs/temperature_2m/chunk_817.om","https_url":"https://openmeteo.s3.us-west-2.amazonaws.com/data/ecmwf_ifs/temperature_2m/chunk_817.om","key":"data/ecmwf_ifs/temperature_2m/chunk_817.om","public_read":true,"version_id":null,"etag":"\"8aacc014058aca39a7a1ae9800fbef58-43\"","last_modified":"2025-04-03T01:11:58Z"},
+      "size_bytes":353999720,
+      "sha256":"483dd0be2096d3e3fff6731509400f97591ebcfc237a941a37460f42a7a10e7f",
+      "format_version":3,
+      "external_variable":"temperature_2m",
+      "array":{"variable_path":"/","shape":[1,6599680,504],"chunk_shape":[1,6,504],"axes":null,"axes_embedded_in_array_metadata":false,"mapping_status":"OM metadata shape/chunks checked; axis semantics and O1280 row/point order not mapped"},
+      "grid_metadata_object":{"s3_uri":"s3://openmeteo/data/ecmwf_ifs/static/meta.json","sha256":"c8dd4aa8e6eb07e1708742fc0e28e23e2516857ca156f55596e97bad65d86bd0","size_bytes":658,"last_modified":"2026-10-06T06:50:24Z","etag":"\"203586194241279275a8cff6dcbb54fb\"","crs_wkt_remark":"Reduced Gaussian Grid O1280 (ECMWF); WGS84 ellipsoid 6378137/298.257223563"},
+      "metadata_validation":"OM v3 header/trailer and root array metadata validated with official OM C API: shape [1,6599680,504], chunks [1,6,504]; DuckDB read_om binds as value FLOAT; no value decode, coordinate, or axis-order reference claimed",
+      "local_copy":{"path":"build/s3-samples/openmeteo-v3/ecmwf-ifs-temperature-2m-chunk-817.om","fetch_command":"python3 scripts/fetch-openmeteo-grid-samples.py"},
+      "remote_identity":"No S3 VersionId; multipart ETag is not a content hash. SHA-256 pins the downloaded local bytes; remote identity remains weak."
+    }
+  ]
+})json";
+	std::ostringstream manifest;
+	manifest.imbue(std::locale::classic());
+	manifest << "{\n"
+	         << "  \"schema_version\": 1,\n"
+	         << "  \"classification\": \"synthetic_fixtures_plus_public_real_samples\",\n"
+	         << "  \"fixture_classification\": \"synthetic_only\",\n"
+	         << "  \"generated_by\": \"duckomo_fixture_tool --output\",\n"
+	         << "  \"om_format_version\": 3,\n"
+	         << "  \"oracle\": \"fixed OM C API full-array decode; generated values are not producer data\",\n"
+	         << "  \"real_sample_coverage\": {\"status\": \"four_grid_family_samples_frozen; required_n_grid_coordinates_and_values_not_validated\", \"required\": [\"rotated_v3\", \"lambert_v3\", \"stereographic_v3\", \"gaussian_n160_v3\", \"gaussian_n320_v3\", \"gaussian_n320_region_v3\"], \"acquired_metadata_checked\": [\"rotated_v3\", \"lambert_v3\", \"stereographic_v3\", \"gaussian_o1280_supplemental\", \"gaussian_hres_o1280_timeseries_supplemental\"], \"family_samples\": {\"rotated_latlon\": \"rotated_cmc_gem_rdps_10km_cape_chunk_4337\", \"lambert_conformal_conic\": \"lambert_chmi_aladin_central_europe_2km_cape_chunk_4135\", \"stereographic\": \"stereographic_cmc_gem_rdps_cape_chunk_4337\", \"reduced_gaussian\": \"ecmwf_ifs_hres_temperature_2m_chunk_817_o1280_supplemental\"}, \"required_gaussian_coverage\": {\"n160\": \"not-run: no matching native OM v3 object\", \"n320_full\": \"not-run: O1280 HRES is a different grid identity\", \"n320_region\": \"not-run: public AIFS product is WGS84 world grid; N320 local-to-parent order absent\"}, \"skip_block_candidates\": [\"rotated_cmc_gem_rdps_10km_cape_chunk_4337\", \"stereographic_cmc_gem_rdps_cape_chunk_4337\", \"lambert_chmi_aladin_central_europe_2km_cape_chunk_4135\", \"ecmwf_ifs_static_hsurf_reduced_gaussian_o1280\"], \"skip_block_performance\": \"not-run; candidate chunks are frozen but spatial mapping/cold full-local comparison is incomplete\", \"supplemental_out_of_scope\": [\"ecmwf_ifs_static_hsurf_reduced_gaussian_o1280\", \"ecmwf_ifs_hres_temperature_2m_chunk_817_o1280_supplemental\"], \"coordinate_reference\": \"not-run_for_required_target_grids\", \"official_value_decode_reference\": \"partial_supplemental_o1280_only; see test/data/grids/value-reference-manifest.json\"},\n"
+	         << "  \"public_open_meteo_samples\": " << public_open_meteo_samples << ",\n"
+	         << "  \"fixtures\": [\n";
+	for (std::size_t index = 0; index < records.size(); index++) {
+		const auto &record = records[index];
+		const auto file_bytes = ReadFile(grids_directory / record.file);
+		manifest << "    {\"id\": \"" << JsonEscape(record.id) << "\", \"path\": \"" << JsonEscape(record.file)
+		         << "\", \"sha256\": \"" << Sha256Hex(file_bytes) << "\", \"size_bytes\": " << file_bytes.size()
+		         << ", \"grid_kind\": \"synthetic_layout_input\", \"description\": \"" << JsonEscape(record.layout)
+		         << "\", \"variables\": [";
+		for (std::size_t variable_index = 0; variable_index < record.variables.size(); variable_index++) {
+			if (variable_index != 0) manifest << ", ";
+			manifest << "{\"path\": \"/" << JsonEscape(record.variables[variable_index]) << "\", \"shape\": "
+			         << JsonNumberArray(record.shapes[variable_index]) << ", \"chunk_shape\": "
+			         << JsonNumberArray(record.chunks[variable_index]) << "}";
+		}
+		manifest << "]}" << (index + 1 == records.size() ? "\n" : ",\n");
+	}
+	const auto selection_bytes = ReadFile(grids_directory / "selection-cases.json");
+	manifest << "  ],\n"
+	         << "  \"selection_cases\": {\"path\": \"selection-cases.json\", \"sha256\": \""
+	         << Sha256Hex(selection_bytes) << "\", \"size_bytes\": " << selection_bytes.size()
+	         << ", \"scope\": \"synthetic selector inputs; pole/singularity vectors are native-only\"},\n"
+	         << "  \"coordinate_reference\": null,\n"
+	         << "  \"value_reference\": \"per-fixture CSVs in the enclosing test/data/manifest.json\",\n"
+	         << "  \"limitations\": [\"real public samples are metadata-checked only; independent coordinate and official full-value references remain not-run\", "
+	            "\"public ECMWF IFS metadata identifies an O1280 Gaussian sample, which cannot substitute for required N160/N320/N320-region samples\", "
+	            "\"public anonymous S3 access does not satisfy signed-S3 authorization or server-audit gates\", "
+	            "\"synthetic fixtures do not satisfy real-sample acceptance\", "
+	            "\"selection-case position formulas do not prove SQL candidate completeness\"]\n"
+	         << "}\n";
+	const auto text = manifest.str();
+	WriteFile(grids_directory / "sample-manifest.json", std::vector<std::uint8_t>(text.begin(), text.end()));
+}
+
+void GenerateGridTreeFixture(const std::filesystem::path &output_directory, const std::string &file_name,
+	                         std::vector<TreeArray> &arrays) {
+	const auto bytes = EncodeTreeFile(arrays);
+	const auto path = output_directory / file_name;
+	WriteFile(path, bytes);
+	const auto decoded = DecodeTreeFile(path);
+	Require(decoded.size() == arrays.size(), "official grid fixture oracle returned the wrong array count for " + file_name);
+	for (const auto &array : arrays) {
+		const auto variable_path = CanonicalVariablePath(array.segments);
+		const auto &reference = FindDecodedVariable(decoded, variable_path);
+		Require(reference.shape == array.fixture.shape && reference.chunks == array.fixture.chunks,
+		        "official grid fixture oracle returned different metadata for " + variable_path);
+		RequireExactRoundtrip(array.fixture, reference.values);
+		const auto reference_path = output_directory / array.reference_name;
+		WriteReferenceCsv(reference_path, reference.values);
+		const auto reference_bytes = ReadFile(reference_path);
+		std::cout << "generated " << file_name << " variable=" << variable_path
+		          << " shape=" << JsonNumberArray(reference.shape)
+		          << " chunks=" << JsonNumberArray(reference.chunks)
+		          << " rows=" << reference.values.size()
+		          << " oracle=passed csv_sha256=" << Sha256Hex(reference_bytes) << '\n';
+	}
+	std::cout << "generated " << file_name << " variables=" << arrays.size()
+	          << " oracle=passed sha256=" << Sha256Hex(bytes) << '\n';
+}
+
 void Generate(const std::filesystem::path &output_directory) {
 	std::filesystem::create_directories(output_directory);
 	auto fixtures = BuildInitialFixtures();
@@ -1651,6 +2099,12 @@ void Generate(const std::filesystem::path &output_directory) {
 		std::cout << "generated spatial_conflict.om variable=" << variable_path << " rows=" << decoded.values.size()
 		          << " oracle=passed sha256=" << Sha256Hex(spatial_conflict_bytes) << '\n';
 	}
+
+	auto source_conflict_arrays = BuildSourceConflictArrays();
+	GenerateGridTreeFixture(output_directory, "source-conflict.om", source_conflict_arrays);
+	const auto source_conflict_decoded = DecodeTreeFile(output_directory / "source-conflict.om");
+	Require(source_conflict_decoded.size() == source_conflict_arrays.size(),
+	        "official oracle returned the wrong source-conflict fixture array count");
 
 	auto pfor_arrays = BuildPforAttributeArrays();
 	const auto pfor_bytes = EncodeTreeFile(pfor_arrays);
@@ -1714,9 +2168,56 @@ void Generate(const std::filesystem::path &output_directory) {
 	Require(projection_arrays.front().fixture.shape[0] != projection_arrays.front().fixture.shape[1],
 	        "projection fixture must use a non-square shape");
 
+	const auto grid_output_directory = output_directory / "grids";
+	std::filesystem::create_directories(grid_output_directory);
+	auto grid_layout_arrays = BuildGridLayoutArrays();
+	GenerateGridTreeFixture(output_directory, "grids/layouts.om", grid_layout_arrays);
+	std::vector<TreeArray> reverse_layout_arrays{grid_layout_arrays.at(0)};
+	std::vector<TreeArray> x_fastest_layout_arrays{grid_layout_arrays.at(1)};
+	std::vector<TreeArray> y_fastest_layout_arrays{grid_layout_arrays.at(2)};
+	std::vector<TreeArray> interleaved_layout_arrays{grid_layout_arrays.at(3), grid_layout_arrays.at(4)};
+	GenerateGridTreeFixture(output_directory, "grids/reverse.om", reverse_layout_arrays);
+	GenerateGridTreeFixture(output_directory, "grids/x-fastest.om", x_fastest_layout_arrays);
+	GenerateGridTreeFixture(output_directory, "grids/y-fastest.om", y_fastest_layout_arrays);
+	GenerateGridTreeFixture(output_directory, "grids/interleaved.om", interleaved_layout_arrays);
+	auto grid_unknown_crs_arrays = BuildGridUnknownCrsArrays();
+	GenerateGridTreeFixture(output_directory, "grids/crs-conflict.om", grid_unknown_crs_arrays);
+	auto grid_gaussian_wgs84_crs_arrays = BuildGridGaussianWgs84CrsArrays();
+	GenerateGridTreeFixture(output_directory, "grids/crs-wgs84-gaussian.om", grid_gaussian_wgs84_crs_arrays);
+	auto grid_n160_identity_arrays = BuildGridN160IdentityArrays();
+	GenerateGridTreeFixture(output_directory, "grids/gaussian-n160-identity.om", grid_n160_identity_arrays);
+	auto grid_long_line_arrays = BuildGridLongLineArrays();
+	GenerateGridTreeFixture(output_directory, "grids/long-line.om", grid_long_line_arrays);
+	auto grid_memory_small_arrays = BuildGridMemoryArrays(false);
+	GenerateGridTreeFixture(output_directory, "grids/memory-small.om", grid_memory_small_arrays);
+	auto grid_memory_large_arrays = BuildGridMemoryArrays(true);
+	GenerateGridTreeFixture(output_directory, "grids/memory-large.om", grid_memory_large_arrays);
+	auto grid_gaussian_work_small_arrays = BuildGaussianWorkArrays(false);
+	GenerateGridTreeFixture(output_directory, "grids/gaussian-work-small.om", grid_gaussian_work_small_arrays);
+	auto grid_gaussian_work_large_arrays = BuildGaussianWorkArrays(true);
+	GenerateGridTreeFixture(output_directory, "grids/gaussian-work-large.om", grid_gaussian_work_large_arrays);
+	auto grid_spatial_relation_gaussian_arrays = BuildSpatialRelationGaussianArrays();
+	GenerateGridTreeFixture(output_directory, "grids/spatial-relations-gaussian.om",
+	                        grid_spatial_relation_gaussian_arrays);
+	auto grid_large_chunk_arrays = BuildGridLargeChunkArrays();
+	GenerateGridTreeFixture(output_directory, "grids/large-value-chunk.om", grid_large_chunk_arrays);
+	Require(CheckedProduct(grid_memory_large_arrays.front().fixture.shape) >=
+	            10 * CheckedProduct(grid_memory_small_arrays.front().fixture.shape),
+	        "grid memory comparison must expand by at least 10x points");
+	Require(grid_memory_large_arrays.front().fixture.chunks == grid_memory_small_arrays.front().fixture.chunks,
+	        "grid memory comparison must use matching chunk shapes");
+	Require(CheckedProduct(grid_gaussian_work_large_arrays.front().fixture.shape) >=
+	            10 * CheckedProduct(grid_gaussian_work_small_arrays.front().fixture.shape),
+	        "Gaussian work-memory comparison must expand by at least 10x spatial points");
+	Require(grid_gaussian_work_large_arrays.front().fixture.chunks ==
+	            grid_gaussian_work_small_arrays.front().fixture.chunks,
+	        "Gaussian work-memory comparison must use matching chunk shapes");
+	WriteGridSampleManifest(output_directory);
+
 	const auto negative_assets = GenerateNegativeAssets(output_directory, multi_path, nested_path);
 	WriteManifest(output_directory, fixtures, multi_arrays, multi_decoded, spatial_conflict_arrays,
-	              spatial_conflict_decoded, pfor_arrays, pfor_decoded,
+	              spatial_conflict_decoded, source_conflict_arrays, source_conflict_decoded,
+	              pfor_arrays, pfor_decoded,
 	              nested_arrays, nested_decoded,
 	              projection_arrays, projection_decoded, negative_assets);
 }
@@ -1726,7 +2227,7 @@ void PrintUsage(std::ostream &output) {
 	       << "  duckomo_fixture_tool --output DIR\n"
 	       << "  duckomo_fixture_tool --oracle INPUT.om --csv REFERENCE.csv\n"
 	       << "  duckomo_fixture_tool --oracle-prefix INPUT.om --variable /PATH --count N --csv REFERENCE.csv\n"
-	       << "\n--output generates raw.om, special.om, raw_large.om, spatial_flat.om, spatial_axes.om, spatial_single.om, spatial_conflict.om, multi.om, pfor_attributes.om, nested.om, projection.om, their oracle CSV files, "
+	       << "\n--output generates raw.om, special.om, raw_large.om, spatial_flat.om, spatial_axes.om, spatial_single.om, spatial_conflict.om, source-conflict.om, multi.om, pfor_attributes.om, nested.om, projection.om, grids/layouts.om and per-layout grid OM files, grids/long-line.om, fixed-chunk projected and Gaussian memory pairs, their oracle CSV files, "
 	          "negative mutation assets, and manifest.json.\n"
 	       << "--oracle runs the independent fixed official OM reader over a full root array and exports index,value CSV.\n";
 }

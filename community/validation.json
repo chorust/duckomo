@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "recorded_date": "2026-10-08",
+  "scope": "Community registration and build integration preparation",
+  "status": "local-checks-pass",
+  "community_registration": "not-submitted",
+  "community_github_ci": "not-run",
+  "community_signed_install": "not-run",
+  "public_source_ref": "pending source commit and push; description.yml.in intentionally contains a placeholder",
+  "independent_reproduction": "not-run (existing R21 condition)",
+  "full_grid_acceptance": "not-run (existing 004 gaps remain)",
+  "host": {
+    "system": "Linux",
+    "machine": "aarch64",
+    "libc": "glibc 2.39"
+  },
+  "upstream": {
+    "community_extensions": "cce4b98b34256fc465d259153049fa5b557e1758",
+    "extension_ci_tools": "3fd6109fc01555673b7c7123eba8d0d143fe8ce4",
+    "latest_stable": "v1.5.6"
+  },
+  "selected_platforms": {
+    "include": [
+      {
+        "duckdb_arch": "linux_arm64"
+      }
+    ]
+  },
+  "workspace_source_sha256_at_recording": "3516b09b09c94a5061faa7d9b65e5bcddb026fe7d63509eaf6487caf4755998d",
+  "configuration_hashes": {
+    "Makefile": "b37e63982db39470fc337cc401c4f0aa88effbba1a892a57d2dc87a50335311a",
+    "CMakeLists.txt": "1a6ecd5e35b14f95c3bf7b12880b8ad5cd3bcad151077dfde38dd88b187d3143",
+    "extension_config.cmake": "ae0f1f713ebb9572b2e86db841461f955fcf0c50521e94302afe03377d0435e3",
+    "vcpkg.json": "ab6d9be2bbf86f2f23481935f85214c71432175ce414f02f5169ed2d4f204287",
+    ".github/workflows/community-build.yml": "ffec515ca145917e4234bb67a59d60b777c18c1022bc4a0d989f4347e53047c0",
+    "community/duckomo/description.yml.in": "b28109670aa2d39eea34adbf20c4dc696010c5e948295621ccd03f7b78240a82",
+    "scripts/version_matrix.py": "dfed986d4730511c09fc34e54c9e95bfa0f2e943621712ccca949f36c09ec62b",
+    "scripts/verify-community-artifact.py": "714281751c27d891b04610edd68a63e4ad38740c5dcecd4c7302e3b7196ba260"
+  },
+  "checks": {
+    "upstream_descriptor_parser": "pass (old HEAD used only as parsing sample, not submission ref)",
+    "upstream_workflow_inputs": "pass",
+    "platform_filter": "pass: only linux_arm64",
+    "three_make_version_flags": "pass",
+    "version_matrix_tool_tests": "pass: 7 tests",
+    "compressed_audit_manifest_hashes": "pass: 9 files retained under ignored build/",
+    "source_extension_binaries_and_gzip": "absent",
+    "local_vcpkg_manifest_configure": {
+      "status": "pass",
+      "scope": "empty dependency manifest and standard toolchain configuration",
+      "local_toolchain_commit": "e06564091c10e0b042900800c9fd48aad7f00643",
+      "community_toolchain_build": "not-run"
+    }
+  },
+  "previous_build_runtime_smoke": [
+    {
+      "version": "v1.5.4",
+      "platform": "linux_arm64",
+      "status": "pass",
+      "checks": [
+        "local raw fixture: 6 rows, sum 15",
+        "official HTTPFS: selected HTTP/local values match (4 rows)"
+      ],
+      "signed_community_install": "not-run (local/CI verification uses -unsigned)",
+      "runtime_version": "v1.5.4 (Variegata) 08e34c447b",
+      "artifact_hashes": {
+        "duckdb": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+        "httpfs": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+        "extension": "c7d739397bc5e3a5257688be87ae6b5de0b239a01ca6aef5412fd9d529d68516"
+      },
+      "http_audit": {
+        "scope": "service sent bytes",
+        "sent_bytes": 5058,
+        "object_bytes": 31624,
+        "requests": 18
+      },
+      "artifact_origin": "previously frozen official HTTPFS refactor build; no new community CI build claimed"
+    },
+    {
+      "version": "v1.5.5",
+      "platform": "linux_arm64",
+      "status": "pass",
+      "checks": [
+        "local raw fixture: 6 rows, sum 15",
+        "official HTTPFS: selected HTTP/local values match (4 rows)"
+      ],
+      "signed_community_install": "not-run (local/CI verification uses -unsigned)",
+      "runtime_version": "v1.5.5 (Variegata) d8cdaa33fd",
+      "artifact_hashes": {
+        "duckdb": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+        "httpfs": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+        "extension": "707da08c1c3209316e51ced89406c35cd92496441429c10ab46fc6a5fab4a0ff"
+      },
+      "http_audit": {
+        "scope": "service sent bytes",
+        "sent_bytes": 5058,
+        "object_bytes": 31624,
+        "requests": 18
+      },
+      "artifact_origin": "previously frozen official HTTPFS refactor build; no new community CI build claimed"
+    },
+    {
+      "version": "v1.5.6",
+      "platform": "linux_arm64",
+      "status": "pass",
+      "checks": [
+        "local raw fixture: 6 rows, sum 15",
+        "official HTTPFS: selected HTTP/local values match (4 rows)"
+      ],
+      "signed_community_install": "not-run (local/CI verification uses -unsigned)",
+      "runtime_version": "v1.5.6 (Variegata) 069cc9f9b5",
+      "artifact_hashes": {
+        "duckdb": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+        "httpfs": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+        "extension": "01b9ecbb47a9aeed1f6e7c2d24f5e868200a0aab3fefa818063d6f90f211f178"
+      },
+      "http_audit": {
+        "scope": "service sent bytes",
+        "sent_bytes": 5058,
+        "object_bytes": 31624,
+        "requests": 18
+      },
+      "artifact_origin": "previously frozen official HTTPFS refactor build; no new community CI build claimed"
+    }
+  ],
+  "production_v1_5_6": {
+    "version": "v1.5.6",
+    "platform": "linux_arm64",
+    "status": "pass",
+    "checks": [
+      "local raw fixture: 6 rows, sum 15",
+      "official HTTPFS: selected HTTP/local values match (4 rows)"
+    ],
+    "signed_community_install": "not-run (local/CI verification uses -unsigned)",
+    "runtime_version": "v1.5.6 (Variegata) 069cc9f9b5",
+    "artifact_hashes": {
+      "duckdb": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+      "httpfs": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+      "extension": "359d38eeec08f21c08dfcd8d8f1781eeefb129777998d50a7af88b9d56b7700a"
+    },
+    "http_audit": {
+      "scope": "service sent bytes",
+      "sent_bytes": 5058,
+      "object_bytes": 31624,
+      "requests": 18
+    },
+    "artifact_origin": "fresh local Linux AArch64 production CMake build, static DuckDB linkage, developer tools disabled"
+  },
+  "local_logs": "build/community-preparation",
+  "commands": [
+    "python3 test/tools/version_matrix_test.py",
+    "cmake -S build/official-matrix/v1.5.6/source/duckdb -B build/community-preparation/production-v1.5.6 -DDUCKDB_EXTENSION_CONFIGS=$PWD/extension_config.cmake -DOVERRIDE_GIT_DESCRIBE=v1.5.6 -DCMAKE_BUILD_TYPE=Release -DBUILD_UNITTESTS=TRUE -DBUILD_SHELL=FALSE -DNATIVE_ARCH=FALSE -DENABLE_UNITTEST_CPP_TESTS=FALSE -DDUCKDB_EXPLICIT_PLATFORM=linux_arm64 -DDUCKOMO_BUILD_DEVELOPER_TOOLS=OFF",
+    "cmake --build build/community-preparation/production-v1.5.6 --target duckomo_loadable_extension --parallel 16",
+    "python3 scripts/verify-community-artifact.py --version v1.5.6 --duckdb build/official-matrix/v1.5.6/official/duckdb --httpfs build/official-matrix/v1.5.6/official/httpfs.duckdb_extension --extension build/community-preparation/production-v1.5.6/extension/duckomo/duckomo.duckdb_extension --output build/community-preparation/production-v1.5.6-runtime.json"
+  ]
+}

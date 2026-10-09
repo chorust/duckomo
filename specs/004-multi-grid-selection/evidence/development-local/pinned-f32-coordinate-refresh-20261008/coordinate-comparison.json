@@ -1,0 +1,81 @@
+{
+  "actual_output_run_manifest": {
+    "build_scope": "development-local; not a fixed matrix pair",
+    "path": "build/evidence-h1-dev-20261007-continue3/h1-reference-checks/manifest.json",
+    "sha256": "932fe2617c271901fe6c994e27c30e8f50dd124b2c91b4f68b8f7d81cfe4b937"
+  },
+  "comparison_method": "scripts/compare-grid-sample-references.py compare_coordinates",
+  "comparison_tool_sha256": "fd8129d81bf3a2c17ed844a76d2c7cec49d4f1a579d4cee59c0c2da2027d8d99",
+  "coordinate_reference_manifest_sha256": "47712d94197d708b7ef1d48a4679d4eb5a38aecc324cc95d60d7b613314d33c7",
+  "coordinate_tolerance_degrees": 0.0001,
+  "environment": {
+    "libc": "glibc 2.39",
+    "machine": "aarch64"
+  },
+  "full_h1_status": "not-run",
+  "missing_coordinate_targets": [
+    "gaussian_n160_v3",
+    "gaussian_n320_v3",
+    "gaussian_n320_region_v3"
+  ],
+  "results": [
+    {
+      "actual": {
+        "path": "build/evidence-h1-dev-20261007-continue3/h1-reference-checks/rotated_cmc_gem_rdps_10km_cape_chunk_4337.duckomo-coordinates.csv",
+        "sha256": "4bcc8dc8fccbb98fe3716e36f95584829b827090c519724a08d45f439dc8211a"
+      },
+      "maximum_error_degrees": 1.52587890625e-05,
+      "positions_over_tolerance": 0,
+      "reference": {
+        "path": "build/grid-references/pinned-producer-f32-20261008/rotated-cmc-gem-rdps-10km-cape-chunk-4337.coordinates.csv",
+        "sha256": "be2598b5dd60b80248d58ee9f215732eafb8dd133e8305997cec90506e382552"
+      },
+      "rows_compared": 1191300,
+      "sample_id": "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+      "status": "pass",
+      "target": "rotated_v3",
+      "tolerance_degrees": 0.0001,
+      "worst_spatial_index": 0
+    },
+    {
+      "actual": {
+        "path": "build/evidence-h1-dev-20261007-continue3/h1-reference-checks/lambert_chmi_aladin_central_europe_2km_cape_chunk_4135.duckomo-coordinates.csv",
+        "sha256": "0b6bb06d3c3918030741546f12f89613de26d410a9755ed7165b4a2b3e59946d"
+      },
+      "maximum_error_degrees": 1.52587890625e-05,
+      "positions_over_tolerance": 0,
+      "reference": {
+        "path": "build/grid-references/pinned-producer-f32-20261008/lambert-chmi-aladin-ce-cape-chunk-4135.coordinates.csv",
+        "sha256": "c9aebe8aa88a2ce11e3c7789be475b6051c90ebfeece7f2e5412bbfc2dbff719"
+      },
+      "rows_compared": 881361,
+      "sample_id": "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135",
+      "status": "pass",
+      "target": "lambert_v3",
+      "tolerance_degrees": 0.0001,
+      "worst_spatial_index": 60
+    },
+    {
+      "actual": {
+        "path": "build/evidence-h1-dev-20261007-continue3/h1-reference-checks/stereographic_cmc_gem_rdps_cape_chunk_4337.duckomo-coordinates.csv",
+        "sha256": "a35f7f3dcf470a742497f7e825cecf2ac2ae1a45a6b477217306146fc5c2b1a7"
+      },
+      "maximum_error_degrees": 3.0517578125e-05,
+      "positions_over_tolerance": 0,
+      "reference": {
+        "path": "build/grid-references/pinned-producer-f32-20261008/stereographic-cmc-gem-rdps-cape-chunk-4337.coordinates.csv",
+        "sha256": "d6556760901be1a17873825f680c3df7e4e51b11704042ae8967653c232d61f0"
+      },
+      "rows_compared": 770440,
+      "sample_id": "stereographic_cmc_gem_rdps_cape_chunk_4337",
+      "status": "pass",
+      "target": "stereographic_v3",
+      "tolerance_degrees": 0.0001,
+      "worst_spatial_index": 630187
+    }
+  ],
+  "sample_manifest_sha256": "72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f",
+  "schema_version": 1,
+  "scope": "coordinate CSV comparison only; does not establish H1, sample axis mapping, value comparison, region point order, or support status",
+  "status": "pass"
+}

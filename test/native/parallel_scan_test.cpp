@@ -12,6 +12,7 @@ extern "C" {
 #include <chrono>
 #include <cmath>
 #include <cstdint>
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -59,6 +60,18 @@ std::string PerfRead(const std::string &path = "test/data/dimensions_perf.om") {
 	return "read_om(" + SqlLiteral(path) + ", dimensions := map(['value'], [['time','member']]), axes := {"
 	       "'time': {'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},"
 	       "'member': {'axis':'member','start':0,'step':1}})";
+}
+
+std::string SpatialPerfRead() {
+	return "read_om('test/data/dimensions_perf.om', dimensions := map(['value'], [['row','column']]), "
+	       "grid := {'nx':256,'ny':512,'lat0':-90.0,'lon0':-180.0,'dlat':0.3522504892367906,"
+	       "'dlon':1.40625,'order':'separate'}, spatial_axes := ['row','column'])";
+}
+
+std::string LimitedSpatialRead() {
+	return "read_om('test/data/raw_large.om', dimensions := map(['value'], [['row','column']]), "
+	       "grid := {'nx':61,'ny':73,'lat0':-36.0,'lon0':-90.0,'dlat':1.0,'dlon':1.0,"
+	       "'order':'separate'}, spatial_axes := ['row','column'])";
 }
 
 class CorruptFinalChunkFixture final {
@@ -133,6 +146,12 @@ std::string LastMetric(duckdb::Connection &connection, const std::string &field)
 	                        "FROM duckomo_last_scan_metrics() ORDER BY scan_id DESC LIMIT 1");
 }
 
+std::uint64_t LastValueMetric(duckdb::Connection &connection, const std::string &field) {
+	return std::stoull(Scalar(connection, "SELECT regexp_extract(metrics, '\"value_totals\":[^}]*\"" + field +
+	                                    "\":([0-9]+)', 1)::BIGINT FROM duckomo_last_scan_metrics() "
+	                                    "ORDER BY scan_id DESC LIMIT 1"));
+}
+
 std::string HeavyExpression() {
 	std::string expression = "value";
 	for (std::size_t i = 0; i < 128; i++) expression = "sin(" + expression + ")";
@@ -162,6 +181,67 @@ void TestThreadLimitsAndEmptySelection(duckdb::Connection &connection) {
 	                                "SELECT regexp_extract(metrics, '\"data_bytes\":([0-9]+)', 1)::BIGINT "
 	                                "FROM duckomo_last_scan_metrics() ORDER BY scan_id DESC LIMIT 1");
 	Require(value_reads == "0", "empty parallel selection performed value reads");
+}
+
+void TestGridReadsKeepTimeContiguous(duckdb::Connection &connection) {
+	RequireSuccess(connection, "SET threads=1");
+	RequireSuccess(connection, "SET duckomo_max_threads=1");
+	const auto reference = Scalar(connection, "SELECT sum(value) FROM read_om('test/data/dimensions_perf.om')");
+	const auto requests = LastValueMetric(connection, "data_requests");
+	const auto bytes = LastValueMetric(connection, "data_bytes");
+	const auto chunks = LastValueMetric(connection, "decoded_chunks");
+	Require(requests > 0 && bytes > 0 && chunks > 0, "value cost comparisons must include actual reads and decoding");
+	const std::string source =
+	    "read_om('test/data/dimensions_perf.om', dimensions := map(['value'], [['point','time']]), "
+	    "grid := {'nx':32,'ny':16,'lat0':0.0,'lon0':0.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'}, "
+	    "spatial_axes := ['point'], axes := {'time': {'axis':'time',"
+	    "'start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'}})";
+	Require(Scalar(connection, "SELECT sum(value) FROM " + source) == reference,
+	        "adding a grid keeps full-scan values unchanged");
+	Require(LastValueMetric(connection, "data_requests") == requests && LastValueMetric(connection, "data_bytes") == bytes &&
+	            LastValueMetric(connection, "decoded_chunks") == chunks,
+	        "adding a grid must preserve full-scan read and decode costs");
+	RequireSuccess(connection, "CREATE TEMP TABLE trailing_time_reference AS SELECT * FROM " + source);
+	for (const auto predicate : {"longitude < 4", "longitude < 4 AND valid_time BETWEEN "
+	                                             "TIMESTAMP '2026-01-01 03:00:00' AND TIMESTAMP '2026-01-02 10:00:00'"}) {
+		const auto filtered_reference = Scalar(connection, "SELECT sum(value) FROM trailing_time_reference WHERE " +
+		                                                     std::string(predicate));
+		Require(Scalar(connection, "SELECT sum(value) FROM " + source + " WHERE " + predicate) == filtered_reference,
+		        "spatial and time selection preserve the reference values");
+		Require(LastValueMetric(connection, "data_requests") < 2048,
+		        "spatially selected time runs must be batched instead of issuing singleton reads");
+	}
+}
+
+void TestLimitLeavesSpatialCandidateCountIncomplete(duckdb::Connection &connection) {
+	RequireSuccess(connection, "SET threads=1");
+	RequireSuccess(connection, "SET duckomo_max_threads=1");
+	const auto limited = "SELECT latitude, longitude FROM " + LimitedSpatialRead() +
+	                     " WHERE latitude >= 0 AND longitude < 0 LIMIT 1";
+	Require(Scalar(connection, "SELECT count(*) FROM (" + limited + ")") == "1",
+	        "a spatially filtered LIMIT query should return its one requested row");
+	const auto incomplete_evidence = Scalar(
+	    connection,
+	    "SELECT count(*) FROM duckomo_last_scan_metrics() WHERE "
+	    "metrics LIKE '%\"status\":\"success\"%' AND "
+	    "metrics LIKE '%\"scan_complete\":false%' AND "
+	    "metrics LIKE '%\"exact_candidate_records\":null%' AND "
+	    "metrics LIKE '%\"candidate_upper_bound_records\":4453%' AND "
+	    "metrics LIKE '%\"count_complete\":false%'");
+	Require(incomplete_evidence == "1",
+	        "a successful LIMIT must not publish an exact candidate count before all spatial windows finish");
+}
+
+void TestSpatialPreflightUsesParallelWindows(duckdb::Connection &connection) {
+	RequireSuccess(connection, "SET threads=4");
+	RequireSuccess(connection, "SET duckomo_max_threads=4");
+	const auto total = Scalar(connection, "SELECT sum(value) FROM " + SpatialPerfRead() +
+	                                    " WHERE latitude >= 0 AND longitude < 0");
+	Require(!total.empty(), "parallel spatial preflight should return a non-empty value result");
+	Require(std::stoll(LastMetric(connection, "active_workers")) >= 2,
+	        "spatial coordinate preflight should leave enough native windows for concurrent workers");
+	Require(std::stoll(LastMetric(connection, "scan_tasks_claimed")) >= 2,
+	        "spatially filtered scans should claim multiple independent native windows");
 }
 
 void TestCancellationFailureAndRecovery(duckdb::Connection &connection) {
@@ -233,10 +313,16 @@ int main() {
 		config.SetOptionByName("allow_unsigned_extensions", true);
 		duckdb::DuckDB database(nullptr, &config);
 		duckdb::Connection connection(database);
-		auto core = connection.Query("LOAD './build/release/extension/core_functions/core_functions.duckdb_extension'");
+		const auto *core_override = std::getenv("DUCKOMO_CORE_FUNCTIONS_EXTENSION");
+		const std::string core_path = core_override ? core_override :
+		                              "./build/release/extension/core_functions/core_functions.duckdb_extension";
+		auto core = connection.Query("LOAD '" + core_path + "'");
 		Require(core != nullptr && !core->HasError(),
 		        "could not load CoreFunctions: " + (core ? core->GetError() : "no result"));
 		TestThreadLimitsAndEmptySelection(connection);
+		TestGridReadsKeepTimeContiguous(connection);
+		TestSpatialPreflightUsesParallelWindows(connection);
+		TestLimitLeavesSpatialCandidateCountIncomplete(connection);
 		TestCancellationFailureAndRecovery(connection);
 		std::cout << "parallel_scan_test: worker limits, empty selection, cancellation, and recovery checks passed\n";
 		return 0;

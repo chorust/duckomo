@@ -1,0 +1,2 @@
+generated /home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h0-query-regeneration-20261007-final/h0-query-regeneration/first-generated-grid-registry.hpp
+generated /home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/baseline-local/h0-query-regeneration-20261007-final/h0-query-regeneration/first-sample-queries.sql

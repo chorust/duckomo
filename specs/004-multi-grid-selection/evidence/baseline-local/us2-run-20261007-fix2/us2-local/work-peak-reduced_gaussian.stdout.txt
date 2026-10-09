@@ -1,0 +1,5 @@
+Binder Error: Referenced column "value" not found in FROM clause!
+Candidate bindings: "latitude", "longitude", "gaussian_work/value"
+
+LINE 1: CREATE TEMP TABLE work_small AS SELECT value FROM read_om('/home/blizhan/repo/github/duckomo/test...
+                                               ^

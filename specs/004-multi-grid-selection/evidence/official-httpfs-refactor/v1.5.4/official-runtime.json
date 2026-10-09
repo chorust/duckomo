@@ -1,0 +1,15 @@
+{
+  "cli": {
+    "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/official/duckdb",
+    "sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+    "url": "https://github.com/duckdb/duckdb/releases/download/v1.5.4/duckdb_cli-linux-arm64.zip"
+  },
+  "httpfs": {
+    "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/official/httpfs.duckdb_extension",
+    "sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+    "url": "https://extensions.duckdb.org/v1.5.4/linux_arm64/httpfs.duckdb_extension.gz"
+  },
+  "reported_version": "v1.5.4 (Variegata) 08e34c447b",
+  "version": "v1.5.4",
+  "platform": "linux_arm64"
+}
