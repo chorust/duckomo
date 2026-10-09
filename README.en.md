@@ -4,35 +4,152 @@
 
 duckomo is a DuckDB C++ extension that queries Float32 arrays in [Open-Meteo OM](https://github.com/open-meteo/om-file-format) files (local or HTTP(S)/S3) as SQL tables, without converting them first.
 
-- **Reading**: OM v3, FPX_XOR2D / PFOR_DELTA2D_INT16 compression, root arrays, and hierarchical variables; NaN becomes SQL `NULL`.
-- **Selective reads**: reads only value variables needed by output and filters; safe geographic predicates can further narrow the scan.
-- **Coordinates**: generates `latitude` and `longitude` from an explicit regular grid, [68 regular domains](docs/regular-domains.md), or a version-one rotated, Lambert, stereographic, or reduced Gaussian definition.
+[Features](#features) · [Install](#install) · [Usage](#usage) · [Dev](#dev) · [Docs](#docs) · [Acknowledgements](#acknowledgements)
 
-The reader supports one local OM file, plus HTTP(S)/S3 range reads through the official `httpfs` extension. DuckDB can schedule scans in parallel; connection-level thread limits are available. Semantic axes include time, level, lead time, member, and run. Projected/Gaussian grids, opt-in `om_source`, and `om_grid_info` are implemented, but the 004 real-grid coordinate/value, remote-benefit, complete memory-ledger, and independent-reproduction gates have not passed; this is not a production-support claim. The public HRES O1280 object is supplemental Gaussian evidence and does not replace the required N160, N320, or N320-region samples. Linux AArch64 is the acceptance platform; Linux x86_64 support and validation are deferred. The official HTTPFS path has passed local/HTTP/HTTPS/signed-S3 consistency and controlled remote regressions on DuckDB v1.5.4, v1.5.5 and v1.5.6; see the [migration validation record](specs/004-multi-grid-selection/evidence/official-httpfs-refactor/status.md). This does not replace per-grid 004 acceptance.
+## Features
 
-## GitHub Release installation
+- **Query OM directly**: OM v3, Float32, FPX_XOR2D / PFOR_DELTA2D_INT16, root arrays, and hierarchical variables; NaN becomes SQL `NULL`.
+- **Selective remote reads**: read HTTP(S)/S3 objects through DuckDB's official HTTPFS extension without downloading the entire file first.
+- **Column pruning and spatial selection**: read only output/filter dependencies. Safe geographic, time, and other axis predicates narrow candidates while DuckDB retains the full `WHERE`.
+- **Multiple grid mappings**: regular latitude/longitude, [68 regular domains](docs/regular-domains.md), rotated latitude/longitude, Lambert, stereographic, and reduced Gaussian.
+- **Multiple variables and semantic axes**: align variables by ordered axis identity; support `valid_time`, `level`, `lead_time`, `member`, and `run`, without implicit transposition, broadcasting, or joins.
+- **Parallelism and observability**: DuckDB-scheduled scans, thread limits, scan metrics, opt-in `om_source` positions, and `om_grid_info` descriptions.
 
-The new tag-release workflow targets DuckDB **v1.5.4 / v1.5.5 / v1.5.6** on **Linux glibc x86_64 / ARM64 and macOS Intel / Apple Silicon**. Tags such as `v0.1.0` or `v0.1.0-rc.1` publish ZIPs, a manifest, and SHA256SUMS only after all 12 build/runtime pairs pass. Manual runs are dry runs and never publish. New platforms remain configured targets until CI actually passes; existing full-acceptance boundaries are unchanged.
+Each input names **one object**, not a directory, glob, or file list. Projected/Gaussian grids are implemented, but per-grid real samples, full memory accounting, and independent reproduction have not all passed acceptance. Implementation is not a production-readiness claim; see [supported scope](docs/spec.md) and [grid evidence](docs/grid-domains.md).
 
-After publication, select a matching package from [GitHub Releases](https://github.com/chorust/duckomo/releases), using `SELECT version(); PRAGMA platform;` to identify your runtime. Verify and unzip it, then start `duckdb -unsigned` and run `INSTALL '/path/to/duckomo.duckdb_extension'; LOAD duckomo;`. These binaries are unsigned, and Release ZIPs are not extension repositories or directly installable extensions. See the [release and installation guide](docs/releases.md).
+## Install
 
-## Community installation (pending inclusion)
+### GitHub Release
 
-DuckOMO is preparing a DuckDB Community Extensions submission and is **not yet listed**. The first release targets **DuckDB v1.5.6 / Linux AArch64 (glibc)**. Once included and published, use a normal DuckDB installation:
+Download a package from [GitHub Releases](https://github.com/chorust/duckomo/releases) that **exactly matches your DuckDB version and platform**, verify `SHA256SUMS`, and unzip it. Identify your environment first:
 
 ```sql
-INSTALL duckomo FROM community;
+SELECT version();
+PRAGMA platform;
+```
+
+The release matrix targets **DuckDB v1.5.4 / v1.5.5 / v1.5.6** on **Linux glibc x86_64 / ARM64 and macOS Intel / Apple Silicon**. Available assets and their validation records are authoritative. If no matching asset is published yet, build from source under [Dev](#dev).
+
+GitHub binaries are unsigned; load only trusted code. Start `duckdb -unsigned`, then install:
+
+```sql
+INSTALL '/path/to/duckomo.duckdb_extension';
 LOAD duckomo;
--- HTTP(S)/S3 reads also need official HTTPFS:
+```
+
+Release ZIPs cannot be passed directly to `INSTALL`, and the GitHub repository URL is not a DuckDB extension repository. See the [release guide](docs/releases.md) for downloads, checksums, installation, and tag publishing.
+
+### Official HTTPFS
+
+Remote reads use DuckDB's **official extension**, not a DuckOMO-specific HTTPFS build:
+
+```sql
 INSTALL httpfs;
 LOAD httpfs;
 ```
 
-The community builds, signs and hosts the extension. Its signed artifacts load without `-unsigned`. Extension `.gz` files stay outside the source repository, and a GitHub Release upload is not a submission prerequisite. See the [registration draft, CI and publication steps](docs/community-extensions.md).
+Local OM reads do not need HTTPFS. DuckOMO is not yet listed in Community Extensions, so do not use `INSTALL duckomo FROM community` yet. See [community preparation](docs/community-extensions.md) for signed installation plans.
 
-## Build and load
+## Usage
 
-Requires C11 / C++17 compilers, CMake, Make, Git, and DuckDB's build dependencies. From the repository root:
+### Read Open-Meteo public S3 data
+
+[Open-Meteo Open Data](https://github.com/open-meteo/open-data) is available in the public bucket `s3://openmeteo/`, in `us-west-2`. Load the extensions and create an anonymous S3 secret scoped to that bucket. **No AWS Access Key is needed**:
+
+```sql
+LOAD duckomo;
+INSTALL httpfs;
+LOAD httpfs;
+
+CREATE SECRET openmeteo_public (
+  TYPE s3,
+  REGION 'us-west-2',
+  SCOPE 's3://openmeteo/'
+);
+```
+
+Start with the GFS static terrain object, whose key does not contain a rolling forecast date, and query a region directly:
+
+```sql
+SELECT value AS elevation, latitude, longitude
+FROM read_om('s3://openmeteo/data/ncep_gfs025/static/HSURF.om',
+  domain := 'ncep_gfs025',
+  dimensions := map(['value'], [['lat', 'lon']]))
+WHERE latitude BETWEEN 30 AND 30.5
+  AND longitude BETWEEN 110 AND 110.5
+ORDER BY latitude, longitude;
+```
+
+`domain` explicitly selects the grid. This object lacks axis-name metadata, so `dimensions` declares `[lat, lon]`. Value-only queries can omit spatial configuration, but multiple variables still need matching ordered axis identities. Grids are never inferred from paths, directory names, or shapes.
+
+### Query forecast variables and valid time
+
+Forecast objects roll over, and older dates may be removed. Follow the [Open Data directory guide](https://github.com/open-meteo/open-data) to select an existing object, or list prefixes level by level with anonymous AWS CLI access:
+
+```sh
+aws s3 ls s3://openmeteo/data_spatial/ncep_gfswave025/ \
+  --no-sign-request --region us-west-2
+```
+
+This example queries a GFS Wave spatial snapshot. **Replace the date and object key with a sample that still exists**:
+
+```sql
+SET VARIABLE wave_file =
+  's3://openmeteo/data_spatial/ncep_gfswave025/2026/10/01/0000Z/2026-10-01T0000.om';
+
+SELECT wave_height, latitude, longitude, valid_time
+FROM read_om(getvariable('wave_file'), domain := 'ncep_gfswave025')
+WHERE latitude BETWEEN 30 AND 40
+  AND longitude BETWEEN 140 AND 150
+LIMIT 10;
+```
+
+Files with Int64 `time` coordinates or scalar `valid_time` metadata automatically expose UTC `valid_time TIMESTAMP`. Add a `valid_time = TIMESTAMP '...'` predicate to select a time. Supply explicit `valid_times` when time metadata is missing; time is never guessed from filenames.
+
+| Directory | Typical layout in audited samples | Geographic queries |
+|---|---|---|
+| `data_spatial/` | Spatial snapshot, usually `[lat, lon]` | Usually just `domain` |
+| `data_run/` | One forecast run, usually `[lat, lon, time]` | Usually just `domain` |
+| `data/` | Rolling series or static data; samples often lack axis metadata | `domain` + complete `dimensions` |
+
+Directory names do not guarantee an object's axis order or format compatibility. When metadata is missing, `dimensions` must cover every value variable. See the [regular-grid guide](docs/regular-domains.md) for directory differences, alignment, and per-domain sample coverage.
+
+### HTTPS, private S3, and read metrics
+
+The same public object is also accessible over HTTPS, without an S3 secret:
+
+```sql
+SELECT value
+FROM read_om('https://openmeteo.s3.us-west-2.amazonaws.com/data/ncep_gfs025/static/HSURF.om')
+LIMIT 5;
+```
+
+For private buckets, configure DuckDB secrets using the [official HTTPFS S3 documentation](https://duckdb.org/docs/current/core_extensions/httpfs/s3api); keep credentials out of shared SQL. Remote objects must support range reads and remain stable during scans. DuckOMO does not promise scan snapshots or a forced refresh on every query. Its own range cache and former cache SQL have been removed.
+
+```sql
+SET threads = 4;
+SET duckomo_max_threads = 2; -- 0 uses DuckDB's thread limit
+
+SELECT query_id, scan_id, metrics::JSON
+FROM duckomo_last_scan_metrics();
+```
+
+Metrics distinguish logical requests from successful standard file-interface reads. DuckOMO does not directly observe HTTPFS network traffic. Spatial read savings depend on OM chunk layout, not just result row counts; see the [interface overview](docs/spec.md).
+
+### Local OM
+
+Replace the URI with a local path; grid and dimension parameters follow the same rules:
+
+```sql
+SELECT value FROM read_om('test/data/raw.om') ORDER BY value;
+-- The repository fixture returns 0 through 5.
+```
+
+`read_om_raw` is an early FPX root-array validation entry point; use `read_om` for normal queries. See the [interface overview](docs/spec.md) and [multi-grid contract](specs/004-multi-grid-selection/contracts/sql-interface.md) for explicit `grid`, other semantic axes, `include_source`, and `om_grid_info`.
+
+## Dev
+
+Requires C11 / C++17 compilers, CMake, Make, Git, Python 3, and DuckDB's build dependencies. From the repository root:
 
 ```sh
 git submodule update --init --recursive
@@ -40,207 +157,44 @@ make release
 ./build/release/duckdb -unsigned :memory:
 ```
 
-`make release` builds local DuckDB, DuckOMO and developer verification tools. Local reads need only DuckOMO. Remote reads use `INSTALL httpfs; LOAD httpfs;` for the official package matching the engine version/platform. Start DuckDB with `-unsigned` for unsigned DuckOMO artifacts.
-
-In the CLI, load the extension and query the included fixture:
+Load the development build directly in SQL:
 
 ```sql
 LOAD 'build/release/extension/duckomo/duckomo.duckdb_extension';
-
-DESCRIBE SELECT * FROM read_om('test/data/raw.om');
-SELECT value FROM read_om('test/data/raw.om') ORDER BY value;
 ```
 
-The output is a `value FLOAT` column containing `0` through `5`. All paths above are relative to the repository root.
-
-The developer DuckDB submodule still pins **v1.5.4**. The community target is **v1.5.6**; community CI checks out its target engine, and the Makefile preserves that engine's version label. The pinned matrix supports v1.5.4, v1.5.5 and v1.5.6; `make matrix-release` defaults to v1.5.6:
+The developer submodule pins DuckDB v1.5.4. Use `scripts/build-version.sh v1.5.6` for another pinned engine (v1.5.4 / v1.5.5 are also supported). Extension binaries are not interchangeable across versions. See the [HTTPFS validation guide](docs/official-httpfs.md) for official runtimes and complete reproduction steps.
 
 ```sh
-./scripts/build-version.sh v1.5.6
-python3 scripts/version_matrix.py fetch-runtime --root . \
-  --matrix test/data/grids/version-matrix.json --pair v1.5.6
-./build/official-matrix/v1.5.6/official/duckdb -unsigned :memory:
+make test                                       # Build and run local SQL/native/tool checks
+./scripts/validate.sh build/release --local-only  # Validate an existing build
+make sanitizer-test                             # ASan / UBSan
+python3 test/tools/release_tools_test.py           # Release contract checks
 ```
 
-`fetch-runtime` fetches matching official CLI/HTTPFS packages. Load `build/official-matrix/v1.5.6/release/extension/duckomo/duckomo.duckdb_extension`. Each version has a separate build under the ignored `build/official-matrix/<version>/` directory. These local artifacts are unsigned and need `-unsigned` for development. Version validation and signed community publication have separate status records.
+Existing in-depth acceptance primarily covers Linux AArch64; new platforms depend on their actual CI results. Complete remote validation needs controlled HTTP/HTTPS/signed-S3 services and audit logs. Local tests or Release smoke checks do not replace real-grid or independent-reproduction gates.
 
-## Reading `data/`, `data_run/`, and `data_spatial/`
+Source entry points: `src/scan/` for binding/scanning, `src/grid/` for grids/layouts, and `src/om/` for OM reading. Tests and fixtures live in `test/sql/`, `test/native/`, and `test/data/`.
 
-Local OM files from all three directories use `read_om()` without a directory-specific read mode. The reader parses the file's internal metadata. HTTP(S)/S3 URIs can also be passed directly to `read_om()`; each input still names one object.
+## Docs
 
-| Directory | Typical axes and metadata in audited samples | Parameters for latitude/longitude queries |
-|---|---|---|
-| `data_spatial/` | Usually `[lat, lon]`; most have complete `coordinates` | Usually just `domain`; add `dimensions` when axis metadata is missing |
-| `data_run/` | Usually `[lat, lon, time]`; most have complete `coordinates` | Usually just `domain`; add `dimensions` when axis metadata is missing |
-| `data/` | Bindable samples lack `coordinates` | `domain` + complete `dimensions` covering every value array |
-
-Value-only queries can omit grid parameters; multiple arrays without matching ordered axis metadata still require `dimensions`. Generating coordinates requires an explicit `domain`, or `grid` + `spatial_axes`; the grid is never inferred from the directory, filename, or shape. Use the actual file's axis order; directory names cannot replace axis declarations. Different time positions at the same coordinates remain separate rows; files with time coordinates append `valid_time`.
-
-See [Open-Meteo regular grids and directory differences](docs/regular-domains.md) for SQL examples, missing-axis declarations, older OM format limits, and sample coverage by domain.
-
-## Query valid time
-
-Int64 `time` coordinate arrays in `data_run` and Int64 scalar `valid_time` metadata in `data_spatial` are interpreted as UTC Unix seconds and automatically append `valid_time TIMESTAMP`. Arrays map to the declared `time` axis and preserve the actual intervals; scalars apply to the entire spatial snapshot. Time columns also work without `domain`:
-
-```sql
-SELECT value, latitude, longitude, valid_time
-FROM read_om('build/s3-samples/data_run/ncep_gfs025/2026/09/28/0000Z/cloud_cover_50hPa.om',
-  domain := 'ncep_gfs025')
-WHERE latitude BETWEEN 30 AND 40 AND longitude BETWEEN 110 AND 120
-  AND valid_time = TIMESTAMP '2026-09-28 03:00:00';
-```
-
-The input may be a local file or a supported remote URI. The `TIMESTAMP` column represents UTC without session-timezone conversion. Time filters can narrow safe candidate positions, while DuckDB still applies the complete `WHERE` clause.
-
-When time metadata is missing, supply a UTC timestamp for each time position with `valid_times := [TIMESTAMP '...', ...]`. Its length must match the `time` axis; missing axis metadata also requires `dimensions`. Spatial snapshots without a `time` axis accept a single timestamp. The list must be nonempty with finite, non-NULL timestamps and cannot override conflicting file time coordinates. Files without time metadata or explicit `valid_times` retain their existing output; valid time is never guessed from paths or forecast reference time.
-
-Declare other semantic axes explicitly with `axes`. This preserves the existing `valid_time` output name for the `time` axis: `run` produces `run TIMESTAMP`, and the other axes produce `level DOUBLE`, `lead_time INTERVAL`, and `member` with its input type.
-
-```sql
-SELECT value, valid_time, member
-FROM read_om('test/data/raw.om',
-  dimensions := map(['value'], [['time_axis','ensemble']]),
-  axes := {
-    'time': {'axis':'time_axis', 'start':TIMESTAMP '2026-09-30 00:00:00',
-             'step':INTERVAL '1 hour'},
-    'member': {'axis':'ensemble', 'values':[10,20,30]}
-  })
-WHERE valid_time=TIMESTAMP '2026-09-30 01:00:00' AND member=20;
-```
-
-Time and run use UTC microseconds. `lead_time` rejects month components. `level` requires a closed `kind` / `unit` pair. Integer members remain `BIGINT`; strings are not converted to numbers. Explicit coordinates retain their logical positions, including duplicates. See the [SQL contract](specs/003-dimensions-remote-parallel/contracts/sql-interface.md) for types, conflicts, and filter fallback rules.
-
-## Query multiple variables
-
-Variables with matching shapes and consistent ordered `coordinates` metadata align automatically. Otherwise, use `dimensions` to declare a complete, matching list of ordered axis names for **every value variable**:
-
-```sql
-SELECT temperature
-FROM read_om('test/data/multi.om',
-  dimensions := map(
-    ['humidity', 'temperature'],
-    [['row', 'column'], ['row', 'column']]
-  ))
-WHERE humidity >= 103
-ORDER BY temperature;
-```
-
-The result is `3`, `4`, `5`. Although `humidity` is absent from the output, it is still required by the filter. `dimensions` validates alignment; it does not generate `row` / `column` columns or override conflicting file metadata. Quote nested column names such as `"surface/temperature"`.
-
-## Geographic queries
-
-A complete grid and spatial axis identity append `latitude DOUBLE` and `longitude DOUBLE` after the value columns. This example assigns a 3×2 demonstration grid to `raw.om`:
-
-```sql
-SELECT value, latitude, longitude
-FROM read_om('test/data/raw.om',
-  dimensions := map(['value'], [['lat', 'lon']]),
-  grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0,
-           'dlat':1.0, 'dlon':2.0, 'order':'separate'},
-  spatial_axes := ['lat', 'lon'])
-WHERE latitude >= 11 AND longitude < 104
-ORDER BY latitude, longitude;
-```
-
-Returns `(3, 11, 100)` and `(4, 11, 102)`. `lat0` / `lon0` are origins; `dlat` / `dlon` are steps. Flattened spatial axes can also use `lon_fastest` or `lat_fastest`; see the [spatial query guide](specs/002-spatial-pushdown/quickstart.md).
-
-For an Open-Meteo file already downloaded locally, select a registered grid:
-
-```sql
-SELECT wave_height, latitude, longitude
-FROM read_om('/path/to/local-gfswave.om', domain := 'ncep_gfswave025')
-WHERE latitude BETWEEN 30 AND 40 AND longitude BETWEEN 110 AND 120;
-```
-
-This example requires a file matching the domain's grid and containing `wave_height`. Domain names are the prefixes after `data/`, `data_run/`, or `data_spatial/` in AWS object keys. Specify the domain explicitly; it is never inferred from the path or shape.
-
-Files without `coordinates` still need complete `dimensions`; `coordinates = 'lat lon'` alone does not define a geographic grid. Binding checks the name, axes, shape, and WKT BBOX when present. See [regular-grid domains](docs/regular-domains.md) for sample downloads, directory differences, and compatibility limits.
-
-## Projected and Gaussian grids (implemented; full acceptance pending)
-
-A version-one `grid` declares rotated latitude/longitude, spherical Lambert, stereographic, or reduced Gaussian geometry. Its closed field set must match the array's spatial axis order and lengths; unknown or conflicting CRS metadata rejects binding. Gaussian definitions provide a complete row table, and regional grids also provide their local-to-parent segments. See the [multi-grid SQL contract](specs/004-multi-grid-selection/contracts/sql-interface.md) for the exact types and examples.
-
-```sql
-SELECT value, latitude, longitude, om_source.logical_index
-FROM read_om('test/data/raw.om',
-  dimensions := map(['value'], [['y','x']]),
-  grid := {'version':1,'type':'rotated_latlon','numeric_policy':'float64_v1',
-           'earth':{'model':'sphere','radius_m':6371229.0},
-           'layout':{'nx':3,'ny':2,'order':'separate'},
-           'parameters':{'x0':0.0,'y0':0.0,'dx':1.0,'dy':1.0,
-                         'north_pole_latitude':39.25,'north_pole_longitude':-162.0,
-                         'rotation':0.0}},
-  spatial_axes := ['y','x'], include_source := true)
-ORDER BY om_source.logical_index;
-```
-
-`om_source` is an opt-in final column containing object, grid/layout, and original array-position identity. `om_grid_info(path, ...the same grid arguments...)` returns one row describing the definition, axes/strides, CRS, capabilities, and provenance without reading value arrays. See the [grid evidence table](docs/grid-domains.md) for per-domain evidence levels and the O1280 scope. The implementation and synthetic regressions exist; this example does not establish real production-grid acceptance.
-
-Longitude is normalized to `[-180,180)`. Finite-constant `=`, `<`, `<=`, `>`, `>=`, `BETWEEN`, and safe `AND` predicates can narrow the scan. DuckDB always applies the complete `WHERE`. For a region across the antimeridian, use:
-
-```sql
-WHERE longitude >= 170 OR longitude < -170
-```
-
-`OR` and expressions that cannot be safely analyzed retain SQL filtering and may read the full domain. Read savings depend on OM chunk layout. Coordinate-only queries, spatial `COUNT(*)`, and selections proven empty do not read value arrays.
-
-## Remote and parallel reads
-
-HTTP(S) and S3 use official HTTPFS for range reads. Objects must remain stable during scans. Standard file size/version evidence detects observable conflicts; DuckOMO does not promise a fresh HEAD or scan snapshot. Provide S3 credentials through a DuckDB secret or the existing httpfs configuration.
-
-```sql
-INSTALL httpfs;
-LOAD httpfs;
-LOAD 'build/release/extension/duckomo/duckomo.duckdb_extension';
-
-SELECT value
-FROM read_om('https://example.invalid/path/object.om')
-LIMIT 10;
-```
-
-Configure an S3 secret before reading an S3 URI, for example with `CREATE SECRET ... (TYPE s3, KEY_ID ..., SECRET ..., REGION ...)`. DuckOMO's own range cache and its SQL settings have been removed. Official HTTPFS owns internal caching, credentials, and retries; DuckOMO does not promise a forced refresh or immediate revocation on every query. `read_om_raw(path)` remains local-only.
-
-Thread limits are connection settings:
-
-```sql
-SET threads=4;
-SET duckomo_max_threads=2;        -- 0 uses DuckDB's thread limit
-```
-
-Inspect one v4 JSON row per scan from the most recently ended SQL query:
-
-```sql
-SELECT query_id, scan_id, metrics::JSON
-FROM duckomo_last_scan_metrics();
-```
-
-Metrics distinguish logical requests and successful standard file-interface reads. Remote transport body/attempts/responses are NULL with complete=false; local inputs report 0/true. The removed own cache reports false/0. Network evidence comes from test service logs. Time-coordinate index/data/decode costs are separate from value variables. `scan_complete=false` means the query succeeded but a consumer such as `LIMIT` stopped the scan early. `peak_rss_bytes` is process-scoped. `peak_query_owned_bytes` tracks the currently instrumented DuckOMO-owned vector capacities; it excludes DuckDB output vectors, and httpfs or engine internals. The full per-component memory ledger and remote-control memory audit remain in progress. Failed, cancelled, or incomplete measurements publish `null` and set `query_memory_count_complete=false`. See [Interface overview](docs/spec.md) for the v4 behavior and metric fields.
-
-## Development and validation
-
-```sh
-make test                            # Build release and run local validation
-./scripts/validate.sh build/release --local-only  # Validate an existing build without remote services
-make sanitizer-test                  # ASan/UBSan checks
-```
-
-`validate.sh` also requires Python 3. Remote reports default to `build/official-validation-<pair-or-release>/`; override with `DUCKOMO_EVIDENCE_DIR`. To run additional real-domain validation, set both `DUCKOMO_DOMAIN_FILE=/path/to/pinned.om` and `DUCKOMO_DOMAIN_REFERENCE=/path/to/reference-dir`. For current remote validation, configure services and run the matrix using the [official HTTPFS reproduction guide](docs/official-httpfs.md). Private-HTTPFS/cache commands in 003 are historical. Relevant gates do not pass without their services, real samples, and audit logs.
-
-## Documentation and source
-
-| Topic | Entry point |
+| Topic | Documentation |
 |---|---|
-| Parameters, output, and supported scope | [Interface overview](docs/spec.md) · [Full SQL contract](specs/002-spatial-pushdown/contracts/sql-interface.md) |
-| Grid definitions and real sample coverage | [Regular-grid domains](docs/regular-domains.md) |
-| Projected/Gaussian definitions and evidence levels | [Grid evidence table](docs/grid-domains.md) |
-| Scan flow and read metrics | [Architecture](docs/architecture.md) |
-| Automated publishing, downloads, and installation | [GitHub Releases guide](docs/releases.md) |
-| Upcoming capabilities | [Roadmap](docs/roadmap.md) |
-| Query binding and scans / grids / local OM reads | `src/scan/` / `src/grid/` / `src/om/` |
-| SQL cases / native checks / fixtures | `test/sql/` / `test/native/` / `test/data/` |
+| Parameters, output, supported scope, and metrics | [Interface overview](docs/spec.md) |
+| Public data directories, axes, and 68 regular domains | [Regular-grid guide](docs/regular-domains.md) |
+| Projected / Gaussian definitions and real-sample evidence | [Grid evidence](docs/grid-domains.md) · [SQL contract](specs/004-multi-grid-selection/contracts/sql-interface.md) |
+| Module responsibilities, scan flow, and I/O | [Architecture](docs/architecture.md) |
+| GitHub downloads, installation, and tag publishing | [Release guide](docs/releases.md) |
+| Official HTTPFS support and controlled validation | [HTTPFS validation guide](docs/official-httpfs.md) |
+| Community registration and signed publication | [Community Extensions](docs/community-extensions.md) |
+| Development stages and remaining acceptance | [Roadmap](docs/roadmap.md) |
 
-`read_om_raw` remains an early validation entry point for FPX root arrays. Use `read_om` for regular queries.
+## Acknowledgements
 
-## Official release matrix
+- [DuckDB](https://github.com/duckdb/duckdb): the SQL engine, extension API, and official HTTPFS remote filesystem.
+- [Open-Meteo OM File Format](https://github.com/open-meteo/om-file-format): the OM format and official C reader/decoder used by this extension.
+- [Open-Meteo Open Data](https://github.com/open-meteo/open-data) and upstream weather-data providers: public samples, model data, and grid-definition sources.
+- [DuckDB extension-ci-tools](https://github.com/duckdb/extension-ci-tools): the community build and cross-platform distribution toolchain.
+- [AWS Open Data](https://aws.amazon.com/opendata/): the public data hosting program.
 
-Run `scripts/build-version.sh v1.5.4` (also v1.5.5 and v1.5.6). Remote verification requires actual official CLI/HTTPFS packages and controlled HTTP/HTTPS/S3 services. See [reproduction instructions](docs/official-httpfs.md). Remove `duckomo_cache_enabled`, `duckomo_cache_capacity` and `duckomo_clear_cache()` from SQL; they are no longer registered.
+Project code is licensed under [Apache-2.0](LICENSE). Weather-data licenses and attribution requirements follow the respective providers' terms.

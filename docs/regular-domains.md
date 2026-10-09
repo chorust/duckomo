@@ -30,7 +30,7 @@ UKMO `data_spatial` 样本的 218 个变量也缺少轴元数据，以显式 `di
 
 ## 使用与轴声明
 
-真实 GFS Wave 样本的下载命令、固定哈希和查询示例见 [空间查询指南](../specs/002-spatial-pushdown/quickstart.md#真实-domain)。远程对象须先下载到本地，不能将 S3 URI 直接传给 `read_om`。
+历史固定 GFS Wave 样本的下载命令、哈希和查询记录见 [空间查询指南](../specs/002-spatial-pushdown/quickstart.md#真实-domain)；滚动日期对象可能已被清理。当前可通过 DuckDB 官方 `INSTALL httpfs; LOAD httpfs;` 直接读取单个 HTTP(S)/S3 对象，无需先下载整个文件。公共 S3 的匿名配置、当前对象选择和查询示例见 [README Usage](../README.md#usage)。
 
 例如，将 `data/chmi_aladin_cz_1km/cape/chunk_4131.om` 下载到本地后，它的根数组列名是 `value`，shape 为 `[290,501,120]`，可这样声明缺失的轴身份：
 
