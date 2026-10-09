@@ -48,6 +48,10 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
     # Upstream generated bitpacking headers emit very large warning streams.
     target_compile_options(duckomo_om PRIVATE -w)
 endif()
+if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
+    # GCC 14 promotes the pinned upstream NEON shim's pointer conversions to errors.
+    target_compile_options(duckomo_om PRIVATE -Wno-error=incompatible-pointer-types)
+endif()
 
 set(EXTENSION_SOURCES
     src/om_extension.cpp
