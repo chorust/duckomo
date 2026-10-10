@@ -464,7 +464,9 @@ std::vector<float> DecodeFullRootArray(const std::filesystem::path &path, std::v
 std::vector<float> DecodeArrayVariable(const std::vector<std::uint8_t> &file, const OmVariable_t *variable,
                                        std::vector<std::uint64_t> *shape_out = nullptr,
                                        std::vector<std::uint64_t> *chunks_out = nullptr,
-                                       std::uint64_t prefix_count = 0) {
+                                       std::uint64_t prefix_count = 0,
+                                       const std::vector<std::uint64_t> &slice_offset = {},
+                                       const std::vector<std::uint64_t> &slice_count = {}) {
 	Require(om_variable_get_type(variable) == DATA_TYPE_FLOAT_ARRAY,
 	        "independent official oracle accepts only Float32 array variables");
 	Require(om_variable_get_compression(variable) == COMPRESSION_FPX_XOR2D ||
@@ -488,6 +490,16 @@ std::vector<float> DecodeArrayVariable(const std::vector<std::uint8_t> &file, co
 			trailing_rows *= dimensions[current_axis];
 		}
 	}
+	if (!slice_offset.empty() || !slice_count.empty()) {
+		Require(prefix_count == 0 && slice_offset.size() == rank && slice_count.size() == rank,
+		        "oracle slice requires one offset/count per axis and cannot combine with prefix");
+		for (std::size_t axis = 0; axis < rank; axis++) {
+			Require(slice_offset[axis] < dimensions[axis] && slice_count[axis] > 0 &&
+			            slice_count[axis] <= dimensions[axis] - slice_offset[axis],
+			        "oracle slice is outside the array");
+		}
+		read_count = slice_count;
+	}
 	const auto row_count = CheckedProduct(read_count);
 	Require(row_count <= std::numeric_limits<std::size_t>::max() / sizeof(float),
 	        "official OM result is too large for this process");
@@ -498,7 +510,7 @@ std::vector<float> DecodeArrayVariable(const std::vector<std::uint8_t> &file, co
 		*chunks_out = chunks;
 	}
 
-	std::vector<std::uint64_t> read_offset(dimensions.size(), 0);
+	std::vector<std::uint64_t> read_offset = slice_offset.empty() ? std::vector<std::uint64_t>(rank, 0) : slice_offset;
 	std::vector<std::uint64_t> cube_offset(dimensions.size(), 0);
 	OmDecoder_t decoder{};
 	const auto decoder_error = om_decoder_init(&decoder, variable, rank, read_offset.data(), read_count.data(),
@@ -526,7 +538,7 @@ std::vector<float> DecodeArrayVariable(const std::vector<std::uint8_t> &file, co
 		}
 		Require(error == ERROR_OK, "official OM index/decode request failed: " + std::string(om_error_string(error)));
 	}
-	values.resize(static_cast<std::size_t>(prefix_rows));
+	if (prefix_count != 0) values.resize(static_cast<std::size_t>(prefix_rows));
 	return values;
 }
 
@@ -2222,14 +2234,60 @@ void Generate(const std::filesystem::path &output_directory) {
 	              projection_arrays, projection_decoded, negative_assets);
 }
 
+// On-demand synthetic values on the full HRES shape, outside the frozen 004 manifest.
+void GenerateHresFixtures(const std::filesystem::path &output) {
+	constexpr std::uint64_t points = 6599680;
+	for (const auto time_count : {std::uint64_t(1), std::uint64_t(3)}) {
+		Fixture fixture;
+		fixture.id = time_count == 1 ? "synthetic_hres_static" : "synthetic_hres_timeseries";
+		fixture.shape = time_count == 1 ? std::vector<std::uint64_t>{1, points} :
+		                                  std::vector<std::uint64_t>{1, points, time_count};
+		fixture.chunks = time_count == 1 ? std::vector<std::uint64_t>{1, 400} :
+		                                   std::vector<std::uint64_t>{1, 400, time_count};
+		fixture.values.resize(static_cast<std::size_t>(points * time_count));
+		for (std::uint64_t point = 0; point < points; point++) {
+			for (std::uint64_t t = 0; t < time_count; t++) {
+				fixture.values[static_cast<std::size_t>(point * time_count + t)] =
+				    static_cast<float>(point % 4096) + static_cast<float>(t) * 0.25F;
+			}
+		}
+		WriteFile(output / (time_count == 1 ? "static.om" : "timeseries.om"), EncodeRootArray(fixture));
+		if (time_count == 1) {
+			TreeArray array;
+			array.fixture = fixture;
+			array.segments = {"value"};
+			array.string_attributes = {{"coordinates", "lat lon"}};
+			std::vector<TreeArray> arrays;
+			arrays.push_back(std::move(array));
+			WriteFile(output / "static-coordinates.om", EncodeTreeFile(arrays));
+		}
+	}
+	std::cout << "generated synthetic HRES shape fixtures in " << output << '\n';
+}
+
+std::vector<std::uint64_t> ParseOracleShape(const std::string &text) {
+	std::vector<std::uint64_t> result;
+	std::istringstream stream(text);
+	std::string part;
+	Require(!text.empty() && text.back() != ',', "oracle shape cannot be empty or end in a comma");
+	while (std::getline(stream, part, ',')) {
+		Require(!part.empty() && part.find_first_not_of("0123456789") == std::string::npos,
+		        "oracle shape requires comma-separated unsigned integers");
+		result.push_back(std::stoull(part));
+	}
+	return result;
+}
+
 void PrintUsage(std::ostream &output) {
 	output << "Usage:\n"
 	       << "  duckomo_fixture_tool --output DIR\n"
 	       << "  duckomo_fixture_tool --oracle INPUT.om --csv REFERENCE.csv\n"
 	       << "  duckomo_fixture_tool --oracle-prefix INPUT.om --variable /PATH --count N --csv REFERENCE.csv\n"
+	       << "  duckomo_fixture_tool --oracle-slice INPUT.om --offset A,B,... --shape A,B,... --csv REFERENCE.csv\n"
 	       << "\n--output generates raw.om, special.om, raw_large.om, spatial_flat.om, spatial_axes.om, spatial_single.om, spatial_conflict.om, source-conflict.om, multi.om, pfor_attributes.om, nested.om, projection.om, grids/layouts.om and per-layout grid OM files, grids/long-line.om, fixed-chunk projected and Gaussian memory pairs, their oracle CSV files, "
 	          "negative mutation assets, and manifest.json.\n"
-	       << "--oracle runs the independent fixed official OM reader over a full root array and exports index,value CSV.\n";
+	       << "--oracle runs the independent fixed official OM reader over a full root array and exports index,value CSV.\n"
+	       << "--hres-output DIR generates synthetic HRES static/time-series fixtures without changing the frozen manifest.\n";
 }
 
 } // namespace
@@ -2237,8 +2295,12 @@ void PrintUsage(std::ostream &output) {
 int main(int argc, char **argv) {
 	try {
 		std::filesystem::path output_directory;
+		std::filesystem::path hres_output;
 		std::filesystem::path oracle_input;
 		std::filesystem::path oracle_prefix_input;
+		std::filesystem::path oracle_slice_input;
+		std::vector<std::uint64_t> slice_offset;
+		std::vector<std::uint64_t> slice_count;
 		std::filesystem::path oracle_csv;
 		std::string variable_path;
 		std::uint64_t prefix_count = 0;
@@ -2252,12 +2314,28 @@ int main(int argc, char **argv) {
 				output_directory = argv[++index];
 				continue;
 			}
+			if (argument == "--hres-output" && index + 1 < argc) {
+				hres_output = argv[++index];
+				continue;
+			}
 			if (argument == "--oracle" && index + 1 < argc) {
 				oracle_input = argv[++index];
 				continue;
 			}
 			if (argument == "--oracle-prefix" && index + 1 < argc) {
 				oracle_prefix_input = argv[++index];
+				continue;
+			}
+			if (argument == "--oracle-slice" && index + 1 < argc) {
+				oracle_slice_input = argv[++index];
+				continue;
+			}
+			if (argument == "--offset" && index + 1 < argc) {
+				slice_offset = ParseOracleShape(argv[++index]);
+				continue;
+			}
+			if (argument == "--shape" && index + 1 < argc) {
+				slice_count = ParseOracleShape(argv[++index]);
 				continue;
 			}
 			if (argument == "--variable" && index + 1 < argc) {
@@ -2276,6 +2354,27 @@ int main(int argc, char **argv) {
 			throw std::runtime_error("unknown or incomplete argument: " + argument);
 		}
 
+		if (!oracle_slice_input.empty() || !slice_offset.empty() || !slice_count.empty()) {
+			Require(!oracle_slice_input.empty() && !oracle_csv.empty() && !slice_offset.empty() &&
+			            !slice_count.empty() && output_directory.empty() && hres_output.empty() &&
+			            oracle_input.empty() && oracle_prefix_input.empty() && variable_path.empty() && prefix_count == 0,
+			        "oracle slice requires --oracle-slice, --offset, --shape, --csv and no other mode");
+			const auto file = ReadFile(oracle_slice_input);
+			std::uint64_t root_size = 0;
+			const auto offset = RootMetadataOffset(file, &root_size);
+			const auto *root = om_variable_init(file.data() + static_cast<std::size_t>(offset));
+			Require(om_variable_validate(root, root_size) == ERROR_OK, "oracle slice root metadata is invalid");
+			const auto decoded = DecodeArrayVariable(file, root, nullptr, nullptr, 0, slice_offset, slice_count);
+			WriteReferenceCsv(oracle_csv, decoded);
+			std::cout << "official OM oracle exported " << decoded.size() << " slice-local rows to " << oracle_csv.string() << '\n';
+			return 0;
+		}
+		if (!hres_output.empty()) {
+			Require(output_directory.empty() && oracle_input.empty() && oracle_prefix_input.empty() && oracle_csv.empty(),
+			        "--hres-output cannot be combined with another mode");
+			GenerateHresFixtures(hres_output);
+			return 0;
+		}
 		if (!output_directory.empty() && oracle_input.empty() && oracle_prefix_input.empty() && oracle_csv.empty()) {
 			Generate(output_directory);
 			return 0;

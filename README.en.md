@@ -20,6 +20,8 @@ duckomo is a DuckDB C++ extension that queries Float32 arrays in [Open-Meteo OM]
 
 Each input names **one object**, not a directory, glob, or file list. Projected/Gaussian grids are implemented, but per-grid real samples, full memory accounting, and independent reproduction have not all passed acceptance. Implementation is not a production-readiness claim; see [supported scope](docs/spec.md) and [grid evidence](docs/grid-domains.md).
 
+The owner-approved [2026-10-10 scope amendment](specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md) skips real-object acceptance for N160/N320/N-region in this round because the surveyed public Open-Meteo sources contain no matching objects. Definitions and synthetic regressions remain; a skip is not a pass and does not block current-scope closure. Per the owner-approved [2026-10-10 pinned-producer-reference decision](specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md), `ecmwf_ifs` O1280 and the three projected grids are registered `coordinate-value-validated` (consistent with the published Open-Meteo objects, not native-GRIB equivalence); O1280 is backed by [real local checks](specs/004-multi-grid-selection/evidence/baseline-local/o1280-real-local-20261010/final.md) covering full HSURF values/coordinates, explicit/domain equivalence, spatial selection and sampled time series. Remote benefit, complete gates and H9 independent reproduction remain open. The Phase 8 cross-chunk entry remains an unapproved proposal.
+
 ## Install
 
 ### GitHub Release

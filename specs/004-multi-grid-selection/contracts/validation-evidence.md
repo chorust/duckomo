@@ -2,6 +2,12 @@
 
 日期：2026-10-03；2026-10-06 按当前 artifacts 复核。尚无完整 H0–H9 gate 可标为通过；已有合成、本地部分、真实对象 metadata 和 O1280 logical-index value 对照记录均按其窄范围引用，不拼接成完整 gate。主证据路径为 `specs/004-multi-grid-selection/evidence/`；003 既有记录仍引用仓库根 `evidence/003-dimensions-remote-parallel/final.md`。
 
+## 2026-10-10 当前 Gaussian 范围
+
+以 [负责人批准的 Gaussian 验收修订](gaussian-acceptance-20261010.md) 为准：N160/N320/N 区域真实样本及其依赖验收本轮跳过，不阻塞当前范围收口；定义及合成回归保留，不记为真实通过。O1280 是本轮 Gaussian 验收目标；其本地真实 domain/空间/抽样时间查询执行记录已补（见 [o1280-real-local-20261010](../evidence/baseline-local/o1280-real-local-20261010/final.md)），完整独立参考、完整时间值覆盖、远程与复现记录仍缺。下文历史表中的 N-grid 必选和“O1280 不替代”条件已由本修订调整，不降低其他门禁，也不追溯修改旧 run 的 pass/fail/not-run。
+
+继续使用既有四种证据等级；按 [2026-10-10 pinned producer 参考决定](pinned-producer-reference-20261010.md)，`ecmwf_ifs` 与三个投影定义登记为 `coordinate-value-validated`：O1280 依据 2026-10-10 本地真实查询记录（官方值全量对照 + producer 坐标独立 Python 实现最大误差 0、显式/domain 等价、空间双向 EXCEPT ALL、22×504 时间值/NULL 官方切片对照），投影依据匹配 baseline 的 H1 全量坐标/值对照。该决定只对 Open-Meteo 自产对象放宽「独立 GRIB 参考」来源，不引入 value-validated，不升级为 remote-benefit-validated，也不扩展为非 Open-Meteo 对象的通用规则。
+
 ## 精确版本组合
 
 | 输入 | baseline-1.5.4 | prerelease-2.0-dev |
@@ -42,9 +48,9 @@ registry 来源为 Open-Meteo `b06f4760fd1f997e5559bb380f64c5e496b4a509`；旧�
 | N160 | pinned `ecmwf_seas5_12hourly` / `ecmwf_seas5_monthly_upper_level` source definition | 原生 OM v3 和逐行点序；本次 public bucket 未获匹配对象 |
 | N320 全域 | 固定 N320 行表 | 固定来源没有全域 producer domain；无真实 N320 OM v3 对象 |
 | N320 区域 | `ecmwf_aifs_europe_ensemble[_mean]` 源派生 14,747 点 | 原生 OM v3、GRIB/生产归档局部行段与 OM 值点序独立对应 |
-| HRES O1280（补充） | 公共 `s3://openmeteo/data/ecmwf_ifs/static/HSURF.om`；real OM v3，6,599,680 点；官方 OM C full-value comparison 0 mismatch | O1280 是有效 Gaussian-family 样本，但不替代 N160/N320/N-region；行长/坐标/point order 与 remote benefit 未验证 |
+| HRES O1280（本轮 Gaussian 目标） | 公共 `s3://openmeteo/data/ecmwf_ifs/static/HSURF.om` 与 `temperature_2m/chunk_817.om`；real OM v3，6,599,680 点 | 行长/坐标/point order 按 pinned producer 参考决定已验证（见 o1280-real-local-20261010）；remote benefit 未验证；不替代 N160/N320/N-region |
 
-四新类型各须真实 OM v3 坐标/值对照；N160/N320/一个 N 子集各有独立定义/位置对照。现有三个投影对象只完成 acquisition/metadata scope，HRES O1280 只补充 logical-index value 对照。固定类型可跳块性能样本在 full/local 前冻结；synthetic 可补布局、奇点、故障和大规模缓冲门禁，不代替真实对照。精确 object metadata、hash、命令和有限 H3 状态见 [sample acquisition](../evidence/baseline-local/open-meteo-s3-sample-acquisition.md)、[H3 local record](../evidence/baseline-local/us4.md) 与 [US2 progress](../evidence/baseline-local/us2-progress.md)。
+四新类型各须真实 OM v3 坐标/值对照；N160/N320/一个 N 子集各有独立定义/位置对照（本轮跳过）。三个投影对象与 HRES O1280 的坐标/值对照已按 pinned producer 参考决定通过并登记 coordinate-value-validated；完整 gate 与远程验收仍开放。固定类型可跳块性能样本在 full/local 前冻结；synthetic 可补布局、奇点、故障和大规模缓冲门禁，不代替真实对照。精确 object metadata、hash、命令和有限 H3 状态见 [sample acquisition](../evidence/baseline-local/open-meteo-s3-sample-acquisition.md)、[H3 local record](../evidence/baseline-local/us4.md) 与 [US2 progress](../evidence/baseline-local/us2-progress.md)。
 
 坐标参考最低策略：source-compatible f32 的逐点参考绝对误差≤1e-4 degree，float64 analytic 与独立 double 参考≤1e-8 degree；同一显式/domain 实现坐标要求精确一致。manifest 可在验收前设更严格的来源级阈值，不得为混淆不同 Gaussian 规则放宽；若默认阈值不成立，先定位算法/约定，必要的规格/阈值修订单独记录后重新冻结全套。标准与生产者 N 纬度差约 0.0087/0.0044 degree，不能视为浮点容差。值逐官方 Float32 位值/NaN→NULL、行数/源位置/缺测均精确核对。
 
@@ -55,7 +61,7 @@ Gaussian全行、行首尾/接缝、N320区域局部原始顺序必须核对。�
 | 门禁 | 核验及成功条件 | 覆盖 |
 | --- | --- | --- |
 | H0 输入/重生 | 完整来源/hash、定义/局部映射、预定容差、两次 registry 重生一致；真实证据等级明确 | FR-002/004/027/028，SC-008 |
-| H1 坐标/值/布局 | 四类真实、Gaussian N160/N320/子集；全源点、独立值/坐标、反向/展平/交错轴、多变量和所有语义轴 | FR-001–007/027，SC-001 |
+| H1 坐标/值/布局 | 当前范围四类真实（Gaussian 目标为 O1280，N160/N320/子集真实验收本轮跳过）；全源点、独立值/坐标、反向/展平/交错轴、多变量和所有语义轴 | FR-001–007/027，SC-001 |
 | H2 选择正确性 | 与完整物化后相同 WHERE 双向 EXCEPT ALL=0，含曲线、域外四角、开闭/nextafter、极区/接缝/OR、片段预算回退和值过滤 | FR-008–012/015/017，SC-002 |
 | H3 零值读取 | 全域/局部坐标和计数、可证空、纯 source/info：value index/data/decode=0；含值过滤对照必保依赖 | FR-012/013，SC-004 |
 | H4 并行/生命周期 | 固定多任务 1/2/4 worker multiset 一致，实际 active worker 记录；LIMIT/不足任务/跨batch/取消/失败/恢复 | FR-012/014，SC-005/010 |

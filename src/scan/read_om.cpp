@@ -929,12 +929,20 @@ SpatialBindConfiguration BindSpatialConfiguration(const TableFunctionBindInput &
 			if (schema.variables.size() != axes.size() || registered->expected_axis_order.empty()) {
 				throw BinderException("read_om domain '" + domain_name + "' requires ordered axes for every array");
 			}
+			// The frozen HSURF producer profile calls its flattened point axis "lon".
+			// Select only a registered alias, after metadata alignment has been checked;
+			// never guess an axis from shape or relax conflicting source declarations.
+			auto domain_spatial_axes = registered->expected_axis_order;
+			if (domain_spatial_axes.size() == 1 && !registered->flattened_axis_alias.empty() &&
+			    std::find(axes.front().begin(), axes.front().end(), domain_spatial_axes.front()) == axes.front().end()) {
+				domain_spatial_axes.front() = registered->flattened_axis_alias;
+			}
 			for (std::size_t index = 0; index < schema.variables.size(); index++) {
 				const auto &variable = schema.variables[index];
 				if (axes[index].size() != variable.shape.size()) {
 					throw BinderException("read_om domain '" + domain_name + "' requires complete ordered axes for every array");
 				}
-				for (const auto &spatial_axis : registered->expected_axis_order) {
+				for (const auto &spatial_axis : domain_spatial_axes) {
 					if (std::find(axes[index].begin(), axes[index].end(), spatial_axis) == axes[index].end()) {
 						throw BinderException("read_om domain '" + domain_name + "' requires spatial axis '" +
 						                      spatial_axis + "' in each array's declared profile");
@@ -952,7 +960,7 @@ SpatialBindConfiguration BindSpatialConfiguration(const TableFunctionBindInput &
 			ValidateGridSourceCrs(schema, *result.definition);
 			try {
 				result.layout.emplace(BindGridSpatialLayout(schema, axes, *result.definition,
-				                                           registered->expected_axis_order));
+				                                           domain_spatial_axes));
 				const bool expected_flattened = registered->expected_layout == "flattened";
 				if (result.layout->flattened != expected_flattened) {
 					throw ReaderError(ReaderErrorCode::InvalidShape,

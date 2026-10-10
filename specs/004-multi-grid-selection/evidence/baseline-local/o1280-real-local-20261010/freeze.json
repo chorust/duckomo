@@ -1,0 +1,373 @@
+{
+  "schema_version": 1,
+  "frozen_at": "2026-10-10T13:17:54.524176+00:00",
+  "scope": "local real OM queries; NOT full H0-H9 acceptance",
+  "platform": "Linux-6.17.0-1029-nvidia-aarch64-with-glibc2.39",
+  "git_head": "cbfcf19166f1237a368bebd55bb7d432ee059546",
+  "tracked_diff_sha256": "e99771a9933cd4642858c6f488eb712e5c80ee3b2de526f5d1b0e20bab65f52b",
+  "dependency_commits": [
+    "-f67f7905c8c47cff8627b5533414934561478023 .specify/extensions/roadmap",
+    " 08e34c447bae34eaee3723cac61f2878b6bdf787 duckdb (v1.5.4)",
+    " b777c70d30942cca5bef62d6d4fa23a13362f398 extension-ci-tools (b777c70)",
+    " d8855e418e2231ae8439f0c7e840fa3f93b371e3 third_party/om-file-format (heads/main)"
+  ],
+  "files": [
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "bytes": 54236752,
+      "sha256": "31b79dd768ab38f2543195e439885d409231398f2437a63741424243766e0134"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/release/extension/duckomo/duckomo.duckdb_extension",
+      "bytes": 12809606,
+      "sha256": "227a9ea693e361c5ed37a443c5051c5c65a1439df89386ca7f06ccb616ce059f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/release/test/tools/duckomo_fixture_tool",
+      "bytes": 3662544,
+      "sha256": "cacb0cba26b4f39b371c521a303d86edf8d65570084f4f0124bceb7332bed275"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.om",
+      "bytes": 2482560,
+      "sha256": "2e8279f8bd12052ba5be5a0bcba2293dc4316097e434d6691f9e6711249e1fd3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/ecmwf-ifs-temperature-2m-chunk-817.om",
+      "bytes": 353999720,
+      "sha256": "483dd0be2096d3e3fff6731509400f97591ebcfc237a941a37460f42a7a10e7f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/scripts/validate-hres-o1280.py",
+      "bytes": 18731,
+      "sha256": "49445f5be1c26eb9b6b50336ddad690d3f3150a4d25cfe901de9cdb340120598"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/scripts/generate-hres-o1280.py",
+      "bytes": 5781,
+      "sha256": "7e19c24752e3e5b94c99439e98ab8a74949b8244408353f3e47b7fa56202653a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/test/tools/duckomo_fixture_tool.cpp",
+      "bytes": 132180,
+      "sha256": "e76d29d2192c9811ee823d55f80fa1facb0ec74aea8a963d6ee32d7b2ff703ee"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/test/data/grids/definitions.json",
+      "bytes": 706240,
+      "sha256": "9b1d2d9979a57839a787b913801901f0211e2d23d647013f23115b026133c8c3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/test/data/grids/sample-manifest.json",
+      "bytes": 35862,
+      "sha256": "72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/test/data/grids/value-reference-manifest.json",
+      "bytes": 9899,
+      "sha256": "9ed46b9664c6023ee14e0fb2e5543d6829125e7dbfaeb0b0760e4906c9272e44"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/src/include/duckomo/generated_grid_registry.hpp",
+      "bytes": 702675,
+      "sha256": "c56e078040fd61958214a43db8cc00795d2ce26f9e412e8c2eeb182bf9b4ec7b"
+    }
+  ],
+  "build_note": "CLI statically links DuckOMO; CLI hash is authoritative. Also retain matching loadable artifact hash.",
+  "tolerances": {
+    "producer_coordinates_degrees": 0.0001,
+    "explicit_domain": "exact",
+    "values": "Float32 bits, NaN to NULL"
+  },
+  "queries": [
+    {
+      "name": "static-domain",
+      "sql": "static-domain.sql",
+      "sql_sha256": "d8b1594feb98f82ccfdf8a7a4798395b7600e64396f2046c9fc44f74b575b2e2",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "static-explicit",
+      "sql": "static-explicit.sql",
+      "sql_sha256": "28f67ac6826d2e81ea90428ce4ed43f2e78edac198b5ee1975e5b40864792e8c",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "static-zero-value",
+      "sql": "static-zero-value.sql",
+      "sql_sha256": "74d9afa507e900c639f42355fcf68de0bf667f08dcd2d06c3510321b766ecc92",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "grid-info",
+      "sql": "grid-info.sql",
+      "sql_sha256": "f18405cdc52c689000bac487e58fb33ba4a4ad19493f3de62cb588794e4c512b",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "static-polar",
+      "sql": "static-polar.sql",
+      "sql_sha256": "836fab639c12bbb52715b2d077e017db6114da50da8d93810f984294f6d8d272",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "static-equator",
+      "sql": "static-equator.sql",
+      "sql_sha256": "13196bfaa8fc74f28696104cdc5076b52d8f462b3f62995817b98d9541901b99",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "static-seam",
+      "sql": "static-seam.sql",
+      "sql_sha256": "685941d157b6bd2f547e3f4ca1d240aefba64048a4b46348386031b5879d8a26",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "static-empty",
+      "sql": "static-empty.sql",
+      "sql_sha256": "02b7bc1d2c3926df12d4618830c370e604ff1c49e8634e0eac47d0363e64d8b9",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "time-polar",
+      "sql": "time-polar.sql",
+      "sql_sha256": "eee211afef41d408e8587f4c41207222de111a0aa4c9f4757358a7e6c3e4900c",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "time-equator",
+      "sql": "time-equator.sql",
+      "sql_sha256": "9e14aa4e9ccf2d485e375596bb17748b15b90fcf95de48b999b2ae5fed4914cf",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "time-last",
+      "sql": "time-last.sql",
+      "sql_sha256": "24f5a1abaf785ac35627e0bb2d7bcdb88c71d7e5d73e3b9c79c4211925198c11",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "time-explicit",
+      "sql": "time-explicit.sql",
+      "sql_sha256": "7c8a703bcbd8d466d8efab39e5eac42fa81f9f12cc22966e235f1e1c4714f7c5",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "time-filter",
+      "sql": "time-filter.sql",
+      "sql_sha256": "762e7a06b9ccfbf638a2d03704a8d7a07e4f01b1bea09de05191d1cc05db4f2e",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "polar-difference",
+      "sql": "polar-difference.sql",
+      "sql_sha256": "01c78a7a651013ace688f8eeb08447b40275bfee3bf43617e33afc7af0219341",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "equator-difference",
+      "sql": "equator-difference.sql",
+      "sql_sha256": "9267e4f77d01f55a36c0956afb6bd251871633cb487536bd4d59ea9a5d13c9fa",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "seam-difference",
+      "sql": "seam-difference.sql",
+      "sql_sha256": "3695961801adc9cda3eedd8e2ff030ed2ce75236c76a4bcffd3d38b3e338eeb4",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "empty-difference",
+      "sql": "empty-difference.sql",
+      "sql_sha256": "df9a09474ecf5fa242cd23c3228b7d3f2204e1a75a753efa3b0274a8f3876819",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    }
+  ],
+  "oracle_commands": {
+    "static-oracle": [
+      "/home/blizhan/repo/github/duckomo/build/release/test/tools/duckomo_fixture_tool",
+      "--oracle",
+      "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.om",
+      "--csv",
+      "/home/blizhan/repo/github/duckomo/build/hres-o1280/validation-20261010-r2/static-oracle.csv"
+    ],
+    "time-polar-oracle": [
+      "/home/blizhan/repo/github/duckomo/build/release/test/tools/duckomo_fixture_tool",
+      "--oracle-slice",
+      "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/ecmwf-ifs-temperature-2m-chunk-817.om",
+      "--offset",
+      "0,0,0",
+      "--shape",
+      "1,20,504",
+      "--csv",
+      "/home/blizhan/repo/github/duckomo/build/hres-o1280/validation-20261010-r2/time-polar-oracle.csv"
+    ],
+    "time-equator-oracle": [
+      "/home/blizhan/repo/github/duckomo/build/release/test/tools/duckomo_fixture_tool",
+      "--oracle-slice",
+      "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/ecmwf-ifs-temperature-2m-chunk-817.om",
+      "--offset",
+      "0,3299840,0",
+      "--shape",
+      "1,1,504",
+      "--csv",
+      "/home/blizhan/repo/github/duckomo/build/hres-o1280/validation-20261010-r2/time-equator-oracle.csv"
+    ],
+    "time-last-oracle": [
+      "/home/blizhan/repo/github/duckomo/build/release/test/tools/duckomo_fixture_tool",
+      "--oracle-slice",
+      "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/ecmwf-ifs-temperature-2m-chunk-817.om",
+      "--offset",
+      "0,6599679,0",
+      "--shape",
+      "1,1,504",
+      "--csv",
+      "/home/blizhan/repo/github/duckomo/build/hres-o1280/validation-20261010-r2/time-last-oracle.csv"
+    ]
+  },
+  "time_cases": {
+    "polar": [
+      "lat > 89.9",
+      0,
+      20
+    ],
+    "equator": [
+      "lat BETWEEN -0.04 AND 0 AND lon BETWEEN -0.001 AND 0.001",
+      3299840,
+      1
+    ],
+    "last": [
+      "lat < -89.9 AND lon BETWEEN -18.001 AND -17.999",
+      6599679,
+      1
+    ]
+  },
+  "time_label_start": "2016-12-22 00:00:00",
+  "open_gates": [
+    "independent original GRIB scanning/pl/point-value correspondence",
+    "full time-series value coverage",
+    "controlled remote full/local and attempts audit",
+    "signed S3/TLS",
+    "full memory gate",
+    "H9 independent reproduction"
+  ]
+}

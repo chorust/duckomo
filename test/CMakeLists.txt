@@ -182,6 +182,11 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
                 target_sources("${test}" PRIVATE
                     "${PROJECT_SOURCE_DIR}/src/grid/gaussian_grid.cpp"
                 )
+                if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+                    # The HRES O1280 reference re-derives the producer's staged
+                    # Float32 arithmetic; FMA contraction changes it by 1 ulp.
+                    target_compile_options("${test}" PRIVATE -ffp-contract=off)
+                endif()
             elseif(test STREQUAL "spatial_layout_test")
                 target_sources("${test}" PRIVATE
                     "${PROJECT_SOURCE_DIR}/src/grid/regular_grid.cpp"

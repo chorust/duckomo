@@ -408,6 +408,9 @@ def generate_header(input_path: Path) -> str:
         profile = item.get("expected_spatial_axis_profile", {})
         axes_json = json.dumps(profile, ensure_ascii=True, separators=(",", ":"), sort_keys=True)
         layout, axis_order, axis_count, profile_status = profile_cpp(profile)
+        alias = profile.get("flattened_axis_alias", "")
+        if alias and (layout != '"flattened"' or axis_count != 1 or not isinstance(alias, str) or alias in profile["axis_order"]):
+            raise ValueError("flattened_axis_alias requires a distinct named axis and a one-axis flattened profile")
         evidence = item.get("evidence", {})
         parent_definition = item.get("parameters", {}).get("parent_definition", "")
         name = item["id"]
@@ -426,7 +429,7 @@ def generate_header(input_path: Path) -> str:
                 cpp_string(evidence.get("source_uri") or ""),
                 cpp_string(evidence.get("build_pair") or ""),
                 cpp_string(evidence.get("claims", "")),
-                cpp_string(parent_definition), f"definitions.at({cpp_string(name)})",
+                cpp_string(parent_definition), f"definitions.at({cpp_string(name)})", cpp_string(alias),
             ]) + "});"
         )
     upstream_commit = manifest["upstream"]["commit"]
@@ -467,6 +470,7 @@ struct GridRegistryDefinitionRecord final {
 \tstd::string_view evidence_claims;
 \tstd::string_view parent_definition;
 \tGridDefinition definition;
+\tstd::string_view flattened_axis_alias;
 };
 
 inline constexpr std::string_view GRID_REGISTRY_UPSTREAM_COMMIT = __UPSTREAM_COMMIT__;

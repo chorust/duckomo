@@ -1,0 +1,273 @@
+{
+  "schema_version": 1,
+  "frozen_at": "2026-10-10T13:15:22.888031+00:00",
+  "scope": "local real OM queries; NOT full H0-H9 acceptance",
+  "platform": "Linux-6.17.0-1029-nvidia-aarch64-with-glibc2.39",
+  "git_head": "cbfcf19166f1237a368bebd55bb7d432ee059546",
+  "tracked_diff_sha256": "e99771a9933cd4642858c6f488eb712e5c80ee3b2de526f5d1b0e20bab65f52b",
+  "files": [
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "bytes": 54236752,
+      "sha256": "31b79dd768ab38f2543195e439885d409231398f2437a63741424243766e0134"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/release/extension/duckomo/duckomo.duckdb_extension",
+      "bytes": 12809606,
+      "sha256": "227a9ea693e361c5ed37a443c5051c5c65a1439df89386ca7f06ccb616ce059f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/release/test/tools/duckomo_fixture_tool",
+      "bytes": 3662544,
+      "sha256": "cacb0cba26b4f39b371c521a303d86edf8d65570084f4f0124bceb7332bed275"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.om",
+      "bytes": 2482560,
+      "sha256": "2e8279f8bd12052ba5be5a0bcba2293dc4316097e434d6691f9e6711249e1fd3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/ecmwf-ifs-temperature-2m-chunk-817.om",
+      "bytes": 353999720,
+      "sha256": "483dd0be2096d3e3fff6731509400f97591ebcfc237a941a37460f42a7a10e7f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/scripts/validate-hres-o1280.py",
+      "bytes": 17442,
+      "sha256": "d5694da910b4fba6381c64c2c8aaa3e37980aac09305b6802709966ff950a239"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/scripts/generate-hres-o1280.py",
+      "bytes": 5781,
+      "sha256": "7e19c24752e3e5b94c99439e98ab8a74949b8244408353f3e47b7fa56202653a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/test/tools/duckomo_fixture_tool.cpp",
+      "bytes": 132180,
+      "sha256": "e76d29d2192c9811ee823d55f80fa1facb0ec74aea8a963d6ee32d7b2ff703ee"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/test/data/grids/definitions.json",
+      "bytes": 706240,
+      "sha256": "9b1d2d9979a57839a787b913801901f0211e2d23d647013f23115b026133c8c3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/test/data/grids/sample-manifest.json",
+      "bytes": 35862,
+      "sha256": "72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/test/data/grids/value-reference-manifest.json",
+      "bytes": 9899,
+      "sha256": "9ed46b9664c6023ee14e0fb2e5543d6829125e7dbfaeb0b0760e4906c9272e44"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/src/include/duckomo/generated_grid_registry.hpp",
+      "bytes": 702675,
+      "sha256": "c56e078040fd61958214a43db8cc00795d2ce26f9e412e8c2eeb182bf9b4ec7b"
+    }
+  ],
+  "build_note": "CLI statically links DuckOMO; CLI hash is authoritative. Also retain matching loadable artifact hash.",
+  "tolerances": {
+    "producer_coordinates_degrees": 0.0001,
+    "explicit_domain": "exact",
+    "values": "Float32 bits, NaN to NULL"
+  },
+  "queries": [
+    {
+      "name": "static-domain",
+      "sql": "static-domain.sql",
+      "sql_sha256": "1f12d2cd91685fed077a7be2f1895ab4e948ddb4a3ea6163f1ac1dfde14f1b75",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "static-explicit",
+      "sql": "static-explicit.sql",
+      "sql_sha256": "ed6e0555ab8c8f0964b7e691add5672cb611f56ed0361264cd066ff62a50f6e4",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "static-zero-value",
+      "sql": "static-zero-value.sql",
+      "sql_sha256": "ff628a126184e668812df1af47676f834cf291b35c367d1d80227b0e2f37682e",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "grid-info",
+      "sql": "grid-info.sql",
+      "sql_sha256": "8f6aff571b07e200bd6723da8ec746723cd113e2e8b1147e0967dbfe42c68ecf",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "static-polar",
+      "sql": "static-polar.sql",
+      "sql_sha256": "3dea6e34d60a6a4353d857540f45af96b7a68fb0de703fe19806377e5ab91384",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "static-equator",
+      "sql": "static-equator.sql",
+      "sql_sha256": "e5059a45f7fce4a0ed66123c4e409d789203b655bedf53c8260f02201a6df502",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "static-seam",
+      "sql": "static-seam.sql",
+      "sql_sha256": "13b79b27889e7852f878ffd7b942e9f16d776361bbfffb25cac3040e0999d107",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "static-empty",
+      "sql": "static-empty.sql",
+      "sql_sha256": "121b69100e88958c63be34460e9305d0dcd7c9a054412d07fb79549adda53757",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "time-polar",
+      "sql": "time-polar.sql",
+      "sql_sha256": "9cf64c7eb257c55007809a56d84cb7e4516294ae31ddac7a7b8b8cf5c9b25e1a",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "time-equator",
+      "sql": "time-equator.sql",
+      "sql_sha256": "94432d9f32fa9c8c62d43bea7a23f7234d0e4bb6133c8e5fd41150f8833bf611",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "time-last",
+      "sql": "time-last.sql",
+      "sql_sha256": "1d75acd423ebcbc417521a525ce0da3193971ebb79d6cb9ce70f374b11d0c866",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "time-explicit",
+      "sql": "time-explicit.sql",
+      "sql_sha256": "885e7ec998dec626cbef433a2b6673184bcbcbd09c5c079d842ea2af4b495eaf",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    },
+    {
+      "name": "time-filter",
+      "sql": "time-filter.sql",
+      "sql_sha256": "e7030f40e47e237357d0ac5158779dca3caec5eb7eb9e5a86335582c0a729f42",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        "-batch",
+        ":memory:"
+      ]
+    }
+  ],
+  "time_cases": {
+    "polar": [
+      "lat > 89.9",
+      0,
+      20
+    ],
+    "equator": [
+      "lat BETWEEN -0.04 AND 0 AND lon BETWEEN -0.001 AND 0.001",
+      3299840,
+      1
+    ],
+    "last": [
+      "lat < -89.9 AND lon BETWEEN -18.001 AND -17.999",
+      6599679,
+      1
+    ]
+  },
+  "time_label_start": "2016-12-22 00:00:00",
+  "open_gates": [
+    "independent original GRIB scanning/pl/point-value correspondence",
+    "full time-series value coverage",
+    "controlled remote full/local and attempts audit",
+    "signed S3/TLS",
+    "full memory gate",
+    "H9 independent reproduction"
+  ]
+}

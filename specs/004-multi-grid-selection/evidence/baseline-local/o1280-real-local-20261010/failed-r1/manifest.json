@@ -1,0 +1,257 @@
+{
+  "schema_version": 1,
+  "freeze_sha256": "892b48a7275f2f10f796171ea80d72875d849c635278166c6b1e91ec29972750",
+  "checks": {
+    "static-official-values-and-producer-coordinates": {
+      "status": "pass",
+      "positions": 6599680,
+      "nulls": 0,
+      "value_bit_mismatches": 0,
+      "max_lat_error_degrees": 0.0,
+      "max_lon_error_degrees": 0.0,
+      "coordinate_oracle_scope": "Python port of pinned producer, not original GRIB scanning reference"
+    }
+  },
+  "metrics": {
+    "static-domain": {
+      "outcome": {
+        "status": "success",
+        "scan_complete": true,
+        "terminal_published": true,
+        "error_category": ""
+      },
+      "value_totals": {
+        "index_bytes": 968912,
+        "index_requests": 11379,
+        "data_bytes": 4102073,
+        "data_requests": 11421,
+        "decoded_chunks": 27649,
+        "decode_complete": true
+      },
+      "query_owned_peak_bytes": 992149
+    },
+    "static-explicit": {
+      "outcome": {
+        "status": "success",
+        "scan_complete": true,
+        "terminal_published": true,
+        "error_category": ""
+      },
+      "value_totals": {
+        "index_bytes": 968912,
+        "index_requests": 11379,
+        "data_bytes": 4102073,
+        "data_requests": 11421,
+        "decoded_chunks": 27649,
+        "decode_complete": true
+      },
+      "query_owned_peak_bytes": 991651
+    },
+    "static-zero-value": {
+      "outcome": {
+        "status": "success",
+        "scan_complete": true,
+        "terminal_published": true,
+        "error_category": ""
+      },
+      "value_totals": {
+        "index_bytes": 0,
+        "index_requests": 0,
+        "data_bytes": 0,
+        "data_requests": 0,
+        "decoded_chunks": 0,
+        "decode_complete": null
+      },
+      "query_owned_peak_bytes": 957958
+    }
+  },
+  "status": "fail",
+  "error": "grid-info did not completely consume its scan",
+  "artifacts": [
+    {
+      "path": "commands.json",
+      "bytes": 1673,
+      "sha256": "2d9deb0330f3d527d6b25444d00803bbedb2d043c16a2c408b88eb4aa1bca3e2"
+    },
+    {
+      "path": "freeze.json",
+      "bytes": 8395,
+      "sha256": "892b48a7275f2f10f796171ea80d72875d849c635278166c6b1e91ec29972750"
+    },
+    {
+      "path": "grid-info.csv",
+      "bytes": 302276,
+      "sha256": "dd761c42255d6f0930e724016627dce8f46f0c26e0ee1fc6f3f3b28c339c56d6"
+    },
+    {
+      "path": "grid-info.metrics.csv",
+      "bytes": 9697,
+      "sha256": "36b320f3e4d03adb05956da723ef2927657c117d19692b0f15dbca4551ef17c5"
+    },
+    {
+      "path": "grid-info.sql",
+      "bytes": 574,
+      "sha256": "8f6aff571b07e200bd6723da8ec746723cd113e2e8b1147e0967dbfe42c68ecf"
+    },
+    {
+      "path": "grid-info.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "grid-info.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "static-domain.csv",
+      "bytes": 510554540,
+      "sha256": "d568d8ac9b46d9a60e43a2ccf64ff44ca101be1d2f69d4ffe8c84de5915523da"
+    },
+    {
+      "path": "static-domain.metrics-v4.json",
+      "bytes": 11810,
+      "sha256": "ab75ecabe18a0058acd79d410aa2817415e11e264b6f23a71419d927f8f0b099"
+    },
+    {
+      "path": "static-domain.metrics.csv",
+      "bytes": 9957,
+      "sha256": "e617cc930787fe9fd014ba2b49a953b4db88a7b14663f6796f6f5867053f5c3b"
+    },
+    {
+      "path": "static-domain.sql",
+      "bytes": 819,
+      "sha256": "1f12d2cd91685fed077a7be2f1895ab4e948ddb4a3ea6163f1ac1dfde14f1b75"
+    },
+    {
+      "path": "static-domain.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "static-domain.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "static-empty.sql",
+      "bytes": 832,
+      "sha256": "121b69100e88958c63be34460e9305d0dcd7c9a054412d07fb79549adda53757"
+    },
+    {
+      "path": "static-equator.sql",
+      "bytes": 877,
+      "sha256": "e5059a45f7fce4a0ed66123c4e409d789203b655bedf53c8260f02201a6df502"
+    },
+    {
+      "path": "static-explicit.csv",
+      "bytes": 510554540,
+      "sha256": "d568d8ac9b46d9a60e43a2ccf64ff44ca101be1d2f69d4ffe8c84de5915523da"
+    },
+    {
+      "path": "static-explicit.metrics-v4.json",
+      "bytes": 11027,
+      "sha256": "33f02a61183d1318acefe27bc124e1dc464392ae3b13676f651ba385e5ebe2d9"
+    },
+    {
+      "path": "static-explicit.metrics.csv",
+      "bytes": 9174,
+      "sha256": "16c9890031f875954879f18b7b8daf62f1696e44642684e084c09dc0336e9fd2"
+    },
+    {
+      "path": "static-explicit.sql",
+      "bytes": 532692,
+      "sha256": "ed6e0555ab8c8f0964b7e691add5672cb611f56ed0361264cd066ff62a50f6e4"
+    },
+    {
+      "path": "static-explicit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "static-explicit.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "static-oracle.csv",
+      "bytes": 83004797,
+      "sha256": "083300d4593e326236b76dfb2d55485058fdbf360a27bfab6a04a64d01eab91a"
+    },
+    {
+      "path": "static-oracle.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "static-oracle.stdout.txt",
+      "bytes": 136,
+      "sha256": "4c4466d604ca9ff16af5b014ffa27af1f97f2998c5eaf6d9d78571c62e2d6951"
+    },
+    {
+      "path": "static-polar.sql",
+      "bytes": 834,
+      "sha256": "3dea6e34d60a6a4353d857540f45af96b7a68fb0de703fe19806377e5ab91384"
+    },
+    {
+      "path": "static-seam.sql",
+      "bytes": 875,
+      "sha256": "13b79b27889e7852f878ffd7b942e9f16d776361bbfffb25cac3040e0999d107"
+    },
+    {
+      "path": "static-zero-value.csv",
+      "bytes": 118,
+      "sha256": "ef50e8f303c4e0acb2b3f6cb4590ec2dd303b30fbf8f20dbe4c4c19e7b070856"
+    },
+    {
+      "path": "static-zero-value.metrics-v4.json",
+      "bytes": 11608,
+      "sha256": "ca7d30fb9806f27473c307f3fb140eac5f3d6d92b76ff754b63bcf4ce0ff401e"
+    },
+    {
+      "path": "static-zero-value.metrics.csv",
+      "bytes": 9755,
+      "sha256": "b128e58dbea010add51fddfbdd13ce4732ebc5de9d4901b88482d291b05afdca"
+    },
+    {
+      "path": "static-zero-value.sql",
+      "bytes": 664,
+      "sha256": "ff628a126184e668812df1af47676f834cf291b35c367d1d80227b0e2f37682e"
+    },
+    {
+      "path": "static-zero-value.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "static-zero-value.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "time-equator.sql",
+      "bytes": 1082,
+      "sha256": "94432d9f32fa9c8c62d43bea7a23f7234d0e4bb6133c8e5fd41150f8833bf611"
+    },
+    {
+      "path": "time-explicit.sql",
+      "bytes": 532909,
+      "sha256": "885e7ec998dec626cbef433a2b6673184bcbcbd09c5c079d842ea2af4b495eaf"
+    },
+    {
+      "path": "time-filter.sql",
+      "bytes": 1133,
+      "sha256": "e7030f40e47e237357d0ac5158779dca3caec5eb7eb9e5a86335582c0a729f42"
+    },
+    {
+      "path": "time-last.sql",
+      "bytes": 1067,
+      "sha256": "1d75acd423ebcbc417521a525ce0da3193971ebb79d6cb9ce70f374b11d0c866"
+    },
+    {
+      "path": "time-polar.sql",
+      "bytes": 1032,
+      "sha256": "9cf64c7eb257c55007809a56d84cb7e4516294ae31ddac7a7b8b8cf5c9b25e1a"
+    }
+  ]
+}

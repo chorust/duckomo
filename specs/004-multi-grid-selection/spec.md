@@ -8,6 +8,12 @@
 
 **Input**: User description: "docs/roadmap phase6多个网格支持，要思考如何让range 读取（s3远程文件）怎么适配，比如先把lot lat range转换成对应网格文件range读取再，还要考虑后面支持空间计算的适配，这个spec可能需要详细考虑一下后面肯定要支持到duckdb2.0"
 
+## 2026-10-10 当前 Gaussian 验收范围
+
+负责人已批准：[Gaussian 验收范围修订](contracts/gaussian-acceptance-20261010.md)。因已调查 Open-Meteo 公开来源未获匹配对象，N160/N320/N 区域真实样本及依赖它们的验收本轮跳过、不阻塞当前范围收口；定义与 native/synthetic 回归保留，不记为真实通过。按 [2026-10-10 pinned producer 参考决定](contracts/pinned-producer-reference-20261010.md)，O1280（`ecmwf_ifs`）与三个投影定义登记为 coordinate-value-validated：认可 pinned Open-Meteo Swift 源码（经独立移植逐点核对）为坐标/点序参考，一致性对象是 Open-Meteo 发布对象而非原生 GRIB 网格。O1280 依据 2026-10-10 本地真实查询记录（evidence/baseline-local/o1280-real-local-20261010/final.md）；远程收益、完整 gate 与 H9 独立复现仍开放。
+
+下文原始 N-grid 场景、FR-001/FR-027/SC-001 和 O/F 范围描述保留为历史基线，冲突时以本修订为准；其他正确性、证据、内存、远程与独立复现要求不降低，Phase 6 仍为 in-progress。
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - 用同一地理坐标语义查询不同网格 (Priority: P1)

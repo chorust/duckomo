@@ -1,5 +1,50 @@
 <!--
-LATEST SYNC IMPACT REPORT — 2026-10-02
+LATEST SYNC IMPACT REPORT — 2026-10-10 (3)
+======================================
+Version change: 1.1.1 → 1.2.0
+Bump rationale: MINOR — 新增负责人证据决定（pinned producer 参考接受），属新决策记录，非单纯状态措辞。
+
+Changes this revision:
+  - 负责人决定：对 Open-Meteo 自产对象，pinned Swift 源码（经独立移植逐点核对）接受为坐标/点序参考。
+  - `ecmwf_ifs` 与三个投影定义（gem_rdps_10km/gem_regional/aladin_central_europe_2km）登记为 coordinate-value-validated；新增 C-14。
+  - 语义边界保留：一致性对象是 Open-Meteo 发布对象而非原生 GRIB 网格；远程收益、完整 gate、H9 仍开放，不升级 remote-benefit-validated。
+
+Specs affected: 004
+Open questions added/resolved: none
+Notes: 历史 manifests/gate 结果不追溯改写；N-grid 本轮跳过决定不变。
+
+---
+HISTORICAL SYNC IMPACT REPORT — 2026-10-10 (2)
+======================================
+Version change: 1.1.0 → 1.1.1
+Bump rationale: PATCH — 记录 004 O1280 本地真实 domain/空间/抽样时间查询验证通过与证据边界澄清；生命周期不变，无新增 spec、决策或开放问题。
+
+Changes this revision:
+  - O1280（ecmwf_ifs）补本地真实查询执行记录：全量 HSURF 官方值对照零 mismatch、producer 坐标独立 Python 复算最大误差 0、显式/domain 等价、空间双向 EXCEPT ALL、22×504 时间值/NULL 官方切片对照（evidence/baseline-local/o1280-real-local-20261010/）。
+  - 修复真实 HSURF 内嵌 lat/lon 轴名的绑定（显式登记 flattened_axis_alias），不放宽冲突元数据断言；历史 manifest 不追溯改写。
+  - O1280 保持 metadata-checked：独立原始 GRIB 扫描/点序、完整时间值覆盖、受控远程/签名 S3、完整 gate 与 H9 仍开放。
+
+Specs affected: 004
+Open questions added/resolved: none
+Notes: 属状态/证据更新与措辞澄清；范围与治理决策不变。
+
+---
+HISTORICAL SYNC IMPACT REPORT — 2026-10-10
+======================================
+Version change: 1.0.1 → 1.1.0
+Bump rationale: MINOR — 负责人批准 004 Gaussian 真实样本范围实质调整；生命周期仍为 in-progress。
+
+Changes this revision:
+  - N160/N320/N 区域真实样本本轮跳过，不阻塞当前范围收口；保留定义/native/synthetic 回归。
+  - O1280 改为 Gaussian 验收目标，当前 metadata-checked；历史值证据不升级真实坐标/点序。
+  - 同步 spec/plan/tasks/SQL/evidence 契约和产品文档；Phase 8 保留为待评审提案。
+
+Specs affected: 004
+Open questions added/resolved: none
+Notes: 旧证据与门禁结果不改写；其他当前范围缺口及独立复现仍未完成。
+
+---
+HISTORICAL SYNC IMPACT REPORT — 2026-10-02
 ======================================
 Version change: 1.0.0 → 1.0.1
 Bump rationale: PATCH — 更新 003 的任务快照和 T059 运行证据；生命周期仍为 in-progress。
@@ -66,6 +111,7 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 - **C-10 — 由 DuckDB 调度并行：** global state 保存不可变 schema/selection、惰性任务分配及终止状态，worker local state 独占句柄、decoder 与缓冲。上限受 DuckDB threads、连接设置及可用任务数共同限制，不另建线程池；每个候选逻辑位置恰好处理一次，失败后停止后续任务。来源：[003 plan](../../specs/003-dimensions-remote-parallel/plan.md#implementation-sequence)、[003 data model](../../specs/003-dimensions-remote-parallel/data-model.md#scantask-与-globallocalstate)。
 - **C-11 — 缓存归官方依赖：移除 DuckOMO 自有 LRU 和缓存 SQL 设置/函数，不承诺原容量、访问分区或即时撤权语义。旧 G5 superseded，保留历史失败。** 来源：[2026-10-08 修订](../../specs/004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md)。
 - **C-12 — 诚实的 profiling：自有应用读取/解码/选择/任务/终态保留；远程 transport NULL/complete=false，本地 0/complete=true；自有 cache false/0/removed。服务端发送量独立审计，HTTPFS 总内存不由自有账本约束。** 来源：[2026-10-08 修订](../../specs/004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md)。
+- **C-14 — Open-Meteo 自产对象的 producer 参考（2026-10-10 负责人决定）：** 对 Open-Meteo 公开发布且由 pinned `b06f4760` Swift 源码自身产出的 OM v3 对象，pinned producer 源码经不调用 DuckOMO 内核的独立移植逐点核对后，接受为坐标/点序参考，满足 coordinate-value-validated 的参考条件；详见 [pinned-producer-reference-20261010](../../specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md)。该一致性是「与发布对象一致」，不得宣传为与原生 GRIB 网格等价；不替代远程收益、完整 gate 与 H9；不扩展至非 Open-Meteo 生产者对象，同类定义不继承。
 - **C-13 — 后续网格与科学算子的边界：** 更多网格须有上游定义、真实样本对照及可重生 registry；科学算子独立于扫描入口设计，普通 `read_om` 直接输出 DuckDB Vector。xtensor/xsimd 尚未接入，现有 artifacts 未确定它们的后续选型。来源：[产品路线图](../../docs/roadmap.md#后续实现约束)。
 
 ## Planned Specs
@@ -77,7 +123,7 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 | 001 | Phase 0–2 | `implemented` | 44/44 勾选 | AArch64 运行门禁有通过记录；SC-006 独立复现仍为 Partial |
 | 002 | Phase 3 | `verified` | 46/46 勾选 | 原始 Phase 3 / ncep_gfswave025 在 AArch64 独立验收；T042 为延期决定，未执行 |
 | 003 | Phase 4–5 | `in-progress` | 本地 G0–G2 通过，G4 只有本地部分结果；G3、G5–G7 未完成，完整交付门禁未闭环 |
-| 004 | Phase 6 | `in-progress` | 任务仍在实施；本地网格/选择代码已有进展，真实定义覆盖、远程/内存/版本 gate 和独立复现未闭环 |
+| 004 | Phase 6 | `in-progress` | 任务仍在实施；四个 Open-Meteo 定义 2026-10-10 已登记 coordinate-value-validated（C-14）；N-grid 本轮跳过，远程/内存/版本 gate、完整 H1/H2 和独立复现未闭环 |
 
 生命周期根据实施和验收 artifacts 归纳；任务勾选不代表运行 gate 通过。001 与 003 的 spec 头部仍写 `Draft`；原文件状态保留。
 
@@ -126,14 +172,16 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 
 - **Description:** 在既有单对象扫描器上增加封闭的 rotated/Lambert/stereographic/reduced-Gaussian 定义、保守 native-window 空间选择、可选 source 位置和 `om_grid_info` 描述。
 - **Outcome:** 对固定真实来源完整核对坐标、值、布局及源位置；空间条件结果与完整物化后过滤一致，并在真实可跳块输入上证明局部读取收益；内存/取消/并行/终态可审计；逐 definition/domain 标注实际 evidence 等级。
-- **Scope (in):** 固定 Open-Meteo 规则和数值来源；明示 N160/N320/N320 区域 Gaussian；有界选择与预算回退；source/grid-info；metrics v4；本地及远程、版本配套和独立复现门禁。公开 HRES O1280 对象为补充 Gaussian-family 证据，不替代 N-grid 样本。Evidence levels 按 definition 隔离。
-- **Scope (out):** 任意 CRS/PROJ、Gaussian O/F 接受、由 BBOX 重建区域点序、解码块缓存、写入、多文件拼接、邻接/单元边界/面积/距离/向量方向算子，以及未经 gate 支持的发布声明。
+- **Historical scope (in, superseded for Gaussian real samples on 2026-10-10):** 固定 Open-Meteo 规则和数值来源；明示 N160/N320/N320 区域 Gaussian；有界选择与预算回退；source/grid-info；metrics v4；本地及远程、版本配套和独立复现门禁。公开 HRES O1280 对象为补充 Gaussian-family 证据，不替代 N-grid 样本。Evidence levels 按 definition 隔离。
+- **Scope (in, current):** 按 [负责人批准的 Gaussian 修订](../../specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md)，N160/N320/N 区域真实样本本轮跳过、不阻塞当前范围收口；定义/身份/native/synthetic 回归保留且不记为真实通过。O1280（ecmwf_ifs）与三个投影定义按 C-14 登记 coordinate-value-validated（evidence/baseline-local/o1280-real-local-20261010/ 与 h1-20261008-5dac993/）；完整时间值覆盖、远程证据、完整 gate 与 H9 仍待补齐。N-grid 定义与跳过决定不变；其他网格、选择、source/info、指标和独立复现范围不降低。
+- **Scope (out):** 任意 CRS/PROJ、除登记 O1280 外的任意 Gaussian O/F 接受、由 BBOX 重建区域点序、解码块缓存、写入、多文件拼接、邻接/单元边界/面积/距离/向量方向算子，以及未经 gate 支持的发布声明。
 - **Depends on:** 复用 001–003 的 OM v3 reader、DuckDB table function、轴和受检 ReadAtFile 框架。本地网格内核可继续实现；H6 远程收益按官方 HTTPFS 新契约和受控服务独立审计。外部真实样本和独立 oracle 是 Gaussian 完整验收输入门槛，不阻止已有输入下的内核实现。
 - **Governed by:** C-01–C-13；spec 自带的 SQL、selection/I/O 和 evidence contracts。
 - **Addresses:** [产品路线图 Phase 6](../../docs/roadmap.md#阶段)、[多网格 SQL 契约](../../specs/004-multi-grid-selection/contracts/sql-interface.md)、[逐 definition 证据表](../../docs/grid-domains.md)。
 - **Spec dir:** [specs/004-multi-grid-selection/](../../specs/004-multi-grid-selection/)；[spec](../../specs/004-multi-grid-selection/spec.md)、[plan](../../specs/004-multi-grid-selection/plan.md)、[tasks](../../specs/004-multi-grid-selection/tasks.md)。
 - **Key decisions:** canonical identity 不含 provenance；未知/冲突 CRS fail closed；候选使用与输出一致的函数且保留 DuckDB residual；任务惰性、有界并可取消；Gaussian 显式完整行表/局部 parent segments；O1280 与 N family 分开；完整 scan 才能发布 authoritative exact count/成功 memory evidence。
-- **Notes:** requirements checklist 全部通过。三类真实 Open-Meteo OM v3 投影样本已有独立坐标和官方 OM C 全量值参考；2026-10-08 匹配 baseline H1 子比较对全部可用投影坐标和值逐位置通过，但其 `[ny,nx,ntime]` 轴顺序仍来自 producer profile，OM 对象源轴映射尚无独立证明。HRES O1280 `HSURF.om` 全值参考仍是补充证据，行长/坐标 point order 未映射，不能提升 N160/N320/区域状态。T003/T004 对 N-grid真实对象、区域局部点序和完整验收参考仍未完成；本地合成选择回归不替代 H0/H1/H6。G3 的远程依赖、2.0 matrix 与 H9 独立复现仍待完成。因此保持 `in-progress`，不能只因实现代码或生成 registry 存在而标 `implemented` / `verified`。
+- **Current scope note (2026-10-10):** 下条历史 Notes 的 N-grid 阻塞及 O1280 supplemental 限制已由本轮修订替代；旧执行结果/hash 不变，T004 等其余工作和完整门禁仍开放，不提升 lifecycle。同日补记的 O1280 本地真实查询验证（含 HSURF 轴绑定修复）与 pinned producer 参考决定已使四个 Open-Meteo 定义登记 coordinate-value-validated（C-14）；远程/完整 gate/H9 仍开放。Phase 8 series 只是产品文档中的待评审提案，不新增已立项 spec。
+- **Historical notes (retained):** requirements checklist 全部通过。三类真实 Open-Meteo OM v3 投影样本已有独立坐标和官方 OM C 全量值参考；2026-10-08 匹配 baseline H1 子比较对全部可用投影坐标和值逐位置通过，但其 `[ny,nx,ntime]` 轴顺序仍来自 producer profile，OM 对象源轴映射尚无独立证明。HRES O1280 `HSURF.om` 全值参考仍是补充证据，行长/坐标 point order 未映射，不能提升 N160/N320/区域状态。T003/T004 对 N-grid真实对象、区域局部点序和完整验收参考仍未完成；本地合成选择回归不替代 H0/H1/H6。G3 的远程依赖、2.0 matrix 与 H9 独立复现仍待完成。因此保持 `in-progress`，不能只因实现代码或生成 registry 存在而标 `implemented` / `verified`。
 
 ### 尚未形成 spec 的既有方向
 
@@ -164,7 +212,7 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 
 ---
 
-**Version**: 1.0.1 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-02
+**Version**: 1.2.0 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-10
 
 ## 2026-10-08 官方 HTTPFS 接入
 

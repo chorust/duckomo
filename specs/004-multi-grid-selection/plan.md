@@ -4,6 +4,10 @@
 
 **Input**: `specs/004-multi-grid-selection/spec.md`
 
+## 2026-10-10 Gaussian 范围修订
+
+当前范围以 [负责人批准的 Gaussian 修订](contracts/gaussian-acceptance-20261010.md) 为准：N160/N320/N 区域真实样本本轮跳过且不阻塞收口，定义/合成回归保留；O1280 为本轮 Gaussian 验收目标而非已验收结论。下文原始 N-grid 强制样本和排除 O/F 的范围是历史基线；其他门禁不放宽，旧执行结果不追溯改为 pass。
+
 ## Summary
 
 在既有规则网格上增加球面旋转经纬度、Lambert conformal conic、stereographic 和 reduced Gaussian N。网格内核提供原生位置到地理坐标及可追溯定义；选择层生成与非空间轴相交的、不重复的对象逻辑位置；官方 OM C reader 继续负责 chunk、LUT、压缩偏移及解码，配套 httpfs 负责严格 HTTP/S3 Range。

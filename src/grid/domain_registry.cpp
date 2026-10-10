@@ -175,7 +175,7 @@ const std::vector<RegisteredGridDefinition> &GridDefinitions() {
 			                  std::string(record.evidence_sample_id), std::string(record.evidence_source_uri),
 			                  std::string(record.evidence_build_pair), std::string(record.evidence_claims),
 			                  std::string(record.parent_definition),
-			                  record.domain_bindable});
+			                  record.domain_bindable, std::string(record.flattened_axis_alias)});
 		}
 		for (const auto &definition : result) {
 			if (definition.parent_definition.empty()) continue;

@@ -1,5 +1,6 @@
 #include "duckomo/gaussian_grid.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <fstream>
 #include <functional>
@@ -279,6 +280,42 @@ void TestFrozenN160N320TablesAndN320RegionMapping() {
 	}
 }
 
+void TestFrozenHresO1280Rows() {
+	const auto rows = ReadFrozenGaussianRows("ecmwf_ifs");
+	GaussianGrid grid(1280, "openmeteo_approx_v1", rows);
+	Require(rows.size() == 2560 && grid.PointCount() == 6599680,
+	        "HRES O1280 has its own octahedral row table, not N160/N320 or a rectangular grid");
+	const float dy = 180.0F / (2.0F * 1280.0F + 0.5F);
+	std::uint64_t prefix = 0;
+	for (std::uint64_t y = 0; y < 2560; y++) {
+		const auto nx = 20 + 4 * std::min(y, std::uint64_t(2559) - y);
+		// Split multiply/add so the compiler cannot contract them into an FMA;
+		// the pinned producer semantics are two separate Float32 roundings.
+		const float scaled_latitude = static_cast<float>(1279 - static_cast<std::int64_t>(y)) * dy;
+		const float latitude = scaled_latitude + dy / 2.0F;
+		const float dx = 360.0F / static_cast<float>(nx);
+		if (rows[y].point_count != nx || rows[y].latitude != latitude || rows[y].longitude_step != dx) {
+			std::cerr << "row " << y << " nx " << nx << " lat(def/cpp) " << std::setprecision(17)
+			          << rows[y].latitude << '/' << static_cast<double>(latitude)
+			          << " dx " << rows[y].longitude_step << '/' << static_cast<double>(dx) << '\n';
+			throw std::runtime_error("O1280 row rule mismatch");
+		}
+		const auto source_prefix = y < 1280 ? 2 * y * y + 18 * y :
+		    6599680 - (2 * (2560 - y) * (2560 - y) + 18 * (2560 - y));
+		Require(prefix == source_prefix, "O1280 row offsets follow the producer integral point order");
+		for (std::uint64_t x = 0; x < nx; x++) {
+			const float unwrapped = static_cast<float>(x) * dx;
+			const float longitude = unwrapped >= 180.0F ? unwrapped - 360.0F : unwrapped;
+			const auto actual = grid.Coordinate(prefix + x, GridNumericPolicy::OpenMeteoF32V1);
+			Require(actual.latitude == latitude && actual.longitude == longitude,
+			        "all HRES source positions retain producer row/longitude coordinates");
+		}
+		prefix += nx;
+	}
+	Require(prefix == grid.PointCount() && rows.front().point_count == 20 && rows.back().point_count == 20,
+	        "both polar rows and the complete point count are preserved");
+}
+
 void TestIndependentLegendreRootReference() {
 	const double root_outer = std::sqrt((15.0 + 2.0 * std::sqrt(30.0)) / 35.0);
 	const double root_inner = std::sqrt((15.0 - 2.0 * std::sqrt(30.0)) / 35.0);
@@ -303,6 +340,7 @@ int main() {
 		TestOrderedRegionSegmentsAndParentMap();
 		TestMalformedRowsAndSegmentsReject();
 		TestFrozenN160N320TablesAndN320RegionMapping();
+		TestFrozenHresO1280Rows();
 		TestIndependentLegendreRootReference();
 		std::cout << "Gaussian grid checks passed\n";
 		return 0;

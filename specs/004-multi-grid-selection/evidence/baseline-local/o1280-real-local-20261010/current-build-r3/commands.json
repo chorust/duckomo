@@ -1,0 +1,304 @@
+[
+  {
+    "name": "static-oracle",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/test/tools/duckomo_fixture_tool",
+      "--oracle",
+      "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.om",
+      "--csv",
+      "/home/blizhan/repo/github/duckomo/build/hres-o1280/validation-20261010-r3/static-oracle.csv"
+    ],
+    "sql_file": null,
+    "exit_code": 0,
+    "seconds": 1.5689817410893738
+  },
+  {
+    "name": "static-domain",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "-no-init",
+      "-unsigned",
+      "-bail",
+      "-batch",
+      ":memory:"
+    ],
+    "sql_file": "static-domain.sql",
+    "exit_code": 0,
+    "seconds": 17.481736736837775
+  },
+  {
+    "name": "static-explicit",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "-no-init",
+      "-unsigned",
+      "-bail",
+      "-batch",
+      ":memory:"
+    ],
+    "sql_file": "static-explicit.sql",
+    "exit_code": 0,
+    "seconds": 17.683583880309016
+  },
+  {
+    "name": "static-zero-value",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "-no-init",
+      "-unsigned",
+      "-bail",
+      "-batch",
+      ":memory:"
+    ],
+    "sql_file": "static-zero-value.sql",
+    "exit_code": 0,
+    "seconds": 13.859876524657011
+  },
+  {
+    "name": "grid-info",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "-no-init",
+      "-unsigned",
+      "-bail",
+      "-batch",
+      ":memory:"
+    ],
+    "sql_file": "grid-info.sql",
+    "exit_code": 0,
+    "seconds": 0.16459546005353332
+  },
+  {
+    "name": "static-polar",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "-no-init",
+      "-unsigned",
+      "-bail",
+      "-batch",
+      ":memory:"
+    ],
+    "sql_file": "static-polar.sql",
+    "exit_code": 0,
+    "seconds": 0.2651353720575571
+  },
+  {
+    "name": "static-equator",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "-no-init",
+      "-unsigned",
+      "-bail",
+      "-batch",
+      ":memory:"
+    ],
+    "sql_file": "static-equator.sql",
+    "exit_code": 0,
+    "seconds": 0.21498631732538342
+  },
+  {
+    "name": "static-seam",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "-no-init",
+      "-unsigned",
+      "-bail",
+      "-batch",
+      ":memory:"
+    ],
+    "sql_file": "static-seam.sql",
+    "exit_code": 0,
+    "seconds": 1.317740284372121
+  },
+  {
+    "name": "static-empty",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "-no-init",
+      "-unsigned",
+      "-bail",
+      "-batch",
+      ":memory:"
+    ],
+    "sql_file": "static-empty.sql",
+    "exit_code": 0,
+    "seconds": 0.2648158799856901
+  },
+  {
+    "name": "time-polar",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "-no-init",
+      "-unsigned",
+      "-bail",
+      "-batch",
+      ":memory:"
+    ],
+    "sql_file": "time-polar.sql",
+    "exit_code": 0,
+    "seconds": 2.820875335019082
+  },
+  {
+    "name": "time-equator",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "-no-init",
+      "-unsigned",
+      "-bail",
+      "-batch",
+      ":memory:"
+    ],
+    "sql_file": "time-equator.sql",
+    "exit_code": 0,
+    "seconds": 2.8710114588029683
+  },
+  {
+    "name": "time-last",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "-no-init",
+      "-unsigned",
+      "-bail",
+      "-batch",
+      ":memory:"
+    ],
+    "sql_file": "time-last.sql",
+    "exit_code": 0,
+    "seconds": 2.8260812517255545
+  },
+  {
+    "name": "time-explicit",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "-no-init",
+      "-unsigned",
+      "-bail",
+      "-batch",
+      ":memory:"
+    ],
+    "sql_file": "time-explicit.sql",
+    "exit_code": 0,
+    "seconds": 2.931418322958052
+  },
+  {
+    "name": "time-filter",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "-no-init",
+      "-unsigned",
+      "-bail",
+      "-batch",
+      ":memory:"
+    ],
+    "sql_file": "time-filter.sql",
+    "exit_code": 0,
+    "seconds": 2.7734868498519063
+  },
+  {
+    "name": "polar-difference",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "-no-init",
+      "-unsigned",
+      "-bail",
+      "-batch",
+      ":memory:"
+    ],
+    "sql_file": "polar-difference.sql",
+    "exit_code": 0,
+    "seconds": 0.5156951416283846
+  },
+  {
+    "name": "equator-difference",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "-no-init",
+      "-unsigned",
+      "-bail",
+      "-batch",
+      ":memory:"
+    ],
+    "sql_file": "equator-difference.sql",
+    "exit_code": 0,
+    "seconds": 0.5157639146782458
+  },
+  {
+    "name": "seam-difference",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "-no-init",
+      "-unsigned",
+      "-bail",
+      "-batch",
+      ":memory:"
+    ],
+    "sql_file": "seam-difference.sql",
+    "exit_code": 0,
+    "seconds": 0.6656501940451562
+  },
+  {
+    "name": "empty-difference",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/duckdb",
+      "-no-init",
+      "-unsigned",
+      "-bail",
+      "-batch",
+      ":memory:"
+    ],
+    "sql_file": "empty-difference.sql",
+    "exit_code": 0,
+    "seconds": 0.46544565400108695
+  },
+  {
+    "name": "time-polar-oracle",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/test/tools/duckomo_fixture_tool",
+      "--oracle-slice",
+      "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/ecmwf-ifs-temperature-2m-chunk-817.om",
+      "--offset",
+      "0,0,0",
+      "--shape",
+      "1,20,504",
+      "--csv",
+      "/home/blizhan/repo/github/duckomo/build/hres-o1280/validation-20261010-r3/time-polar-oracle.csv"
+    ],
+    "sql_file": null,
+    "exit_code": 0,
+    "seconds": 0.16453231405466795
+  },
+  {
+    "name": "time-equator-oracle",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/test/tools/duckomo_fixture_tool",
+      "--oracle-slice",
+      "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/ecmwf-ifs-temperature-2m-chunk-817.om",
+      "--offset",
+      "0,3299840,0",
+      "--shape",
+      "1,1,504",
+      "--csv",
+      "/home/blizhan/repo/github/duckomo/build/hres-o1280/validation-20261010-r3/time-equator-oracle.csv"
+    ],
+    "sql_file": null,
+    "exit_code": 0,
+    "seconds": 0.21498708706349134
+  },
+  {
+    "name": "time-last-oracle",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/release/test/tools/duckomo_fixture_tool",
+      "--oracle-slice",
+      "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/ecmwf-ifs-temperature-2m-chunk-817.om",
+      "--offset",
+      "0,6599679,0",
+      "--shape",
+      "1,1,504",
+      "--csv",
+      "/home/blizhan/repo/github/duckomo/build/hres-o1280/validation-20261010-r3/time-last-oracle.csv"
+    ],
+    "sql_file": null,
+    "exit_code": 0,
+    "seconds": 0.21483791107311845
+  }
+]

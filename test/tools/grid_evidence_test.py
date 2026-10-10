@@ -568,6 +568,32 @@ class GridEvidenceContractTest(unittest.TestCase):
         self.assertTrue(any("cannot be inherited" in error for error in errors))
         self.assertTrue(any("frozen tolerance" in error for error in errors))
 
+    def test_registered_definitions_use_supported_evidence_levels(self) -> None:
+        root = Path(__file__).resolve().parents[2]
+        registry = json.loads((root / "test/data/grids/definitions.json").read_text())
+        for definition in registry["definitions"]:
+            with self.subTest(domain=definition["id"]):
+                self.assertIn(definition["evidence"]["level"], EVIDENCE_LEVELS)
+
+    def test_value_only_evidence_does_not_establish_coordinate_validation(self) -> None:
+        with TemporaryDirectory(prefix="duckomo-value-evidence-test-") as directory:
+            root = Path(directory)
+            oracle = root / "values.csv"
+            oracle.write_text("index,value\n0,1\n")
+            sample = {
+                "domain_id": "ecmwf_ifs", "classification": "real_public_open_meteo_om_v3",
+                "evidence_level": "metadata-checked", "numeric_policy": "openmeteo_f32_v1",
+                "coordinate_tolerance_degrees": 1e-4,
+                "official_value_reference": {
+                    "path": "values.csv", "sha256": hashlib.sha256(oracle.read_bytes()).hexdigest(),
+                },
+            }
+            self.assertEqual(sample_errors(sample, root), [])
+            sample["evidence_level"] = "coordinate-value-validated"
+            self.assertTrue(any("coordinate_reference" in error for error in sample_errors(sample, root)))
+            sample["evidence_level"] = "value-validated"
+            self.assertEqual(sample_errors(sample, root), ["sample evidence level is unknown"])
+
     def test_server_audit_matches_every_attempt_and_body_byte(self) -> None:
         audit = {
             "complete": True,

@@ -153,6 +153,17 @@ void TestGeneratedDefinitionRegistry() {
 	            std::get<GaussianGrid>(n320->definition.geometry).PointCount() == 542080 &&
 	            std::get<GaussianGrid>(region->definition.geometry).PointCount() == 14747,
 	        "generated Gaussian full and regional point counts are loaded from the frozen definitions");
+	const auto *hres = FindRegisteredGridDefinition("ecmwf_ifs");
+	Require(hres && hres->domain_bindable && hres->expected_axis_order == std::vector<std::string>({"point"}),
+	        "HRES is registered with a native point axis, not separate lat/lon axes");
+	Require(hres->flattened_axis_alias == "lon" && n160->flattened_axis_alias.empty(),
+	        "only explicitly registered profiles accept the HSURF flattened lon alias");
+	Require(std::get<GaussianGrid>(hres->definition.geometry).N() == 1280 &&
+	            std::get<GaussianGrid>(hres->definition.geometry).PointCount() == 6599680,
+	        "HRES registry retains the complete O1280 grid");
+	Require(GridId(hres->definition) != GridId(n160->definition) &&
+	            GridId(hres->definition) != GridId(n320->definition),
+	        "HRES has its own canonical identity");
 	Require(ParentGridId(region->definition) == GridId(n320->definition),
 	        "generated Gaussian region is linked to the n320 parent identity");
 	Require(!stereographic->source_path.empty() && !stereographic->object_profile_status.empty(),

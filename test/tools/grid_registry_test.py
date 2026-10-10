@@ -58,6 +58,26 @@ def check_sample_query_generation(generator) -> None:
         raise AssertionError("fixed seam and point/polygon query cases are missing")
 
 
+def check_flattened_axis_alias(generator) -> None:
+    data = json.loads((ROOT / "test/data/grids/definitions.json").read_text())
+    hres = next(item for item in data["definitions"] if item["id"] == "ecmwf_ifs")
+    profile = hres["expected_spatial_axis_profile"]
+    if profile["axis_order"] != ["point"] or profile.get("flattened_axis_alias") != "lon":
+        raise AssertionError("HRES must retain point and explicitly register its static lon alias")
+    with tempfile.TemporaryDirectory(prefix="duckomo-grid-alias-") as temporary:
+        path = Path(temporary) / "definitions.json"
+        for layout, alias in (("separate", "lon"), ("flattened", "point"), ("flattened", ["lon"])):
+            profile["layout"], profile["flattened_axis_alias"] = layout, alias
+            path.write_text(json.dumps(data))
+            try:
+                generator.generate_header(path)
+            except ValueError as error:
+                if "flattened_axis_alias" not in str(error):
+                    raise
+            else:
+                raise AssertionError("invalid registered flattened alias was accepted")
+
+
 def load_generator():
     spec = importlib.util.spec_from_file_location("grid_registry_generator", GENERATOR)
     if spec is None or spec.loader is None:
@@ -71,6 +91,7 @@ def main() -> int:
     generator = load_generator()
     check_n160_sql_rows_match_registry()
     check_sample_query_generation(generator)
+    check_flattened_axis_alias(generator)
     vectors = ROOT / "test/data/grids/canonical-vectors.json"
     sample_manifest = ROOT / "test/data/grids/sample-manifest.json"
     generator.canonical_vectors(vectors)

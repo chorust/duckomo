@@ -41,6 +41,7 @@ struct RegisteredGridDefinition final {
 	std::string evidence_claims;
 	std::string parent_definition;
 	bool domain_bindable = true;
+	std::string flattened_axis_alias;
 };
 
 const VerifiedDomain *FindVerifiedDomain(const std::string &name);

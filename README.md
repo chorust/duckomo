@@ -20,6 +20,8 @@ duckomo 是一个 DuckDB C++ 扩展，将 [Open-Meteo OM](https://github.com/ope
 
 当前每次读取**单个对象**，不接受目录、glob 或文件列表。新投影/Gaussian 网格的代码已实现，但逐网格真实样本、完整内存审计和独立复现尚未全部验收；实现不等于生产就绪，详见 [支持范围](docs/spec.md) 与 [网格证据](docs/grid-domains.md)。
 
+2026-10-10 [范围修订](specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md)：因已调查 Open-Meteo 公开来源未找到匹配对象，负责人批准本轮跳过 N160/N320/N 区域真实验收，保留定义和合成回归，不记为通过也不阻塞当前范围收口。按 [2026-10-10 pinned producer 参考决定](specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md)，`ecmwf_ifs` O1280 与三个投影定义登记为 `coordinate-value-validated`（与 Open-Meteo 发布对象一致，非原生 GRIB 网格等价）；O1280 依据 [真实本地查询验证](specs/004-multi-grid-selection/evidence/baseline-local/o1280-real-local-20261010/final.md)（全量 HSURF 值/坐标、显式/domain、空间与抽样时间序列）。远程收益、完整 gate 与 H9 独立复现仍开放。Phase 8 跨 chunk 入口仍是待评审提案。
+
 ## Install
 
 ### GitHub Release

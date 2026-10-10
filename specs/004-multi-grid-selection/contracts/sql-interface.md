@@ -4,6 +4,12 @@
 
 日期：2026-10-03；2026-10-06 与当前工作树实现核对。该文件是 004 的接口约束；version=1 grid、`include_source` 和 `om_grid_info` 已实现，但真实新网格验收、远程收益和版本矩阵仍未完成。继承 [002 SQL](../../002-spatial-pushdown/contracts/sql-interface.md) 与 [003 SQL](../../003-dimensions-remote-parallel/contracts/sql-interface.md) 的值/轴/缺测/类型及远程约束。
 
+## 2026-10-10 O1280 登记与验收边界
+
+`domain := 'ecmwf_ifs'` 登记完整 O1280 2560 行/6,599,680 点，使用一个展平空间轴。无坐标元数据时保留 `point` 声明（静态 `['y','point']`，时间序列 `['y','point','time']`）；真实冻结 HSURF 内嵌 `lat lon` 轴名，domain 明确登记 `flattened_axis_alias='lon'`，可保留推断轴直接读取或显式声明 `['lat','lon']`，不能用 `['y','point']` 覆盖。显式 grid 等价查询的 HSURF `spatial_axes := ['lon']`、chunk_817 则为 `['point']`。其他原始轴均保留位置；沿用完整行表与 f32 策略，不按 shape/路径猜轴。新增真实本地执行结果见 [O1280 记录](../evidence/baseline-local/o1280-real-local-20261010/final.md)，不替代独立原始 GRIB 点序和完整门禁。
+
+[负责人批准的范围修订](gaussian-acceptance-20261010.md) 仅跳过本轮 N-grid 真实样本验收；O1280 与三个投影定义当前 coordinate-value-validated（见 [pinned producer 参考决定](pinned-producer-reference-20261010.md)），native/合成回归只是实现回归。当前 `read_om` 仍只接受单对象，Phase 8 series 只是待评审提案。
+
 ## 读取入口与兼容
 
 ```text
@@ -38,7 +44,7 @@ Lambert为球面标准conformal-conic；φ1=φ2时`n=sinφ1`，否则采用两�
 
 ### reduced_gaussian
 
-layout 精确为 `{'order':'row_major'}`，spatial_axes 只有一个 point 轴。parameters 精确包含 `n,latitude_rule,rows,subset_segments`；n 正整数、rows 长度 2*n。latitude_rule 为 `openmeteo_approx_v1` / `legendre_roots_v1` / `explicit_v1`，其名声明来源，不替代实际行表；登记 N160/N320 固定为核对的生产者规则。
+layout 精确为 `{'order':'row_major'}`，spatial_axes 只有一个 point 轴。parameters 精确包含 `n,latitude_rule,rows,subset_segments`；n 正整数、rows 长度 2*n。latitude_rule 为 `openmeteo_approx_v1` / `legendre_roots_v1` / `explicit_v1`，其名声明来源，不替代实际行表；登记 N160/N320 和 O1280 固定为核对的生产者规则；相同 n 不代表相同行长或定义身份。
 
 rows 为非空 STRUCT 列表，每项精确包含 `latitude,point_count,longitude_origin,longitude_step`，point_count 正整数。按给定行序连接点，先执行 numeric_policy 再 normalize longitude 到 [-180,180)。必须用全部行表和规则确定身份，不能仅靠 n 生成未提供行长。legendre_roots_v1 必须有独立根参考与固定容差验证，不覆盖生产者近似行表。
 
