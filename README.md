@@ -1,6 +1,7 @@
-<p align="center"><img src="logo.png" alt="duckomo logo" width="160"></p>
-
-# duckomo
+<h1 align="center">
+  <img src="logo.png" alt="duckomo logo" width="160"><br>
+  duckomo
+</h1>
 
 中文 | [English](README.en.md)
 
