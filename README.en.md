@@ -33,19 +33,22 @@ PRAGMA platform;
 
 The release matrix targets **DuckDB v1.5.4 / v1.5.5 / v1.5.6** on **Linux glibc x86_64 / ARM64 and macOS Intel / Apple Silicon**. Available assets and their validation records are authoritative. If no matching asset is published yet, build from source under [Dev](#dev).
 
-GitHub binaries are unsigned; load only trusted code. Start `duckdb -unsigned`, then install. Releases that include a `.duckdb_extension.gz` asset can be installed directly (replace the tag / DuckDB version / platform in the URL with an exact match for your environment):
+GitHub binaries are unsigned; load only trusted code. Start `duckdb -unsigned`, then install. Release asset names carry the version and platform, and passing the URL directly to `INSTALL` makes DuckDB truncate the extension name at the first `.` (it is stored as `duckomo-v0.duckdb_extension`), so a later `LOAD duckomo` cannot find the file. Download the `.duckdb_extension.gz`, decompress it to the canonical name, and install locally instead:
 
-```sql
-INSTALL 'https://github.com/chorust/duckomo/releases/download/v0.1.0/duckomo-v0.1.0-duckdb-v1.5.4-linux_arm64.duckdb_extension.gz';
-LOAD duckomo;
+```bash
+DUCKOMO_VERSION=v0.2.0                                                    # DuckOMO version
+DUCKDB_VERSION=$(duckdb -list -noheader :memory: "SELECT version();")      # detected from local DuckDB
+PLATFORM=$(duckdb -list -noheader :memory: "PRAGMA platform;")            # detected from local DuckDB
+
+curl -sfL "https://github.com/chorust/duckomo/releases/download/${DUCKOMO_VERSION}/duckomo-${DUCKOMO_VERSION}-duckdb-${DUCKDB_VERSION}-${PLATFORM}.duckdb_extension.gz" | gunzip > duckomo.duckdb_extension
 ```
-
-Or download the Release ZIP and install the local file:
 
 ```sql
 INSTALL './duckomo.duckdb_extension';
 LOAD duckomo;
 ```
+
+Alternatively, download the Release ZIP manually (it contains the same `duckomo.duckdb_extension`) and the separate `SHA256SUMS` file, verify the ZIP before unzipping it, then run the same local install.
 
 Release ZIPs cannot be passed directly to `INSTALL`, and the GitHub repository URL is not a DuckDB extension repository. See the [release guide](docs/releases.md) for downloads, checksums, installation, and tag publishing.
 
@@ -59,6 +62,16 @@ Query GFS terrain from [Open-Meteo's public data](https://github.com/open-meteo/
 LOAD duckomo;
 INSTALL httpfs;
 LOAD httpfs;
+
+-- Optional: explicitly set the endpoint and region for Open-Meteo's public S3 bucket.
+-- No credentials are needed. Anonymous access normally works without a secret;
+-- this narrower scope can override an existing secret covering all of s3://.
+-- CREATE SECRET openmeteo_public (
+--   TYPE s3, PROVIDER config,
+--   ENDPOINT 's3.us-west-2.amazonaws.com',
+--   REGION 'us-west-2',
+--   SCOPE 's3://openmeteo/'
+-- );
 
 SELECT value AS elevation, lat, lon
 FROM read_om('s3://openmeteo/data/ncep_gfs025/static/HSURF.om',
@@ -87,7 +100,7 @@ Example output:
 └───────────┴───────┴────────┘
 ```
 
-`domain` selects the grid; `dimensions` declares the array axes.
+`domain` selects the grid; `dimensions` declares the array axes. The public bucket is read anonymously; no secret is needed. Beware: an existing secret scoped to `s3://` (for example an OSS/MinIO config with a custom endpoint) takes over Open-Meteo requests and causes a 404. Check with `SELECT name, scope FROM duckdb_secrets();` and drop that secret or narrow its scope.
 
 ### Query forecast variables and valid time
 

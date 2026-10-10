@@ -15,7 +15,7 @@
 ## 复现环境
 
 - 日期：2026-09-29。
-- DuckDB：官方 CLI v1.5.5；duckomo：针对 v1.5.5 构建的本地扩展。
+- DuckDB：官方 CLI v1.5.5；DuckOMO：针对 v1.5.5 构建的本地扩展。
 - 来源：公开桶 `s3://openmeteo/`；通过匿名 HTTPS 下载完整文件到 `build/s3-samples/` 后测试。本问题只涉及本地文件兼容性；S3 URI 直接读取属于独立的远程 I/O 工作。
 - 测试语句：`DESCRIBE SELECT * FROM read_om('本地文件路径');`。命令的非零退出码和错误信息用于判断当前实现是否接受文件。
 

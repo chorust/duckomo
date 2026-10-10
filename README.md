@@ -33,19 +33,22 @@ PRAGMA platform;
 
 发布矩阵为 **DuckDB v1.5.4 / v1.5.5 / v1.5.6** × **Linux glibc x86_64 / ARM64、macOS Intel / Apple Silicon**。以实际发布的资产和验证记录为准；若尚无匹配资产，可按 [Dev](#dev) 从源码构建。
 
-GitHub 包未签名，只加载可信来源。用 `duckdb -unsigned` 启动后安装。包含 `.duckdb_extension.gz` 资产的 Release 可直接安装（URL 中换成与实际环境精确匹配的 tag／DuckDB 版本／平台）：
+GitHub 包未签名，只加载可信来源。用 `duckdb -unsigned` 启动后安装。Release 资产文件名带有版本和平台，直接把 URL 传给 `INSTALL` 时 DuckDB 会按第一个 `.` 截断扩展名（存成 `duckomo-v0.duckdb_extension`），导致后续 `LOAD duckomo` 找不到文件。因此先下载 `.duckdb_extension.gz` 并解压为标准文件名，再本地安装：
 
-```sql
-INSTALL 'https://github.com/chorust/duckomo/releases/download/v0.1.0/duckomo-v0.1.0-duckdb-v1.5.4-linux_arm64.duckdb_extension.gz';
-LOAD duckomo;
+```bash
+DUCKOMO_VERSION=v0.2.0                                                    # DuckOMO 版本
+DUCKDB_VERSION=$(duckdb -list -noheader :memory: "SELECT version();")      # 从本机 DuckDB 获取
+PLATFORM=$(duckdb -list -noheader :memory: "PRAGMA platform;")            # 从本机 DuckDB 获取
+
+curl -sfL "https://github.com/chorust/duckomo/releases/download/${DUCKOMO_VERSION}/duckomo-${DUCKOMO_VERSION}-duckdb-${DUCKDB_VERSION}-${PLATFORM}.duckdb_extension.gz" | gunzip > duckomo.duckdb_extension
 ```
-
-也可以下载 Release ZIP 后安装本地文件：
 
 ```sql
 INSTALL './duckomo.duckdb_extension';
 LOAD duckomo;
 ```
+
+也可以手动下载 Release ZIP（内含同样的 `duckomo.duckdb_extension`）及独立的 `SHA256SUMS`，先校验 ZIP，再解压并执行同样的本地安装。
 
 Release ZIP 不能直接传给 `INSTALL`，GitHub 仓库地址也不是 DuckDB 扩展仓库。下载、校验、安装及 tag 发布流程见 [Release 指南](docs/releases.md)。
 
@@ -59,6 +62,15 @@ Release ZIP 不能直接传给 `INSTALL`，GitHub 仓库地址也不是 DuckDB �
 LOAD duckomo;
 INSTALL httpfs;
 LOAD httpfs;
+
+-- 可选：显式指定 Open-Meteo 公共 S3 桶的 endpoint 和 region，无需凭据。
+-- 通常可直接匿名读取；如已有覆盖 s3:// 的其他 secret，可用更精确的 scope 指定此桶。
+-- CREATE SECRET openmeteo_public (
+--   TYPE s3, PROVIDER config,
+--   ENDPOINT 's3.us-west-2.amazonaws.com',
+--   REGION 'us-west-2',
+--   SCOPE 's3://openmeteo/'
+-- );
 
 SELECT value AS elevation, lat, lon
 FROM read_om('s3://openmeteo/data/ncep_gfs025/static/HSURF.om',
@@ -87,7 +99,7 @@ ORDER BY lat, lon;
 └───────────┴───────┴────────┘
 ```
 
-`domain` 选择网格，`dimensions` 声明数组轴。
+`domain` 选择网格，`dimensions` 声明数组轴。公共桶匿名读取，无需创建 secret。注意：本机已有的 scope 为 `s3://` 的 secret（如 OSS/MinIO 等自定义 endpoint 的配置）会接管 Open-Meteo 请求并导致 404；用 `SELECT name, scope FROM duckdb_secrets();` 检查，删除或收窄该 secret 的 scope 即可。
 
 <a id="有效时间查询"></a>
 

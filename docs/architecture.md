@@ -1,4 +1,4 @@
-# duckomo 技术架构
+# DuckOMO 技术架构
 
 当前工作树实现本地 OM 扫描、语义维度选择、列裁剪、规则/投影/Gaussian 网格、native-window 空间选择、opt-in source 身份、grid-info 描述、DuckDB 并行任务及 v4 指标。004 的真实坐标/值、远程收益、完整内存 ledger 和独立复现仍未闭环。官方 HTTPFS 路径已通过 v1.5.4/v1.5.5/v1.5.6 的受控验证；2.0 开发版不在本轮范围。用户接口见 [接口说明](spec.md)，定义与证据等级见 [多网格证据表](grid-domains.md)。
 

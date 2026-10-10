@@ -1,6 +1,6 @@
 > 当前远程读取使用 [官方 HTTPFS 迁移契约](../specs/004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md)，不再使用专用 ABI、自有 LRU 或 transport observer。003/004 中相关历史条款由此契约替换；复现请见 [官方流程](official-httpfs.md)。
 
-# duckomo 接口说明
+# DuckOMO 接口说明
 
 当前工作树包含本地扫描、维度语义、列裁剪、规则/投影/Gaussian 网格、官方 HTTPFS 的 HTTP(S)/S3 范围读取、并行任务、opt-in 源位置、网格描述和 v4 扫描指标实现。004 的新网格真实坐标/值、远程收益、完整内存 ledger 和独立复现门禁尚未通过；DuckDB 2.0 已退出当前支持范围；代码存在不等于生产支持。[README](../README.md) 提供用法示例；原有空间契约见 [002 SQL 契约](../specs/002-spatial-pushdown/contracts/sql-interface.md)，维度与远程约定见 [003 SQL 契约](../specs/003-dimensions-remote-parallel/contracts/sql-interface.md)，新网格接口见 [004 SQL 契约](../specs/004-multi-grid-selection/contracts/sql-interface.md)。
 

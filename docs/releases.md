@@ -59,7 +59,7 @@ SHA256SUMS
 ```
 
 `.zip` 资产供下载、校验和解压；`.duckdb_extension.gz` 是同一份已验证二进制的确定性 gzip，
-供 DuckDB 直接从 Release URL `INSTALL`（聚合时会校验其解压结果与 ZIP 内二进制一致）。
+供不解开 ZIP 时直接下载、解压后本地 `INSTALL`（聚合时会校验其解压结果与 ZIP 内二进制一致）。
 
 每个 ZIP 包含：
 
@@ -74,14 +74,23 @@ SHA256SUMS
 
 以下示例在**对应 Release 成功发布后**才可用。先在你的 DuckDB 中运行 `SELECT version(); PRAGMA platform;`，选择精确匹配的包。macOS 使用 `osx_*`，不能加载 Linux ARM64 包。
 
-包含 `.duckdb_extension.gz` 资产时，可在 DuckDB 内直接安装（未签名，仍需 `-unsigned`）：
+资产文件名带有 DuckOMO 版本、DuckDB 版本和平台，不能把 Release URL 直接传给 `INSTALL`：DuckDB 按 URL basename 第一个 `.` 之前的部分推导扩展名（会存成 `duckomo-v0.duckdb_extension`），且加载时要求入口函数名与文件名一致（本扩展为 `duckomo_duckdb_cpp_init`），改名后 `LOAD` 失败。因此先下载 `.duckdb_extension.gz`、解压为标准文件名，再本地安装（未签名，仍需 `-unsigned`）：
+
+```sh
+TAG=v0.1.0-rc.1
+DUCKDB_VERSION=v1.5.6
+PLATFORM=linux_arm64  # 按实际环境改成 linux_amd64 / osx_amd64 / osx_arm64
+ASSET="duckomo-${TAG}-duckdb-${DUCKDB_VERSION}-${PLATFORM}.duckdb_extension.gz"
+
+curl -sfL "https://github.com/chorust/duckomo/releases/download/${TAG}/${ASSET}" | gunzip > duckomo.duckdb_extension
+```
 
 ```sql
-INSTALL 'https://github.com/chorust/duckomo/releases/download/v0.1.0-rc.1/duckomo-v0.1.0-rc.1-duckdb-v1.5.6-linux_arm64.duckdb_extension.gz';
+INSTALL './duckomo.duckdb_extension';
 LOAD duckomo;
 ```
 
-直接 URL 安装需要官方 HTTPFS 处理 HTTPS（已安装且允许自动加载时无需显式加载；否则先 `INSTALL httpfs; LOAD httpfs;`）。
+HTTP(S) 下载由本机 `curl` 完成，不需要 DuckDB 侧 HTTPFS；读取远程数据才需要官方 HTTPFS。
 
 下载 ZIP 校验解压的方式仍然有效：
 

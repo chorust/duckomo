@@ -1,4 +1,4 @@
-# duckomo Roadmap
+# DuckOMO Roadmap
 
 本地扫描、列裁剪和规则网格空间查询（Phase 0–3）已实现。Phase 4 的维度语义已实现；Phase 5 的官方 HTTPFS 远程与并行路径已通过 v1.5.4/v1.5.5/v1.5.6 的受控验证，独立复现仍待完成。Phase 6 的 [004 多网格](../specs/004-multi-grid-selection/spec.md) 功能已实现，逐网格真实样本和完整验收仍在进行。当前行为见 [接口说明](spec.md)，模块边界见 [技术架构](architecture.md)。
 
