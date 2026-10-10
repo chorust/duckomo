@@ -7,7 +7,7 @@
 | 模块 | 职责 | 源码 |
 |---|---|---|
 | DuckDB table function | 绑定参数、稳定 schema、分析空间/语义条件、生成任务并输出 DataChunk | `src/scan/read_om.cpp` |
-| Schema / dimensions | 变量命名、shape、有序轴身份及五类语义坐标校验 | `src/scan/schema.cpp`、`dimensions.cpp`、`semantic_axes.cpp` |
+| Schema / dimensions | 变量命名、共享 LIST/逐变量 MAP 归一化及共同的 shape/有序轴/语义坐标校验 | `src/scan/schema.cpp`、`dimensions.cpp`、`semantic_axes.cpp` |
 | ProjectionPlan | 保留输出与过滤依赖，去重物理变量并保留输出顺序 | `src/scan/projection.cpp` |
 | GridDefinition / SpatialLayout | 封闭 Regular/Rotated/Lambert/Stereographic/Gaussian 定义，映射原生坐标和真实 strides | `src/grid/`、`src/include/duckomo/grid_definition.hpp` |
 | DomainRegistry | 固定 68 个规则 domain 和 version=1 定义；保留独立 provenance/evidence 状态，canonical grid identity 不含证据字段 | `src/grid/domain_registry.cpp`、`test/data/grids/definitions.json` |
@@ -36,6 +36,8 @@ DuckDB SQL
 
 ## 条件分析与正确性
 
+地理输出列固定为 `lat/lon`；内部输出角色仍用 Latitude/Longitude，过滤按列绑定和角色分析，不靠名称字符串推断轴。原生轴、网格参数及 provenance JSON 保持原有语义，迁移见 [接口修订](interface-migration.md)。
+
 启用 projection pushdown；普通 `filter_pushdown` 和 `filter_prune` 关闭。filter callback 校验当前 `LogicalGet` 的表/列绑定和引用深度，仅提取可证明安全的经纬度与语义轴必要条件。它不删除或改写 `WHERE`，不跨生命周期保存表达式指针。
 
 有限常量比较、`BETWEEN` 和安全 `AND` 可缩小候选。跨接缝最多两个完整安全经度区间可作并集；任一不安全 `OR` 分支会令整个 `OR` 回退。完整 DuckDB `WHERE` 始终保留。候选必须覆盖所有匹配行，精确过滤由 DuckDB 执行。
@@ -45,6 +47,8 @@ DuckDB SQL
 ## I/O 与指标
 
 网格/轴选择只提供逻辑切片。OM chunk 交集、LUT、字节范围和解码策略由官方 reader 负责。`ReadAtFile` 通过 DuckDB 标准文件系统读取。本地/远程 Adapter 携带 ClientContext；每 worker 独立句柄。远程使用 opener 局部配置禁止完整下载回退并保留 ETag 检查，使用标准 DIRECT_IO 让 OM reader 控制范围；比较打开时可观察长度/版本。HTTPFS 内部缓存和网络字节不由 DuckOMO 观测，远程 transport 为 NULL/false；服务端日志仅用于验收。
+
+远程打开和范围读取复用脱敏失败分类器；只从 DuckDB 公开异常类型及严格校验的 HTTP status 选择固定类别/建议，不转发异常正文、response body、reason 或 headers。不通过字符串猜测未知 HTTP 状态，不影响取消和成功读取计数。
 
 自有 RangeCache、provider/observer、授权 HMAC、专用 ABI handshake 和缓存 SQL 已删除。HTTPFS 的凭据、签名、重试及内部缓存由官方依赖维护；DuckOMO 不承诺固定 HEAD/探测顺序、扫描快照、每次查询强制刷新或任意缓存即时撤权。固定版本/配置的同 URI 允许→拒绝→恢复、取消及隔离有受控验证，见 [官方 HTTPFS 记录](../specs/004-multi-grid-selection/evidence/official-httpfs-refactor/status.md)。
 

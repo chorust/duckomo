@@ -1,5 +1,7 @@
 # SQL Interface Contract
 
+> 当前开发版修订：SQL 地理列统一为 `lat/lon`；`dimensions` 支持共享 `VARCHAR[]` 或完整逐变量 MAP；远程错误输出脱敏类别与建议。迁移及完整规则见 [读取接口修订](../../../docs/interface-migration.md)。历史 evidence 仍对应原构建，不因本修订提升验收状态。
+
 状态：实现已接入源码和配套构建；G3–G7 的外部验收及独立复现尚未全部完成。保留既有本地、空间及 `valid_time` 接口。
 
 ## 读取入口
@@ -47,7 +49,7 @@ path 为非 NULL 常量 VARCHAR，支持本地普通文件、http://、https://�
 
 `axes.time` 可显式绑定任意已声明的非空间时间轴；如存在文件时间证据，必须与其实际轴及坐标逐位置一致。不能同时传 valid_times 和 axes.time（即使相等也报重复声明）。未传 axes.time 时保留自动时间和 valid_times 路径。无时间轴的一时刻快照继续通过既有标量或 valid_times 单元素路径表达，axes 不增加任意标量广播。
 
-输出按值列 → latitude/longitude（若有）→ valid_time（若有）→ level → lead_time → member → run 排列，仅追加启用项。任何新增列与原值列按 DuckDB 名称比较规则冲突则拒绝。
+输出按值列 → lat/lon（若有）→ valid_time（若有）→ level → lead_time → member → run 排列，仅追加启用项。任何新增列与原值列按 DuckDB 名称比较规则冲突则拒绝。
 
 ## 示例
 

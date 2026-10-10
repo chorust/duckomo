@@ -2,6 +2,7 @@
 #include "duckdb/main/extension_helper.hpp"
 #include "duckdb/common/types/value.hpp"
 #include "duckomo/dimensions.hpp"
+#include "duckomo/compat/duckdb_api.hpp"
 #include "duckomo/local_file.hpp"
 #include "duckomo/metadata.hpp"
 #include "duckomo/reader.hpp"
@@ -330,6 +331,51 @@ void TestIdentifierCollisionsAndShapeBounds() {
 	                   "shape product above DuckDB's signed row-count limit");
 }
 
+void TestSharedAxesAndCoordinateNames() {
+	OmMetadataTree tree;
+	tree.arrays.push_back(SyntheticVariable("/first", {2, 3}, {1, 2}));
+	tree.arrays.push_back(SyntheticVariable("/nested/second", {2, 3}, {1, 2}));
+	auto schema = BuildBoundSchema(tree);
+	auto shared = duckdb::Value::LIST(duckdb::LogicalType::VARCHAR, {duckdb::Value("lat"), duckdb::Value("lon")});
+	auto axes = ValidateAxisDeclarations(&shared, schema);
+	Require(axes.size() == 2 && axes[0] == axes[1] && axes[0] == std::vector<std::string>({"lat", "lon"}),
+	        "shared list must normalize to a declaration for every array");
+	schema.variables[1].inferred_axes = {"lat", "lon"};
+	Require(ValidateAxisDeclarations(&shared, schema) == axes, "matching evidence accepts shared axes");
+	schema.variables[1].inferred_axes = {"lon", "lat"};
+	RequireRejected([&] { (void)ValidateAxisDeclarations(&shared, schema); },
+	                "shared declaration must check metadata on later arrays, not only the first");
+	schema.variables[1].inferred_axes.clear();
+	schema.variables[1].shape = {3, 2};
+	RequireRejected([&] { (void)ValidateAxisDeclarations(&shared, schema); },
+	                "equal row count does not establish shape/axis alignment");
+	schema.variables[1].shape = {1, 2, 3};
+	RequireRejected([&] { (void)ValidateAxisDeclarations(&shared, schema); },
+	                "shared axes must check rank on every array");
+
+	for (const auto *name : {"lat", "LAT", "lon", "LoN"}) {
+		OmMetadataTree collision;
+		collision.arrays.push_back(SyntheticVariable(std::string("/") + name, {2, 3}, {1, 2}));
+		const auto source = BuildBoundSchema(collision);
+		Require(source.variables[0].column_name == name, "ordinary source schema keeps its column names");
+		std::vector<duckdb::LogicalType> types;
+		duckdb::duckomo::TableFunctionColumnNames names;
+		RequireRejected([&] { duckdb::duckomo::AppendSpatialOutputColumns(source, types, names); },
+		                "short geographic column conflicts are case-insensitive");
+		Require(types.empty() && names.empty(), "name conflict fails before appending either coordinate");
+	}
+	OmMetadataTree long_names;
+	long_names.arrays.push_back(SyntheticVariable("/Latitude", {2, 3}, {1, 2}));
+	long_names.arrays.push_back(SyntheticVariable("/Longitude", {2, 3}, {1, 2}));
+	std::vector<duckdb::LogicalType> types;
+	duckdb::duckomo::TableFunctionColumnNames names;
+	duckdb::duckomo::AppendSpatialOutputColumns(BuildBoundSchema(long_names), types, names);
+	Require(names.size() == 2 && duckdb::duckomo::IdentifierNameString(names[0]) == "lat" &&
+	            duckdb::duckomo::IdentifierNameString(names[1]) == "lon" &&
+	            types[0] == duckdb::LogicalType::DOUBLE && types[1] == duckdb::LogicalType::DOUBLE,
+	        "only lat/lon are emitted/reserved; long source names remain valid");
+}
+
 void TestNegativeFixtures(duckdb::ClientContext &context, const fs::path &fixture_directory) {
 	const auto negative = fixture_directory / "negative";
 	for (const auto &case_name : {"unsupported_version", "unsupported_type", "unsupported_compression",
@@ -395,6 +441,7 @@ int main() {
 		TestInvalidArrayAttributeReference(*connection.context, fixture_directory / "pfor_attributes.om", temporary);
 		TestInvalidNames(*connection.context, fixture_directory / "nested.om", temporary);
 		TestIdentifierCollisionsAndShapeBounds();
+		TestSharedAxesAndCoordinateNames();
 		TestNegativeFixtures(*connection.context, fixture_directory);
 		TestMetadataOnlyDescribe(connection, fixture_directory / "raw.om", temporary);
 		std::cout << "metadata/schema checks passed\n";

@@ -2583,7 +2583,7 @@ void ScanLastMetrics(ClientContext &, TableFunctionInput &input, DataChunk &outp
 
 TableFunction GetReadOmFunction() {
 	TableFunction function("read_om", {LogicalType::VARCHAR}, ScanReadOm, BindReadOm, InitReadOm, InitReadOmLocal);
-	AddTableFunctionOption(function, "dimensions", LogicalType::MAP(LogicalType::VARCHAR, LogicalType::LIST(LogicalType::VARCHAR)));
+	AddTableFunctionOption(function, "dimensions", LogicalType::ANY);
 	AddTableFunctionOption(function, "grid", LogicalType::ANY);
 	AddTableFunctionOption(function, "spatial_axes", LogicalType::LIST(LogicalType::VARCHAR));
 	AddTableFunctionOption(function, "domain", LogicalType::VARCHAR);
@@ -2601,7 +2601,7 @@ TableFunction GetReadOmFunction() {
 
 TableFunction GetGridInfoFunction() {
 	TableFunction function("om_grid_info", {LogicalType::VARCHAR}, ScanGridInfo, BindGridInfo, InitGridInfo);
-	AddTableFunctionOption(function, "dimensions", LogicalType::MAP(LogicalType::VARCHAR, LogicalType::LIST(LogicalType::VARCHAR)));
+	AddTableFunctionOption(function, "dimensions", LogicalType::ANY);
 	AddTableFunctionOption(function, "grid", LogicalType::ANY);
 	AddTableFunctionOption(function, "spatial_axes", LogicalType::LIST(LogicalType::VARCHAR));
 	AddTableFunctionOption(function, "domain", LogicalType::VARCHAR);

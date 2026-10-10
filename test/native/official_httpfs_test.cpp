@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 #include <thread>
+#include <utility>
 namespace duckdb {
 void ExtensionHelper::LoadAllExtensions(DuckDB &db) { db.LoadStaticExtension<DuckomoExtension>(); }
 }
@@ -34,6 +35,41 @@ int main() {
   DuckDB db(nullptr,&config);Connection conn(db),second(db);
   auto load=conn.Query("LOAD "+Lit(httpfs));Require(load && !load->HasError(),"matching official HTTPFS must load");
   Require(!conn.Query("SET http_retries=0")->HasError(),"disable retry for controlled cancel latency");
+  for (const auto &fault : {std::pair<const char *,const char *>{"403","access_denied"},
+                           std::pair<const char *,const char *>{"403-data","access_denied"},
+                           std::pair<const char *,const char *>{"404","object_not_found"}}) {
+   Require(!conn.Query("SET VARIABLE diagnostic_uri="+Lit(std::string(base)+"/raw.om?fault="+fault.first+"&token=sensitive-marker"))->HasError(),
+           "store test URI outside the erroring SQL text");
+   const auto failed=conn.Query("SELECT * FROM read_om(getvariable('diagnostic_uri'))");
+   Require(failed && failed->HasError(),"HTTP access/object errors fail");
+   const auto message=failed->GetError();
+   // Some official HTTPFS builds lose status on HEAD-denied range retries.
+   // Preserve an explicit unknown-status diagnostic, never guess from text.
+   const bool unknown_head=std::string(fault.first)=="403" && message.find("[transport]")!=std::string::npos &&
+                           message.find("no structured HTTP status")!=std::string::npos;
+   Require(message.find(std::string("[")+fault.second+"]")!=std::string::npos || unknown_head,
+           "structured HTTP diagnostic category or honest unknown-status fallback");
+   Require(message.find("sensitive-marker")==std::string::npos,"HTTP diagnostics redact signed parameters");
+   Require(Metrics(conn).find("\"status\":\"failure\"")!=std::string::npos,"classified failure publishes QueryEnd");
+   auto recovery=conn.Query("SELECT count(*) FROM read_om("+Lit(std::string(base)+"/raw.om")+")");
+   Require(recovery && !recovery->HasError() && recovery->GetValue(0,0).GetValue<int64_t>()==6,"same-connection HTTP error recovery");
+  }
+  Require(!conn.Query("SET http_proxy='http://sensitive-marker:invalid-port/'")->HasError(),"set malformed test proxy");
+  Require(!conn.Query("SET VARIABLE diagnostic_uri="+Lit(std::string(base)+"/raw.om?token=sensitive-marker"))->HasError(),"set proxy-test URI");
+  auto proxy_error=conn.Query("SELECT * FROM read_om(getvariable('diagnostic_uri'))");
+  Require(proxy_error && proxy_error->HasError() && proxy_error->GetError().find("[configuration]")!=std::string::npos,
+          "proxy misconfiguration is not a missing-extension error");
+  Require(proxy_error->GetError().find("sensitive-marker")==std::string::npos,"proxy credentials are not exposed");
+  Require(!conn.Query("SET http_proxy=''")->HasError(),"reset test proxy");
+  {
+   DuckDB missing_db(nullptr,&config);Connection missing(missing_db);
+   Require(!missing.Query("SET autoload_known_extensions=false")->HasError(),"disable extension autoload for missing-extension test");
+   Require(!missing.Query("SET VARIABLE diagnostic_uri='https://example.invalid/file.om?token=sensitive-marker'")->HasError(),"set missing-extension URI");
+   auto failure=missing.Query("SELECT * FROM read_om(getvariable('diagnostic_uri'))");
+   Require(failure && failure->HasError() && failure->GetError().find("[extension_missing]")!=std::string::npos,
+           "missing official HTTPFS has its own diagnostic");
+   Require(failure->GetError().find("sensitive-marker")==std::string::npos,"missing-extension errors redact parameters");
+  }
   auto future=std::async(std::launch::async,[&]{return conn.Query("SELECT * FROM read_om("+Lit(std::string(base)+"/raw.om?fault=timeout&seconds=2")+")");});
   std::this_thread::sleep_for(std::chrono::milliseconds(250));conn.Interrupt();
   auto result=future.get();Require(result && result->HasError(),"cancelled scan must fail");
@@ -49,6 +85,6 @@ int main() {
   auto two=second.Query("SELECT * FROM read_om("+Lit(std::string(base)+"/raw.om")+") ORDER BY ALL");
   auto first=one.get();Require(first && two && !first->HasError() && !two->HasError() && first->ToString()==two->ToString(),"concurrent connection results");
   Require(Metrics(conn)!=Metrics(second),"connection query identities differ");
-  std::cout<<"official_httpfs_test: actual HTTPFS cancellation/recovery and same-process connection isolation passed\n";return 0;
+  std::cout<<"official_httpfs_test: actual HTTPFS diagnostics/redaction, cancellation/recovery and connection isolation passed\n";return 0;
  } catch(const std::exception &){std::cerr<<"official HTTPFS test failed (transport diagnostics withheld)\n";return 1;}
 }

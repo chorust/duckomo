@@ -12,7 +12,7 @@ LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
 # Materialize the full unfiltered scan before any selection query runs.
 statement ok
 CREATE TEMP VIEW rotated_grid AS
-SELECT humidity, pressure, temperature, latitude, longitude
+SELECT humidity, pressure, temperature, lat, lon
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/projection.om',
     dimensions := map(['humidity','pressure','temperature'],
@@ -32,25 +32,25 @@ CREATE TEMP TABLE rotated_baseline AS SELECT * FROM rotated_grid;
 query II
 SELECT
     (SELECT count(*) FROM (
-        (SELECT temperature, latitude, longitude FROM rotated_baseline
-         WHERE latitude >= 20 AND latitude <= 40 AND longitude BETWEEN 30 AND 50)
+        (SELECT temperature, lat, lon FROM rotated_baseline
+         WHERE lat >= 20 AND lat <= 40 AND lon BETWEEN 30 AND 50)
         EXCEPT ALL
-        (SELECT temperature, latitude, longitude FROM rotated_grid
-         WHERE latitude >= 20 AND latitude <= 40 AND longitude BETWEEN 30 AND 50))),
+        (SELECT temperature, lat, lon FROM rotated_grid
+         WHERE lat >= 20 AND lat <= 40 AND lon BETWEEN 30 AND 50))),
     (SELECT count(*) FROM (
-        (SELECT temperature, latitude, longitude FROM rotated_grid
-         WHERE latitude >= 20 AND latitude <= 40 AND longitude BETWEEN 30 AND 50)
+        (SELECT temperature, lat, lon FROM rotated_grid
+         WHERE lat >= 20 AND lat <= 40 AND lon BETWEEN 30 AND 50)
         EXCEPT ALL
-        (SELECT temperature, latitude, longitude FROM rotated_baseline
-         WHERE latitude >= 20 AND latitude <= 40 AND longitude BETWEEN 30 AND 50)));
+        (SELECT temperature, lat, lon FROM rotated_baseline
+         WHERE lat >= 20 AND lat <= 40 AND lon BETWEEN 30 AND 50)));
 ----
 0	0
 
 # Projected selectors are compared against independently materialized full scans
-# for each projection family, not just the rotated-latitude fast path.
+# for each projection family, not just the rotated-lat fast path.
 statement ok
 CREATE TEMP VIEW lambert_grid AS
-SELECT temperature, latitude, longitude
+SELECT temperature, lat, lon
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/projection.om',
     dimensions := map(['humidity','pressure','temperature'],
@@ -70,23 +70,23 @@ CREATE TEMP TABLE lambert_baseline AS SELECT * FROM lambert_grid;
 query II
 SELECT
     (SELECT count(*) FROM (
-        (SELECT temperature, latitude, longitude FROM lambert_baseline
-         WHERE latitude BETWEEN 45.5 AND 46.5 AND longitude BETWEEN 9.5 AND 10.5)
+        (SELECT temperature, lat, lon FROM lambert_baseline
+         WHERE lat BETWEEN 45.5 AND 46.5 AND lon BETWEEN 9.5 AND 10.5)
         EXCEPT ALL
-        (SELECT temperature, latitude, longitude FROM lambert_grid
-         WHERE latitude BETWEEN 45.5 AND 46.5 AND longitude BETWEEN 9.5 AND 10.5))),
+        (SELECT temperature, lat, lon FROM lambert_grid
+         WHERE lat BETWEEN 45.5 AND 46.5 AND lon BETWEEN 9.5 AND 10.5))),
     (SELECT count(*) FROM (
-        (SELECT temperature, latitude, longitude FROM lambert_grid
-         WHERE latitude BETWEEN 45.5 AND 46.5 AND longitude BETWEEN 9.5 AND 10.5)
+        (SELECT temperature, lat, lon FROM lambert_grid
+         WHERE lat BETWEEN 45.5 AND 46.5 AND lon BETWEEN 9.5 AND 10.5)
         EXCEPT ALL
-        (SELECT temperature, latitude, longitude FROM lambert_baseline
-         WHERE latitude BETWEEN 45.5 AND 46.5 AND longitude BETWEEN 9.5 AND 10.5)));
+        (SELECT temperature, lat, lon FROM lambert_baseline
+         WHERE lat BETWEEN 45.5 AND 46.5 AND lon BETWEEN 9.5 AND 10.5)));
 ----
 0	0
 
 statement ok
 CREATE TEMP VIEW stereographic_grid AS
-SELECT temperature, latitude, longitude
+SELECT temperature, lat, lon
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/projection.om',
     dimensions := map(['humidity','pressure','temperature'],
@@ -105,17 +105,17 @@ CREATE TEMP TABLE stereographic_baseline AS SELECT * FROM stereographic_grid;
 query II
 SELECT
     (SELECT count(*) FROM (
-        (SELECT temperature, latitude, longitude FROM stereographic_baseline
-         WHERE latitude BETWEEN 44 AND 46 AND longitude BETWEEN 9 AND 11)
+        (SELECT temperature, lat, lon FROM stereographic_baseline
+         WHERE lat BETWEEN 44 AND 46 AND lon BETWEEN 9 AND 11)
         EXCEPT ALL
-        (SELECT temperature, latitude, longitude FROM stereographic_grid
-         WHERE latitude BETWEEN 44 AND 46 AND longitude BETWEEN 9 AND 11))),
+        (SELECT temperature, lat, lon FROM stereographic_grid
+         WHERE lat BETWEEN 44 AND 46 AND lon BETWEEN 9 AND 11))),
     (SELECT count(*) FROM (
-        (SELECT temperature, latitude, longitude FROM stereographic_grid
-         WHERE latitude BETWEEN 44 AND 46 AND longitude BETWEEN 9 AND 11)
+        (SELECT temperature, lat, lon FROM stereographic_grid
+         WHERE lat BETWEEN 44 AND 46 AND lon BETWEEN 9 AND 11)
         EXCEPT ALL
-        (SELECT temperature, latitude, longitude FROM stereographic_baseline
-         WHERE latitude BETWEEN 44 AND 46 AND longitude BETWEEN 9 AND 11)));
+        (SELECT temperature, lat, lon FROM stereographic_baseline
+         WHERE lat BETWEEN 44 AND 46 AND lon BETWEEN 9 AND 11)));
 ----
 0	0
 
@@ -123,7 +123,7 @@ SELECT
 # materialized oracle.
 statement ok
 CREATE TEMP VIEW gaussian_grid AS
-SELECT "flattened_x_fastest/value" AS value, latitude, longitude
+SELECT "flattened_x_fastest/value" AS value, lat, lon
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/grids/x-fastest.om',
     dimensions := map(['flattened_x_fastest/value'], [['point']]),
@@ -146,7 +146,7 @@ CREATE TEMP TABLE gaussian_baseline AS SELECT * FROM gaussian_grid;
 # Preparation contains only the 12 bind-time grid-coordinate validations.
 query I
 SELECT count(*) FROM gaussian_grid
-WHERE latitude BETWEEN -90 AND 90 AND longitude >= -180 AND longitude < 180;
+WHERE lat BETWEEN -90 AND 90 AND lon >= -180 AND lon < 180;
 ----
 12
 
@@ -160,24 +160,24 @@ WHERE scan_id = (SELECT max(scan_id) FROM duckomo_last_scan_metrics())
 query II
 SELECT
     (SELECT count(*) FROM (
-        (SELECT value, latitude, longitude FROM gaussian_baseline
-         WHERE latitude = 60 AND longitude BETWEEN 0 AND 60)
+        (SELECT value, lat, lon FROM gaussian_baseline
+         WHERE lat = 60 AND lon BETWEEN 0 AND 60)
         EXCEPT ALL
-        (SELECT value, latitude, longitude FROM gaussian_grid
-         WHERE latitude = 60 AND longitude BETWEEN 0 AND 60))),
+        (SELECT value, lat, lon FROM gaussian_grid
+         WHERE lat = 60 AND lon BETWEEN 0 AND 60))),
     (SELECT count(*) FROM (
-        (SELECT value, latitude, longitude FROM gaussian_grid
-         WHERE latitude = 60 AND longitude BETWEEN 0 AND 60)
+        (SELECT value, lat, lon FROM gaussian_grid
+         WHERE lat = 60 AND lon BETWEEN 0 AND 60)
         EXCEPT ALL
-        (SELECT value, latitude, longitude FROM gaussian_baseline
-         WHERE latitude = 60 AND longitude BETWEEN 0 AND 60)));
+        (SELECT value, lat, lon FROM gaussian_baseline
+         WHERE lat = 60 AND lon BETWEEN 0 AND 60)));
 ----
 0	0
 
-# The Float32 stereographic center uses the same longitude domain as other points.
+# The Float32 stereographic center uses the same lon domain as other points.
 statement ok
 CREATE TEMP VIEW stereographic_f32_grid AS
-SELECT value, latitude, longitude
+SELECT value, lat, lon
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['row', 'column']]),
@@ -193,46 +193,46 @@ statement ok
 CREATE TEMP TABLE stereographic_f32_baseline AS SELECT * FROM stereographic_f32_grid;
 
 query RR
-SELECT latitude, longitude FROM stereographic_f32_baseline WHERE value = 0;
+SELECT lat, lon FROM stereographic_f32_baseline WHERE value = 0;
 ----
 45.000000	-90.000000
 
 # Direct filtering and filtering the materialized scan agree at the center and outside the domain.
 query IIII
 SELECT
-    (SELECT count(*) FROM stereographic_f32_baseline WHERE longitude > 180),
-    (SELECT count(*) FROM stereographic_f32_grid WHERE longitude > 180),
-    (SELECT count(*) FROM stereographic_f32_baseline WHERE longitude = -90 AND latitude = 45),
-    (SELECT count(*) FROM stereographic_f32_grid WHERE longitude = -90 AND latitude = 45);
+    (SELECT count(*) FROM stereographic_f32_baseline WHERE lon > 180),
+    (SELECT count(*) FROM stereographic_f32_grid WHERE lon > 180),
+    (SELECT count(*) FROM stereographic_f32_baseline WHERE lon = -90 AND lat = 45),
+    (SELECT count(*) FROM stereographic_f32_grid WHERE lon = -90 AND lat = 45);
 ----
 0	0	1	1
 
-# Two safe longitude intervals on opposite sides of the normalized seam remain exact.
+# Two safe lon intervals on opposite sides of the normalized seam remain exact.
 query II
 SELECT
     (SELECT count(*) FROM (
-        (SELECT humidity, latitude, longitude FROM rotated_baseline
-         WHERE latitude BETWEEN 10 AND 30 AND (longitude >= 125 OR longitude < 3))
+        (SELECT humidity, lat, lon FROM rotated_baseline
+         WHERE lat BETWEEN 10 AND 30 AND (lon >= 125 OR lon < 3))
         EXCEPT ALL
-        (SELECT humidity, latitude, longitude FROM rotated_grid
-         WHERE latitude BETWEEN 10 AND 30 AND (longitude >= 125 OR longitude < 3)))),
+        (SELECT humidity, lat, lon FROM rotated_grid
+         WHERE lat BETWEEN 10 AND 30 AND (lon >= 125 OR lon < 3)))),
     (SELECT count(*) FROM (
-        (SELECT humidity, latitude, longitude FROM rotated_grid
-         WHERE latitude BETWEEN 10 AND 30 AND (longitude >= 125 OR longitude < 3))
+        (SELECT humidity, lat, lon FROM rotated_grid
+         WHERE lat BETWEEN 10 AND 30 AND (lon >= 125 OR lon < 3))
         EXCEPT ALL
-        (SELECT humidity, latitude, longitude FROM rotated_baseline
-         WHERE latitude BETWEEN 10 AND 30 AND (longitude >= 125 OR longitude < 3))));
+        (SELECT humidity, lat, lon FROM rotated_baseline
+         WHERE lat BETWEEN 10 AND 30 AND (lon >= 125 OR lon < 3))));
 ----
 0	0
 
 # An unsafe OR branch remains a residual predicate while its conservative fallback stays exact.
 query I
 SELECT count(*) FROM (
-    (SELECT pressure, latitude, longitude FROM rotated_baseline
-     WHERE longitude >= 125 OR humidity = 0)
+    (SELECT pressure, lat, lon FROM rotated_baseline
+     WHERE lon >= 125 OR humidity = 0)
     EXCEPT ALL
-    (SELECT pressure, latitude, longitude FROM rotated_grid
-     WHERE longitude >= 125 OR humidity = 0));
+    (SELECT pressure, lat, lon FROM rotated_grid
+     WHERE lon >= 125 OR humidity = 0));
 ----
 0
 
@@ -247,13 +247,13 @@ WHERE metrics LIKE '%"selection_mode":"fallback"%'
 query II
 SELECT
     (SELECT count(*) FROM (
-        (SELECT temperature, longitude FROM rotated_baseline WHERE 25 BETWEEN latitude AND longitude)
+        (SELECT temperature, lon FROM rotated_baseline WHERE 25 BETWEEN lat AND lon)
         EXCEPT ALL
-        (SELECT temperature, longitude FROM rotated_grid WHERE 25 BETWEEN latitude AND longitude))),
+        (SELECT temperature, lon FROM rotated_grid WHERE 25 BETWEEN lat AND lon))),
     (SELECT count(*) FROM (
-        (SELECT temperature, longitude FROM rotated_grid WHERE 25 BETWEEN latitude AND longitude)
+        (SELECT temperature, lon FROM rotated_grid WHERE 25 BETWEEN lat AND lon)
         EXCEPT ALL
-        (SELECT temperature, longitude FROM rotated_baseline WHERE 25 BETWEEN latitude AND longitude)));
+        (SELECT temperature, lon FROM rotated_baseline WHERE 25 BETWEEN lat AND lon)));
 ----
 0	0
 
@@ -262,19 +262,19 @@ query I
 SELECT count(*) FROM (
     (SELECT count(*), min(temperature + pressure), max(temperature + pressure)
      FROM rotated_baseline
-     WHERE latitude BETWEEN 20 AND 40 AND longitude BETWEEN 30 AND 50 AND humidity % 2 = 0)
+     WHERE lat BETWEEN 20 AND 40 AND lon BETWEEN 30 AND 50 AND humidity % 2 = 0)
     EXCEPT ALL
     (SELECT count(*), min(temperature + pressure), max(temperature + pressure)
      FROM rotated_grid
-     WHERE latitude BETWEEN 20 AND 40 AND longitude BETWEEN 30 AND 50 AND humidity % 2 = 0));
+     WHERE lat BETWEEN 20 AND 40 AND lon BETWEEN 30 AND 50 AND humidity % 2 = 0));
 ----
 0
 
 query I
 SELECT count(*) FROM (
-    SELECT longitude, temperature, latitude, longitude
+    SELECT lon, temperature, lat, lon
     FROM rotated_grid
-    WHERE latitude BETWEEN 20 AND 40 AND longitude BETWEEN 30 AND 50
+    WHERE lat BETWEEN 20 AND 40 AND lon BETWEEN 30 AND 50
     ORDER BY temperature);
 ----
 400
@@ -284,7 +284,7 @@ SELECT count(*) FROM (
 statement ok
 CREATE TEMP VIEW interleaved_grid AS
 SELECT "interleaved/temperature" AS temperature, "interleaved/humidity" AS humidity,
-       latitude, longitude
+       lat, lon
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/grids/interleaved.om',
     dimensions := map(
@@ -305,24 +305,24 @@ CREATE TEMP TABLE interleaved_baseline AS SELECT * FROM interleaved_grid;
 query II
 SELECT
     (SELECT count(*) FROM (
-        (SELECT humidity, latitude, longitude
+        (SELECT humidity, lat, lon
          FROM interleaved_baseline
-         WHERE latitude BETWEEN 1 AND 2 AND longitude BETWEEN 1 AND 3
+         WHERE lat BETWEEN 1 AND 2 AND lon BETWEEN 1 AND 3
            AND temperature > 100000)
         EXCEPT ALL
-        (SELECT humidity, latitude, longitude
+        (SELECT humidity, lat, lon
          FROM interleaved_grid
-         WHERE latitude BETWEEN 1 AND 2 AND longitude BETWEEN 1 AND 3
+         WHERE lat BETWEEN 1 AND 2 AND lon BETWEEN 1 AND 3
            AND temperature > 100000))),
     (SELECT count(*) FROM (
-        (SELECT humidity, latitude, longitude
+        (SELECT humidity, lat, lon
          FROM interleaved_grid
-         WHERE latitude BETWEEN 1 AND 2 AND longitude BETWEEN 1 AND 3
+         WHERE lat BETWEEN 1 AND 2 AND lon BETWEEN 1 AND 3
            AND temperature > 100000)
         EXCEPT ALL
-        (SELECT humidity, latitude, longitude
+        (SELECT humidity, lat, lon
          FROM interleaved_baseline
-         WHERE latitude BETWEEN 1 AND 2 AND longitude BETWEEN 1 AND 3
+         WHERE lat BETWEEN 1 AND 2 AND lon BETWEEN 1 AND 3
            AND temperature > 100000)));
 ----
 0	0

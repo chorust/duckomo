@@ -683,6 +683,10 @@ def prepare_public_sample_queries(root: Path, output_dir: Path, *, full_position
             time_literal = "TIMESTAMP " + sql_string(first_valid_times[grid_id])
         else:
             time_literal = ""
+        # A raw LIMIT advances time first in [y,x,time] arrays. Select the
+        # reference's time-zero plane without sorting/materializing the full
+        # object; the validator still checks the exact spatial prefix.
+        prefix_clause = " WHERE om_source.axis_indices[3] = 0 LIMIT 4"
         for mode, view_name in (("explicit", explicit_name), ("domain", domain_name)):
             source_csv = output_dir / record[mode + "_source_csv"]
             source_metrics = output_dir / record[mode + "_source_metrics_csv"]
@@ -692,10 +696,8 @@ def prepare_public_sample_queries(root: Path, output_dir: Path, *, full_position
                 "COPY (SELECT om_source.object_id, om_source.object_version, om_source.version_strength, "
                 "om_source.content_verified, om_source.grid_id, om_source.layout_id, "
                 "om_source.logical_index, om_source.point_index, om_source.parent_point_index, "
-                "om_source.axis_indices, latitude, longitude FROM " + view_name +
-                # Keep this as an early scan prefix. validate_public_sample_source checks the exact
-                # logical/axis sequence, so any changed or nondeterministic scan order fails closed.
-                " LIMIT 4) TO " +
+                "om_source.axis_indices, lat AS latitude, lon AS longitude FROM " + view_name +
+                prefix_clause + ") TO " +
                 sql_string(str(source_csv)) + " (FORMAT CSV, HEADER true, NULL 'NULL');",
                 "COPY (SELECT metrics::VARCHAR AS metrics FROM duckomo_last_scan_metrics() "
                 "ORDER BY scan_id DESC LIMIT 1) TO " + sql_string(str(source_metrics)) +
@@ -713,7 +715,7 @@ def prepare_public_sample_queries(root: Path, output_dir: Path, *, full_position
                     "COPY (SELECT om_source.object_id, om_source.object_version, om_source.version_strength, "
                     "om_source.content_verified, om_source.grid_id, om_source.layout_id, om_source.logical_index, "
                     "om_source.point_index, om_source.parent_point_index, om_source.axis_indices, "
-                    "latitude, longitude FROM " + view_name + " WHERE valid_time = " + time_literal +
+                    "lat AS latitude, lon AS longitude FROM " + view_name + " WHERE valid_time = " + time_literal +
                     ") TO " + sql_string(str(full_source_csv)) +
                     " (FORMAT CSV, HEADER true, COMPRESSION 'gzip', NULL 'NULL');",
                     "COPY (SELECT metrics::VARCHAR AS metrics FROM duckomo_last_scan_metrics() "
@@ -724,9 +726,9 @@ def prepare_public_sample_queries(root: Path, output_dir: Path, *, full_position
                 selection = record["spatial_selection_bounds"]
                 selection_filter = (
                     "valid_time = " + time_literal +
-                    " AND latitude BETWEEN " + sql_double(selection["latitude_min"]) +
+                    " AND lat BETWEEN " + sql_double(selection["latitude_min"]) +
                     " AND " + sql_double(selection["latitude_max"]) +
-                    " AND longitude BETWEEN " + sql_double(selection["longitude_min"]) +
+                    " AND lon BETWEEN " + sql_double(selection["longitude_min"]) +
                     " AND " + sql_double(selection["longitude_max"])
                 )
                 spatial_source_csv = output_dir / record[mode + "_spatial_source_csv"]
@@ -735,7 +737,7 @@ def prepare_public_sample_queries(root: Path, output_dir: Path, *, full_position
                     "COPY (SELECT om_source.object_id, om_source.object_version, om_source.version_strength, "
                     "om_source.content_verified, om_source.grid_id, om_source.layout_id, "
                     "om_source.logical_index, om_source.point_index, om_source.parent_point_index, "
-                    "om_source.axis_indices, latitude, longitude FROM " + view_name + " WHERE " +
+                    "om_source.axis_indices, lat AS latitude, lon AS longitude FROM " + view_name + " WHERE " +
                     selection_filter + ") TO " + sql_string(str(spatial_source_csv)) +
                     " (FORMAT CSV, HEADER true, NULL 'NULL');",
                     "COPY (SELECT metrics::VARCHAR AS metrics FROM duckomo_last_scan_metrics() "
@@ -743,9 +745,10 @@ def prepare_public_sample_queries(root: Path, output_dir: Path, *, full_position
                     " (FORMAT CSV, HEADER true);",
                 ])
         identity_sql = (
-            "COPY (WITH explicit_prefix AS MATERIALIZED (SELECT om_source, latitude, longitude FROM " +
-            explicit_name + " LIMIT 4), domain_prefix AS MATERIALIZED (SELECT om_source, latitude, longitude FROM " +
-            domain_name + " LIMIT 4) SELECT count(*) AS joined_rows, "
+            "COPY (WITH explicit_prefix AS MATERIALIZED (SELECT om_source, lat AS latitude, lon AS longitude FROM " +
+            explicit_name + prefix_clause + "), domain_prefix AS MATERIALIZED "
+            "(SELECT om_source, lat AS latitude, lon AS longitude FROM " +
+            domain_name + prefix_clause + ") SELECT count(*) AS joined_rows, "
             "count(*) FILTER (WHERE e.om_source IS NULL OR d.om_source IS NULL) AS unmatched_rows, "
             "count(*) FILTER (WHERE e.om_source IS DISTINCT FROM d.om_source OR "
             "e.latitude IS DISTINCT FROM d.latitude OR e.longitude IS DISTINCT FROM d.longitude) AS mismatch_rows, "
@@ -767,15 +770,15 @@ def prepare_public_sample_queries(root: Path, output_dir: Path, *, full_position
             selection = record["spatial_selection_bounds"]
             selection_filter = (
                 "valid_time = " + time_literal +
-                " AND latitude BETWEEN " + sql_double(selection["latitude_min"]) +
+                " AND lat BETWEEN " + sql_double(selection["latitude_min"]) +
                 " AND " + sql_double(selection["latitude_max"]) +
-                " AND longitude BETWEEN " + sql_double(selection["longitude_min"]) +
+                " AND lon BETWEEN " + sql_double(selection["longitude_min"]) +
                 " AND " + sql_double(selection["longitude_max"])
             )
             selection_identity_sql = (
-                "COPY (WITH explicit_selected AS MATERIALIZED (SELECT om_source, latitude, longitude FROM " +
+                "COPY (WITH explicit_selected AS MATERIALIZED (SELECT om_source, lat AS latitude, lon AS longitude FROM " +
                 explicit_name + " WHERE " + selection_filter + "), domain_selected AS MATERIALIZED "
-                "(SELECT om_source, latitude, longitude FROM " + domain_name + " WHERE " + selection_filter + ") "
+                "(SELECT om_source, lat AS latitude, lon AS longitude FROM " + domain_name + " WHERE " + selection_filter + ") "
                 "SELECT count(*) AS joined_rows, "
                 "count(*) FILTER (WHERE e.om_source IS NULL OR d.om_source IS NULL) AS unmatched_rows, "
                 "count(*) FILTER (WHERE e.om_source IS DISTINCT FROM d.om_source OR "
@@ -795,7 +798,7 @@ def prepare_public_sample_queries(root: Path, output_dir: Path, *, full_position
             ])
         records.append(record)
     source_label = "three local" if source_uri_kind == "local" else f"three public {source_uri_kind} URI"
-    reason = f"{source_label} projected samples are anchored to hash-pinned local OM v3 copies; first four source positions are checked against pinned Float32 coordinate references"
+    reason = f"{source_label} projected samples are anchored to hash-pinned local OM v3 copies; first four spatial positions at time-axis index 0 are checked against pinned Float32 coordinate references"
     if full_positions:
         reason += ("; full spatial positions are streamed at time-axis index 0 using validator-declared synthetic "
                    "valid_time labels, without ordering or projecting values")
@@ -1342,7 +1345,7 @@ def run_public_source_validation(duckdb: Path, extension: Path, root: Path, outp
                   + ("; full original positions compared to local hash-pinned copies with per-URI object evidence "
                      "recorded separately" if compare_local_source_dir is not None else "")
                   if full_positions else
-                  f"three hash-pinned public projected samples via {source_uri_kind} source URIs; first four natural source positions, SQL explicit/domain source identity, and source/info/identity zero-value-read checks"),
+                  f"three hash-pinned public projected samples via {source_uri_kind} source URIs; first four spatial positions at time-axis index 0, SQL explicit/domain source identity, and source/info/identity zero-value-read checks"),
         "reason": reason,
         "full_spatial_positions_requested": full_positions,
         "spatial_selection_requested": spatial_selection,
@@ -1384,7 +1387,7 @@ def run_validation(duckdb: Path, extension: Path, root: Path, output_dir: Path) 
             "COPY (SELECT om_source.object_id, om_source.object_version, om_source.version_strength, "
             "om_source.content_verified, om_source.grid_id, om_source.layout_id, "
             "om_source.logical_index, om_source.point_index, om_source.parent_point_index, "
-            "om_source.axis_indices, longitude, latitude FROM " + read +
+            "om_source.axis_indices, lon AS longitude, lat AS latitude FROM " + read +
             " ORDER BY om_source.logical_index) TO " + sql_string(str(source_path)) +
             " (FORMAT CSV, HEADER true, NULL 'NULL');",
             "COPY (SELECT metrics::VARCHAR AS metrics FROM duckomo_last_scan_metrics() "

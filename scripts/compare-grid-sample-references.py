@@ -324,7 +324,7 @@ def run_sample(args: argparse.Namespace, sample: dict[str, Any], coordinate_reco
     )
     coordinate_sql.write_text(
         f"LOAD {sql_literal(str(args.extension.resolve()))};\nSET threads = 1;\n"
-        f"COPY (SELECT om_source.point_index AS spatial_index, longitude, latitude FROM {coordinate_common} "
+        f"COPY (SELECT om_source.point_index AS spatial_index, lon AS longitude, lat AS latitude FROM {coordinate_common} "
         "WHERE valid_time = TIMESTAMP '2000-01-01 00:00:00') "
         f"TO {sql_literal(str(actual_coordinates))} "
         "(FORMAT CSV, HEADER true);\n", encoding="utf-8")

@@ -35,11 +35,11 @@ UKMO `data_spatial` 样本的 218 个变量也缺少轴元数据，以显式 `di
 例如，将 `data/chmi_aladin_cz_1km/cape/chunk_4131.om` 下载到本地后，它的根数组列名是 `value`，shape 为 `[290,501,120]`，可这样声明缺失的轴身份：
 
 ```sql
-SELECT value, latitude, longitude
+SELECT value, lat, lon
 FROM read_om('/path/to/chunk_4131.om',
   domain := 'chmi_aladin_cz_1km',
-  dimensions := map(['value'], [['lat','lon','time']]))
-WHERE latitude BETWEEN 49 AND 50;
+  dimensions := ['lat','lon','time'])
+WHERE lat BETWEEN 49 AND 50;
 ```
 
 绑定会检查所有值变量的有序轴、空间轴长度和文件存在时的 WKT BBOX。额外轴保留在原逻辑行序中，同一网格坐标会在不同时间位置重复；文件带 Int64 `time` 坐标数组或标量 `valid_time` 时自动生成 UTC `valid_time TIMESTAMP`；无时间元数据时可显式提供 `valid_times`，详见 [README 有效时间查询](../README.md#有效时间查询)。显式 `grid` 仍限制纬度在 `[-90,90]`。上游的 `meteofrance_wave`、`meteofrance_currents`、`meteofrance_sea_surface_temperature` 末行纬度约为 90.041664°，仅这三个登记 domain 按源数据定义保留该值。

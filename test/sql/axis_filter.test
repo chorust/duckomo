@@ -96,6 +96,6 @@ FROM read_om(
     spatial_axes := ['point'],
     axes := {'time': {'axis':'time', 'start':TIMESTAMP '2026-09-30 00:00:00', 'step':INTERVAL '1 hour'}}
 )
-WHERE longitude = 1 AND valid_time = TIMESTAMP '2026-09-30 01:00:00';
+WHERE lon = 1 AND valid_time = TIMESTAMP '2026-09-30 01:00:00';
 ----
 4

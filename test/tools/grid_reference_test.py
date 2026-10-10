@@ -4,8 +4,10 @@
 from __future__ import annotations
 
 import importlib.util
+import csv
 import gzip
 import json
+import os
 import unittest
 from argparse import Namespace
 from pathlib import Path
@@ -186,6 +188,64 @@ class GridReferenceComparisonTest(unittest.TestCase):
             self.assertEqual(result["first_exceeded_spatial_index"], 0)
 
 
+class SyntheticSourceValidationTest(unittest.TestCase):
+    def test_synthetic_sql_preserves_reference_columns_with_short_geographic_outputs(self) -> None:
+        extension_path = os.environ.get("DUCKOMO_TEST_EXTENSION")
+        if not extension_path:
+            self.skipTest("DUCKOMO_TEST_EXTENSION is required for synthetic SQL validation")
+        extension = Path(extension_path).resolve()
+        self.assertTrue(extension.is_file(), "configured DuckOMO extension must exist")
+        cli_path = os.environ.get("DUCKOMO_OFFICIAL_DUCKDB")
+        duckdb = Path(cli_path).resolve() if cli_path else extension.parents[2] / "duckdb"
+        if not cli_path and not duckdb.is_file():
+            self.skipTest("matching DuckDB CLI is not built; set DUCKOMO_OFFICIAL_DUCKDB")
+        with TemporaryDirectory(prefix="duckomo-synthetic-source-") as directory:
+            root = Path(directory)
+            # Keep this regression independent of optional public-sample archives.
+            for fixture in ("test/data/raw.om", "test/data/grids/spatial-relations-gaussian.om"):
+                path = root / fixture
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.symlink_to(ROOT / fixture)
+            output = root / "output"
+            report = grid_spatial_reference.run_validation(duckdb, extension, root, output)
+            self.assertEqual(report["status"], "synthetic_local_pass")
+            self.assertEqual({case["grid_type"] for case in report["cases"]}, {
+                "rotated_latlon", "lambert_conformal_conic", "stereographic", "reduced_gaussian",
+            })
+            for case in report["cases"]:
+                with self.subTest(case=case["id"]):
+                    self.assertTrue(case["full_relation_multiset_matches"])
+                    self.assertTrue(case["source_value_reads_zero"])
+                    self.assertTrue(case["grid_info_value_reads_zero"])
+            self.assertEqual(json.loads((output / "h7-synthetic-report.json").read_text()), report)
+
+
+class PublicSourceValidationIntegrationTest(unittest.TestCase):
+    def test_public_prefix_checks_four_spatial_positions_at_time_zero(self) -> None:
+        extension_path = os.environ.get("DUCKOMO_TEST_EXTENSION")
+        if not extension_path:
+            self.skipTest("DUCKOMO_TEST_EXTENSION is required for public source validation")
+        extension = Path(extension_path).resolve()
+        cli_path = os.environ.get("DUCKOMO_OFFICIAL_DUCKDB")
+        duckdb = Path(cli_path).resolve() if cli_path else extension.parents[2] / "duckdb"
+        if not cli_path and not duckdb.is_file():
+            self.skipTest("matching DuckDB CLI is not built; set DUCKOMO_OFFICIAL_DUCKDB")
+        with TemporaryDirectory(prefix="duckomo-public-source-validation-") as directory:
+            output = Path(directory)
+            _, records, reason = grid_spatial_reference.prepare_public_sample_queries(ROOT, output)
+            if not records:
+                self.skipTest(reason)
+            report = grid_spatial_reference.run_public_source_validation(duckdb, extension, ROOT, output)
+            self.assertEqual(report["status"], "public_source_local_pass")
+            self.assertEqual(len(report["samples"]), 3)
+            for sample in report["samples"]:
+                with self.subTest(sample=sample["id"]):
+                    self.assertEqual(sample["positions_checked"], 4)
+                    self.assertTrue(sample["pinned_coordinate_reference_matches"])
+                    self.assertTrue(sample["source_identity_sql_matches"])
+                    self.assertTrue(sample["source_identity_sql_value_reads_zero"])
+
+
 class PublicSourceCoordinateReferenceTest(unittest.TestCase):
     def test_public_source_uri_comes_from_manifest_without_conversion(self) -> None:
         item = {"id": "public_om", "source_object": {
@@ -304,8 +364,35 @@ class PublicSourceCoordinateReferenceTest(unittest.TestCase):
             self.assertEqual(len(records), 3)
             self.assertIn("first four", reason)
             self.assertEqual(len(source_queries), 6)
-            self.assertTrue(all("LIMIT 4) TO" in statement for statement in source_queries))
+            prefix = "WHERE om_source.axis_indices[3] = 0 LIMIT 4"
+            self.assertTrue(all(prefix + ") TO" in statement for statement in source_queries))
             self.assertTrue(all("ORDER BY om_source.logical_index" not in statement for statement in source_queries))
+            identity_queries = [statement for statement in statements
+                                if statement.startswith("COPY (WITH explicit_prefix")]
+            self.assertEqual(len(identity_queries), 3)
+            self.assertTrue(all(statement.count(prefix) == 2 for statement in identity_queries))
+
+    def test_public_source_prefix_rejects_wrong_time_and_corrupt_positions(self) -> None:
+        with TemporaryDirectory(prefix="duckomo-public-source-invalid-position-") as directory:
+            output = Path(directory)
+            record = {"id": "sample", "shape": [2, 4, 5], "explicit_source_csv": "source.csv"}
+            for field, invalid in (("axis_indices", "[0, 1, 1]"), ("logical_index", 6),
+                                   ("point_index", 0), ("parent_point_index", 0)):
+                with self.subTest(field=field):
+                    rows = [{"object_id": "object-a", "object_version": "NULL",
+                             "version_strength": "unverifiable", "content_verified": "false",
+                             "grid_id": "grid-a", "layout_id": "layout-a",
+                             "logical_index": index * 5, "point_index": index,
+                             "parent_point_index": index, "axis_indices": json.dumps([0, index, 0]),
+                             "longitude": 10 + index, "latitude": 20}
+                            for index in range(4)]
+                    rows[1][field] = invalid
+                    with (output / "source.csv").open("w", encoding="utf-8", newline="") as stream:
+                        writer = csv.DictWriter(stream, fieldnames=grid_spatial_reference.PUBLIC_SOURCE_COLUMNS)
+                        writer.writeheader()
+                        writer.writerows(rows)
+                    with self.assertRaisesRegex(ValueError, "identity does not reconstruct"):
+                        grid_spatial_reference.validate_public_sample_source(record, output)
 
     def test_public_spatial_source_selection_uses_full_scan_baseline_and_sql_identity(self) -> None:
         with TemporaryDirectory(prefix="duckomo-public-source-selection-") as directory:
@@ -396,10 +483,10 @@ class PublicSourceCoordinateReferenceTest(unittest.TestCase):
             self.assertEqual(len(baseline), 1)
             self.assertEqual(len(selected), 1)
             self.assertEqual(len(identity), 1)
-            self.assertNotIn("latitude BETWEEN", baseline[0])
+            self.assertNotIn("lat BETWEEN", baseline[0])
             self.assertIn("valid_time = TIMESTAMP '2026-01-01 00:00:00'", baseline[0])
-            self.assertIn("latitude BETWEEN 22.8 AND 23.2", selected[0])
-            self.assertIn("longitude BETWEEN 12.8 AND 13.2", selected[0])
+            self.assertIn("lat BETWEEN 22.8 AND 23.2", selected[0])
+            self.assertIn("lon BETWEEN 12.8 AND 13.2", selected[0])
             self.assertIn("om_source.object_id", selected[0])
             self.assertIn("FULL OUTER JOIN", identity[0])
             self.assertIn("om_source.logical_index", identity[0])

@@ -11,8 +11,8 @@ namespace duckomo {
 
 using AxisDeclarations = std::vector<std::vector<std::string>>;
 
-// Validates the optional dimensions MAP against the complete schema. A single
-// variable may omit the map; multiple variables require explicit equal axes.
+// Validates shared VARCHAR[] or per-variable MAP declarations against every
+// array. Omission uses ordered coordinates metadata (optional for one array).
 AxisDeclarations ValidateAxisDeclarations(const Value *dimensions, const BoundSchema &schema);
 
 } // namespace duckomo

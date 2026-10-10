@@ -181,7 +181,7 @@ void TestInterleavedAxesAndParallelIdentity(Connection &connection) {
 	                    "SELECT om_source.logical_index, om_source.axis_indices[1], om_source.axis_indices[2], "
 	                    "om_source.axis_indices[3], om_source.axis_indices[4], om_source.axis_indices[5], "
 	                    "om_source.axis_indices[6], om_source.axis_indices[7] FROM " + InterleavedRead() +
-	                    " WHERE latitude BETWEEN 0.99 AND 1.01 AND longitude BETWEEN 1.99 AND 2.01 "
+	                    " WHERE lat BETWEEN 0.99 AND 1.01 AND lon BETWEEN 1.99 AND 2.01 "
 	                    "ORDER BY om_source.logical_index DESC");
 	Require(result->RowCount() == 32, "the same geographic point retains all non-spatial records");
 	std::vector<std::uint64_t> positions;

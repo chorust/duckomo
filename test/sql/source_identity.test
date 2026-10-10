@@ -41,8 +41,8 @@ DESCRIBE SELECT * FROM read_om(
     spatial_axes := ['row', 'column'], include_source := true);
 ----
 value	FLOAT	YES	NULL	NULL	NULL
-latitude	DOUBLE	YES	NULL	NULL	NULL
-longitude	DOUBLE	YES	NULL	NULL	NULL
+lat	DOUBLE	YES	NULL	NULL	NULL
+lon	DOUBLE	YES	NULL	NULL	NULL
 om_source	STRUCT(object_id VARCHAR, object_version VARCHAR, version_strength VARCHAR, content_verified BOOLEAN, grid_id VARCHAR, layout_id VARCHAR, logical_index UBIGINT, point_index UBIGINT, parent_point_index UBIGINT, axis_indices UBIGINT[])	YES	NULL	NULL	NULL
 
 statement error
@@ -96,7 +96,7 @@ FROM read_om(
         'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
                        'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
     }, spatial_axes := ['latitude_axis', 'longitude_axis'], include_source := true)
-WHERE latitude BETWEEN 0.99 AND 1.01 AND longitude BETWEEN 1.99 AND 2.01;
+WHERE lat BETWEEN 0.99 AND 1.01 AND lon BETWEEN 1.99 AND 2.01;
 ----
 32	32
 

@@ -31,7 +31,7 @@ FROM read_om(
     },
     spatial_axes := ['row', 'column'], include_source := true
 )
-WHERE (longitude >= 1 AND value % 2 = 1) OR value = 0;
+WHERE (lon >= 1 AND value % 2 = 1) OR value = 0;
 ----
 3
 
@@ -46,7 +46,7 @@ WHERE metrics LIKE '%"residual_filter_retained":true%'
 # Case-insensitive Identifier/named-argument lookup must retain the same
 # output and filtering semantics as the baseline std::string API.
 query III
-SELECT value, latitude, longitude
+SELECT value, lat, lon
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     DIMENSIONS := map(['value'], [['row', 'column']]),
@@ -64,7 +64,7 @@ FROM read_om(
     },
     SPATIAL_AXES := ['row', 'column']
 )
-WHERE longitude BETWEEN 0.9 AND 2.1 AND value >= 3
+WHERE lon BETWEEN 0.9 AND 2.1 AND value >= 3
 ORDER BY value;
 ----
 4.000000	0.9999999999999964	0.9999999999999964

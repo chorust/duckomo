@@ -15,7 +15,7 @@ LOAD '__BUILD_DIRECTORY__/extension/json/json.duckdb_extension';
 # A rotated grid with its north pole at the geographic north pole is an
 # identity mapping. The fixture has six row-major values in [row, column].
 query RRR
-SELECT value, latitude, longitude
+SELECT value, lat, lon
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['row', 'column']]),
@@ -102,7 +102,7 @@ SELECT count(*) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');
 # The legacy seven-field regular grid keeps the original coordinate columns
 # and row-major value positions after version=1 definitions are introduced.
 query RRR
-SELECT value, latitude, longitude
+SELECT value, lat, lon
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['row', 'column']]),
@@ -121,7 +121,7 @@ ORDER BY value;
 # Version-one definitions evaluate copied spatial predicates on native source
 # positions while keeping the original SQL filter for exact result semantics.
 query RRR
-SELECT value, latitude, longitude
+SELECT value, lat, lon
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['row', 'column']]),
@@ -138,7 +138,7 @@ FROM read_om(
         }
     },
     spatial_axes := ['row', 'column'])
-WHERE longitude >= 1.5 OR longitude < 0.5
+WHERE lon >= 1.5 OR lon < 0.5
 ORDER BY value;
 ----
 0.000000	0.000000	0.000000
@@ -172,7 +172,7 @@ FROM read_om(
         }
     },
     spatial_axes := ['row', 'column'])
-WHERE longitude >= 1 OR value = 0;
+WHERE lon >= 1 OR value = 0;
 ----
 4
 
@@ -283,7 +283,7 @@ SELECT * FROM read_om(
 # A complete source Gaussian CRS profile is retained and checked against the
 # declared WGS84 earth model, ordered axes, and angular coordinate output.
 query RRR
-SELECT "gaussian_wgs84/value", latitude, longitude
+SELECT "gaussian_wgs84/value", lat, lon
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/grids/crs-wgs84-gaussian.om',
     dimensions := map(['gaussian_wgs84/value'], [['point']]),
@@ -410,8 +410,8 @@ SELECT value FROM read_om(
 # Each closed grid family binds through the same version=1 interface. The
 # synthetic arrays exercise separate, x-fastest, y-fastest, and row-major axes.
 query III
-SELECT count(*), count(*) FILTER (WHERE latitude IS NULL),
-       count(*) FILTER (WHERE longitude IS NULL)
+SELECT count(*), count(*) FILTER (WHERE lat IS NULL),
+       count(*) FILTER (WHERE lon IS NULL)
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/grids/reverse.om',
     dimensions := map(['reverse/value'], [['latitude_axis', 'longitude_axis']]),
@@ -448,13 +448,13 @@ FROM read_om(
                                 {'parent_row': 0, 'parent_begin': 0, 'count': 3}]
         }
     }, spatial_axes := ['point'])
-WHERE longitude BETWEEN -70 AND 70;
+WHERE lon BETWEEN -70 AND 70;
 ----
 6	708	2	202
 
 query III
-SELECT count(*), count(*) FILTER (WHERE latitude IS NULL),
-       count(*) FILTER (WHERE longitude IS NULL)
+SELECT count(*), count(*) FILTER (WHERE lat IS NULL),
+       count(*) FILTER (WHERE lon IS NULL)
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/grids/x-fastest.om',
     dimensions := map(['flattened_x_fastest/value'], [['point']]),
@@ -472,8 +472,8 @@ FROM read_om(
 12	0	0
 
 query III
-SELECT count(*), count(*) FILTER (WHERE latitude IS NULL),
-       count(*) FILTER (WHERE longitude IS NULL)
+SELECT count(*), count(*) FILTER (WHERE lat IS NULL),
+       count(*) FILTER (WHERE lon IS NULL)
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/grids/y-fastest.om',
     dimensions := map(['flattened_y_fastest/value'], [['point']]),
@@ -490,8 +490,8 @@ FROM read_om(
 12	0	0
 
 query III
-SELECT count(*), count(*) FILTER (WHERE latitude IS NULL),
-       count(*) FILTER (WHERE longitude IS NULL)
+SELECT count(*), count(*) FILTER (WHERE lat IS NULL),
+       count(*) FILTER (WHERE lon IS NULL)
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/grids/x-fastest.om',
     dimensions := map(['flattened_x_fastest/value'], [['point']]),
@@ -512,8 +512,8 @@ FROM read_om(
 12	0	0
 
 query III
-SELECT count(*), count(*) FILTER (WHERE latitude IS NULL),
-       count(*) FILTER (WHERE longitude IS NULL)
+SELECT count(*), count(*) FILTER (WHERE lat IS NULL),
+       count(*) FILTER (WHERE lon IS NULL)
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/grids/interleaved.om',
     dimensions := map(
@@ -549,7 +549,7 @@ FROM read_om(
         'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
                        'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
     }, spatial_axes := ['latitude_axis', 'longitude_axis'])
-WHERE latitude BETWEEN 0.99 AND 1.01 AND longitude BETWEEN 1.99 AND 2.01;
+WHERE lat BETWEEN 0.99 AND 1.01 AND lon BETWEEN 1.99 AND 2.01;
 ----
 32	1910608
 
@@ -612,9 +612,9 @@ SELECT temperature FROM read_om(
 ----
 <REGEX>:(?i).*dimensions axis order differs.*
 
-# Column names added by geographic binding cannot collide with source arrays.
-statement error
-SELECT * FROM read_om(
+# Long source names coexist with lat/lon for projected grids too.
+query III
+SELECT count("Latitude"), count(lat), count(lon) FROM read_om(
     '__WORKING_DIRECTORY__/test/data/spatial_conflict.om',
     dimensions := map(['Latitude'], [['lat', 'lon']]),
     grid := {
@@ -626,7 +626,7 @@ SELECT * FROM read_om(
     },
     spatial_axes := ['lat', 'lon']);
 ----
-<REGEX>:(?i).*coordinate column name conflicts.*
+6	6	6
 
 statement error
 SELECT * FROM read_om(

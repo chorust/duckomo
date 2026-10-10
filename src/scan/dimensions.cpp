@@ -54,6 +54,24 @@ std::vector<std::string> ReadAxes(const Value &value, const BoundVariable &varia
 	return result;
 }
 
+// Both explicit forms carry the same assertion about every source array.
+// A shared list saves SQL repetition, not rank/shape/metadata validation.
+void ValidateAlignment(const BoundSchema &schema, const AxisDeclarations &axes) {
+	for (std::size_t index = 0; index < schema.variables.size(); index++) {
+		const auto &variable = schema.variables[index];
+		if (variable.shape != schema.shape || variable.row_count != schema.row_count) {
+			throw BinderException("read_om arrays do not have identical shapes: '" + variable.canonical_path + "'");
+		}
+		if (!variable.inferred_axes.empty() && axes[index] != variable.inferred_axes) {
+			throw BinderException("read_om dimensions axis names conflict with coordinates metadata for array '" +
+			                      variable.column_name + "'");
+		}
+		if (axes[index] != axes.front()) {
+			throw BinderException("read_om dimensions axis order differs for array '" + variable.canonical_path + "'");
+		}
+	}
+}
+
 } // namespace
 
 AxisDeclarations ValidateAxisDeclarations(const Value *dimensions, const BoundSchema &schema) {
@@ -77,11 +95,20 @@ AxisDeclarations ValidateAxisDeclarations(const Value *dimensions, const BoundSc
 		}
 		return AxisDeclarations(1, schema.variables.front().inferred_axes);
 	}
+	if (dimensions->type().id() == LogicalTypeId::LIST) {
+		AxisDeclarations shared;
+		shared.reserve(schema.variables.size());
+		for (const auto &variable : schema.variables) {
+			shared.emplace_back(ReadAxes(*dimensions, variable));
+		}
+		ValidateAlignment(schema, shared);
+		return shared;
+	}
 	if (dimensions->type().id() != LogicalTypeId::MAP ||
 	    MapType::KeyType(dimensions->type()).id() != LogicalTypeId::VARCHAR ||
 	    MapType::ValueType(dimensions->type()).id() != LogicalTypeId::LIST ||
 	    ListType::GetChildType(MapType::ValueType(dimensions->type())).id() != LogicalTypeId::VARCHAR) {
-		throw BinderException(AxisInputError("must be MAP(VARCHAR, VARCHAR[])"));
+		throw BinderException(AxisInputError("must be VARCHAR[] (shared by every array) or MAP(VARCHAR, VARCHAR[])"));
 	}
 
 	const auto &entries = MapValue::GetChildren(*dimensions);
@@ -119,18 +146,9 @@ AxisDeclarations ValidateAxisDeclarations(const Value *dimensions, const BoundSc
 		if (found == axes_by_path.end()) {
 			throw BinderException(AxisInputError("is missing array path '" + variable.column_name + "'"));
 		}
-		if (variable.shape != schema.shape || variable.row_count != schema.row_count) {
-			throw BinderException("read_om arrays do not have identical shapes: '" + variable.canonical_path + "'");
-		}
-		if (!variable.inferred_axes.empty() && found->second != variable.inferred_axes) {
-			throw BinderException("read_om dimensions axis names conflict with coordinates metadata for array '" +
-			                      variable.column_name + "'");
-		}
-		if (!result.empty() && result.front() != found->second) {
-			throw BinderException("read_om dimensions axis order differs for array '" + variable.canonical_path + "'");
-		}
 		result.emplace_back(found->second);
 	}
+	ValidateAlignment(schema, result);
 	return result;
 }
 

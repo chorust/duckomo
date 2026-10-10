@@ -66,17 +66,17 @@ void TestCallbackRetainsFilterAndProjection(duckdb::Connection &connection) {
 	Require(result->RowCount() == 108, "integer and reversed-comparison residual filters return the exact rows");
 
 	auto coordinate_explain = RequireSuccess(
-	    connection, "EXPLAIN SELECT value FROM " + SpatialRawRead() + " WHERE latitude >= 11");
+	    connection, "EXPLAIN SELECT value FROM " + SpatialRawRead() + " WHERE lat >= 11");
 	std::string coordinate_plan;
 	for (idx_t row = 0; row < coordinate_explain->RowCount(); row++) {
 		coordinate_plan += coordinate_explain->GetValue(1, row).ToString();
 		coordinate_plan.push_back('\n');
 	}
 	Require(coordinate_plan.find("FILTER") != std::string::npos &&
-	            coordinate_plan.find("latitude >= 11.0") != std::string::npos,
+	            coordinate_plan.find("lat >= 11.0") != std::string::npos,
 	        "DOUBLE coordinate comparison with an integer literal remains as an exact filter");
 	auto reverse_coordinate = RequireSuccess(connection,
-	                                         "SELECT value FROM " + SpatialRawRead() + " WHERE 11 <= latitude");
+	                                         "SELECT value FROM " + SpatialRawRead() + " WHERE 11 <= lat");
 	Require(reverse_coordinate->RowCount() == 3, "reversed integer-to-coordinate comparison retains residual semantics");
 	auto final_filter = RequireSuccess(
 	    connection, "SELECT temperature FROM " + source + " WHERE 96 <= humidity AND humidity <= 96");

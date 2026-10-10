@@ -4,12 +4,16 @@
 #include "duckdb/main/client_context.hpp"
 #include "duckdb/common/file_opener.hpp"
 #include "duckdb/common/file_system.hpp"
+#include "duckdb/common/exception/http_exception.hpp"
 #include "duckomo/remote_file.hpp"
 #include "duckomo/om_reader.hpp"
 #include "duckomo_extension.hpp"
 #include <cstring>
+#include <algorithm>
 #include <cstdlib>
 #include <fstream>
+#include <functional>
+#include <unordered_map>
 #include <iostream>
 #include <iterator>
 #include <stdexcept>
@@ -22,7 +26,11 @@ namespace {
 using namespace duckdb;
 using namespace duckdb::duckomo;
 void Require(bool value, const char *why) { if (!value) throw std::runtime_error(why); }
-struct State { int opens=0; int closed=0; bool fail=false; bool changed=false; bool no_tag=false; };
+struct State {
+    int opens=0; int closed=0; bool fail=false; bool changed=false; bool no_tag=false;
+    std::function<void()> open_error;
+    std::function<void()> read_error;
+};
 struct Handle final : FileHandle {
     Handle(FileSystem &fs, const std::string &path, FileOpenFlags flags, State &state)
         : FileHandle(fs,path,flags),state(state) {}
@@ -46,12 +54,14 @@ public:
         Require(bool(opener->TryGetCurrentSetting("unsafe_disable_etag_checks",value)) && !value.GetValue<bool>(),"ETag check required");
         Require(bool(opener->TryGetCurrentSetting("s3_version_id_pinning",value)) && value.GetValue<bool>(),"S3 pinning required");
         ++state.opens;
+        if (state.open_error) state.open_error();
         if (state.fail) throw IOException("private-token=secret");
         return make_uniq<Handle>(*this,path,flags,state);
     }
     int64_t GetFileSize(FileHandle &) override { return state.changed?9:8; }
     string GetVersionTag(FileHandle &) override { return state.no_tag ? "" : state.changed?"v2":"v1"; }
     void Read(FileHandle &,void *dest,int64_t size,idx_t offset) override {
+        if (state.read_error) state.read_error();
         if (state.fail) throw IOException("short read, private-token=secret");
         if (offset+size>8) throw IOException("short read");
         std::memcpy(dest,"abcdefgh"+offset,static_cast<size_t>(size));
@@ -63,6 +73,84 @@ template<class F> void Fails(F action,const char *why) {
     try { action(); } catch(const std::exception &e) { failed=true;Require(std::string(e.what()).find("secret")==std::string::npos,"error must redact transport secrets"); }
     Require(failed,why);
 }
+void TestDiagnosticFailures() {
+    State state;
+    DuckDB db(nullptr); Connection conn(db);
+    FileSystem::GetFileSystem(*conn.context).RegisterSubSystem(make_uniq<FakeFileSystem>(state));
+    auto metrics=std::make_shared<ScanMetrics>();
+    auto session=RemoteReadSession::Create(*conn.context,"https://duckomo-test/object.om?token=sensitive-marker",metrics);
+    struct Case { std::function<void()> fail; const char *category; };
+    std::vector<Case> cases={
+        {[]{throw MissingExtensionException("sensitive-marker");},"extension_missing"},
+        {[]{throw Exception(ExceptionType::AUTOLOAD,"sensitive-marker");},"extension_load"},
+        {[]{throw PermissionException("sensitive-marker");},"access_denied"},
+        {[]{throw InvalidInputException("proxy credential=sensitive-marker");},"configuration"},
+        {[]{throw Exception(ExceptionType::INVALID_CONFIGURATION,"sensitive-marker");},"configuration"},
+        {[]{throw Exception(ExceptionType::SETTINGS,"sensitive-marker");},"configuration"},
+        {[]{throw IOException("HTTP 404 sensitive-marker");},"transport"},
+        {[]{throw std::runtime_error("HTTP 403 sensitive-marker");},"transport"},
+        {[]{throw std::runtime_error("{token=sensitive-marker");},"transport"},
+        {[]{throw HTTPException("HTTP 404 sensitive-marker");},"transport"},
+        {[]{throw Exception(unordered_map<string,string>{{"status_code","404 sensitive-marker"}},
+                           ExceptionType::HTTP,"sensitive-marker");},"transport"}
+    };
+    for (const auto &status : std::vector<std::pair<int,const char *>>{
+             {401,"access_denied"},{403,"access_denied"},{404,"object_not_found"},
+             {408,"timeout"},{504,"timeout"},{412,"object_changed"},{416,"range_request"},
+             {429,"rate_limited"},{500,"http"}}) {
+        cases.push_back({[code=status.first]{
+            const std::unordered_map<std::string,std::string> headers={{"Authorization","sensitive-marker"}};
+            throw HTTPException(code,"sensitive-marker body",headers,"sensitive-marker reason",
+                                "sensitive-marker signed URL");
+        },status.second});
+    }
+    const auto expect=[&](const std::function<void()> &action, const char *category, ReaderErrorCode code) {
+        try { action(); }
+        catch (const ReaderError &error) {
+            const std::string message=error.what();
+            Require(error.Code()==code,"diagnostics preserve reader error phase");
+            Require(message.find(std::string("[")+category+"]")!=std::string::npos,"actionable error category");
+            Require(message.find("?<redacted>")!=std::string::npos,"object query parameters are redacted");
+            Require(message.find("sensitive-marker")==std::string::npos,"raw message/body/header/reason must never escape");
+            Require(std::count(message.begin(),message.end(),'\n')==0,"diagnostics contain no injected lines");
+            return;
+        }
+        throw std::runtime_error("remote diagnostic did not fail");
+    };
+    for (const auto &test : cases) {
+        state.open_error=test.fail;
+        expect([&]{session->Open(*conn.context,ScanMetadataStage::Bind);},test.category,ReaderErrorCode::FileIo);
+        state.open_error={};
+        auto file=session->Open(*conn.context,ScanMetadataStage::Scan);
+        state.read_error=test.fail;
+        const auto before=metrics->Snapshot().physical_read_bytes;
+        expect([&]{file->ReadRange(0,1,ScanReadPhase::Index,"value");},test.category,ReaderErrorCode::IndexRead);
+        expect([&]{file->ReadRange(0,1,ScanReadPhase::Data,"value");},test.category,ReaderErrorCode::DataRead);
+        Require(metrics->Snapshot().physical_read_bytes==before,"failed reads are not accounted as success");
+        state.read_error={};
+        Require(file->ReadRange(0,1,ScanReadPhase::Data,"value")[0]=='a',"same-session recovery after classified failure");
+    }
+    Require(state.closed==static_cast<int>(cases.size()),"all successful diagnostic handles close");
+    state.open_error=[]{throw Exception(ExceptionType::INTERRUPT,"sensitive-marker");};
+    bool cancelled=false;
+    try { session->Open(*conn.context,ScanMetadataStage::Bind); } catch(const InterruptException &) {cancelled=true;}
+    Require(cancelled,"serialized interruption preserves cancellation rather than transport failure");
+    state.open_error={};
+    auto file=session->Open(*conn.context,ScanMetadataStage::Scan);
+    state.read_error=[]{throw Exception(ExceptionType::INTERRUPT,"sensitive-marker");};
+    for (const auto phase : {ScanReadPhase::Index, ScanReadPhase::Data}) {
+        cancelled=false;
+        try { file->ReadRange(0,1,phase,"value"); } catch(const InterruptException &) {cancelled=true;}
+        Require(cancelled,"serialized read interruption preserves cancellation rather than transport failure");
+    }
+    state.read_error={};
+    Require(file->ReadRange(0,1,ScanReadPhase::Data,"value")[0]=='a',"read recovery after serialized interruption");
+    file.reset();
+    Require(state.closed==static_cast<int>(cases.size())+1,"cancellation diagnostic handle closes");
+    Require(RedactRemoteUri("https://user-sensitive-marker:pass-sensitive-marker@host/file.om?token=sensitive-marker") ==
+            "https://host/file.om?<redacted>","userinfo and signed parameters are both redacted");
+}
+
 class IdentityFileSystem final : public FileSystem {
 public:
     IdentityFileSystem() {
@@ -161,6 +249,7 @@ int main() {
         Fails([&]{ RemoteReadSession::Create(*denied.context,"https://duckomo-test/object.om?token=secret",metrics); },"external access restriction");
         Require(!IsSupportedRemoteOmUri("https://host/*.om"),"reject globs");
         Require(!IsSupportedRemoteOmUri("https://host/file.om#frag"),"reject fragments");
+        TestDiagnosticFailures();
         TestQueryObjectIdentity(conn);
         std::cout<<"remote_session_test: standard interface, handles, errors, cancellation, permissions passed\n";
         return 0;

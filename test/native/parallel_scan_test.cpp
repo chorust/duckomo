@@ -202,7 +202,7 @@ void TestGridReadsKeepTimeContiguous(duckdb::Connection &connection) {
 	            LastValueMetric(connection, "decoded_chunks") == chunks,
 	        "adding a grid must preserve full-scan read and decode costs");
 	RequireSuccess(connection, "CREATE TEMP TABLE trailing_time_reference AS SELECT * FROM " + source);
-	for (const auto predicate : {"longitude < 4", "longitude < 4 AND valid_time BETWEEN "
+	for (const auto predicate : {"lon < 4", "lon < 4 AND valid_time BETWEEN "
 	                                             "TIMESTAMP '2026-01-01 03:00:00' AND TIMESTAMP '2026-01-02 10:00:00'"}) {
 		const auto filtered_reference = Scalar(connection, "SELECT sum(value) FROM trailing_time_reference WHERE " +
 		                                                     std::string(predicate));
@@ -216,8 +216,8 @@ void TestGridReadsKeepTimeContiguous(duckdb::Connection &connection) {
 void TestLimitLeavesSpatialCandidateCountIncomplete(duckdb::Connection &connection) {
 	RequireSuccess(connection, "SET threads=1");
 	RequireSuccess(connection, "SET duckomo_max_threads=1");
-	const auto limited = "SELECT latitude, longitude FROM " + LimitedSpatialRead() +
-	                     " WHERE latitude >= 0 AND longitude < 0 LIMIT 1";
+	const auto limited = "SELECT lat, lon FROM " + LimitedSpatialRead() +
+	                     " WHERE lat >= 0 AND lon < 0 LIMIT 1";
 	Require(Scalar(connection, "SELECT count(*) FROM (" + limited + ")") == "1",
 	        "a spatially filtered LIMIT query should return its one requested row");
 	const auto incomplete_evidence = Scalar(
@@ -236,7 +236,7 @@ void TestSpatialPreflightUsesParallelWindows(duckdb::Connection &connection) {
 	RequireSuccess(connection, "SET threads=4");
 	RequireSuccess(connection, "SET duckomo_max_threads=4");
 	const auto total = Scalar(connection, "SELECT sum(value) FROM " + SpatialPerfRead() +
-	                                    " WHERE latitude >= 0 AND longitude < 0");
+	                                    " WHERE lat >= 0 AND lon < 0");
 	Require(!total.empty(), "parallel spatial preflight should return a non-empty value result");
 	Require(std::stoll(LastMetric(connection, "active_workers")) >= 2,
 	        "spatial coordinate preflight should leave enough native windows for concurrent workers");

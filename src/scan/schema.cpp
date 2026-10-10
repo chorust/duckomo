@@ -81,15 +81,15 @@ BoundSchema BuildBoundSchema(const OmMetadataTree &tree) {
 void AppendSpatialOutputColumns(const BoundSchema &schema, std::vector<LogicalType> &return_types,
 	                            TableFunctionColumnNames &names) {
 	for (const auto &variable : schema.variables) {
-		if (StringUtil::CIEquals(variable.column_name, "latitude") ||
-		    StringUtil::CIEquals(variable.column_name, "longitude")) {
+		if (StringUtil::CIEquals(variable.column_name, "lat") ||
+		    StringUtil::CIEquals(variable.column_name, "lon")) {
 			throw BinderException("read_om coordinate column name conflicts with source array '" + variable.column_name + "'");
 		}
 	}
 	return_types.emplace_back(LogicalType::DOUBLE);
-	names.emplace_back("latitude");
+	names.emplace_back("lat");
 	return_types.emplace_back(LogicalType::DOUBLE);
-	names.emplace_back("longitude");
+	names.emplace_back("lon");
 }
 
 } // namespace duckomo

@@ -1,0 +1,138 @@
+# name: test/sql/interface_usability.test
+# description: Short geographic columns and shared dimension declarations retain strict semantics
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+statement ok
+CREATE MACRO usability_grid() AS {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':1.0, 'order':'separate'};
+
+statement ok
+CREATE TEMP VIEW usability_short AS
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := ['lat','lon'], grid := usability_grid(), spatial_axes := ['lat','lon']);
+
+query T
+SELECT column_name || ' ' || column_type FROM (DESCRIBE SELECT * FROM usability_short);
+----
+value FLOAT
+lat DOUBLE
+lon DOUBLE
+
+# MAP is preserved and has exactly the same rows as the shared-list spelling.
+query I
+SELECT count(*) FROM (
+    (SELECT * FROM usability_short EXCEPT ALL
+     SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om',
+         dimensions := map(['value'], [['lat','lon']]), grid := usability_grid(), spatial_axes := ['lat','lon']))
+    UNION ALL
+    (SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om',
+         dimensions := map(['/'], [['lat','lon']]), grid := usability_grid(), spatial_axes := ['lat','lon'])
+     EXCEPT ALL SELECT * FROM usability_short));
+----
+0
+
+# This is an intentional output-schema change, not an implicit alias pair.
+statement error
+SELECT latitude, longitude FROM usability_short;
+----
+<REGEX>:(?i).*referenced column.*not found.*
+
+# Explicit SQL aliases remain usable, including through a view/predicate.
+statement ok
+CREATE TEMP VIEW usability_alias AS SELECT value, lat AS latitude, lon AS longitude FROM usability_short;
+
+query IR
+SELECT count(*), sum(value) FROM usability_alias WHERE latitude = 11 AND longitude BETWEEN 100 AND 101;
+----
+2	7.000000
+
+# Shared axes apply to every array, including nested variable paths.
+query I
+SELECT count(*) FROM read_om('__WORKING_DIRECTORY__/test/data/multi.om', dimensions := ['row','column']);
+----
+6
+
+query I
+SELECT count(*) FROM (
+    SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/nested.om', dimensions := ['row','column'])
+    EXCEPT ALL
+    SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/nested.om', dimensions := map(
+        ['layer_a/value','layer_b/temperature','layer_b/value','temperature','weird%2Fname%25/value'],
+        [['row','column'],['row','column'],['row','column'],['row','column'],['row','column']])));
+----
+0
+
+# A LIST is only an explicit axis assertion; it does not synthesize coordinates.
+statement error
+SELECT lat FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := ['lat','lon']);
+----
+<REGEX>:(?i).*referenced column.*not found.*
+
+# All variables must pass the same validation as the MAP form.
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/negative/shape_mismatch.om', dimensions := ['row','column']);
+----
+<REGEX>:(?i).*identical shapes.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/pfor_attributes.om', dimensions := ['x','y']);
+----
+<REGEX>:(?i).*conflict with coordinates metadata.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := ['row']);
+----
+<REGEX>:(?i).*axis count must match rank 2.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := []::VARCHAR[]);
+----
+<REGEX>:(?i).*axis count must match rank 2.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := ['row','row']);
+----
+<REGEX>:(?i).*duplicate axis.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := ['row','']);
+----
+<REGEX>:(?i).*axis names must not be empty.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := ['row',NULL]);
+----
+<REGEX>:(?i).*NULL axis names.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := [1,2]);
+----
+<REGEX>:(?i).*values must be VARCHAR\[\].*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := {'value':['row','column']});
+----
+<REGEX>:(?i).*VARCHAR\[\].*MAP.*
+
+# Both metadata and omission/NULL behavior are unchanged.
+query I
+SELECT count(*) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := NULL);
+----
+6
+
+# Grid descriptors share the normalized binder and retain their JSON vocabulary.
+query I
+SELECT count(*) FROM
+    om_grid_info('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := ['lat','lon'],
+        grid := usability_grid(), spatial_axes := ['lat','lon']) AS a,
+    om_grid_info('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]),
+        grid := usability_grid(), spatial_axes := ['lat','lon']) AS b
+WHERE a.grid_id IS DISTINCT FROM b.grid_id OR a.layout IS DISTINCT FROM b.layout;
+----
+0

@@ -47,6 +47,7 @@ set(DUCKOMO_NATIVE_TEST_SOURCES
 set(DUCKOMO_SQLLOGICTEST_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/raw.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/read_om.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/interface_usability.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/semantic_axes.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/axis_filter.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/parallel_scan.test"

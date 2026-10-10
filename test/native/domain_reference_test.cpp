@@ -77,7 +77,7 @@ void Run(const fs::path &sample_path, const fs::path &manifest_path, const fs::p
 	const auto sample = fs::absolute(sample_path).string();
 	const auto query = "SELECT * FROM read_om(" + SqlLiteral(sample) +
 	                   ", grid := {'nx':1440, 'ny':721, 'lat0':-90.0, 'lon0':-180.0, 'dlat':0.25, 'dlon':0.25, "
-	                   "'order':'separate'}, spatial_axes := ['lat','lon']) ORDER BY latitude, longitude";
+	                   "'order':'separate'}, spatial_axes := ['lat','lon']) ORDER BY lat, lon";
 	auto result = connection.Query(query);
 	Require(result != nullptr && !result->HasError(), "explicit-domain-grid query failed: " +
 	                                                     (result ? result->GetError() : "no result"));
@@ -85,7 +85,7 @@ void Run(const fs::path &sample_path, const fs::path &manifest_path, const fs::p
 	CompareDomainResult(materialized, references);
 
 	const auto domain_query = "SELECT * FROM read_om(" + SqlLiteral(sample) +
-	                          ", domain := 'ncep_gfswave025') ORDER BY latitude, longitude";
+	                          ", domain := 'ncep_gfswave025') ORDER BY lat, lon";
 	auto domain_result = connection.Query(domain_query);
 	Require(domain_result != nullptr && !domain_result->HasError(), "registered-domain query failed: " +
 	                                                                 (domain_result ? domain_result->GetError() : "no result"));

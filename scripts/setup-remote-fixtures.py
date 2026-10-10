@@ -169,7 +169,7 @@ def http_server_main(args: list[str]) -> int:
                 "body_bytes": 0,
             })
             try:
-                if state == "denied" or fault == "403":
+                if state == "denied" or fault == "403" or (fault == "403-data" and method == "GET"):
                     status = 403
                     self.send_response(status)
                     self.send_header("Content-Length", "0")

@@ -65,20 +65,20 @@ SELECT count(*) AS domain_identity_difference_gem_rdps_10km FROM (
      EXCEPT ALL SELECT om_source.grid_id, om_source.layout_id FROM explicit_gem_rdps_10km)
 );
 SELECT count(*) AS restricted_difference_gem_rdps_10km FROM (
-    (SELECT * FROM baseline_gem_rdps_10km WHERE latitude BETWEEN -10 AND 10 AND longitude BETWEEN -10 AND 10
-     EXCEPT ALL SELECT * FROM explicit_gem_rdps_10km WHERE latitude BETWEEN -10 AND 10 AND longitude BETWEEN -10 AND 10)
+    (SELECT * FROM baseline_gem_rdps_10km WHERE lat BETWEEN -10 AND 10 AND lon BETWEEN -10 AND 10
+     EXCEPT ALL SELECT * FROM explicit_gem_rdps_10km WHERE lat BETWEEN -10 AND 10 AND lon BETWEEN -10 AND 10)
     UNION ALL
-    (SELECT * FROM explicit_gem_rdps_10km WHERE latitude BETWEEN -10 AND 10 AND longitude BETWEEN -10 AND 10
-     EXCEPT ALL SELECT * FROM baseline_gem_rdps_10km WHERE latitude BETWEEN -10 AND 10 AND longitude BETWEEN -10 AND 10)
+    (SELECT * FROM explicit_gem_rdps_10km WHERE lat BETWEEN -10 AND 10 AND lon BETWEEN -10 AND 10
+     EXCEPT ALL SELECT * FROM baseline_gem_rdps_10km WHERE lat BETWEEN -10 AND 10 AND lon BETWEEN -10 AND 10)
 );
 SELECT count(*) AS seam_rows_gem_rdps_10km FROM explicit_gem_rdps_10km WHERE 
-    (longitude BETWEEN 170 AND 180 OR longitude BETWEEN -180 AND -170);
-SELECT count(*) AS empty_rows_gem_rdps_10km FROM explicit_gem_rdps_10km WHERE latitude > 90;
-SELECT count(*) AS fallback_rows_gem_rdps_10km FROM explicit_gem_rdps_10km WHERE abs(latitude) < 1;
-SELECT om_source.logical_index, longitude, latitude,
-       (longitude BETWEEN -1 AND 1 AND latitude BETWEEN -1 AND 1) AS polygon_covers_point
+    (lon BETWEEN 170 AND 180 OR lon BETWEEN -180 AND -170);
+SELECT count(*) AS empty_rows_gem_rdps_10km FROM explicit_gem_rdps_10km WHERE lat > 90;
+SELECT count(*) AS fallback_rows_gem_rdps_10km FROM explicit_gem_rdps_10km WHERE abs(lat) < 1;
+SELECT om_source.logical_index, lon, lat,
+       (lon BETWEEN -1 AND 1 AND lat BETWEEN -1 AND 1) AS polygon_covers_point
 FROM explicit_gem_rdps_10km -- POLYGON((-1 -1, 1 -1, 1 1, -1 1, -1 -1)), lon/lat order
-WHERE longitude BETWEEN -1 AND 1 AND latitude BETWEEN -1 AND 1 LIMIT 64;
+WHERE lon BETWEEN -1 AND 1 AND lat BETWEEN -1 AND 1 LIMIT 64;
 
 -- gem_regional: stereographic_cmc_gem_rdps_cape_chunk_4337; explicit and domain forms use the same frozen input.
 CREATE TEMP VIEW explicit_gem_regional AS
@@ -138,20 +138,20 @@ SELECT count(*) AS domain_identity_difference_gem_regional FROM (
      EXCEPT ALL SELECT om_source.grid_id, om_source.layout_id FROM explicit_gem_regional)
 );
 SELECT count(*) AS restricted_difference_gem_regional FROM (
-    (SELECT * FROM baseline_gem_regional WHERE latitude BETWEEN -10 AND 10 AND longitude BETWEEN -10 AND 10
-     EXCEPT ALL SELECT * FROM explicit_gem_regional WHERE latitude BETWEEN -10 AND 10 AND longitude BETWEEN -10 AND 10)
+    (SELECT * FROM baseline_gem_regional WHERE lat BETWEEN -10 AND 10 AND lon BETWEEN -10 AND 10
+     EXCEPT ALL SELECT * FROM explicit_gem_regional WHERE lat BETWEEN -10 AND 10 AND lon BETWEEN -10 AND 10)
     UNION ALL
-    (SELECT * FROM explicit_gem_regional WHERE latitude BETWEEN -10 AND 10 AND longitude BETWEEN -10 AND 10
-     EXCEPT ALL SELECT * FROM baseline_gem_regional WHERE latitude BETWEEN -10 AND 10 AND longitude BETWEEN -10 AND 10)
+    (SELECT * FROM explicit_gem_regional WHERE lat BETWEEN -10 AND 10 AND lon BETWEEN -10 AND 10
+     EXCEPT ALL SELECT * FROM baseline_gem_regional WHERE lat BETWEEN -10 AND 10 AND lon BETWEEN -10 AND 10)
 );
 SELECT count(*) AS seam_rows_gem_regional FROM explicit_gem_regional WHERE 
-    (longitude BETWEEN 170 AND 180 OR longitude BETWEEN -180 AND -170);
-SELECT count(*) AS empty_rows_gem_regional FROM explicit_gem_regional WHERE latitude > 90;
-SELECT count(*) AS fallback_rows_gem_regional FROM explicit_gem_regional WHERE abs(latitude) < 1;
-SELECT om_source.logical_index, longitude, latitude,
-       (longitude BETWEEN -1 AND 1 AND latitude BETWEEN -1 AND 1) AS polygon_covers_point
+    (lon BETWEEN 170 AND 180 OR lon BETWEEN -180 AND -170);
+SELECT count(*) AS empty_rows_gem_regional FROM explicit_gem_regional WHERE lat > 90;
+SELECT count(*) AS fallback_rows_gem_regional FROM explicit_gem_regional WHERE abs(lat) < 1;
+SELECT om_source.logical_index, lon, lat,
+       (lon BETWEEN -1 AND 1 AND lat BETWEEN -1 AND 1) AS polygon_covers_point
 FROM explicit_gem_regional -- POLYGON((-1 -1, 1 -1, 1 1, -1 1, -1 -1)), lon/lat order
-WHERE longitude BETWEEN -1 AND 1 AND latitude BETWEEN -1 AND 1 LIMIT 64;
+WHERE lon BETWEEN -1 AND 1 AND lat BETWEEN -1 AND 1 LIMIT 64;
 
 -- aladin_central_europe_2km: lambert_chmi_aladin_central_europe_2km_cape_chunk_4135; explicit and domain forms use the same frozen input.
 CREATE TEMP VIEW explicit_aladin_central_europe_2km AS
@@ -212,20 +212,20 @@ SELECT count(*) AS domain_identity_difference_aladin_central_europe_2km FROM (
      EXCEPT ALL SELECT om_source.grid_id, om_source.layout_id FROM explicit_aladin_central_europe_2km)
 );
 SELECT count(*) AS restricted_difference_aladin_central_europe_2km FROM (
-    (SELECT * FROM baseline_aladin_central_europe_2km WHERE latitude BETWEEN -10 AND 10 AND longitude BETWEEN -10 AND 10
-     EXCEPT ALL SELECT * FROM explicit_aladin_central_europe_2km WHERE latitude BETWEEN -10 AND 10 AND longitude BETWEEN -10 AND 10)
+    (SELECT * FROM baseline_aladin_central_europe_2km WHERE lat BETWEEN -10 AND 10 AND lon BETWEEN -10 AND 10
+     EXCEPT ALL SELECT * FROM explicit_aladin_central_europe_2km WHERE lat BETWEEN -10 AND 10 AND lon BETWEEN -10 AND 10)
     UNION ALL
-    (SELECT * FROM explicit_aladin_central_europe_2km WHERE latitude BETWEEN -10 AND 10 AND longitude BETWEEN -10 AND 10
-     EXCEPT ALL SELECT * FROM baseline_aladin_central_europe_2km WHERE latitude BETWEEN -10 AND 10 AND longitude BETWEEN -10 AND 10)
+    (SELECT * FROM explicit_aladin_central_europe_2km WHERE lat BETWEEN -10 AND 10 AND lon BETWEEN -10 AND 10
+     EXCEPT ALL SELECT * FROM baseline_aladin_central_europe_2km WHERE lat BETWEEN -10 AND 10 AND lon BETWEEN -10 AND 10)
 );
 SELECT count(*) AS seam_rows_aladin_central_europe_2km FROM explicit_aladin_central_europe_2km WHERE 
-    (longitude BETWEEN 170 AND 180 OR longitude BETWEEN -180 AND -170);
-SELECT count(*) AS empty_rows_aladin_central_europe_2km FROM explicit_aladin_central_europe_2km WHERE latitude > 90;
-SELECT count(*) AS fallback_rows_aladin_central_europe_2km FROM explicit_aladin_central_europe_2km WHERE abs(latitude) < 1;
-SELECT om_source.logical_index, longitude, latitude,
-       (longitude BETWEEN -1 AND 1 AND latitude BETWEEN -1 AND 1) AS polygon_covers_point
+    (lon BETWEEN 170 AND 180 OR lon BETWEEN -180 AND -170);
+SELECT count(*) AS empty_rows_aladin_central_europe_2km FROM explicit_aladin_central_europe_2km WHERE lat > 90;
+SELECT count(*) AS fallback_rows_aladin_central_europe_2km FROM explicit_aladin_central_europe_2km WHERE abs(lat) < 1;
+SELECT om_source.logical_index, lon, lat,
+       (lon BETWEEN -1 AND 1 AND lat BETWEEN -1 AND 1) AS polygon_covers_point
 FROM explicit_aladin_central_europe_2km -- POLYGON((-1 -1, 1 -1, 1 1, -1 1, -1 -1)), lon/lat order
-WHERE longitude BETWEEN -1 AND 1 AND latitude BETWEEN -1 AND 1 LIMIT 64;
+WHERE lon BETWEEN -1 AND 1 AND lat BETWEEN -1 AND 1 LIMIT 64;
 
 -- n160: gaussian_n160_identity (synthetic identity only); explicit and domain forms use the same frozen input.
 CREATE TEMP VIEW explicit_n160 AS
@@ -2198,20 +2198,20 @@ SELECT count(*) AS domain_identity_difference_n160 FROM (
      EXCEPT ALL SELECT om_source.grid_id, om_source.layout_id FROM explicit_n160)
 );
 SELECT count(*) AS restricted_difference_n160 FROM (
-    (SELECT * FROM baseline_n160 WHERE latitude BETWEEN -10 AND 10 AND longitude BETWEEN -10 AND 10
-     EXCEPT ALL SELECT * FROM explicit_n160 WHERE latitude BETWEEN -10 AND 10 AND longitude BETWEEN -10 AND 10)
+    (SELECT * FROM baseline_n160 WHERE lat BETWEEN -10 AND 10 AND lon BETWEEN -10 AND 10
+     EXCEPT ALL SELECT * FROM explicit_n160 WHERE lat BETWEEN -10 AND 10 AND lon BETWEEN -10 AND 10)
     UNION ALL
-    (SELECT * FROM explicit_n160 WHERE latitude BETWEEN -10 AND 10 AND longitude BETWEEN -10 AND 10
-     EXCEPT ALL SELECT * FROM baseline_n160 WHERE latitude BETWEEN -10 AND 10 AND longitude BETWEEN -10 AND 10)
+    (SELECT * FROM explicit_n160 WHERE lat BETWEEN -10 AND 10 AND lon BETWEEN -10 AND 10
+     EXCEPT ALL SELECT * FROM baseline_n160 WHERE lat BETWEEN -10 AND 10 AND lon BETWEEN -10 AND 10)
 );
 SELECT count(*) AS seam_rows_n160 FROM explicit_n160 WHERE 
-    (longitude BETWEEN 170 AND 180 OR longitude BETWEEN -180 AND -170);
-SELECT count(*) AS empty_rows_n160 FROM explicit_n160 WHERE latitude > 90;
-SELECT count(*) AS fallback_rows_n160 FROM explicit_n160 WHERE abs(latitude) < 1;
-SELECT om_source.logical_index, longitude, latitude,
-       (longitude BETWEEN -1 AND 1 AND latitude BETWEEN -1 AND 1) AS polygon_covers_point
+    (lon BETWEEN 170 AND 180 OR lon BETWEEN -180 AND -170);
+SELECT count(*) AS empty_rows_n160 FROM explicit_n160 WHERE lat > 90;
+SELECT count(*) AS fallback_rows_n160 FROM explicit_n160 WHERE abs(lat) < 1;
+SELECT om_source.logical_index, lon, lat,
+       (lon BETWEEN -1 AND 1 AND lat BETWEEN -1 AND 1) AS polygon_covers_point
 FROM explicit_n160 -- POLYGON((-1 -1, 1 -1, 1 1, -1 1, -1 -1)), lon/lat order
-WHERE longitude BETWEEN -1 AND 1 AND latitude BETWEEN -1 AND 1 LIMIT 64;
+WHERE lon BETWEEN -1 AND 1 AND lat BETWEEN -1 AND 1 LIMIT 64;
 
 -- Pending sample-backed explicit/domain views; no compatible frozen OM v3 input is recorded:
 -- NOT RUN n320: keep absent until a matching object and ordered-axis evidence are frozen.

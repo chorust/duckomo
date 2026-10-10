@@ -86,7 +86,7 @@ void TestPreparedRebindingAndAlternatingFailures(duckdb::Connection &connection,
 	setenv("DUCKOMO_METRICS_OUTPUT", metrics_file.c_str(), 1);
 	setenv("DUCKOMO_SCENARIO", "spatial_prepared_region", 1);
 	const auto prepare = "PREPARE spatial_region AS SELECT count(*) FROM " + Source() +
-	                     " WHERE latitude = ? AND longitude BETWEEN ? AND ?";
+	                     " WHERE lat = ? AND lon BETWEEN ? AND ?";
 	auto prepared = Query(connection, prepare);
 	Require(!prepared->HasError(), "spatial prepared statement failed to bind: " + prepared->GetError());
 	prepared.reset();
@@ -126,7 +126,7 @@ void TestPreparedRebindingAndAlternatingFailures(duckdb::Connection &connection,
 
 void TestIndependentAliases(duckdb::Connection &connection) {
 	const auto sql = "SELECT count(*) FROM " + Source() + " AS a JOIN " + Source() +
-	                 " AS b ON a.longitude = b.longitude WHERE a.latitude = 10 AND b.latitude = 11";
+	                 " AS b ON a.lon = b.lon WHERE a.lat = 10 AND b.lat = 11";
 	Require(RequireScalar(connection, sql, "two independently filtered spatial scans") == 3,
 	        "aliases should retain separate coordinate selections and join matching longitudes");
 }

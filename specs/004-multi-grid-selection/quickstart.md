@@ -1,5 +1,7 @@
 > 2026-10-08：当前未发布版本使用 [官方 HTTPFS 迁移契约](evidence/official-httpfs-refactor/contract.md)。下文专用 ABI、LRU 或 observer 的条款/命令为历史约定，已被本次契约替换。历史证据状态保持，当前复现请见 [官方流程](../../docs/official-httpfs.md)。
 
+> 本页含历史阶段的构建/复现示例。当前开发版地理列已改为 `lat/lon`，并支持共享轴 `dimensions := [轴名...]`；旧 `latitude/longitude` 引用需迁移，详见 [接口修订](../../docs/interface-migration.md)。不改写历史验证结果。
+
 # Quickstart: 多网格验证指南
 
 日期：2026-10-03；2026-10-08 核对实现状态。version=1 grid/source/info、registry/sample-query generator、sample view binding audit、两套固定 matrix build 和 H0–H8 harness 已存在；H8 配套身份/证据汇总器已实现并按当前矩阵运行。匹配 baseline build `5dac993fc31d45def31d02b87c7d23ced7858782fb9a6546b0e22e1a1b95f81d` 上，H1 可用的三类投影坐标/值子比较通过；full H1 仍 not-run。真实独立 Gaussian/N-grid 参考、远程 fixture/审计及多个 gate case 仍未完成。以下完整命令是 gate 的复现接口，不代表它们当前可全部通过；缺输入/未实现用例必须返回 not-run/failure。所有命令从仓库根执行，Linux AArch64 为本期验收平台；状态见 [validation-evidence](contracts/validation-evidence.md) 与 [逐网格证据表](../../docs/grid-domains.md)。
@@ -57,7 +59,7 @@ build/release-vcpkg/test/tools/duckomo_grid_validation \
   --output "$PWD/specs/004-multi-grid-selection/evidence/baseline-local/h0-query-regeneration-20261007-audited-final"
 ```
 
-本地开发构建审计记录在 `evidence/baseline-local/h0-query-regeneration-20261007-audited-final/`。当前 9 个显式/domain/补充值 view 均能绑定，包含真实 CHMI ALADIN domain；旧 evidence 只记录 view binding。新的匹配 baseline 矩阵 CLI/扩展审计在 `evidence/baseline-local/h0-query-regeneration-20261007-matched-schema/`，额外通过了默认输出与 opt-in `om_source` schema、显式/domain `grid_id`/`layout` 等价检查（12 项 schema/source 记录）。其中 N160 是 synthetic identity fixture。相同的 schema/source 子检查也在 prerelease pair 上返回 exit 0，详见 [`schema-source-smoke-20261007.json`](version-matrix/schema-source-smoke-20261007.json)；这不是 H8 验收。生成与绑定子检查通过，完整 H0 坐标和值 oracle 仍为 not-run；总 gate 因此返回 exit 2。输出目录必须是空目录。使用旧 `build/release` CLI/扩展组合会使 ALADIN domain 报 unknown；运行门禁时使用同一固定 pair 的 CLI 与扩展。
+本地开发构建审计记录在 `evidence/baseline-local/h0-query-regeneration-20261007-audited-final/`。当前 9 个显式/domain/补充值 view 均能绑定，包含真实 CHMI ALADIN domain；旧 evidence 只记录 view binding。新的匹配 baseline 矩阵 CLI/扩展审计在 `evidence/baseline-local/h0-query-regeneration-20261007-matched-schema/`，额外通过了默认输出与 opt-in `om_source` schema、显式/domain `grid_id`/`layout` 等价检查（12 项 schema/source 记录）。其中 N160 是 synthetic identity fixture。相同的 schema/source 子检查也在 prerelease pair 上返回 exit 0，详见 [`schema-source-smoke-20261007.json`](evidence/version-matrix/schema-source-smoke-20261007.json)；这不是 H8 验收。生成与绑定子检查通过，完整 H0 坐标和值 oracle 仍为 not-run；总 gate 因此返回 exit 2。输出目录必须是空目录。使用旧 `build/release` CLI/扩展组合会使 ALADIN domain 报 unknown；运行门禁时使用同一固定 pair 的 CLI 与扩展。
 
 两套固定组合均已有隔离 build manifest，状态为 `build-verified`：baseline ID `15f751c1929b88adebbfe2a150a8c7987f92de29af7fc0b806a6af1cd80388c8`（DuckDB `v1.5.4 (Variegata) 08e34c447b`），prerelease ID `9a7aff37d7cc7c910cc0d29fc08a0fb51d6f199f3115791731d71eb00630312b`（DuckDB `v2.0.0-dev86261 (Development Version) 7264a9f0e5`）。这只确认配套构建身份及定向 ABI/兼容检查；不表示 H0–H8 网格、远程或正式版 gate 已通过。详细命令和产物 hash 见 [matrix build evidence](evidence/version-matrix/builds.md)。不能修改共享 submodule 来串行覆盖两套身份。
 

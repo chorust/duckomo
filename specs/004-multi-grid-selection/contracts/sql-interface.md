@@ -1,5 +1,7 @@
 # SQL Interface Contract: 多网格声明、描述与源位置
 
+> 当前开发版修订：SQL 地理列统一为 `lat/lon`；`dimensions` 支持共享 `VARCHAR[]` 或完整逐变量 MAP；远程错误输出脱敏类别与建议。迁移及完整规则见 [读取接口修订](../../../docs/interface-migration.md)。历史 evidence 仍对应原构建，不因本修订提升验收状态。
+
 日期：2026-10-03；2026-10-06 与当前工作树实现核对。该文件是 004 的接口约束；version=1 grid、`include_source` 和 `om_grid_info` 已实现，但真实新网格验收、远程收益和版本矩阵仍未完成。继承 [002 SQL](../../002-spatial-pushdown/contracts/sql-interface.md) 与 [003 SQL](../../003-dimensions-remote-parallel/contracts/sql-interface.md) 的值/轴/缺测/类型及远程约束。
 
 ## 读取入口与兼容
@@ -12,7 +14,7 @@ read_om(path, dimensions := NULL, grid := NULL, spatial_axes := NULL,
 
 新增 include_source 必须为绑定期非 NULL BOOLEAN；其他参数显式 NULL 沿用旧规则。legacy 七字段 grid 原样接受；新 grid 依 version/type 严格验证实际 STRUCT，字段名/枚举区分大小写，拒绝未知、缺失、重复、内部 NULL 及有损轴整数转型。新结构仅 `subset_segments` 允许显式 NULL 表示全域。不能向旧结构随意添加 earth 字段。
 
-grid/domain 互斥；显式 grid 必须提供 spatial_axes。新 domain 固定其适用轴 profile，不能用 spatial_axes 覆盖；dimensions 可补缺失全部轴身份，但不能覆盖文件已有不同证据。所有变量必须布局相容，空间轴不能再映射 time/level/member 等语义。无 grid/domain 的默认值读取不变；include_source 需要绑定网格，否则拒绝。read_om_raw 不扩展新接口。
+grid/domain 互斥；显式 grid 必须提供 spatial_axes。新 domain 固定其适用轴 profile，不能用 spatial_axes 覆盖；dimensions 支持共享 VARCHAR[] 或完整逐变量 MAP，可补缺失全部轴身份，但不能覆盖文件已有不同证据。所有变量必须布局相容，空间轴不能再映射 time/level/member 等语义。无 grid/domain 的默认值读取不变；include_source 需要绑定网格，否则拒绝。read_om_raw 不扩展新接口。
 
 ## 新 version=1 grid
 
@@ -44,7 +46,7 @@ subset_segments=NULL 为完整网格；区域必须给非空 STRUCT 列表，各
 
 ## 默认输出与 om_source
 
-默认列顺序沿用 003：值 → latitude/longitude → 启用的语义列。新地理两列为非 NULL DOUBLE、有限，latitude∈[-90,90]、longitude∈[-180,180)。旧规则 domain 的已公布例外保留。
+默认列顺序沿用 003：值 → lat/lon → 启用的语义列。地理两列为非 NULL DOUBLE、有限，lat∈[-90,90]、lon∈[-180,180)。旧规则 domain 的已公布例外保留。
 
 include_source=true 时仅在最后追加 `om_source STRUCT`：
 
@@ -89,8 +91,8 @@ definition 包含完整 parameters/rows/subset_segments，而非摘要；provena
 支持有限常量比较、BETWEEN、安全 AND 和下列两经度区间的完整安全 OR：
 
 ```sql
-WHERE latitude BETWEEN -10 AND 10
-  AND (longitude BETWEEN 170 AND 179.9 OR longitude BETWEEN -180 AND -170)
+WHERE lat BETWEEN -10 AND 10
+  AND (lon BETWEEN 170 AND 179.9 OR lon BETWEEN -180 AND -170)
 ```
 
 按实际输出 DOUBLE 和开闭边界比较；普通反向 BETWEEN 仍为空。任一 OR 分支不能证明安全则整个 OR 回退，仍可使用独立安全 latitude 条件。完整 WHERE 由 DuckDB 精确执行。复杂函数、CAST、参数、未知投影界或预算超限均有具体回退原因。
@@ -98,9 +100,9 @@ WHERE latitude BETWEEN -10 AND 10
 以下小样本在实施期验证 rotated 网格的基本接口；它给没有地理元数据的原始 [2,3] 数组明确赋予坐标，不是生产 domain 样本：
 
 ```sql
-SELECT value, latitude, longitude, om_source.logical_index
+SELECT value, lat, lon, om_source.logical_index
 FROM read_om('test/data/raw.om',
-  dimensions := map(['value'], [['y','x']]),
+  dimensions := ['y','x'],
   grid := {'version':1,'type':'rotated_latlon','numeric_policy':'float64_v1',
            'earth':{'model':'sphere','radius_m':6371229.0},
            'layout':{'nx':3,'ny':2,'order':'separate'},

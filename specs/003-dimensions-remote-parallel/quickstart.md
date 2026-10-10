@@ -1,5 +1,7 @@
 > 2026-10-08：当前未发布版本使用 [官方 HTTPFS 迁移契约](../004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md)。下文专用 ABI、LRU 或 observer 的条款/命令为历史约定，已被本次契约替换。历史证据状态保持，当前复现请见 [官方流程](../../docs/official-httpfs.md)。
 
+> 本页含历史阶段的构建/复现示例。当前开发版地理列已改为 `lat/lon`，并支持共享轴 `dimensions := [轴名...]`；旧 `latitude/longitude` 引用需迁移，详见 [接口修订](../../docs/interface-migration.md)。不改写历史验证结果。
+
 # Quickstart: Phase 4–5 验证指南
 
 状态：本地维度、并行、缓存和 v3 指标入口已实现；G3–G6 的自动验收程序也已实现，但完整门禁必须在固定 S3-compatible 服务和真实 OM 样本可用时运行。G7 还需要未参与实现者按本指南独立复现。所有命令从仓库根目录执行，Linux AArch64 为验收平台；代码已实现不代表对应外部门禁通过。
@@ -8,7 +10,7 @@
 
 需要 C11/C++17、CMake/Make、Git、Python 3、jq、sha256sum，以及配套 httpfs 的 TLS/HTTP 依赖。准备受控 HTTP range 服务和固定版本的 S3-compatible 测试服务，两个来源均提供与本地 fixtures 完全相同的字节，开启本次运行专用审计日志；远程协议要求见 [remote-io](contracts/remote-io.md)。服务版本/digest、测试桶、endpoint、region 与 TLS 设置写入运行 manifest。设置 `DUCKOMO_S3_SERVICE_VERSION` 为服务端固定版本标识，并通过环境提供 S3 凭据；临时凭据可同时设置 `AWS_SESSION_TOKEN`。
 
-构建身份由 DuckDB v1.5.4 commit `08e34c447bae34eaee3723cac61f2878b6bdf787`、OM C commit `d8855e418e2231ae8439f0c7e840fa3f93b371e3`、extension-ci-tools commit `b777c70d30942cca5bef62d6d4fa23a13362f398` 固定。配套 httpfs 使用上游 commit `c3f215ab360f04dc3d3d5305fa81849c0121f111` 和 `duckomo-httpfs-range-v2`；补丁 SHA-256 与共享 ABI 头 SHA-256 见 [`third_party/httpfs-patches/manifest.json`](../../third_party/httpfs-patches/manifest.json)。性能 fixture `dimensions_perf.om` SHA-256 为 `47a803a4769ab5a8c6622f9be5cc05b53b96152443917b7603d78dab94e1ec13`。固定真实样本身份见 `test/data/domain-manifest.json`；没有该文件时真实样本 gate 不通过。
+构建身份由 DuckDB v1.5.4 commit `08e34c447bae34eaee3723cac61f2878b6bdf787`、OM C commit `d8855e418e2231ae8439f0c7e840fa3f93b371e3`、extension-ci-tools commit `b777c70d30942cca5bef62d6d4fa23a13362f398` 固定。配套 httpfs 使用上游 commit `c3f215ab360f04dc3d3d5305fa81849c0121f111` 和 `duckomo-httpfs-range-v2`；补丁 SHA-256 与共享 ABI 头 SHA-256 历史上记录于 `third_party/httpfs-patches/manifest.json`（该自有补丁路径现已移除，当前远程实现见 [官方 HTTPFS 修订契约](../004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md)）。性能 fixture `dimensions_perf.om` SHA-256 为 `47a803a4769ab5a8c6622f9be5cc05b53b96152443917b7603d78dab94e1ec13`。固定真实样本身份见 `test/data/domain-manifest.json`；没有该文件时真实样本 gate 不通过。
 
 加载扩展时，CLI 和两个扩展必须来自同一构建目录、使用同一 DuckDB 版本。构建完成后先检查 CLI：
 

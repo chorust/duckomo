@@ -145,7 +145,7 @@ void TestSpatialIO(duckdb::Connection &connection) {
 	                          ("duckomo-spatial-io-" + std::to_string(static_cast<unsigned long long>(getpid())) + ".json");
 	const auto source = SpatialProjectionRead();
 	const auto full = RunWithMetrics(connection, metrics_path, "full",
-	                                 "SELECT humidity, temperature, latitude, longitude FROM " + source, false);
+	                                 "SELECT humidity, temperature, lat, lon FROM " + source, false);
 	Require(full.query->RowCount() == 83 * 127, "fixed projection fixture full scan has 10,541 rows");
 	Require(full.metrics.find("\"selection_mode\":\"full\"") != std::string::npos,
 	        "full scan is explicitly measured as full selection");
@@ -160,8 +160,8 @@ void TestSpatialIO(duckdb::Connection &connection) {
 
 	const auto restricted = RunWithMetrics(
 	    connection, metrics_path, "restricted",
-	    "SELECT temperature, latitude, longitude FROM " + source +
-	        " WHERE latitude BETWEEN -2 AND 2 AND longitude BETWEEN -4 AND 4");
+	    "SELECT temperature, lat, lon FROM " + source +
+	        " WHERE lat BETWEEN -2 AND 2 AND lon BETWEEN -4 AND 4");
 	Require(restricted.query->RowCount() == 25, "fixed latitude/longitude window returns the expected 25 positions");
 	Require(restricted.metrics.find("\"selection_mode\":\"restricted\"") != std::string::npos,
 	        "selected scan is explicitly measured as restricted");
@@ -189,20 +189,20 @@ void TestSpatialIO(duckdb::Connection &connection) {
 	RequireVariableZero(restricted.metrics, "/pressure", "temperature-only restricted scan");
 
 	const auto empty = RunWithMetrics(connection, metrics_path, "empty",
-	                                  "SELECT temperature FROM " + source + " WHERE latitude > 90");
+	                                  "SELECT temperature FROM " + source + " WHERE lat > 90");
 	Require(empty.query->RowCount() == 0 && empty.metrics.find("\"selection_mode\":\"empty\"") != std::string::npos,
 	        "empty spatial selection completes successfully with explicit empty mode");
 	RequireZeroValueReads(empty.metrics, "empty selection");
 
 	const auto coordinates = RunWithMetrics(
 	    connection, metrics_path, "coordinates",
-	    "SELECT latitude, longitude FROM " + source + " WHERE latitude BETWEEN -2 AND 2 AND longitude BETWEEN -4 AND 4");
+	    "SELECT lat, lon FROM " + source + " WHERE lat BETWEEN -2 AND 2 AND lon BETWEEN -4 AND 4");
 	Require(coordinates.query->RowCount() == 25, "coordinate-only query preserves the selected positions");
 	RequireZeroValueReads(coordinates.metrics, "coordinate-only query");
 
 	const auto count = RunWithMetrics(
 	    connection, metrics_path, "count",
-	    "SELECT count(*) FROM " + source + " WHERE latitude BETWEEN -2 AND 2 AND longitude BETWEEN -4 AND 4");
+	    "SELECT count(*) FROM " + source + " WHERE lat BETWEEN -2 AND 2 AND lon BETWEEN -4 AND 4");
 	Require(count.query->RowCount() == 1 && count.query->GetValue(0, 0).GetValue<std::int64_t>() == 25,
 	        "count-only query returns the selected cardinality");
 	RequireZeroValueReads(count.metrics, "count-only query");
@@ -210,7 +210,7 @@ void TestSpatialIO(duckdb::Connection &connection) {
 	const auto mixed = RunWithMetrics(
 	    connection, metrics_path, "mixed",
 	    "SELECT temperature FROM " + source +
-	        " WHERE humidity = 96 AND latitude BETWEEN -41 AND -37 AND longitude BETWEEN 50 AND 70");
+	        " WHERE humidity = 96 AND lat BETWEEN -41 AND -37 AND lon BETWEEN 50 AND 70");
 	Require(mixed.query->RowCount() == 1, "mixed value/spatial window contains the pinned humidity=96 source row");
 	Require(mixed.metrics.find("\"selection_mode\":\"restricted\"") != std::string::npos,
 	        "safe spatial terms can narrow an AND expression that retains a value predicate");
@@ -220,8 +220,8 @@ void TestSpatialIO(duckdb::Connection &connection) {
 
 	const auto safe_or = RunWithMetrics(
 	    connection, metrics_path, "safe_or",
-	    "SELECT temperature, latitude, longitude FROM " + source +
-	        " WHERE longitude >= 124 OR longitude <= -124");
+	    "SELECT temperature, lat, lon FROM " + source +
+	        " WHERE lon >= 124 OR lon <= -124");
 	Require(safe_or.query->RowCount() == 332, "safe seam OR returns its exact residual-filtered rows");
 	Require(safe_or.metrics.find("\"selection_mode\":\"restricted\"") != std::string::npos &&
 	            safe_or.metrics.find("unsupported_or_expression") == std::string::npos,
@@ -239,7 +239,7 @@ void TestSpatialIO(duckdb::Connection &connection) {
 
 	const auto unsafe_or = RunWithMetrics(
 	    connection, metrics_path, "unsafe_or",
-	    "SELECT temperature, latitude, longitude FROM " + source + " WHERE longitude >= 124 OR humidity = 96");
+	    "SELECT temperature, lat, lon FROM " + source + " WHERE lon >= 124 OR humidity = 96");
 	std::uint64_t expected_unsafe_or = 0;
 	for (const auto &[coordinate, values] : full_values) {
 		if (coordinate.second >= 124 || values.first == 96) expected_unsafe_or++;

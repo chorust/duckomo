@@ -54,7 +54,7 @@ def check_sample_query_generation(generator) -> None:
         raise AssertionError("unavailable N320 inputs were not preserved as not-run query entries")
     if "values_ecmwf_hres_o1280" not in queries or "not relabelled as N160 or N320" not in queries:
         raise AssertionError("the public HRES O1280 sample must remain supplemental and unmapped")
-    if "polygon_covers_point" not in queries or "longitude BETWEEN 170 AND 180" not in queries:
+    if "polygon_covers_point" not in queries or "lon BETWEEN 170 AND 180" not in queries:
         raise AssertionError("fixed seam and point/polygon query cases are missing")
 
 

@@ -164,13 +164,13 @@ void Run(const std::filesystem::path &dir) {
 	        "successful local scans must publish the tracked query-owned buffer high-water mark");
 	Expect(connection,
 	       "SELECT value, valid_time FROM " + Read(run, Spatial()) +
-	           " WHERE latitude=11 AND longitude=100 ORDER BY valid_time",
+	           " WHERE lat=11 AND lon=100 ORDER BY valid_time",
 	       {"6.0", "2026-09-21 00:00:00", "7.0", "2026-09-21 01:00:00", "8.0", "2026-09-21 03:00:00"});
 	Expect(connection,
 	       "SELECT count(*) FROM " + Read(run, Spatial()) + " WHERE valid_time=TIMESTAMP '2026-09-21 03:00:00'", {"4"});
 	Expect(connection,
 	       "SELECT value, valid_time FROM " + Read(run, Spatial()) +
-	           " WHERE latitude=11 AND longitude=100 AND valid_time=TIMESTAMP '2026-09-21 03:00:00'",
+	           " WHERE lat=11 AND lon=100 AND valid_time=TIMESTAMP '2026-09-21 03:00:00'",
 	       {"8.0", "2026-09-21 03:00:00"});
 	Expect(connection, "SELECT min(valid_time), max(valid_time), count(*) FROM " + Read(run),
 	       {"2026-09-21 00:00:00", "2026-09-21 03:00:00", "12"});

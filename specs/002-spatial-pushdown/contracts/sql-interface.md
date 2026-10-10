@@ -1,12 +1,14 @@
 # SQL Interface Contract: Phase 3
 
+> 当前开发版修订：SQL 地理列统一为 `lat/lon`；`dimensions` 支持共享 `VARCHAR[]` 或完整逐变量 MAP；远程错误输出脱敏类别与建议。迁移及完整规则见 [读取接口修订](../../../docs/interface-migration.md)。历史 evidence 仍对应原构建，不因本修订提升验收状态。
+
 状态：已实现并在 Linux AArch64 独立验证；Linux x86_64 支持与验证暂缓，不属于本期范围。继承 [Phase 0–2 契约](../../001-local-om-scanner/contracts/sql-interface.md) 的本地文件、类型、缺测、对齐、命名和错误约束。完整结果见 [US1](../evidence/us1.md)、[US2](../evidence/us2.md)、[US3](../evidence/us3.md) 与 [独立 quickstart 复核](../evidence/quickstart-review.md)。
 
 ## 参数
 
 ```text
 read_om(path VARCHAR,
-        dimensions MAP(VARCHAR,VARCHAR[]) := NULL,
+        dimensions ANY := NULL, -- VARCHAR[] 或 MAP(VARCHAR,VARCHAR[])
         grid STRUCT(nx BIGINT, ny BIGINT,
                     lat0 DOUBLE, lon0 DOUBLE, dlat DOUBLE, dlon DOUBLE,
                     order VARCHAR) := NULL,
@@ -27,18 +29,18 @@ read_om(path VARCHAR,
 
 ## 输出模式
 
-原值列及顺序不变，随后追加 `latitude DOUBLE`、`longitude DOUBLE`，两列非 NULL。按 DuckDB 标识符等价规则检测与源列的冲突（含大小写），坐标模式冲突即拒绝；不重命名已有列。没有网格时不生成坐标，引用不存在列仍报绑定错误。
+原值列及顺序不变，随后追加 `lat DOUBLE`、`lon DOUBLE`，两列非 NULL。按 DuckDB 标识符等价规则检测与源列的冲突（含大小写），坐标模式冲突即拒绝；不重命名已有列。没有网格时不生成坐标，引用不存在列仍报绑定错误。
 
-latitude 通常在 [-90,90]；仅 `meteofrance_wave`、`meteofrance_currents`、`meteofrance_sea_surface_temperature` 的上游规则网格末行达到约 90.041664°，按源定义输出。显式 grid 仍要求纬度在 [-90,90]。longitude 在 [-180,180)。负步长不改变逻辑记录身份；两个接缝端点若为两个源位置则保留两条记录。额外轴位置不被折叠，不生成 time/level/member 等列。不承诺无 ORDER BY 的 SQL 行序。
+lat 通常在 [-90,90]；仅 `meteofrance_wave`、`meteofrance_currents`、`meteofrance_sea_surface_temperature` 的上游规则网格末行达到约 90.041664°，按源定义输出。显式 grid 仍要求纬度在 [-90,90]。lon 在 [-180,180)。负步长不改变逻辑记录身份；两个接缝端点若为两个源位置则保留两条记录。额外轴位置不被折叠，不生成 time/level/member 等列。不承诺无 ORDER BY 的 SQL 行序。
 
 ## 条件与回退
 
 有限数值常量的 `=,<,<=,>,>=,BETWEEN` 和 AND 可缩小扫描，反向常量比较等价支持；单轴条件保持另一轴全范围。比较依据输出 DOUBLE 值，不使用 epsilon。所有 WHERE 仍由 DuckDB 执行，候选范围不得排除匹配行。
 
-`longitude BETWEEN 170 AND -170` 按普通 SQL 返回空，不环绕。跨接缝写法：
+`lon BETWEEN 170 AND -170` 按普通 SQL 返回空，不环绕。跨接缝写法：
 
 ```sql
-WHERE longitude >= 170 OR longitude < -170
+WHERE lon >= 170 OR lon < -170
 ```
 
 OR 首版允许全域回退；不得仅采用其中一个区间。坐标函数/cast、复杂表达式、非有限/NULL 比较、安全性不能证明的条件回退并正常执行。混合 AND 可以采用独立的安全必要条件，保留其他条件；混合 OR 整棵子树回退。
@@ -48,13 +50,13 @@ OR 首版允许全域回退；不得仅采用其中一个区间。坐标函数/c
 ## 示例：明确两轴
 
 ```sql
-SELECT value, latitude, longitude
+SELECT value, lat, lon
 FROM read_om('test/data/raw.om',
-  dimensions := map(['value'], [['lat','lon']]),
+  dimensions := ['lat','lon'],
   grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0,
            'dlat':1.0, 'dlon':2.0, 'order':'separate'},
   spatial_axes := ['lat','lon'])
-WHERE latitude >= 11 AND longitude < 104;
+WHERE lat >= 11 AND lon < 104;
 ```
 
 预期为 value=3/4，对应 (11,100)/(11,102)。raw.om 没有地理身份，这是调用者显式赋予的演示网格。
@@ -68,10 +70,10 @@ WHERE latitude >= 11 AND longitude < 104;
 Registry 登记 68 个 Open-Meteo AWS 规则网格 domain，完整名称、来源和样本覆盖见 [规则网格 domain](../../../docs/regular-domains.md)。`domain := 'ncep_gfswave025'` 选择 ny=721、nx=1440、纬度 -90 起/经度 -180 起、步长均 0.25° 的规则网格。二维 `[lat,lon]` 和带额外轴的 `[lat,lon,time]` 均可绑定；其他轴顺序只要有完整身份且空间轴长度正确也可绑定。缺少 coordinates 的文件必须显式提供完整 dimensions，不从路径或 shape 推断轴。
 
 ```sql
-SELECT wave_height, latitude, longitude
+SELECT wave_height, lat, lon
 FROM read_om('build/s3-samples/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om',
              domain := 'ncep_gfswave025')
-WHERE latitude BETWEEN 30 AND 40 AND longitude BETWEEN 110 AND 120;
+WHERE lat BETWEEN 30 AND 40 AND lon BETWEEN 110 AND 120;
 ```
 
 `data_run` 示例使用文件自带的 `coordinates = 'lat lon time'`；`data/` 旧式时序文件若无此 metadata，需为每个值变量声明 `dimensions`。本地 OM v3、Float32 和受支持压缩格式的限制仍然适用；注册 domain 不保证任意同 prefix 文件可读。最初 `ncep_gfswave025` 全量值对照见 [domain manifest](../../../test/data/domain-manifest.json) 和 [domain evidence](../evidence/domain.md)；本次扩展的样本元数据记录见 [规则网格 domain](../../../docs/regular-domains.md)。

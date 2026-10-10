@@ -9,12 +9,18 @@ require allow_unsigned_extensions
 statement ok
 LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
 
-# Remote input stays fail-closed without the official httpfs runtime, and
-# signed URL query parameters are never echoed in the error.
+# Missing HTTPFS has an actionable diagnostic without attempting installation.
+# Signed URL query parameters are never echoed by the extension.
+statement ok
+SET autoload_known_extensions = false;
+
 statement error
 SELECT * FROM read_om('https://example.invalid/file.om?X-Amz-Signature=must-not-appear');
 ----
-<REGEX>:(?i).*matching official httpfs.*
+<REGEX>:(?i).*\[extension_missing\].*matching official httpfs.*
+
+statement ok
+SET autoload_known_extensions = true;
 
 # A single root array has the stable value column and does not need dimensions.
 query T
@@ -327,9 +333,9 @@ SELECT * FROM read_om(
 <REGEX>:(?i).*(zero|empty|shape|dimension).*
 
 # No synthetic coordinate columns are exposed; ordinary name binding reports
-# requests for latitude, longitude, and time as absent columns.
+# requests for lat, lon, and time as absent columns.
 statement error
-SELECT latitude
+SELECT lat
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/multi.om',
     dimensions := map(
@@ -338,10 +344,10 @@ FROM read_om(
     )
 );
 ----
-<REGEX>:(?i).*(latitude|referenced column|not found).*
+<REGEX>:(?i).*(lat|referenced column|not found).*
 
 statement error
-SELECT longitude, time
+SELECT lon, time
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/multi.om',
     dimensions := map(
@@ -350,4 +356,4 @@ FROM read_om(
     )
 );
 ----
-<REGEX>:(?i).*(longitude|time|referenced column|not found).*
+<REGEX>:(?i).*(lon|time|referenced column|not found).*

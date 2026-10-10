@@ -106,7 +106,7 @@ SELECT * FROM om_grid_info('__WORKING_DIRECTORY__/test/data/raw.om');
 ----
 <REGEX>:(?i).*om_grid_info requires a bound grid or domain.*
 
-# Spherical output carries the declared radius and explicit longitude/latitude
+# Spherical output carries the declared radius and explicit lon/lat
 # order; CRS84 is only used for a declared, source-compatible WGS84 model.
 query T
 SELECT crs::VARCHAR LIKE '%"output_crs":"+proj=longlat +R=6371000 +type=crs"%'

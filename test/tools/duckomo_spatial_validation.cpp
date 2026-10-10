@@ -575,14 +575,14 @@ int main(int argc, char **argv) {
 
 		const auto source = SpatialSource(projection);
 		const auto full = RunScenario(options, "full",
-		                              "SELECT row_number() OVER () - 1, temperature, latitude, longitude FROM " + source,
+		                              "SELECT row_number() OVER () - 1, temperature, lat, lon FROM " + source,
 		                              4, "projection", PROJECTION_SHA256, "official_temperature_reference_and_axis_formula");
 		Require(full.rows.size() == ROWS && full.selection_mode == "full" && full.candidate_rows == ROWS,
 		        "full scenario has the wrong row count or selection metadata");
 		VerifyFullReference(full, reference_values);
 
 		const auto mixed_full = RunScenario(options, "mixed_baseline",
-		                                   "SELECT humidity, temperature, latitude, longitude FROM " + source,
+		                                   "SELECT humidity, temperature, lat, lon FROM " + source,
 		                                   4, "projection", PROJECTION_SHA256,
 		                                   "complete_materialized_baseline_for_mixed_value_and_spatial_filter");
 		Require(mixed_full.rows.size() == ROWS && mixed_full.selection_mode == "full",
@@ -590,8 +590,8 @@ int main(int argc, char **argv) {
 
 		const auto restricted = RunScenario(
 		    options, "restricted",
-		    "SELECT temperature, latitude, longitude FROM " + source +
-		        " WHERE latitude BETWEEN -2 AND 2 AND longitude BETWEEN -4 AND 4",
+		    "SELECT temperature, lat, lon FROM " + source +
+		        " WHERE lat BETWEEN -2 AND 2 AND lon BETWEEN -4 AND 4",
 		    3, "projection", PROJECTION_SHA256, "exact_difference_from_materialized_full_output");
 		Require(restricted.selection_mode == "restricted" && restricted.candidate_rows == 25,
 		        "restricted scenario did not publish the expected 25 candidate rows");
@@ -603,15 +603,15 @@ int main(int argc, char **argv) {
 		Require(restricted_data_bytes < full_data_bytes && restricted_chunks < full_chunks,
 		        "restricted temperature data bytes and decoded chunks must both be strictly below full scan");
 
-		const auto empty = RunScenario(options, "empty", "SELECT temperature FROM " + source + " WHERE latitude > 90",
+		const auto empty = RunScenario(options, "empty", "SELECT temperature FROM " + source + " WHERE lat > 90",
 		                              1, "projection", PROJECTION_SHA256, "empty_spatial_selection");
 		Require(empty.rows.empty() && empty.selection_mode == "empty" && empty.candidate_rows == 0,
 		        "empty scenario did not finish with zero rows and empty selection metadata");
 		RequireAllValueCountersZero(options, empty);
 
 		const auto coordinates = RunScenario(
-		    options, "coordinates", "SELECT latitude, longitude FROM " + source +
-		                              " WHERE latitude BETWEEN -2 AND 2 AND longitude BETWEEN -4 AND 4",
+		    options, "coordinates", "SELECT lat, lon FROM " + source +
+		                              " WHERE lat BETWEEN -2 AND 2 AND lon BETWEEN -4 AND 4",
 		    2, "projection", PROJECTION_SHA256, "independent_formula_and_materialized_coordinate_window");
 		Require(coordinates.rows.size() == 25 && coordinates.selection_mode == "restricted",
 		        "coordinate-only scenario returned an unexpected position set");
@@ -620,7 +620,7 @@ int main(int argc, char **argv) {
 
 		const auto count = RunScenario(
 		    options, "count", "SELECT count(*) FROM " + source +
-	                            " WHERE latitude BETWEEN -2 AND 2 AND longitude BETWEEN -4 AND 4",
+	                            " WHERE lat BETWEEN -2 AND 2 AND lon BETWEEN -4 AND 4",
 		    1, "projection", PROJECTION_SHA256, "selected_cardinality_without_value_dependencies");
 		Require(count.rows.size() == 1 && count.rows[0][0] == "25" && count.selection_mode == "restricted",
 		        "spatial count scenario returned an incorrect cardinality");
@@ -628,8 +628,8 @@ int main(int argc, char **argv) {
 
 		const auto mixed = RunScenario(
 		    options, "mixed",
-		    "SELECT temperature, latitude, longitude FROM " + source +
-		        " WHERE humidity = 96 AND latitude BETWEEN -41 AND -37 AND longitude BETWEEN 50 AND 70",
+		    "SELECT temperature, lat, lon FROM " + source +
+		        " WHERE humidity = 96 AND lat BETWEEN -41 AND -37 AND lon BETWEEN 50 AND 70",
 		    3, "projection", PROJECTION_SHA256, "exact_multiset_difference_from_materialized_mixed_baseline");
 		Require(mixed.selection_mode == "restricted" && mixed.rows.size() == 1,
 		        "mixed spatial/value scenario must narrow the scan and return its pinned row");
@@ -648,8 +648,8 @@ int main(int argc, char **argv) {
 
 		const auto fallback = RunScenario(
 		    options, "fallback",
-		    "SELECT temperature, latitude, longitude FROM " + source +
-		        " WHERE longitude >= 124 OR longitude <= -124",
+		    "SELECT temperature, lat, lon FROM " + source +
+		        " WHERE lon >= 124 OR lon <= -124",
 		    3, "projection", PROJECTION_SHA256, "seam_or_exact_multiset_difference_from_materialized_full_output");
 		Require(fallback.selection_mode == "fallback" && fallback.candidate_rows == ROWS,
 		        "seam OR must retain all full-scan candidates and report fallback mode");

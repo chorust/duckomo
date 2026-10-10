@@ -1,0 +1,226 @@
+{
+  "scope": "U1 short geographic output names, U3 safe remote diagnostics, U4 shared dimensions list",
+  "platform": "Linux AArch64",
+  "source_base_commit": "6107faa",
+  "build_method": "Reused per-version cached engine build directories, reconfigured DUCKOMO_BUILD_ID from the current version-matrix content hash, rebuilt extension + SQL/native/tool targets; previous historical manifests were not promoted",
+  "builds": [
+    {
+      "version": "v1.5.4",
+      "release": "build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release",
+      "source_build_id": "b8bb3ca4adf0787f7e4f738fcfdd58490d97cdf6862475f512bec258dcf906a7",
+      "commands": [
+        {
+          "argv": [
+            "cmake",
+            "-S",
+            "build/official-matrix/v1.5.4/source/duckdb",
+            "-B",
+            "build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release",
+            "-DDUCKOMO_BUILD_ID=b8bb3ca4adf0787f7e4f738fcfdd58490d97cdf6862475f512bec258dcf906a7"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "cmake",
+            "--build",
+            "build/official-matrix/v1.5.4/builds/ac8eff12df347a7345ad56cb6d94ee5d5ab40a090a59d7e6250099e53da52973/release",
+            "--target",
+            "duckomo_loadable_extension",
+            "core_functions_loadable_extension",
+            "json_loadable_extension",
+            "unittest",
+            "duckomo_developer_tools",
+            "--parallel",
+            "6"
+          ],
+          "returncode": 0
+        }
+      ],
+      "passed": true,
+      "elapsed_seconds": 101.44,
+      "extension_sha256": "6ebea2ac67024da9ce83d023ba8f8fc5936c11eec49c533985375ee9a9fd7a48"
+    },
+    {
+      "version": "v1.5.5",
+      "release": "build/official-matrix/v1.5.5/builds/b21f21aea5971199c87b0a4739c2545e5c981e39f34daf4b1b82b8950e2836e4/release",
+      "source_build_id": "9af41df7941fb81e0b95e9bca413c6be53f87ec9da58a82c3363966d177eb8c3",
+      "commands": [
+        {
+          "argv": [
+            "cmake",
+            "-S",
+            "build/official-matrix/v1.5.5/source/duckdb",
+            "-B",
+            "build/official-matrix/v1.5.5/builds/b21f21aea5971199c87b0a4739c2545e5c981e39f34daf4b1b82b8950e2836e4/release",
+            "-DDUCKOMO_BUILD_ID=9af41df7941fb81e0b95e9bca413c6be53f87ec9da58a82c3363966d177eb8c3"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "cmake",
+            "--build",
+            "build/official-matrix/v1.5.5/builds/b21f21aea5971199c87b0a4739c2545e5c981e39f34daf4b1b82b8950e2836e4/release",
+            "--target",
+            "duckomo_loadable_extension",
+            "core_functions_loadable_extension",
+            "json_loadable_extension",
+            "unittest",
+            "duckomo_developer_tools",
+            "--parallel",
+            "6"
+          ],
+          "returncode": 0
+        }
+      ],
+      "passed": true,
+      "elapsed_seconds": 101.66,
+      "extension_sha256": "3978e784a51d5fa1f381960165c76d909be5a55f26324d7ff39df7c3742538bd"
+    },
+    {
+      "version": "v1.5.6",
+      "release": "build/official-matrix/v1.5.6/builds/24d2012eb2c1f0a0bd5c737ce9c0cfebe4efbf646fead601280013869a74c52d/release",
+      "source_build_id": "ac30a9d7e368e5aa2887b7d0a0ce8131c71b800d354a45c867bc0e1c6568c680",
+      "commands": [
+        {
+          "argv": [
+            "cmake",
+            "-S",
+            "build/official-matrix/v1.5.6/source/duckdb",
+            "-B",
+            "build/official-matrix/v1.5.6/builds/24d2012eb2c1f0a0bd5c737ce9c0cfebe4efbf646fead601280013869a74c52d/release",
+            "-DDUCKOMO_BUILD_ID=ac30a9d7e368e5aa2887b7d0a0ce8131c71b800d354a45c867bc0e1c6568c680"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "cmake",
+            "--build",
+            "build/official-matrix/v1.5.6/builds/24d2012eb2c1f0a0bd5c737ce9c0cfebe4efbf646fead601280013869a74c52d/release",
+            "--target",
+            "duckomo_loadable_extension",
+            "core_functions_loadable_extension",
+            "json_loadable_extension",
+            "unittest",
+            "duckomo_developer_tools",
+            "--parallel",
+            "6"
+          ],
+          "returncode": 0
+        }
+      ],
+      "passed": true,
+      "elapsed_seconds": 83.99,
+      "extension_sha256": "d257de737f8f87da3e3acdb54e8561804e30fb1c8aae0b991d20e4756cd9ff3a"
+    }
+  ],
+  "local_validation": [
+    {
+      "version": "v1.5.4",
+      "native_total": 30,
+      "native_local": 28,
+      "sql_files": 17,
+      "sql_assertions": 937,
+      "python_suites": 8,
+      "command": "scripts/validate.sh build/official-matrix/v1.5.4/release --local-only",
+      "returncode": 0,
+      "log": "build/interface-usability/local-v1.5.4.log"
+    },
+    {
+      "version": "v1.5.5",
+      "native_total": 30,
+      "native_local": 28,
+      "sql_files": 17,
+      "sql_assertions": 937,
+      "python_suites": 8,
+      "command": "scripts/validate.sh build/official-matrix/v1.5.5/release --local-only",
+      "returncode": 0,
+      "log": "build/interface-usability/local-v1.5.5.log"
+    },
+    {
+      "version": "v1.5.6",
+      "native_total": 30,
+      "native_local": 28,
+      "sql_files": 17,
+      "sql_assertions": 937,
+      "python_suites": 8,
+      "command": "scripts/validate.sh build/official-matrix/v1.5.6/release --local-only",
+      "returncode": 0,
+      "log": "build/interface-usability/local-v1.5.6.log"
+    }
+  ],
+  "actual_official_httpfs_native": [
+    {
+      "version": "v1.5.4",
+      "returncode": 0,
+      "stdout": "official_httpfs_test: actual HTTPFS diagnostics/redaction, cancellation/recovery and connection isolation passed\n",
+      "stderr": ""
+    },
+    {
+      "version": "v1.5.5",
+      "returncode": 0,
+      "stdout": "official_httpfs_test: actual HTTPFS diagnostics/redaction, cancellation/recovery and connection isolation passed\n",
+      "stderr": ""
+    },
+    {
+      "version": "v1.5.6",
+      "returncode": 0,
+      "stdout": "official_httpfs_test: actual HTTPFS diagnostics/redaction, cancellation/recovery and connection isolation passed\n",
+      "stderr": ""
+    }
+  ],
+  "public_runtime": [
+    {
+      "version": "v1.5.4",
+      "returncode": 0,
+      "passed": true,
+      "extension_sha256": "6ebea2ac67024da9ce83d023ba8f8fc5936c11eec49c533985375ee9a9fd7a48",
+      "stdout": "secret_count\n0\nvalue,lat,lon\n1292.0,30.0,110.0\n1258.0,30.0,110.25\n1272.0,30.0,110.5\n1265.0,30.25,110.0\n1275.0,30.25,110.25\n1278.0,30.25,110.5\n1043.0,30.5,110.0\n1058.0,30.5,110.25\n1035.0,30.5,110.5\ndifferences\n0\nSuccess\ntrue\nname\nuser_choice\nuser_region_rows\n9\nfinal_secret_count\n1\n",
+      "stderr": "",
+      "rows": 9,
+      "scope": "No-secret public S3; ordered LIST/MAP/HTTPS equality; user secret remains selected"
+    },
+    {
+      "version": "v1.5.5",
+      "returncode": 0,
+      "passed": true,
+      "extension_sha256": "3978e784a51d5fa1f381960165c76d909be5a55f26324d7ff39df7c3742538bd",
+      "stdout": "secret_count\n0\nvalue,lat,lon\n1292.0,30.0,110.0\n1258.0,30.0,110.25\n1272.0,30.0,110.5\n1265.0,30.25,110.0\n1275.0,30.25,110.25\n1278.0,30.25,110.5\n1043.0,30.5,110.0\n1058.0,30.5,110.25\n1035.0,30.5,110.5\ndifferences\n0\nSuccess\ntrue\nname\nuser_choice\nuser_region_rows\n9\nfinal_secret_count\n1\n",
+      "stderr": "",
+      "rows": 9,
+      "scope": "No-secret public S3; ordered LIST/MAP/HTTPS equality; user secret remains selected"
+    },
+    {
+      "version": "v1.5.6",
+      "returncode": 0,
+      "passed": true,
+      "extension_sha256": "d257de737f8f87da3e3acdb54e8561804e30fb1c8aae0b991d20e4756cd9ff3a",
+      "stdout": "secret_count\n0\nvalue,lat,lon\n1292.0,30.0,110.0\n1258.0,30.0,110.25\n1272.0,30.0,110.5\n1265.0,30.25,110.0\n1275.0,30.25,110.25\n1278.0,30.25,110.5\n1043.0,30.5,110.0\n1058.0,30.5,110.25\n1035.0,30.5,110.5\ndifferences\n0\nSuccess\ntrue\nname\nuser_choice\nuser_region_rows\n9\nfinal_secret_count\n1\n",
+      "stderr": "",
+      "rows": 9,
+      "scope": "No-secret public S3; ordered LIST/MAP/HTTPS equality; user secret remains selected"
+    }
+  ],
+  "verification_invariants": [
+    "Only lat/lon are synthesized; long names require explicit SQL aliases",
+    "Case-insensitive source-name collisions reject spatial binding before either output is appended",
+    "Shared LIST and MAP normalize to the same ordered per-variable declarations and checks",
+    "Wrong rank, shape mismatch, metadata conflict, invalid LIST/MAP types, duplicate/NULL/empty axes are rejected",
+    "Coordinate-only/count/empty selection preserve zero value I/O; spatial/semantic and alias regression suites pass",
+    "19 injected remote exception inputs are checked on open, index read and data read; failures do not count successful bytes; same-session recovery succeeds",
+    "Only public exception type and validated three-digit HTTP status inform fixed categories; no raw message/header/body/reason is emitted",
+    "Actual official HTTPFS: missing extension, malformed proxy, 404 and GET-403, honest fallback for HEAD-403 status loss, redaction, QueryEnd, recovery, cancellation and isolation",
+    "All three current extension binaries load into corresponding official CLIs and query public S3 without secrets; LIST/MAP/HTTPS ordered region results match",
+    "No automatic secret creation; explicitly created user secret stays selected"
+  ],
+  "limitations": [
+    "No new independent verifier sign-off, full scientific/grid acceptance, sanitizer run or platform claims",
+    "Historical domain_reference_test needs a pinned full sample and independent reference; it was not run in local-only validation",
+    "HTTPFS does not always provide structured status/TLS/timeout information; the transport category deliberately does not guess",
+    "DuckDB/client SQL error-location rendering and external query logs can contain caller SQL literals; tests keep sensitive URI values in session variables",
+    "Remote tests normalize proxy trailing slash in child environment only; no global user settings changed"
+  ],
+  "artifacts": "Detailed current build inputs, logs, SQL and loopback audit are under ignored build/interface-usability/; this summary is durable."
+}

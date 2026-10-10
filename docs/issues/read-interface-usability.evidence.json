@@ -1,0 +1,208 @@
+{
+  "scope": "Documentation and usability investigation; no C++ changes or rebuild; not a full acceptance gate",
+  "environment": {
+    "platform": "linux_arm64",
+    "home": "Isolated temporary directory; no existing stored secrets",
+    "removed_environment_prefixes": [
+      "AWS_",
+      "DUCKDB_",
+      "S3_"
+    ],
+    "proxy": "Trailing slash removed only in probe subprocess environment; no global setting changes",
+    "cli_options": [
+      "-unsigned",
+      "-init /dev/null",
+      "-csv",
+      ":memory:"
+    ]
+  },
+  "artifacts": {
+    "cli": "build/official-httpfs-refactor/official/<version>/duckdb",
+    "httpfs": "build/official-httpfs-refactor/official/<version>/httpfs.duckdb_extension",
+    "duckomo": "build/official-httpfs-refactor/dist/duckomo-<version>-linux_arm64.duckdb_extension",
+    "load_preparation": "Copy each existing DuckOMO artifact to $PROBE/<version>/duckomo.duckdb_extension to preserve its canonical entrypoint name. Development-path binaries were older; they were not used for the final observations.",
+    "reproduction": "Run from $REPO; substitute $REPO and $PROBE in SQL. Create an isolated $PROBE/home. Artifacts are ignored local build outputs, not newly distributed binaries."
+  },
+  "assertions": {
+    "no_secret_versions": [
+      "v1.5.4",
+      "v1.5.5",
+      "v1.5.6"
+    ],
+    "secret_count": 0,
+    "metadata_rows": 1038240,
+    "value_read": "LIMIT 1 succeeded; values are not compared because row order is not guaranteed",
+    "ordered_region_rows": 9,
+    "ordered_region_no_secret_equals_anonymous_secret": true,
+    "autoload": "All three versions changed httpfs loaded=false to true; HTTPFS was preinstalled from a local artifact and automatic installation was disabled",
+    "secret_precedence": "Broader user scope and equal-scope lexically later user names did not replace the bucket-scoped default; a narrower user scope did",
+    "expected_rejections": [
+      "info-no-grid",
+      "dimensions-list",
+      "null-source",
+      "domain-typo",
+      "metadata-no-axes",
+      "missing-public-object"
+    ]
+  },
+  "observed_proxy_diagnostic": {
+    "direct_httpfs": "Invalid Input Error: Failed to parse port from http_proxy '<redacted>'",
+    "duckomo": "could not open remote OM object '<public-object>'; install/load the matching official httpfs and check access configuration (details redacted)",
+    "after_subprocess_proxy_normalization": "All no-secret public reads succeeded"
+  },
+  "groups": [
+    {
+      "source": "official-summary.json",
+      "cases": [
+        {
+          "case": "official-public-no-secret-v1.5.4",
+          "returncode": 0,
+          "stdout": "secret_count\n0\nrows\n1038240\nvalue\n2619.0\n",
+          "stderr": "",
+          "extension_sha256": "c7d739397bc5e3a5257688be87ae6b5de0b239a01ca6aef5412fd9d529d68516",
+          "proxy_normalized_for_probe": true,
+          "sql": "LOAD '$REPO/build/official-httpfs-refactor/official/v1.5.4/httpfs.duckdb_extension'; LOAD '$PROBE/v1.5.4/duckomo.duckdb_extension'; SET http_timeout=8; SET http_retries=0; SELECT count(*) AS secret_count FROM duckdb_secrets(); SELECT count(*) AS rows FROM read_om('s3://openmeteo/data/ncep_gfs025/static/HSURF.om'); SELECT value FROM read_om('s3://openmeteo/data/ncep_gfs025/static/HSURF.om') LIMIT 1;\n"
+        },
+        {
+          "case": "official-public-no-secret-v1.5.5",
+          "returncode": 0,
+          "stdout": "secret_count\n0\nrows\n1038240\nvalue\n-999.0\n",
+          "stderr": "",
+          "extension_sha256": "707da08c1c3209316e51ced89406c35cd92496441429c10ab46fc6a5fab4a0ff",
+          "proxy_normalized_for_probe": true,
+          "sql": "LOAD '$REPO/build/official-httpfs-refactor/official/v1.5.5/httpfs.duckdb_extension'; LOAD '$PROBE/v1.5.5/duckomo.duckdb_extension'; SET http_timeout=8; SET http_retries=0; SELECT count(*) AS secret_count FROM duckdb_secrets(); SELECT count(*) AS rows FROM read_om('s3://openmeteo/data/ncep_gfs025/static/HSURF.om'); SELECT value FROM read_om('s3://openmeteo/data/ncep_gfs025/static/HSURF.om') LIMIT 1;\n"
+        },
+        {
+          "case": "official-public-anonymous-secret",
+          "returncode": 0,
+          "stdout": "Success\ntrue\nrows\n1038240\nvalue\n2775.0\n",
+          "stderr": "",
+          "extension_sha256": "707da08c1c3209316e51ced89406c35cd92496441429c10ab46fc6a5fab4a0ff",
+          "proxy_normalized_for_probe": true,
+          "sql": "LOAD '$REPO/build/official-httpfs-refactor/official/v1.5.5/httpfs.duckdb_extension'; LOAD '$PROBE/v1.5.5/duckomo.duckdb_extension'; SET http_timeout=8; SET http_retries=0; CREATE SECRET openmeteo_public (TYPE s3, REGION 'us-west-2', SCOPE 's3://openmeteo/'); SELECT count(*) AS rows FROM read_om('s3://openmeteo/data/ncep_gfs025/static/HSURF.om'); SELECT value FROM read_om('s3://openmeteo/data/ncep_gfs025/static/HSURF.om') LIMIT 1;\n"
+        },
+        {
+          "case": "missing-public-object",
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "Invalid Error: could not open remote OM object 's3://openmeteo/duckomo-usability-audit-nonexistent-object.om'; install/load the matching official httpfs and check access configuration (details redacted)\n",
+          "extension_sha256": "707da08c1c3209316e51ced89406c35cd92496441429c10ab46fc6a5fab4a0ff",
+          "proxy_normalized_for_probe": true,
+          "sql": "LOAD '$REPO/build/official-httpfs-refactor/official/v1.5.5/httpfs.duckdb_extension'; LOAD '$PROBE/v1.5.5/duckomo.duckdb_extension'; SET http_timeout=8; SET http_retries=0; SELECT value FROM read_om('s3://openmeteo/duckomo-usability-audit-nonexistent-object.om') LIMIT 1;\n"
+        },
+        {
+          "case": "official-public-no-secret-v1.5.6",
+          "returncode": 0,
+          "stdout": "secret_count\n0\nrows\n1038240\nvalue\n2619.0\n",
+          "stderr": "",
+          "extension_sha256": "01b9ecbb47a9aeed1f6e7c2d24f5e868200a0aab3fefa818063d6f90f211f178",
+          "proxy_normalized_for_probe": true,
+          "sql": "LOAD '$REPO/build/official-httpfs-refactor/official/v1.5.6/httpfs.duckdb_extension'; LOAD '$PROBE/v1.5.6/duckomo.duckdb_extension'; SET http_timeout=8; SET http_retries=0; SELECT count(*) AS secret_count FROM duckdb_secrets(); SELECT count(*) AS rows FROM read_om('s3://openmeteo/data/ncep_gfs025/static/HSURF.om'); SELECT value FROM read_om('s3://openmeteo/data/ncep_gfs025/static/HSURF.om') LIMIT 1;\n"
+        }
+      ]
+    },
+    {
+      "source": "autoload-summary.json",
+      "cases": [
+        {
+          "case": "autoload-v1.5.4",
+          "returncode": 0,
+          "stdout": "httpfs_before\nfalse\nrows\n1038240\nhttpfs_after\ntrue\n",
+          "stderr": "",
+          "sql": "SET autoinstall_known_extensions=false; INSTALL '$REPO/build/official-httpfs-refactor/official/v1.5.4/httpfs.duckdb_extension'; LOAD '$PROBE/v1.5.4/duckomo.duckdb_extension'; SELECT loaded AS httpfs_before FROM duckdb_extensions() WHERE extension_name='httpfs'; SELECT count(*) AS rows FROM read_om('s3://openmeteo/data/ncep_gfs025/static/HSURF.om'); SELECT loaded AS httpfs_after FROM duckdb_extensions() WHERE extension_name='httpfs';\n"
+        },
+        {
+          "case": "autoload-v1.5.5",
+          "returncode": 0,
+          "stdout": "httpfs_before\nfalse\nrows\n1038240\nhttpfs_after\ntrue\n",
+          "stderr": "",
+          "sql": "SET autoinstall_known_extensions=false; INSTALL '$REPO/build/official-httpfs-refactor/official/v1.5.5/httpfs.duckdb_extension'; LOAD '$PROBE/v1.5.5/duckomo.duckdb_extension'; SELECT loaded AS httpfs_before FROM duckdb_extensions() WHERE extension_name='httpfs'; SELECT count(*) AS rows FROM read_om('s3://openmeteo/data/ncep_gfs025/static/HSURF.om'); SELECT loaded AS httpfs_after FROM duckdb_extensions() WHERE extension_name='httpfs';\n"
+        },
+        {
+          "case": "autoload-v1.5.6",
+          "returncode": 0,
+          "stdout": "httpfs_before\nfalse\nrows\n1038240\nhttpfs_after\ntrue\n",
+          "stderr": "",
+          "sql": "SET autoinstall_known_extensions=false; INSTALL '$REPO/build/official-httpfs-refactor/official/v1.5.6/httpfs.duckdb_extension'; LOAD '$PROBE/v1.5.6/duckomo.duckdb_extension'; SELECT loaded AS httpfs_before FROM duckdb_extensions() WHERE extension_name='httpfs'; SELECT count(*) AS rows FROM read_om('s3://openmeteo/data/ncep_gfs025/static/HSURF.om'); SELECT loaded AS httpfs_after FROM duckdb_extensions() WHERE extension_name='httpfs';\n"
+        }
+      ]
+    },
+    {
+      "source": "interface-summary.json",
+      "cases": [
+        {
+          "case": "region-no-secret",
+          "returncode": 0,
+          "stdout": "value,latitude,longitude\n1292.0,30.0,110.0\n1258.0,30.0,110.25\n1272.0,30.0,110.5\n1265.0,30.25,110.0\n1275.0,30.25,110.25\n1278.0,30.25,110.5\n1043.0,30.5,110.0\n1058.0,30.5,110.25\n1035.0,30.5,110.5\n",
+          "stderr": "",
+          "sql": "LOAD '$REPO/build/official-httpfs-refactor/official/v1.5.5/httpfs.duckdb_extension'; LOAD '$PROBE/v1.5.5/duckomo.duckdb_extension'; SET http_timeout=8; SET http_retries=0; SELECT value,latitude,longitude FROM read_om('s3://openmeteo/data/ncep_gfs025/static/HSURF.om',domain := 'ncep_gfs025',dimensions := map(['value'],[['lat','lon']])) WHERE latitude BETWEEN 30 AND 30.5 AND longitude BETWEEN 110 AND 110.5 ORDER BY latitude,longitude;\n"
+        },
+        {
+          "case": "region-anonymous-secret",
+          "returncode": 0,
+          "stdout": "Success\ntrue\nvalue,latitude,longitude\n1292.0,30.0,110.0\n1258.0,30.0,110.25\n1272.0,30.0,110.5\n1265.0,30.25,110.0\n1275.0,30.25,110.25\n1278.0,30.25,110.5\n1043.0,30.5,110.0\n1058.0,30.5,110.25\n1035.0,30.5,110.5\n",
+          "stderr": "",
+          "sql": "LOAD '$REPO/build/official-httpfs-refactor/official/v1.5.5/httpfs.duckdb_extension'; LOAD '$PROBE/v1.5.5/duckomo.duckdb_extension'; SET http_timeout=8; SET http_retries=0; CREATE SECRET openmeteo_public (TYPE s3,REGION 'us-west-2',SCOPE 's3://openmeteo/'); SELECT value,latitude,longitude FROM read_om('s3://openmeteo/data/ncep_gfs025/static/HSURF.om',domain := 'ncep_gfs025',dimensions := map(['value'],[['lat','lon']])) WHERE latitude BETWEEN 30 AND 30.5 AND longitude BETWEEN 110 AND 110.5 ORDER BY latitude,longitude;\n"
+        },
+        {
+          "case": "info-no-grid",
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "Binder Error: om_grid_info requires a bound grid or domain\n",
+          "sql": "LOAD '$REPO/build/official-httpfs-refactor/official/v1.5.5/httpfs.duckdb_extension'; LOAD '$PROBE/v1.5.5/duckomo.duckdb_extension'; SET http_timeout=8; SET http_retries=0; SELECT * FROM om_grid_info('test/data/raw.om');\n"
+        },
+        {
+          "case": "dimensions-list",
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "Invalid Input Error: Failed to cast value: Unimplemented type for cast (VARCHAR[] -> MAP(VARCHAR, VARCHAR[]))\n",
+          "sql": "LOAD '$REPO/build/official-httpfs-refactor/official/v1.5.5/httpfs.duckdb_extension'; LOAD '$PROBE/v1.5.5/duckomo.duckdb_extension'; SET http_timeout=8; SET http_retries=0; SELECT count(*) FROM read_om('test/data/raw.om',dimensions := ['lat','lon']);\n"
+        },
+        {
+          "case": "null-source",
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "Binder Error: read_om include_source must be a non-NULL BOOLEAN\n",
+          "sql": "LOAD '$REPO/build/official-httpfs-refactor/official/v1.5.5/httpfs.duckdb_extension'; LOAD '$PROBE/v1.5.5/duckomo.duckdb_extension'; SET http_timeout=8; SET http_retries=0; SELECT count(*) FROM read_om('test/data/raw.om',include_source := NULL);\n"
+        },
+        {
+          "case": "domain-typo",
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "Binder Error: read_om domain is unknown or not verified: 'ncep_gfs025_typo'\n",
+          "sql": "LOAD '$REPO/build/official-httpfs-refactor/official/v1.5.5/httpfs.duckdb_extension'; LOAD '$PROBE/v1.5.5/duckomo.duckdb_extension'; SET http_timeout=8; SET http_retries=0; SELECT count(*) FROM read_om('test/data/raw.om',domain := 'ncep_gfs025_typo');\n"
+        },
+        {
+          "case": "metadata-no-axes",
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "Binder Error: read_om dimensions parameter is required for multiple arrays without matching shapes and ordered coordinates metadata\n",
+          "sql": "LOAD '$REPO/build/official-httpfs-refactor/official/v1.5.5/httpfs.duckdb_extension'; LOAD '$PROBE/v1.5.5/duckomo.duckdb_extension'; SET http_timeout=8; SET http_retries=0; DESCRIBE SELECT * FROM read_om('test/data/multi.om');\n"
+        }
+      ]
+    }
+  ],
+  "secret_precedence": [
+    {
+      "case": "priority-global-user",
+      "returncode": 0,
+      "stdout": "Success\ntrue\nSuccess\ntrue\nname\nopenmeteo_public\n",
+      "stderr": "",
+      "sql": "LOAD '$REPO/build/official-httpfs-refactor/official/v1.5.5/httpfs.duckdb_extension'; LOAD '$REPO/build/versions/v1.5.5/release/extension/duckomo/duckomo.duckdb_extension'; SET http_timeout=8; SET http_retries=0; CREATE SECRET openmeteo_public (TYPE s3, REGION 'us-west-2', SCOPE 's3://openmeteo/'); CREATE SECRET user_default (TYPE s3, REGION 'us-east-1', SCOPE 's3://'); SELECT name FROM which_secret('s3://openmeteo/data/file.om','s3');\n"
+    },
+    {
+      "case": "priority-same-scope-user",
+      "returncode": 0,
+      "stdout": "Success\ntrue\nSuccess\ntrue\nname\nopenmeteo_public\n",
+      "stderr": "",
+      "sql": "LOAD '$REPO/build/official-httpfs-refactor/official/v1.5.5/httpfs.duckdb_extension'; LOAD '$REPO/build/versions/v1.5.5/release/extension/duckomo/duckomo.duckdb_extension'; SET http_timeout=8; SET http_retries=0; CREATE SECRET openmeteo_public (TYPE s3, REGION 'us-west-2', SCOPE 's3://openmeteo/'); CREATE SECRET z_user (TYPE s3, REGION 'us-east-1', SCOPE 's3://openmeteo/'); SELECT name FROM which_secret('s3://openmeteo/data/file.om','s3');\n"
+    },
+    {
+      "case": "priority-narrow-user",
+      "returncode": 0,
+      "stdout": "Success\ntrue\nSuccess\ntrue\nname\nz_user\n",
+      "stderr": "",
+      "sql": "LOAD '$REPO/build/official-httpfs-refactor/official/v1.5.5/httpfs.duckdb_extension'; LOAD '$REPO/build/versions/v1.5.5/release/extension/duckomo/duckomo.duckdb_extension'; SET http_timeout=8; SET http_retries=0; CREATE SECRET openmeteo_public (TYPE s3, REGION 'us-west-2', SCOPE 's3://openmeteo/'); CREATE SECRET z_user (TYPE s3, REGION 'us-east-1', SCOPE 's3://openmeteo/data/'); SELECT name FROM which_secret('s3://openmeteo/data/file.om','s3');\n"
+    }
+  ]
+}

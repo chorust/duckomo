@@ -1,3 +1,5 @@
+<img src="logo.png" alt="duckomo logo" width="160">
+
 # duckomo
 
 中文 | [English](README.en.md)
@@ -39,86 +41,76 @@ LOAD duckomo;
 
 Release ZIP 不能直接传给 `INSTALL`，GitHub 仓库地址也不是 DuckDB 扩展仓库。下载、校验、安装及 tag 发布流程见 [Release 指南](docs/releases.md)。
 
-### 官方 HTTPFS
-
-远程读取使用 DuckDB **官方扩展**，无需构建或下载 DuckOMO 专用 HTTPFS：
-
-```sql
-INSTALL httpfs;
-LOAD httpfs;
-```
-
-本地 OM 读取不需要 HTTPFS。DuckOMO 尚未收录到 Community Extensions，当前不要使用 `INSTALL duckomo FROM community`；社区签名安装准备见 [社区说明](docs/community-extensions.md)。
-
 ## Usage
 
 ### 读取 Open-Meteo 公共 S3 数据
 
-[Open-Meteo Open Data](https://github.com/open-meteo/open-data) 的公共桶为 `s3://openmeteo/`，位于 `us-west-2`，可匿名读取。加载扩展并配置仅作用于该桶的匿名 S3 secret，**不需要 AWS Access Key**：
+直接查询 [Open-Meteo 公共数据](https://github.com/open-meteo/open-data) 中的 GFS 地形：
 
 ```sql
 LOAD duckomo;
 INSTALL httpfs;
 LOAD httpfs;
 
-CREATE SECRET openmeteo_public (
-  TYPE s3,
-  REGION 'us-west-2',
-  SCOPE 's3://openmeteo/'
-);
-```
-
-先用不带滚动预测日期的 GFS 静态地形对象，直接查询一个区域：
-
-```sql
-SELECT value AS elevation, latitude, longitude
+SELECT value AS elevation, lat, lon
 FROM read_om('s3://openmeteo/data/ncep_gfs025/static/HSURF.om',
   domain := 'ncep_gfs025',
-  dimensions := map(['value'], [['lat', 'lon']]))
-WHERE latitude BETWEEN 30 AND 30.5
-  AND longitude BETWEEN 110 AND 110.5
-ORDER BY latitude, longitude;
+  dimensions := ['lat', 'lon'])
+WHERE lat BETWEEN 30 AND 30.5
+  AND lon BETWEEN 110 AND 110.5
+ORDER BY lat, lon;
 ```
 
-`domain` 显式选择网格；该对象缺少轴名元数据，因此用 `dimensions` 声明 `[lat, lon]`。只读数值时可省略空间配置，但多变量仍须有一致的有序轴身份。不会从路径、目录名或 shape 自动推断网格。
+示例输出：
+
+```bash
+┌───────────┬───────┬────────┐
+│ elevation │  lat  │  lon   │
+├───────────┼───────┼────────┤
+│ 1292.0    │ 30.0  │ 110.0  │
+│ 1258.0    │ 30.0  │ 110.25 │
+│ 1272.0    │ 30.0  │ 110.5  │
+│ 1265.0    │ 30.25 │ 110.0  │
+│ 1275.0    │ 30.25 │ 110.25 │
+│ 1278.0    │ 30.25 │ 110.5  │
+│ 1043.0    │ 30.5  │ 110.0  │
+│ 1058.0    │ 30.5  │ 110.25 │
+│ 1035.0    │ 30.5  │ 110.5  │
+└───────────┴───────┴────────┘
+```
+
+`domain` 选择网格，`dimensions` 声明数组轴。
 
 <a id="有效时间查询"></a>
 
 ### 查询预测变量与有效时间
 
-公共桶中的预测对象会滚动更新，旧日期可能被清理。先按 [Open Data 目录说明](https://github.com/open-meteo/open-data) 选择当前存在的对象；也可使用 AWS CLI 匿名逐层列出路径：
-
-```sh
-aws s3 ls s3://openmeteo/data_spatial/ncep_gfswave025/ \
-  --no-sign-request --region us-west-2
-```
-
-下面以一个 GFS Wave 空间快照为例，**使用时将日期和对象键替换为仍存在的样本**：
+以 GFS Wave 空间快照为例。从 [Open Data 目录](https://github.com/open-meteo/open-data) 选取可用文件，**替换下面的日期和对象键**：
 
 ```sql
 SET VARIABLE wave_file =
   's3://openmeteo/data_spatial/ncep_gfswave025/2026/10/01/0000Z/2026-10-01T0000.om';
 
-SELECT wave_height, latitude, longitude, valid_time
+SELECT wave_height, lat, lon, valid_time
 FROM read_om(getvariable('wave_file'), domain := 'ncep_gfswave025')
-WHERE latitude BETWEEN 30 AND 40
-  AND longitude BETWEEN 140 AND 150
+WHERE lat BETWEEN 30 AND 40
+  AND lon BETWEEN 140 AND 150
 LIMIT 10;
 ```
 
-带 Int64 `time` 坐标或标量 `valid_time` 的文件自动输出 UTC `valid_time TIMESTAMP`。可继续添加 `valid_time = TIMESTAMP '...'` 条件；缺少时间元数据时使用显式 `valid_times`，不会从文件名猜测时间。
+带时间元数据的文件会自动输出 UTC `valid_time`，可直接用于时间筛选。
 
-| 目录 | 已审计样本的常见布局 | 经纬度查询 |
+| 目录 | 常见布局 | 经纬度查询 |
 |---|---|---|
 | `data_spatial/` | 空间快照，通常 `[lat, lon]` | 通常只需 `domain` |
 | `data_run/` | 一次起报，通常 `[lat, lon, time]` | 通常只需 `domain` |
 | `data/` | 滚动序列或静态数据，样本常缺少轴元数据 | `domain` + 完整 `dimensions` |
 
-目录名不保证具体文件的轴顺序或格式兼容性。缺少元数据时，`dimensions` 须覆盖每个值变量；目录差异、变量对齐和逐 domain 样本范围见 [规则网格指南](docs/regular-domains.md)。
+`dimensions` 支持共享轴列表或逐变量 MAP；目录布局与更多示例见 [规则网格指南](docs/regular-domains.md)。
 
 ### HTTPS、私有 S3 与读取指标
 
-同一公共对象也可通过 HTTPS 查询，无需 S3 secret：
+同一对象也可通过 HTTPS 查询：
 
 ```sql
 SELECT value
@@ -126,7 +118,7 @@ FROM read_om('https://openmeteo.s3.us-west-2.amazonaws.com/data/ncep_gfs025/stat
 LIMIT 5;
 ```
 
-私有桶按 [官方 HTTPFS S3 文档](https://duckdb.org/docs/current/core_extensions/httpfs/s3api) 配置 DuckDB secret，不把凭据写入共享 SQL。远程对象须支持范围读取，并在扫描期间保持稳定；不承诺扫描快照或每次查询强制刷新。DuckOMO 自有范围缓存及原缓存 SQL 已删除。
+私有桶的凭据配置见 [HTTPFS S3 文档](https://duckdb.org/docs/current/core_extensions/httpfs/s3api)。线程配置和最近一次扫描的读取指标：
 
 ```sql
 SET threads = 4;
@@ -136,18 +128,30 @@ SELECT query_id, scan_id, metrics::JSON
 FROM duckomo_last_scan_metrics();
 ```
 
-指标区分逻辑请求与标准文件接口成功读取；HTTPFS 实际网络发送量不由 DuckOMO 直接观测。空间筛选的读取收益取决于 OM 块布局，不仅取决于返回行数。详见 [接口说明](docs/spec.md)。
+指标含义见 [接口说明](docs/spec.md)。
 
 ### 本地 OM
 
-只需将 URI 换成本地路径，网格和维度参数保持相同规则：
+将 URI 换成本地路径即可。以仓库中的样本为例：
 
 ```sql
 SELECT value FROM read_om('test/data/raw.om') ORDER BY value;
--- 仓库样本返回 0 到 5。
 ```
 
-`read_om_raw` 是早期 FPX 根数组验证入口，日常查询使用 `read_om`。显式 `grid`、其他语义轴、`include_source` 和 `om_grid_info` 用法见 [接口说明](docs/spec.md) 与 [多网格契约](specs/004-multi-grid-selection/contracts/sql-interface.md)。
+```bash
+┌───────┐
+│ value │
+├───────┤
+│ 0.0   │
+│ 1.0   │
+│ 2.0   │
+│ 3.0   │
+│ 4.0   │
+│ 5.0   │
+└───────┘
+```
+
+显式网格、语义轴与来源信息等用法见 [接口说明](docs/spec.md)。
 
 ## Dev
 

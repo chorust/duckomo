@@ -151,8 +151,8 @@ void RequireZeroValueReads(const std::string &metrics, const std::string &path, 
 void TestZeroValueReadsAndNonSpatialMultiplicity(Connection &connection) {
 	const auto source = InterleavedRead();
 	const std::string geographic_window =
-	    " latitude BETWEEN 0.99 AND 1.01 AND longitude BETWEEN 1.99 AND 2.01";
-	auto coordinates = Query(connection, "SELECT latitude, longitude FROM " + source + " WHERE" + geographic_window);
+	    " lat BETWEEN 0.99 AND 1.01 AND lon BETWEEN 1.99 AND 2.01";
+	auto coordinates = Query(connection, "SELECT lat, lon FROM " + source + " WHERE" + geographic_window);
 	Require(coordinates->RowCount() == 32,
 	        "coordinate projection preserves time/level/lead/member/run records at one geographic point");
 	auto metrics = LastMetrics(connection);
@@ -168,7 +168,7 @@ void TestZeroValueReadsAndNonSpatialMultiplicity(Connection &connection) {
 	RequireZeroValueReads(metrics, "/interleaved/humidity", "coordinate COUNT");
 
 	Require(Scalar(connection, "SELECT count(*) FROM " + source +
-	                           " WHERE latitude > 90 AND latitude < -90") == "0",
+	                           " WHERE lat > 90 AND lat < -90") == "0",
 	        "contradictory coordinate bounds prove an empty result before value decoding");
 	metrics = LastMetrics(connection);
 	CaptureMetrics("interleaved_empty", metrics);
@@ -176,7 +176,7 @@ void TestZeroValueReadsAndNonSpatialMultiplicity(Connection &connection) {
 	RequireZeroValueReads(metrics, "/interleaved/humidity", "contradictory coordinate query");
 
 	Require(Scalar(connection, "SELECT count(*) FROM " + source +
-	                           " WHERE latitude >= -90 AND latitude <= 90 AND longitude >= -180 AND longitude < 180") ==
+	                           " WHERE lat >= -90 AND lat <= 90 AND lon >= -180 AND lon < 180") ==
 	            "384",
 	        "a proven full-domain predicate retains every source record");
 	metrics = LastMetrics(connection);
@@ -188,7 +188,7 @@ void TestZeroValueReadsAndNonSpatialMultiplicity(Connection &connection) {
 void TestValueFilterReadsOnlyItsDependency(Connection &connection) {
 	const auto source = InterleavedRead();
 	const std::string sql = "SELECT count(*) FROM " + source +
-	                        " WHERE latitude BETWEEN 0.99 AND 1.01 AND longitude BETWEEN 1.99 AND 2.01"
+	                        " WHERE lat BETWEEN 0.99 AND 1.01 AND lon BETWEEN 1.99 AND 2.01"
 	                        " AND \"interleaved/temperature\" > 0";
 	Require(Scalar(connection, sql) == "32", "value filter preserves the complete spatial and residual result");
 	const auto metrics = LastMetrics(connection);
@@ -201,9 +201,9 @@ void TestValueFilterReadsOnlyItsDependency(Connection &connection) {
 }
 
 void TestLargeValueChunkIsolation(Connection &connection) {
-	const auto result = Query(connection, "SELECT latitude, longitude FROM " + LargeValueChunkRead() +
-	                                        " WHERE latitude BETWEEN -0.01 AND 0.01"
-	                                        " AND longitude BETWEEN -0.01 AND 0.01");
+	const auto result = Query(connection, "SELECT lat, lon FROM " + LargeValueChunkRead() +
+	                                        " WHERE lat BETWEEN -0.01 AND 0.01"
+	                                        " AND lon BETWEEN -0.01 AND 0.01");
 	Require(result->RowCount() == 1, "coordinate selection from a 256 KiB value chunk returns the origin");
 	Require(result->GetValue(0, 0).GetValue<double>() == 0.0 &&
 	            result->GetValue(1, 0).GetValue<double>() == 0.0,
@@ -222,7 +222,7 @@ std::string DoubleLiteral(double value) {
 void TestGridFamilyZeroValueReads(Connection &connection, const std::string &family) {
 	const auto source = GridFamilyRead(family);
 	const auto variable = family == "stereographic" ? "/flattened_y_fastest/value" : "/flattened_x_fastest/value";
-	auto coordinates = Query(connection, "SELECT latitude, longitude FROM " + source);
+	auto coordinates = Query(connection, "SELECT lat, lon FROM " + source);
 	Require(coordinates->RowCount() == 12, family + " coordinate projection returns all 12 source positions");
 	const auto first_latitude = coordinates->GetValue(0, 0).GetValue<double>();
 	const auto first_longitude = coordinates->GetValue(1, 0).GetValue<double>();
@@ -232,9 +232,9 @@ void TestGridFamilyZeroValueReads(Connection &connection, const std::string &fam
 	CaptureMetrics(family + "_full_coordinates", metrics);
 	RequireZeroValueReads(metrics, variable, family + " full coordinate projection");
 
-	const auto local = "SELECT count(*) FROM " + source + " WHERE latitude BETWEEN " +
+	const auto local = "SELECT count(*) FROM " + source + " WHERE lat BETWEEN " +
 	                    DoubleLiteral(first_latitude - 1e-7) + " AND " + DoubleLiteral(first_latitude + 1e-7) +
-	                    " AND longitude BETWEEN " + DoubleLiteral(first_longitude - 1e-7) + " AND " +
+	                    " AND lon BETWEEN " + DoubleLiteral(first_longitude - 1e-7) + " AND " +
 	                    DoubleLiteral(first_longitude + 1e-7);
 	const auto local_count = std::stoull(Scalar(connection, local));
 	Require(local_count > 0 && local_count <= 12, family + " local coordinate COUNT keeps source positions");
@@ -242,7 +242,7 @@ void TestGridFamilyZeroValueReads(Connection &connection, const std::string &fam
 	CaptureMetrics(family + "_local_count", metrics);
 	RequireZeroValueReads(metrics, variable, family + " local coordinate COUNT");
 
-	Require(Scalar(connection, "SELECT count(*) FROM " + source + " WHERE latitude > 0 AND latitude < 0") == "0",
+	Require(Scalar(connection, "SELECT count(*) FROM " + source + " WHERE lat > 0 AND lat < 0") == "0",
 	        family + " contradictory coordinate COUNT is empty");
 	metrics = LastMetrics(connection);
 	CaptureMetrics(family + "_empty", metrics);

@@ -12,7 +12,7 @@ LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
 # Materialize the baseline first so the comparison cannot be pushed into read_om.
 statement ok
 CREATE TEMP TABLE spatial_baseline AS
-SELECT humidity, pressure, temperature, latitude, longitude
+SELECT humidity, pressure, temperature, lat, lon
 FROM read_om(
     '__WORKING_DIRECTORY__/test/data/projection.om',
     dimensions := map(['humidity','pressure','temperature'], [['row','column'],['row','column'],['row','column']]),
@@ -23,26 +23,26 @@ FROM read_om(
 query II
 SELECT
     (SELECT count(*) FROM (
-        (SELECT temperature, latitude, longitude FROM spatial_baseline
-         WHERE humidity = 96 AND latitude BETWEEN -41 AND -37 AND longitude BETWEEN 50 AND 70)
+        (SELECT temperature, lat, lon FROM spatial_baseline
+         WHERE humidity = 96 AND lat BETWEEN -41 AND -37 AND lon BETWEEN 50 AND 70)
         EXCEPT ALL
-        (SELECT temperature, latitude, longitude FROM read_om(
+        (SELECT temperature, lat, lon FROM read_om(
             '__WORKING_DIRECTORY__/test/data/projection.om',
             dimensions := map(['humidity','pressure','temperature'], [['row','column'],['row','column'],['row','column']]),
             grid := {'nx':127,'ny':83,'lat0':-41.0,'lon0':-126.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
             spatial_axes := ['row','column'])
-         WHERE humidity = 96 AND latitude BETWEEN -41 AND -37 AND longitude BETWEEN 50 AND 70)
+         WHERE humidity = 96 AND lat BETWEEN -41 AND -37 AND lon BETWEEN 50 AND 70)
     )),
     (SELECT count(*) FROM (
-        (SELECT temperature, latitude, longitude FROM read_om(
+        (SELECT temperature, lat, lon FROM read_om(
             '__WORKING_DIRECTORY__/test/data/projection.om',
             dimensions := map(['humidity','pressure','temperature'], [['row','column'],['row','column'],['row','column']]),
             grid := {'nx':127,'ny':83,'lat0':-41.0,'lon0':-126.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
             spatial_axes := ['row','column'])
-         WHERE humidity = 96 AND latitude BETWEEN -41 AND -37 AND longitude BETWEEN 50 AND 70)
+         WHERE humidity = 96 AND lat BETWEEN -41 AND -37 AND lon BETWEEN 50 AND 70)
         EXCEPT ALL
-        (SELECT temperature, latitude, longitude FROM spatial_baseline
-         WHERE humidity = 96 AND latitude BETWEEN -41 AND -37 AND longitude BETWEEN 50 AND 70)
+        (SELECT temperature, lat, lon FROM spatial_baseline
+         WHERE humidity = 96 AND lat BETWEEN -41 AND -37 AND lon BETWEEN 50 AND 70)
     ));
 ----
 0	0
@@ -51,22 +51,22 @@ SELECT
 query II
 SELECT
     (SELECT count(*) FROM (
-        (SELECT longitude, temperature, latitude, longitude FROM spatial_baseline WHERE latitude BETWEEN -1 AND 1)
+        (SELECT lon, temperature, lat, lon FROM spatial_baseline WHERE lat BETWEEN -1 AND 1)
         EXCEPT ALL
-        (SELECT longitude, temperature, latitude, longitude FROM read_om(
+        (SELECT lon, temperature, lat, lon FROM read_om(
             '__WORKING_DIRECTORY__/test/data/projection.om',
             dimensions := map(['humidity','pressure','temperature'], [['row','column'],['row','column'],['row','column']]),
             grid := {'nx':127,'ny':83,'lat0':-41.0,'lon0':-126.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
-            spatial_axes := ['row','column']) WHERE latitude BETWEEN -1 AND 1)
+            spatial_axes := ['row','column']) WHERE lat BETWEEN -1 AND 1)
     )),
     (SELECT count(*) FROM (
-        (SELECT longitude, temperature, latitude, longitude FROM read_om(
+        (SELECT lon, temperature, lat, lon FROM read_om(
             '__WORKING_DIRECTORY__/test/data/projection.om',
             dimensions := map(['humidity','pressure','temperature'], [['row','column'],['row','column'],['row','column']]),
             grid := {'nx':127,'ny':83,'lat0':-41.0,'lon0':-126.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
-            spatial_axes := ['row','column']) WHERE latitude BETWEEN -1 AND 1)
+            spatial_axes := ['row','column']) WHERE lat BETWEEN -1 AND 1)
         EXCEPT ALL
-        (SELECT longitude, temperature, latitude, longitude FROM spatial_baseline WHERE latitude BETWEEN -1 AND 1)
+        (SELECT lon, temperature, lat, lon FROM spatial_baseline WHERE lat BETWEEN -1 AND 1)
     ));
 ----
 0	0
@@ -75,14 +75,14 @@ SELECT
 query I
 SELECT count(*) FROM (
     (SELECT count(*), min(temperature), max(temperature) FROM spatial_baseline
-     WHERE latitude BETWEEN -2 AND 2 AND longitude BETWEEN -4 AND 4 AND humidity % 2 = 0)
+     WHERE lat BETWEEN -2 AND 2 AND lon BETWEEN -4 AND 4 AND humidity % 2 = 0)
     EXCEPT ALL
     (SELECT count(*), min(temperature), max(temperature) FROM read_om(
         '__WORKING_DIRECTORY__/test/data/projection.om',
         dimensions := map(['humidity','pressure','temperature'], [['row','column'],['row','column'],['row','column']]),
         grid := {'nx':127,'ny':83,'lat0':-41.0,'lon0':-126.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
         spatial_axes := ['row','column'])
-     WHERE latitude BETWEEN -2 AND 2 AND longitude BETWEEN -4 AND 4 AND humidity % 2 = 0)
+     WHERE lat BETWEEN -2 AND 2 AND lon BETWEEN -4 AND 4 AND humidity % 2 = 0)
 );
 ----
 0
@@ -94,7 +94,7 @@ SELECT count(*) FROM (
         dimensions := map(['humidity','pressure','temperature'], [['row','column'],['row','column'],['row','column']]),
         grid := {'nx':127,'ny':83,'lat0':-41.0,'lon0':-126.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
         spatial_axes := ['row','column'])
-WHERE latitude BETWEEN -2 AND 2 ORDER BY temperature
+WHERE lat BETWEEN -2 AND 2 ORDER BY temperature
 );
 ----
 635
@@ -105,7 +105,7 @@ SELECT count(*) FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['lat','lon']]),
     grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':179.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
-    spatial_axes := ['lat','lon']) WHERE longitude >= 179 OR longitude < -179;
+    spatial_axes := ['lat','lon']) WHERE lon >= 179 OR lon < -179;
 ----
 4
 
@@ -114,7 +114,7 @@ SELECT count(*) FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['lat','lon']]),
     grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
-    spatial_axes := ['lat','lon']) WHERE CAST(latitude AS INTEGER) = 11;
+    spatial_axes := ['lat','lon']) WHERE CAST(lat AS INTEGER) = 11;
 ----
 3
 
@@ -123,7 +123,7 @@ SELECT count(*) FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['lat','lon']]),
     grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
-    spatial_axes := ['lat','lon']) WHERE abs(latitude - 11) = 0;
+    spatial_axes := ['lat','lon']) WHERE abs(lat - 11) = 0;
 ----
 3
 
@@ -132,7 +132,7 @@ SELECT count(*) FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['lat','lon']]),
     grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
-    spatial_axes := ['lat','lon']) WHERE 11 BETWEEN latitude AND 12;
+    spatial_axes := ['lat','lon']) WHERE 11 BETWEEN lat AND 12;
 ----
 6
 
@@ -141,7 +141,7 @@ SELECT count(*) FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['lat','lon']]),
     grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
-    spatial_axes := ['lat','lon']) WHERE latitude = 'NaN'::DOUBLE OR latitude = 'Infinity'::DOUBLE;
+    spatial_axes := ['lat','lon']) WHERE lat = 'NaN'::DOUBLE OR lat = 'Infinity'::DOUBLE;
 ----
 0
 
@@ -150,6 +150,6 @@ SELECT count(*) FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['lat','lon']]),
     grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
-    spatial_axes := ['lat','lon']) WHERE latitude = NULL::DOUBLE;
+    spatial_axes := ['lat','lon']) WHERE lat = NULL::DOUBLE;
 ----
 0

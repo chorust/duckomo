@@ -14,7 +14,7 @@ SELECT count(*) FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['lat','lon']]),
     grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
-    spatial_axes := ['lat','lon']) WHERE latitude = 11;
+    spatial_axes := ['lat','lon']) WHERE lat = 11;
 ----
 3
 
@@ -23,7 +23,7 @@ SELECT count(*) FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['lat','lon']]),
     grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
-    spatial_axes := ['lat','lon']) WHERE 11 <= latitude AND longitude < 104;
+    spatial_axes := ['lat','lon']) WHERE 11 <= lat AND lon < 104;
 ----
 2
 
@@ -32,7 +32,7 @@ SELECT count(*) FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['lat','lon']]),
     grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
-    spatial_axes := ['lat','lon']) WHERE 12 > latitude AND 10 < latitude;
+    spatial_axes := ['lat','lon']) WHERE 12 > lat AND 10 < lat;
 ----
 3
 
@@ -41,7 +41,7 @@ SELECT count(*) FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['lat','lon']]),
     grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
-    spatial_axes := ['lat','lon']) WHERE latitude BETWEEN 11 AND 11 AND longitude BETWEEN 102 AND 104;
+    spatial_axes := ['lat','lon']) WHERE lat BETWEEN 11 AND 11 AND lon BETWEEN 102 AND 104;
 ----
 2
 
@@ -51,7 +51,7 @@ SELECT count(*) FROM read_om(
     dimensions := map(['value'], [['lat','lon']]),
     grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
     spatial_axes := ['lat','lon'])
-WHERE latitude >= nextafter(10.0, 11.0);
+WHERE lat >= nextafter(10.0, 11.0);
 ----
 3
 
@@ -60,7 +60,7 @@ SELECT count(*) FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['lat','lon']]),
     grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
-    spatial_axes := ['lat','lon']) WHERE latitude > 11 AND latitude < 10;
+    spatial_axes := ['lat','lon']) WHERE lat > 11 AND lat < 10;
 ----
 0
 
@@ -73,13 +73,13 @@ SELECT count(*) FROM read_om(
 ----
 0
 
-# Reverse axes cross the longitude seam without dropping source positions.
+# Reverse axes cross the lon seam without dropping source positions.
 query I
 SELECT count(*) FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['lat','lon']]),
     grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':181.0, 'dlat':-1.0, 'dlon':-1.0, 'order':'separate'},
-    spatial_axes := ['lat','lon']) WHERE longitude = 179;
+    spatial_axes := ['lat','lon']) WHERE lon = 179;
 ----
 2
 
@@ -88,7 +88,7 @@ SELECT count(*) FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['lat','lon']]),
     grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':179.0, 'dlat':1.0, 'dlon':1.0, 'order':'separate'},
-    spatial_axes := ['lat','lon']) WHERE longitude >= 179 OR longitude < -179;
+    spatial_axes := ['lat','lon']) WHERE lon >= 179 OR lon < -179;
 ----
 4
 
@@ -100,11 +100,11 @@ WHERE metrics LIKE '%"selection_mode":"restricted"%'
 1
 
 query III
-SELECT min(latitude), max(longitude), count(*) FROM read_om(
+SELECT min(lat), max(lon), count(*) FROM read_om(
     '__WORKING_DIRECTORY__/test/data/raw.om',
     dimensions := map(['value'], [['lat','lon']]),
     grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
-    spatial_axes := ['lat','lon']) WHERE latitude > 10;
+    spatial_axes := ['lat','lon']) WHERE lat > 10;
 ----
 11	104	3
 
@@ -113,6 +113,6 @@ SELECT count(*) FROM read_om(
     '__WORKING_DIRECTORY__/test/data/spatial_flat.om',
     dimensions := map(['value'], [['sample','point']]),
     grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'lon_fastest'},
-    spatial_axes := ['point']) WHERE latitude = 10 AND longitude = 102;
+    spatial_axes := ['point']) WHERE lat = 10 AND lon = 102;
 ----
 2

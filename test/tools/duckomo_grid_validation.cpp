@@ -773,15 +773,15 @@ std::string WorkPeakRead(const Options &options, const WorkPeakCase &work_case, 
 
 std::string WorkPeakPredicate(const std::string &grid_type) {
 	if (grid_type == "rotated_latlon") {
-		return "latitude BETWEEN -0.000001 AND 0.000001 AND longitude BETWEEN -0.000001 AND 0.000001";
+		return "lat BETWEEN -0.000001 AND 0.000001 AND lon BETWEEN -0.000001 AND 0.000001";
 	}
 	if (grid_type == "lambert_conformal_conic") {
-		return "latitude BETWEEN 46.243 AND 46.245 AND longitude BETWEEN 9.999 AND 10.001";
+		return "lat BETWEEN 46.243 AND 46.245 AND lon BETWEEN 9.999 AND 10.001";
 	}
 	if (grid_type == "stereographic") {
-		return "latitude BETWEEN 44.999 AND 45.001 AND longitude BETWEEN 9.999 AND 10.001";
+		return "lat BETWEEN 44.999 AND 45.001 AND lon BETWEEN 9.999 AND 10.001";
 	}
-	if (grid_type == "reduced_gaussian") return "latitude = 60 AND longitude BETWEEN 0 AND 2";
+	if (grid_type == "reduced_gaussian") return "lat = 60 AND lon BETWEEN 0 AND 2";
 	throw std::invalid_argument("unknown work-peak predicate grid type " + grid_type);
 }
 

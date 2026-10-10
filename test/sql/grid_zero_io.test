@@ -33,9 +33,9 @@ SELECT * FROM read_om(
 
 # Coordinate values are produced for the local spatial subset.
 query RR
-SELECT latitude, longitude FROM interleaved_grid
-WHERE latitude BETWEEN 0.99 AND 1.01 AND longitude BETWEEN 1.99 AND 2.01
-ORDER BY latitude, longitude LIMIT 1;
+SELECT lat, lon FROM interleaved_grid
+WHERE lat BETWEEN 0.99 AND 1.01 AND lon BETWEEN 1.99 AND 2.01
+ORDER BY lat, lon LIMIT 1;
 ----
 1.000000	2.000000
 
@@ -65,9 +65,9 @@ WHERE scan_id = (SELECT max(scan_id) FROM duckomo_last_scan_metrics())
 # Preparation validates the 12 spatial points at bind time, with no extra
 # preflight transformations across the 384 records and five non-spatial axes.
 query I
-SELECT count(latitude) + count(longitude) FROM interleaved_grid
-WHERE latitude >= -90 AND latitude <= 90
-  AND longitude >= -180 AND longitude < 180;
+SELECT count(lat) + count(lon) FROM interleaved_grid
+WHERE lat >= -90 AND lat <= 90
+  AND lon >= -180 AND lon < 180;
 ----
 768
 
@@ -83,7 +83,7 @@ WHERE scan_id = (SELECT max(scan_id) FROM duckomo_last_scan_metrics())
 # Coordinate-filtered COUNT also preserves the five non-spatial axes.
 query I
 SELECT count(*) FROM interleaved_grid
-WHERE latitude BETWEEN 0.99 AND 1.01 AND longitude BETWEEN 1.99 AND 2.01;
+WHERE lat BETWEEN 0.99 AND 1.01 AND lon BETWEEN 1.99 AND 2.01;
 ----
 32
 
@@ -97,17 +97,17 @@ WHERE scan_id = (SELECT max(scan_id) FROM duckomo_last_scan_metrics())
 
 # Contradictory and reversed predicates remain exact SQL filters and read no values.
 query I
-SELECT count(*) FROM interleaved_grid WHERE latitude > 0 AND latitude < 0;
+SELECT count(*) FROM interleaved_grid WHERE lat > 0 AND lat < 0;
 ----
 0
 
 query I
-SELECT count(*) FROM interleaved_grid WHERE latitude BETWEEN 2 AND 0;
+SELECT count(*) FROM interleaved_grid WHERE lat BETWEEN 2 AND 0;
 ----
 0
 
 query I
-SELECT count(*) FROM interleaved_grid WHERE latitude > 90;
+SELECT count(*) FROM interleaved_grid WHERE lat > 90;
 ----
 0
 
@@ -122,7 +122,7 @@ WHERE scan_id = (SELECT max(scan_id) FROM duckomo_last_scan_metrics())
 # Value residuals are still applied, but unrelated variables stay untouched.
 query I
 SELECT count(*) FROM interleaved_grid
-WHERE latitude BETWEEN 0.99 AND 1.01 AND longitude BETWEEN 1.99 AND 2.01
+WHERE lat BETWEEN 0.99 AND 1.01 AND lon BETWEEN 1.99 AND 2.01
   AND "interleaved/temperature" > 10000;
 ----
 24

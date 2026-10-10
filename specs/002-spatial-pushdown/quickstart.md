@@ -1,5 +1,7 @@
 # Quickstart: 空间查询与验收
 
+> 本页含历史阶段的构建/复现示例。当前开发版地理列已改为 `lat/lon`，并支持共享轴 `dimensions := [轴名...]`；旧 `latitude/longitude` 引用需迁移，详见 [接口修订](../../docs/interface-migration.md)。不改写历史验证结果。
+
 状态：Phase 3 实现、Linux AArch64 运行验证和独立 quickstart 复现指南。Linux x86_64 支持与验证按用户决策暂缓，不属于本期发布门禁。SQL 语义见 [接口契约](contracts/sql-interface.md)，指标见 [观测契约](contracts/validation-evidence.md)，布局见 [data model](data-model.md)。所有命令从仓库根目录执行。
 
 ## 构建与合成样本验证
