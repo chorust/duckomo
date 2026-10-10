@@ -52,9 +52,14 @@ git push origin v0.1.0-rc.1
 ```text
 duckomo-v0.1.0-rc.1-duckdb-v1.5.6-linux_arm64.zip
 ...另外 11 个版本/平台组合...
+duckomo-v0.1.0-rc.1-duckdb-v1.5.6-linux_arm64.duckdb_extension.gz
+...另外 11 个版本/平台组合的 gzip 资产...
 manifest.json
 SHA256SUMS
 ```
+
+`.zip` 资产供下载、校验和解压；`.duckdb_extension.gz` 是同一份已验证二进制的确定性 gzip，
+供 DuckDB 直接从 Release URL `INSTALL`（聚合时会校验其解压结果与 ZIP 内二进制一致）。
 
 每个 ZIP 包含：
 
@@ -68,6 +73,17 @@ SHA256SUMS
 ## 下载与安装
 
 以下示例在**对应 Release 成功发布后**才可用。先在你的 DuckDB 中运行 `SELECT version(); PRAGMA platform;`，选择精确匹配的包。macOS 使用 `osx_*`，不能加载 Linux ARM64 包。
+
+包含 `.duckdb_extension.gz` 资产时，可在 DuckDB 内直接安装（未签名，仍需 `-unsigned`）：
+
+```sql
+INSTALL 'https://github.com/chorust/duckomo/releases/download/v0.1.0-rc.1/duckomo-v0.1.0-rc.1-duckdb-v1.5.6-linux_arm64.duckdb_extension.gz';
+LOAD duckomo;
+```
+
+直接 URL 安装需要官方 HTTPFS 处理 HTTPS（已安装且允许自动加载时无需显式加载；否则先 `INSTALL httpfs; LOAD httpfs;`）。
+
+下载 ZIP 校验解压的方式仍然有效：
 
 ```sh
 TAG=v0.1.0-rc.1
@@ -102,7 +118,7 @@ SELECT * FROM read_om('/path/to/weather.om') LIMIT 10;
 
 每次启动加载未签名包的 DuckDB 都需要 `-unsigned`；Python 客户端使用 `duckdb.connect(config={'allow_unsigned_extensions': 'true'})`。仅加载可信来源的原生代码。
 
-GitHub Release ZIP 不是 DuckDB 扩展仓库，不能写 `INSTALL duckomo FROM 'https://github.com/chorust/duckomo'`，也不能直接 `INSTALL '...zip'`。当前采用 HTTP 下载、校验、解压、本地 `INSTALL` 的方式。社区收录后的签名安装仍见 [社区说明](community-extensions.md)。
+GitHub Release ZIP 不是 DuckDB 扩展仓库，不能写 `INSTALL duckomo FROM 'https://github.com/chorust/duckomo'`，ZIP 资产也不能直接 `INSTALL`。需要下载留档或校验链时采用 HTTP 下载、校验、解压、本地 `INSTALL` 的方式。社区收录后的签名安装仍见 [社区说明](community-extensions.md)。
 
 ## 本地检查与复现单个候选包
 

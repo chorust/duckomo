@@ -32,10 +32,17 @@ PRAGMA platform;
 
 发布矩阵为 **DuckDB v1.5.4 / v1.5.5 / v1.5.6** × **Linux glibc x86_64 / ARM64、macOS Intel / Apple Silicon**。以实际发布的资产和验证记录为准；若尚无匹配资产，可按 [Dev](#dev) 从源码构建。
 
-GitHub 包未签名，只加载可信来源。用 `duckdb -unsigned` 启动后安装：
+GitHub 包未签名，只加载可信来源。用 `duckdb -unsigned` 启动后安装。包含 `.duckdb_extension.gz` 资产的 Release 可直接安装（URL 中换成与实际环境精确匹配的 tag／DuckDB 版本／平台）：
 
 ```sql
-INSTALL '/path/to/duckomo.duckdb_extension';
+INSTALL 'https://github.com/chorust/duckomo/releases/download/v0.1.0/duckomo-v0.1.0-duckdb-v1.5.4-linux_arm64.duckdb_extension.gz';
+LOAD duckomo;
+```
+
+也可以下载 Release ZIP 后安装本地文件：
+
+```sql
+INSTALL './duckomo.duckdb_extension';
 LOAD duckomo;
 ```
 

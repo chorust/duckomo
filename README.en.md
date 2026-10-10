@@ -32,10 +32,17 @@ PRAGMA platform;
 
 The release matrix targets **DuckDB v1.5.4 / v1.5.5 / v1.5.6** on **Linux glibc x86_64 / ARM64 and macOS Intel / Apple Silicon**. Available assets and their validation records are authoritative. If no matching asset is published yet, build from source under [Dev](#dev).
 
-GitHub binaries are unsigned; load only trusted code. Start `duckdb -unsigned`, then install:
+GitHub binaries are unsigned; load only trusted code. Start `duckdb -unsigned`, then install. Releases that include a `.duckdb_extension.gz` asset can be installed directly (replace the tag / DuckDB version / platform in the URL with an exact match for your environment):
 
 ```sql
-INSTALL '/path/to/duckomo.duckdb_extension';
+INSTALL 'https://github.com/chorust/duckomo/releases/download/v0.1.0/duckomo-v0.1.0-duckdb-v1.5.4-linux_arm64.duckdb_extension.gz';
+LOAD duckomo;
+```
+
+Or download the Release ZIP and install the local file:
+
+```sql
+INSTALL './duckomo.duckdb_extension';
 LOAD duckomo;
 ```
 

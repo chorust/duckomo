@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Pinned release runtimes and fail-closed packaging (no GitHub write operations)."""
 import argparse
+import gzip
 import hashlib
 import json
 from pathlib import Path
@@ -68,6 +69,11 @@ def archive_name(tag, version, platform):
     return f'duckomo-{tag}-duckdb-{version}-{platform}.zip'
 
 
+def gz_asset_name(tag, version, platform):
+    validate_tag(tag)
+    return f'duckomo-{tag}-duckdb-{version}-{platform}.duckdb_extension.gz'
+
+
 def check_report(document, report, version, platform, extension_sha256):
     runtime = find_runtime(document, version, platform)
     if report.get('status') != 'pass' or report.get('version') != version or report.get('platform') != platform:
@@ -97,6 +103,7 @@ def package(document, version, platform, tag, commit, extension, verification, l
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     archive = output / archive_name(tag, version, platform)
+    gz_asset = output / gz_asset_name(tag, version, platform)
     # Exclusive creation prevents stale reruns silently replacing an existing package.
     with zipfile.ZipFile(archive, 'x', compression=zipfile.ZIP_DEFLATED) as z:
         for name, content in [('duckomo.duckdb_extension', binary), ('manifest.json', json.dumps(manifest, indent=2) + '\n'),
@@ -105,15 +112,23 @@ def package(document, version, platform, tag, commit, extension, verification, l
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
             z.writestr(info, content)
+    # A deterministic gzip of the verified binary lets DuckDB INSTALL straight
+    # from the release URL (DuckDB accepts .duckdb_extension.gz over HTTP).
+    gz_asset.write_bytes(gzip.compress(binary, compresslevel=9, mtime=0))
     return archive
 
 
 def assemble(document, tag, commit, packages, output):
     check_identity(tag, commit)
     expected = {archive_name(tag, r['version'], r['platform']): r for r in document['runtimes']}
+    expected_gz = {name: gz_asset_name(tag, r['version'], r['platform']) for name, r in expected.items()}
     archives = list(Path(packages).rglob('*.zip'))
+    gz_assets = list(Path(packages).rglob('*.duckdb_extension.gz'))
     if len(archives) != len(expected) or {a.name for a in archives} != set(expected):
         raise ValueError('exactly one package for every runtime pair required')
+    if len(gz_assets) != len(expected_gz) or {a.name for a in gz_assets} != set(expected_gz.values()):
+        raise ValueError('exactly one .duckdb_extension.gz asset for every runtime pair required')
+    gz_by_name = {a.name: a for a in gz_assets}
     records = []
     for archive in sorted(archives):
         runtime = expected[archive.name]
@@ -130,13 +145,19 @@ def assemble(document, tag, commit, packages, output):
                 raise ValueError('package provenance does not match the release')
             check_report(document, json.loads(z.read('verification.json')), runtime['version'],
                          runtime['platform'], binary_digest)
-        records.append(dict(file=archive.name, sha256=sha(archive), **required_identity))
+        gz_asset = gz_by_name[expected_gz[archive.name]]
+        if hashlib.sha256(gzip.decompress(gz_asset.read_bytes())).hexdigest() != binary_digest:
+            raise ValueError('gz install asset does not match the verified extension binary')
+        records.append(dict(file=archive.name, sha256=sha(archive), gz_file=gz_asset.name,
+                            gz_sha256=sha(gz_asset), **required_identity))
     output = Path(output)
     if output.exists() and any(output.iterdir()):
         raise ValueError('release output must be empty to exclude stale assets')
     output.mkdir(parents=True, exist_ok=True)
     for archive in archives:
         shutil.copyfile(archive, output / archive.name)
+    for gz_asset in gz_assets:
+        shutil.copyfile(gz_asset, output / gz_asset.name)
     (output / 'manifest.json').write_text(json.dumps(dict(schema_version=1, tag=tag, source_commit=commit,
                                                        signed=False, packages=records), indent=2) + '\n')
     files = sorted(output.iterdir())

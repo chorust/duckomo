@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Fail-closed release packaging and pinned multi-platform runtime contracts."""
 import copy
+import gzip
 import hashlib
 import importlib.util
 import json
@@ -66,7 +67,7 @@ class ReleaseTests(unittest.TestCase):
         return release.package(self.document, version, platform, self.tag, self.commit,
                                extension, report, ROOT / 'LICENSE', directory / 'packages')
 
-    def test_package_has_standard_binary_and_bound_provenance(self):
+    def test_package_has_standard_binary_bound_provenance_and_gz_asset(self):
         with tempfile.TemporaryDirectory() as directory:
             archive = self.pack(Path(directory))
             self.assertEqual(archive.name, 'duckomo-v0.1.0-duckdb-v1.5.6-linux_arm64.zip')
@@ -76,6 +77,10 @@ class ReleaseTests(unittest.TestCase):
                 self.assertFalse(manifest['signed'])
                 self.assertEqual(manifest['source_commit'], self.commit)
                 self.assertEqual(manifest['extension_sha256'], hashlib.sha256(z.read('duckomo.duckdb_extension')).hexdigest())
+            gz_asset = archive.with_name('duckomo-v0.1.0-duckdb-v1.5.6-linux_arm64.duckdb_extension.gz')
+            with zipfile.ZipFile(archive) as z:
+                self.assertEqual(gzip.decompress(gz_asset.read_bytes()), z.read('duckomo.duckdb_extension'))
+            self.assertEqual(gz_asset.name, release.gz_asset_name(self.tag, self.version, self.platform))
 
     def test_failed_wrong_pair_stale_binary_or_unpinned_runtime_cannot_package(self):
         for mutation in ['status', 'version', 'platform', 'extension', 'duckdb', 'httpfs']:
@@ -118,6 +123,8 @@ class ReleaseTests(unittest.TestCase):
             first = release.package(*args, root / 'a')
             second = release.package(*args, root / 'b')
             self.assertEqual(first.read_bytes(), second.read_bytes())
+            self.assertEqual(first.with_suffix('.duckdb_extension.gz').read_bytes(),
+                             second.with_suffix('.duckdb_extension.gz').read_bytes())
             with self.assertRaises(FileExistsError): release.package(*args, root / 'a')
 
     def test_invalid_source_commit_rejected(self):
@@ -135,7 +142,12 @@ class ReleaseTests(unittest.TestCase):
             release.assemble(self.document, self.tag, self.commit, root / 'packages', output)
             manifest = json.loads((output / 'manifest.json').read_text())
             self.assertEqual(len(manifest['packages']), 12)
-            self.assertEqual(len((output / 'SHA256SUMS').read_text().splitlines()), 13)
+            for record in manifest['packages']:
+                self.assertEqual(record['gz_file'], release.gz_asset_name(self.tag, record['duckdb_version'], record['platform']))
+                self.assertEqual(release.sha(output / record['gz_file']), record['gz_sha256'])
+            self.assertEqual(len(list(output.glob('*.duckdb_extension.gz'))), 12)
+            # 12 ZIP + 12 gz assets + manifest.json
+            self.assertEqual(len((output / 'SHA256SUMS').read_text().splitlines()), 25)
             for line in (output / 'SHA256SUMS').read_text().splitlines():
                 digest, name = line.split('  '); self.assertEqual(release.sha(output / name), digest)
             with self.assertRaises(ValueError):
@@ -143,6 +155,20 @@ class ReleaseTests(unittest.TestCase):
             next((root / 'packages').glob('*.zip')).unlink()
             with self.assertRaises(ValueError):
                 release.assemble(self.document, self.tag, self.commit, root / 'packages', root / 'missing')
+
+    def test_aggregate_rejects_missing_or_tampered_gz_asset(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for row in self.document['runtimes']:
+                self.pack(root, row['version'], row['platform'])
+            gz_assets = sorted(root.rglob('*.duckdb_extension.gz'))
+            self.assertEqual(len(gz_assets), 12)
+            gz_assets[0].unlink()
+            with self.assertRaises(ValueError):
+                release.assemble(self.document, self.tag, self.commit, root / 'packages', root / 'dist')
+            gz_assets[0].write_bytes(gzip.compress(b'changed after verification', mtime=0))
+            with self.assertRaises(ValueError):
+                release.assemble(self.document, self.tag, self.commit, root / 'packages', root / 'dist')
 
     def test_aggregate_rejects_tampered_archive_even_with_passing_report(self):
         with tempfile.TemporaryDirectory() as directory:
