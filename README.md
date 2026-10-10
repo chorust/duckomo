@@ -1,4 +1,4 @@
-<img src="logo.png" alt="duckomo logo" width="160">
+<p align="center"><img src="logo.png" alt="duckomo logo" width="160"></p>
 
 # duckomo
 
