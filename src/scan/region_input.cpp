@@ -190,6 +190,7 @@ private:
 		}
 		for (std::uint32_t ring = 0; ring < ring_count; ++ring) {
 			const auto point_count = ReadU32(little_endian);
+			if (point_count == 0) continue;
 			if (point_count < 4) InputError(ordinal, "every non-empty ring must contain at least four points");
 			if (point_count > REGION_MAX_VERTICES - result.vertices) {
 				LimitError(ordinal, "vertex count exceeds the 65536 per-region limit");

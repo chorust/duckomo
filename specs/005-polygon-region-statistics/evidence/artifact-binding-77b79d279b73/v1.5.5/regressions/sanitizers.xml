@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="16"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="196"
+	timestamp="2026-10-14T15:12:35"
+	>
+	<testcase name="duckomo_sanitizer_batch_test" classname="duckomo_sanitizer_batch_test" time="0.00791868" status="run">
+		<properties/>
+		<system-out>batch checks passed
+</system-out>
+	</testcase>
+	<testcase name="duckomo_sanitizer_raw_reader_test" classname="duckomo_sanitizer_raw_reader_test" time="0.178473" status="run">
+		<properties/>
+		<system-out>raw reader oracle checks passed
+</system-out>
+	</testcase>
+	<testcase name="duckomo_sanitizer_schema_test" classname="duckomo_sanitizer_schema_test" time="0.0557786" status="run">
+		<properties/>
+		<system-out>metadata/schema checks passed
+</system-out>
+	</testcase>
+	<testcase name="duckomo_sanitizer_axis_selection_test" classname="duckomo_sanitizer_axis_selection_test" time="0.82273" status="run">
+		<properties/>
+		<system-out>semantic axis selection checks passed
+</system-out>
+	</testcase>
+	<testcase name="duckomo_sanitizer_parallel_scan_test" classname="duckomo_sanitizer_parallel_scan_test" time="18.9495" status="run">
+		<properties/>
+		<system-out>parallel_scan_test: worker limits, empty selection, cancellation, and recovery checks passed
+</system-out>
+	</testcase>
+	<testcase name="duckomo_sanitizer_scan_metrics_v3_test" classname="duckomo_sanitizer_scan_metrics_v3_test" time="0.0101775" status="run">
+		<properties/>
+		<system-out>scan_metrics_v3_test: v3 fields, v2 compatibility, unknown values, and URI redaction passed
+</system-out>
+	</testcase>
+	<testcase name="duckomo_sanitizer_session_metrics_test" classname="duckomo_sanitizer_session_metrics_test" time="0.0811895" status="run">
+		<properties/>
+		<system-out>session_metrics_test: settings and last-scan state are connection-local
+</system-out>
+	</testcase>
+	<testcase name="duckomo_sanitizer_grid_validation" classname="duckomo_sanitizer_grid_validation" time="0.0108823" status="run">
+		<properties/>
+		<system-out>grid validation CLI self-check passed
+</system-out>
+	</testcase>
+	<testcase name="duckomo_sanitizer_lifecycle" classname="duckomo_sanitizer_lifecycle" time="0.217394" status="run">
+		<properties/>
+		<system-out>lifecycle loaded DuckOMO: /home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/test/sanitizer_runtime/build/release/extension/duckomo/duckomo.duckdb_extension
+lifecycle checks passed
+</system-out>
+	</testcase>
+	<testcase name="duckomo_sanitizer_spatial_selection" classname="duckomo_sanitizer_spatial_selection" time="0.75794" status="run">
+		<properties/>
+		<system-out>spatial selection checks passed
+</system-out>
+	</testcase>
+	<testcase name="duckomo_sanitizer_spatial_io_test" classname="duckomo_sanitizer_spatial_io_test" time="1.93403" status="run">
+		<properties/>
+		<system-out>spatial_io full_rows=10541 restricted_rows=25 full_temperature_data_bytes=169525 restricted_temperature_data_bytes=1795 full_temperature_decoded_chunks=515 restricted_temperature_decoded_chunks=5 empty_rows=0 coordinates_rows=25 mixed_rows=1 safe_or_rows=332 unsafe_or_rows=273 count=25
+spatial I/O checks passed
+</system-out>
+	</testcase>
+	<testcase name="duckomo_sanitizer_spatial_lifecycle_test" classname="duckomo_sanitizer_spatial_lifecycle_test" time="1.20697" status="run">
+		<properties/>
+		<system-out>spatial lifecycle checks passed (prepared rebinding, 100 failures, alias isolation)
+</system-out>
+	</testcase>
+	<testcase name="duckomo_sanitizer_region_input_test" classname="duckomo_sanitizer_region_input_test" time="8.73549" status="run">
+		<properties/>
+		<system-out>region_input_test: ok
+</system-out>
+	</testcase>
+	<testcase name="duckomo_sanitizer_region_geometry_test" classname="duckomo_sanitizer_region_geometry_test" time="0.115161" status="run">
+		<properties/>
+		<system-out>duckdb_version=v1.5.5
+duckdb_source_id=d8cdaa33
+spatial_extension_version=eb1e57c
+spatial_install_path=
+spatial_package_sha256=b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d
+region_geometry_test: ok
+</system-out>
+	</testcase>
+	<testcase name="duckomo_sanitizer_region_scan_test" classname="duckomo_sanitizer_region_scan_test" time="160.39" status="run">
+		<properties/>
+		<system-out>region_scan_test: cancellation response after first output was 2.70532 ms (observed only; no fixed bound)
+region_scan_test: task windows, ordinals, zero-value I/O, metrics, cancellation, short-read/decoder/object-change failure recovery, and multi-connection lifecycle passed
+</system-out>
+	</testcase>
+	<testcase name="duckomo_sanitizer_projection_evidence" classname="duckomo_sanitizer_projection_evidence" time="3.40987" status="run">
+		<properties/>
+		<system-out>projection metrics and lifecycle checks passed
+</system-out>
+	</testcase>
+</testsuite>

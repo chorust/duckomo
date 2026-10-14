@@ -1,0 +1,1679 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "runtime_version": "v1.5.5",
+  "build_manifest_path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/build-manifest.json",
+  "build_manifest_sha256": "ddcbe6f4e35aea33b7d23877f93eded64fe695e4adc69b3dd3e34add748f939c",
+  "duckomo_sha256": "0f5128a54c9776aeffd6230abb9482873f44e8e9b6f9a2bb91eb860c625dc47b",
+  "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+  "feature_manifest_sha256": "14253140fa569b1b8ae7f69911a66103db16bc98651566eee8be7aebf7ff9a24",
+  "commands": [
+    {
+      "id": "sanitizers",
+      "argv": [
+        "ctest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/test",
+        "--output-on-failure",
+        "-R",
+        "^duckomo_sanitizer_",
+        "--output-junit",
+        "/home/blizhan/repo/github/duckomo/build/evidence/regions/005-artifact-binding-77b79d279b73/v1.5.5/regressions/sanitizers.xml"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/test/sanitizer_runtime/build/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/test/sanitizer_runtime/build/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "1.log",
+      "output_sha256": "d11a88a265eb9a2d99352a0ef5017028caa35d8607dd6ac4346fef723675ee96",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/test/sanitizer_runtime/build/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "a76df8dd045420f796ef55d90c2417f863faaacbfe5126587a999b6296f7d855"
+        }
+      ]
+    },
+    {
+      "id": "native:axis_selection_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/axis_selection_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "2.log",
+      "output_sha256": "a7e0e73d9b8726620ddd660776a3e78dc12a2302913933113a3cc63929861308",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/axis_selection_test",
+          "sha256": "76de51a9a696a88424d5b9b32a4e0d1dc5e277b7404cca93cf8107122fac6c6e"
+        }
+      ]
+    },
+    {
+      "id": "native:batch_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/batch_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "3.log",
+      "output_sha256": "8ae5de04f8548b13477616316357c905c472632384ba91262536a1f3e7af7684",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/batch_test",
+          "sha256": "d1d18a35c706e19cbc6127e6efef395328c2480be2c2fa8b8484780e7a50147c"
+        }
+      ]
+    },
+    {
+      "id": "native:domain_reference_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/domain_reference_test",
+        "/home/blizhan/repo/github/duckomo/build/s3-samples/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om",
+        "/home/blizhan/repo/github/duckomo/test/data/domain-manifest.json",
+        "/home/blizhan/repo/github/duckomo/build/evidence/spatial/reference"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "4.log",
+      "output_sha256": "c05bdd0f32905335971ad97e2c61f2a3f18fd3787f3bdafd7341d6f60bbcf1c1",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/domain_reference_test",
+          "sha256": "3a67557ba84fe1c94abd9a95546995d535e0215ec78caf4529715afd635dffb2"
+        }
+      ]
+    },
+    {
+      "id": "native:gaussian_grid_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/gaussian_grid_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "5.log",
+      "output_sha256": "fc6e713ff233be8f2386a8860911cf1e1abb0907e04f36cb6065aa501ab1f6e7",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/gaussian_grid_test",
+          "sha256": "0d7d4444521e28f3cf868ca948161be2f817b3ac5e901db6041d18dc50253258"
+        }
+      ]
+    },
+    {
+      "id": "native:grid_identity_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/grid_identity_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "6.log",
+      "output_sha256": "de9e07b3c7b40a69def094d2566ab868bf70209e29235957ece25508f7255c23",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/grid_identity_test",
+          "sha256": "8f31e208acbe505deab62a167473f86228f976fd7626b34577855c5a0292476a"
+        }
+      ]
+    },
+    {
+      "id": "native:grid_selection_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/grid_selection_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "7.log",
+      "output_sha256": "b36f16c8b17e194d0f35686d4c99925c3b48759e460edd7d352928f0576e5766",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/grid_selection_test",
+          "sha256": "2122348bc995a12b7c82c9defd27bbbc8e073009cfeb0d20b028d7da5b8c00d6"
+        }
+      ]
+    },
+    {
+      "id": "native:grid_version_compat_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/grid_version_compat_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "8.log",
+      "output_sha256": "9bf29039360aa7f4e2ec93ddef52349c3a6a4089a820a56a584eccfd795d16ae",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/grid_version_compat_test",
+          "sha256": "c493f43d54208f884522057778f2120e96ce3458a8885541638f1c0a49729a95"
+        }
+      ]
+    },
+    {
+      "id": "native:grid_zero_io_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/grid_zero_io_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "9.log",
+      "output_sha256": "74775c7f4306f0004a85aca1cbf4a1c2d7e33c63cc03713512d2deba1ae9d5ee",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/grid_zero_io_test",
+          "sha256": "1c41dc83b5aa1d16e3f18fb8082cae10d561af22eb1207208e5a363a5deae2f2"
+        }
+      ]
+    },
+    {
+      "id": "native:lifecycle_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/lifecycle_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "10.log",
+      "output_sha256": "96525519fbe4c984930d633413e2a6913fc684e39407215d47ac6c3ddb06637f",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/lifecycle_test",
+          "sha256": "38a3c19089928fd8b0df337e73e97d091e294350aec5204629c2d18ef05935c9"
+        }
+      ]
+    },
+    {
+      "id": "native:parallel_scan_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/parallel_scan_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "11.log",
+      "output_sha256": "c381abc0b4cd6cd086690db663885d45ec5a427216d62222ef2ef6cecc90a6f5",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/parallel_scan_test",
+          "sha256": "306d340f6c8e953916bca0ad2ae64e120e037b5864b5d5cf8fabad1c0a7679e3"
+        }
+      ]
+    },
+    {
+      "id": "native:projected_grid_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/projected_grid_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "12.log",
+      "output_sha256": "d3921e510adc0589d9dfb20ef82dc747fa438f4b8ef12598bde8c2cd0dd85749",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/projected_grid_test",
+          "sha256": "8fa52cdd728bfd438a09a53402d0f2bf06e4d4b421f041c5522df1b28a883d5b"
+        }
+      ]
+    },
+    {
+      "id": "native:projection_evidence_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/projection_evidence_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "13.log",
+      "output_sha256": "efb58e6ac1d941a09249aa311c5621ea7f60221992afa838e9b600e37e0f7184",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/projection_evidence_test",
+          "sha256": "8855a517a90781f2783bd7ec01b712669bbec657698b1f96ccf0a504d241b39f"
+        }
+      ]
+    },
+    {
+      "id": "native:raw_reader_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/raw_reader_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "14.log",
+      "output_sha256": "70acf404655fc07d236cfa0fa68e4f297578445865e1199126bd57f44ef34454",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/raw_reader_test",
+          "sha256": "9dd2affcdae9e1a9c39b2848be435e03d5f4a8918b53ac857be1fcffd279bf30"
+        }
+      ]
+    },
+    {
+      "id": "native:reader_capacity_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/reader_capacity_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "15.log",
+      "output_sha256": "04941c76702aa72f27b80d00c98516a11d5f5ad5b82618bebb4a588f4179b508",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/reader_capacity_test",
+          "sha256": "25ea5ec4e69c4d5d18f374ce5f1dc5a8ef563f781369616126dd22f77f5c1971"
+        }
+      ]
+    },
+    {
+      "id": "native:region_geometry_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/region_geometry_test",
+        "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.5/official/spatial.duckdb_extension",
+        "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "16.log",
+      "output_sha256": "18ccf51c8a02a9a503d3a06ac80cf8c86de447e61f4229c3a909980b7cc9be54",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/region_geometry_test",
+          "sha256": "0c275795451f23987ee41108c38408644d04438a9a637e69439961f4cb4b1c24"
+        }
+      ]
+    },
+    {
+      "id": "native:region_input_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/region_input_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "17.log",
+      "output_sha256": "f14746be3b28b7da7de4d044f8b95cce04f56457fc7112404273971f6da10672",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/region_input_test",
+          "sha256": "e0cfc7642faaf8670ce4e8d7cf221a061370da47ac79cd2416ae44f7f6b9e26c"
+        }
+      ]
+    },
+    {
+      "id": "native:region_scan_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/region_scan_test",
+        "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.5/official/spatial.duckdb_extension",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "18.log",
+      "output_sha256": "e557a31d6be27af116e0c3533f17dec4fcad3c9452bd91b31ecaf611e0eb3c5a",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/region_scan_test",
+          "sha256": "90bb4a36d039e05a87988899be602f46a202dab92f678a843bd2576e368a1f50"
+        }
+      ]
+    },
+    {
+      "id": "native:regular_grid_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/regular_grid_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "19.log",
+      "output_sha256": "518131553ef297560676c70e858930f06adaaf9a2337eabf7a7a8515448790ae",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/regular_grid_test",
+          "sha256": "289b59bc8f120df125dc27db2e1e2d3d2e0dd14a15a879730b98360e659f1b32"
+        }
+      ]
+    },
+    {
+      "id": "native:remote_session_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/remote_session_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "20.log",
+      "output_sha256": "9eb3b7234a1b7f73c2b0e614effc935f6b42ca7714e24b451af8673506f469dd",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/remote_session_test",
+          "sha256": "c621a4e8bad30b7dce73e7b04935054df6c71926873e4f0f2762cb2a30b45364"
+        }
+      ]
+    },
+    {
+      "id": "native:scan_metrics_v3_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/scan_metrics_v3_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "21.log",
+      "output_sha256": "7ad0ef72e61c5160b2f04c5195104c77432ae6e779cccffd2ee67d79d3ff2b63",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/scan_metrics_v3_test",
+          "sha256": "0b3db5258a7ec20dcb73c2d6d40762b7856985ead8143cc6ac19abeb75ac45e6"
+        }
+      ]
+    },
+    {
+      "id": "native:scan_metrics_v4_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/scan_metrics_v4_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "22.log",
+      "output_sha256": "b4cf5d641fba9db513eff124b48b941d7409c148199a20c5efe206c30feb36c3",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/scan_metrics_v4_test",
+          "sha256": "ab77fc56a99ac035da6f93df239a8b4432d6224e7c745178a2b39a39d82aea2a"
+        }
+      ]
+    },
+    {
+      "id": "native:schema_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/schema_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "23.log",
+      "output_sha256": "b3287e33aa0a412008ef30b7341615b86533bf157ed6f6579b8b404843682dd5",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/schema_test",
+          "sha256": "80f3a43448088ba67faa91e8a7c99803ee3620650055ce18b2ddc16a84d7f94b"
+        }
+      ]
+    },
+    {
+      "id": "native:semantic_axes_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/semantic_axes_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "24.log",
+      "output_sha256": "d782784de5b168b2d1a58bf4f75cc64133cf3e73d7199a73214f3e1cadee537a",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/semantic_axes_test",
+          "sha256": "ba9bd91c2a635e6db3f3a5d7194faf93a7b8d6c92dccaa49a89f2c2b4ae6fe4b"
+        }
+      ]
+    },
+    {
+      "id": "native:session_metrics_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/session_metrics_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "25.log",
+      "output_sha256": "f223bd179273c6303dcab3a510d5df8c5f9d2cd0cd7ee73182fba18460de5a64",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/session_metrics_test",
+          "sha256": "87f4151035cff8859d3d25f7df4284630e448d2e7468f8a802cdd44cff964c2d"
+        }
+      ]
+    },
+    {
+      "id": "native:source_identity_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/source_identity_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "26.log",
+      "output_sha256": "914d9b03d64c5e5fa7b676863576660d5e606f3fb0609b22ecd1c1b59f92d36e",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/source_identity_test",
+          "sha256": "565457e5188d843285b48f737054566c6545bcf693ead69f15abe0c9fb73eef5"
+        }
+      ]
+    },
+    {
+      "id": "native:spatial_callback_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/spatial_callback_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "27.log",
+      "output_sha256": "3956bf2631c975baefc5eb69be664f22995aca837c8ae34e7a688e10b32309a4",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/spatial_callback_test",
+          "sha256": "e2bdd60d4181e0cd51c549d5a90af6dfde2fe2e086d267adb5a486bd85c04a7f"
+        }
+      ]
+    },
+    {
+      "id": "native:spatial_io_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/spatial_io_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "28.log",
+      "output_sha256": "4355152e858f640e4593263b24ae231444f1a96b54affe259d5f635b6f4923ee",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/spatial_io_test",
+          "sha256": "58bbbdc7c68682bba20db338b2227cd82a82bd7c37613b572fde051b179a26cf"
+        }
+      ]
+    },
+    {
+      "id": "native:spatial_layout_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/spatial_layout_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "29.log",
+      "output_sha256": "ec79a5034a866bb06266adde78ccca97cf411016922e919fe2d92771b3241008",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/spatial_layout_test",
+          "sha256": "6bc18846128e3d8641c025e3bdacf097897151800f46f0d1186870ccfc93d02f"
+        }
+      ]
+    },
+    {
+      "id": "native:spatial_lifecycle_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/spatial_lifecycle_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "30.log",
+      "output_sha256": "acf290d392de82a698d6fa27a5c4cab6a54fc1780b4554d41825702bdb2776b7",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/spatial_lifecycle_test",
+          "sha256": "e6d94d3f76a78fd119eb5108d7d6e4ee38aaf98fb8faf31e803fc74170776015"
+        }
+      ]
+    },
+    {
+      "id": "native:spatial_metrics_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/spatial_metrics_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "31.log",
+      "output_sha256": "fbd4cb256a1b857092f17fac74affa650e8d8746eca6bc6b223f202c894472bb",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/spatial_metrics_test",
+          "sha256": "7515761eec54c301e7057567a0a9bef09f0c729ae932f8ead30f083d0b02002f"
+        }
+      ]
+    },
+    {
+      "id": "native:spatial_selection_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/spatial_selection_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "32.log",
+      "output_sha256": "3d161f8faf513f28432fbdb4b3c065ca1d7d24b7aadcdb6935b0627c79b72fe6",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/spatial_selection_test",
+          "sha256": "370fba2b3fcef832b157d14a87bb8d9cecaf80d8bc19cb3050c0c87208e9ca15"
+        }
+      ]
+    },
+    {
+      "id": "native:time_test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/time_test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "33.log",
+      "output_sha256": "0241833f8af056f48379e1f892e95b9e81d95ca9af206f508e87155074679715",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/native/time_test",
+          "sha256": "d00d31e7d64794a04a86efbc25b8c9a4ae310154b41a89749022fd786ffb9075"
+        }
+      ]
+    },
+    {
+      "id": "python:test/tools/grid_evidence_test.py",
+      "argv": [
+        "/home/blizhan/miniconda3/bin/python3",
+        "/home/blizhan/repo/github/duckomo/test/tools/grid_evidence_test.py"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "34.log",
+      "output_sha256": "1b54e7bd3e4f0557cdf06d1076b6ef63ce21d6c17ecec62d2881ac93eafe1fed",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/tools/grid_evidence_test.py",
+          "sha256": "a572df51daa0e2b60da03b7acd0dad5eb878fd657e60b2723f8979381b30f799"
+        }
+      ]
+    },
+    {
+      "id": "python:test/tools/grid_reference_test.py",
+      "argv": [
+        "/home/blizhan/miniconda3/bin/python3",
+        "/home/blizhan/repo/github/duckomo/test/tools/grid_reference_test.py"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "35.log",
+      "output_sha256": "128fb5b1df63b0364801c4f48f5e046ba45fe0ca32978d1baaa02bdc25cbfaae",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/tools/grid_reference_test.py",
+          "sha256": "de0325819c7993fe11559f5609f5dcff89eec37cc9475f3134b129784609c035"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+          "sha256": "53ea9b89dba4657b7e2246e70242d32bb02b494d048efc0f36a0aece5f64478a"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "0f5128a54c9776aeffd6230abb9482873f44e8e9b6f9a2bb91eb860c625dc47b"
+        }
+      ]
+    },
+    {
+      "id": "python:test/tools/grid_registry_test.py",
+      "argv": [
+        "/home/blizhan/miniconda3/bin/python3",
+        "/home/blizhan/repo/github/duckomo/test/tools/grid_registry_test.py"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "36.log",
+      "output_sha256": "5ab327f4d600881262edd10745b3523e2fcc12bce8277ccf081578b6d23b7135",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/tools/grid_registry_test.py",
+          "sha256": "be5295937492d32bb1ebd954727a91a84289426fef2b6530c065026bb6acc484"
+        }
+      ]
+    },
+    {
+      "id": "python:test/tools/hres_domain_test.py",
+      "argv": [
+        "/home/blizhan/miniconda3/bin/python3",
+        "/home/blizhan/repo/github/duckomo/test/tools/hres_domain_test.py"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "37.log",
+      "output_sha256": "0d8b79fb07e7de7d16be10a161bade96b8e62333fa97aff045bc1e3ef5952817",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/tools/hres_domain_test.py",
+          "sha256": "2b5bc2af68735f5594999bed71302a202776101460b496cd41d6ed86a082ed30"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+          "sha256": "53ea9b89dba4657b7e2246e70242d32bb02b494d048efc0f36a0aece5f64478a"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "0f5128a54c9776aeffd6230abb9482873f44e8e9b6f9a2bb91eb860c625dc47b"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/tools/duckomo_fixture_tool",
+          "sha256": "f9382228e3188d4d45681d19147629dd4ad2724585b4d6bbcde9fb8bdf6dfc38"
+        }
+      ]
+    },
+    {
+      "id": "python:test/tools/official_httpfs_validation_test.py",
+      "argv": [
+        "/home/blizhan/miniconda3/bin/python3",
+        "/home/blizhan/repo/github/duckomo/test/tools/official_httpfs_validation_test.py"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "38.log",
+      "output_sha256": "4944b52bbd4925fbdbd93e8e63727eafd8b7f54a89da1f214e45c555290a3392",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/tools/official_httpfs_validation_test.py",
+          "sha256": "c85cb1d866577f26616f9da9c1ab1a51298ba5ae3fe8cd071f70c5e4fcfec263"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+          "sha256": "53ea9b89dba4657b7e2246e70242d32bb02b494d048efc0f36a0aece5f64478a"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "0f5128a54c9776aeffd6230abb9482873f44e8e9b6f9a2bb91eb860c625dc47b"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/tools/duckomo_region_validation",
+          "sha256": "1407473c5cd18986737a47943eb027f5067c3ba179b2a480db88b59c171c0140"
+        }
+      ]
+    },
+    {
+      "id": "python:test/tools/om_build_test.py",
+      "argv": [
+        "/home/blizhan/miniconda3/bin/python3",
+        "/home/blizhan/repo/github/duckomo/test/tools/om_build_test.py"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "39.log",
+      "output_sha256": "19e365ffe552944f1b350e76aafe4f28904c0f470ea3c66f4deb726d2b536c6d",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/tools/om_build_test.py",
+          "sha256": "30d0c5811abb2833801e58082ca2bbb1968e72e6f58043b14fad7d0d879c567e"
+        }
+      ]
+    },
+    {
+      "id": "python:test/tools/record_region_regressions_test.py",
+      "argv": [
+        "/home/blizhan/miniconda3/bin/python3",
+        "/home/blizhan/repo/github/duckomo/test/tools/record_region_regressions_test.py"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "40.log",
+      "output_sha256": "0f2a1d5e7c2faa0387d6d929bd7c821fbabe31eb9bdf15eb5c1d0572f932a3a9",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/tools/record_region_regressions_test.py",
+          "sha256": "e9e4de0292765b93afbcf514e93eb6b0ce89f3141aa255c4298a593b0fc3b2d2"
+        }
+      ]
+    },
+    {
+      "id": "python:test/tools/region_evidence_test.py",
+      "argv": [
+        "/home/blizhan/miniconda3/bin/python3",
+        "/home/blizhan/repo/github/duckomo/test/tools/region_evidence_test.py"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "41.log",
+      "output_sha256": "4ad025de4a6023816fdf864dc1056380d1998bbd59ace38059ddec7c23a7bc57",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/tools/region_evidence_test.py",
+          "sha256": "5b7a602a7cb52086e156c05fb5813dbced3a958481d526fe3473853bdd1b1913"
+        }
+      ]
+    },
+    {
+      "id": "python:test/tools/region_remote_fixture_test.py",
+      "argv": [
+        "/home/blizhan/miniconda3/bin/python3",
+        "/home/blizhan/repo/github/duckomo/test/tools/region_remote_fixture_test.py"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "42.log",
+      "output_sha256": "949378ba45ff600d5bd7663e1fb0d347ab769f5e9bdaf860efcedafd286be9d0",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/tools/region_remote_fixture_test.py",
+          "sha256": "c75eb5e718f8819c59e07ebe2221a309fd5205c1bfad66cb75042b8894e329da"
+        }
+      ]
+    },
+    {
+      "id": "python:test/tools/release_tools_test.py",
+      "argv": [
+        "/home/blizhan/miniconda3/bin/python3",
+        "/home/blizhan/repo/github/duckomo/test/tools/release_tools_test.py"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "43.log",
+      "output_sha256": "8d30a83a83257b23c7da771f9896cbe5d30255662eedbbfa507fd4349fa02a0c",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/tools/release_tools_test.py",
+          "sha256": "8a9f2bd13f28dea871885230daa2bf212c11323c95851d1467669a9026708870"
+        }
+      ]
+    },
+    {
+      "id": "python:test/tools/remote_fixture_proxy_test.py",
+      "argv": [
+        "/home/blizhan/miniconda3/bin/python3",
+        "/home/blizhan/repo/github/duckomo/test/tools/remote_fixture_proxy_test.py"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "44.log",
+      "output_sha256": "82459e967fb7cc03276ea515e3404521583ed646ed78d095304b8d8b4ee92ccf",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/tools/remote_fixture_proxy_test.py",
+          "sha256": "0ed507dfeaa51b0af4cf46f0fed33df6969255d98ad750b8f2af934a077bbfc0"
+        }
+      ]
+    },
+    {
+      "id": "python:test/tools/version_matrix_test.py",
+      "argv": [
+        "/home/blizhan/miniconda3/bin/python3",
+        "/home/blizhan/repo/github/duckomo/test/tools/version_matrix_test.py"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "45.log",
+      "output_sha256": "c328cf2340c6e31baae76ff9da638fb106de2a70cc5953c6160ddfae6fbbd8a0",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/tools/version_matrix_test.py",
+          "sha256": "22adf1c74b0ec90fef3075810954457e2f31dbf157f96e64191fd8072a2fc0e6"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/axis_filter.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/axis_filter.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "46.log",
+      "output_sha256": "20b807abb865196b7897034f7255e70e04780fe381c60392004ad893ff411ad5",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/axis_filter.test",
+          "sha256": "543165d6ba168c81e714b2e75351ccc7fea04e17acd916a765e1ac7fef1cc6f0"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/cache_metrics.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/cache_metrics.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "47.log",
+      "output_sha256": "b586e5fa32ea4ceb007bffe3b06454116d5eac9eb882344595b12dc52100fb57",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/cache_metrics.test",
+          "sha256": "83201ccff7707060a9cfa12a427bc305991f56e2e41e4ee9a926264412ada47d"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/grid_info.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/grid_info.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "48.log",
+      "output_sha256": "b4de700ed6048c3cf13a5d3c37642665d7fa71850514d4ce68dc724c02ba8c7c",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/grid_info.test",
+          "sha256": "4720254cf7a642622bd971ecaa69b6094c806735236c3d74469702c846b9be41"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/grid_selection.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/grid_selection.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "49.log",
+      "output_sha256": "ebfac85a0de270b95d81663236df5f4779776919685301b4687b22db84c9b392",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/grid_selection.test",
+          "sha256": "bbab91ddb873acabe736f3f3881cf243f944dd96a452782f4efd12e2fa34148e"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/grid_version_compat.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/grid_version_compat.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "50.log",
+      "output_sha256": "2a384007d406bec474cdd1a8ef24f33364633c122d0810850363f17d71ae7eae",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/grid_version_compat.test",
+          "sha256": "060885dc35a0124e1b524e6f113cdd8de9e66e69b6bfecaa4518ac0563cda23e"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/grid_zero_io.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/grid_zero_io.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "51.log",
+      "output_sha256": "a1b485732ca53088a3a9dee295ed08af46df1534dd01fc69187e8e047b5bd4b0",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/grid_zero_io.test",
+          "sha256": "96cfc4953462d4c9f56df763d6d7d01875891d6f0f92c9123be013b65c4b3ac6"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/interface_usability.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/interface_usability.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "52.log",
+      "output_sha256": "9a61ec55fddfe61658a6181cba7396a61dbc47f3c80c2f5bfb53ead02bcfa020",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/interface_usability.test",
+          "sha256": "ab334751a533c4c3430036dc547040d7fbfc42181b67a26e09dd0f3e9cac047c"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/multi_grid.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/multi_grid.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "53.log",
+      "output_sha256": "3086bf99db2c0adfa8814b2ba9288e862503eef120e1dd09b703a67d515285f6",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/multi_grid.test",
+          "sha256": "28d7f81b9c1003daea2f6071c584f42e169ea2805150b10b9c55129388595dc9"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/parallel_scan.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/parallel_scan.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "54.log",
+      "output_sha256": "3922065fe3fef2dade07461dc43a3d516d7dca27342e3094e314c4cfc0287a1a",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/parallel_scan.test",
+          "sha256": "ea95f41f9e8fd25a9464bac6efa1fedad56d34764db43ea9e2a45504fc2f5667"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/projection.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/projection.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "55.log",
+      "output_sha256": "3e8610f0fbdd95bc39044bb827c9d426362af361c0001494c28dbc5641362cb1",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/projection.test",
+          "sha256": "443d1233de6d9fc8ee6be2782356edd6900a4a5fa60ca2105e34b526bb7989b0"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/raw.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/raw.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "56.log",
+      "output_sha256": "72f2c9614356c741a64ee338ecdcda07a58d36de492b835eaeeae416b9bdf845",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/raw.test",
+          "sha256": "f33275128450d1c0e2c5194238f0612a8d166f8dff975cbb689923cefeddf280"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/read_om.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/read_om.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "57.log",
+      "output_sha256": "5798fb0313c3736526ab2368e47391e2996749bc0400f143589dc92fc7e79776",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/read_om.test",
+          "sha256": "ff3f2f79d8b1eaac7206eea64b8ec6985118eb8a46a935f976108cdd3b6ed129"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/regions.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/regions.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "58.log",
+      "output_sha256": "105ceb709505386b3c2d3f07331648f6dd7c3ce3790bc8672ca69f8d68a99517",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/regions.test",
+          "sha256": "c012c9c9ef956bbdc168da0a2bb0f8e83d03dc0cbdc5be0b9be34132bb1d991d"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/regions_spatial_dependency.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/regions_spatial_dependency.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "59.log",
+      "output_sha256": "1331ce3bfae858b456e52ae4307b31650fc016becc04ab2e4279410055cee716",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/regions_spatial_dependency.test",
+          "sha256": "d54314d4f815e8a660dd0e4152e36825dc94ba69467ecf202fe08b2bb5762f0b"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/semantic_axes.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/semantic_axes.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "60.log",
+      "output_sha256": "5ec7de6f6eccdde826a0087fa57763da5238a74782b6cddd69bebca119f1f232",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/semantic_axes.test",
+          "sha256": "c73c25016453f51b0963d45fd44d85c9344a43b57d45a846b4d352900e9f7c6b"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/source_identity.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/source_identity.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "61.log",
+      "output_sha256": "67de09ab3a66a5853376c2fb72980a5c257e496925ce73ef256c4654136e9091",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/source_identity.test",
+          "sha256": "0c7ea101d72b9253f361e19df430546b0cc44ac068c723feeb8ee8e638ba4e16"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/spatial.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/spatial.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "62.log",
+      "output_sha256": "5afa51813f269748bb807f4c3eb4f4c2938a3b174324a6e54380a4a5b17b1d37",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/spatial.test",
+          "sha256": "4a25fc41edac060c05d67df7c9d44507338ad737aa88904601018f28cd824316"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/spatial_composition.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/spatial_composition.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "63.log",
+      "output_sha256": "cc9420f2f76e652e5f71ad2b60c5b6b35500ed283f060e8ea1e13a6bc1a6ce70",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/spatial_composition.test",
+          "sha256": "2b75856f2002c450fc5a24a44d82da0190fbdbe6a33a5a002064d68c51008d9c"
+        }
+      ]
+    },
+    {
+      "id": "sql:test/sql/spatial_pushdown.test",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "test/sql/spatial_pushdown.test"
+      ],
+      "exit_code": 0,
+      "environment": {
+        "DUCKOMO_BUILD": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release",
+        "DUCKOMO_OFFICIAL_DUCKDB": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/duckdb",
+        "DUCKOMO_EXTENSION_PATH": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_TEST_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/duckomo/duckomo.duckdb_extension",
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/extension/core_functions/core_functions.duckdb_extension"
+      },
+      "output_path": "64.log",
+      "output_sha256": "bf27b50f31e036b80271b95eb57d194ed697f7bac8acf543740a924d493d50fb",
+      "artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd/release/test/unittest",
+          "sha256": "869cdb32aadfd4b82f185a0ca571e0d5662e1e65b758affac36209d2ce3829a6"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/test/sql/spatial_pushdown.test",
+          "sha256": "a09ed25c72658cbbbb715b636c166bfd969c1fe7967f1ab5a32bfad6572ebf17"
+        }
+      ]
+    }
+  ],
+  "sanitizer_tests": [
+    {
+      "id": "duckomo_sanitizer_batch_test",
+      "status": "pass"
+    },
+    {
+      "id": "duckomo_sanitizer_raw_reader_test",
+      "status": "pass"
+    },
+    {
+      "id": "duckomo_sanitizer_schema_test",
+      "status": "pass"
+    },
+    {
+      "id": "duckomo_sanitizer_axis_selection_test",
+      "status": "pass"
+    },
+    {
+      "id": "duckomo_sanitizer_parallel_scan_test",
+      "status": "pass"
+    },
+    {
+      "id": "duckomo_sanitizer_scan_metrics_v3_test",
+      "status": "pass"
+    },
+    {
+      "id": "duckomo_sanitizer_session_metrics_test",
+      "status": "pass"
+    },
+    {
+      "id": "duckomo_sanitizer_grid_validation",
+      "status": "pass"
+    },
+    {
+      "id": "duckomo_sanitizer_lifecycle",
+      "status": "pass"
+    },
+    {
+      "id": "duckomo_sanitizer_spatial_selection",
+      "status": "pass"
+    },
+    {
+      "id": "duckomo_sanitizer_spatial_io_test",
+      "status": "pass"
+    },
+    {
+      "id": "duckomo_sanitizer_spatial_lifecycle_test",
+      "status": "pass"
+    },
+    {
+      "id": "duckomo_sanitizer_region_input_test",
+      "status": "pass"
+    },
+    {
+      "id": "duckomo_sanitizer_region_geometry_test",
+      "status": "pass"
+    },
+    {
+      "id": "duckomo_sanitizer_region_scan_test",
+      "status": "pass"
+    },
+    {
+      "id": "duckomo_sanitizer_projection_evidence",
+      "status": "pass"
+    }
+  ],
+  "sanitizer_results_path": "sanitizers.xml",
+  "sanitizer_results_sha256": "d24329c13b2fd6af8e56cd6cbb9e1ea77a3ba90d5dc4a0f5b20240e89486995b"
+}

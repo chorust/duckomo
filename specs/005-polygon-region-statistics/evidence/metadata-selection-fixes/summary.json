@@ -1,0 +1,315 @@
+{
+  "source_sha256": "e4730a700267447e983e7a5b82503d343ada66e84f886886bff6a75355e69c91",
+  "versions": [
+    {
+      "version": "v1.5.4",
+      "build_id": "2f10f119845898b38ffc59a6c181bf2012c2b06a17e0dd1df3a07810a02fef14",
+      "extension_sha256": "6934e6730b9405378fa6964caa2a521c4d16e123e7a5181d5913c93ab4c79f50",
+      "cases": [
+        {
+          "name": "local-full",
+          "elapsed_seconds": 0.3384835277684033,
+          "metadata": {
+            "bind_bytes": 47256,
+            "bind_requests": 638,
+            "scan_bytes": 15465,
+            "scan_requests": 9
+          },
+          "value_totals": {
+            "index_bytes": 8178,
+            "index_requests": 94,
+            "data_bytes": 131031,
+            "data_requests": 139,
+            "decoded_chunks": 139,
+            "decode_complete": true
+          },
+          "query_owned_complete": true,
+          "query_owned_released_at_terminal": true
+        },
+        {
+          "name": "local-selected",
+          "elapsed_seconds": 0.29648512601852417,
+          "metadata": {
+            "bind_bytes": 485770,
+            "bind_requests": 4,
+            "scan_bytes": 15465,
+            "scan_requests": 9
+          },
+          "value_totals": {
+            "index_bytes": 8178,
+            "index_requests": 94,
+            "data_bytes": 131031,
+            "data_requests": 139,
+            "decoded_chunks": 139,
+            "decode_complete": true
+          },
+          "query_owned_complete": true,
+          "query_owned_released_at_terminal": true
+        },
+        {
+          "name": "local-selected-strict",
+          "elapsed_seconds": 0.3441697019152343,
+          "metadata": {
+            "bind_bytes": 485770,
+            "bind_requests": 4,
+            "scan_bytes": 141768,
+            "scan_requests": 1914
+          },
+          "value_totals": {
+            "index_bytes": 8178,
+            "index_requests": 94,
+            "data_bytes": 131031,
+            "data_requests": 139,
+            "decoded_chunks": 139,
+            "decode_complete": true
+          },
+          "query_owned_complete": true,
+          "query_owned_released_at_terminal": true
+        }
+      ]
+    },
+    {
+      "version": "v1.5.5",
+      "build_id": "1a84594332f50ebbcd0394102995902f65426cccbc020450b84781043db38819",
+      "extension_sha256": "0a08f44f0df67db88d0125517e48637701392bc3688cbde5f3e09509c7a26454",
+      "cases": [
+        {
+          "name": "local-full",
+          "elapsed_seconds": 0.3585307509638369,
+          "metadata": {
+            "bind_bytes": 47256,
+            "bind_requests": 638,
+            "scan_bytes": 15465,
+            "scan_requests": 9
+          },
+          "value_totals": {
+            "index_bytes": 8178,
+            "index_requests": 94,
+            "data_bytes": 131031,
+            "data_requests": 139,
+            "decoded_chunks": 139,
+            "decode_complete": true
+          },
+          "query_owned_complete": true,
+          "query_owned_released_at_terminal": true
+        },
+        {
+          "name": "local-selected",
+          "elapsed_seconds": 0.32104492420330644,
+          "metadata": {
+            "bind_bytes": 485770,
+            "bind_requests": 4,
+            "scan_bytes": 15465,
+            "scan_requests": 9
+          },
+          "value_totals": {
+            "index_bytes": 8178,
+            "index_requests": 94,
+            "data_bytes": 131031,
+            "data_requests": 139,
+            "decoded_chunks": 139,
+            "decode_complete": true
+          },
+          "query_owned_complete": true,
+          "query_owned_released_at_terminal": true
+        },
+        {
+          "name": "local-selected-strict",
+          "elapsed_seconds": 0.3818944990634918,
+          "metadata": {
+            "bind_bytes": 485770,
+            "bind_requests": 4,
+            "scan_bytes": 141768,
+            "scan_requests": 1914
+          },
+          "value_totals": {
+            "index_bytes": 8178,
+            "index_requests": 94,
+            "data_bytes": 131031,
+            "data_requests": 139,
+            "decoded_chunks": 139,
+            "decode_complete": true
+          },
+          "query_owned_complete": true,
+          "query_owned_released_at_terminal": true
+        },
+        {
+          "name": "s3-selected",
+          "elapsed_seconds": 39.453954302705824,
+          "metadata": {
+            "bind_bytes": 485770,
+            "bind_requests": 4,
+            "scan_bytes": 15465,
+            "scan_requests": 9
+          },
+          "value_totals": {
+            "index_bytes": 8178,
+            "index_requests": 94,
+            "data_bytes": 131031,
+            "data_requests": 139,
+            "decoded_chunks": 139,
+            "decode_complete": true
+          },
+          "query_owned_complete": true,
+          "query_owned_released_at_terminal": true
+        },
+        {
+          "name": "s3-full",
+          "elapsed_seconds": 208.1551189837046,
+          "metadata": {
+            "bind_bytes": 47256,
+            "bind_requests": 638,
+            "scan_bytes": 15465,
+            "scan_requests": 9
+          },
+          "value_totals": {
+            "index_bytes": 8178,
+            "index_requests": 94,
+            "data_bytes": 131031,
+            "data_requests": 139,
+            "decoded_chunks": 139,
+            "decode_complete": true
+          },
+          "query_owned_complete": true,
+          "query_owned_released_at_terminal": true
+        }
+      ]
+    },
+    {
+      "version": "v1.5.6",
+      "build_id": "cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125",
+      "extension_sha256": "1b472cbdb1b9b5137dad059594bcc39ab0f7c8dcca425677691d4c62be50cd5e",
+      "cases": [
+        {
+          "name": "local-full",
+          "elapsed_seconds": 0.33323190500959754,
+          "metadata": {
+            "bind_bytes": 47256,
+            "bind_requests": 638,
+            "scan_bytes": 15465,
+            "scan_requests": 9
+          },
+          "value_totals": {
+            "index_bytes": 8178,
+            "index_requests": 94,
+            "data_bytes": 131031,
+            "data_requests": 139,
+            "decoded_chunks": 139,
+            "decode_complete": true
+          },
+          "query_owned_complete": true,
+          "query_owned_released_at_terminal": true
+        },
+        {
+          "name": "local-selected",
+          "elapsed_seconds": 0.3256556857377291,
+          "metadata": {
+            "bind_bytes": 485770,
+            "bind_requests": 4,
+            "scan_bytes": 15465,
+            "scan_requests": 9
+          },
+          "value_totals": {
+            "index_bytes": 8178,
+            "index_requests": 94,
+            "data_bytes": 131031,
+            "data_requests": 139,
+            "decoded_chunks": 139,
+            "decode_complete": true
+          },
+          "query_owned_complete": true,
+          "query_owned_released_at_terminal": true
+        },
+        {
+          "name": "local-selected-strict",
+          "elapsed_seconds": 0.3505899580195546,
+          "metadata": {
+            "bind_bytes": 485770,
+            "bind_requests": 4,
+            "scan_bytes": 141768,
+            "scan_requests": 1914
+          },
+          "value_totals": {
+            "index_bytes": 8178,
+            "index_requests": 94,
+            "data_bytes": 131031,
+            "data_requests": 139,
+            "decoded_chunks": 139,
+            "decode_complete": true
+          },
+          "query_owned_complete": true,
+          "query_owned_released_at_terminal": true
+        }
+      ]
+    }
+  ],
+  "v1.5.5_P0_P2": "pass",
+  "v1.5.5_P3_P4": "pass",
+  "original_runtime_repros": [
+    {
+      "version": "v1.5.4",
+      "case": "empty-root",
+      "build_id": "2f10f119845898b38ffc59a6c181bf2012c2b06a17e0dd1df3a07810a02fef14",
+      "fixture_sha256": "bfd77b8139f5421558d4ea9b40ae1cce2011dc6b35283c3f6074a3210fa82431",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Invalid Error: OM variable 'temperature_80m' was not found\n"
+    },
+    {
+      "version": "v1.5.4",
+      "case": "reordered",
+      "build_id": "2f10f119845898b38ffc59a6c181bf2012c2b06a17e0dd1df3a07810a02fef14",
+      "fixture_sha256": "e623b1271d0e6289cfcb2dd49ef6f2d827a114b3163bef12e3f15c69b20abf61",
+      "exit_code": 0,
+      "stdout": "[{\"count_star()\":1038240}]\n",
+      "stderr": ""
+    },
+    {
+      "version": "v1.5.4",
+      "case": "sparse",
+      "build_id": "2f10f119845898b38ffc59a6c181bf2012c2b06a17e0dd1df3a07810a02fef14",
+      "fixture_sha256": "6373fa06ab8933563a8a929350d5d92612ef745b84e6a4924af3ecc07f3834e5",
+      "exit_code": 0,
+      "stdout": "[{\"count_star()\":1038240}]\n",
+      "stderr": ""
+    },
+    {
+      "version": "v1.5.6",
+      "case": "empty-root",
+      "build_id": "cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125",
+      "fixture_sha256": "bfd77b8139f5421558d4ea9b40ae1cce2011dc6b35283c3f6074a3210fa82431",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Invalid Error: OM variable 'temperature_80m' was not found\n"
+    },
+    {
+      "version": "v1.5.6",
+      "case": "reordered",
+      "build_id": "cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125",
+      "fixture_sha256": "e623b1271d0e6289cfcb2dd49ef6f2d827a114b3163bef12e3f15c69b20abf61",
+      "exit_code": 0,
+      "stdout": "[{\"count_star()\":1038240}]\n",
+      "stderr": ""
+    },
+    {
+      "version": "v1.5.6",
+      "case": "sparse",
+      "build_id": "cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125",
+      "fixture_sha256": "6373fa06ab8933563a8a929350d5d92612ef745b84e6a4924af3ecc07f3834e5",
+      "exit_code": 0,
+      "stdout": "[{\"count_star()\":1038240}]\n",
+      "stderr": ""
+    }
+  ],
+  "v1.5.5_regressions": {
+    "status": "pass",
+    "manifest_sha256": "12f0052ccd2b93975397a3cacb3c8aa94367250d21957a8fcc49742b82b17518",
+    "commands_by_kind": {
+      "sanitizers": 1,
+      "native": 32,
+      "python": 12,
+      "sql": 19
+    },
+    "sanitizer_count": 16
+  }
+}

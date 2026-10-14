@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "scope": "three-version regressions and P0-P6; bounded remote windows only",
+  "source_sha256": "77b79d279b735731300342630de0ac52a3b87b3d107dd60a3c668a128c8248db",
+  "bulk_root": "build/evidence/regions/005-artifact-binding-77b79d279b73",
+  "p6_report_sha256": "0e124c84cb8dbeb6b7dea41f5dd4103c60accdd23f8996bafcd107cfaf6263a3",
+  "versions": {
+    "v1.5.4": {
+      "build_id": "abc08d813e3b65de88306b9834d96029ba2b35c964c3d287a84b52662f48896d",
+      "build_manifest_sha256": "36a4beef348394b2b676ee255f4de60abf8f97dd8529b832f39ec0591a26be4c",
+      "duckomo_sha256": "171759d6a02e1e1924e2a68beaefeac03da208af066f6868bddc4d5163d59148",
+      "regression_commands": 64,
+      "sql_files": 19,
+      "native_tests": 32,
+      "python_suites": 12,
+      "python_cases": 97,
+      "sanitizer_tests": 16,
+      "regression_manifest_sha256": "d6a5cecf3466a2d4bf6eee992000cdaf40e4e354ba6215fff82d6f812824af24",
+      "p0_p4_manifest_sha256": "05f41d85f8ad34b5af42500ae8dbbb0ab8457b495f173f71ffd053be3258e3cc",
+      "p5_manifest_sha256": "4cd1c197c1c0645c3cf3a414803455b780df98b00b9cc769f62e77b69a7f6ac1",
+      "p3_ratios": {
+        "owned_work_peak": 1.000004,
+        "isolated_process_peak_rss": 0.985469
+      },
+      "p4_resources": {
+        "point_count_ratio": 16.0,
+        "owned_work_peak_ratio": 1.000004,
+        "isolated_process_peak_rss_ratio": 0.985472,
+        "owned_complete": true,
+        "exact_complete": true
+      }
+    },
+    "v1.5.5": {
+      "build_id": "8dbd4e0bfd5763f7b073893b403883ce13daf7d2b17f687b3a5783f75ef762cd",
+      "build_manifest_sha256": "ddcbe6f4e35aea33b7d23877f93eded64fe695e4adc69b3dd3e34add748f939c",
+      "duckomo_sha256": "0f5128a54c9776aeffd6230abb9482873f44e8e9b6f9a2bb91eb860c625dc47b",
+      "regression_commands": 64,
+      "sql_files": 19,
+      "native_tests": 32,
+      "python_suites": 12,
+      "python_cases": 97,
+      "sanitizer_tests": 16,
+      "regression_manifest_sha256": "476734dd56ae79c2c9417ea18e6827e68f549b3491da819ab2b56e13d1f23c80",
+      "p0_p4_manifest_sha256": "214dcae3ac8370360b6a749ff60991a7eba2763325034b80639d521208e4aa4a",
+      "p5_manifest_sha256": "f3dbc34b2d48934b6d20905b3d6ff28e81484c332bac44884a87a0fb816b5e36",
+      "p3_ratios": {
+        "owned_work_peak": 1.000004,
+        "isolated_process_peak_rss": 0.986307
+      },
+      "p4_resources": {
+        "point_count_ratio": 16.0,
+        "owned_work_peak_ratio": 1.000004,
+        "isolated_process_peak_rss_ratio": 0.990968,
+        "owned_complete": true,
+        "exact_complete": true
+      }
+    },
+    "v1.5.6": {
+      "build_id": "828b20ce97c7a0ad073f03034a851288cf4b25998ae75f1aadae18044def9478",
+      "build_manifest_sha256": "19a33eda69e9f00411106ef2de290d3a949735bde3424df0b376d9504b84a08b",
+      "duckomo_sha256": "12b18ac59a1c6eaedc047821f55b889beb046893c590760b752f72ddbdaa8348",
+      "regression_commands": 64,
+      "sql_files": 19,
+      "native_tests": 32,
+      "python_suites": 12,
+      "python_cases": 97,
+      "sanitizer_tests": 16,
+      "regression_manifest_sha256": "e8d2062baaf1fb7a10caa306a00bd78877bc4c136255777768584cd827d77642",
+      "p0_p4_manifest_sha256": "068f4f1bbf64ba9d2a1a87f72142533167a3e1eac677e881d9382ac3ce59fba6",
+      "p5_manifest_sha256": "e6a560f24799321c3e9ed5c1d62bdfb8048cd761f65da8e58dfb857224fa140b",
+      "p3_ratios": {
+        "owned_work_peak": 1.000004,
+        "isolated_process_peak_rss": 0.995756
+      },
+      "p4_resources": {
+        "point_count_ratio": 16.0,
+        "owned_work_peak_ratio": 1.000004,
+        "isolated_process_peak_rss_ratio": 0.986104,
+        "owned_complete": true,
+        "exact_complete": true
+      }
+    }
+  },
+  "p7_report_sha256": "50feb8f26ba7ae388d9c3ce1a662e0d1f4d207bcda98a74da9a1cc74d890ec76",
+  "p7_scope": "independent fresh-context AI; v1.5.4 synthetic and fixed-window HTTPS"
+}

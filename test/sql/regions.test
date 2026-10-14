@@ -96,6 +96,23 @@ SELECT count(*) FROM read_om_regions(
 ----
 54
 
+# Selecting the root array preserves region results under full revalidation.
+statement ok
+SET duckomo_revalidate_metadata = true;
+
+query I
+SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om', variable := 'value',
+    regions := [{'wkb':ST_AsWKB(ST_GeomFromText('POLYGON((100 20,102 20,102 22,100 22,100 20))')),
+                 'id':'Selected'}], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));
+----
+54
+
+statement ok
+SET duckomo_revalidate_metadata = false;
+
 # Domain-backed region binding uses the registered axis/layout without an explicit grid.
 query I
 SELECT count(*) FROM read_om_regions(

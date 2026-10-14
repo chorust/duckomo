@@ -13,6 +13,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 
 ROOT = Path(__file__).resolve().parents[2]
+BUILD = ROOT / os.environ.get("DUCKOMO_BUILD", "build/release")
 SPEC = importlib.util.spec_from_file_location(
     "httpfs_performance", ROOT / "scripts/compare-official-httpfs-performance.py"
 )
@@ -91,12 +92,14 @@ class OfficialHttpfsValidationTest(unittest.TestCase):
                 official_httpfs.p5_remote_config(args)
 
     def test_validate_sh_rejects_blocked_identity_when_package_hash_matches(self):
-        cli = ROOT / "build/release/duckdb"
-        spatial = ROOT / "build/regions-runtime/v1.5.4/official/spatial.duckdb_extension"
+        cli = BUILD / "duckdb"
+        spatial = Path(os.environ.get("DUCKOMO_SPATIAL_EXTENSION",
+                                     ROOT / "build/regions-runtime/v1.5.4/official/spatial.duckdb_extension"))
         if not cli.is_file() or not spatial.is_file():
-            self.skipTest("local v1.5.4 runtime is unavailable")
+            self.skipTest("local runtime is unavailable")
         matrix = json.loads((ROOT / "test/data/regions/runtime-matrix.json").read_text())
-        record = next(item for item in matrix["runtimes"] if item.get("version") == "v1.5.4")
+        version = subprocess.check_output([str(cli), "--version"], text=True).split()[0]
+        record = next(item for item in matrix["runtimes"] if item.get("version") == version)
         record["gate_status"] = "blocked_identity_mismatch"
         record["source_identity_match"] = False
         record["spatial_artifact"]["sha256"] = official_httpfs.sha(spatial)
@@ -106,7 +109,7 @@ class OfficialHttpfsValidationTest(unittest.TestCase):
             env = os.environ.copy()
             env["DUCKOMO_REGION_RUNTIME_MATRIX"] = str(matrix_path)
             result = subprocess.run(
-                [str(ROOT / "scripts/validate.sh"), str(ROOT / "build/release"), "--local-only",
+                [str(ROOT / "scripts/validate.sh"), str(BUILD), "--local-only",
                  "--regions", "--spatial", str(spatial)],
                 cwd=ROOT, env=env, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                 check=False,
@@ -115,14 +118,16 @@ class OfficialHttpfsValidationTest(unittest.TestCase):
         self.assertIn("No verified spatial runtime record", result.stdout)
 
     def test_region_validator_rejects_blocked_identity_when_package_hash_matches(self):
-        validator = ROOT / "build/release/test/tools/duckomo_region_validation"
-        cli = ROOT / "build/release/duckdb"
-        extension = ROOT / "build/release/extension/duckomo/duckomo.duckdb_extension"
-        spatial = ROOT / "build/regions-runtime/v1.5.4/official/spatial.duckdb_extension"
+        validator = BUILD / "test/tools/duckomo_region_validation"
+        cli = BUILD / "duckdb"
+        extension = BUILD / "extension/duckomo/duckomo.duckdb_extension"
+        spatial = Path(os.environ.get("DUCKOMO_SPATIAL_EXTENSION",
+                                     ROOT / "build/regions-runtime/v1.5.4/official/spatial.duckdb_extension"))
         if not all(path.is_file() for path in (validator, cli, extension, spatial)):
             self.skipTest("local region validator artifacts are unavailable")
         matrix = json.loads((ROOT / "test/data/regions/runtime-matrix.json").read_text())
-        record = next(item for item in matrix["runtimes"] if item.get("version") == "v1.5.4")
+        version = subprocess.check_output([str(cli), "--version"], text=True).split()[0]
+        record = next(item for item in matrix["runtimes"] if item.get("version") == version)
         record["gate_status"] = "blocked_identity_mismatch"
         record["source_identity_match"] = False
         record["spatial_artifact"]["sha256"] = official_httpfs.sha(spatial)

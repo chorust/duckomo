@@ -8,6 +8,7 @@
 #include "duckomo/reader.hpp"
 #include "duckomo/schema.hpp"
 #include "duckomo_extension.hpp"
+#include "core_functions_extension.hpp"
 
 #include <algorithm>
 #include <cstddef>
@@ -30,15 +31,18 @@ extern "C" {
 }
 
 namespace duckdb {
+#if DUCKOMO_DUCKDB_API_GENERATION < 2
 void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
 	database.LoadStaticExtension<DuckomoExtension>();
 }
+#endif
 } // namespace duckdb
 
 namespace {
 
 namespace fs = std::filesystem;
 using duckdb::duckomo::BoundSchema;
+using duckdb::duckomo::BoundVariable;
 using duckdb::duckomo::BuildBoundSchema;
 using duckdb::duckomo::EncodeMetadataName;
 using duckdb::duckomo::LocalFile;
@@ -228,6 +232,139 @@ void TestFixtureTraversal(duckdb::ClientContext &context, const fs::path &fixtur
 	        "matching coordinates metadata must provide ordered axes");
 	Require(ValidateAxisDeclarations(nullptr, pfor).size() == 2,
 	        "matching coordinates metadata must allow implicit dimension alignment");
+}
+
+void TestSelectedMetadata(duckdb::Connection &connection, const fs::path &fixtures,
+                          const TemporaryDirectory &temporary) {
+	using duckdb::duckomo::ReadNamedMetadataTree;
+	auto read_selected = [&](const fs::path &path, const std::string &name) {
+		OmV3Reader reader(LocalFile::Open(*connection.context, path.string()));
+		return BuildBoundSchema(ReadNamedMetadataTree(reader, name));
+	};
+	for (const auto &name : {"layer_a/value", "weird%2Fname%25/value"}) {
+		const auto schema = read_selected(fixtures / "nested.om", name);
+		Require(schema.variables.size() == 1 && schema.variables[0].column_name == name,
+		        "selected nested canonical name must retain its column identity");
+		auto result = connection.Query("SELECT avg(\"" + std::string(name) + "\") FROM read_om(" +
+		                               SqlLiteral(fixtures / "nested.om") + ", dimensions := ['row','column'])");
+		Require(result && !result->HasError(), "ordinary nested single-column projection regressed: " +
+		        (result && result->HasError() ? result->GetError() : "no result"));
+	}
+	for (const auto *mode : {"false", "true"}) {
+		connection.Query(std::string("SET duckomo_revalidate_metadata=") + mode);
+		auto result = connection.Query("SELECT avg(temperature) FROM read_om(" + SqlLiteral(fixtures / "multi.om") +
+		                               ", variable := 'temperature', dimensions := ['row','column'])");
+		Require(result && !result->HasError() && result->GetValue(0, 0).GetValue<double>() == 2.5,
+		        "selected variable must work in default and strict modes");
+	}
+	connection.Query("SET duckomo_revalidate_metadata=false");
+	RequireReaderError(ReaderErrorCode::InvalidMetadata,
+	                   [&] { read_selected(fixtures / "multi.om", "missing"); }, "missing selected variable");
+	const auto full_metrics = std::make_shared<duckdb::duckomo::ScanMetrics>();
+	const auto selected_metrics = std::make_shared<duckdb::duckomo::ScanMetrics>();
+	{
+		OmV3Reader reader(LocalFile::Open(*connection.context, (fixtures / "multi.om").string(), full_metrics));
+		(void)ReadMetadataTree(reader);
+	}
+	{
+		OmV3Reader reader(LocalFile::Open(*connection.context, (fixtures / "multi.om").string(), selected_metrics));
+		(void)ReadNamedMetadataTree(reader, "temperature");
+	}
+	Require(selected_metrics->Snapshot().metadata_requests < full_metrics->Snapshot().metadata_requests,
+	        "compact selection must reduce actual positional metadata reads");
+	const auto original = ReadFixtureBytes(fixtures / "multi.om");
+	const auto children = RootChildren(original);
+	{
+		auto named_time = original;
+		const auto offset = FindNamedChild(named_time, "humidity");
+		auto *header = reinterpret_cast<OmVariableArrayV3_t *>(named_time.bytes.data() + offset);
+		std::uint16_t length = 0;
+		const auto *name = om_variable_get_name(om_variable_init(header), &length);
+		const auto position = reinterpret_cast<const std::uint8_t *>(name) - named_time.bytes.data();
+		header->name_size = 4;
+		std::memcpy(named_time.bytes.data() + position, "time", 4);
+		const auto path = temporary.File("unselected_time_value.om");
+		WriteFixture(path, named_time);
+		Require(read_selected(path, "temperature").variables.size() == 1,
+		        "an unrelated Float32 value named time must not become a shared time coordinate");
+	}
+	// Place shared coordinates before more than six unrelated siblings.
+	{
+		auto reordered = original;
+		reordered.bytes.resize(reordered.bytes.size() - om_trailer_size());
+		std::vector<std::uint64_t> offsets, sizes;
+		for (int i = 0; i < 8; ++i) {
+			const std::string name = i == 0 ? "coordinates" : "unused_" + std::to_string(i);
+			const std::string value = "row column";
+			const auto size = om_variable_write_scalar_size(name.size(), 0, DATA_TYPE_STRING, value.size());
+			const auto offset = reordered.bytes.size();
+			reordered.bytes.resize(offset + size);
+			om_variable_write_scalar(reordered.bytes.data() + offset, name.size(), 0, nullptr, nullptr,
+			                         name.data(), DATA_TYPE_STRING, value.data(), value.size());
+			offsets.push_back(offset);
+			sizes.push_back(size);
+		}
+		for (const auto &child : children) { offsets.push_back(child.offset); sizes.push_back(child.size); }
+		const auto offset = reordered.bytes.size();
+		const auto size = om_variable_write_scalar_size(0, offsets.size(), DATA_TYPE_NONE, 0);
+		reordered.bytes.resize(offset + size + om_trailer_size());
+		om_variable_write_scalar(reordered.bytes.data() + offset, 0, offsets.size(), offsets.data(), sizes.data(),
+		                         nullptr, DATA_TYPE_NONE, nullptr, 0);
+		om_trailer_write(reordered.bytes.data() + offset + size, offset, size);
+		const auto path = temporary.File("shared_coordinates_first.om");
+		WriteFixture(path, reordered);
+		const auto selected = read_selected(path, "temperature");
+		Require(selected.variables[0].inferred_axes == std::vector<std::string>({"row", "column"}),
+		        "shared coordinates must be discovered before any number of value/scalar siblings");
+	}
+	for (bool sparse : {false, true}) {
+		auto mutated = original;
+		if (sparse) {
+			// Relocate one node while retaining every referenced byte and payload.
+			mutated.bytes.resize(mutated.bytes.size() - om_trailer_size() + 2 * 1024 * 1024);
+			const auto offset = static_cast<std::uint64_t>(mutated.bytes.size());
+			mutated.bytes.insert(mutated.bytes.end(), original.bytes.begin() + children[0].offset,
+			                     original.bytes.begin() + children[0].offset + children[0].size);
+			const auto root_offset = mutated.bytes.size();
+			mutated.bytes.insert(mutated.bytes.end(), original.bytes.begin() + original.root_offset,
+			                     original.bytes.begin() + original.root_offset + original.root_size);
+			std::memcpy(mutated.bytes.data() + root_offset + sizeof(OmVariableV3_t) + children.size() * sizeof(std::uint64_t),
+			            &offset, sizeof(offset));
+			mutated.bytes.resize(mutated.bytes.size() + om_trailer_size());
+			om_trailer_write(mutated.bytes.data() + mutated.bytes.size() - om_trailer_size(), root_offset, original.root_size);
+		} else {
+			// Reverse child directory order, including shared scalar metadata.
+			for (std::size_t i = 0; i < children.size(); ++i) {
+				const auto &child = children[children.size() - i - 1];
+				std::memcpy(mutated.bytes.data() + original.root_offset + sizeof(OmVariableV3_t) + i * sizeof(std::uint64_t),
+				            &child.size, sizeof(child.size));
+				std::memcpy(mutated.bytes.data() + original.root_offset + sizeof(OmVariableV3_t) +
+				            (children.size() + i) * sizeof(std::uint64_t), &child.offset, sizeof(child.offset));
+			}
+		}
+		const auto path = temporary.File(sparse ? "selected_sparse.om" : "selected_reordered.om");
+		WriteFixture(path, mutated);
+		const auto selected = read_selected(path, "temperature");
+		const auto full = ReadSchema(*connection.context, path);
+		const auto expected = std::find_if(full.variables.begin(), full.variables.end(), [](const BoundVariable &v) {
+			return v.column_name == "temperature";
+		});
+		Require(expected != full.variables.end() && selected.variables[0].shape == expected->shape &&
+		        selected.variables[0].inferred_axes == expected->inferred_axes && selected.variables[0].time == expected->time,
+		        "selected metadata must be independent of directory order and physical gaps");
+	}
+	// An empty v3 root is invalid input, but must never crash the process.
+	auto empty = original;
+	empty.root_offset = om_header_write_size();
+	empty.root_size = om_variable_write_scalar_size(0, 0, DATA_TYPE_NONE, 0);
+	empty.bytes.resize(empty.root_offset + empty.root_size + om_trailer_size());
+	om_variable_write_scalar(empty.bytes.data() + empty.root_offset, 0, 0, nullptr, nullptr, nullptr,
+	                         DATA_TYPE_NONE, nullptr, 0);
+	om_trailer_write(empty.bytes.data() + empty.bytes.size() - om_trailer_size(), empty.root_offset, empty.root_size);
+	const auto empty_path = temporary.File("selected_empty.om");
+	WriteFixture(empty_path, empty);
+	RequireReaderError(ReaderErrorCode::InvalidMetadata, [&] { read_selected(empty_path, "temperature"); },
+	                   "empty directory must report missing variable");
 }
 
 void TestInvalidArrayAttributeReference(duckdb::ClientContext &context, const fs::path &pfor_path,
@@ -434,10 +571,15 @@ int main() {
 	try {
 		const fs::path fixture_directory("test/data");
 		duckdb::DuckDB database(nullptr);
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+		database.LoadStaticExtension<DuckomoExtension>();
+#endif
+		database.LoadStaticExtension<duckdb::CoreFunctionsExtension>();
 		duckdb::Connection connection(database);
 		TemporaryDirectory temporary;
 
 		TestFixtureTraversal(*connection.context, fixture_directory);
+		TestSelectedMetadata(connection, fixture_directory, temporary);
 		TestInvalidArrayAttributeReference(*connection.context, fixture_directory / "pfor_attributes.om", temporary);
 		TestInvalidNames(*connection.context, fixture_directory / "nested.om", temporary);
 		TestIdentifierCollisionsAndShapeBounds();

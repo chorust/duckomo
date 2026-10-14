@@ -28,14 +28,19 @@ constexpr const char *EXTENSION_PATH = "./build/release/extension/duckomo/duckom
 constexpr const char *RAW_FIXTURE = "test/data/raw.om";
 constexpr const char *RAW_LARGE_FIXTURE = "test/data/raw_large.om";
 
+const char *ConfiguredExtensionPath() {
+	const auto *override_path = std::getenv("DUCKOMO_EXTENSION_PATH");
+	return override_path && override_path[0] != '\0' ? override_path : EXTENSION_PATH;
+}
+
 // Override DuckDB's generated loader hook so this native test loads the same
 // quickstart extension artifact without pulling unrelated built-in extension
 // archives into its link.
 namespace duckdb {
 void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
-	const auto *extension_override = std::getenv("DUCKOMO_EXTENSION_PATH");
-	const auto *extension_path = extension_override && extension_override[0] != '\0' ? extension_override : EXTENSION_PATH;
+	const auto *extension_path = ConfiguredExtensionPath();
 	ExtensionHelper::LoadExternalExtension(*database.instance, database.GetFileSystem(), extension_path);
+	std::cout << "lifecycle loaded DuckOMO: " << std::filesystem::canonical(extension_path).string() << '\n';
 }
 } // namespace duckdb
 
@@ -182,7 +187,7 @@ private:
 };
 
 void LoadExtension(Connection &connection) {
-	RequireNoQueryError(connection, "LOAD " + SqlLiteral(EXTENSION_PATH), "load quickstart extension");
+	RequireNoQueryError(connection, "LOAD " + SqlLiteral(ConfiguredExtensionPath()), "load quickstart extension");
 }
 
 void TestScanFailureRecovery(Connection &connection, const TemporaryPartialFixture &partial_fixture) {

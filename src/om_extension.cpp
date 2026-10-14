@@ -27,6 +27,9 @@ void DuckomoExtension::Load(ExtensionLoader &loader) {
 	auto &config = DBConfig::GetConfig(loader.GetDatabaseInstance());
 	config.AddExtensionOption("duckomo_max_threads", "Maximum workers used by read_om (0 uses DuckDB's thread limit)",
 	                          LogicalType::BIGINT, Value::BIGINT(0), SetDuckomoMaxThreads);
+	config.AddExtensionOption("duckomo_revalidate_metadata",
+	                          "Re-read every OM variable before scanning (slower; detects metadata changes after bind)",
+	                          LogicalType::BOOLEAN, Value::BOOLEAN(false));
 
 }
 

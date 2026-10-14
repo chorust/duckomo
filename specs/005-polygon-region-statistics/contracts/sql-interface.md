@@ -1,6 +1,6 @@
 # SQL Contract: read_om_regions
 
-状态：计划中的接口，尚未实现。继承当前 `read_om` 的 OM/轴/值/授权语义，不继承被官方 HTTPFS 修订替代的旧缓存接口。
+状态：当前工作树已实现的开发版接口，验收证据按各记录的源码与产物身份限定。继承当前 `read_om` 的 OM/轴/值/授权语义，不继承被官方 HTTPFS 修订替代的旧缓存接口。
 
 ## 入口
 
@@ -10,10 +10,11 @@ read_om_regions(
   regions := STRUCT(id VARCHAR, wkb BLOB)[],
   region_crs := 'grid_lonlat',
   dimensions := NULL, grid := NULL, spatial_axes := NULL, domain := NULL,
-  valid_times := NULL, axes := NULL, include_source := false
+  valid_times := NULL, axes := NULL, include_source := false, variable := <省略>
 )
 ```
 
+- `variable` 省略时绑定全部值数组；显式非空 VARCHAR 按编码 SQL 列名或前导 `/` 的规范路径选择一个值数组，名称区分大小写。根数组接受 `value` 或 `/`；NULL、空串、不存在或非值节点拒绝。`dimensions` MAP 只覆盖所选数组。`read_om` 和 `om_grid_info` 提供相同选择语义。嵌套名称中的 `/`、`%` 字节分别编码为 `%2F`、`%25`。
 - 单个本地、HTTP(S) 或 S3 对象。`regions`、`region_crs` 必填且非 NULL，无隐式默认 CRS。
 - 所有参数绑定时确定；支持常量表达式、`getvariable` 快照，不支持相关参数、直接传关系/表名/SQL 字符串、扫描过程中变化的区域输入。
 - `regions` 注册为 ANY 后按实际值严格检查：LIST 的 STRUCT 元素恰含 `id VARCHAR`、`wkb BLOB`，字段名大小写精确，字段顺序无关；未知/重复字段、NULL 元素或字段拒绝，不隐式转 ID 类型、不把 WKT 字符串当 WKB。
@@ -72,4 +73,4 @@ SET VARIABLE region_input = (
 | `[region_input_limit]` | 区域/顶点/WKB 或拥有容量超预算 | 明确拒绝并给上限 |
 | 既有 OM/远程错误 | schema/对象/权限/短读/版本变化/解码 | 沿用现有类别，查询失败或取消；已有流式批次不代表成功完整结果 |
 
-验证全部区域、依赖、原有参数及 OM 绑定后，空集合可以零值 I/O 结束；不保证零元数据/远程请求。请求已绑定后的精确判断和解码异常进入现有 QueryEnd 终态。普通 `read_om`、`read_om_raw`、`om_grid_info` 既有接口不变。
+验证全部区域、依赖、原有参数及 OM 绑定后，空集合可以零值 I/O 结束；不保证零元数据/远程请求。请求已绑定后的精确判断和解码异常进入现有 QueryEnd 终态。扫描默认复用绑定元数据；连接设置 `duckomo_revalidate_metadata=true` 启用全树重读并比较绑定视图，显式选择不会与全变量 schema 错误比较。读取期间对象须稳定。`read_om_raw` 不接受 `variable`，其根数组接口保持不变。

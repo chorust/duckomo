@@ -1,6 +1,6 @@
 # Quickstart validation: 多区域读取与分时统计
 
-**状态：2026-10-14，review修复后的三版本本地P0–P4、完整回归/domain参考及每版16项sanitizer通过，见 [当前验证记录](evidence/review-fixes-20261014.md)。2026-10-13固定局部窗口P5/P6与独立fresh-context AI P7通过记录属于旧产物；本轮未重跑，不宣称当前产物远程/独立验收已刷新。全域远程收益未验证，P7不是人工验收。**
+**历史验收：2026-10-14，源码快照 `77b79d279b73…` 的三版本回归/domain参考、每版16项sanitizer、P0–P6及 v1.5.4 的独立 AI P7通过，见 [历史验证记录](evidence/artifact-binding-77b79d279b73.md)。变量选择与元数据修复的三个新构建、v1.5.5 回归/16项 sanitizer/P0–P4及真实 S3 同查询对照见 [元数据修复验证](evidence/metadata-selection-fixes.md)；历史结果不证明当前源码通过。P5/P7限冻结局部窗口，P7不是人工验收。**
 
 ## 1. 准备匹配构建与输入
 
@@ -16,6 +16,8 @@ scripts/validate.sh --matrix test/data/grids/version-matrix.json \
 ```
 
 按生成的 build manifest 选择 CLI/扩展路径，CLI 与扩展必须匹配版本。若复用本轮产物，读取 `build/official-matrix/<version>/build-manifest.json` 的 `release_dir` 和 `artifact_hashes`，并核对磁盘 hash；官方 CLI、HTTPFS 和 spatial 身份分别来自 `test/data/regions/runtime-matrix.json`。下文 SQL 的 DuckOMO 加载路径须替换为该 `release_dir/extension/duckomo/duckomo.duckdb_extension`。
+
+三个 metadata 入口 `read_om`、`read_om_regions`、`om_grid_info` 支持 `variable := '编码后的列名'`；省略则绑定全部数组，选择时 dimensions MAP 只覆盖所选数组。默认复用绑定元数据，`SET duckomo_revalidate_metadata=true` 启用全树重读检查。青海与 Nino 的可复现真实对象示例见 [README Usage](../../README.md)。
 
 区域入口要求调用者显式加载匹配版本 spatial；运行时不自动联网安装。合成 fixture、独立 membership/统计参考及 manifest 已在 `test/data/regions/`，缺 fixture 或 spatial 时停止，不替换为任意文件。
 
@@ -173,7 +175,19 @@ DUCKOMO_REGION_EVIDENCE_DIR="$PWD/build/evidence/regions/005/v1.5.4/P5" \
     --local-only --regions --region-gates P5
 ```
 
-对三个版本分别完成 P0–P4 和 P5 后，使用任一已构建版本的 validator 汇总，不复用历史或不同输入的 gate：
+每个版本先记录本地完整回归（`--domain-file` 和 `--domain-reference` 使用该版本 P0–P4 的冻结输入；输出必须为空且与构建清单所在目录树分离）：
+
+```bash
+python3 scripts/record-region-regressions.py \
+  --build-manifest build/official-matrix/v1.5.4/build-manifest.json \
+  --spatial build/regions-runtime/v1.5.4/official/spatial.duckdb_extension \
+  --domain-file "$DUCKOMO_DOMAIN_FILE" --domain-reference "$DUCKOMO_DOMAIN_REFERENCE" \
+  --output build/evidence/regions/005/v1.5.4/regressions
+```
+
+记录器为普通回归绑定该版本的 CLI、DuckOMO 和 fixture tool，为 sanitizer 绑定隔离扩展；逐命令保存环境路径与依赖 hash。生命周期 sanitizer 的 JUnit 输出必须标识实际加载的隔离扩展，否则 P6 拒绝通过。旧记录缺少这些身份字段时需要重新生成。
+
+对三个版本分别完成 P0–P4、完整回归和 P5 后，使用任一已构建版本的 validator 汇总，不复用历史或不同输入的 gate：
 
 ```bash
 # 输出目录必须与证据输入树分离，且为空。
@@ -184,7 +198,7 @@ build/official-matrix/v1.5.4/release/test/tools/duckomo_region_validation \
   --output build/evidence/regions/005-P6-audit --gates P6 --root "$PWD"
 ```
 
-P6 会重算三版本运行包、冻结输入、命令输出和 P5 原始服务日志的 SHA-256；缺少任一版本、gate 或来源时保持 `not-run`/失败。大型 P5 报告设有64 MiB审计上限；服务请求逐行日志单独保存并用摘要 hash 核验，不把事件全文复制进汇总。
+P6 会重算三版本运行包、冻结输入、命令输出和 P5 原始服务日志的 SHA-256；缺少任一版本、gate 或来源时保持 `not-run`/失败。每个版本还必须在 `<version>/regressions/manifest.json` 中记录完整 SQL/native/Python 回归和 16 项 sanitizer 执行结果；P0–P4、回归和 P5 必须使用同一份当前源码对应的 DuckOMO 产物。缺少该记录时保持 `not-run`。大型 P5 报告设有64 MiB审计上限；服务请求逐行日志单独保存并用摘要 hash 核验，不把事件全文复制进汇总。
 
 远程收益必须使用同一冻结对象、基准窗口和区域、相同投影及冷缓存条件完整消费结果；确认窗口基准/区域与 local/HTTP/HTTPS/S3 结果逐行一致，HTTP/S3 的 value bytes、decoded blocks 与服务发送量相对窗口基准严格下降。不执行全域远程扫描，不据此宣称全域吞吐或全域收益已验证。remote transport 为 NULL/false 正常，不能当作零字节证据。报告中应注明 S3 服务身份是否经过独立校验。
 

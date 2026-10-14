@@ -272,8 +272,13 @@ void Traverse(const OmV3Reader &reader, std::uint64_t offset, std::uint64_t size
 	    static_cast<std::uint64_t>(std::numeric_limits<std::size_t>::max() / sizeof(std::uint64_t))) {
 		throw ReaderError(ReaderErrorCode::Allocation, "OM child reference count exceeds addressable memory");
 	}
+	ScanMemoryAccount child_account(reader.File().Metrics(), ScanMemoryComponent::Definitions);
+	child_account.Set(0, 2 * sizeof(std::vector<std::uint64_t>) +
+	                    static_cast<std::uint64_t>(children_count) * 2 * sizeof(std::uint64_t));
 	std::vector<std::uint64_t> child_offsets(children_count);
 	std::vector<std::uint64_t> child_sizes(children_count);
+	child_account.Set(sizeof(child_offsets) + sizeof(child_sizes) +
+	                  (child_offsets.capacity() + child_sizes.capacity()) * sizeof(std::uint64_t));
 	if (!om_variable_get_children(variable, 0, children_count, child_offsets.data(), child_sizes.data())) {
 		throw ReaderError(ReaderErrorCode::InvalidMetadata,
 		                  "official OM API could not enumerate child metadata at '" +
@@ -287,32 +292,34 @@ void Traverse(const OmV3Reader &reader, std::uint64_t offset, std::uint64_t size
 
 } // namespace
 
-std::string EncodeMetadataName(const std::string &name) {
-	if (name.empty() || !IsValidUtf8Name(name)) {
-		throw ReaderError(ReaderErrorCode::InvalidMetadata,
-		                  "OM metadata path segments must be nonempty, non-NUL UTF-8 strings");
+namespace {
+
+struct ChildEntry final {
+	std::uint64_t offset = 0;
+	std::uint64_t size = 0;
+};
+
+std::vector<ChildEntry> ChildDirectory(const OmVariable_t *variable, const std::string &path) {
+	const auto children_count = om_variable_get_children_count(variable);
+	if (children_count == 0) return {};
+	std::vector<std::uint64_t> offsets(children_count), sizes(children_count);
+	if (!om_variable_get_children(variable, 0, children_count, offsets.data(), sizes.data())) {
+		throw ReaderError(ReaderErrorCode::InvalidMetadata, "cannot enumerate OM child metadata at '" + path + "'");
 	}
-	std::string result;
-	result.reserve(name.size());
-	for (const auto character : name) {
-		if (character == '%') {
-			result += "%25";
-		} else if (character == '/') {
-			result += "%2F";
-		} else {
-			result += character;
+	std::vector<ChildEntry> result;
+	result.reserve(children_count);
+	for (std::uint32_t index = 0; index < children_count; index++) {
+		if (sizes[index] > std::numeric_limits<std::uint64_t>::max() - offsets[index]) {
+			throw ReaderError(ReaderErrorCode::InvalidMetadata, "OM child metadata range overflows at '" + path + "'");
 		}
+		result.push_back({offsets[index], sizes[index]});
 	}
 	return result;
 }
 
-OmMetadataTree ReadMetadataTree(const OmV3Reader &reader) {
-	OmMetadataTree result;
-	std::unordered_set<std::uint64_t> active_offsets;
-	std::unordered_map<std::string, std::vector<std::string>> coordinates_by_path;
-	std::unordered_map<std::string, OmTimeCoordinate> time_by_path;
-	Traverse(reader, reader.RootOffset(), reader.RootSize(), "", true, false, active_offsets, coordinates_by_path,
-	         time_by_path, result);
+void FinalizeMetadata(OmMetadataTree &result,
+                      const std::unordered_map<std::string, std::vector<std::string>> &coordinates_by_path,
+                      const std::unordered_map<std::string, OmTimeCoordinate> &time_by_path) {
 	result.crs_profile = ClassifySourceCrsProfile(result.crs_wkt);
 	for (auto &array : result.arrays) {
 		auto time_owner_path = array.canonical_path;
@@ -344,9 +351,101 @@ OmMetadataTree ReadMetadataTree(const OmV3Reader &reader) {
 			owner_path = separator == 0 ? "/" : owner_path.substr(0, separator);
 		}
 	}
+}
+
+} // namespace
+
+std::string EncodeMetadataName(const std::string &name) {
+	if (name.empty() || !IsValidUtf8Name(name)) {
+		throw ReaderError(ReaderErrorCode::InvalidMetadata,
+		                  "OM metadata path segments must be nonempty, non-NUL UTF-8 strings");
+	}
+	std::string result;
+	result.reserve(name.size());
+	for (const auto character : name) {
+		if (character == '%') {
+			result += "%25";
+		} else if (character == '/') {
+			result += "%2F";
+		} else {
+			result += character;
+		}
+	}
+	return result;
+}
+
+OmMetadataTree ReadMetadataTree(const OmV3Reader &reader) {
+	OmMetadataTree result;
+	std::unordered_set<std::uint64_t> active_offsets;
+	std::unordered_map<std::string, std::vector<std::string>> coordinates_by_path;
+	std::unordered_map<std::string, OmTimeCoordinate> time_by_path;
+	Traverse(reader, reader.RootOffset(), reader.RootSize(), "", true, false, active_offsets, coordinates_by_path,
+	         time_by_path, result);
+	FinalizeMetadata(result, coordinates_by_path, time_by_path);
 	if (result.arrays.empty()) {
 		throw ReaderError(ReaderErrorCode::InvalidMetadata, "OM file contains no supported Float32 arrays");
 	}
+	return result;
+}
+
+OmMetadataTree ReadNamedMetadataTree(const OmV3Reader &reader, const std::string &variable_name) {
+	if (variable_name.empty()) throw ReaderError(ReaderErrorCode::InvalidMetadata, "OM variable name must not be empty");
+	auto root = reader.ReadRootVariable();
+	const auto *root_variable = root.Get();
+	if (om_variable_get_type(root_variable) == DATA_TYPE_FLOAT_ARRAY) {
+		if (variable_name != "value" && variable_name != "/") {
+			throw ReaderError(ReaderErrorCode::InvalidMetadata, "OM variable '" + variable_name + "' was not found");
+		}
+		return ReadMetadataTree(reader);
+	}
+	// Names use the same encoded canonical paths as SQL columns. For nested
+	// selection retain the existing traversal, including ancestor attributes.
+	const auto canonical_path = variable_name.front() == '/' ? variable_name : "/" + variable_name;
+	if (canonical_path.find('/', 1) != std::string::npos) {
+		auto tree = ReadMetadataTree(reader);
+		tree.arrays.erase(std::remove_if(tree.arrays.begin(), tree.arrays.end(), [&](const MetadataVariable &array) {
+			return array.canonical_path != canonical_path;
+		}), tree.arrays.end());
+		if (tree.arrays.empty()) throw ReaderError(ReaderErrorCode::InvalidMetadata, "OM variable '" + variable_name + "' was not found");
+		return tree;
+	}
+
+	ScanMemoryAccount directory_account(reader.File().Metrics(), ScanMemoryComponent::Definitions);
+	const auto count = om_variable_get_children_count(root_variable);
+	directory_account.Set(0, sizeof(std::vector<ChildEntry>) +
+	                         static_cast<std::uint64_t>(count) * (sizeof(ChildEntry) + 2 * sizeof(std::uint64_t)));
+	const auto children = ChildDirectory(root_variable, "/");
+	directory_account.Set(sizeof(children) + children.capacity() * sizeof(ChildEntry));
+	if (children.empty()) throw ReaderError(ReaderErrorCode::InvalidMetadata, "OM variable '" + variable_name + "' was not found");
+	std::uint64_t span_begin = UINT64_MAX, span_end = 0;
+	for (const auto &child : children) {
+		span_begin = std::min(span_begin, child.offset);
+		span_end = std::max(span_end, child.offset + child.size);
+	}
+	reader.PrefetchMetadata(span_begin, span_end - span_begin);
+
+	OmMetadataTree result;
+	std::unordered_set<std::uint64_t> active_offsets;
+	std::unordered_map<std::string, std::vector<std::string>> coordinates_by_path;
+	std::unordered_map<std::string, OmTimeCoordinate> time_by_path;
+	bool selected = false;
+	for (const auto &child : children) {
+		auto variable = reader.ReadVariable(child.offset, child.size);
+		const auto name = ReadNodeName(variable.Get(), "/");
+		const bool match = "/" + EncodeMetadataName(name) == canonical_path;
+		const auto type = om_variable_get_type(variable.Get());
+		const bool shared = ((name == "coordinates" || name == "crs_wkt") && type == DATA_TYPE_STRING) ||
+		                    (name == "time" && type == DATA_TYPE_INT64_ARRAY) ||
+		                    (name == "valid_time" && type != DATA_TYPE_NONE && type < DATA_TYPE_INT8_ARRAY);
+		if (!match && !shared) continue;
+		if (match && selected) throw ReaderError(ReaderErrorCode::InvalidMetadata, "duplicate selected OM variable '" + variable_name + "'");
+		Traverse(reader, child.offset, child.size, "", false, false, active_offsets, coordinates_by_path, time_by_path, result);
+		selected = selected || match;
+	}
+	if (!selected || result.arrays.size() != 1) {
+		throw ReaderError(ReaderErrorCode::InvalidMetadata, "OM variable '" + variable_name + "' is not one Float32 value array");
+	}
+	FinalizeMetadata(result, coordinates_by_path, time_by_path);
 	return result;
 }
 

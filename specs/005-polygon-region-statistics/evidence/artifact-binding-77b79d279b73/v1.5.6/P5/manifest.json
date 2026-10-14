@@ -1,0 +1,15 @@
+{
+  "schema_version":1,
+  "status":"pass",
+  "manifest_path":"/home/blizhan/repo/github/duckomo/test/data/regions/manifest.json",
+  "manifest_sha256":"14253140fa569b1b8ae7f69911a66103db16bc98651566eee8be7aebf7ff9a24",
+  "runtime_version":"v1.5.6",
+  "duckdb_path":"/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.6/official/duckdb",
+  "duckdb_sha256":"c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+  "duckomo_path":"/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/828b20ce97c7a0ad073f03034a851288cf4b25998ae75f1aadae18044def9478/release/extension/duckomo/duckomo.duckdb_extension",
+  "duckomo_sha256":"12b18ac59a1c6eaedc047821f55b889beb046893c590760b752f72ddbdaa8348",
+  "spatial_path":"/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.6/official/spatial.duckdb_extension",
+  "spatial_sha256":"96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+  "requested_gates":["P5"],
+  "gates":[{"id":"P5","status":"pass","reason":"","commands":[{"argv":["python3","/home/blizhan/repo/github/duckomo/scripts/validate-official-httpfs.py","--root","/home/blizhan/repo/github/duckomo","--duckdb","/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.6/official/duckdb","--extension","/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/828b20ce97c7a0ad073f03034a851288cf4b25998ae75f1aadae18044def9478/release/extension/duckomo/duckomo.duckdb_extension","--httpfs","/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.6/official/httpfs.duckdb_extension","--spatial","/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.6/official/spatial.duckdb_extension","--region-manifest","/home/blizhan/repo/github/duckomo/test/data/regions/real-targets.json","--remote-env","/home/blizhan/repo/github/duckomo/build/regions-remote/005-completion-20261013/v1.5.6/run.env","--server-log","/home/blizhan/repo/github/duckomo/build/regions-remote/005-completion-20261013/fixture/logs","--output","/home/blizhan/repo/github/duckomo/build/evidence/regions/005-artifact-binding-77b79d279b73/v1.5.6/P5"],"exit_code":0,"elapsed_ms":176642,"peak_rss_bytes":72208384,"output_path":"P5-1.stdout.txt","output_sha256":"2487a44a3e9204d76a2faf84c363a52627e9833045d482e51ec3855a9a231c9f"}],"evidence_report":"summary.json","evidence_report_sha256":"dd21c8be85e3e7dcb111009596c3395df2d4b9e290ad3e84dda0b1118f51a785"}]
+}

@@ -1,0 +1,8 @@
+{
+  "test/data/regions/manifest.json": "14253140fa569b1b8ae7f69911a66103db16bc98651566eee8be7aebf7ff9a24",
+  "test/data/regions/real-targets.json": "03c2bcc84b4a0081cbf636d0aace7347b5039eb45ad6bc6a132cf78d9988fd80",
+  "test/data/regions/remote-windows.json": "832114aa533191b3db26f2a99d0e147aad24a7339c0afa7457c37a8646c7c4c7",
+  "test/data/regions/runtime-matrix.json": "d6b3d9d9211c03d6b3c9efaa22036577eefe366fbf4788734bcec0d3912c27ff",
+  "test/data/domain-manifest.json": "dfd954fa8059fbffe25cafd559d583d8383df4414c855711f710d2da88e79406",
+  "test/data/grids/version-matrix.json": "c72b11267bd1f8795f3c1ddb96d07a74bf3e292bbf3e560cf4174300ae80d060"
+}

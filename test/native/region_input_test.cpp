@@ -164,6 +164,20 @@ void TestOwnedCopyEmptyAndEndian() {
 	const auto empty = RegionCollection::Build(Value::LIST(RegionStructType(), {}));
 	Require(empty.GetRegions().empty() && empty.GetTotalVertices() == 0,
 	        "a typed empty list is accepted after full type validation");
+	for (const bool little_endian : {false, true}) {
+		const auto empty_ring = PolygonWkb({}, little_endian);
+		const auto ring_collection = RegionCollection::Build(
+		    RegionList({{"empty-ring", empty_ring}, {"empty-component", MultiPolygonWkb(empty_ring)}}));
+		Require(ring_collection.GetTotalVertices() == 0 &&
+		            ring_collection.GetRegions()[0].envelope.empty && ring_collection.GetRegions()[1].envelope.empty,
+		        "zero-point Polygon rings and empty MultiPolygon components have no coordinate envelope");
+	}
+	for (const std::vector<Point> short_ring : {std::vector<Point>{{0, 0}},
+	                                          std::vector<Point>{{0, 0}, {0, 0}},
+	                                          std::vector<Point>{{0, 0}, {1, 0}, {0, 0}}}) {
+		RequireRegionError(RegionList({{"short-ring", PolygonWkb(short_ring)}}), "[region_input]",
+		                   "non-empty rings with fewer than four points remain invalid");
+	}
 }
 
 void TestStrictShapeIdentityAndUtf8() {

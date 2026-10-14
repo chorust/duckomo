@@ -1,0 +1,140 @@
+{
+  "coverage": {
+    "v1.5.4": {
+      "gates": [
+        "P0",
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5"
+      ],
+      "sources": [
+        "local",
+        "http",
+        "https",
+        "s3"
+      ],
+      "targets": [
+        "ncep_gfswave025",
+        "gem_rdps_10km",
+        "gem_regional",
+        "aladin_central_europe_2km",
+        "ecmwf_ifs"
+      ]
+    },
+    "v1.5.5": {
+      "gates": [
+        "P0",
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5"
+      ],
+      "sources": [
+        "local",
+        "http",
+        "https",
+        "s3"
+      ],
+      "targets": [
+        "ncep_gfswave025",
+        "gem_rdps_10km",
+        "gem_regional",
+        "aladin_central_europe_2km",
+        "ecmwf_ifs"
+      ]
+    },
+    "v1.5.6": {
+      "gates": [
+        "P0",
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5"
+      ],
+      "sources": [
+        "local",
+        "http",
+        "https",
+        "s3"
+      ],
+      "targets": [
+        "ncep_gfswave025",
+        "gem_rdps_10km",
+        "gem_regional",
+        "aladin_central_europe_2km",
+        "ecmwf_ifs"
+      ]
+    }
+  },
+  "errors": [],
+  "gate": "P6",
+  "not_run": [],
+  "schema_version": 1,
+  "status": "pass",
+  "versions": {
+    "v1.5.4": {
+      "duckomo_sha256": "171759d6a02e1e1924e2a68beaefeac03da208af066f6868bddc4d5163d59148",
+      "extension_version": "28db190",
+      "install_path": "",
+      "p0_p4_manifest_sha256": "05f41d85f8ad34b5af42500ae8dbbb0ab8457b495f173f71ffd053be3258e3cc",
+      "p5_manifest_sha256": "4cd1c197c1c0645c3cf3a414803455b780df98b00b9cc769f62e77b69a7f6ac1",
+      "probes": {
+        "boundary_covers": true,
+        "covers": true,
+        "duckdb_version": "v1.5.4",
+        "extension_version": "28db190",
+        "geom_from_wkb": true,
+        "install_path": "",
+        "is_valid": true,
+        "point": true
+      },
+      "regression_manifest_sha256": "d6a5cecf3466a2d4bf6eee992000cdaf40e4e354ba6215fff82d6f812824af24",
+      "source_identity_match": true,
+      "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a"
+    },
+    "v1.5.5": {
+      "duckomo_sha256": "0f5128a54c9776aeffd6230abb9482873f44e8e9b6f9a2bb91eb860c625dc47b",
+      "extension_version": "eb1e57c",
+      "install_path": "",
+      "p0_p4_manifest_sha256": "214dcae3ac8370360b6a749ff60991a7eba2763325034b80639d521208e4aa4a",
+      "p5_manifest_sha256": "f3dbc34b2d48934b6d20905b3d6ff28e81484c332bac44884a87a0fb816b5e36",
+      "probes": {
+        "boundary_covers": true,
+        "covers": true,
+        "duckdb_version": "v1.5.5",
+        "extension_version": "eb1e57c",
+        "geom_from_wkb": true,
+        "install_path": "",
+        "is_valid": true,
+        "point": true
+      },
+      "regression_manifest_sha256": "476734dd56ae79c2c9417ea18e6827e68f549b3491da819ab2b56e13d1f23c80",
+      "source_identity_match": true,
+      "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d"
+    },
+    "v1.5.6": {
+      "duckomo_sha256": "12b18ac59a1c6eaedc047821f55b889beb046893c590760b752f72ddbdaa8348",
+      "extension_version": "04270fe",
+      "install_path": "",
+      "p0_p4_manifest_sha256": "068f4f1bbf64ba9d2a1a87f72142533167a3e1eac677e881d9382ac3ce59fba6",
+      "p5_manifest_sha256": "e6a560f24799321c3e9ed5c1d62bdfb8048cd761f65da8e58dfb857224fa140b",
+      "probes": {
+        "boundary_covers": true,
+        "covers": true,
+        "duckdb_version": "v1.5.6",
+        "extension_version": "04270fe",
+        "geom_from_wkb": true,
+        "install_path": "",
+        "is_valid": true,
+        "point": true
+      },
+      "regression_manifest_sha256": "e8d2062baaf1fb7a10caa306a00bd78877bc4c136255777768584cd827d77642",
+      "source_identity_match": true,
+      "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14"
+    }
+  }
+}

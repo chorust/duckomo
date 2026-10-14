@@ -198,6 +198,17 @@ std::uint64_t OmV3Reader::RootSize() const noexcept {
 	return root_size_;
 }
 
+void OmV3Reader::PrefetchMetadata(std::uint64_t offset, std::uint64_t size) const {
+	constexpr std::uint64_t MAX_PREFETCH_BYTES = 1024 * 1024;
+	if (size == 0 || size > MAX_PREFETCH_BYTES) return;
+	ValidateBodyRange(offset, size, "metadata");
+	metadata_cache_account_ = std::make_shared<ScanMemoryAccount>(file_->Metrics(), ScanMemoryComponent::Definitions);
+	metadata_cache_account_->Set(0, sizeof(metadata_cache_) + size);
+	metadata_cache_ = file_->ReadRange(offset, size, ScanReadPhase::Metadata);
+	metadata_cache_offset_ = offset;
+	metadata_cache_account_->Set(sizeof(metadata_cache_) + metadata_cache_.capacity());
+}
+
 BorrowedOmVariable OmV3Reader::ReadRootVariable() const {
 	return BorrowedOmVariable(root_metadata_);
 }
@@ -444,7 +455,14 @@ std::shared_ptr<const OwnedMetadataBuffer> OmV3Reader::ReadAndValidateMetadata(s
 	    CheckedAddBytes(sizeof(std::vector<std::uint8_t>), size, "OM metadata buffer upper bound"),
 	    sizeof(OwnedMetadataBuffer), "OM metadata owner upper bound");
 	memory_account->Set(0, metadata_upper_bound);
-	auto bytes = file_->ReadRange(offset, size, ScanReadPhase::Metadata);
+	std::vector<std::uint8_t> bytes;
+	if (offset >= metadata_cache_offset_ && offset - metadata_cache_offset_ <= metadata_cache_.size() &&
+	    size <= metadata_cache_.size() - (offset - metadata_cache_offset_)) {
+		const auto begin = metadata_cache_.begin() + static_cast<std::size_t>(offset - metadata_cache_offset_);
+		bytes.assign(begin, begin + static_cast<std::size_t>(size));
+	} else {
+		bytes = file_->ReadRange(offset, size, ScanReadPhase::Metadata);
+	}
 	const auto temporary_bytes = CheckedAddBytes(sizeof(bytes), static_cast<std::uint64_t>(bytes.capacity()),
 	                                            "OM metadata buffer accounting");
 	const auto transfer_upper_bound = CheckedAddBytes(temporary_bytes, sizeof(OwnedMetadataBuffer),

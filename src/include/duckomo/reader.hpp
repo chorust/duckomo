@@ -35,6 +35,9 @@ public:
 	std::uint64_t RootOffset() const noexcept;
 	std::uint64_t RootSize() const noexcept;
 
+	// Cache a compact metadata directory for this reader only. Wide/sparse
+	// directories fall back to ordinary reads; this is not a format constraint.
+	void PrefetchMetadata(std::uint64_t offset, std::uint64_t size) const;
 	BorrowedOmVariable ReadRootVariable() const;
 	BorrowedOmVariable ReadVariable(std::uint64_t offset, std::uint64_t size) const;
 
@@ -73,6 +76,9 @@ private:
 	std::uint64_t root_offset_ = 0;
 	std::uint64_t root_size_ = 0;
 	std::shared_ptr<const OwnedMetadataBuffer> root_metadata_;
+	mutable std::uint64_t metadata_cache_offset_ = 0;
+	mutable std::vector<std::uint8_t> metadata_cache_;
+	mutable std::shared_ptr<ScanMemoryAccount> metadata_cache_account_;
 };
 
 } // namespace duckomo

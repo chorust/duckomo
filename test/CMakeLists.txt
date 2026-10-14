@@ -236,7 +236,7 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
         else()
             target_link_libraries("${test}" PRIVATE duckdb_static duckomo_extension duckomo_om)
             duckomo_link_generated_extension_loader("${test}")
-            if(test STREQUAL "grid_zero_io_test" OR test STREQUAL "source_identity_test")
+            if(test STREQUAL "grid_zero_io_test" OR test STREQUAL "source_identity_test" OR test STREQUAL "schema_test")
                 target_include_directories("${test}" PRIVATE
                     "${CMAKE_SOURCE_DIR}/extension/core_functions/include"
                 )
@@ -360,6 +360,10 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
             set_target_properties("${test_target}" PROPERTIES EXCLUDE_FROM_ALL TRUE)
             target_compile_options("${test_target}" PRIVATE ${DUCKOMO_SANITIZER_COMPILE_OPTIONS})
             target_link_options("${test_target}" PRIVATE ${DUCKOMO_SANITIZER_LINK_OPTIONS})
+            if(test STREQUAL "schema_test")
+                target_include_directories("${test_target}" PRIVATE "${CMAKE_SOURCE_DIR}/extension/core_functions/include")
+                target_link_libraries("${test_target}" PRIVATE core_functions_extension)
+            endif()
                 target_link_libraries("${test_target}" PRIVATE
                     duckdb_static
                     duckomo_extension_sanitized
@@ -414,6 +418,7 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
         )
         set_tests_properties(duckomo_sanitizer_lifecycle PROPERTIES
             WORKING_DIRECTORY "${DUCKOMO_SANITIZER_RUNTIME_DIR}"
+            ENVIRONMENT "${DUCKOMO_SANITIZER_EXTENSION_ENV}"
         )
         list(APPEND DUCKOMO_SANITIZER_TEST_TARGETS duckomo_lifecycle_sanitizer)
     endif()

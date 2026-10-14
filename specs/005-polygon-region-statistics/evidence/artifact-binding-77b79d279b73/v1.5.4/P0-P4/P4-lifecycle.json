@@ -1,0 +1,10 @@
+{
+  "schema_version":1,
+  "gate":"P4",
+  "status":"pass",
+  "reason":"",
+  "cancellation_response_ms":0.906041,
+  "resources":{"point_count_ratio":16.0,"owned_work_peak_ratio":1.000004,"isolated_process_peak_rss_ratio":0.985472,"owned_complete":true,"exact_complete":true},
+  "subchecks":{"input_limits":true,"geometry_adapter_and_state":true,"cancel_shortread_decoder_objectchange_limit_multiscan_multiconnection_recovery":true,"dependency_isolation":true,"ordinary_read_regression":true,"regions_sql_boundaries":true},
+  "limitations":{"spatial_internal_peak_bytes":null,"spatial_internal_memory_complete":false,"cancellation_is_checked_around_each_spatial_call":true,"single_spatial_call_has_fixed_interrupt_bound":false}
+}

@@ -470,6 +470,21 @@ void TestRegionInputsAreIncludedInQueryMemory(Connection &connection, std::uint3
 }
 
 void TestRegionZeroIoEmptyAndFilterPaths(Connection &connection) {
+	const auto empty_ring = Query(connection, "SELECT count(*) FROM " + SmallRegionScan(
+	    "[{'id':'EmptyRing','wkb':ST_AsWKB(ST_GeomFromText('POLYGON (EMPTY)'))}]"));
+	Require(empty_ring->GetValue(0, 0).GetValue<std::uint64_t>() == 0,
+	        "spatial-produced zero-point rings are accepted as empty regions");
+	const auto mixed_components = Query(connection, "SELECT count(*) FROM " + SmallRegionScan(
+	    "[{'id':'Mixed','wkb':ST_AsWKB(ST_GeomFromText("
+	    "'MULTIPOLYGON ((EMPTY),((100 20,102 20,102 22,100 22,100 20)))'))}]"));
+	Require(mixed_components->GetValue(0, 0).GetValue<std::uint64_t>() == 54,
+	        "an empty MultiPolygon component must not suppress the non-empty component's records");
+	const auto counted = Query(connection, "SELECT count(*) FROM " + SmallRegionScan("getvariable('zero_io_regions')"));
+	Require(counted->GetValue(0, 0).GetValue<std::uint64_t>() == 54, "count retains exact region membership");
+	const auto count_metrics = LastScanMetrics(connection);
+	Require(count_metrics.find("\"coordinate_preparation\":{\"evaluations\":150,\"complete\":true}") != std::string::npos &&
+	            count_metrics.find("\"repeated_work\":{\"coordinate_evaluations\":150") != std::string::npos,
+	        "count-only queries report coordinates evaluated for all 150 candidate records");
 	const auto positions = Query(connection,
 	                             "SELECT region_id,lat,lon,om_source.logical_index FROM "
 	                             + SmallRegionScan("getvariable('zero_io_regions')", true));
@@ -502,6 +517,12 @@ void TestRegionZeroIoEmptyAndFilterPaths(Connection &connection) {
 	                         "\"data_bytes\":0,\"data_requests\":0,\"decoded_chunks\":0,\"decode_complete\":true}") !=
 	                std::string::npos,
 	        "candidate-nonempty exact-empty scans must finish with zero exact matches and zero value I/O");
+	const auto batch_memory_start = metrics.find("\"batch_segments\":{");
+	Require(batch_memory_start != std::string::npos, "metrics must expose batch working memory");
+	Require(JsonUintField(metrics.substr(batch_memory_start), "peak_owned_capacity_bytes") >= 150 * sizeof(std::uint64_t),
+	        "exact-empty filtering must charge the live candidate position buffer");
+	Require(metrics.find("\"coordinate_preparation\":{\"evaluations\":150,\"complete\":true}") != std::string::npos,
+	        "exact-empty filtering reports its coordinate work");
 
 	for (const auto &regions : {std::string("getvariable('empty_regions')"),
 	                            std::string("[]::STRUCT(id VARCHAR,wkb BLOB)[]")}) {

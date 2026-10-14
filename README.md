@@ -17,7 +17,7 @@ duckomo 是一个 DuckDB C++ 扩展，将 [Open-Meteo OM](https://github.com/ope
 - **多种网格 mapping**：规则经纬度、[68 个规则 domain](docs/regular-domains.md)、旋转经纬度、Lambert、stereographic 和 reduced Gaussian。
 - **多变量与语义轴**：按有序轴身份对齐变量，支持 `valid_time`、`level`、`lead_time`、`member`、`run`，不自动转置、广播或连接。
 - **并行与可观测性**：DuckDB 调度并行扫描；提供线程上限、扫描指标、可选 `om_source` 源位置及 `om_grid_info` 网格描述。
-- **Polygon 区域读取（实验性）**：源码工作区提供 `read_om_regions`，返回区域内原始网格记录供 SQL 分组统计；005 的完整矩阵与独立复现未收口，暂不作为发布支持。
+- **Polygon 区域读取（实验性）**：v0.3.0 GitHub 包提供 `read_om_regions`，返回区域内原始网格记录供 SQL 分组统计；当前优化的完整跨平台验收仍未收口，作为实验功能供试用。
 
 当前每次读取**单个对象**，不接受目录、glob 或文件列表。005 区域入口需要显式加载匹配版本的 DuckDB spatial；普通 `read_om` 不需要。区域 WKB 的 `grid_lonlat` 参考由调用者负责，边界按平面 `covers` 处理，统计为 SQL 等权聚合。区域能力仍在验收，详见 [005 Quickstart](specs/005-polygon-region-statistics/quickstart.md)。新投影/Gaussian 网格的代码已实现，但逐网格真实样本、完整内存审计和独立复现尚未全部验收；实现不等于生产就绪，详见 [支持范围](docs/spec.md) 与 [网格证据](docs/grid-domains.md)。
 
@@ -39,7 +39,7 @@ PRAGMA platform;
 GitHub 包未签名，只加载可信来源。用 `duckdb -unsigned` 启动后安装。Release 资产文件名带有版本和平台，直接把 URL 传给 `INSTALL` 时 DuckDB 会按第一个 `.` 截断扩展名（存成 `duckomo-v0.duckdb_extension`），导致后续 `LOAD duckomo` 找不到文件。因此先下载 `.duckdb_extension.gz` 并解压为标准文件名，再本地安装：
 
 ```bash
-DUCKOMO_VERSION=v0.2.0                                                    # DuckOMO 版本
+DUCKOMO_VERSION=v0.3.0                                                    # DuckOMO 版本
 DUCKDB_VERSION=$(duckdb -list -noheader :memory: "SELECT version();")      # 从本机 DuckDB 获取
 PLATFORM=$(duckdb -list -noheader :memory: "PRAGMA platform;")            # 从本机 DuckDB 获取
 
@@ -129,7 +129,90 @@ LIMIT 10;
 | `data_run/` | 一次起报，通常 `[lat, lon, time]` | 通常只需 `domain` |
 | `data/` | 滚动序列或静态数据，样本常缺少轴元数据 | `domain` + 完整 `dimensions` |
 
-`dimensions` 支持共享轴列表或逐变量 MAP；目录布局与更多示例见 [规则网格指南](docs/regular-domains.md)。
+`dimensions` 支持共享轴列表或逐变量 MAP；目录布局与更多示例见 [规则网格指南](docs/regular-domains.md)。v0.3.0 的 `read_om`、`read_om_regions`、`om_grid_info` 均支持 `variable := '列名'`，在绑定时仅保留该值数组，适合变量很多的远程文件。嵌套列按编码路径选择，如 `weird%2Fname%25/value`；维度 MAP 只声明所选数组。默认扫描复用绑定元数据；如需全树重读检查，设置 `duckomo_revalidate_metadata=true`，会增加读取成本。
+
+### 按多边形筛选并聚合
+
+开发版的 `read_om_regions` 接收标准 WKB 区域，返回落在多边形内的原始网格点；统计由 SQL 完成，均值是点的等权平均，不是面积加权。以青海各市州边界查询 GFS 空间快照为例。先在仓库根目录准备 [GADM 4.1](https://gadm.org/data.html) 中国二级行政区数据（使用须遵守其非商业/学术许可）：
+
+```sh
+mkdir -p build/manual-region-queries
+curl -fL https://geodata.ucdavis.edu/gadm/gadm4.1/json/gadm41_CHN_2.json.zip \
+  -o build/manual-region-queries/gadm41_CHN_2.json.zip
+python3 - <<'PY'
+import json, zipfile
+from pathlib import Path
+folder = Path('build/manual-region-queries')
+with zipfile.ZipFile(folder / 'gadm41_CHN_2.json.zip') as archive:
+    data = json.loads(archive.read('gadm41_CHN_2.json'))
+assert data['crs']['properties']['name'] == 'urn:ogc:def:crs:OGC:1.3:CRS84'
+data['features'] = [f for f in data['features'] if f['properties']['NAME_1'] == 'Qinghai']
+assert len(data['features']) == 8
+(folder / 'qinghai-gadm41.geojson').write_text(json.dumps(data, ensure_ascii=False))
+PY
+```
+
+该文件声明 CRS84（x=经度、y=纬度），下例据此传入 `grid_lonlat`。边界版本为 GADM 4.1，不代表实时行政区划；不再使用未核实坐标参考的 DataV 绘图边界。
+
+```sql
+-- 先按 Install 章节安装 v0.3.0 的匹配包，并以 duckdb -unsigned 启动。
+LOAD duckomo;
+INSTALL httpfs; LOAD httpfs;
+INSTALL spatial; LOAD spatial; -- 与当前 DuckDB 匹配；首次安装需要联网
+
+CREATE TEMP TABLE qinghai AS
+SELECT feature.properties.GID_2 AS region_id,
+       ST_GeomFromGeoJSON(feature.geometry::JSON) AS geometry
+FROM (SELECT unnest(features) AS feature
+      FROM read_json_auto('build/manual-region-queries/qinghai-gadm41.geojson'));
+
+SET VARIABLE qinghai_regions = (
+    SELECT list({'id': region_id, 'wkb': ST_AsWKB(geometry)} ORDER BY region_id)
+    FROM qinghai
+);
+
+SELECT region_id, count(*) AS grid_points,
+       round(avg(temperature_80m), 3) AS mean_celsius
+FROM read_om_regions(
+    's3://openmeteo/data_spatial/ncep_gfs025/2026/10/14/0000Z/2026-10-14T0000.om',
+    domain := 'ncep_gfs025', variable := 'temperature_80m',
+    regions := getvariable('qinghai_regions'),
+    region_crs := 'grid_lonlat')
+GROUP BY region_id
+ORDER BY region_id;
+```
+
+该快照没有 `temperature_2m`，上例使用实际存在的 `temperature_80m`。对象会过期，替换前先从 Open-Meteo 目录确认新的对象键。
+
+### 区域平均：Nino 海温
+
+`s3://openmeteo/data/copernicus_era5/sea_surface_temperature/` 是 chunk 目录，不能直接作为 `read_om` 路径；选择其中一个 `chunk_*.om`。以 `chunk_987.om` 计算 Nino3.4 和 Nino1+2：
+
+```sql
+SET VARIABLE nino_regions = [
+    {'id': 'nino34', 'wkb': ST_AsWKB(ST_GeomFromText(
+        'POLYGON((-170 -5,-120 -5,-120 5,-170 5,-170 -5))'))},
+    {'id': 'nino12', 'wkb': ST_AsWKB(ST_GeomFromText(
+        'POLYGON((-90 -10,-80 -10,-80 0,-90 0,-90 -10))'))}
+];
+
+SELECT region_id, valid_time, count(*) AS grid_points,
+       round(avg(value), 3) AS mean_celsius
+FROM read_om_regions(
+    's3://openmeteo/data/copernicus_era5/sea_surface_temperature/chunk_987.om',
+    domain := 'copernicus_era5',
+    dimensions := ['lat', 'lon', 'time'],
+    axes := {'time': {'axis': 'time', 'start': TIMESTAMP '2026-10-01',
+                      'step': INTERVAL '1 hour'}},
+    regions := getvariable('nino_regions'),
+    region_crs := 'grid_lonlat')
+WHERE valid_time >= TIMESTAMP '2026-10-01'
+  AND valid_time < TIMESTAMP '2026-10-02'
+GROUP BY region_id, valid_time
+ORDER BY region_id, valid_time;
+```
+
+时间标签依据 [固定 producer 的 ERA5 配置](https://github.com/open-meteo/open-meteo/blob/b06f4760fd1f997e5559bb380f64c5e496b4a509/Sources/App/Era5/Era5Domain.swift)、[chunk 划分](https://github.com/open-meteo/open-meteo/blob/b06f4760fd1f997e5559bb380f64c5e496b4a509/Sources/App/Helper/OmFileSplitter.swift) 与 [Unix 时间索引](https://github.com/open-meteo/open-meteo/blob/b06f4760fd1f997e5559bb380f64c5e496b4a509/Sources/OmTime/Time.swift)：每文件 504 小时，chunk N 从 `1970-01-01 + N × 504 小时` 开始。因此 987 对应 2026-10-01 00:00 UTC，共 21 天；示例只统计第一天。更换对象时重新计算起始时间并核对 shape/producer 约定；`axes.start` 赋予标签，不会发现真实日期。结果是网格点等权平均，不是气候态距平或面积加权的 Nino 指数。
 
 ### HTTPS、私有 S3 与读取指标
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import re
 import sys
@@ -12,6 +13,7 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any
+import xml.etree.ElementTree as ET
 
 VERSIONS = ("v1.5.4", "v1.5.5", "v1.5.6")
 LOCAL_GATES = ("P0", "P1", "P2", "P3", "P4")
@@ -19,6 +21,23 @@ ALL_SOURCES = ("local", "http", "https", "s3")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 SHA1_RE = re.compile(r"^[0-9a-f]{40}$")
 MAX_P5_SUMMARY_BYTES = 64 * 1024 * 1024
+SANITIZER_TESTS = tuple("duckomo_sanitizer_" + name for name in (
+    "batch_test", "raw_reader_test", "schema_test", "axis_selection_test", "parallel_scan_test",
+    "scan_metrics_v3_test", "session_metrics_test", "grid_validation", "lifecycle", "spatial_selection",
+    "spatial_io_test", "spatial_lifecycle_test", "region_input_test", "region_geometry_test",
+    "region_scan_test", "projection_evidence"))
+
+
+def required_regression_tests(root: Path) -> set[str]:
+    cmake = (root / "test/CMakeLists.txt").read_text()
+    match = re.search(r"set\(DUCKOMO_NATIVE_TEST_SOURCES\s+(.*?)\)", cmake, re.DOTALL)
+    if not match:
+        raise EvidenceError("native regression inventory is missing")
+    # official_httpfs_test is a remote integration test; P5 audits its sources separately.
+    native = set(match.group(1).split()) - {"official_httpfs_test"}
+    return ({"native:" + name for name in native} |
+            {"sql:" + path.relative_to(root).as_posix() for path in (root / "test/sql").glob("*.test")} |
+            {"python:" + path.relative_to(root).as_posix() for path in (root / "test/tools").glob("*_test.py")})
 
 
 class EvidenceError(ValueError):
@@ -31,6 +50,58 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def sanitizer_test_directory(release: Path) -> Path:
+    return release / "extension/duckomo/test"
+
+
+def sanitizer_extension_path(release: Path) -> Path:
+    return sanitizer_test_directory(release) / "sanitizer_runtime/build/release/extension/duckomo/duckomo.duckdb_extension"
+
+
+def regression_environment(release: Path, *, sanitizer: bool = False) -> dict[str, str]:
+    extension = sanitizer_extension_path(release) if sanitizer else release / "extension/duckomo/duckomo.duckdb_extension"
+    return {"DUCKOMO_BUILD": str(release), "DUCKOMO_OFFICIAL_DUCKDB": str(release / "duckdb"),
+            "DUCKOMO_EXTENSION_PATH": str(extension), "DUCKOMO_TEST_EXTENSION": str(extension),
+            "DUCKOMO_CORE_FUNCTIONS_EXTENSION": str(release / "extension/core_functions/core_functions.duckdb_extension")}
+
+
+def regression_artifacts(root: Path, release: Path, test_id: str) -> list[Path]:
+    if test_id == "sanitizers":
+        return [sanitizer_extension_path(release)]
+    kind, name = test_id.split(":", 1)
+    if kind == "native":
+        return [release / "test/native" / name]
+    if kind == "sql":
+        return [release / "test/unittest", root / name]
+    dependencies = {
+        "test/tools/hres_domain_test.py": ("duckdb", "extension/duckomo/duckomo.duckdb_extension",
+                                           "test/tools/duckomo_fixture_tool"),
+        "test/tools/grid_reference_test.py": ("duckdb", "extension/duckomo/duckomo.duckdb_extension"),
+        "test/tools/official_httpfs_validation_test.py": ("duckdb", "extension/duckomo/duckomo.duckdb_extension",
+                                                          "test/tools/duckomo_region_validation"),
+    }
+    return [root / name, *(release / path for path in dependencies.get(name, ()))]
+
+
+def read_sanitizer_results(path: Path, extension: Path) -> list[dict[str, str]]:
+    try:
+        cases = ET.parse(path).getroot().findall(".//testcase")
+    except ET.ParseError as error:
+        raise EvidenceError(f"cannot parse sanitizer execution report: {error}") from error
+    if len(cases) != len(SANITIZER_TESTS) or {case.get("name") for case in cases} != set(SANITIZER_TESTS):
+        raise EvidenceError("sanitizer execution report does not cover all 16 tests")
+    if any(case.get("status") != "run" or any(case.find(tag) is not None
+           for tag in ("failure", "error", "skipped")) for case in cases):
+        raise EvidenceError("sanitizer execution report contains failed/skipped tests")
+    lifecycle = next(case for case in cases if case.get("name") == "duckomo_sanitizer_lifecycle")
+    loaded = [line.removeprefix("lifecycle loaded DuckOMO: ")
+              for line in (lifecycle.findtext("system-out") or "").splitlines()
+              if line.startswith("lifecycle loaded DuckOMO: ")]
+    if not loaded or any(Path(value).resolve() != extension.resolve() for value in loaded):
+        raise EvidenceError("sanitizer lifecycle does not identify the intended loaded extension")
+    return [{"id": case.get("name"), "status": "pass"} for case in cases]
 
 
 def read_json(path: Path) -> Any:
@@ -448,6 +519,94 @@ def p5_summary_errors(report: Any, report_path: Path, targets: list[dict[str, An
     return errors
 
 
+def regression_evidence_errors(root: Path, run_dir: Path, version: str, runtime: dict[str, Any],
+                               feature_manifest: Path, local_manifest: dict[str, Any] | None,
+                               p5_manifest: dict[str, Any] | None) -> tuple[list[str], list[str], str | None]:
+    path = run_dir / "manifest.json"
+    if not path.is_file():
+        return [], [f"{version} regression/sanitizer evidence is missing"], None
+    errors: list[str] = []
+    not_run: list[str] = []
+    try:
+        report = read_json(path)
+        if not isinstance(report, dict) or report.get("schema_version") != 1:
+            raise EvidenceError("regression manifest schema is missing or unsupported")
+        if report.get("status") in {"not-run", "running", "blocked"}:
+            not_run.append(f"{version} regression/sanitizer run is incomplete")
+        elif report.get("status") != "pass":
+            errors.append(f"{version} regression/sanitizer run did not pass")
+        if report.get("runtime_version") != version or \
+                report.get("feature_manifest_sha256") != sha256_file(feature_manifest) or \
+                report.get("spatial_sha256") != runtime["spatial_artifact"]["sha256"]:
+            errors.append(f"{version} regression inputs differ from the pinned version/fixtures/spatial")
+        build_path = Path(report["build_manifest_path"])
+        verify_file(build_path, report.get("build_manifest_sha256"), f"{version} regression build manifest")
+        build = read_json(build_path)
+        spec = importlib.util.spec_from_file_location("region_build_identity", root / "scripts/version_matrix.py")
+        matrix = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(matrix)
+        if build.get("pair_id") != version or build.get("inputs", {}).get("pair_id") != version or \
+                build.get("build_id") != matrix.compute_build_id(build["inputs"]) or \
+                build["inputs"].get("extension_source_sha256") != matrix.extension_source_digest(root):
+            errors.append(f"{version} regression build does not identify the current intended source")
+        duckomo_hash = build.get("artifact_hashes", {}).get("duckomo")
+        verify_file(Path(build["release_dir"]) / "extension/duckomo/duckomo.duckdb_extension",
+                    duckomo_hash, f"{version} intended DuckOMO build")
+        for label, manifest in (("regression", report), ("P0-P4", local_manifest), ("P5", p5_manifest)):
+            if manifest is not None and manifest.get("duckomo_sha256") != duckomo_hash:
+                errors.append(f"{version} {label} DuckOMO hash differs from the intended build")
+        required = required_regression_tests(root) | {"sanitizers"}
+        commands = report.get("commands", [])
+        ids = [command.get("id") for command in commands if isinstance(command, dict)]
+        if len(ids) != len(commands) or len(ids) != len(set(ids)):
+            errors.append(f"{version} regression commands are malformed or duplicated")
+        if required - set(ids):
+            not_run.append(f"{version} required regressions are missing: {', '.join(sorted(required - set(ids)))}")
+        for command in commands:
+            if not isinstance(command, dict):
+                continue
+            if command.get("exit_code") != 0:
+                errors.append(f"{version} regression {command.get('id')} did not pass")
+            if not isinstance(command.get("argv"), list) or not command["argv"]:
+                errors.append(f"{version} regression command has no invocation")
+            verify_file(safe_child(run_dir, command.get("output_path"), "regression output"),
+                        command.get("output_sha256"), f"{version} regression output")
+            artifacts = command.get("artifacts")
+            if not isinstance(artifacts, list) or not artifacts:
+                raise EvidenceError("regression command lacks executable/source artifact identities")
+            for artifact in artifacts:
+                verify_file(Path(artifact["path"]), artifact.get("sha256"), f"{version} regression artifact")
+            test_id = command.get("id", "")
+            if test_id not in required:
+                continue
+            release = Path(build["release_dir"]).resolve()
+            expected_env = regression_environment(release, sanitizer=test_id == "sanitizers")
+            if any(command.get("environment", {}).get(key) != value for key, value in expected_env.items()):
+                errors.append(f"{version} {test_id} environment does not select its intended build artifacts")
+            recorded_paths = {Path(artifact["path"]).resolve() for artifact in artifacts}
+            if any(path.resolve() not in recorded_paths for path in regression_artifacts(root, release, test_id)):
+                errors.append(f"{version} {test_id} does not identify its intended executable/source dependencies")
+        sanitizer_ids = [item.get("id") for item in report.get("sanitizer_tests", []) if isinstance(item, dict)]
+        if len(sanitizer_ids) != len(set(sanitizer_ids)):
+            errors.append(f"{version} sanitizer results contain duplicate tests")
+        if set(SANITIZER_TESTS) - set(sanitizer_ids):
+            not_run.append(f"{version} required sanitizer results are missing")
+        if any(item.get("status") != "pass" for item in report.get("sanitizer_tests", [])):
+            errors.append(f"{version} a sanitizer test did not pass")
+        if "sanitizer_results_path" not in report:
+            not_run.append(f"{version} sanitizer execution report is missing")
+        else:
+            junit = safe_child(run_dir, report.get("sanitizer_results_path"), "sanitizer results")
+            verify_file(junit, report.get("sanitizer_results_sha256"), f"{version} sanitizer results")
+            results = read_sanitizer_results(junit, sanitizer_extension_path(Path(build["release_dir"])))
+            if sorted(results, key=lambda item: item["id"]) != sorted(report.get("sanitizer_tests", []), key=lambda item: item["id"]):
+                errors.append(f"{version} sanitizer summary differs from its execution report")
+        return errors, not_run, duckomo_hash
+    except (EvidenceError, OSError, ValueError, KeyError, TypeError, AttributeError, ET.ParseError) as error:
+        errors.append(f"{version} regression evidence could not be audited: {error}")
+        return errors, not_run, None
+
+
 def audit_p6(root: Path, runtime_matrix_path: Path, evidence_root: Path,
              feature_manifest_path: Path) -> dict[str, Any]:
     root = root.resolve()
@@ -493,6 +652,14 @@ def audit_p6(root: Path, runtime_matrix_path: Path, evidence_root: Path,
         p5_manifest, p5_errors = verify_run_manifest(version_root / "P5", ("P5",),
                                                        version, runtime, feature_manifest_path)
         errors.extend(p5_errors)
+        regression_errors, regression_not_run, intended_duckomo_hash = regression_evidence_errors(
+            root, version_root / "regressions", version, runtime, feature_manifest_path,
+            local_manifest, p5_manifest)
+        errors.extend(regression_errors)
+        not_run.extend(regression_not_run)
+        if local_manifest is not None and p5_manifest is not None and \
+                local_manifest.get("duckomo_sha256") != p5_manifest.get("duckomo_sha256"):
+            errors.append(f"{version} P0-P4 and P5 DuckOMO artifact hashes differ")
         if local_manifest is None:
             not_run.append(f"{version} P0-P4 evidence is missing")
         elif gate_manifest_incomplete(local_manifest, LOCAL_GATES):
@@ -514,6 +681,7 @@ def audit_p6(root: Path, runtime_matrix_path: Path, evidence_root: Path,
                     "duckdb_sha256": runtime["official_runtime"]["cli"]["sha256"],
                     "httpfs_sha256": runtime["official_runtime"]["httpfs"]["sha256"],
                     "spatial_sha256": runtime["spatial_artifact"]["sha256"],
+                    "duckomo_sha256": intended_duckomo_hash or p5_manifest.get("duckomo_sha256"),
                 }
                 errors.extend(p5_summary_errors(report, report_path, targets, runtime,
                                                 runtime_matrix_path, expected, version))
@@ -527,6 +695,9 @@ def audit_p6(root: Path, runtime_matrix_path: Path, evidence_root: Path,
             "spatial_sha256": runtime.get("spatial_artifact", {}).get("sha256") if isinstance(runtime.get("spatial_artifact"), dict) else None,
             "p0_p4_manifest_sha256": sha256_file(version_root / "P0-P4" / "manifest.json") if (version_root / "P0-P4" / "manifest.json").is_file() else None,
             "p5_manifest_sha256": sha256_file(version_root / "P5" / "manifest.json") if (version_root / "P5" / "manifest.json").is_file() else None,
+            "regression_manifest_sha256": sha256_file(version_root / "regressions/manifest.json")
+                if (version_root / "regressions/manifest.json").is_file() else None,
+            "duckomo_sha256": intended_duckomo_hash,
         }
     status = "fail" if errors else "not-run" if not_run else "pass"
     return {"schema_version": 1, "gate": "P6", "status": status, "versions": versions,
@@ -585,6 +756,27 @@ class RegionEvidenceTest(unittest.TestCase):
         records, errors = runtime_records({"runtimes": [{"version": version} for version in VERSIONS[:-1]]})
         self.assertNotIn(VERSIONS[-1], records)
         self.assertFalse(any("cover exactly" in error for error in errors))
+
+    def regression_fixture(self, directory):
+        root = Path(__file__).resolve().parents[2]
+        release = Path(directory) / "release"
+        (release / "extension/duckomo").mkdir(parents=True)
+        extension = release / "extension/duckomo/duckomo.duckdb_extension"
+        extension.write_bytes(b"extension")
+        duckomo_hash = sha256_file(extension)
+        (release / "test/native").mkdir(parents=True)
+        (release / "test/unittest").write_bytes(b"sql-runner")
+        for name in required_regression_tests(root):
+            if name.startswith("native:"):
+                (release / "test/native" / name.split(":", 1)[1]).write_bytes(b"native")
+        for relative in ("duckdb", "test/tools/duckomo_fixture_tool", "test/tools/duckomo_region_validation"):
+            path = release / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(b"dependency")
+        sanitized = sanitizer_extension_path(release)
+        sanitized.parent.mkdir(parents=True)
+        sanitized.write_bytes(b"sanitized-extension")
+        return root, release, duckomo_hash
 
     def test_missing_version_and_gate_evidence_stays_not_run(self):
         root = Path(__file__).resolve().parents[2]
@@ -684,6 +876,116 @@ class RegionEvidenceTest(unittest.TestCase):
 
             self.assertTrue(any("owned-work and RSS bounds" in error for error in errors))
             self.assertTrue(any("resource completeness or dual bound failed" in error for error in errors))
+
+    def regression_report(self, root, release, duckomo_hash):
+        run_dir = release.parent / "regressions"
+        run_dir.mkdir()
+        commands = []
+        for index, test_id in enumerate(sorted(required_regression_tests(root) | {"sanitizers"}), 1):
+            log = run_dir / f"{index}.log"
+            log.write_text("ok")
+            artifacts = regression_artifacts(root, release, test_id)
+            commands.append({"id": test_id, "argv": [str(artifacts[0])], "exit_code": 0,
+                             "environment": regression_environment(release, sanitizer=test_id == "sanitizers"),
+                             "output_path": log.name, "output_sha256": sha256_file(log),
+                             "artifacts": [{"path": str(artifact), "sha256": sha256_file(artifact)} for artifact in artifacts]})
+        junit = run_dir / "sanitizers.xml"
+        suite = ET.Element("testsuite")
+        for name in SANITIZER_TESTS:
+            case = ET.SubElement(suite, "testcase", name=name, status="run")
+            if name == "duckomo_sanitizer_lifecycle":
+                ET.SubElement(case, "system-out").text = f"lifecycle loaded DuckOMO: {sanitizer_extension_path(release)}\n"
+        ET.ElementTree(suite).write(junit)
+        manifest = {"schema_version": 1, "status": "pass", "runtime_version": "v1.5.4",
+                    "feature_manifest_sha256": sha256_file(root / "test/data/regions/manifest.json"),
+                    "spatial_sha256": "c" * 64, "duckomo_sha256": duckomo_hash,
+                    "build_manifest_path": str(run_dir / "build.json"), "commands": commands,
+                    "sanitizer_tests": [{"id": name, "status": "pass"} for name in SANITIZER_TESTS],
+                    "sanitizer_results_path": junit.name, "sanitizer_results_sha256": sha256_file(junit)}
+        return run_dir, manifest
+
+    def test_rejects_mismatched_duckomo_and_missing_sanitizer_evidence(self):
+        with TemporaryDirectory() as directory:
+            root, release, duckomo_hash = self.regression_fixture(directory)
+            run_dir, manifest = self.regression_report(root, release, duckomo_hash)
+            build = {"pair_id": "v1.5.4", "build_id": "placeholder", "release_dir": str(release),
+                     "inputs": {"pair_id": "v1.5.4", "extension_source_sha256": "placeholder"},
+                     "artifact_hashes": {"duckomo": duckomo_hash}}
+            build_path = run_dir / "build.json"
+            build_path.write_text(json.dumps(build))
+            manifest["build_manifest_sha256"] = sha256_file(build_path)
+            (run_dir / "manifest.json").write_text(json.dumps(manifest))
+            runtime = {"spatial_artifact": {"sha256": "c" * 64}}
+            feature = root / "test/data/regions/manifest.json"
+            local = {"duckomo_sha256": "d" * 64}
+            p5 = {"duckomo_sha256": "e" * 64}
+            errors, not_run, _ = regression_evidence_errors(root, run_dir, "v1.5.4", runtime, feature, local, p5)
+            self.assertTrue(any("DuckOMO hash differs" in error for error in errors))
+            manifest["sanitizer_tests"].pop()
+            (run_dir / "manifest.json").write_text(json.dumps(manifest))
+            _, missing, _ = regression_evidence_errors(root, run_dir, "v1.5.4", runtime, feature, local, p5)
+            self.assertTrue(any("sanitizer results are missing" in item for item in missing))
+
+    def test_audit_rejects_wrong_environment_missing_dependencies_and_loaded_extension(self):
+        with TemporaryDirectory() as directory:
+            root, release, duckomo_hash = self.regression_fixture(directory)
+            run_dir, manifest = self.regression_report(root, release, duckomo_hash)
+            spec = importlib.util.spec_from_file_location("regression_matrix", root / "scripts/version_matrix.py")
+            matrix = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(matrix)
+            inputs = {"pair_id": "v1.5.4", "extension_source_sha256": matrix.extension_source_digest(root)}
+            build_path = Path(manifest["build_manifest_path"])
+            build_path.write_text(json.dumps({"pair_id": "v1.5.4", "inputs": inputs,
+                "build_id": matrix.compute_build_id(inputs), "release_dir": str(release),
+                "artifact_hashes": {"duckomo": duckomo_hash}}))
+            manifest["build_manifest_sha256"] = sha256_file(build_path)
+
+            def audit():
+                (run_dir / "manifest.json").write_text(json.dumps(manifest))
+                return regression_evidence_errors(root, run_dir, "v1.5.4",
+                    {"spatial_artifact": {"sha256": "c" * 64}}, root / "test/data/regions/manifest.json",
+                    {"duckomo_sha256": duckomo_hash}, {"duckomo_sha256": duckomo_hash})
+
+            self.assertEqual(audit(), ([], [], duckomo_hash))
+            command = next(item for item in manifest["commands"] if item["id"] == "python:test/tools/hres_domain_test.py")
+            command["environment"]["DUCKOMO_BUILD"] = "/stale/release"
+            self.assertTrue(any("environment does not select" in error for error in audit()[0]))
+            command["environment"] = regression_environment(release)
+            artifact = command["artifacts"].pop()
+            self.assertTrue(any("dependencies" in error for error in audit()[0]))
+            command["artifacts"].append(artifact)
+            junit = run_dir / "sanitizers.xml"
+            tree = ET.parse(junit)
+            case = next(case for case in tree.getroot() if case.get("name") == "duckomo_sanitizer_lifecycle")
+            case.find("system-out").text = f"lifecycle loaded DuckOMO: {release / 'extension/duckomo/duckomo.duckdb_extension'}\n"
+            tree.write(junit)
+            manifest["sanitizer_results_sha256"] = sha256_file(junit)
+            self.assertTrue(any("intended loaded extension" in error for error in audit()[0]))
+
+    def test_sanitizer_report_rejects_duplicate_skipped_failed_and_missing_tests(self):
+        with TemporaryDirectory() as directory:
+            root, release, duckomo_hash = self.regression_fixture(directory)
+            run_dir, _ = self.regression_report(root, release, duckomo_hash)
+            path = run_dir / "sanitizers.xml"
+            original = path.read_bytes()
+            for change in ("duplicate", "missing", "status", "failure", "error", "skipped", "identity"):
+                with self.subTest(change=change):
+                    tree = ET.ElementTree(ET.fromstring(original))
+                    suite = tree.getroot()
+                    if change == "duplicate":
+                        suite.append(ET.fromstring(ET.tostring(suite[0])))
+                    elif change == "missing":
+                        suite.remove(suite[0])
+                    elif change == "status":
+                        suite[0].set("status", "notrun")
+                    elif change == "identity":
+                        lifecycle = next(case for case in suite if case.get("name") == "duckomo_sanitizer_lifecycle")
+                        lifecycle.remove(lifecycle.find("system-out"))
+                    else:
+                        ET.SubElement(suite[0], change)
+                    tree.write(path)
+                    with self.assertRaises(EvidenceError):
+                        read_sanitizer_results(path, sanitizer_extension_path(release))
 
     def test_rejects_only_local_gate_report(self):
         manifest = {"schema_version": 1, "status": "pass", "requested_gates": ["P0", "P2"],

@@ -17,7 +17,7 @@ duckomo is a DuckDB C++ extension that queries Float32 arrays in [Open-Meteo OM]
 - **Multiple grid mappings**: regular latitude/longitude, [68 regular domains](docs/regular-domains.md), rotated latitude/longitude, Lambert, stereographic, and reduced Gaussian.
 - **Multiple variables and semantic axes**: align variables by ordered axis identity; support `valid_time`, `level`, `lead_time`, `member`, and `run`, without implicit transposition, broadcasting, or joins.
 - **Parallelism and observability**: DuckDB-scheduled scans, thread limits, scan metrics, opt-in `om_source` positions, and `om_grid_info` descriptions.
-- **Polygon-region reads (experimental)**: the source workspace provides `read_om_regions` for raw grid records that can be grouped with SQL; the 005 version matrix and independent reproduction are still open, so this is not release support.
+- **Polygon-region reads (experimental)**: v0.3.0 GitHub packages provide `read_om_regions` for raw grid records that can be grouped with SQL; full cross-platform acceptance of the current optimization remains open, so this is an experimental feature.
 
 Each input names **one object**, not a directory, glob, or file list. The 005 region entrypoint requires an explicitly loaded spatial extension that matches DuckDB; ordinary `read_om` does not. Callers are responsible for the WKB `grid_lonlat` reference, containment uses planar `covers`, and SQL aggregates are equally weighted. Region support is still under validation; see the [005 quickstart](specs/005-polygon-region-statistics/quickstart.md). Projected/Gaussian grids are implemented, but per-grid real samples, full memory accounting, and independent reproduction have not all passed acceptance. Implementation is not a production-readiness claim; see [supported scope](docs/spec.md) and [grid evidence](docs/grid-domains.md).
 
@@ -39,7 +39,7 @@ The release matrix targets **DuckDB v1.5.4 / v1.5.5 / v1.5.6** on **Linux glibc 
 GitHub binaries are unsigned; load only trusted code. Start `duckdb -unsigned`, then install. Release asset names carry the version and platform, and passing the URL directly to `INSTALL` makes DuckDB truncate the extension name at the first `.` (it is stored as `duckomo-v0.duckdb_extension`), so a later `LOAD duckomo` cannot find the file. Download the `.duckdb_extension.gz`, decompress it to the canonical name, and install locally instead:
 
 ```bash
-DUCKOMO_VERSION=v0.2.0                                                    # DuckOMO version
+DUCKOMO_VERSION=v0.3.0                                                    # DuckOMO version
 DUCKDB_VERSION=$(duckdb -list -noheader :memory: "SELECT version();")      # detected from local DuckDB
 PLATFORM=$(duckdb -list -noheader :memory: "PRAGMA platform;")            # detected from local DuckDB
 
@@ -129,6 +129,91 @@ Files with time metadata expose UTC `valid_time`, which you can use in time pred
 | `data/` | Rolling series or static data; samples often lack axis metadata | `domain` + complete `dimensions` |
 
 `dimensions` accepts a shared axis list or a per-variable MAP. See the [regular-grid guide](docs/regular-domains.md) for directory layouts and more examples.
+
+v0.3.0 supports `variable := 'column_name'` on `read_om`, `read_om_regions`, and `om_grid_info`. It binds one value array, which reduces metadata work for remote files with many variables. Names follow encoded SQL column paths, such as `weird%2Fname%25/value`, with an optional leading slash. A dimensions MAP must contain only the selected array. NULL, empty, missing, or non-value names fail during binding. Scans reuse bound metadata by default; `SET duckomo_revalidate_metadata=true` enables full-tree rereads and comparison of the same selected view.
+
+### Polygon aggregation: Qinghai
+
+The experimental `read_om_regions` entrypoint returns grid points covered by each WKB polygon. SQL supplies the aggregation; AVG is an equal-weight point average. Prepare eight Qinghai prefectures from [GADM 4.1](https://gadm.org/data.html), following its academic/non-commercial license:
+
+```sh
+mkdir -p build/manual-region-queries
+curl -fL https://geodata.ucdavis.edu/gadm/gadm4.1/json/gadm41_CHN_2.json.zip \
+  -o build/manual-region-queries/gadm41_CHN_2.json.zip
+python3 - <<'PY'
+import json, zipfile
+from pathlib import Path
+folder = Path('build/manual-region-queries')
+with zipfile.ZipFile(folder / 'gadm41_CHN_2.json.zip') as archive:
+    data = json.loads(archive.read('gadm41_CHN_2.json'))
+assert data['crs']['properties']['name'] == 'urn:ogc:def:crs:OGC:1.3:CRS84'
+data['features'] = [f for f in data['features'] if f['properties']['NAME_1'] == 'Qinghai']
+assert len(data['features']) == 8
+(folder / 'qinghai-gadm41.geojson').write_text(json.dumps(data, ensure_ascii=False))
+PY
+```
+
+The archive explicitly declares CRS84 (x=longitude, y=latitude), used here as `grid_lonlat`. These are GADM 4.1 boundaries, not a promise of current administrative divisions. Use matching DuckDB, DuckOMO, HTTPFS, and spatial builds:
+
+```sql
+-- Install the matching v0.3.0 package above, then start duckdb -unsigned.
+LOAD duckomo;
+INSTALL httpfs; LOAD httpfs;
+INSTALL spatial; LOAD spatial; -- matching DuckDB version; initial install needs network
+
+CREATE TEMP TABLE qinghai AS
+SELECT feature.properties.GID_2 AS region_id,
+       ST_GeomFromGeoJSON(feature.geometry::JSON) AS geometry
+FROM (SELECT unnest(features) AS feature
+      FROM read_json_auto('build/manual-region-queries/qinghai-gadm41.geojson'));
+
+SET VARIABLE qinghai_regions = (
+    SELECT list({'id': region_id, 'wkb': ST_AsWKB(geometry)} ORDER BY region_id)
+    FROM qinghai
+);
+
+SELECT region_id, count(*) AS grid_points,
+       round(avg(temperature_80m), 3) AS mean_celsius
+FROM read_om_regions(
+    's3://openmeteo/data_spatial/ncep_gfs025/2026/10/14/0000Z/2026-10-14T0000.om',
+    domain := 'ncep_gfs025', variable := 'temperature_80m',
+    regions := getvariable('qinghai_regions'),
+    region_crs := 'grid_lonlat')
+GROUP BY region_id
+ORDER BY region_id;
+```
+
+This snapshot contains `temperature_80m` and does not contain `temperature_2m`. Public objects expire; confirm a replacement key and variable before querying.
+
+### Regional SST averages: Nino
+
+The ERA5 SST prefix is a directory. Choose an individual `chunk_*.om` object:
+
+```sql
+SET VARIABLE nino_regions = [
+    {'id': 'nino34', 'wkb': ST_AsWKB(ST_GeomFromText(
+        'POLYGON((-170 -5,-120 -5,-120 5,-170 5,-170 -5))'))},
+    {'id': 'nino12', 'wkb': ST_AsWKB(ST_GeomFromText(
+        'POLYGON((-90 -10,-80 -10,-80 0,-90 0,-90 -10))'))}
+];
+
+SELECT region_id, valid_time, count(*) AS grid_points,
+       round(avg(value), 3) AS mean_celsius
+FROM read_om_regions(
+    's3://openmeteo/data/copernicus_era5/sea_surface_temperature/chunk_987.om',
+    domain := 'copernicus_era5',
+    dimensions := ['lat', 'lon', 'time'],
+    axes := {'time': {'axis': 'time', 'start': TIMESTAMP '2026-10-01',
+                      'step': INTERVAL '1 hour'}},
+    regions := getvariable('nino_regions'),
+    region_crs := 'grid_lonlat')
+WHERE valid_time >= TIMESTAMP '2026-10-01'
+  AND valid_time < TIMESTAMP '2026-10-02'
+GROUP BY region_id, valid_time
+ORDER BY region_id, valid_time;
+```
+
+The pinned [ERA5 configuration](https://github.com/open-meteo/open-meteo/blob/b06f4760fd1f997e5559bb380f64c5e496b4a509/Sources/App/Era5/Era5Domain.swift), [chunk writer](https://github.com/open-meteo/open-meteo/blob/b06f4760fd1f997e5559bb380f64c5e496b4a509/Sources/App/Helper/OmFileSplitter.swift), and [Unix time index](https://github.com/open-meteo/open-meteo/blob/b06f4760fd1f997e5559bb380f64c5e496b4a509/Sources/OmTime/Time.swift) define 504 hourly steps per file. Chunk N starts at 1970-01-01 plus N × 504 hours; chunk 987 starts at 2026-10-01 00:00 UTC. The example selects its first day. Check shape and producer conventions when changing the object; explicit axis labels do not discover timestamps. These averages are not climatological anomalies or area-weighted Nino indices.
 
 ### HTTPS, private S3, and read metrics
 

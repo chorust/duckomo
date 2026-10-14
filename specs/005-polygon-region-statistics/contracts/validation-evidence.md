@@ -27,7 +27,7 @@ A、member0、time0：sample_count=9、valid_count=8、sum=77、mean=9.625、min
 | P3 I/O与依赖 | 精确过滤先于值解码；值过滤未投影仍有效；coordinate/source/region-only/count/empty值index/data/decode为0；4096/4097 ranges回退不漏点 | SC-005 |
 | P4 执行资源 | 1/2/4 worker结果一致且记录实际active workers；跨批/空中间批不提前EOF；10× owned work与隔离RSS实验、输入预算边界；准备/geometry/decode取消、故障恢复、LIMIT/多scan/多连接终态 | SC-006 |
 | P5 真实远程与收益 | 五类同内容local/HTTP/HTTPS/签名S3的固定窗口基准/区域结果逐行一致；每类HTTP和签名S3冷窗口基准→区域的value bytes、decoded blocks、服务发送量严格下降；全部查询成功完整、审计含重试 | SC-004 |
-| P6 版本回归 | 三版本相同输入分别执行P0–P5；汇总工具逐一重算产物/输入/证据 hash 并确认各版本请求范围全部通过。每个版本的本地构建至少执行全套现有普通读取 SQLLogicTest/native、当前16项 ASan/UBSan（13项既有检查与3项区域检查）、fixture/reference hash 和 region-specific tests；缺任一目标不以编译通过代替 | FR-017–019 |
+| P6 版本回归 | 三版本相同输入分别执行P0–P5；汇总工具逐一重算产物/输入/证据 hash 并确认各版本请求范围全部通过。每个版本的本地构建至少执行全套现有普通读取 SQLLogicTest/native、当前16项 ASan/UBSan（13项既有检查与3项区域检查）、fixture/reference hash 和 region-specific tests。每版本的 `<version>/regressions/manifest.json` 必须逐项记录这些成功命令、日志 hash、16 项无跳过的 sanitizer 结果，并与 P0–P4 和 P5 使用同一份当前源码对应的 DuckOMO 产物。每条命令记录所选构建环境及实际依赖产物路径/hash；sanitizer 使用隔离构建扩展，JUnit 中的生命周期加载路径必须与该隔离产物一致。缺任一记录为 not-run，不以编译通过代替 | FR-017–019 |
 | P7 独立复现 | 未参与实现者按quickstart完成多区域/分时统计/空缺测/一次固定窗口远程收益，环境命令hash及结论齐备 | SC-007/FR-020 |
 
 P0 首先做，不先实现整个 scanner 后才检查空间依赖可行性。P1/P2/P3 可先本地 synthetic，但完整 gate 必须具备表中要求的覆盖。P5 不依赖历史 003 G5；采用当前官方 HTTPFS 契约。P7 可以准备指南，但完成判定依赖稳定可执行产物及相应 gate。

@@ -177,6 +177,55 @@ ORDER BY "temperature";
 104.000000	204.000000	304.000000	4.000000	404.000000
 105.000000	205.000000	305.000000	5.000000	405.000000
 
+# Explicit selection uses canonical encoded paths and only the selected MAP key.
+query R
+SELECT avg("weird%2Fname%25/value") FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/nested.om', variable := '/weird%2Fname%25/value',
+    dimensions := map(['weird%2Fname%25/value'], [['row','column']]));
+----
+402.500000
+
+statement ok
+SET duckomo_revalidate_metadata = true;
+
+query R
+SELECT avg(temperature) FROM read_om('__WORKING_DIRECTORY__/test/data/multi.om',
+    variable := 'temperature', dimensions := ['row','column']);
+----
+2.500000
+
+statement ok
+SET duckomo_revalidate_metadata = false;
+
+query R
+SELECT avg("layer_a/value") FROM read_om('__WORKING_DIRECTORY__/test/data/nested.om',
+    dimensions := ['row','column']);
+----
+102.500000
+
+query I
+SELECT count(*) FROM om_grid_info('__WORKING_DIRECTORY__/test/data/multi.om', variable := 'temperature',
+    dimensions := ['row','column'], spatial_axes := ['row','column'],
+    grid := {'nx':3,'ny':2,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'});
+----
+1
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/multi.om', variable := NULL);
+----
+<REGEX>:.*nonempty VARCHAR.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/multi.om', variable := 'missing');
+----
+<REGEX>:.*not one Float32 value array.*
+
+statement error
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/multi.om', variable := 'temperature',
+    dimensions := map(['temperature','humidity'], [['row','column'],['row','column']]));
+----
+<REGEX>:.*exactly cover every array path.*
+
 # Exact coverage is required: a missing key and an unknown replacement key
 # must both fail during binding.
 statement error
