@@ -107,6 +107,52 @@ def load_grid_samples(manifest_path: Path, repository_root: Path) -> tuple[list[
     return samples, hashlib.sha256(payload).hexdigest()
 
 
+def load_region_samples(manifest_path: Path, repository_root: Path) -> tuple[list[dict], str]:
+    manifest_path = manifest_path.resolve()
+    payload = manifest_path.read_bytes()
+    manifest = json.loads(payload)
+    targets = manifest.get("targets")
+    required = {"ncep_gfswave025", "gem_rdps_10km", "gem_regional",
+                "aladin_central_europe_2km", "ecmwf_ifs"}
+    if manifest.get("schema_version") != 1 or not isinstance(targets, list):
+        raise RuntimeError("region manifest must use schema_version 1 and contain targets")
+    samples = []
+    seen = set()
+    for target in targets:
+        if not isinstance(target, dict):
+            raise RuntimeError("region manifest contains an invalid target")
+        sample_id = target.get("grid_id")
+        obj = target.get("object", {})
+        local_name = obj.get("path")
+        expected_hash = obj.get("sha256")
+        expected_size = obj.get("size_bytes")
+        if (not isinstance(sample_id, str) or not sample_id or
+                any(not (char.isascii() and (char.isalnum() or char in "_.-")) for char in sample_id) or
+                sample_id in seen or not isinstance(local_name, str)):
+            raise RuntimeError("region manifest contains an invalid or duplicate grid_id/path")
+        seen.add(sample_id)
+        relative_path = Path(local_name)
+        if relative_path.is_absolute() or ".." in relative_path.parts:
+            raise RuntimeError(f"region manifest has an unsafe local path for {sample_id}")
+        local_path = (repository_root / relative_path).resolve()
+        if not local_path.is_relative_to(repository_root.resolve()):
+            raise RuntimeError(f"region manifest path escapes the repository for {sample_id}")
+        if not isinstance(expected_hash, str) or len(expected_hash) != 64 or not isinstance(expected_size, int):
+            raise RuntimeError(f"region manifest identity is incomplete for {sample_id}")
+        if not local_path.is_file():
+            raise RuntimeError(f"frozen region target is missing locally: {local_path}")
+        if local_path.stat().st_size != expected_size or hash_file(local_path) != expected_hash:
+            raise RuntimeError(f"frozen region target size/hash mismatch for {sample_id}")
+        with local_path.open("rb") as stream:
+            if stream.read(3) != b"OM\x03":
+                raise RuntimeError(f"frozen region target is not OM v3: {sample_id}")
+        samples.append({"id": sample_id, "path": local_path, "sha256": expected_hash,
+                        "size_bytes": expected_size, "key": f"duckomo/grids/{sample_id}.om"})
+    if seen != required:
+        raise RuntimeError("region manifest must contain exactly the five frozen 005 targets")
+    return samples, hashlib.sha256(payload).hexdigest()
+
+
 def http_server_main(args: list[str]) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--fixtures", required=True)
@@ -605,6 +651,7 @@ def main() -> int:
     parser.add_argument("--real-file", type=Path)
     parser.add_argument("--real-manifest", type=Path)
     parser.add_argument("--grid-manifest", type=Path)
+    parser.add_argument("--region-manifest", type=Path)
     parser.add_argument("--s3-endpoint")
     parser.add_argument("--s3-bucket")
     parser.add_argument("--authorized-s3-bucket", default=os.getenv("DUCKOMO_AUTHORIZED_S3_BUCKET"),
@@ -624,7 +671,10 @@ def main() -> int:
         stop_services(output)
         return 0
     if not options.real_file and not options.grid_manifest:
-        parser.error("--real-file or --grid-manifest is required unless --stop is used")
+        if not options.region_manifest:
+            parser.error("--real-file, --grid-manifest, or --region-manifest is required unless --stop is used")
+    if options.grid_manifest and options.region_manifest:
+        parser.error("--grid-manifest and --region-manifest cannot be combined")
     if not options.s3_endpoint or not options.s3_bucket:
         parser.error("--s3-endpoint and --s3-bucket are required unless --stop is used")
     if not options.authorized_s3_bucket:
@@ -663,6 +713,7 @@ def main() -> int:
 
     grid_samples = []
     grid_manifest_sha256 = None
+    region_manifest_sha256 = None
     if options.grid_manifest:
         try:
             grid_samples, grid_manifest_sha256 = load_grid_samples(
@@ -671,6 +722,14 @@ def main() -> int:
             parser.error(str(error))
         if not options.http_tls_cert or not options.http_tls_key:
             parser.error("--grid-manifest requires --http-tls-cert and --http-tls-key for controlled HTTPS")
+    if options.region_manifest:
+        try:
+            grid_samples, region_manifest_sha256 = load_region_samples(
+                options.region_manifest, Path(__file__).resolve().parent.parent)
+        except (OSError, ValueError, RuntimeError) as error:
+            parser.error(str(error))
+        if not options.http_tls_cert or not options.http_tls_key:
+            parser.error("--region-manifest requires --http-tls-cert and --http-tls-key for controlled HTTPS")
     if not options.s3_service_digest:
         parser.error("--s3-service-digest or DUCKOMO_S3_SERVICE_DIGEST must identify the fixed S3 service build")
     service_digest = options.s3_service_digest.removeprefix("sha256:")
@@ -799,6 +858,8 @@ def main() -> int:
             env["DUCKOMO_REAL_MANIFEST"] = str(real_manifest)
         if options.grid_manifest:
             env["DUCKOMO_GRID_MANIFEST"] = str(options.grid_manifest.resolve())
+        if options.region_manifest:
+            env["DUCKOMO_REGION_MANIFEST"] = str(options.region_manifest.resolve())
         write_private_text(output / "run.env",
                            "".join(f"export {key}={shlex.quote(value)}\n" for key, value in env.items()))
         atomic_json(output / "run-manifest.json", {
@@ -825,9 +886,13 @@ def main() -> int:
             "fixtures": {upload["key"]: {"sha256": upload["sha256"], "size_bytes": upload["size_bytes"]}
                          for upload in upload_specs},
             "grid_manifest_sha256": grid_manifest_sha256,
+            "region_manifest_sha256": region_manifest_sha256,
             "public_grid_samples": {sample["id"]: {"key": sample["key"], "sha256": sample["sha256"],
                                                       "size_bytes": sample["size_bytes"]}
-                                    for sample in grid_samples},
+                                    for sample in grid_samples if options.grid_manifest},
+            "region_samples": {sample["id"]: {"key": sample["key"], "sha256": sample["sha256"],
+                                                "size_bytes": sample["size_bytes"]}
+                               for sample in grid_samples if options.region_manifest},
             "http_grid_paths": {sample["id"]: f"/{sample['id']}.om" for sample in grid_samples},
             "real_manifest_sha256": real_manifest_sha256,
             "official_httpfs": str(httpfs),

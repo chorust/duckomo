@@ -1,0 +1,14 @@
+{
+  "schema_version":1,
+  "gate":"P3",
+  "status":"pass",
+  "reason":"",
+  "duckdb_version":"v1.5.5 (Variegata) d8cdaa33fd\n",
+  "inputs":{"sample_manifest_sha256":"72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f","resource_wkb_manifest_sha256":"7f3cc76ed78a8e826c0c8a3597df628ecd530c49c36cb9d8bd80d4fe8556d8c4","resource_wkb_sha256":"a14c2d8af9f6dcf96841e94afef57b91126c968142bb4f2e62064a92da44d2a2","region_scan_source_sha256":"d6211b762e97925bdab12b50552911cf0ad6a299a3b74076a4506a94b7eb3e1d","memory_small":{"bytes":27096,"sha256":"b30726368c5528be93ae28711173a56300419215a375203d58ddb150e3199b5a"},"memory_large":{"bytes":431352,"sha256":"e6a2fad366365fd2a311b63a9b9cfa443a6854f2766c7927ce4b90815c27c0df"},"duckomo_sha256":"aa9041641ed24f5d6823bb42625f20d4e0beca297304c0353044ac758b58ed7e","spatial_sha256":"b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d"},
+  "fixture_contract":{"small_shape":[256,256],"large_shape":[1024,1024],"shared_chunk_shape":[32,32],"point_count_ratio":16.000000},
+  "small":{"point_count":65536,"result_rows":1,"result_sum":0,"matched_pairs_exact":1,"geometry_tested_pairs":1,"input_wkb_bytes":93,"input_vertex_count":5,"value_data_bytes":421,"value_decoded_chunks":1,"owned_work_peak_bytes":550564,"owned_work_bound_bytes":642827,"startup_peak_rss_bytes":42430464,"process_peak_rss_bytes":49364992,"complete":true,"owned_complete":true,"output_sha256":"1a311694f1666cf01159535066d066a1f86140815376caa8cda1f8df3aeef24b"},
+  "large":{"point_count":1048576,"result_rows":1,"result_sum":0,"matched_pairs_exact":1,"geometry_tested_pairs":1,"input_wkb_bytes":93,"input_vertex_count":5,"value_data_bytes":421,"value_decoded_chunks":1,"owned_work_peak_bytes":550566,"owned_work_bound_bytes":1047177,"startup_peak_rss_bytes":42430464,"process_peak_rss_bytes":48861184,"complete":true,"owned_complete":true,"output_sha256":"962972a2665c87b085431b36d75d96ec70be0082f1bf09759c86a2c9e8884e5c"},
+  "ratios":{"owned_work_peak":1.000004,"isolated_process_peak_rss":0.989794},
+  "subchecks":{"zero_io_filters_parallel_fallback_and_legacy_metrics":true,"equal_narrow_result":true,"owned_work_ratio_at_most_2":true,"process_rss_ratio_at_most_2":true,"p4_resource_parallel_subset":true,"p4_lifecycle":"not-run"},
+  "limitations":{"spatial_internal_peak_bytes":null,"spatial_internal_memory_complete":false,"rss_scope":"isolated process; DuckDB and extension dependency memory is not separable","startup_peak_rss_is_recorded":true}
+}

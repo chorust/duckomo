@@ -917,6 +917,20 @@ std::vector<TreeArray> BuildMultiArrays() {
 	return {std::move(temperature), std::move(humidity)};
 }
 
+std::vector<TreeArray> BuildRegionIdConflictArrays() {
+	TreeArray region_id;
+	region_id.fixture.id = "regions.region_id_conflict";
+	region_id.fixture.shape = {5, 5};
+	region_id.fixture.chunks = {2, 3};
+	for (std::uint64_t index = 0; index < 25; ++index) {
+		region_id.fixture.values.push_back(static_cast<float>(index));
+	}
+	region_id.segments = {"region_id"};
+	region_id.axes = {"lat", "lon"};
+	region_id.reference_name = "regions_region_id_conflict.reference.csv";
+	return {std::move(region_id)};
+}
+
 std::vector<TreeArray> BuildSpatialConflictArrays() {
 	TreeArray latitude;
 	latitude.fixture.id = "spatial_conflict.latitude";
@@ -2234,6 +2248,80 @@ void Generate(const std::filesystem::path &output_directory) {
 	              projection_arrays, projection_decoded, negative_assets);
 }
 
+void GenerateRegionsFixtures(const std::filesystem::path &output_directory) {
+	std::filesystem::create_directories(output_directory);
+	std::vector<Fixture> fixtures;
+	auto add_fixture = [&](std::string id, std::string file_name, std::vector<std::uint64_t> shape,
+	                       std::vector<std::uint64_t> chunks, auto value_at) {
+		Fixture fixture;
+		fixture.id = std::move(id);
+		fixture.file_name = std::move(file_name);
+		fixture.reference_name = fixture.id + ".reference.csv";
+		fixture.shape = std::move(shape);
+		fixture.chunks = std::move(chunks);
+		const auto count = CheckedProduct(fixture.shape);
+		Require(count <= std::numeric_limits<std::size_t>::max(), "region fixture is too large");
+		fixture.values.reserve(static_cast<std::size_t>(count));
+		for (std::uint64_t index = 0; index < count; index++) fixture.values.push_back(value_at(index));
+		fixtures.push_back(std::move(fixture));
+	};
+	add_fixture("regions", "regions.om", {2, 3, 5, 5}, {1, 1, 2, 3}, [](std::uint64_t index) {
+		const auto x = index % 5;
+		const auto y = (index / 5) % 5;
+		const auto time = (index / 25) % 3;
+		const auto member = index / 75;
+		if (time == 2 || (y == 2 && x == 2)) return std::numeric_limits<float>::quiet_NaN();
+		return static_cast<float>(1000 * member + 100 * time + 10 * y + x);
+	});
+	add_fixture("regions_axis_order", "regions_axis_order.om", {3, 2, 5, 5}, {1, 1, 2, 3}, [](std::uint64_t index) {
+		const auto x = index % 5;
+		const auto y = (index / 5) % 5;
+		const auto member = (index / 25) % 2;
+		const auto time = index / 50;
+		if (time == 2 || (y == 2 && x == 2)) return std::numeric_limits<float>::quiet_NaN();
+		return static_cast<float>(1000 * member + 100 * time + 10 * y + x);
+	});
+	add_fixture("regions_no_time", "regions_no_time.om", {5, 5}, {2, 3}, [](std::uint64_t index) {
+		return static_cast<float>(index);
+	});
+	add_fixture("regions_long", "regions_long.om", {2, 3, 73, 61}, {1, 1, 16, 31}, [](std::uint64_t index) {
+		const auto x = index % 61;
+		const auto y = (index / 61) % 73;
+		const auto time = (index / (61 * 73)) % 3;
+		const auto member = index / (61 * 73 * 3);
+		return static_cast<float>(1000 * member + 100 * time + y + x * 0.01);
+	});
+	add_fixture("regions_nonfinite", "regions_nonfinite.om", {2, 2}, {1, 2}, [](std::uint64_t index) {
+		const float values[] = {std::numeric_limits<float>::quiet_NaN(),
+		                        std::numeric_limits<float>::infinity(),
+		                        -std::numeric_limits<float>::infinity(), -0.0F};
+		return values[index];
+	});
+
+	for (const auto &fixture : fixtures) {
+		const auto bytes = EncodeRootArray(fixture);
+		const auto path = output_directory / fixture.file_name;
+		WriteFile(path, bytes);
+		std::vector<std::uint64_t> shape;
+		std::vector<std::uint64_t> chunks;
+		const auto decoded = DecodeFullRootArray(path, &shape, &chunks);
+		Require(shape == fixture.shape && chunks == fixture.chunks,
+		        "official region fixture oracle returned different metadata for " + fixture.id);
+		RequireExactRoundtrip(fixture, decoded);
+		WriteReferenceCsv(output_directory / fixture.reference_name, decoded);
+		std::cout << "generated " << fixture.file_name << " shape=" << JsonNumberArray(shape)
+		          << " chunks=" << JsonNumberArray(chunks) << " rows=" << decoded.size()
+		          << " oracle=passed sha256=" << Sha256Hex(bytes) << '\n';
+	}
+	auto multi_arrays = BuildMultiArrays();
+	for (auto &array : multi_arrays) {
+		array.reference_name = "regions_" + array.reference_name;
+	}
+	GenerateGridTreeFixture(output_directory, "regions_multi.om", multi_arrays);
+	auto conflict_arrays = BuildRegionIdConflictArrays();
+	GenerateGridTreeFixture(output_directory, "regions_region_id_conflict.om", conflict_arrays);
+}
+
 // On-demand synthetic values on the full HRES shape, outside the frozen 004 manifest.
 void GenerateHresFixtures(const std::filesystem::path &output) {
 	constexpr std::uint64_t points = 6599680;
@@ -2281,12 +2369,14 @@ std::vector<std::uint64_t> ParseOracleShape(const std::string &text) {
 void PrintUsage(std::ostream &output) {
 	output << "Usage:\n"
 	       << "  duckomo_fixture_tool --output DIR\n"
+	       << "  duckomo_fixture_tool --regions-output DIR\n"
 	       << "  duckomo_fixture_tool --oracle INPUT.om --csv REFERENCE.csv\n"
 	       << "  duckomo_fixture_tool --oracle-prefix INPUT.om --variable /PATH --count N --csv REFERENCE.csv\n"
 	       << "  duckomo_fixture_tool --oracle-slice INPUT.om --offset A,B,... --shape A,B,... --csv REFERENCE.csv\n"
 	       << "\n--output generates raw.om, special.om, raw_large.om, spatial_flat.om, spatial_axes.om, spatial_single.om, spatial_conflict.om, source-conflict.om, multi.om, pfor_attributes.om, nested.om, projection.om, grids/layouts.om and per-layout grid OM files, grids/long-line.om, fixed-chunk projected and Gaussian memory pairs, their oracle CSV files, "
 	          "negative mutation assets, and manifest.json.\n"
 	       << "--oracle runs the independent fixed official OM reader over a full root array and exports index,value CSV.\n"
+	       << "--regions-output writes only the region-statistics fixtures and official-reader references under DIR.\n"
 	       << "--hres-output DIR generates synthetic HRES static/time-series fixtures without changing the frozen manifest.\n";
 }
 
@@ -2295,6 +2385,7 @@ void PrintUsage(std::ostream &output) {
 int main(int argc, char **argv) {
 	try {
 		std::filesystem::path output_directory;
+		std::filesystem::path regions_output;
 		std::filesystem::path hres_output;
 		std::filesystem::path oracle_input;
 		std::filesystem::path oracle_prefix_input;
@@ -2312,6 +2403,10 @@ int main(int argc, char **argv) {
 			}
 			if (argument == "--output" && index + 1 < argc) {
 				output_directory = argv[++index];
+				continue;
+			}
+			if (argument == "--regions-output" && index + 1 < argc) {
+				regions_output = argv[++index];
 				continue;
 			}
 			if (argument == "--hres-output" && index + 1 < argc) {
@@ -2373,6 +2468,13 @@ int main(int argc, char **argv) {
 			Require(output_directory.empty() && oracle_input.empty() && oracle_prefix_input.empty() && oracle_csv.empty(),
 			        "--hres-output cannot be combined with another mode");
 			GenerateHresFixtures(hres_output);
+			return 0;
+		}
+		if (!regions_output.empty()) {
+			Require(output_directory.empty() && oracle_input.empty() && oracle_prefix_input.empty() &&
+			            oracle_slice_input.empty() && oracle_csv.empty() && variable_path.empty() && prefix_count == 0,
+			        "--regions-output cannot be combined with another mode");
+			GenerateRegionsFixtures(regions_output);
 			return 0;
 		}
 		if (!output_directory.empty() && oracle_input.empty() && oracle_prefix_input.empty() && oracle_csv.empty()) {

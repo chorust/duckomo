@@ -10,6 +10,7 @@ set(DUCKOMO_TOOL_SOURCES
     duckomo_dimensions_validation
     duckomo_remote_validation
     duckomo_grid_validation
+    duckomo_region_validation
 )
 set(DUCKOMO_NATIVE_TEST_SOURCES
     batch_test
@@ -42,6 +43,9 @@ set(DUCKOMO_NATIVE_TEST_SOURCES
     grid_identity_test
     source_identity_test
     grid_version_compat_test
+    region_input_test
+    region_geometry_test
+    region_scan_test
 )
 
 set(DUCKOMO_SQLLOGICTEST_FILES
@@ -62,6 +66,8 @@ set(DUCKOMO_SQLLOGICTEST_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/source_identity.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/grid_info.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/grid_version_compat.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/regions.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/regions_spatial_dependency.test"
 )
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
     ${DUCKOMO_SQLLOGICTEST_FILES}
@@ -111,18 +117,23 @@ function(duckomo_link_generated_extension_loader target)
     endif()
 endfunction()
 
+set(DUCKOMO_EXISTING_TOOL_TARGETS)
 foreach(tool IN LISTS DUCKOMO_TOOL_SOURCES)
     duckomo_add_source_target(
         "${tool}"
         "tools/${tool}.cpp"
         tools
     )
+	if(TARGET "${tool}")
+		list(APPEND DUCKOMO_EXISTING_TOOL_TARGETS "${tool}")
+	endif()
 endforeach()
 
 if(TARGET duckomo_fixture_tool)
     target_link_libraries(duckomo_fixture_tool PRIVATE duckomo_om)
 endif()
 
+set(DUCKOMO_EXISTING_NATIVE_TEST_TARGETS)
 foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
     duckomo_add_source_target(
         "${test}"
@@ -130,6 +141,7 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
         native
     )
     if(TARGET "${test}")
+		list(APPEND DUCKOMO_EXISTING_NATIVE_TEST_TARGETS "${test}")
         if(test STREQUAL "domain_reference_test")
             target_include_directories("${test}" PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/tools")
         endif()
@@ -153,6 +165,17 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
                 "${PROJECT_SOURCE_DIR}/duckdb/extension/loader/dummy_static_extension_loader.cpp"
             )
             target_link_libraries("${test}" PRIVATE duckdb_static duckomo_extension duckomo_om)
+        elseif(test STREQUAL "region_input_test" OR test STREQUAL "region_geometry_test")
+            target_link_libraries("${test}" PRIVATE duckdb_static duckomo_extension duckomo_om)
+            duckomo_link_generated_extension_loader("${test}")
+		elseif(test STREQUAL "region_scan_test")
+			target_include_directories("${test}" PRIVATE
+				"${PROJECT_SOURCE_DIR}/duckdb/extension/core_functions/include"
+			)
+			target_link_libraries("${test}" PRIVATE
+				duckdb_static duckomo_extension duckomo_om core_functions_extension
+			)
+			duckomo_link_generated_extension_loader("${test}")
         elseif(test STREQUAL "grid_selection_test")
             target_sources("${test}" PRIVATE
                 "${PROJECT_SOURCE_DIR}/src/grid/regular_grid.cpp"
@@ -223,8 +246,25 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
     endif()
 endforeach()
 
-add_custom_target(duckomo_developer_tools
-    DEPENDS ${DUCKOMO_TOOL_SOURCES} ${DUCKOMO_NATIVE_TEST_SOURCES}
+add_custom_target(duckomo_developer_tools DEPENDS
+	${DUCKOMO_EXISTING_TOOL_TARGETS}
+	${DUCKOMO_EXISTING_NATIVE_TEST_TARGETS}
+)
+add_custom_target(duckomo_region_validation_bundle
+    DEPENDS duckomo_region_validation duckomo_fixture_tool
+            region_input_test region_geometry_test region_scan_test
+    SOURCES
+        "${CMAKE_CURRENT_SOURCE_DIR}/sql/regions.test"
+        "${CMAKE_CURRENT_SOURCE_DIR}/sql/regions_spatial_dependency.test"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tools/duckomo_region_validation.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tools/region_real_reference.py"
+        "${CMAKE_CURRENT_SOURCE_DIR}/native/region_input_test.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/native/region_geometry_test.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/native/region_scan_test.cpp"
+        "${PROJECT_SOURCE_DIR}/test/data/regions/manifest.json"
+        "${PROJECT_SOURCE_DIR}/scripts/fetch-region-runtime.py"
+        "${PROJECT_SOURCE_DIR}/scripts/generate-region-reference.py"
+        "${PROJECT_SOURCE_DIR}/scripts/freeze-region-targets.py"
 )
 set(DUCKOMO_VALIDATION_EXECUTABLES "")
 foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
@@ -241,6 +281,11 @@ file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/test/duckomo-validation-executables.tx
 # translation units. Linking the regular duckomo_extension here would leave the
 # code under test uninstrumented, even if the native executable itself used ASan.
 if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    set(DUCKOMO_REGION_SANITIZER_SPATIAL_PATH "" CACHE FILEPATH
+        "Verified matching spatial extension used by region sanitizer tests")
+    set(DUCKOMO_REGION_SANITIZER_SPATIAL_SHA256 "" CACHE STRING
+        "Verified SHA-256 of the spatial extension used by region sanitizer tests")
+    string(LENGTH "${DUCKOMO_REGION_SANITIZER_SPATIAL_SHA256}" DUCKOMO_REGION_SANITIZER_SPATIAL_SHA_LENGTH)
     set(DUCKOMO_SANITIZER_COMPILE_OPTIONS
         -O1 -g -UNDEBUG -fno-omit-frame-pointer -fsanitize=address,undefined
     )
@@ -271,6 +316,11 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
     # the test's relative extension and fixture paths; the release artifact
     # remains untouched for performance measurements.
     set(DUCKOMO_SANITIZER_RUNTIME_DIR "${CMAKE_CURRENT_BINARY_DIR}/sanitizer_runtime")
+    set(DUCKOMO_SANITIZER_EXTENSION_ENV
+        "DUCKOMO_EXTENSION_PATH=${DUCKOMO_SANITIZER_RUNTIME_DIR}/build/release/extension/duckomo/duckomo.duckdb_extension"
+        "DUCKOMO_TEST_EXTENSION=${DUCKOMO_SANITIZER_RUNTIME_DIR}/build/release/extension/duckomo/duckomo.duckdb_extension"
+        "DUCKOMO_CORE_FUNCTIONS_EXTENSION=${CMAKE_BINARY_DIR}/extension/core_functions/core_functions.duckdb_extension"
+    )
     file(MAKE_DIRECTORY "${DUCKOMO_SANITIZER_RUNTIME_DIR}/test")
     file(COPY "${PROJECT_SOURCE_DIR}/test/data" DESTINATION "${DUCKOMO_SANITIZER_RUNTIME_DIR}/test")
 
@@ -321,6 +371,7 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
             )
             set_tests_properties("duckomo_sanitizer_${test}" PROPERTIES
                 WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+                ENVIRONMENT "${DUCKOMO_SANITIZER_EXTENSION_ENV}"
             )
             list(APPEND DUCKOMO_SANITIZER_TEST_TARGETS "${test_target}")
         endif()
@@ -416,9 +467,61 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
             )
             set_tests_properties("duckomo_sanitizer_${test}" PROPERTIES
                 WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
-                ENVIRONMENT "DUCKOMO_EXTENSION_PATH=${DUCKOMO_SANITIZER_RUNTIME_DIR}/build/release/extension/duckomo/duckomo.duckdb_extension"
+                ENVIRONMENT "${DUCKOMO_SANITIZER_EXTENSION_ENV}"
             )
             list(APPEND DUCKOMO_SANITIZER_TEST_TARGETS "${test_target}")
+        endif()
+    endforeach()
+
+    foreach(test region_input_test region_geometry_test region_scan_test)
+        set(test_target "${test}_sanitizer")
+        duckomo_add_source_target("${test_target}" "native/${test}.cpp" "sanitizer/native")
+        if(TARGET "${test_target}")
+            set_target_properties("${test_target}" PROPERTIES EXCLUDE_FROM_ALL TRUE)
+            target_compile_options("${test_target}" PRIVATE ${DUCKOMO_SANITIZER_COMPILE_OPTIONS})
+            target_link_options("${test_target}" PRIVATE ${DUCKOMO_SANITIZER_LINK_OPTIONS})
+            target_link_libraries("${test_target}" PRIVATE
+                duckdb_static duckomo_extension_sanitized duckomo_om
+            )
+            if(test STREQUAL "region_scan_test")
+                target_include_directories("${test_target}" PRIVATE
+                    "${PROJECT_SOURCE_DIR}/duckdb/extension/core_functions/include"
+                )
+                target_link_libraries("${test_target}" PRIVATE core_functions_extension)
+            endif()
+            duckomo_link_generated_extension_loader("${test_target}")
+            if(test STREQUAL "region_input_test")
+                add_test(NAME "duckomo_sanitizer_${test}"
+                    COMMAND "$<TARGET_FILE:${test_target}>"
+                )
+                list(APPEND DUCKOMO_SANITIZER_TEST_TARGETS "${test_target}")
+                set_tests_properties("duckomo_sanitizer_${test}" PROPERTIES
+                    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+                )
+            elseif(DUCKOMO_REGION_SANITIZER_SPATIAL_PATH AND
+                   EXISTS "${DUCKOMO_REGION_SANITIZER_SPATIAL_PATH}" AND
+                   DUCKOMO_REGION_SANITIZER_SPATIAL_SHA_LENGTH EQUAL 64 AND
+                   DUCKOMO_REGION_SANITIZER_SPATIAL_SHA256 MATCHES "^[0-9a-f]+$")
+                if(test STREQUAL "region_geometry_test")
+                    add_test(NAME "duckomo_sanitizer_${test}"
+                        COMMAND "$<TARGET_FILE:${test_target}>"
+                                "${DUCKOMO_REGION_SANITIZER_SPATIAL_PATH}"
+                                "${DUCKOMO_REGION_SANITIZER_SPATIAL_SHA256}"
+                    )
+                else()
+                    add_test(NAME "duckomo_sanitizer_${test}"
+                        COMMAND "$<TARGET_FILE:${test_target}>"
+                                "${DUCKOMO_REGION_SANITIZER_SPATIAL_PATH}"
+                    )
+                endif()
+                list(APPEND DUCKOMO_SANITIZER_TEST_TARGETS "${test_target}")
+                set_tests_properties("duckomo_sanitizer_${test}" PROPERTIES
+                    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+                    ENVIRONMENT "${DUCKOMO_SANITIZER_EXTENSION_ENV};LSAN_OPTIONS=suppressions=${CMAKE_CURRENT_SOURCE_DIR}/data/regions/spatial-sanitizer.supp:print_suppressions=1"
+                )
+            else()
+                message(STATUS "Not registering ${test_target}: verified matching spatial runtime was not supplied")
+            endif()
         endif()
     endforeach()
 
@@ -440,7 +543,7 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
         )
         set_tests_properties(duckomo_sanitizer_projection_evidence PROPERTIES
             WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
-            ENVIRONMENT "DUCKOMO_EXTENSION_PATH=${DUCKOMO_SANITIZER_RUNTIME_DIR}/build/release/extension/duckomo/duckomo.duckdb_extension"
+            ENVIRONMENT "${DUCKOMO_SANITIZER_EXTENSION_ENV}"
         )
         list(APPEND DUCKOMO_SANITIZER_TEST_TARGETS duckomo_projection_evidence_sanitizer)
     endif()

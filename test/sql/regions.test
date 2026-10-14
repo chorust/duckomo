@@ -1,0 +1,544 @@
+# name: test/sql/regions.test
+# description: Validate region binding, exact row semantics, source identity, and aggregation composition
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+# Ordinary test_release needs no spatial package. The region validator provides
+# this path only after verifying the matching runtime identity and artifact hash.
+require-env DUCKOMO_SPATIAL_EXTENSION
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+statement ok
+LOAD '${DUCKOMO_SPATIAL_EXTENSION}';
+
+statement ok
+CREATE TEMP TABLE region_shapes(region_id VARCHAR, geom GEOMETRY);
+
+statement ok
+INSERT INTO region_shapes VALUES
+    ('A', ST_GeomFromText('POLYGON((100 20,102 20,102 22,100 22,100 20))')),
+    ('B', ST_GeomFromText('POLYGON((101 21,103 21,103 23,101 23,101 21))')),
+    ('Hole', ST_GeomFromText('POLYGON((100 20,104 20,104 24,100 24,100 20),(101 21,103 21,103 23,101 23,101 21))')),
+    ('Empty', ST_GeomFromText('POLYGON EMPTY')),
+    ('Outside', ST_GeomFromText('POLYGON((110 30,111 30,111 31,110 31,110 30))')),
+    ('Multi', ST_GeomFromText('MULTIPOLYGON(((100 20,101 20,101 21,100 21,100 20)),((103 23,104 23,104 24,103 24,103 23)))')),
+    ('CopyA', ST_GeomFromText('POLYGON((100 20,102 20,102 22,100 22,100 20))')),
+    ('Narrow', ST_GeomFromText('POLYGON((100 20,100.2 20,100.2 24,100 24,100 20))')),
+    ('Gap', ST_GeomFromText('POLYGON((100.1 20.1,100.2 20.1,100.2 20.2,100.1 20.2,100.1 20.1))')),
+    ('Corner', ST_GeomFromText('POLYGON((102 22,104 22,104 24,102 24,102 22))'));
+
+statement ok
+SET VARIABLE region_input = (
+    SELECT COALESCE(list({'id':region_id, 'wkb':ST_AsWKB(geom)} ORDER BY region_id),
+                    []::STRUCT(id VARCHAR,wkb BLOB)[])
+    FROM region_shapes
+);
+
+statement ok
+SET VARIABLE demo_grid = {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,
+                          'dlat':1.0,'dlon':1.0,'order':'separate'};
+
+statement ok
+SET VARIABLE demo_axes = {
+    'time':{'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},
+    'member':{'axis':'member','values':[0::BIGINT,1::BIGINT]}
+};
+
+statement ok
+CREATE TEMP VIEW region_samples AS
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'), include_source := true);
+
+# The stable row shape appends region_id and leaves om_source last.
+query T
+SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes')));
+----
+value FLOAT
+lat DOUBLE
+lon DOUBLE
+valid_time TIMESTAMP
+member BIGINT
+region_id VARCHAR
+
+query T
+SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM region_samples);
+----
+value FLOAT
+lat DOUBLE
+lon DOUBLE
+valid_time TIMESTAMP
+member BIGINT
+region_id VARCHAR
+om_source STRUCT(object_id VARCHAR, object_version VARCHAR, version_strength VARCHAR, content_verified BOOLEAN, grid_id VARCHAR, layout_id VARCHAR, logical_index UBIGINT, point_index UBIGINT, parent_point_index UBIGINT, axis_indices UBIGINT[])
+
+# A literal list with reversed STRUCT field order binds just like getvariable input.
+query I
+SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := [{'wkb':ST_AsWKB(ST_GeomFromText('POLYGON((100 20,102 20,102 22,100 22,100 20))')),
+                 'id':'Literal'}], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));
+----
+54
+
+# Domain-backed region binding uses the registered axis/layout without an explicit grid.
+query I
+SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/grids/gaussian-n160-identity.om',
+    regions := [{'id':'EmptyDomain','wkb':ST_AsWKB(ST_GeomFromText('POLYGON EMPTY'))}],
+    region_crs := 'grid_lonlat', dimensions := map(['n160_identity/value'], [['point']]),
+    domain := 'n160');
+----
+0
+
+# A source value named region_id conflicts even when that value is not projected.
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions_region_id_conflict.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['lat','lon'], grid := getvariable('demo_grid'), spatial_axes := ['lat','lon']);
+----
+<REGEX>:(?i).*region_id column name conflicts.*
+
+# om_source keeps the existing conflict rule when source identity is requested.
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/source-conflict.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := map(['om_source'], [['row','column']]),
+    grid := {'nx':3,'ny':2,'lat0':0.0,'lon0':0.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['row','column'], include_source := true);
+----
+<REGEX>:(?i).*om_source column name conflicts.*
+
+# Strict input checks reject incorrect CRS, malformed WKB, and duplicate IDs before filters or LIMIT.
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := getvariable('region_input'), region_crs := 'EPSG:4326',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));
+----
+<REGEX>:(?i).*\[region_reference\].*grid_lonlat.*
+
+# Empty inputs still validate declarations, and malformed typed rows are rejected at bind time.
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'EPSG:4326',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));
+----
+<REGEX>:(?i).*\[region_reference\].*grid_lonlat.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := [{'id':1,'wkb':ST_AsWKB(ST_GeomFromText('POLYGON((100 20,101 20,101 21,100 21,100 20))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','lat','lon'],
+    grid := getvariable('demo_grid'), spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));
+----
+<REGEX>:(?i).*\[region_input\].*
+
+# A structurally valid WKB with invalid topology is rejected by the bound spatial adapter.
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := [{'id':'Overlap','wkb':ST_AsWKB(ST_GeomFromText(
+        'MULTIPOLYGON(((100 20,102 20,102 22,100 22,100 20)),((101 21,103 21,103 23,101 23,101 21)))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','lat','lon'],
+    grid := getvariable('demo_grid'), spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));
+----
+<REGEX>:(?i).*\[region_input\].*region ordinal 1.*valid.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := [{'id':'Seam','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((-180 0,180 0,180 1,-180 1,-180 0))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','lat','lon'],
+    grid := getvariable('demo_grid'), spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));
+----
+<REGEX>:(?i).*\[region_input\].*(longitudes|180).*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := [{'id':'Pole','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0 89,1 89,1 90,0 90,0 89))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','lat','lon'],
+    grid := getvariable('demo_grid'), spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));
+----
+<REGEX>:(?i).*\[region_input\].*(pole|latitude).*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], domain := 'not_a_registered_grid',
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));
+----
+<REGEX>:(?i).*\[region_reference\].*(unknown|unregistered|not found).*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := [
+        {'id':'Good','wkb':ST_AsWKB(ST_GeomFromText('POLYGON((100 20,102 20,102 22,100 22,100 20))'))},
+        {'id':'Bad','wkb':from_hex('010300000001000000')}], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'))
+WHERE region_id='Good' LIMIT 1;
+----
+<REGEX>:(?i).*\[region_input\].*region ordinal 2.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := [
+        {'id':'Duplicate','wkb':ST_AsWKB(ST_GeomFromText('POLYGON((100 20,101 20,101 21,100 21,100 20))'))},
+        {'id':'Duplicate','wkb':ST_AsWKB(ST_GeomFromText('POLYGON((101 21,102 21,102 22,101 22,101 21))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','lat','lon'],
+    grid := getvariable('demo_grid'), spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));
+----
+<REGEX>:(?i).*\[region_input\].*id must be unique.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := NULL, region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));
+----
+<REGEX>:(?i).*\[region_input\].*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/does-not-exist.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon']);
+----
+<REGEX>:(?i).*(file access|io error|could not open|no such file|not found).*
+
+# The shared-spatial baseline checks scanner integration and candidate pruning.
+statement ok
+CREATE TEMP TABLE full_baseline AS
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'), include_source := true);
+
+statement ok
+CREATE TEMP TABLE expected_region_samples AS
+SELECT r.region_id, b.om_source.logical_index AS logical_index,
+       b.value, b.lat, b.lon, b.valid_time, b.member
+FROM full_baseline b CROSS JOIN region_shapes r
+WHERE ST_Covers(r.geom, ST_Point(b.lon, b.lat));
+
+statement ok
+CREATE TEMP TABLE actual_region_samples AS
+SELECT region_id, om_source.logical_index AS logical_index,
+       value, lat, lon, valid_time, member
+FROM region_samples;
+
+query I
+SELECT count(*) FROM actual_region_samples;
+----
+438
+
+query II
+SELECT
+    (SELECT count(*) FROM (SELECT * FROM expected_region_samples EXCEPT ALL SELECT * FROM actual_region_samples)),
+    (SELECT count(*) FROM (SELECT * FROM actual_region_samples EXCEPT ALL SELECT * FROM expected_region_samples));
+----
+0	0
+
+# The frozen Python membership oracle is independent of spatial and the scanner.
+# Exact typed rows include source positions, coordinates, Float32 values, and NULLs;
+# EXCEPT ALL in both directions also detects missing or duplicated memberships.
+statement ok
+CREATE TEMP TABLE independent_region_samples AS
+SELECT * FROM read_csv('__WORKING_DIRECTORY__/test/data/regions/regions-membership.reference.csv',
+    header=true, nullstr='', columns={
+        'region_id':'VARCHAR', 'logical_index':'UBIGINT', 'member':'BIGINT',
+        'time_index':'INTEGER', 'lat':'DOUBLE', 'lon':'DOUBLE', 'value':'FLOAT'});
+
+query III
+WITH actual AS (
+    SELECT region_id, logical_index, member,
+           date_diff('hour', TIMESTAMP '2026-01-01 00:00:00', valid_time)::INTEGER AS time_index,
+           lat, lon, value
+    FROM actual_region_samples
+)
+SELECT
+    (SELECT count(*) FROM independent_region_samples),
+    (SELECT count(*) FROM (SELECT * FROM independent_region_samples EXCEPT ALL SELECT * FROM actual)),
+    (SELECT count(*) FROM (SELECT * FROM actual EXCEPT ALL SELECT * FROM independent_region_samples));
+----
+438	0	0
+
+# Region IDs remain distinct even when geometry is identical; boundaries are covered and the hole interior is excluded.
+query I
+SELECT count(DISTINCT region_id) FROM region_samples WHERE region_id IN ('A','CopyA');
+----
+2
+
+query I
+SELECT count(*) FROM region_samples WHERE region_id = 'A' AND om_source.logical_index = 0;
+----
+1
+
+query I
+SELECT count(*) FROM region_samples WHERE region_id = 'CopyA' AND om_source.logical_index = 0;
+----
+1
+
+query I
+SELECT count(*) FROM region_samples WHERE region_id = 'Hole' AND lon = 102 AND lat = 22;
+----
+0
+
+query I
+SELECT count(*) FROM region_samples WHERE region_id = 'Hole' AND lon = 102 AND lat = 21
+  AND member = 0 AND valid_time = TIMESTAMP '2026-01-01 00:00:00';
+----
+1
+
+query I
+SELECT count(*) FROM region_samples WHERE region_id = 'Hole' AND lon = 101 AND lat = 22
+  AND member = 0 AND valid_time = TIMESTAMP '2026-01-01 00:00:00';
+----
+1
+
+query I
+SELECT count(*) FROM region_samples WHERE region_id IN ('Empty','Outside','Gap');
+----
+0
+
+# SQL aggregation is equal-weight over non-NULL source points and preserves empty/all-NULL distinctions.
+query T
+SELECT count(*)::VARCHAR || '/' || count(value)::VARCHAR || '/' || sum(value)::VARCHAR || '/' ||
+       avg(value)::VARCHAR || '/' || min(value)::VARCHAR || '/' || max(value)::VARCHAR
+FROM region_samples
+WHERE region_id='A' AND member=0 AND valid_time=TIMESTAMP '2026-01-01 00:00:00';
+----
+9/8/77.0/9.625/0.0/21.0
+
+query T
+SELECT count(*)::VARCHAR || '/' || count(value)::VARCHAR || '/' || coalesce(sum(value)::VARCHAR,'NULL') || '/' ||
+       coalesce(avg(value)::VARCHAR,'NULL')
+FROM region_samples
+WHERE region_id='A' AND member=0 AND valid_time=TIMESTAMP '2026-01-01 02:00:00';
+----
+9/0/NULL/NULL
+
+statement ok
+CREATE TEMP TABLE region_statistics AS
+SELECT region_id, valid_time, member, count(*) AS sample_count, count(value) AS valid_count,
+       sum(value) AS sum_value, avg(value) AS avg_value, min(value) AS min_value, max(value) AS max_value
+FROM region_samples
+GROUP BY region_id, valid_time, member;
+
+statement ok
+CREATE TEMP TABLE expected_region_statistics AS
+SELECT * FROM read_csv_auto('__WORKING_DIRECTORY__/test/data/regions/regions-statistics.reference.csv',
+                            header=true, nullstr='');
+
+statement ok
+CREATE TEMP TABLE complete_region_statistics AS
+SELECT r.region_id, t.valid_time, m.member,
+       coalesce(s.sample_count, 0) AS sample_count,
+       coalesce(s.valid_count, 0) AS valid_count,
+       s.sum_value, s.avg_value, s.min_value, s.max_value
+FROM region_shapes r
+CROSS JOIN (SELECT DISTINCT valid_time FROM full_baseline) t
+CROSS JOIN (SELECT DISTINCT member FROM full_baseline) m
+LEFT JOIN region_statistics s USING (region_id, valid_time, member);
+
+# The complete 10 x 3 x 2 SQL result matches the independent frozen oracle.
+query II
+WITH actual AS (
+    SELECT region_id, member, date_diff('hour', TIMESTAMP '2026-01-01 00:00:00', valid_time)::INTEGER AS time_index,
+           sample_count, valid_count, sum_value, avg_value, min_value, max_value
+    FROM complete_region_statistics
+), compared AS (
+    SELECT e.*, a.sample_count AS actual_sample_count, a.valid_count AS actual_valid_count,
+           a.sum_value AS actual_sum, a.avg_value AS actual_mean,
+           a.min_value AS actual_min, a.max_value AS actual_max,
+           e.region_id IS NOT NULL AS expected_present, a.region_id IS NOT NULL AS actual_present
+    FROM expected_region_statistics e
+    FULL OUTER JOIN actual a USING (region_id, member, time_index)
+)
+SELECT count(*)::INTEGER,
+       count(*) FILTER (WHERE
+           NOT expected_present OR NOT actual_present OR sample_count != actual_sample_count OR
+           valid_count != actual_valid_count OR
+           (sum IS NULL) != (actual_sum IS NULL) OR
+           (sum IS NOT NULL AND abs(sum - actual_sum) > greatest(1e-6, 1e-6 * abs(sum))) OR
+           (mean IS NULL) != (actual_mean IS NULL) OR
+           (mean IS NOT NULL AND abs(mean - actual_mean) > greatest(1e-6, 1e-6 * abs(mean))) OR
+           (min IS NULL) != (actual_min IS NULL) OR (min IS NOT NULL AND min != actual_min) OR
+           (max IS NULL) != (actual_max IS NULL) OR (max IS NOT NULL AND max != actual_max))::INTEGER
+FROM compared;
+----
+60	0
+
+query I
+SELECT count(*) FROM region_shapes r
+CROSS JOIN (SELECT DISTINCT valid_time FROM full_baseline) t
+CROSS JOIN (SELECT DISTINCT member FROM full_baseline) m
+LEFT JOIN region_statistics s USING (region_id, valid_time, member);
+----
+60
+
+query T
+SELECT coalesce(sum(sample_count),0)::VARCHAR || '/' || coalesce(sum(valid_count),0)::VARCHAR || '/' ||
+       coalesce(sum(sum_value)::VARCHAR,'NULL')
+FROM region_shapes r
+CROSS JOIN (SELECT DISTINCT valid_time FROM full_baseline) t
+CROSS JOIN (SELECT DISTINCT member FROM full_baseline) m
+LEFT JOIN region_statistics s USING (region_id, valid_time, member)
+WHERE r.region_id IN ('Empty','Outside','Gap');
+----
+0/0/NULL
+
+# Repeated labels merge only in SQL aggregation; distinct logical source positions remain available.
+statement ok
+SET VARIABLE repeated_time_region = (
+    SELECT [{'id':'A','wkb':ST_AsWKB(ST_GeomFromText('POLYGON((100 20,102 20,102 22,100 22,100 20))'))}]
+);
+
+query T
+SELECT valid_time::VARCHAR || '/' || member::VARCHAR || '/' || count(*)::VARCHAR || '/' ||
+       count(DISTINCT om_source.logical_index)::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions_axis_order.om',
+    regions := getvariable('repeated_time_region'), region_crs := 'grid_lonlat',
+    dimensions := ['time','member','lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], axes := {
+        'time':{'axis':'time','values':[TIMESTAMP '2026-01-01 00:00:00',
+                                      TIMESTAMP '2026-01-01 00:00:00',
+                                      TIMESTAMP '2026-01-01 01:00:00']},
+        'member':{'axis':'member','values':[0::BIGINT,1::BIGINT]}}, include_source := true)
+GROUP BY valid_time, member ORDER BY valid_time, member;
+----
+2026-01-01 00:00:00/0/18/18
+2026-01-01 00:00:00/1/18/18
+2026-01-01 01:00:00/0/9/9
+2026-01-01 01:00:00/1/9/9
+
+# NaN remains NULL, while infinities and their host aggregate behavior stay visible.
+statement ok
+SET VARIABLE nonfinite_regions = [
+    {'id':'All','wkb':ST_AsWKB(ST_GeomFromText('POLYGON((-0.5 -0.5,1.5 -0.5,1.5 1.5,-0.5 1.5,-0.5 -0.5))'))}
+];
+
+query T
+SELECT count(*)::VARCHAR || '/' || count(value)::VARCHAR || '/' ||
+       (isinf(min(value)) AND min(value) < 0)::VARCHAR || '/' ||
+       (isinf(max(value)) AND max(value) > 0)::VARCHAR || '/' ||
+       isnan(sum(value))::VARCHAR || '/' || isnan(avg(value))::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions_nonfinite.om',
+    regions := getvariable('nonfinite_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['lat','lon'],
+    grid := {'nx':2,'ny':2,'lat0':0.0,'lon0':0.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon']);
+----
+4/3/true/true/true/true
+
+# Objects without a time axis keep their original scalar schema and emit no guessed time column.
+query I
+SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions_no_time.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['lat','lon'], grid := getvariable('demo_grid'), spatial_axes := ['lat','lon']);
+----
+73
+
+# A typed empty collection remains a valid zero-row input and retains output schema.
+statement ok
+SET VARIABLE region_input = []::STRUCT(id VARCHAR,wkb BLOB)[];
+
+query I
+SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));
+----
+0
+
+query T
+SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes')));
+----
+value FLOAT
+lat DOUBLE
+lon DOUBLE
+valid_time TIMESTAMP
+member BIGINT
+region_id VARCHAR
+
+# A new prepare after rebinding the variable snapshots the changed region collection.
+statement ok
+SET VARIABLE region_input = (
+    SELECT list({'id':region_id, 'wkb':ST_AsWKB(geom)}) FROM region_shapes WHERE region_id='A'
+);
+
+statement ok
+PREPARE region_count AS SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));
+
+query I
+EXECUTE region_count;
+----
+54
+
+statement ok
+DEALLOCATE region_count;
+
+statement ok
+SET VARIABLE region_input = (
+    SELECT list({'id':region_id, 'wkb':ST_AsWKB(geom)}) FROM region_shapes WHERE region_id='Narrow'
+);
+
+statement ok
+PREPARE region_count AS SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));
+
+query I
+EXECUTE region_count;
+----
+30
+
+statement ok
+DEALLOCATE region_count;

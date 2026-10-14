@@ -43,6 +43,11 @@ test: release
 grid-validation: release
 	"$(PROJ_DIR)build/release/test/tools/duckomo_grid_validation" --self-check
 
+.PHONY: region-validation
+region-validation: release
+	cmake --build "$(PROJ_DIR)build/release" --target duckomo_region_validation_bundle --parallel
+	"$(PROJ_DIR)scripts/validate.sh" "$(PROJ_DIR)build/release" --local-only --regions
+
 # Keep sanitizer builds and timings separate from the regular release tests.
 .PHONY: sanitizer-test
 sanitizer-test: release

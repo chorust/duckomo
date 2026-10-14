@@ -1,0 +1,146 @@
+{
+  "status": "pass",
+  "stage": "all local versions completed",
+  "versions": {
+    "v1.5.4": {
+      "build_id": "ec24083e32cf3008368ee496a8847b5c4ba0f8e006008a7b363ead2c4ded2cc1",
+      "source_sha256": "3be1fcf158a30bb19ed27f244904c1c8196501e42a0a5387d3e1e696be400a70",
+      "artifact_hashes": {
+        "duckomo": "00288c10872b7eece42977759d20eaf2946b03c0ae3b67b4d1c64ccdc8bf559a",
+        "duckdb": "c0f756b7e17b5bc9c7b999c9deeaa1fa5f425a009092526bb13dc5abe58c5d38",
+        "unittest": "f44c765ca5354103849cb76387ce402783d3854fc288d2c831ab49db7674623d"
+      },
+      "local_status": "pass"
+    },
+    "v1.5.5": {
+      "build_id": "1dbc3e6e32895af53d58ec0ded3319ec0bdf77b56f070b89f70d77e314a85937",
+      "source_sha256": "3be1fcf158a30bb19ed27f244904c1c8196501e42a0a5387d3e1e696be400a70",
+      "artifact_hashes": {
+        "duckomo": "aa9041641ed24f5d6823bb42625f20d4e0beca297304c0353044ac758b58ed7e",
+        "duckdb": "bef9fd5bee5d4e42f4c0e0380a6ffb1577ab50cf475f632212033a0a6bce1d81",
+        "unittest": "e301674936e4a12e37ae5631a20d20591b66a3716345d5ac447da7a97fce96d2"
+      },
+      "local_status": "pass"
+    },
+    "v1.5.6": {
+      "build_id": "657b1402e7f9a98e34ab595c54ef1eab19d2cee373f4093824e170e8fe77aa89",
+      "source_sha256": "3be1fcf158a30bb19ed27f244904c1c8196501e42a0a5387d3e1e696be400a70",
+      "artifact_hashes": {
+        "duckomo": "6564a764ad436cb82543655278193f8127143e5e9710e8fcc967d24914f0e723",
+        "duckdb": "2ef173dd0a8b329b192a060356f2c112da3dc05b73265b0b5368424d8a1aff9b",
+        "unittest": "fb55f9481aef4b3622cd3492a6ea12f8a85cbcaff05cb80a262da9ff7583a283"
+      },
+      "local_status": "pass"
+    }
+  },
+  "commands": [
+    {
+      "version": "v1.5.4",
+      "stage": "build",
+      "argv": [
+        "bash",
+        "scripts/build-version.sh",
+        "v1.5.4",
+        "--region-sanitizers"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 439.359,
+      "log": "v1.5.4/build.log",
+      "log_sha256": "ac4c4a520a93c889b0a8ae78665b42a10af64c8756bb8f5195ef30e43509cc9b"
+    },
+    {
+      "version": "v1.5.4",
+      "stage": "local-validation",
+      "argv": [
+        "bash",
+        "scripts/validate.sh",
+        "--matrix",
+        "/home/blizhan/repo/github/duckomo/test/data/grids/version-matrix.json",
+        "--pair",
+        "v1.5.4",
+        "--output-root",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix",
+        "--local-only",
+        "--regions",
+        "--region-gates",
+        "P0,P1,P2,P3,P4"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 176.707,
+      "log": "v1.5.4/local-validation.log",
+      "log_sha256": "e005995a04fc6b7d3467b38b89d6edaa28b8c38a7f31d3fd918c1f54cfb5a3b2"
+    },
+    {
+      "version": "v1.5.5",
+      "stage": "build",
+      "argv": [
+        "bash",
+        "scripts/build-version.sh",
+        "v1.5.5",
+        "--region-sanitizers"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 553.712,
+      "log": "v1.5.5/build.log",
+      "log_sha256": "17903c42dd63a73cd3b86ea44f713e41bcfd70b00bf9a6c1cb6938936a5be2fb"
+    },
+    {
+      "version": "v1.5.5",
+      "stage": "local-validation",
+      "argv": [
+        "bash",
+        "scripts/validate.sh",
+        "--matrix",
+        "/home/blizhan/repo/github/duckomo/test/data/grids/version-matrix.json",
+        "--pair",
+        "v1.5.5",
+        "--output-root",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix",
+        "--local-only",
+        "--regions",
+        "--region-gates",
+        "P0,P1,P2,P3,P4"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 179.65,
+      "log": "v1.5.5/local-validation.log",
+      "log_sha256": "005daf00b2f9b1aa1947dda0d343a4d75706e704120a12d29a000bde53bd1b78"
+    },
+    {
+      "version": "v1.5.6",
+      "stage": "build",
+      "argv": [
+        "bash",
+        "scripts/build-version.sh",
+        "v1.5.6",
+        "--region-sanitizers"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 638.322,
+      "log": "v1.5.6/build.log",
+      "log_sha256": "2ba0dc8cffe029115a30764a7c9d4f4dddfc5acd22d0bcb54b0d96db83f1d9de"
+    },
+    {
+      "version": "v1.5.6",
+      "stage": "local-validation",
+      "argv": [
+        "bash",
+        "scripts/validate.sh",
+        "--matrix",
+        "/home/blizhan/repo/github/duckomo/test/data/grids/version-matrix.json",
+        "--pair",
+        "v1.5.6",
+        "--output-root",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix",
+        "--local-only",
+        "--regions",
+        "--region-gates",
+        "P0,P1,P2,P3,P4"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 163.31,
+      "log": "v1.5.6/local-validation.log",
+      "log_sha256": "373ce6f7127e12ee62aaeaac1d005bd0f6a330d2e4c2bd43ec7872f0f15d8997"
+    }
+  ]
+}

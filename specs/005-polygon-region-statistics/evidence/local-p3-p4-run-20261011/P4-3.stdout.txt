@@ -1,0 +1,2 @@
+region_scan_test: cancellation response after first output was 0.646393 ms (observed only; no fixed bound)
+region_scan_test: task windows, ordinals, zero-value I/O, metrics, cancellation, short-read/decoder/object-change failure recovery, and multi-connection lifecycle passed

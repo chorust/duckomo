@@ -1,0 +1,11 @@
+{
+  "schema_version":1,
+  "status":"pass",
+  "manifest_path":"/home/blizhan/repo/github/duckomo/test/data/regions/manifest.json",
+  "manifest_sha256":"14253140fa569b1b8ae7f69911a66103db16bc98651566eee8be7aebf7ff9a24",
+  "duckdb_path":"/home/blizhan/repo/github/duckomo/build/release/duckdb",
+  "duckomo_sha256":"6fb7d6d776cd673e1838913e9acdf13a6b628f72bd73214a9c258aa245d06d11",
+  "spatial_sha256":"af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+  "requested_gates":["P0"],
+  "gates":[{"id":"P0","status":"pass","reason":"","commands":[{"argv":["/home/blizhan/repo/github/duckomo/build/release/test/native/region_geometry_test","/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/spatial.duckdb_extension","af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a"],"exit_code":0,"elapsed_ms":49.0897,"peak_rss_bytes":45711360,"output_path":"P0-1.stdout.txt","output_sha256":"12c11916f00549cc40bc2a7509cb5a7fb302724cb823cd67ae2e5a82a896c4be"},{"argv":["/home/blizhan/repo/github/duckomo/build/release/test/unittest","--test-dir","/home/blizhan/repo/github/duckomo","test/sql/read_om.test"],"exit_code":0,"elapsed_ms":20.142,"peak_rss_bytes":34729984,"output_path":"P0-2.stdout.txt","output_sha256":"5798fb0313c3736526ab2368e47391e2996749bc0400f143589dc92fc7e79776"},{"argv":["/home/blizhan/repo/github/duckomo/build/release/test/unittest","--test-dir","/home/blizhan/repo/github/duckomo","test/sql/regions_spatial_dependency.test"],"exit_code":0,"elapsed_ms":19.9051,"peak_rss_bytes":32714752,"output_path":"P0-3.stdout.txt","output_sha256":"1331ce3bfae858b456e52ae4307b31650fc016becc04ab2e4279410055cee716"},{"argv":["/home/blizhan/repo/github/duckomo/build/release/test/unittest","--test-dir","/home/blizhan/repo/github/duckomo","test/sql/regions.test"],"exit_code":0,"elapsed_ms":116.025,"peak_rss_bytes":107196416,"output_path":"P0-4.stdout.txt","output_sha256":"a42f8de82a521dd0b25a6de0f5acc4f3db3e2d56fd7d0c08db93bf0e34e99fd0"}]}]
+}

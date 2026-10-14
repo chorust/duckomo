@@ -1,12 +1,13 @@
 # DuckOMO 技术架构
 
-当前工作树实现本地 OM 扫描、语义维度选择、列裁剪、规则/投影/Gaussian 网格、native-window 空间选择、opt-in source 身份、grid-info 描述、DuckDB 并行任务及 v4 指标。004 的真实坐标/值、远程收益、完整内存 ledger 和独立复现仍未闭环。官方 HTTPFS 路径已通过 v1.5.4/v1.5.5/v1.5.6 的受控验证；2.0 开发版不在本轮范围。用户接口见 [接口说明](spec.md)，定义与证据等级见 [多网格证据表](grid-domains.md)。
+当前工作树实现本地 OM 扫描、语义维度选择、列裁剪、规则/投影/Gaussian 网格、多区域 polygon 扫描、native-window 空间选择、opt-in source 身份、grid-info 描述、DuckDB 并行任务及 v4 指标。005 的区域功能使用匹配版 spatial adapter、受检 WKB、惰性区域任务和逐 query owned-memory accounting；版本矩阵和 P6 审计状态见 [005 版本矩阵](../specs/005-polygon-region-statistics/evidence/version-matrix.md) 与 [P6 摘要](../specs/005-polygon-region-statistics/evidence/p6-summary.md)；P7 独立复现由未参与实现者执行。004 的验收仍按自身网格/远程/内存和独立复现门禁判断。官方 HTTPFS 路径已通过 v1.5.4/v1.5.5/v1.5.6 的受控验证；2.0 开发版不在本轮范围。用户接口见 [接口说明](spec.md)，定义与证据等级见 [多网格证据表](grid-domains.md)。
 
 ## 模块职责
 
 | 模块 | 职责 | 源码 |
 |---|---|---|
 | DuckDB table function | 绑定参数、稳定 schema、分析空间/语义条件、生成任务并输出 DataChunk | `src/scan/read_om.cpp` |
+| Region input/geometry | 严格审计 WKB/ID/预算；逐区域运行官方 spatial `covers`，隔离 worker expression state 并轮询取消 | `src/scan/region_input.cpp`、`src/scan/region_geometry.cpp` |
 | Schema / dimensions | 变量命名、共享 LIST/逐变量 MAP 归一化及共同的 shape/有序轴/语义坐标校验 | `src/scan/schema.cpp`、`dimensions.cpp`、`semantic_axes.cpp` |
 | ProjectionPlan | 保留输出与过滤依赖，去重物理变量并保留输出顺序 | `src/scan/projection.cpp` |
 | GridDefinition / SpatialLayout | 封闭 Regular/Rotated/Lambert/Stereographic/Gaussian 定义，映射原生坐标和真实 strides | `src/grid/`、`src/include/duckomo/grid_definition.hpp` |
@@ -20,7 +21,7 @@
 
 ```text
 DuckDB SQL
-  → Bind：读取元数据，校验语义轴、变量、grid/domain、CRS profile 与布局，确定 schema
+  → Bind：读取元数据，校验语义轴、变量、grid/domain、CRS profile、区域全集与布局，确定 schema
   → RemoteReadSession（远程）：经当前 ClientContext 打开官方文件系统句柄，检查可观察长度/版本身份
   → 优化：收集安全空间/语义必要条件，保留完整 WHERE
   → GlobalInit：计算受检记录/window 上界，初始化共享惰性 cursor
@@ -33,6 +34,8 @@ DuckDB SQL
 ```
 
 不带空间或语义条件时沿用完整 row-major 逻辑扫描；未映射轴仍参与行索引，不被折叠。task cursor 不物化全域行或任务表。查询成功与扫描完整是两个状态：下游 LIMIT 可以令 SQL 成功、`scan_complete=false`。
+
+区域扫描在绑定阶段先验证并保留整个 regions 输入，随后为每个区域和原始空间窗口惰性生成任务。worker 只持有当前区域 geometry 与 bounded point batch；官方 spatial 执行最终 `covers` 判断。区域集合、geometry opaque copy、bound predicates、task/worker scratch 均纳入 DuckOMO query-owned memory accounting；spatial/GEOS 内部内存仍单列 unknown，进程 RSS 作为独立增长检查。取消和异常在 task/QueryEnd 汇合时发布不完整终态并清理状态。SQL 侧按 region_id/time/member 等分组，不在扫描器里预聚合。
 
 ## 条件分析与正确性
 

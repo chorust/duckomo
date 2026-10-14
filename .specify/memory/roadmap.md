@@ -1,4 +1,20 @@
 <!--
+LATEST SYNC IMPACT REPORT — 2026-10-13
+======================================
+Version change: 1.2.0 → 1.3.0
+Bump rationale: MINOR — 新增 005 台账条目并完成生命周期归纳（implemented，仅限固定局部窗口修订范围），属新 spec 收口而非单纯措辞调整。
+
+Changes this revision:
+  - 新增 005（多边形区域统计，Phase 7 前置）条目：status implemented，50/50 任务勾选。
+  - 三版本 P0–P6 全过；P5 按负责人 2026-10-13 授权改为固定局部窗口范围，全域远程收益未验证、未宣称。
+  - P7 由三次 fresh-context AI 验证留档，第三次通过；明确非人工验收。只读 roadmap debrief 建议治理方评估是否在修订范围内升为 verified，该建议未应用；roadmap 保持 implemented。
+  - 已知实现限制留档：跨扫描切片重复小远程读取未修复；旧归档 Python 回归增量已于2026-10-14三版本重跑，每版93项通过。
+
+Specs affected: 005
+Open questions added/resolved: none
+Notes: 历史 manifests/gate 结果不追溯改写；definitions.json/registry 支持声明 hash 复核未变。
+
+---
 LATEST SYNC IMPACT REPORT — 2026-10-10 (3)
 ======================================
 Version change: 1.1.1 → 1.2.0
@@ -124,6 +140,7 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 | 002 | Phase 3 | `verified` | 46/46 勾选 | 原始 Phase 3 / ncep_gfswave025 在 AArch64 独立验收；T042 为延期决定，未执行 |
 | 003 | Phase 4–5 | `in-progress` | 本地 G0–G2 通过，G4 只有本地部分结果；G3、G5–G7 未完成，完整交付门禁未闭环 |
 | 004 | Phase 6 | `in-progress` | 任务仍在实施；四个 Open-Meteo 定义 2026-10-10 已登记 coordinate-value-validated（C-14）；N-grid 本轮跳过，远程/内存/版本 gate、完整 H1/H2 和独立复现未闭环 |
+| 005 | Phase 7 前置：多边形区域统计 | `implemented` | 50/50 任务勾选；三版本 P0–P6 全过（固定局部窗口范围）；P7 为 fresh-context AI 独立复现通过（非人工）；全域远程收益未验证；是否据此升级 verified 待治理确认 |
 
 生命周期根据实施和验收 artifacts 归纳；任务勾选不代表运行 gate 通过。001 与 003 的 spec 头部仍写 `Draft`；原文件状态保留。
 
@@ -183,7 +200,16 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 - **Current scope note (2026-10-10):** 下条历史 Notes 的 N-grid 阻塞及 O1280 supplemental 限制已由本轮修订替代；旧执行结果/hash 不变，T004 等其余工作和完整门禁仍开放，不提升 lifecycle。同日补记的 O1280 本地真实查询验证（含 HSURF 轴绑定修复）与 pinned producer 参考决定已使四个 Open-Meteo 定义登记 coordinate-value-validated（C-14）；远程/完整 gate/H9 仍开放。Phase 8 series 只是产品文档中的待评审提案，不新增已立项 spec。
 - **Historical notes (retained):** requirements checklist 全部通过。三类真实 Open-Meteo OM v3 投影样本已有独立坐标和官方 OM C 全量值参考；2026-10-08 匹配 baseline H1 子比较对全部可用投影坐标和值逐位置通过，但其 `[ny,nx,ntime]` 轴顺序仍来自 producer profile，OM 对象源轴映射尚无独立证明。HRES O1280 `HSURF.om` 全值参考仍是补充证据，行长/坐标 point order 未映射，不能提升 N160/N320/区域状态。T003/T004 对 N-grid真实对象、区域局部点序和完整验收参考仍未完成；本地合成选择回归不替代 H0/H1/H6。G3 的远程依赖、2.0 matrix 与 H9 独立复现仍待完成。因此保持 `in-progress`，不能只因实现代码或生成 registry 存在而标 `implemented` / `verified`。
 
-### 尚未形成 spec 的既有方向
+### 005 — 多边形区域统计  [status: implemented]
+
+- **Description:** 在单对象扫描器上增加 `read_om_regions` 多区域读取入口：调用者显式提供标准 2D Polygon/MultiPolygon（WKB），平面 `covers` 精确筛选在值解码前执行，原生 SQL 分组统计区分空组与全 NULL，且无值依赖维持零值成本。
+- **Outcome:** 区域—原始记录多重集合匹配独立 oracle；五目标×三版本×四来源在冻结固定局部窗口内完整对照，HTTP/S3 的三项成本严格下降；预算、取消和生命周期可审计。
+- **Scope (in, 2026-10-13 修订):** 负责人授权取消全域远程扫描，P5/P6/P7 按 [固定局部窗口契约](../../specs/005-polygon-region-statistics/contracts/bounded-remote-validation-20261013.md) 执行；全域远程收益未验证、未宣称。`grid_lonlat` 为调用者声明，不重投影；上限 4096 区域/16 MiB 总 WKB；区域入口显式依赖 spatial。
+- **Scope (out):** 任意 CRS/重投影、面积加权、插值、跨 chunk 合并缓存、多对象拼接、Line/点几何。
+- **Evidence:** [final](../../specs/005-polygon-region-statistics/evidence/final.md)：三版本 16/16 sanitizer、942 断言 SQL 回归、P0–P4、固定窗口 P5（每版本 40/40 扫描）、P6 审计通过；P7 三次尝试完整留档，第三次 fresh-context AI 验证通过本地 108 行/12 组/18 组对照及 ncep 固定窗口 HTTPS 基准/区域对照（9 行相同、77,580→25,860 数据字节、135→45 解码块、150,469→79,671 服务字节）。独立报告一处 CSV hash 转录错误已由 final 记录父审计重算值。重复小远程读取限制未修复；2026-10-14 review修复后三版本P0–P4、16/16 sanitizer、19个SQL文件/1,028断言和93项Python回归通过，见[修复验证](../../specs/005-polygon-region-statistics/evidence/review-fixes-20261014.md)；新产物P5/P6/P7未重跑，旧记录保留历史范围。
+- **Notes:** lifecycle 保持 `implemented`：修复前产物P0–P6 在负责人批准的固定局部窗口修订范围完整通过，P7 有独立 fresh-context AI 复现记录；P7 明确为 AI 验证、非人工验收。roadmap debrief 建议确认该 AI 复现是否足以将本条升级为 `verified`，该建议尚未应用。全域远程收益/吞吐仍未验证，重复小远程读取限制保持开放。网格 registry 的既有支持声明 hash 未变。
+
+### 尚未形成 spec 的其他方向
 
 | 产品方向 | 已有目标与范围依据 | 原产品阶段状态 | 尚待确认 |
 | --- | --- | --- | --- |
@@ -212,8 +238,12 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 
 ---
 
-**Version**: 1.2.0 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-10
+<!-- Historical version snapshot: **Version**: 1.2.0 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-10 -->
 
 ## 2026-10-08 官方 HTTPFS 接入
 
 用户指定 v1.5.4、v1.5.5、v1.5.6 / Linux AArch64。C-09/C-11/C-12 已按迁移契约修订；C-10 并行职责保留。官方运行兼容性证据另行记录，不提升 003/004 的 verified 状态。旧 G5 失败保留且 superseded，完整 004 真实网格门禁和独立验证仍未闭环。
+
+---
+
+**Version**: 1.3.0 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-13

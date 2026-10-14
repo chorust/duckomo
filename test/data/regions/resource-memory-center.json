@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "id": "memory_center",
+  "path": "resource-memory-center.wkb",
+  "sha256": "a14c2d8af9f6dcf96841e94afef57b91126c968142bb4f2e62064a92da44d2a2",
+  "size_bytes": 93,
+  "crs": "grid_lonlat",
+  "vertices": 5,
+  "expected_region_record_pairs": 1,
+  "expected_value": 0.0,
+  "purpose": "fixed narrow region for 16x spatial-point owned-work and isolated-RSS comparison"
+}

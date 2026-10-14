@@ -59,7 +59,10 @@ def extension_source_digest(root: pathlib.Path) -> str:
     # by input_payload(). Its build result is written after a successful build,
     # so hashing the whole file here would make recording that result change
     # the build ID retroactively.
-    mutable_results = {"test/data/grids/version-matrix.json"}
+    mutable_results = {
+        "test/data/grids/version-matrix.json",
+        "test/data/regions/runtime-matrix.json",
+    }
     paths: list[pathlib.Path] = []
     for relative in roots:
         candidate = root / relative
@@ -219,9 +222,37 @@ def fetch_runtime(resolved):
     return records
 
 
+def verified_spatial_runtime(root, version):
+    matrix_path = root / 'test/data/regions/runtime-matrix.json'
+    matrix = load_document(matrix_path)
+    matches = [record for record in matrix.get('runtimes', [])
+               if isinstance(record, dict) and record.get('version') == version]
+    if len(matches) != 1:
+        raise MatrixError(f'region runtime matrix must contain exactly one {version} record')
+    artifact = matches[0].get('spatial_artifact')
+    if not isinstance(artifact, dict) or not isinstance(artifact.get('path'), str):
+        raise MatrixError(f'verified spatial artifact path is missing for {version}')
+    artifact_path = pathlib.Path(artifact['path'])
+    if not artifact_path.is_absolute():
+        artifact_path = matrix_path.parent / artifact_path
+    try:
+        verified_sha = subprocess.check_output(
+            [sys.executable, str(root / 'scripts/region_runtime.py'), str(matrix_path), version],
+            cwd=root, text=True, stderr=subprocess.PIPE,
+        ).strip()
+    except subprocess.CalledProcessError as error:
+        raise MatrixError(f'spatial runtime identity is not verified for {version}') from error
+    if digest_file(artifact_path) != verified_sha or artifact.get('sha256') != verified_sha:
+        raise MatrixError(f'verified spatial artifact SHA-256 mismatch for {version}')
+    return artifact_path.resolve(), verified_sha
+
+
 def build_pair(args):
     root = pathlib.Path(args.root).resolve()
     resolved = resolve(args)
+    spatial_path, spatial_sha = ('', '')
+    if args.region_sanitizers and not args.extension_only:
+        spatial_path, spatial_sha = verified_spatial_runtime(root, args.pair)
     inputs = resolved['input_payload']['commits']
     source = pathlib.Path(resolved['duckdb_source'])
     # Local shared clone avoids downloading the pinned base again; origin still
@@ -246,12 +277,15 @@ def build_pair(args):
                  '-DDUCKOMO_OM_COMMIT='+inputs['om_c']['commit'],
                  '-DDUCKOMO_EXTENSION_CI_TOOLS_COMMIT='+inputs['extension_ci_tools']['commit'],
                  '-DDUCKOMO_MATRIX_PLATFORM='+resolved['input_payload']['platform']['target'],
-                 '-DDUCKOMO_CXX_ABI='+resolved['input_payload']['platform']['cxx_abi']]
+                 '-DDUCKOMO_CXX_ABI='+resolved['input_payload']['platform']['cxx_abi'],
+                 '-DDUCKOMO_REGION_SANITIZER_SPATIAL_PATH='+str(spatial_path),
+                 '-DDUCKOMO_REGION_SANITIZER_SPATIAL_SHA256='+spatial_sha]
     configure += [f'-D{k}={v}' for k,v in sorted(resolved['input_payload']['build_options'].items())]
     subprocess.run(configure, cwd=root, check=True)
     targets = ['duckomo_loadable_extension'] if args.extension_only else [
         'shell', 'duckomo_loadable_extension', 'core_functions_loadable_extension',
         'json_loadable_extension', 'unittest', 'duckomo_developer_tools',
+        'duckomo_sanitizer_checks',
     ]
     build = ['cmake','--build',str(release),'--target',*targets,'--parallel',str(args.jobs)]
     subprocess.run(build,cwd=root,check=True)
@@ -284,6 +318,8 @@ def main():
         if name=='build':
             command.add_argument('--jobs',type=int,default=int(os.environ.get('DUCKOMO_BUILD_JOBS','8')))
             command.add_argument('--extension-only',action='store_true')
+            command.add_argument('--region-sanitizers',action='store_true',
+                                 help='require the verified region spatial runtime and enable its sanitizer tests')
     args=parser.parse_args()
     try:
         result=resolve(args) if args.command=='resolve' else fetch_runtime(resolve(args)) if args.command=='fetch-runtime' else build_pair(args)

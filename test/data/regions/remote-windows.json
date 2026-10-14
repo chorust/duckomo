@@ -1,0 +1,71 @@
+{
+  "comparison": "Materialized read_om window filtered by ST_Covers versus read_om_regions; exact ordered rows and source positions must agree across all four sources.",
+  "decision": "User authorized dropping full-domain scans; bounded-window consistency and costs only.",
+  "real_targets_sha256": "03c2bcc84b4a0081cbf636d0aace7347b5039eb45ad6bc6a132cf78d9988fd80",
+  "savings_policy": "Require strictly fewer value bytes, decoded blocks and HTTP/S3 service-sent bytes for polygon than the fixed larger window; make no full-domain savings claim.",
+  "schema_version": 1,
+  "scope": "bounded_window",
+  "targets": [
+    {
+      "baseline_local_sql": "WITH window_rows AS MATERIALIZED (SELECT secondary_swell_wave_direction, secondary_swell_wave_height, secondary_swell_wave_period, swell_wave_direction, swell_wave_height, swell_wave_period, tertiary_swell_wave_direction, tertiary_swell_wave_height, tertiary_swell_wave_period, wave_direction, wave_height, wave_period, wind_wave_direction, wind_wave_height, wind_wave_period, lat, lon, om_source FROM read_om('build/s3-samples/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om', domain := 'ncep_gfswave025', include_source := true) WHERE lon BETWEEN -1.2000000000000002 AND 1.2000000000000002 AND lat BETWEEN -1.2000000000000002 AND 1.2000000000000002) SELECT \"secondary_swell_wave_direction\",\"secondary_swell_wave_height\",\"secondary_swell_wave_period\",\"swell_wave_direction\",\"swell_wave_height\",\"swell_wave_period\",\"tertiary_swell_wave_direction\",\"tertiary_swell_wave_height\",\"tertiary_swell_wave_period\",\"wave_direction\",\"wave_height\",\"wave_period\",\"wind_wave_direction\",\"wind_wave_height\",\"wind_wave_period\",\"lat\",\"lon\",'ncep_gfswave025' AS region_id,om_source.logical_index AS source_index FROM window_rows WHERE ST_Covers(ST_GeomFromWKB(from_hex('010300000001000000050000009a9999999999d9bf9a9999999999d9bf9a9999999999d93f9a9999999999d9bf9a9999999999d93f9a9999999999d93f9a9999999999d9bf9a9999999999d93f9a9999999999d9bf9a9999999999d9bf')),ST_Point(lon,lat)) ORDER BY ALL",
+      "expected_rows": 9,
+      "grid_id": "ncep_gfswave025",
+      "region_local_sql": "SELECT \"secondary_swell_wave_direction\",\"secondary_swell_wave_height\",\"secondary_swell_wave_period\",\"swell_wave_direction\",\"swell_wave_height\",\"swell_wave_period\",\"tertiary_swell_wave_direction\",\"tertiary_swell_wave_height\",\"tertiary_swell_wave_period\",\"wave_direction\",\"wave_height\",\"wave_period\",\"wind_wave_direction\",\"wind_wave_height\",\"wind_wave_period\",\"lat\",\"lon\",region_id,om_source.logical_index AS source_index FROM (SELECT secondary_swell_wave_direction, secondary_swell_wave_height, secondary_swell_wave_period, swell_wave_direction, swell_wave_height, swell_wave_period, tertiary_swell_wave_direction, tertiary_swell_wave_height, tertiary_swell_wave_period, wave_direction, wave_height, wave_period, wind_wave_direction, wind_wave_height, wind_wave_period, lat, lon, region_id, om_source FROM read_om_regions('build/s3-samples/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om', regions := [{'id': 'ncep_gfswave025', 'wkb': from_hex('010300000001000000050000009a9999999999d9bf9a9999999999d9bf9a9999999999d93f9a9999999999d9bf9a9999999999d93f9a9999999999d93f9a9999999999d9bf9a9999999999d93f9a9999999999d9bf9a9999999999d9bf')}], region_crs := 'grid_lonlat', domain := 'ncep_gfswave025', include_source := true) WHERE lon BETWEEN -1.2000000000000002 AND 1.2000000000000002 AND lat BETWEEN -1.2000000000000002 AND 1.2000000000000002) AS region_rows ORDER BY ALL",
+      "window_bounds_lonlat": [
+        -1.2000000000000002,
+        -1.2000000000000002,
+        1.2000000000000002,
+        1.2000000000000002
+      ]
+    },
+    {
+      "baseline_local_sql": "WITH window_rows AS MATERIALIZED (SELECT value, lat, lon, om_source FROM read_om('build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om', dimensions := map(['value'], [['y','x','time']]), domain := 'gem_rdps_10km', include_source := true) WHERE lon BETWEEN -124.9 AND -124.23 AND lat BETWEEN -4.07 AND -3.4) SELECT \"value\",\"lat\",\"lon\",'gem_rdps_10km' AS region_id,om_source.logical_index AS source_index FROM window_rows WHERE ST_Covers(ST_GeomFromWKB(from_hex('010300000001000000050000009a99999999295fc08fc2f5285c8f0ec01f85eb51b81e5fc08fc2f5285c8f0ec01f85eb51b81e5fc03333333333330dc09a99999999295fc03333333333330dc09a99999999295fc08fc2f5285c8f0ec0')),ST_Point(lon,lat)) ORDER BY ALL",
+      "expected_rows": 456,
+      "grid_id": "gem_rdps_10km",
+      "region_local_sql": "SELECT \"value\",\"lat\",\"lon\",region_id,om_source.logical_index AS source_index FROM (SELECT value, lat, lon, region_id, om_source FROM read_om_regions('build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om', regions := [{'id': 'gem_rdps_10km', 'wkb': from_hex('010300000001000000050000009a99999999295fc08fc2f5285c8f0ec01f85eb51b81e5fc08fc2f5285c8f0ec01f85eb51b81e5fc03333333333330dc09a99999999295fc03333333333330dc09a99999999295fc08fc2f5285c8f0ec0')}], region_crs := 'grid_lonlat', dimensions := map(['value'], [['y','x','time']]), domain := 'gem_rdps_10km', include_source := true) WHERE lon BETWEEN -124.9 AND -124.23 AND lat BETWEEN -4.07 AND -3.4) AS region_rows ORDER BY ALL",
+      "window_bounds_lonlat": [
+        -124.9,
+        -4.07,
+        -124.23,
+        -3.4
+      ]
+    },
+    {
+      "baseline_local_sql": "WITH window_rows AS MATERIALIZED (SELECT value, lat, lon, om_source FROM read_om('build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.om', dimensions := map(['value'], [['y','x','time']]), domain := 'gem_regional', include_source := true) WHERE lon BETWEEN -143.28000000000003 AND -142.49999999999997 AND lat BETWEEN 17.85 AND 18.59) SELECT \"value\",\"lat\",\"lon\",'gem_regional' AS region_id,om_source.logical_index AS source_index FROM window_rows WHERE ST_Covers(ST_GeomFromWKB(from_hex('01030000000100000005000000713d0ad7a3e061c09a99999999193240b81e85eb51d861c09a99999999193240b81e85eb51d861c0d7a3703d0a573240713d0ad7a3e061c0d7a3703d0a573240713d0ad7a3e061c09a99999999193240')),ST_Point(lon,lat)) ORDER BY ALL",
+      "expected_rows": 1254,
+      "grid_id": "gem_regional",
+      "region_local_sql": "SELECT \"value\",\"lat\",\"lon\",region_id,om_source.logical_index AS source_index FROM (SELECT value, lat, lon, region_id, om_source FROM read_om_regions('build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.om', regions := [{'id': 'gem_regional', 'wkb': from_hex('01030000000100000005000000713d0ad7a3e061c09a99999999193240b81e85eb51d861c09a99999999193240b81e85eb51d861c0d7a3703d0a573240713d0ad7a3e061c0d7a3703d0a573240713d0ad7a3e061c09a99999999193240')}], region_crs := 'grid_lonlat', dimensions := map(['value'], [['y','x','time']]), domain := 'gem_regional', include_source := true) WHERE lon BETWEEN -143.28000000000003 AND -142.49999999999997 AND lat BETWEEN 17.85 AND 18.59) AS region_rows ORDER BY ALL",
+      "window_bounds_lonlat": [
+        -143.28000000000003,
+        17.85,
+        -142.49999999999997,
+        18.59
+      ]
+    },
+    {
+      "baseline_local_sql": "WITH window_rows AS MATERIALIZED (SELECT value, lat, lon, om_source FROM read_om('build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om', dimensions := map(['value'], [['y','x','time']]), domain := 'aladin_central_europe_2km', include_source := true) WHERE lon BETWEEN 1.05 AND 1.65 AND lat BETWEEN 38.33 AND 38.88) SELECT \"value\",\"lat\",\"lon\",'aladin_central_europe_2km' AS region_id,om_source.logical_index AS source_index FROM window_rows WHERE ST_Covers(ST_GeomFromWKB(from_hex('01030000000100000005000000cdccccccccccf43f0ad7a3703d4a4340666666666666f63f0ad7a3703d4a4340666666666666f63f713d0ad7a3504340cdccccccccccf43f713d0ad7a3504340cdccccccccccf43f0ad7a3703d4a4340')),ST_Point(lon,lat)) ORDER BY ALL",
+      "expected_rows": 720,
+      "grid_id": "aladin_central_europe_2km",
+      "region_local_sql": "SELECT \"value\",\"lat\",\"lon\",region_id,om_source.logical_index AS source_index FROM (SELECT value, lat, lon, region_id, om_source FROM read_om_regions('build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om', regions := [{'id': 'aladin_central_europe_2km', 'wkb': from_hex('01030000000100000005000000cdccccccccccf43f0ad7a3703d4a4340666666666666f63f0ad7a3703d4a4340666666666666f63f713d0ad7a3504340cdccccccccccf43f713d0ad7a3504340cdccccccccccf43f0ad7a3703d4a4340')}], region_crs := 'grid_lonlat', dimensions := map(['value'], [['y','x','time']]), domain := 'aladin_central_europe_2km', include_source := true) WHERE lon BETWEEN 1.05 AND 1.65 AND lat BETWEEN 38.33 AND 38.88) AS region_rows ORDER BY ALL",
+      "window_bounds_lonlat": [
+        1.05,
+        38.33,
+        1.65,
+        38.88
+      ]
+    },
+    {
+      "baseline_local_sql": "WITH window_rows AS MATERIALIZED (SELECT value, lat, lon, om_source FROM read_om('build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.om', domain := 'ecmwf_ifs', include_source := true) WHERE lon BETWEEN -1.25 AND 1.25 AND lat BETWEEN 88.8 AND 90.0) SELECT \"value\",\"lat\",\"lon\",'ecmwf_ifs' AS region_id,om_source.logical_index AS source_index FROM window_rows WHERE ST_Covers(ST_GeomFromWKB(from_hex('01030000000100000005000000000000000000d0bf3333333333735640000000000000d03f3333333333735640000000000000d03f8fc2f5285c7f5640000000000000d0bf8fc2f5285c7f5640000000000000d0bf3333333333735640')),ST_Point(lon,lat)) ORDER BY ALL",
+      "expected_rows": 3,
+      "grid_id": "ecmwf_ifs",
+      "region_local_sql": "SELECT \"value\",\"lat\",\"lon\",region_id,om_source.logical_index AS source_index FROM (SELECT value, lat, lon, region_id, om_source FROM read_om_regions('build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.om', regions := [{'id': 'ecmwf_ifs', 'wkb': from_hex('01030000000100000005000000000000000000d0bf3333333333735640000000000000d03f3333333333735640000000000000d03f8fc2f5285c7f5640000000000000d0bf8fc2f5285c7f5640000000000000d0bf3333333333735640')}], region_crs := 'grid_lonlat', domain := 'ecmwf_ifs', include_source := true) WHERE lon BETWEEN -1.25 AND 1.25 AND lat BETWEEN 88.8 AND 90.0) AS region_rows ORDER BY ALL",
+      "window_bounds_lonlat": [
+        -1.25,
+        88.8,
+        1.25,
+        90.0
+      ]
+    }
+  ],
+  "window_policy": "Expand each frozen polygon envelope by max(span,0.25 degrees) on each side (O1280 uses a fixed 1-degree minimum for its dense polar rows); clamp to geographic limits; keep all original dimensions and values. No LIMIT or time sampling."
+}

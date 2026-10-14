@@ -38,6 +38,32 @@ class MatrixTests(unittest.TestCase):
         self.assertEqual(m.compute_build_id(payload),m.compute_build_id(m.input_payload(self.matrix,pair,'a'*64)))
         pair['duckdb']['commit']='1'*40
         self.assertNotEqual(m.compute_build_id(payload),m.compute_build_id(m.input_payload(self.matrix,pair,'a'*64)))
+    def test_region_runtime_evidence_does_not_change_source_build_identity(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            (root/'test/data/regions').mkdir(parents=True)
+            (root/'test/data/regions/runtime-matrix.json').write_text('{"artifact_sha256":"'+'a'*64+'"}\n')
+            before=m.extension_source_digest(root)
+            (root/'test/data/regions/runtime-matrix.json').write_text('{"artifact_sha256":"'+'b'*64+'"}\n')
+            self.assertEqual(before,m.extension_source_digest(root))
+    def test_sanitizer_spatial_runtime_requires_verified_identity_and_hash(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            runtime_dir=root/'test/data/regions';runtime_dir.mkdir(parents=True)
+            scripts=root/'scripts';scripts.mkdir()
+            (scripts/'region_runtime.py').symlink_to(ROOT/'scripts/region_runtime.py')
+            artifact=root/'spatial.duckdb_extension';artifact.write_bytes(b'verified spatial package')
+            sha=m.digest_file(artifact)
+            record={'version':'v1.5.4','gate_status':'ready_for_adapter_check',
+                    'source_identity_match':True,'spatial_source_sha':'a'*40,
+                    'probes':{'extension_version':'aaaaaaa'},
+                    'spatial_artifact':{'path':str(artifact),'sha256':sha}}
+            matrix=runtime_dir/'runtime-matrix.json'
+            matrix.write_text(json.dumps({'runtimes':[record]}))
+            self.assertEqual(m.verified_spatial_runtime(root,'v1.5.4'),(artifact,sha))
+            record['gate_status']='blocked_identity_mismatch'
+            matrix.write_text(json.dumps({'runtimes':[record]}))
+            with self.assertRaises(m.MatrixError):m.verified_spatial_runtime(root,'v1.5.4')
     def test_unavailable_official_package_does_not_build_fallback(self):
         with tempfile.TemporaryDirectory() as directory:
             resolved={'runtime_dir':directory,'official_runtime':self.pair['official_runtime']}
@@ -57,29 +83,42 @@ class MatrixTests(unittest.TestCase):
         self.matrix['pairs'].append(self.pair)
         with self.assertRaises(m.MatrixError):m.find_pair(self.matrix,self.pair['pair_id'])
     def test_default_build_includes_native_checks_and_validation_tools(self):
-        for extension_only in (False, True):
-            with self.subTest(extension_only=extension_only), tempfile.TemporaryDirectory() as directory:
+        for extension_only, region_sanitizers in ((False, False), (True, False), (False, True), (True, True)):
+            with self.subTest(extension_only=extension_only, region_sanitizers=region_sanitizers), tempfile.TemporaryDirectory() as directory:
                 pair_root=Path(directory);source=pair_root/'source';source.mkdir()
                 release=pair_root/'build/release';release.mkdir(parents=True)
                 payload=m.input_payload(self.matrix,self.pair,'a'*64)
                 resolved=dict(duckdb_source=str(source),release_dir=str(release),input_payload=payload,
                               build_id='a'*64,official_runtime=self.pair['official_runtime'],
                               build_manifest=str(pair_root/'build/build-manifest.json'),pair_root=str(pair_root))
-                args=SimpleNamespace(root=str(ROOT),pair=self.pair['pair_id'],jobs=2,extension_only=extension_only)
+                args=SimpleNamespace(root=str(ROOT),pair=self.pair['pair_id'],jobs=2,
+                                     extension_only=extension_only,region_sanitizers=region_sanitizers)
                 def pinned_git(*args, cwd):
                     component='om_c' if Path(cwd).name=='om-file-format' else 'extension_ci_tools'
                     return payload['commits'][component]['commit']
-                with patch.object(m,'resolve',return_value=resolved), patch.object(m,'ensure_checkout'), \
+                spatial=ROOT/'build/regions-runtime/v1.5.4/official/spatial.duckdb_extension'
+                with patch.object(m,'resolve',return_value=resolved), \
+                     patch.object(m,'verified_spatial_runtime',return_value=(spatial,'a'*64)) as verify_spatial, \
+                     patch.object(m,'ensure_checkout'), \
                      patch.object(m,'git',side_effect=pinned_git), patch.object(m,'digest_file',return_value='a'*64), \
                      patch.object(m.subprocess,'run') as run:
                     manifest=m.build_pair(args)
                 targets=run.call_args.args[0]
                 self.assertEqual(len(manifest['commands']),2)
+                configure=manifest['commands'][0]['argv']
+                if region_sanitizers and not extension_only:
+                    verify_spatial.assert_called_once_with(ROOT,self.pair['pair_id'])
+                    self.assertIn('-DDUCKOMO_REGION_SANITIZER_SPATIAL_PATH='+str(spatial),configure)
+                else:
+                    verify_spatial.assert_not_called()
+                    self.assertIn('-DDUCKOMO_REGION_SANITIZER_SPATIAL_PATH=',configure)
+                    self.assertIn('-DDUCKOMO_REGION_SANITIZER_SPATIAL_SHA256=',configure)
                 if extension_only:
                     self.assertNotIn('duckomo_developer_tools',targets)
                     self.assertNotIn('unittest',targets)
                 else:
-                    for target in ('unittest','duckomo_developer_tools','core_functions_loadable_extension'):
+                    for target in ('unittest','duckomo_developer_tools','core_functions_loadable_extension',
+                                   'duckomo_sanitizer_checks'):
                         self.assertIn(target,targets)
     def test_local_validation_rejects_missing_executables_before_running_sql(self):
         for missing in ('manifest','native/raw_reader_test','native/axis_selection_test',

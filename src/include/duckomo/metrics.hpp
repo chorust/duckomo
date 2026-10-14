@@ -39,6 +39,7 @@ enum class ScanMemoryComponent : std::uint8_t {
 	Coalescing,
 	TransportControl,
 	Unclassified,
+	RegionInput,
 	Count
 };
 
@@ -57,6 +58,7 @@ inline const char *ScanMemoryComponentName(ScanMemoryComponent component) noexce
 	case ScanMemoryComponent::Coalescing: return "coalescing";
 	case ScanMemoryComponent::TransportControl: return "transport_control";
 	case ScanMemoryComponent::Unclassified: return "unclassified";
+	case ScanMemoryComponent::RegionInput: return "region_input";
 	case ScanMemoryComponent::Count: break;
 	}
 	return "unknown";
@@ -173,6 +175,8 @@ struct ScanMetricsSnapshot final {
 	std::uint64_t max_active_workers = 0;
 	std::optional<std::uint64_t> peak_query_owned_bytes;
 	std::optional<std::uint64_t> peak_query_owned_upper_bound_bytes;
+	std::optional<std::uint64_t> peak_work_owned_bytes;
+	std::optional<std::uint64_t> peak_work_owned_upper_bound_bytes;
 	std::optional<bool> query_owned_released_at_terminal;
 	std::array<std::uint64_t, ScanMemoryComponentCount> memory_component_peak_bytes{};
 	std::array<std::uint64_t, ScanMemoryComponentCount> memory_component_upper_bound_peak_bytes{};
@@ -203,6 +207,21 @@ struct ScanMetricsSnapshot final {
 	std::optional<bool> coordinate_decode_complete;
 	std::optional<bool> memory_accounting_complete;
 	bool query_terminal_published = false;
+	std::uint64_t input_region_count = 0;
+	std::uint64_t empty_region_count = 0;
+	std::uint64_t input_wkb_bytes = 0;
+	std::uint64_t input_vertex_count = 0;
+	std::uint64_t owned_input_peak_bytes = 0;
+	std::uint64_t candidate_pairs_observed = 0;
+	std::uint64_t geometry_tested_pairs = 0;
+	std::uint64_t matched_pairs_observed = 0;
+	std::uint64_t geometry_batches = 0;
+	std::uint64_t geometry_evaluations = 0;
+	std::uint64_t envelope_rejected_pairs = 0;
+	std::optional<std::uint64_t> matched_pairs_exact;
+	std::optional<bool> match_count_complete;
+	std::uint64_t geometry_prepare_ns = 0;
+	std::uint64_t geometry_evaluate_ns = 0;
 };
 
 // Per-query counters with no global registry or persistence. Instances may be
@@ -251,6 +270,8 @@ public:
 		if (status != ScanStatus::Succeeded || !scan_complete_) {
 			exact_candidate_records_.reset();
 			candidate_count_complete_ = false;
+			region_matched_pairs_exact_.reset();
+			region_match_count_complete_ = false;
 		}
 	}
 
@@ -353,6 +374,12 @@ public:
 		    std::max(memory_component_peak_bytes_[component_index], next_component_current);
 		memory_component_upper_bound_peak_bytes_[component_index] =
 		    std::max(memory_component_upper_bound_peak_bytes_[component_index], next_component_bound);
+		const auto input_index = static_cast<std::size_t>(ScanMemoryComponent::RegionInput);
+		memory_work_peak_bytes_ = std::max(
+		    memory_work_peak_bytes_, memory_current_bytes_ - memory_component_current_bytes_[input_index]);
+		memory_work_peak_upper_bound_bytes_ = std::max(
+		    memory_work_peak_upper_bound_bytes_,
+		    memory_current_upper_bound_bytes_ - memory_component_current_upper_bound_bytes_[input_index]);
 		if (query_memory_accounting_enabled_ && query_memory_count_complete_) {
 			peak_query_owned_bytes_ = memory_peak_bytes_;
 			peak_query_owned_upper_bound_bytes_ = memory_peak_upper_bound_bytes_;
@@ -591,6 +618,52 @@ public:
 		operation_ = std::move(operation);
 	}
 
+	void SetRegionInputMetrics(std::uint64_t region_count, std::uint64_t empty_count,
+	                           std::uint64_t wkb_bytes, std::uint64_t vertex_count,
+	                           std::uint64_t owned_input_bytes) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		input_region_count_ = region_count;
+		empty_region_count_ = empty_count;
+		input_wkb_bytes_ = wkb_bytes;
+		input_vertex_count_ = vertex_count;
+		owned_input_peak_bytes_ = owned_input_bytes;
+	}
+
+	void RecordRegionCandidatePairs(std::uint64_t pairs) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		AddChecked(region_candidate_pairs_observed_, pairs);
+	}
+
+	void RecordRegionEnvelopeRejects(std::uint64_t pairs) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		AddChecked(region_envelope_rejected_pairs_, pairs);
+	}
+
+	void RecordRegionGeometryBatch(std::uint64_t tested_pairs, std::uint64_t matched_pairs,
+	                               std::uint64_t elapsed_ns) {
+		if (matched_pairs > tested_pairs) throw std::invalid_argument("region matches cannot exceed tested pairs");
+		std::lock_guard<std::mutex> guard(mutex_);
+		AddChecked(region_geometry_tested_pairs_, tested_pairs);
+		AddChecked(region_matched_pairs_observed_, matched_pairs);
+		AddChecked(region_geometry_batches_, 1);
+		AddChecked(region_geometry_evaluations_, tested_pairs);
+		AddChecked(region_geometry_evaluate_ns_, elapsed_ns);
+	}
+
+	void RecordRegionPrepareNanoseconds(std::uint64_t elapsed_ns) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		AddChecked(region_geometry_prepare_ns_, elapsed_ns);
+	}
+
+	void SetRegionMatchCount(std::optional<std::uint64_t> exact_pairs, std::optional<bool> complete) {
+		if (complete.value_or(false) && !exact_pairs) {
+			throw std::invalid_argument("complete region match count requires an exact value");
+		}
+		std::lock_guard<std::mutex> guard(mutex_);
+		region_matched_pairs_exact_ = exact_pairs;
+		region_match_count_complete_ = complete;
+	}
+
 	void SetCandidateCountEvidence(std::optional<std::uint64_t> exact_records,
 	                               std::optional<std::uint64_t> upper_bound_records,
 	                               std::optional<std::uint64_t> observed_records,
@@ -702,6 +775,11 @@ public:
 		value_decode_evidence_observed_ = true;
 	}
 
+	void MarkValueDecodeNotRequired() {
+		std::lock_guard<std::mutex> guard(mutex_);
+		value_decode_evidence_observed_ = true;
+	}
+
 	void MarkDecodeCountIncomplete(const std::string &variable_path) {
 		RequireVariablePath(variable_path);
 		std::lock_guard<std::mutex> guard(mutex_);
@@ -781,6 +859,10 @@ public:
 		snapshot.max_active_workers = max_active_workers_;
 		snapshot.peak_query_owned_bytes = peak_query_owned_bytes_;
 		snapshot.peak_query_owned_upper_bound_bytes = peak_query_owned_upper_bound_bytes_;
+		if (peak_query_owned_bytes_) snapshot.peak_work_owned_bytes = memory_work_peak_bytes_;
+		if (peak_query_owned_upper_bound_bytes_) {
+			snapshot.peak_work_owned_upper_bound_bytes = memory_work_peak_upper_bound_bytes_;
+		}
 		snapshot.query_owned_released_at_terminal = query_owned_released_at_terminal_;
 		snapshot.memory_component_peak_bytes = memory_component_peak_bytes_;
 		snapshot.memory_component_upper_bound_peak_bytes = memory_component_upper_bound_peak_bytes_;
@@ -815,6 +897,23 @@ public:
 		                                          ? std::optional<bool>(query_memory_count_complete_)
 		                                          : std::nullopt;
 		snapshot.query_terminal_published = query_terminal_published_;
+		snapshot.input_region_count = input_region_count_;
+		snapshot.empty_region_count = empty_region_count_;
+		snapshot.input_wkb_bytes = input_wkb_bytes_;
+		snapshot.input_vertex_count = input_vertex_count_;
+		snapshot.owned_input_peak_bytes = std::max(
+		    owned_input_peak_bytes_,
+		    memory_component_peak_bytes_[static_cast<std::size_t>(ScanMemoryComponent::RegionInput)]);
+		snapshot.candidate_pairs_observed = region_candidate_pairs_observed_;
+		snapshot.geometry_tested_pairs = region_geometry_tested_pairs_;
+		snapshot.matched_pairs_observed = region_matched_pairs_observed_;
+		snapshot.geometry_batches = region_geometry_batches_;
+		snapshot.geometry_evaluations = region_geometry_evaluations_;
+		snapshot.envelope_rejected_pairs = region_envelope_rejected_pairs_;
+		snapshot.matched_pairs_exact = region_matched_pairs_exact_;
+		snapshot.match_count_complete = region_match_count_complete_;
+		snapshot.geometry_prepare_ns = region_geometry_prepare_ns_;
+		snapshot.geometry_evaluate_ns = region_geometry_evaluate_ns_;
 		snapshot.decode_count_complete = coordinate_metrics_.decode_count_complete;
 		snapshot.bytes_fetched = snapshot.metadata_bytes;
 		snapshot.read_requests = snapshot.metadata_requests;
@@ -1022,8 +1121,30 @@ public:
 	     << ",\"windows\":" << snapshot.selection_windows
 	     << ",\"ranges\":" << snapshot.selection_ranges
 	     << ",\"fallback_windows\":" << snapshot.selection_fallback_windows
-	     << ",\"coordinate_evaluations\":" << JsonOptionalUint(snapshot.coordinate_preparation_evaluations) << '}'
-	     << ",\"coordinate_preparation\":{\"evaluations\":"
+	     << ",\"coordinate_evaluations\":" << JsonOptionalUint(snapshot.coordinate_preparation_evaluations) << '}';
+		if (snapshot.operation == "read_om_regions") {
+			json << ",\"regions\":{\"input_region_count\":" << snapshot.input_region_count
+			     << ",\"empty_region_count\":" << snapshot.empty_region_count
+			     << ",\"input_wkb_bytes\":" << snapshot.input_wkb_bytes
+			     << ",\"input_vertex_count\":" << snapshot.input_vertex_count
+			     << ",\"owned_input_peak_bytes\":" << snapshot.owned_input_peak_bytes
+			     << ",\"count_unit\":\"region_record_pair\""
+			     << ",\"candidate_pairs_observed\":" << snapshot.candidate_pairs_observed
+			     << ",\"geometry_tested_pairs\":" << snapshot.geometry_tested_pairs
+			     << ",\"matched_pairs_observed\":" << snapshot.matched_pairs_observed
+			     << ",\"geometry_batches\":" << snapshot.geometry_batches
+			     << ",\"geometry_evaluations\":" << snapshot.geometry_evaluations
+			     << ",\"envelope_rejected_pairs\":" << snapshot.envelope_rejected_pairs
+			     << ",\"matched_pairs_exact\":" << JsonOptionalUint(snapshot.matched_pairs_exact)
+			     << ",\"match_count_complete\":" << JsonOptionalBool(snapshot.match_count_complete)
+			     << ",\"geometry_prepare_ns\":" << snapshot.geometry_prepare_ns
+			     << ",\"geometry_evaluate_ns\":" << snapshot.geometry_evaluate_ns
+			     << ",\"owned_work_peak_bytes\":" << JsonOptionalUint(snapshot.peak_work_owned_bytes)
+			     << ",\"owned_work_bound_bytes\":" << JsonOptionalUint(snapshot.peak_work_owned_upper_bound_bytes)
+			     << ",\"spatial_internal_peak_bytes\":null"
+			     << ",\"spatial_internal_memory_complete\":false}";
+		}
+		json << ",\"coordinate_preparation\":{\"evaluations\":"
 	     << JsonOptionalUint(snapshot.coordinate_preparation_evaluations)
 	     << ",\"complete\":" << JsonOptionalBool(snapshot.coordinate_preparation_complete) << '}'
 	     << ",\"reads\":{\"metadata\":{\"bind_bytes\":" << snapshot.bind_metadata_bytes
@@ -1312,6 +1433,8 @@ private:
 	std::uint64_t memory_peak_bytes_ = 0;
 	std::uint64_t memory_current_upper_bound_bytes_ = 0;
 	std::uint64_t memory_peak_upper_bound_bytes_ = 0;
+	std::uint64_t memory_work_peak_bytes_ = 0;
+	std::uint64_t memory_work_peak_upper_bound_bytes_ = 0;
 	std::array<std::uint64_t, ScanMemoryComponentCount> memory_component_current_bytes_{};
 	std::array<std::uint64_t, ScanMemoryComponentCount> memory_component_peak_bytes_{};
 	std::array<std::uint64_t, ScanMemoryComponentCount> memory_component_current_upper_bound_bytes_{};
@@ -1336,6 +1459,21 @@ private:
 	std::optional<std::uint64_t> coordinate_preparation_evaluations_;
 	std::optional<bool> coordinate_preparation_complete_;
 	std::uint64_t coordinate_evaluations_ = 0;
+	std::uint64_t input_region_count_ = 0;
+	std::uint64_t empty_region_count_ = 0;
+	std::uint64_t input_wkb_bytes_ = 0;
+	std::uint64_t input_vertex_count_ = 0;
+	std::uint64_t owned_input_peak_bytes_ = 0;
+	std::uint64_t region_candidate_pairs_observed_ = 0;
+	std::uint64_t region_geometry_tested_pairs_ = 0;
+	std::uint64_t region_matched_pairs_observed_ = 0;
+	std::uint64_t region_geometry_batches_ = 0;
+	std::uint64_t region_geometry_evaluations_ = 0;
+	std::uint64_t region_envelope_rejected_pairs_ = 0;
+	std::optional<std::uint64_t> region_matched_pairs_exact_;
+	std::optional<bool> region_match_count_complete_;
+	std::uint64_t region_geometry_prepare_ns_ = 0;
+	std::uint64_t region_geometry_evaluate_ns_ = 0;
 	bool value_decode_evidence_observed_ = false;
 	bool coordinate_decode_evidence_observed_ = false;
 	bool query_terminal_published_ = false;

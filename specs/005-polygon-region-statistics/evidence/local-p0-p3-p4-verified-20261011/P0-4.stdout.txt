@@ -1,0 +1,7 @@
+Filters: test/sql/regions.test
+
+[0/1] (0%): test/sql/regions.test
+[1/1] (100%): test/sql/regions.test
+===============================================================================
+All tests passed (83 assertions in 1 test case)
+

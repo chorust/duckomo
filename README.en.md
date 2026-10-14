@@ -17,8 +17,9 @@ duckomo is a DuckDB C++ extension that queries Float32 arrays in [Open-Meteo OM]
 - **Multiple grid mappings**: regular latitude/longitude, [68 regular domains](docs/regular-domains.md), rotated latitude/longitude, Lambert, stereographic, and reduced Gaussian.
 - **Multiple variables and semantic axes**: align variables by ordered axis identity; support `valid_time`, `level`, `lead_time`, `member`, and `run`, without implicit transposition, broadcasting, or joins.
 - **Parallelism and observability**: DuckDB-scheduled scans, thread limits, scan metrics, opt-in `om_source` positions, and `om_grid_info` descriptions.
+- **Polygon-region reads (experimental)**: the source workspace provides `read_om_regions` for raw grid records that can be grouped with SQL; the 005 version matrix and independent reproduction are still open, so this is not release support.
 
-Each input names **one object**, not a directory, glob, or file list. Projected/Gaussian grids are implemented, but per-grid real samples, full memory accounting, and independent reproduction have not all passed acceptance. Implementation is not a production-readiness claim; see [supported scope](docs/spec.md) and [grid evidence](docs/grid-domains.md).
+Each input names **one object**, not a directory, glob, or file list. The 005 region entrypoint requires an explicitly loaded spatial extension that matches DuckDB; ordinary `read_om` does not. Callers are responsible for the WKB `grid_lonlat` reference, containment uses planar `covers`, and SQL aggregates are equally weighted. Region support is still under validation; see the [005 quickstart](specs/005-polygon-region-statistics/quickstart.md). Projected/Gaussian grids are implemented, but per-grid real samples, full memory accounting, and independent reproduction have not all passed acceptance. Implementation is not a production-readiness claim; see [supported scope](docs/spec.md) and [grid evidence](docs/grid-domains.md).
 
 The owner-approved [2026-10-10 scope amendment](specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md) skips real-object acceptance for N160/N320/N-region in this round because the surveyed public Open-Meteo sources contain no matching objects. Definitions and synthetic regressions remain; a skip is not a pass and does not block current-scope closure. Per the owner-approved [2026-10-10 pinned-producer-reference decision](specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md), `ecmwf_ifs` O1280 and the three projected grids are registered `coordinate-value-validated` (consistent with the published Open-Meteo objects, not native-GRIB equivalence); O1280 is backed by [real local checks](specs/004-multi-grid-selection/evidence/baseline-local/o1280-real-local-20261010/final.md) covering full HSURF values/coordinates, explicit/domain equivalence, spatial selection and sampled time series. Remote benefit, complete gates and H9 independent reproduction remain open. The Phase 8 cross-chunk entry remains an unapproved proposal.
 
@@ -192,6 +193,8 @@ LOAD 'build/release/extension/duckomo/duckomo.duckdb_extension';
 
 The developer submodule pins DuckDB v1.5.4. Use `scripts/build-version.sh v1.5.6` for another pinned engine (v1.5.4 / v1.5.5 are also supported). Extension binaries are not interchangeable across versions. See the [HTTPFS validation guide](docs/official-httpfs.md) for official runtimes and complete reproduction steps.
 
+Ordinary builds do not require spatial runtime artifacts. To include region sanitizer tests, prepare the matching runtime with `scripts/fetch-region-runtime.py`, then pass `--region-sanitizers` to `scripts/build-version.sh`. `--extension-only` builds only the extension and skips the region runtime prerequisite.
+
 ```sh
 make test                                       # Build and run local SQL/native/tool checks
 ./scripts/validate.sh build/release --local-only  # Validate an existing build
@@ -210,6 +213,7 @@ Source entry points: `src/scan/` for binding/scanning, `src/grid/` for grids/lay
 | Parameters, output, supported scope, and metrics | [Interface overview](docs/spec.md) |
 | Public data directories, axes, and 68 regular domains | [Regular-grid guide](docs/regular-domains.md) |
 | Projected / Gaussian definitions and real-sample evidence | [Grid evidence](docs/grid-domains.md) · [SQL contract](specs/004-multi-grid-selection/contracts/sql-interface.md) |
+| Polygon-region reads, time-grouped statistics, and validation | [005 quickstart](specs/005-polygon-region-statistics/quickstart.md) · [SQL contract](specs/005-polygon-region-statistics/contracts/sql-interface.md) |
 | Module responsibilities, scan flow, and I/O | [Architecture](docs/architecture.md) |
 | GitHub downloads, installation, and tag publishing | [Release guide](docs/releases.md) |
 | Official HTTPFS support and controlled validation | [HTTPFS validation guide](docs/official-httpfs.md) |

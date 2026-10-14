@@ -1,6 +1,6 @@
 # DuckOMO Roadmap
 
-本地扫描、列裁剪和规则网格空间查询（Phase 0–3）已实现。Phase 4 的维度语义已实现；Phase 5 的官方 HTTPFS 远程与并行路径已通过 v1.5.4/v1.5.5/v1.5.6 的受控验证，独立复现仍待完成。Phase 6 的 [004 多网格](../specs/004-multi-grid-selection/spec.md) 功能已实现，逐网格真实样本和完整验收仍在进行。当前行为见 [接口说明](spec.md)，模块边界见 [技术架构](architecture.md)。
+本地扫描、列裁剪和规则网格空间查询（Phase 0–3）已实现。Phase 4 的维度语义已实现；Phase 5 的官方 HTTPFS 远程与并行路径已通过 v1.5.4/v1.5.5/v1.5.6 的受控验证，独立复现仍待完成。Phase 6 的 [004 多网格](../specs/004-multi-grid-selection/spec.md) 功能已实现，逐网格真实样本和完整验收仍在进行。[005 Polygon 区域读取](../specs/005-polygon-region-statistics/spec.md) 已实现，版本矩阵和独立复现状态见该 spec 的 evidence；只有实际完成的 gate 才计为通过。当前行为见 [接口说明](spec.md)，模块边界见 [技术架构](architecture.md)。
 
 ## 阶段
 
@@ -13,6 +13,7 @@
 | **4 — 其他维度** | 功能已实现；G0–G2 本地验收通过 | time、level、lead_time、member、run 映射；验证混合谓词、维度顺序和空结果 |
 | **5 — 远程与并行** | 官方 HTTPFS 实现及三版本受控验证通过；独立复现待完成 | HTTP(S)/S3 标准文件系统、任务切分和 profiling；自有缓存已移除，不承诺热缓存收益 |
 | **6 — 更多网格** | 功能已实现；完整验收未通过 | 旋转、Lambert、stereographic 与 Gaussian 定义、局部空间选择、source/grid-info；每类真实坐标/值、远程收益和独立复现门禁按 [004 spec](../specs/004-multi-grid-selection/spec.md) 完成 |
+| **005 — Polygon 区域读取** | 功能已实现；独立复现待完成 | 匹配版 spatial 依赖、原始区域点值、SQL 分时统计、owned memory/lifecycle、HTTP/S3 收益和三版本矩阵按 [005 gates](../specs/005-polygon-region-statistics/contracts/validation-evidence.md) 留证；P7 由未参与实现者执行 |
 | **7 — 科学计算** | 计划中 | 独立设计 `om_slice`、`om_reduce`、`om_interp`、`om_regrid` |
 | **8 — 跨 chunk 时间序列入口** | 待评审提案；未立项、未实现 | `read_om_series` 按 model 登记的 chunk 时间参数把任意时间窗展开为多个 `data/` 布局 `chunk_*.om` 对象并按 `valid_time` 对齐拼接，用户无需知道目标时间落在哪个 chunk；设计细节见下节 |
 

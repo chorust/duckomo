@@ -75,6 +75,76 @@ void TestV4SeparatesExactObservedUpperAndCompleteness() {
 	        "compatibility snapshots continue to redact remote source URIs");
 }
 
+void TestRegionWorkMemoryExcludesInputAtEachPeak() {
+	auto metrics = std::make_shared<ScanMetrics>();
+	metrics->EnableQueryMemoryAccounting();
+	metrics->SetOperation("read_om_regions");
+	{
+		ScanMemoryAccount input(metrics, ScanMemoryComponent::RegionInput);
+		ScanMemoryAccount work(metrics, ScanMemoryComponent::Decoder);
+		input.Set(1000, 2000);
+		work.Set(100, 200);
+		input.Set(0);
+		work.Set(500, 700);
+		const auto snapshot = metrics->Snapshot();
+		Require(snapshot.peak_query_owned_bytes == 1100 &&
+		            snapshot.peak_query_owned_upper_bound_bytes == 2200 &&
+		            snapshot.peak_work_owned_bytes == 500 &&
+		            snapshot.peak_work_owned_upper_bound_bytes == 700 &&
+		            snapshot.owned_input_peak_bytes == 1000,
+		        "work peaks track simultaneous scan allocations independently of retained input peaks");
+	}
+	metrics->FinalizeQueryMemoryAccounting(true);
+	const auto json = metrics->ToMetricsV4Json();
+	Require(json.find("\"owned_work_peak_bytes\":500,\"owned_work_bound_bytes\":700") != std::string::npos,
+	        "region JSON serializes independent work peaks");
+	metrics->MarkQueryMemoryAccountingIncomplete();
+	Require(!metrics->Snapshot().peak_work_owned_bytes &&
+	            metrics->ToMetricsV4Json().find("\"owned_work_peak_bytes\":null,\"owned_work_bound_bytes\":null") !=
+	                std::string::npos,
+	        "incomplete memory accounting also invalidates work peaks");
+}
+
+void TestRegionMetricsAreAdditiveAndExactOnlyAtCompletion() {
+	ScanMetrics complete;
+	complete.SetOperation("read_om_regions");
+	complete.SetRegionInputMetrics(2, 1, 64, 8, 1024);
+	complete.RecordRegionCandidatePairs(10);
+	complete.RecordRegionEnvelopeRejects(3);
+	complete.RecordRegionGeometryBatch(7, 4, 25);
+	complete.SetCandidateCountEvidence(10, 10, 10, true);
+	complete.SetRegionMatchCount(4, true);
+	complete.SetScanComplete(true);
+	complete.SetStatus(ScanStatus::Succeeded);
+	const auto complete_snapshot = complete.Snapshot();
+	const auto complete_json = complete.ToMetricsV4Json();
+	Require(complete_snapshot.operation == "read_om_regions" &&
+	            complete_snapshot.candidate_pairs_observed == 10 && complete_snapshot.geometry_tested_pairs == 7 &&
+	            complete_snapshot.matched_pairs_observed == 4 && complete_snapshot.matched_pairs_exact == 4 &&
+	            complete_snapshot.match_count_complete == true,
+	        "region metrics preserve pair units and publish exact matches only when complete");
+	Require(complete_json.find("\"count_unit\":\"region_record_pair\"") != std::string::npos &&
+	            complete_json.find("\"envelope_rejected_pairs\":3") != std::string::npos &&
+	            complete_json.find("\"matched_pairs_exact\":4") != std::string::npos &&
+	            complete_json.find("\"spatial_internal_peak_bytes\":null,\"spatial_internal_memory_complete\":false") !=
+	                std::string::npos,
+	        "v4 serializes additive region fields while leaving unobservable spatial memory unknown");
+	Require(complete.ToMetricsV3Json().find("read_om_regions") == std::string::npos,
+	        "legacy v3 retains its existing schema and does not expose additive region fields");
+
+	ScanMetrics limited;
+	limited.SetOperation("read_om_regions");
+	limited.RecordRegionCandidatePairs(10);
+	limited.RecordRegionGeometryBatch(7, 4, 25);
+	limited.SetRegionMatchCount(std::nullopt, false);
+	limited.SetScanComplete(false);
+	limited.SetStatus(ScanStatus::Succeeded);
+	const auto limited_snapshot = limited.Snapshot();
+	Require(!limited_snapshot.matched_pairs_exact && limited_snapshot.match_count_complete == false &&
+	            limited.ToMetricsV4Json().find("\"matched_pairs_exact\":null") != std::string::npos,
+	        "LIMIT-style early stop keeps observed matches but never publishes an exact count");
+}
+
 void TestInvalidCandidateEvidenceIsRejected() {
 	ScanMetrics metrics;
 	bool rejected = false;
@@ -197,6 +267,8 @@ void TestUnobservedEvidenceStaysNullAndLegacyV3IsEmbeddedVerbatim() {
 int main() {
 	try {
 		TestV4SeparatesExactObservedUpperAndCompleteness();
+		TestRegionMetricsAreAdditiveAndExactOnlyAtCompletion();
+		TestRegionWorkMemoryExcludesInputAtEachPeak();
 		TestInvalidCandidateEvidenceIsRejected();
 		TestConstructedRemoteUrisRedactEveryCompatibilitySnapshot();
 		TestNonSuccessfulOrEarlyStoppedScansDoNotPublishExactCounts();

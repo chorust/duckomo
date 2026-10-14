@@ -1,0 +1,11 @@
+# US4 input and lifecycle boundaries
+
+The final local run on DuckDB v1.5.4 (`08e34c44`) passed P0, P3, and P4 with the matching spatial extension. The archived manifest [`local-p0-p3-p4-verified-20261011/manifest.json`](local-p0-p3-p4-verified-20261011/manifest.json) has SHA-256 `6ac9b46816a4ec8a117d5ac3138d38a68fbed2ceaaaf1a2d5f765d4d6e31f4a6`; all command-output hashes and the P3/P4 report hashes match.
+
+P0 passed the real adapter and isolated SQL checks: ordinary `read_om_raw`, `read_om`, and `om_grid_info` work without spatial; `read_om_regions` with a typed empty collection reports `[spatial_dependency]`; matching spatial must be loaded explicitly. The adapter checks cover exact catalog signatures, shadow/signature mismatches, geometry boundaries and holes, and worker state isolation.
+
+P4 passed its ten-command bundle. Input and geometry native tests, legacy metrics v3/v4 checks, ordinary-read SQL, isolated dependency SQL, and region SQL boundaries all passed. The lifecycle test also verified cancellation after output, incomplete exact counts and terminal memory release, then successful recovery on the same connection. Object mutation, truncation, and corrupted decoder lookup failures each published terminal failure metrics with exact matches unknown and released scan-owned memory; a valid scan succeeded afterward. LIMIT left exact counts unknown. Two region scans in one query published independently, and a second connection kept its metrics separate.
+
+The recorded cancellation response was 0.608201 ms for this run. This is an observation, not a latency guarantee: a single spatial call has no fixed interrupt bound. Cancellation is checked around spatial calls, and WKB traversal polls at most every 256 vertices; the native input test verifies that an interrupt at that poll propagates out of validation.
+
+P4's 16× point-growth resource comparison passed with 1.000004× DuckOMO-owned work peak and 0.994136× isolated-process RSS. Exact counts and owned accounting were complete; spatial-internal peak memory is unknown (`null`, `complete=false`). Ordinary SQL/native/Python regression checks passed. `domain_reference_test` remained not-run because its external input variables were absent. P5 remote, P6 version-matrix, and P7 independent-reproduction checks remain open.

@@ -1,6 +1,9 @@
 #include "duckomo/read_om.hpp"
+#include "duckomo/region_geometry.hpp"
+#include "duckomo/region_input.hpp"
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <cmath>
@@ -32,6 +35,9 @@
 #include "duckdb/main/client_context_state.hpp"
 #include "duckdb/main/database.hpp"
 #include "duckdb/planner/column_binding.hpp"
+#include "duckdb/planner/expression/bound_constant_expression.hpp"
+#include "duckdb/planner/expression/bound_function_expression.hpp"
+#include "duckdb/planner/expression/bound_reference_expression.hpp"
 #include "duckdb/planner/operator/logical_get.hpp"
 #include "duckdb/main/client_context.hpp"
 #include "duckomo/batch.hpp"
@@ -68,6 +74,7 @@ namespace duckomo {
 namespace {
 
 constexpr idx_t SCAN_TASK_POSITION_WINDOW = 65536;
+constexpr std::uint64_t MAX_REGION_GEOMETRY_SCRATCH_BYTES = 64 * 1024;
 
 std::unique_ptr<ReadAtFile> OpenOmReadAt(ClientContext &context, const std::string &path,
                                          const std::shared_ptr<RemoteReadSession> &remote_session,
@@ -899,7 +906,7 @@ void ValidateGridCoordinates(ClientContext &context, const GridDefinition &defin
 
 SpatialBindConfiguration BindSpatialConfiguration(const TableFunctionBindInput &input, const BoundSchema &schema,
 	                                               const AxisDeclarations &axes, ScanMetrics &metrics,
-	                                               ClientContext &context) {
+	                                               ClientContext &context, bool regions_mode) {
 	SpatialBindConfiguration result;
 	const auto *grid_value = GetTableFunctionNamedArgument(input, "grid");
 	const auto *axes_value = GetTableFunctionNamedArgument(input, "spatial_axes");
@@ -918,7 +925,8 @@ SpatialBindConfiguration BindSpatialConfiguration(const TableFunctionBindInput &
 		if (domain == nullptr) {
 			const auto *registered = FindRegisteredGridDefinition(domain_name);
 			if (registered == nullptr) {
-				throw BinderException("read_om domain is unknown or not verified: '" + domain_name + "'");
+				const auto message = "read_om domain is unknown or not verified: '" + domain_name + "'";
+				throw BinderException(regions_mode ? "[region_reference] " + message : message);
 			}
 			if (!registered->domain_bindable) {
 				throw BinderException("read_om domain '" + domain_name + "' is a formula identity vector, not a producer domain");
@@ -979,7 +987,8 @@ SpatialBindConfiguration BindSpatialConfiguration(const TableFunctionBindInput &
 			return result;
 		}
 		if (!domain) {
-			throw BinderException("read_om domain is unknown or not verified: '" + domain_name + "'");
+			const auto message = "read_om domain is unknown or not verified: '" + domain_name + "'";
+			throw BinderException(regions_mode ? "[region_reference] " + message : message);
 		}
 		if (axes_value != nullptr && !axes_value->IsNull()) {
 			throw BinderException("read_om domain does not accept an extra spatial_axes override");
@@ -1211,6 +1220,10 @@ std::uint64_t AddMemoryBytes(std::uint64_t total, std::uint64_t bytes);
 std::uint64_t EstimateAxisPredicateMemory(const AxisPredicate &predicate);
 std::uint64_t EstimateSpatialPredicateMemory(const SpatialPredicate &predicate);
 std::uint64_t EstimateBindMemory(const ReadOmBindData &data);
+std::uint64_t EstimateRegionInputMemory(const RegionCollection &regions);
+std::uint64_t EstimateRegionBindCopyMemory(const std::string &region_crs,
+                                         const std::vector<Value> &region_geometries,
+                                         const std::vector<unique_ptr<Expression>> &region_predicates);
 
 struct ReadOmBindData final : TableFunctionData {
 	ReadOmBindData(std::string path_p, BoundSchema schema_p, AxisDeclarations axes_p,
@@ -1218,14 +1231,29 @@ struct ReadOmBindData final : TableFunctionData {
 	               SemanticAxes semantic_axes_p,
 	               std::shared_ptr<RemoteReadSession> remote_session_p,
 	               std::shared_ptr<ScanMetrics> metrics_p,
-	               std::shared_ptr<ScanMemoryAccount> memory_account_p)
+	               std::shared_ptr<ScanMemoryAccount> memory_account_p,
+	               bool regions_mode_p = false,
+	               std::shared_ptr<const RegionCollection> regions_p = {},
+	               std::string region_crs_p = {},
+	               std::vector<Value> region_geometries_p = {},
+	               std::vector<unique_ptr<Expression>> region_predicates_p = {})
 	    : path(std::move(path_p)), schema(std::move(schema_p)), axes(std::move(axes_p)), spatial(std::move(spatial_p)),
 	      temporal(std::move(temporal_p)), semantic_axes(std::move(semantic_axes_p)),
 	      remote_session(std::move(remote_session_p)), metrics(std::move(metrics_p)),
 	      memory_account(std::move(memory_account_p)),
 	      axis_predicate_memory_account(std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::Selector)),
-	      spatial_predicate_memory_account(std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::Selector)) {
+	      spatial_predicate_memory_account(std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::Selector)),
+	      regions_mode(regions_mode_p), regions(std::move(regions_p)), region_crs(std::move(region_crs_p)),
+	      region_collection_memory_account(regions ? std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::RegionInput)
+	                                               : nullptr),
+	      region_bind_memory_account(regions ? std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::RegionInput)
+	                                         : nullptr),
+	      region_geometries(std::move(region_geometries_p)), region_predicates(std::move(region_predicates_p)) {
 		memory_account->Set(EstimateBindMemory(*this));
+		if (region_collection_memory_account) {
+			region_collection_memory_account->Set(EstimateRegionInputMemory(*regions));
+			region_bind_memory_account->Set(EstimateRegionBindCopyMemory(region_crs, region_geometries, region_predicates));
+		}
 		axis_predicate_memory_account->Set(AddMemoryBytes(sizeof(*axis_predicate),
 		                                                  EstimateAxisPredicateMemory(*axis_predicate)));
 		spatial_predicate_memory_account->Set(EstimateSpatialPredicateMemory(*spatial.predicate));
@@ -1237,8 +1265,18 @@ struct ReadOmBindData final : TableFunctionData {
 	      remote_session(other.remote_session), metrics(other.metrics),
 	      memory_account(std::make_shared<ScanMemoryAccount>(other.metrics, ScanMemoryComponent::Bind)),
 	      axis_predicate_memory_account(other.axis_predicate_memory_account),
-	      spatial_predicate_memory_account(other.spatial_predicate_memory_account) {
+	      spatial_predicate_memory_account(other.spatial_predicate_memory_account),
+	      regions_mode(other.regions_mode), regions(other.regions), region_crs(other.region_crs),
+	      region_collection_memory_account(other.region_collection_memory_account),
+	      region_bind_memory_account(regions ? std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::RegionInput)
+	                                         : nullptr),
+	      region_geometries(other.region_geometries) {
+		region_predicates.reserve(other.region_predicates.size());
+		for (const auto &predicate : other.region_predicates) region_predicates.emplace_back(predicate->Copy());
 		memory_account->Set(EstimateBindMemory(*this));
+		if (region_bind_memory_account) {
+			region_bind_memory_account->Set(EstimateRegionBindCopyMemory(region_crs, region_geometries, region_predicates));
+		}
 	}
 
 	unique_ptr<FunctionData> Copy() const override {
@@ -1247,7 +1285,9 @@ struct ReadOmBindData final : TableFunctionData {
 
 	bool Equals(const FunctionData &other_p) const override {
 		const auto &other = other_p.Cast<ReadOmBindData>();
-		return path == other.path && axes == other.axes && temporal == other.temporal &&
+		return path == other.path && regions_mode == other.regions_mode && region_crs == other.region_crs &&
+		       ((!regions && !other.regions) || (regions && other.regions && regions->Equals(*other.regions))) &&
+		       axes == other.axes && temporal == other.temporal &&
 		       semantic_axes == other.semantic_axes &&
 		       spatial.grid_signature == other.spatial.grid_signature &&
 		       spatial.layout_name == other.spatial.layout_name && spatial.source == other.spatial.source &&
@@ -1273,6 +1313,13 @@ struct ReadOmBindData final : TableFunctionData {
 	std::shared_ptr<ScanMemoryAccount> memory_account;
 	std::shared_ptr<ScanMemoryAccount> axis_predicate_memory_account;
 	std::shared_ptr<ScanMemoryAccount> spatial_predicate_memory_account;
+	bool regions_mode = false;
+	std::shared_ptr<const RegionCollection> regions;
+	std::string region_crs;
+	std::shared_ptr<ScanMemoryAccount> region_collection_memory_account;
+	std::shared_ptr<ScanMemoryAccount> region_bind_memory_account;
+	std::vector<Value> region_geometries;
+	std::vector<unique_ptr<Expression>> region_predicates;
 };
 
 std::uint64_t AddMemoryBytes(std::uint64_t total, std::uint64_t bytes) {
@@ -1416,6 +1463,52 @@ std::uint64_t EstimateTemporalMemory(const std::optional<TemporalBindConfigurati
 	return VectorMemoryBytes(temporal->values.capacity(), sizeof(timestamp_t));
 }
 
+std::uint64_t EstimateRegionPredicateMemory(const Expression &expression) {
+	if (ExpressionClassOf(expression) == ExpressionClass::BOUND_FUNCTION) {
+		const auto &function = expression.Cast<BoundFunctionExpression>();
+		std::uint64_t bytes = sizeof(BoundFunctionExpression);
+		bytes = AddMemoryBytes(bytes, StringMemoryBytes(function.function.name));
+		bytes = AddMemoryBytes(bytes, StringMemoryBytes(function.function.extra_info));
+		bytes = AddMemoryBytes(bytes, StringMemoryBytes(function.function.catalog_name));
+		bytes = AddMemoryBytes(bytes, StringMemoryBytes(function.function.schema_name));
+		bytes = AddMemoryBytes(bytes, VectorMemoryBytes(function.function.arguments.capacity(), sizeof(LogicalType)));
+		bytes = AddMemoryBytes(bytes,
+		                       VectorMemoryBytes(function.children.capacity(), sizeof(unique_ptr<Expression>)));
+		if (function.bind_info) bytes = AddMemoryBytes(bytes, sizeof(FunctionData));
+		for (const auto &child : function.children) {
+			bytes = AddMemoryBytes(bytes, EstimateRegionPredicateMemory(*child));
+		}
+		return bytes;
+	}
+	if (ExpressionClassOf(expression) == ExpressionClass::BOUND_CONSTANT) {
+		// Value and expression copies share the payload charged to the region input account.
+		return sizeof(BoundConstantExpression);
+	}
+	if (ExpressionClassOf(expression) == ExpressionClass::BOUND_REF) return sizeof(BoundReferenceExpression);
+	return sizeof(Expression);
+}
+
+std::uint64_t EstimateRegionInputMemory(const RegionCollection &regions) {
+	std::uint64_t bytes = regions.GetOwnedBytes();
+	for (const auto &region : regions.GetRegions()) {
+		bytes = AddMemoryBytes(bytes, region.geometry_bytes);
+	}
+	return bytes;
+}
+
+std::uint64_t EstimateRegionBindCopyMemory(const std::string &region_crs,
+	                                        const std::vector<Value> &region_geometries,
+	                                        const std::vector<unique_ptr<Expression>> &region_predicates) {
+	std::uint64_t bytes = StringMemoryBytes(region_crs);
+	bytes = AddMemoryBytes(bytes, VectorMemoryBytes(region_geometries.capacity(), sizeof(Value)));
+	bytes = AddMemoryBytes(bytes,
+	                       VectorMemoryBytes(region_predicates.capacity(), sizeof(unique_ptr<Expression>)));
+	for (const auto &predicate : region_predicates) {
+		if (predicate) bytes = AddMemoryBytes(bytes, EstimateRegionPredicateMemory(*predicate));
+	}
+	return bytes;
+}
+
 std::uint64_t EstimateBindMemory(const ReadOmBindData &data) {
 	std::uint64_t bytes = sizeof(data);
 	bytes = AddMemoryBytes(bytes, StringMemoryBytes(data.path));
@@ -1510,14 +1603,16 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 	                  std::shared_ptr<ScanMetrics> metrics_p)
 	    : path(bind_data.path), schema(bind_data.schema),
 	      projection(schema, column_ids, bind_data.spatial.HasGrid(), bind_data.temporal.has_value(),
-	                 bind_data.semantic_axes, bind_data.spatial.include_source),
+	                 bind_data.semantic_axes, bind_data.spatial.include_source, bind_data.regions_mode),
 	      spatial(bind_data.spatial), temporal(bind_data.temporal), semantic_axes(bind_data.semantic_axes),
-	      axis_predicate(*bind_data.axis_predicate), metrics(std::move(metrics_p)),
+	      axis_predicate(*bind_data.axis_predicate), regions_mode(bind_data.regions_mode), regions(bind_data.regions),
+	      metrics(std::move(metrics_p)),
 	      memory_control_account(std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::GlobalControl)),
 	      memory_definition_account(std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::Definitions)),
 	      memory_selector_account(std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::Selector)),
 	      reader(make_uniq<OmV3Reader>(OpenOmReadAt(context, bind_data.path, bind_data.remote_session, metrics,
 	                                               ScanMetadataStage::Scan))) {
+		if (regions_mode && projection.GetRequiredVariableIds().empty()) metrics->MarkValueDecodeNotRequired();
 		RefreshMemoryAccount();
 		// The file may have changed since binding. Revalidate its complete tree
 		// before constructing decoder state, while keeping binding metadata-only.
@@ -1540,7 +1635,7 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 			    (!std::holds_alternative<RegularGrid>(spatial.definition->geometry));
 			const auto spatial_filter_covers_domain = bounded_geographic_domain && has_safe_spatial_filter &&
 			    SpatialPredicateCoversGeographicDomain(*spatial.predicate);
-			spatial_preflight_active = has_safe_spatial_filter && !spatial_filter_covers_domain;
+			spatial_preflight_active = !regions_mode && has_safe_spatial_filter && !spatial_filter_covers_domain;
 			selection.mode = spatial_filter_covers_domain ? SpatialSelectionMode::Full :
 			                 has_safe_spatial_filter ? SpatialSelectionMode::Restricted :
 			                 spatial.predicate->has_unsupported_condition ? SpatialSelectionMode::Fallback :
@@ -1552,14 +1647,28 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 			                             selection.candidate_rows);
 		}
 		selection_cursor = make_uniq<AxisSelectionCursor>(schema.shape, semantic_axes, axis_predicate);
+		candidate_count = selection_cursor->CandidateCount();
 		const bool spatial_predicate_empty = spatial.HasGrid() && spatial.layout &&
 	                                    SpatialPredicateProvesEmpty(*spatial.predicate);
-		if (selection_cursor->IsEmpty() || spatial_predicate_empty) {
+		const bool all_regions_empty = regions_mode && regions &&
+		    std::none_of(regions->GetRegions().begin(), regions->GetRegions().end(),
+		                 [](const Region &region) { return !region.envelope.empty; });
+		if (selection_cursor->IsEmpty() || spatial_predicate_empty ||
+		    (regions_mode && (!regions || regions->GetRegions().empty() || all_regions_empty))) {
 			no_candidates = true;
 			scan_completed = true;
-			candidate_count = 0;
-			metrics->SetCandidateRows(0);
-			metrics->SetCandidateCountEvidence(0, 0, 0, true);
+			std::uint64_t completed_candidate_rows = 0;
+			if (regions_mode && all_regions_empty && !selection_cursor->IsEmpty() && !spatial_predicate_empty) {
+				const auto region_count = static_cast<std::uint64_t>(regions->GetRegions().size());
+				if (region_count != 0 && candidate_count > UINT64_MAX / region_count) {
+					throw ReaderError(ReaderErrorCode::ShapeOverflow,
+					                  "region-record candidate count exceeds unsigned 64-bit range");
+				}
+				completed_candidate_rows = candidate_count * region_count;
+			}
+			metrics->SetCandidateRows(completed_candidate_rows);
+			metrics->SetCandidateCountEvidence(completed_candidate_rows, completed_candidate_rows,
+			                                   completed_candidate_rows, true);
 			metrics->RecordCoordinatePreparation(0, true);
 			auto empty_reasons = selection.fallback_reasons;
 			for (const auto &reason : axis_predicate.fallback_reasons) {
@@ -1575,11 +1684,21 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 				}
 			}
 			metrics->SetSpatialSelection("empty", true, std::move(empty_reasons), 0, true);
+			if (regions_mode) {
+				if (completed_candidate_rows != 0) {
+					for (std::size_t index = 0; index < regions->GetRegions().size(); ++index) {
+						metrics->RecordRegionCandidatePairs(selection_cursor->CandidateCount());
+						metrics->RecordRegionEnvelopeRejects(selection_cursor->CandidateCount());
+					}
+				}
+				metrics->SetRegionMatchCount(0, true);
+				metrics->MarkValueDecodeNotRequired();
+			}
 			metrics->SetScanComplete(true);
 			RefreshMemoryAccount();
 			return;
 		}
-		if (spatial_preflight_active) {
+		if (spatial_preflight_active && !regions_mode) {
 			native_window_cursor = make_uniq<NativeWindowCursor>(
 			    *spatial.layout, !projection.GetRequiredVariableIds().empty());
 		} else if (spatial.HasGrid()) {
@@ -1593,12 +1712,22 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 			if (configured > 0) requested_limit = std::min<std::uint64_t>(requested_limit,
 			                                                           static_cast<std::uint64_t>(configured));
 		}
-		const auto available_tasks = native_window_cursor
+		std::uint64_t available_tasks = native_window_cursor
 		                                 ? native_window_cursor->WindowUpperBound(*selection_cursor)
 		                                 : (candidate_count == 0
 		                                        ? std::uint64_t(1)
 		                                        : candidate_count / SCAN_TASK_POSITION_WINDOW +
 		                                              (candidate_count % SCAN_TASK_POSITION_WINDOW != 0));
+		if (regions_mode) {
+			const auto per_region_tasks = candidate_count / SCAN_TASK_POSITION_WINDOW +
+			                             (candidate_count % SCAN_TASK_POSITION_WINDOW != 0);
+			const auto non_empty_regions = static_cast<std::uint64_t>(std::count_if(
+			    regions->GetRegions().begin(), regions->GetRegions().end(),
+			    [](const Region &region) { return !region.envelope.empty; }));
+			available_tasks = per_region_tasks != 0 && non_empty_regions > UINT64_MAX / per_region_tasks
+			                      ? UINT64_MAX
+			                      : std::max<std::uint64_t>(1, per_region_tasks * non_empty_regions);
+		}
 		max_threads = static_cast<idx_t>(std::max<std::uint64_t>(1, std::min(requested_limit, available_tasks)));
 		auto selection_fallback_reasons = selection.fallback_reasons;
 		for (const auto &reason : axis_predicate.fallback_reasons) {
@@ -1614,10 +1743,22 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 		                            axis_predicate.necessary_conditions.empty() ?
 		                                (selection.mode == SpatialSelectionMode::Restricted ? "restricted" :
 		                                 SpatialSelectionModeName(selection.mode)) : "axis_restricted";
+		std::uint64_t selection_candidate_rows = candidate_count;
+		if (regions_mode) {
+			const auto region_count = static_cast<std::uint64_t>(regions->GetRegions().size());
+			if (region_count != 0 && candidate_count > UINT64_MAX / region_count) {
+				throw ReaderError(ReaderErrorCode::ShapeOverflow,
+				                  "region-record candidate count exceeds unsigned 64-bit range");
+			}
+			selection_candidate_rows = candidate_count * region_count;
+		}
 		metrics->SetSpatialSelection(selection_mode,
-		                             true, std::move(selection_fallback_reasons), candidate_count,
+		                             true, std::move(selection_fallback_reasons), selection_candidate_rows,
 		                             candidate_count == 0);
-		if (spatial_preflight_active) {
+		if (regions_mode) {
+			metrics->SetCandidateCountEvidence(std::nullopt, selection_candidate_rows, 0, false);
+			metrics->SetRegionMatchCount(std::nullopt, false);
+		} else if (spatial_preflight_active) {
 			metrics->SetCandidateCountEvidence(std::nullopt, candidate_count, 0, false);
 		} else {
 			metrics->SetCandidateCountEvidence(candidate_count, candidate_count, candidate_count, true);
@@ -1799,8 +1940,59 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 		}
 	}
 
+	bool GetNextRegionTask(ClientContext &context, std::vector<std::uint64_t> &positions,
+	                       const ScanMemoryAccount &task_positions_account, std::uint64_t &region_ordinal) {
+	while (true) {
+		std::lock_guard<std::mutex> guard(task_mutex);
+		if (stop_requested.load() || no_candidates || !regions) return false;
+		const auto &items = regions->GetRegions();
+		while (current_region_ordinal < items.size()) {
+			const auto &region = items[current_region_ordinal];
+			if (!region.envelope.empty) break;
+			const auto candidate_pairs = selection_cursor->CandidateCount();
+			metrics->RecordRegionCandidatePairs(candidate_pairs);
+			metrics->RecordRegionEnvelopeRejects(candidate_pairs);
+			metrics->RecordObservedCandidateRecords(candidate_pairs);
+			++current_region_ordinal;
+			selection_cursor = make_uniq<AxisSelectionCursor>(schema.shape, semantic_axes, axis_predicate);
+		}
+		if (current_region_ordinal >= items.size()) {
+			selection_exhausted = true;
+			MaybeSetScanCompleteLocked();
+			return false;
+		}
+		const auto previous_capacity_bytes = VectorMemoryBytes(positions.capacity(), sizeof(std::uint64_t));
+		if (positions.capacity() < SCAN_TASK_POSITION_WINDOW) {
+			const auto requested_capacity_bytes = VectorMemoryBytes(SCAN_TASK_POSITION_WINDOW, sizeof(std::uint64_t));
+			task_positions_account.Set(previous_capacity_bytes,
+			                           AddMemoryBytes(previous_capacity_bytes, requested_capacity_bytes));
+		}
+		const auto position_count = selection_cursor->Next(SCAN_TASK_POSITION_WINDOW, positions, [&context](std::uint64_t) {
+			if (context.IsInterrupted()) throw InterruptException();
+			return true;
+		});
+		const auto task_position_bytes = VectorMemoryBytes(positions.capacity(), sizeof(std::uint64_t));
+		if (task_position_bytes > SCAN_TASK_POSITION_WINDOW * sizeof(std::uint64_t)) {
+			throw ReaderError(ReaderErrorCode::Allocation, "region task position map exceeds the 512 KiB limit");
+		}
+		const auto task_position_upper_bound = previous_capacity_bytes == task_position_bytes
+		                                           ? task_position_bytes
+		                                           : AddMemoryBytes(previous_capacity_bytes, task_position_bytes);
+		task_positions_account.Set(task_position_bytes, task_position_upper_bound);
+		if (position_count == 0) {
+			++current_region_ordinal;
+			selection_cursor = make_uniq<AxisSelectionCursor>(schema.shape, semantic_axes, axis_predicate);
+			continue;
+		}
+		region_ordinal = current_region_ordinal;
+		ClaimTaskLocked();
+		return true;
+	}
+	}
+
 	bool GetNextTask(ClientContext &context, std::vector<std::uint64_t> &positions,
-	                 const ScanMemoryAccount &task_positions_account) {
+	                 const ScanMemoryAccount &task_positions_account, std::uint64_t &region_ordinal) {
+		if (regions_mode) return GetNextRegionTask(context, positions, task_positions_account, region_ordinal);
 		if (native_window_cursor) return GetNextNativeWindowTask(context, positions, task_positions_account);
 		std::lock_guard<std::mutex> guard(task_mutex);
 		if (stop_requested.load() || selection_exhausted || no_candidates) return false;
@@ -1874,6 +2066,16 @@ private:
 	void MaybeSetScanCompleteLocked() {
 		if (selection_exhausted && outstanding_tasks == 0 && !stop_requested.load() && !scan_completed) {
 			scan_completed = true;
+			if (regions_mode) {
+				const auto region_metrics = metrics->Snapshot();
+				metrics->SetCandidateRows(region_metrics.candidate_pairs_observed);
+				metrics->SetCandidateCountEvidence(region_metrics.candidate_pairs_observed,
+				                                   candidate_count *
+				                                       static_cast<std::uint64_t>(regions->GetRegions().size()),
+				                                   region_metrics.candidate_pairs_observed, true);
+				metrics->SetRegionMatchCount(region_metrics.matched_pairs_observed, true);
+				metrics->MarkValueDecodeNotRequired();
+			}
 			if (spatial_preflight_active) {
 				const auto exact_count = observed_candidate_rows.load(std::memory_order_relaxed);
 				metrics->SetCandidateCountEvidence(exact_count, candidate_count, exact_count, true);
@@ -1906,6 +2108,9 @@ public:
 	SpatialSelection selection;
 	unique_ptr<AxisSelectionCursor> selection_cursor;
 	unique_ptr<NativeWindowCursor> native_window_cursor;
+	bool regions_mode = false;
+	std::shared_ptr<const RegionCollection> regions;
+	std::uint64_t current_region_ordinal = 0; // guarded by task_mutex
     std::shared_ptr<ScanMetrics> metrics;
 	    std::shared_ptr<ScanMemoryAccount> memory_control_account;
 	    std::shared_ptr<ScanMemoryAccount> memory_definition_account;
@@ -1931,7 +2136,9 @@ struct ReadOmLocalState final : LocalTableFunctionState {
 	    : worker_id(worker_id_p), memory_account(std::make_shared<ScanMemoryAccount>(
 	          bind_data.metrics, ScanMemoryComponent::GlobalControl)),
 	      task_positions_account(std::make_shared<ScanMemoryAccount>(bind_data.metrics,
-	                                                               ScanMemoryComponent::TaskPositions)) {
+	                                                               ScanMemoryComponent::TaskPositions)),
+	      region_evaluator_account(std::make_shared<ScanMemoryAccount>(bind_data.metrics,
+	                                                                 ScanMemoryComponent::Selector)) {
 		RefreshMemoryAccount();
 		if (global_state.no_candidates) {
 			return;
@@ -1964,24 +2171,45 @@ struct ReadOmLocalState final : LocalTableFunctionState {
 		if (reader) bytes = AddMemoryBytes(bytes, sizeof(OmV3Reader));
 		memory_account->Set(bytes);
 		task_positions_account->Set(VectorMemoryBytes(task_positions.capacity(), sizeof(std::uint64_t)));
+		region_evaluator_account->Set(region_evaluator_memory_bytes);
 	}
 
 	unique_ptr<OmV3Reader> reader;
 	vector<unique_ptr<OmDecoderState>> decoders;
 	std::vector<std::uint64_t> task_positions;
 	idx_t task_position_offset = 0;
+	std::uint64_t task_region_ordinal = DConstants::INVALID_INDEX;
+	std::uint64_t active_region_ordinal = DConstants::INVALID_INDEX;
+	unique_ptr<RegionPredicateEvaluator> region_evaluator;
+	std::uint64_t region_evaluator_memory_bytes = 0;
 	std::uint64_t worker_id;
 	std::shared_ptr<ScanMemoryAccount> memory_account;
 	std::shared_ptr<ScanMemoryAccount> task_positions_account;
+	std::shared_ptr<ScanMemoryAccount> region_evaluator_account;
 	bool registered_as_active = false;
 	bool task_active = false;
 };
 
-unique_ptr<FunctionData> BindReadOm(ClientContext &context, TableFunctionBindInput &input,
-                                    vector<LogicalType> &return_types, TableFunctionColumnNames &names) {
+unique_ptr<FunctionData> BindReadOmInternal(ClientContext &context, TableFunctionBindInput &input,
+                                            vector<LogicalType> &return_types, TableFunctionColumnNames &names,
+                                            bool regions_mode) {
 	auto metrics = CreateScanMetrics(context);
 	RegisterScanMetricsQueryState(context, metrics);
+	if (regions_mode) metrics->SetOperation("read_om_regions");
 	auto memory_account = std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::Bind);
+	std::shared_ptr<const RegionCollection> regions;
+	std::string region_crs;
+	if (regions_mode) {
+		const auto *regions_value = GetTableFunctionNamedArgument(input, "regions");
+		const auto *region_crs_value = GetTableFunctionNamedArgument(input, "region_crs");
+		if (regions_value == nullptr) throw BinderException("[region_input] regions is required");
+		if (region_crs_value == nullptr) throw BinderException("[region_reference] region_crs is required");
+		ValidateRegionCrs(*region_crs_value);
+		region_crs = StringValue::Get(*region_crs_value);
+		regions = std::make_shared<RegionCollection>(RegionCollection::Build(*regions_value, [&context]() {
+			if (context.IsInterrupted()) throw InterruptException();
+		}));
+	}
 	if (input.inputs.size() != 1) {
 		throw BinderException("read_om expects one constant VARCHAR path");
 	}
@@ -2021,7 +2249,7 @@ unique_ptr<FunctionData> BindReadOm(ClientContext &context, TableFunctionBindInp
 	memory_account->Set(AddMemoryBytes(
 	    AddMemoryBytes(sizeof(ReadOmBindData), StringMemoryBytes(path)),
 	    AddMemoryBytes(EstimateSchemaMemory(schema), EstimateAxisDeclarationsMemory(axes))));
-	auto spatial = BindSpatialConfiguration(input, schema, axes, *metrics, context);
+	auto spatial = BindSpatialConfiguration(input, schema, axes, *metrics, context, regions_mode);
 	memory_account->Set(AddMemoryBytes(
 	    AddMemoryBytes(sizeof(ReadOmBindData), StringMemoryBytes(path)),
 	    AddMemoryBytes(AddMemoryBytes(EstimateSchemaMemory(schema), EstimateAxisDeclarationsMemory(axes)),
@@ -2079,14 +2307,62 @@ unique_ptr<FunctionData> BindReadOm(ClientContext &context, TableFunctionBindInp
 	staged_bind_bytes = AddMemoryBytes(staged_bind_bytes, EstimateTemporalMemory(temporal));
 	staged_bind_bytes = AddMemoryBytes(staged_bind_bytes, EstimateSemanticAxesMemory(semantic_axes));
 	memory_account->Set(staged_bind_bytes);
+	std::vector<Value> region_geometries;
+	std::vector<unique_ptr<Expression>> region_predicates;
+	if (regions_mode) {
+		if (!spatial.HasGrid() || !spatial.layout) {
+			throw BinderException("[region_reference] read_om_regions requires a bound grid or domain");
+		}
+		const auto geometry_prepare_start = std::chrono::steady_clock::now();
+		RegionGeometryAdapter adapter(context);
+		region_geometries.reserve(regions->GetRegions().size());
+		region_predicates.reserve(regions->GetRegions().size());
+		for (idx_t ordinal = 0; ordinal < regions->GetRegions().size(); ++ordinal) {
+			if (context.IsInterrupted()) throw InterruptException();
+			const auto &region = regions->GetRegions()[ordinal];
+			const std::string wkb(region.wkb.begin(), region.wkb.end());
+			Value geometry;
+			try {
+				geometry = adapter.CreateGeometry(wkb);
+				if (!adapter.IsValid(geometry)) {
+					throw BinderException("[region_input] region ordinal %llu is not a valid Polygon or MultiPolygon",
+					                     static_cast<unsigned long long>(ordinal + 1));
+				}
+			} catch (const BinderException &) {
+				throw;
+			} catch (const std::exception &error) {
+				throw BinderException("[region_input] region ordinal %llu could not be validated: %s",
+				                     static_cast<unsigned long long>(ordinal + 1), error.what());
+			}
+			region_predicates.emplace_back(adapter.BindCovers(geometry, 0, 1));
+			region_geometries.emplace_back(std::move(geometry));
+		}
+		const auto geometry_prepare_ns = static_cast<std::uint64_t>(std::chrono::duration_cast<std::chrono::nanoseconds>(
+		    std::chrono::steady_clock::now() - geometry_prepare_start).count());
+		metrics->RecordRegionPrepareNanoseconds(geometry_prepare_ns);
+		std::uint64_t input_wkb_bytes = 0;
+		std::uint64_t empty_region_count = 0;
+		std::uint64_t owned_input_bytes = EstimateRegionInputMemory(*regions);
+		owned_input_bytes = AddMemoryBytes(owned_input_bytes,
+		                                   EstimateRegionBindCopyMemory(region_crs, region_geometries,
+		                                                                region_predicates));
+		for (const auto &region : regions->GetRegions()) {
+			input_wkb_bytes = AddMemoryBytes(input_wkb_bytes, region.wkb.size());
+			if (region.envelope.empty) ++empty_region_count;
+		}
+		metrics->SetRegionInputMetrics(regions->GetRegions().size(), empty_region_count, input_wkb_bytes,
+		                               regions->GetTotalVertices(), owned_input_bytes);
+	}
 
 	const auto semantic_column_count = static_cast<std::size_t>(std::count_if(
 	    semantic_axes.begin(), semantic_axes.end(),
 	    [](const SemanticAxis &axis) { return axis.kind != SemanticAxisKind::Time; }));
 	return_types.reserve(return_types.size() + schema.variables.size() + (spatial.HasGrid() ? 2 : 0) +
-	                     (temporal ? 1 : 0) + semantic_column_count + (spatial.include_source ? 1 : 0));
+	                     (temporal ? 1 : 0) + semantic_column_count + (regions_mode ? 1 : 0) +
+	                     (spatial.include_source ? 1 : 0));
 	names.reserve(names.size() + schema.variables.size() + (spatial.HasGrid() ? 2 : 0) +
-	              (temporal ? 1 : 0) + semantic_column_count + (spatial.include_source ? 1 : 0));
+	              (temporal ? 1 : 0) + semantic_column_count + (regions_mode ? 1 : 0) +
+	              (spatial.include_source ? 1 : 0));
 	for (const auto &variable : schema.variables) {
 		return_types.emplace_back(variable.type);
 		names.emplace_back(variable.column_name);
@@ -2115,6 +2391,16 @@ unique_ptr<FunctionData> BindReadOm(ClientContext &context, TableFunctionBindInp
 		return_types.emplace_back(semantic_axis.output_type);
 		names.emplace_back(name);
 	}
+	if (regions_mode) {
+		for (const auto &existing_name : names) {
+			if (StringUtil::CIEquals(TableFunctionColumnNameString(existing_name), "region_id")) {
+				throw BinderException("[region_input] region_id column name conflicts with existing column '%s'",
+				                     existing_name);
+			}
+		}
+		return_types.emplace_back(LogicalType::VARCHAR);
+		names.emplace_back("region_id");
+	}
 	if (spatial.include_source) {
 		for (const auto &existing_name : names) {
 			if (StringUtil::CIEquals(TableFunctionColumnNameString(existing_name), "om_source")) {
@@ -2126,8 +2412,20 @@ unique_ptr<FunctionData> BindReadOm(ClientContext &context, TableFunctionBindInp
 	}
 	auto bind_data = make_uniq<ReadOmBindData>(path, std::move(schema), std::move(axes), std::move(spatial),
 	                                          std::move(temporal), std::move(semantic_axes),
-	                                          std::move(remote_session), metrics, memory_account);
+	                                          std::move(remote_session), metrics, memory_account, regions_mode,
+	                                          std::move(regions), std::move(region_crs),
+	                                          std::move(region_geometries), std::move(region_predicates));
 	return bind_data;
+}
+
+unique_ptr<FunctionData> BindReadOm(ClientContext &context, TableFunctionBindInput &input,
+                                    vector<LogicalType> &return_types, TableFunctionColumnNames &names) {
+	return BindReadOmInternal(context, input, return_types, names, false);
+}
+
+unique_ptr<FunctionData> BindReadOmRegions(ClientContext &context, TableFunctionBindInput &input,
+                                            vector<LogicalType> &return_types, TableFunctionColumnNames &names) {
+	return BindReadOmInternal(context, input, return_types, names, true);
 }
 
 struct GridInfoBindData final : TableFunctionData {
@@ -2298,17 +2596,118 @@ unique_ptr<LocalTableFunctionState> InitReadOmLocal(ExecutionContext &context, T
 	}
 }
 
-void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLocalState &local, DataChunk &output) {
+bool RegionEnvelopeContains(const RegionEnvelope &envelope, const GridCoordinate &coordinate) {
+	return !envelope.empty && coordinate.longitude >= envelope.min_longitude &&
+	       coordinate.longitude <= envelope.max_longitude && coordinate.latitude >= envelope.min_latitude &&
+	       coordinate.latitude <= envelope.max_latitude;
+}
+
+void FilterRegionCandidates(ClientContext &context, ReadOmGlobalState &state, ReadOmLocalState &local,
+	                        const ReadOmBindData &bind_data, std::vector<std::uint64_t> &logical_positions) {
+	if (local.task_region_ordinal >= bind_data.region_predicates.size()) {
+		throw InternalException("read_om_regions task refers to an unknown region ordinal");
+	}
+	if (local.active_region_ordinal != local.task_region_ordinal) {
+		local.region_evaluator.reset();
+		local.region_evaluator_memory_bytes = 0;
+		local.RefreshMemoryAccount();
+		local.region_evaluator = make_uniq<RegionPredicateEvaluator>(
+		    context, *bind_data.region_predicates[local.task_region_ordinal]);
+		local.active_region_ordinal = local.task_region_ordinal;
+		local.region_evaluator_memory_bytes = AddMemoryBytes(
+		    sizeof(RegionPredicateEvaluator),
+		    EstimateRegionPredicateMemory(*bind_data.region_predicates[local.task_region_ordinal]));
+		local.RefreshMemoryAccount();
+	}
+	const auto &region = bind_data.regions->GetRegions()[local.task_region_ordinal];
+	std::vector<std::uint64_t> matches;
+	if (logical_positions.size() > STANDARD_VECTOR_SIZE) {
+		throw InternalException("read_om_regions geometry scratch exceeds one output vector");
+	}
+	matches.reserve(logical_positions.size());
+	DataChunk coordinates;
+	coordinates.Initialize(context, {LogicalType(LogicalTypeId::DOUBLE), LogicalType(LogicalTypeId::DOUBLE)},
+	                       REGION_GEOMETRY_BATCH_SIZE);
+	SelectionVector selected(REGION_GEOMETRY_BATCH_SIZE);
+	std::array<std::uint64_t, REGION_GEOMETRY_BATCH_SIZE> candidate_positions{};
+	coordinates.SetCardinality(REGION_GEOMETRY_BATCH_SIZE);
+	const auto coordinate_allocation_bytes = coordinates.GetAllocationSize();
+	coordinates.SetCardinality(0);
+	std::uint64_t scratch_bytes = sizeof(matches);
+	scratch_bytes = AddMemoryBytes(scratch_bytes, VectorMemoryBytes(matches.capacity(), sizeof(std::uint64_t)));
+	scratch_bytes = AddMemoryBytes(scratch_bytes, sizeof(coordinates));
+	scratch_bytes = AddMemoryBytes(scratch_bytes, coordinate_allocation_bytes);
+	scratch_bytes = AddMemoryBytes(scratch_bytes, sizeof(selected));
+	scratch_bytes = AddMemoryBytes(scratch_bytes, VectorMemoryBytes(REGION_GEOMETRY_BATCH_SIZE, sizeof(idx_t)));
+	scratch_bytes = AddMemoryBytes(scratch_bytes, sizeof(candidate_positions));
+	if (scratch_bytes > MAX_REGION_GEOMETRY_SCRATCH_BYTES) {
+		throw ReaderError(ReaderErrorCode::Allocation, "region geometry scratch exceeds the 64 KiB worker limit");
+	}
+	ScanMemoryAccount scratch_account(state.metrics, ScanMemoryComponent::Selector);
+	scratch_account.Set(scratch_bytes);
+	idx_t coordinate_count = 0;
+	std::uint64_t envelope_rejects = 0;
+	state.metrics->RecordRegionCandidatePairs(logical_positions.size());
+	state.metrics->RecordObservedCandidateRecords(logical_positions.size());
+	auto evaluate = [&]() {
+		if (coordinate_count == 0) return;
+		coordinates.SetCardinality(coordinate_count);
+		const auto started = std::chrono::steady_clock::now();
+		idx_t match_count = 0;
+		bool interrupted = false;
+		try {
+			match_count = local.region_evaluator->Select(coordinates, selected);
+			interrupted = context.IsInterrupted();
+		} catch (...) {
+			const auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
+			    std::chrono::steady_clock::now() - started).count();
+			state.metrics->RecordRegionGeometryBatch(coordinate_count, 0,
+			                                         static_cast<std::uint64_t>(std::max<std::int64_t>(0, elapsed)));
+			throw;
+		}
+		const auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
+		    std::chrono::steady_clock::now() - started).count();
+		state.metrics->RecordRegionGeometryBatch(coordinate_count, match_count,
+		                                         static_cast<std::uint64_t>(std::max<std::int64_t>(0, elapsed)));
+		if (interrupted) throw InterruptException();
+		for (idx_t i = 0; i < match_count; ++i) matches.push_back(candidate_positions[selected.get_index(i)]);
+		coordinates.Reset();
+		coordinate_count = 0;
+	};
+	for (const auto logical_position : logical_positions) {
+		if (context.IsInterrupted()) throw InterruptException();
+		const auto coordinate = state.spatial.Coordinate(logical_position);
+		if (!RegionEnvelopeContains(region.envelope, coordinate)) {
+			++envelope_rejects;
+			continue;
+		}
+		if (!MatchesSpatialPredicate(*state.spatial.predicate, coordinate)) {
+			continue;
+		}
+		coordinates.SetValue(0, coordinate_count, Value::DOUBLE(coordinate.longitude));
+		coordinates.SetValue(1, coordinate_count, Value::DOUBLE(coordinate.latitude));
+		candidate_positions[coordinate_count] = logical_position;
+		if (++coordinate_count == REGION_GEOMETRY_BATCH_SIZE) evaluate();
+	}
+	state.metrics->RecordRegionEnvelopeRejects(envelope_rejects);
+	evaluate();
+	logical_positions = std::move(matches);
+}
+
+void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLocalState &local,
+	                const ReadOmBindData &bind_data, DataChunk &output) {
 	output.SetCardinality(0);
 	if (state.stop_requested.load() || context.IsInterrupted()) {
 		throw InterruptException();
 	}
+	while (true) {
 	while (local.task_position_offset >= local.task_positions.size()) {
 		if (local.task_active) {
 			state.RecordTaskCompleted();
 			local.task_active = false;
 		}
-		if (!state.GetNextTask(context, local.task_positions, *local.task_positions_account)) {
+		if (!state.GetNextTask(context, local.task_positions, *local.task_positions_account,
+		                       local.task_region_ordinal)) {
 			local.RefreshMemoryAccount();
 			return;
 		}
@@ -2316,11 +2715,13 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLoca
 		local.task_position_offset = 0;
 		local.task_active = true;
 	}
-	auto count = std::min<idx_t>(STANDARD_VECTOR_SIZE,
-	                            local.task_positions.size() - local.task_position_offset);
+	auto candidate_count = std::min<idx_t>(STANDARD_VECTOR_SIZE,
+	                                       local.task_positions.size() - local.task_position_offset);
+	idx_t count = candidate_count;
 	const auto &required_variables = state.projection.GetRequiredVariableIds();
 	if (!required_variables.empty()) {
 		count = std::min<idx_t>(count, static_cast<idx_t>(MaxBatchPositionCount(state.schema.shape.size())));
+		candidate_count = count;
 	}
 	struct WorkerExecution final {
 		ScanMetrics &metrics;
@@ -2338,7 +2739,15 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLoca
 	batch_account.Set(0, initial_batch_upper_bound);
 	std::vector<std::uint64_t> logical_positions(
 	    local.task_positions.begin() + local.task_position_offset,
-	    local.task_positions.begin() + local.task_position_offset + count);
+	    local.task_positions.begin() + local.task_position_offset + candidate_count);
+	if (state.regions_mode) {
+		FilterRegionCandidates(context, state, local, bind_data, logical_positions);
+		count = static_cast<idx_t>(logical_positions.size());
+		if (count == 0) {
+			local.task_position_offset += candidate_count;
+			continue;
+		}
+	}
 	const auto &slots = state.projection.GetOutputSlots();
 	const auto segments = required_variables.empty() ? std::vector<BatchSegment>()
 	                                                : BuildSelectedBatchSegments(state.schema.shape, logical_positions);
@@ -2402,6 +2811,14 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLoca
 				output.data[output_column].SetValue(row,
 				    MakeOmSourceValue(state.spatial, logical_positions[row]));
 			}
+			continue;
+		}
+		if (slots[output_column].kind == OutputColumnKind::RegionId) {
+			if (!state.regions_mode || local.task_region_ordinal >= bind_data.regions->GetRegions().size()) {
+				throw InternalException("read_om projected region_id without a bound region task");
+			}
+			const auto &region_id = bind_data.regions->GetRegions()[local.task_region_ordinal].id;
+			for (idx_t row = 0; row < count; ++row) output.data[output_column].SetValue(row, Value(region_id));
 			continue;
 		}
 		if (slots[output_column].kind != OutputColumnKind::Cardinality) {
@@ -2477,18 +2894,20 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLoca
 
 	// Commit both the visible cardinality and shared range only after every
 	// array has decoded successfully. Exceptions leave a zero-row chunk.
-	local.task_position_offset += count;
+	local.task_position_offset += candidate_count;
 	state.metrics->RecordScannedRows(count);
 	output.SetCardinality(static_cast<idx_t>(count));
 	if (!local.registered_as_active) {
 		state.metrics->RecordWorkerActive(local.worker_id);
 		local.registered_as_active = true;
 	}
+	return;
+	}
 }
 
 void ScanReadOm(ClientContext &context, TableFunctionInput &input, DataChunk &output) {
-	if (!input.global_state) {
-		throw InternalException("read_om scan has no global state");
+	if (!input.global_state || !input.bind_data) {
+		throw InternalException("read_om scan has no bind or global state");
 	}
 	auto &state = input.global_state->Cast<ReadOmGlobalState>();
 	if (!input.local_state) {
@@ -2496,7 +2915,7 @@ void ScanReadOm(ClientContext &context, TableFunctionInput &input, DataChunk &ou
 	}
 	auto &local = input.local_state->Cast<ReadOmLocalState>();
 	try {
-		ScanReadOmImpl(context, state, local, output);
+		ScanReadOmImpl(context, state, local, input.bind_data->Cast<ReadOmBindData>(), output);
 	} catch (const InterruptException &) {
 		const auto first_stop = state.RequestStop();
 		if (local.task_active) {
@@ -2600,6 +3019,27 @@ TableFunction GetReadOmFunction() {
 	AddTableFunctionOption(function, "axes", LogicalType::ANY);
 	function.get_virtual_columns = GetReadOmVirtualColumns;
     function.projection_pushdown = true;
+	function.filter_pushdown = false;
+	function.filter_prune = false;
+	function.pushdown_complex_filter = ObserveComplexFilter;
+	function.order_preservation_type = OrderPreservationType::NO_ORDER;
+	return function;
+}
+
+TableFunction GetReadOmRegionsFunction() {
+	TableFunction function("read_om_regions", {LogicalType::VARCHAR}, ScanReadOm, BindReadOmRegions,
+	                       InitReadOm, InitReadOmLocal);
+	AddTableFunctionOption(function, "regions", LogicalType::ANY);
+	AddTableFunctionOption(function, "region_crs", LogicalType::ANY);
+	AddTableFunctionOption(function, "dimensions", LogicalType::ANY);
+	AddTableFunctionOption(function, "grid", LogicalType::ANY);
+	AddTableFunctionOption(function, "spatial_axes", LogicalType::LIST(LogicalType::VARCHAR));
+	AddTableFunctionOption(function, "domain", LogicalType::VARCHAR);
+	AddTableFunctionOption(function, "include_source", LogicalType::BOOLEAN);
+	AddTableFunctionOption(function, "valid_times", LogicalType::LIST(LogicalType::TIMESTAMP));
+	AddTableFunctionOption(function, "axes", LogicalType::ANY);
+	function.get_virtual_columns = GetReadOmVirtualColumns;
+	function.projection_pushdown = true;
 	function.filter_pushdown = false;
 	function.filter_prune = false;
 	function.pushdown_complex_filter = ObserveComplexFilter;

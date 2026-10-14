@@ -1,0 +1,1 @@
+scan_metrics_v3_test: v3 fields, v2 compatibility, unknown values, and URI redaction passed

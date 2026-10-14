@@ -18,6 +18,7 @@ enum class OutputColumnKind : std::uint8_t {
 	ValidTime,
 	SemanticCoordinate,
 	Source,
+	RegionId,
 	Cardinality
 };
 
@@ -40,7 +41,8 @@ public:
 	ProjectionPlan(const BoundSchema &schema, const std::vector<column_t> &column_ids, bool has_spatial_columns,
 	               bool has_time_column);
 	ProjectionPlan(const BoundSchema &schema, const std::vector<column_t> &column_ids, bool has_spatial_columns,
-	               bool has_time_column, const SemanticAxes &semantic_axes, bool has_source_column = false);
+	               bool has_time_column, const SemanticAxes &semantic_axes, bool has_source_column = false,
+	               bool has_region_id_column = false);
 
 	const std::vector<OutputColumn> &GetOutputSlots() const {
 		return output_slots;

@@ -1,0 +1,1394 @@
+{
+  "classification": "synthetic_and_frozen_real_targets",
+  "edge_case_reference": {
+    "cases": [
+      {
+        "covers": true,
+        "id": "outer_boundary",
+        "point": [
+          0.0,
+          1.0
+        ]
+      },
+      {
+        "covers": true,
+        "id": "hole_boundary",
+        "point": [
+          0.5,
+          1.0
+        ]
+      },
+      {
+        "covers": false,
+        "id": "hole_interior",
+        "point": [
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "covers": true,
+        "id": "just_inside_outer",
+        "point": [
+          5e-324,
+          1.0
+        ]
+      },
+      {
+        "covers": false,
+        "id": "just_outside_outer",
+        "point": [
+          -5e-324,
+          1.0
+        ]
+      },
+      {
+        "covers": true,
+        "id": "outer_vertex",
+        "point": [
+          0.0,
+          0.0
+        ]
+      }
+    ],
+    "geometry_wkb_hex": "01030000000200000005000000000000000000000000000000000000000000000000000040000000000000000000000000000000400000000000000040000000000000000000000000000000400000000000000000000000000000000005000000000000000000e03f000000000000e03f000000000000f83f000000000000e03f000000000000f83f000000000000f83f000000000000e03f000000000000f83f000000000000e03f000000000000e03f",
+    "id": "square_with_hole_and_nextafter"
+  },
+  "edge_case_wkb_path": "geometries/edge-cases.wkb",
+  "edge_case_wkb_sha256": "c298bb3911c176b928a50bc7c8edf676e808c74da384a4a1037f23ae00c0de60",
+  "expected_group_statistics": [
+    {
+      "max": 21.0,
+      "mean": 9.625,
+      "member": 0,
+      "min": 0.0,
+      "region_id": "A",
+      "sample_count": 9,
+      "sum": 77.0,
+      "time_index": 0,
+      "valid_count": 8
+    },
+    {
+      "max": 121.0,
+      "mean": 109.625,
+      "member": 0,
+      "min": 100.0,
+      "region_id": "A",
+      "sample_count": 9,
+      "sum": 877.0,
+      "time_index": 1,
+      "valid_count": 8
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 0,
+      "min": null,
+      "region_id": "A",
+      "sample_count": 9,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": 1021.0,
+      "mean": 1009.625,
+      "member": 1,
+      "min": 1000.0,
+      "region_id": "A",
+      "sample_count": 9,
+      "sum": 8077.0,
+      "time_index": 0,
+      "valid_count": 8
+    },
+    {
+      "max": 1121.0,
+      "mean": 1109.625,
+      "member": 1,
+      "min": 1100.0,
+      "region_id": "A",
+      "sample_count": 9,
+      "sum": 8877.0,
+      "time_index": 1,
+      "valid_count": 8
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 1,
+      "min": null,
+      "region_id": "A",
+      "sample_count": 9,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": 33.0,
+      "mean": 22.0,
+      "member": 0,
+      "min": 11.0,
+      "region_id": "B",
+      "sample_count": 9,
+      "sum": 176.0,
+      "time_index": 0,
+      "valid_count": 8
+    },
+    {
+      "max": 133.0,
+      "mean": 122.0,
+      "member": 0,
+      "min": 111.0,
+      "region_id": "B",
+      "sample_count": 9,
+      "sum": 976.0,
+      "time_index": 1,
+      "valid_count": 8
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 0,
+      "min": null,
+      "region_id": "B",
+      "sample_count": 9,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": 1033.0,
+      "mean": 1022.0,
+      "member": 1,
+      "min": 1011.0,
+      "region_id": "B",
+      "sample_count": 9,
+      "sum": 8176.0,
+      "time_index": 0,
+      "valid_count": 8
+    },
+    {
+      "max": 1133.0,
+      "mean": 1122.0,
+      "member": 1,
+      "min": 1111.0,
+      "region_id": "B",
+      "sample_count": 9,
+      "sum": 8976.0,
+      "time_index": 1,
+      "valid_count": 8
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 1,
+      "min": null,
+      "region_id": "B",
+      "sample_count": 9,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": 21.0,
+      "mean": 9.625,
+      "member": 0,
+      "min": 0.0,
+      "region_id": "CopyA",
+      "sample_count": 9,
+      "sum": 77.0,
+      "time_index": 0,
+      "valid_count": 8
+    },
+    {
+      "max": 121.0,
+      "mean": 109.625,
+      "member": 0,
+      "min": 100.0,
+      "region_id": "CopyA",
+      "sample_count": 9,
+      "sum": 877.0,
+      "time_index": 1,
+      "valid_count": 8
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 0,
+      "min": null,
+      "region_id": "CopyA",
+      "sample_count": 9,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": 1021.0,
+      "mean": 1009.625,
+      "member": 1,
+      "min": 1000.0,
+      "region_id": "CopyA",
+      "sample_count": 9,
+      "sum": 8077.0,
+      "time_index": 0,
+      "valid_count": 8
+    },
+    {
+      "max": 1121.0,
+      "mean": 1109.625,
+      "member": 1,
+      "min": 1100.0,
+      "region_id": "CopyA",
+      "sample_count": 9,
+      "sum": 8877.0,
+      "time_index": 1,
+      "valid_count": 8
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 1,
+      "min": null,
+      "region_id": "CopyA",
+      "sample_count": 9,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": 44.0,
+      "mean": 34.375,
+      "member": 0,
+      "min": 23.0,
+      "region_id": "Corner",
+      "sample_count": 9,
+      "sum": 275.0,
+      "time_index": 0,
+      "valid_count": 8
+    },
+    {
+      "max": 144.0,
+      "mean": 134.375,
+      "member": 0,
+      "min": 123.0,
+      "region_id": "Corner",
+      "sample_count": 9,
+      "sum": 1075.0,
+      "time_index": 1,
+      "valid_count": 8
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 0,
+      "min": null,
+      "region_id": "Corner",
+      "sample_count": 9,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": 1044.0,
+      "mean": 1034.375,
+      "member": 1,
+      "min": 1023.0,
+      "region_id": "Corner",
+      "sample_count": 9,
+      "sum": 8275.0,
+      "time_index": 0,
+      "valid_count": 8
+    },
+    {
+      "max": 1144.0,
+      "mean": 1134.375,
+      "member": 1,
+      "min": 1123.0,
+      "region_id": "Corner",
+      "sample_count": 9,
+      "sum": 9075.0,
+      "time_index": 1,
+      "valid_count": 8
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 1,
+      "min": null,
+      "region_id": "Corner",
+      "sample_count": 9,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 0,
+      "min": null,
+      "region_id": "Empty",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 0,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 0,
+      "min": null,
+      "region_id": "Empty",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 1,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 0,
+      "min": null,
+      "region_id": "Empty",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 1,
+      "min": null,
+      "region_id": "Empty",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 0,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 1,
+      "min": null,
+      "region_id": "Empty",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 1,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 1,
+      "min": null,
+      "region_id": "Empty",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 0,
+      "min": null,
+      "region_id": "Gap",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 0,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 0,
+      "min": null,
+      "region_id": "Gap",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 1,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 0,
+      "min": null,
+      "region_id": "Gap",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 1,
+      "min": null,
+      "region_id": "Gap",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 0,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 1,
+      "min": null,
+      "region_id": "Gap",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 1,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 1,
+      "min": null,
+      "region_id": "Gap",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": 44.0,
+      "mean": 22.0,
+      "member": 0,
+      "min": 0.0,
+      "region_id": "Hole",
+      "sample_count": 24,
+      "sum": 528.0,
+      "time_index": 0,
+      "valid_count": 24
+    },
+    {
+      "max": 144.0,
+      "mean": 122.0,
+      "member": 0,
+      "min": 100.0,
+      "region_id": "Hole",
+      "sample_count": 24,
+      "sum": 2928.0,
+      "time_index": 1,
+      "valid_count": 24
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 0,
+      "min": null,
+      "region_id": "Hole",
+      "sample_count": 24,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": 1044.0,
+      "mean": 1022.0,
+      "member": 1,
+      "min": 1000.0,
+      "region_id": "Hole",
+      "sample_count": 24,
+      "sum": 24528.0,
+      "time_index": 0,
+      "valid_count": 24
+    },
+    {
+      "max": 1144.0,
+      "mean": 1122.0,
+      "member": 1,
+      "min": 1100.0,
+      "region_id": "Hole",
+      "sample_count": 24,
+      "sum": 26928.0,
+      "time_index": 1,
+      "valid_count": 24
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 1,
+      "min": null,
+      "region_id": "Hole",
+      "sample_count": 24,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": 44.0,
+      "mean": 22.0,
+      "member": 0,
+      "min": 0.0,
+      "region_id": "Multi",
+      "sample_count": 8,
+      "sum": 176.0,
+      "time_index": 0,
+      "valid_count": 8
+    },
+    {
+      "max": 144.0,
+      "mean": 122.0,
+      "member": 0,
+      "min": 100.0,
+      "region_id": "Multi",
+      "sample_count": 8,
+      "sum": 976.0,
+      "time_index": 1,
+      "valid_count": 8
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 0,
+      "min": null,
+      "region_id": "Multi",
+      "sample_count": 8,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": 1044.0,
+      "mean": 1022.0,
+      "member": 1,
+      "min": 1000.0,
+      "region_id": "Multi",
+      "sample_count": 8,
+      "sum": 8176.0,
+      "time_index": 0,
+      "valid_count": 8
+    },
+    {
+      "max": 1144.0,
+      "mean": 1122.0,
+      "member": 1,
+      "min": 1100.0,
+      "region_id": "Multi",
+      "sample_count": 8,
+      "sum": 8976.0,
+      "time_index": 1,
+      "valid_count": 8
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 1,
+      "min": null,
+      "region_id": "Multi",
+      "sample_count": 8,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": 40.0,
+      "mean": 20.0,
+      "member": 0,
+      "min": 0.0,
+      "region_id": "Narrow",
+      "sample_count": 5,
+      "sum": 100.0,
+      "time_index": 0,
+      "valid_count": 5
+    },
+    {
+      "max": 140.0,
+      "mean": 120.0,
+      "member": 0,
+      "min": 100.0,
+      "region_id": "Narrow",
+      "sample_count": 5,
+      "sum": 600.0,
+      "time_index": 1,
+      "valid_count": 5
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 0,
+      "min": null,
+      "region_id": "Narrow",
+      "sample_count": 5,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": 1040.0,
+      "mean": 1020.0,
+      "member": 1,
+      "min": 1000.0,
+      "region_id": "Narrow",
+      "sample_count": 5,
+      "sum": 5100.0,
+      "time_index": 0,
+      "valid_count": 5
+    },
+    {
+      "max": 1140.0,
+      "mean": 1120.0,
+      "member": 1,
+      "min": 1100.0,
+      "region_id": "Narrow",
+      "sample_count": 5,
+      "sum": 5600.0,
+      "time_index": 1,
+      "valid_count": 5
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 1,
+      "min": null,
+      "region_id": "Narrow",
+      "sample_count": 5,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 0,
+      "min": null,
+      "region_id": "Outside",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 0,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 0,
+      "min": null,
+      "region_id": "Outside",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 1,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 0,
+      "min": null,
+      "region_id": "Outside",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 1,
+      "min": null,
+      "region_id": "Outside",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 0,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 1,
+      "min": null,
+      "region_id": "Outside",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 1,
+      "valid_count": 0
+    },
+    {
+      "max": null,
+      "mean": null,
+      "member": 1,
+      "min": null,
+      "region_id": "Outside",
+      "sample_count": 0,
+      "sum": null,
+      "time_index": 2,
+      "valid_count": 0
+    }
+  ],
+  "expected_group_statistics_path": "regions-statistics.reference.csv",
+  "expected_group_statistics_sha256": "ec9b46a79a521b5951087a1b4b6df55df8a0ec3f65c744ba2f776bf9d02b3321",
+  "expected_membership_path": "regions-membership.reference.csv",
+  "expected_membership_rows": 438,
+  "expected_membership_sha256": "5d2777324982402abfe6aad9f9dc1b8df4ec93c153dcfe45afe5f761108c59b4",
+  "fixture": {
+    "axes": [
+      "member",
+      "time",
+      "lat",
+      "lon"
+    ],
+    "chunks": [
+      1,
+      1,
+      2,
+      3
+    ],
+    "official_reference_path": "regions.reference.csv",
+    "official_reference_sha256": "98b8349ae035ef9fc14e4e7f37caf5daa2d44f7de2cad5fe3201534cf4be1b32",
+    "path": "regions.om",
+    "sha256": "264fe0905d0681d0fedd08d60a43bf7974cbd161319df77e919f08b4cb582e36",
+    "shape": [
+      2,
+      3,
+      5,
+      5
+    ],
+    "size_bytes": 488,
+    "value_formula": "1000*member + 100*time + 10*y + x; time index 2 and spatial (y=2,x=2) are NaN"
+  },
+  "om_format_version": 3,
+  "oracle": "independent Python ray casting and exact segment boundary checks; values decoded by pinned official OM C reader",
+  "real_targets": {
+    "baseline_evidence": {
+      "coordinate_references": "test/data/grids/coordinate-reference.json",
+      "grid_samples": "test/data/grids/sample-manifest.json",
+      "ncep_domain": "test/data/domain-manifest.json",
+      "o1280_execution": "specs/004-multi-grid-selection/evidence/baseline-local/o1280-real-local-20261010/current-build-r3/manifest.json",
+      "value_references": "test/data/grids/value-reference-manifest.json"
+    },
+    "freeze_policy": "object, axes/chunks, independent coordinate/value references and local polygon WKB are fixed before any 005 region performance run",
+    "input_status": "all frozen local objects, producer coordinate exports, and official value references are present and hash-checked",
+    "limitations": [
+      "O1280 coordinates use the pinned producer Float32 port; they are not an original GRIB scan.",
+      "Public S3 identity is the frozen local object SHA; no remote VersionId is claimed.",
+      "This artifact freezes correctness inputs and does not claim 005 region-query results or savings."
+    ],
+    "missing_inputs": [],
+    "path": "real-targets.json",
+    "pinned_producer_source": "test/data/grids/source-manifest.json",
+    "platform": "Linux AArch64",
+    "schema_version": 1,
+    "sha256": "03c2bcc84b4a0081cbf636d0aace7347b5039eb45ad6bc6a132cf78d9988fd80",
+    "status": "frozen_before_region_performance_measurement",
+    "target_count": 5,
+    "targets": [
+      {
+        "coordinate_points_in_region": 9,
+        "coordinate_tolerance_degrees": 0.0,
+        "expected_region_rows": 9,
+        "first_source_position": 517679,
+        "full_output_rows": 1038240,
+        "grid_id": "ncep_gfswave025",
+        "independent_coordinate_reference": {
+          "method": "lat=-90+row*0.25; lon=normalize_180(-180+column*0.25)",
+          "source": "test/data/domain-manifest.json and specs/002-spatial-pushdown/evidence/domain.md"
+        },
+        "object": {
+          "axes": [
+            "lat",
+            "lon"
+          ],
+          "chunks": [
+            32,
+            32
+          ],
+          "domain": "ncep_gfswave025",
+          "path": "build/s3-samples/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om",
+          "s3_uri": "s3://openmeteo/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om",
+          "sha256": "0b44b22cde2f59a230423d54766826af7d28750f99f8052522844fe0b993dbfd",
+          "shape": [
+            721,
+            1440
+          ],
+          "size_bytes": 5812040,
+          "uri": "https://openmeteo.s3.amazonaws.com/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om",
+          "variable_count": 15
+        },
+        "official_value_reference": {
+          "evidence": "evidence/003-dimensions-remote-parallel/final.md",
+          "manifest": "test/data/domain-manifest.json",
+          "method": "fixed OM C API full-domain and per-variable prefix reference",
+          "variables": [
+            {
+              "path": "build/evidence/spatial/reference/secondary_swell_wave_direction.csv",
+              "sha256": "c5869e3890039ed88b684fb2916f6b74925c08243d36692fe906c255e7c4eed5",
+              "size_bytes": 10734828,
+              "variable": "/secondary_swell_wave_direction"
+            },
+            {
+              "path": "build/evidence/spatial/reference/secondary_swell_wave_height.csv",
+              "sha256": "41446f0736f55a5ad9bc1878059cebd7b168a67501cf3a402224c069451c7a48",
+              "size_bytes": 14133426,
+              "variable": "/secondary_swell_wave_height"
+            },
+            {
+              "path": "build/evidence/spatial/reference/secondary_swell_wave_period.csv",
+              "sha256": "e438f165d10dc7669ad2e6cc60797530453e32797c43a3745705261102dcf5fb",
+              "size_bytes": 13327949,
+              "variable": "/secondary_swell_wave_period"
+            },
+            {
+              "path": "build/evidence/spatial/reference/swell_wave_direction.csv",
+              "sha256": "f7ea32de7afc46b242715f08cbf7e71ca4723624e82f2956fec365b96c94b956",
+              "size_bytes": 10885525,
+              "variable": "/swell_wave_direction"
+            },
+            {
+              "path": "build/evidence/spatial/reference/swell_wave_height.csv",
+              "sha256": "e69cb9dd35f2834bf360cd74ff5796d2276a9ac894b6002e00077eb03e692993",
+              "size_bytes": 14586849,
+              "variable": "/swell_wave_height"
+            },
+            {
+              "path": "build/evidence/spatial/reference/swell_wave_period.csv",
+              "sha256": "9dc94349e8450e08465884a0adc1cf8a5da7f2d6a1c0c57d522765626776f4e1",
+              "size_bytes": 13959824,
+              "variable": "/swell_wave_period"
+            },
+            {
+              "path": "build/evidence/spatial/reference/tertiary_swell_wave_direction.csv",
+              "sha256": "e1052e3024573087d74cc7231da3198f4ca6d6ef70322a83aca08e9275c425cc",
+              "size_bytes": 10583460,
+              "variable": "/tertiary_swell_wave_direction"
+            },
+            {
+              "path": "build/evidence/spatial/reference/tertiary_swell_wave_height.csv",
+              "sha256": "a978bc1ac061e4eaf5084c7c07543cf9edad268e80363f84322668867b224c8a",
+              "size_bytes": 13403001,
+              "variable": "/tertiary_swell_wave_height"
+            },
+            {
+              "path": "build/evidence/spatial/reference/tertiary_swell_wave_period.csv",
+              "sha256": "6403b60f88d31837c42ccdc928dcfe4bf5f1fc80aa407337316941a299fe81a0",
+              "size_bytes": 12661236,
+              "variable": "/tertiary_swell_wave_period"
+            },
+            {
+              "path": "build/evidence/spatial/reference/wave_direction.csv",
+              "sha256": "4ef1d56c20de5739bdf8719aab09ad491dea9ccd5d7b3606fffe348067295a83",
+              "size_bytes": 11032975,
+              "variable": "/wave_direction"
+            },
+            {
+              "path": "build/evidence/spatial/reference/wave_height.csv",
+              "sha256": "c5a0bd2bc2e0457ad1a3a0e4b1da877a655b2a8c37a654f8d25a3730c388e778",
+              "size_bytes": 14983132,
+              "variable": "/wave_height"
+            },
+            {
+              "path": "build/evidence/spatial/reference/wave_period.csv",
+              "sha256": "cebaca77f2a0c2c3131e6648de8e70ad9cdeb39c55f05452792e8690e2d85a9a",
+              "size_bytes": 14459839,
+              "variable": "/wave_period"
+            },
+            {
+              "path": "build/evidence/spatial/reference/wind_wave_direction.csv",
+              "sha256": "1b25c4905b056cefc8345e2f402a38ee5864e13302dc86182b50f272ca68e5ef",
+              "size_bytes": 10635317,
+              "variable": "/wind_wave_direction"
+            },
+            {
+              "path": "build/evidence/spatial/reference/wind_wave_height.csv",
+              "sha256": "ab149d25f08b77714a06ce8030fc795315a7664dbd3600b9c566b70c1220c090",
+              "size_bytes": 13310232,
+              "variable": "/wind_wave_height"
+            },
+            {
+              "path": "build/evidence/spatial/reference/wind_wave_period.csv",
+              "sha256": "dce257e8a4d70893cfa42e25c2dd78d4989cf9ae15870df4a7ba20ccbd122dc3",
+              "size_bytes": 12785497,
+              "variable": "/wind_wave_period"
+            }
+          ]
+        },
+        "queries": {
+          "access_paths": [
+            "local",
+            "https",
+            "s3"
+          ],
+          "full_local_condition": "full object scan; no spatial predicate; source coordinates and all requested value columns materialized",
+          "full_local_sql": "SELECT secondary_swell_wave_direction, secondary_swell_wave_height, secondary_swell_wave_period, swell_wave_direction, swell_wave_height, swell_wave_period, tertiary_swell_wave_direction, tertiary_swell_wave_height, tertiary_swell_wave_period, wave_direction, wave_height, wave_period, wind_wave_direction, wind_wave_height, wind_wave_period, lat, lon, om_source FROM read_om('build/s3-samples/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om', domain := 'ncep_gfswave025', include_source := true)",
+          "full_remote_s3_sql": "SELECT secondary_swell_wave_direction, secondary_swell_wave_height, secondary_swell_wave_period, swell_wave_direction, swell_wave_height, swell_wave_period, tertiary_swell_wave_direction, tertiary_swell_wave_height, tertiary_swell_wave_period, wave_direction, wave_height, wave_period, wind_wave_direction, wind_wave_height, wind_wave_period, lat, lon, om_source FROM read_om('s3://openmeteo/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om', domain := 'ncep_gfswave025', include_source := true)",
+          "full_remote_sql": "SELECT secondary_swell_wave_direction, secondary_swell_wave_height, secondary_swell_wave_period, swell_wave_direction, swell_wave_height, swell_wave_period, tertiary_swell_wave_direction, tertiary_swell_wave_height, tertiary_swell_wave_period, wave_direction, wave_height, wave_period, wind_wave_direction, wind_wave_height, wind_wave_period, lat, lon, om_source FROM read_om('https://openmeteo.s3.amazonaws.com/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om', domain := 'ncep_gfswave025', include_source := true)",
+          "projection": [
+            "secondary_swell_wave_direction",
+            "secondary_swell_wave_height",
+            "secondary_swell_wave_period",
+            "swell_wave_direction",
+            "swell_wave_height",
+            "swell_wave_period",
+            "tertiary_swell_wave_direction",
+            "tertiary_swell_wave_height",
+            "tertiary_swell_wave_period",
+            "wave_direction",
+            "wave_height",
+            "wave_period",
+            "wind_wave_direction",
+            "wind_wave_height",
+            "wind_wave_period",
+            "lat",
+            "lon",
+            "om_source"
+          ],
+          "region_local_condition": "frozen Polygon covers point in declared grid_lonlat; no SQL bounding predicate or row limit",
+          "region_local_sql": "SELECT secondary_swell_wave_direction, secondary_swell_wave_height, secondary_swell_wave_period, swell_wave_direction, swell_wave_height, swell_wave_period, tertiary_swell_wave_direction, tertiary_swell_wave_height, tertiary_swell_wave_period, wave_direction, wave_height, wave_period, wind_wave_direction, wind_wave_height, wind_wave_period, lat, lon, region_id, om_source FROM read_om_regions('build/s3-samples/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om', regions := [{'id': 'ncep_gfswave025', 'wkb': from_hex('010300000001000000050000009a9999999999d9bf9a9999999999d9bf9a9999999999d93f9a9999999999d9bf9a9999999999d93f9a9999999999d93f9a9999999999d9bf9a9999999999d93f9a9999999999d9bf9a9999999999d9bf')}], region_crs := 'grid_lonlat', domain := 'ncep_gfswave025', include_source := true)",
+          "region_remote_s3_sql": "SELECT secondary_swell_wave_direction, secondary_swell_wave_height, secondary_swell_wave_period, swell_wave_direction, swell_wave_height, swell_wave_period, tertiary_swell_wave_direction, tertiary_swell_wave_height, tertiary_swell_wave_period, wave_direction, wave_height, wave_period, wind_wave_direction, wind_wave_height, wind_wave_period, lat, lon, region_id, om_source FROM read_om_regions('s3://openmeteo/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om', regions := [{'id': 'ncep_gfswave025', 'wkb': from_hex('010300000001000000050000009a9999999999d9bf9a9999999999d9bf9a9999999999d93f9a9999999999d9bf9a9999999999d93f9a9999999999d93f9a9999999999d9bf9a9999999999d93f9a9999999999d9bf9a9999999999d9bf')}], region_crs := 'grid_lonlat', domain := 'ncep_gfswave025', include_source := true)",
+          "region_remote_sql": "SELECT secondary_swell_wave_direction, secondary_swell_wave_height, secondary_swell_wave_period, swell_wave_direction, swell_wave_height, swell_wave_period, tertiary_swell_wave_direction, tertiary_swell_wave_height, tertiary_swell_wave_period, wave_direction, wave_height, wave_period, wind_wave_direction, wind_wave_height, wind_wave_period, lat, lon, region_id, om_source FROM read_om_regions('https://openmeteo.s3.amazonaws.com/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om', regions := [{'id': 'ncep_gfswave025', 'wkb': from_hex('010300000001000000050000009a9999999999d9bf9a9999999999d9bf9a9999999999d93f9a9999999999d9bf9a9999999999d93f9a9999999999d93f9a9999999999d9bf9a9999999999d93f9a9999999999d9bf9a9999999999d9bf')}], region_crs := 'grid_lonlat', domain := 'ncep_gfswave025', include_source := true)",
+          "value_columns": [
+            "secondary_swell_wave_direction",
+            "secondary_swell_wave_height",
+            "secondary_swell_wave_period",
+            "swell_wave_direction",
+            "swell_wave_height",
+            "swell_wave_period",
+            "tertiary_swell_wave_direction",
+            "tertiary_swell_wave_height",
+            "tertiary_swell_wave_period",
+            "wave_direction",
+            "wave_height",
+            "wave_period",
+            "wind_wave_direction",
+            "wind_wave_height",
+            "wind_wave_period"
+          ]
+        },
+        "region_bounds_lonlat": [
+          -0.4,
+          -0.4,
+          0.4,
+          0.4
+        ],
+        "region_wkb": {
+          "bytes": 93,
+          "path": "geometries/real_ncep_gfswave025.wkb",
+          "sha256": "e82a0ac0b35ceaeef0437278fbce364ba5ed9c246c7ebd96703c8bd9b69e0ac2",
+          "wkb_hex": "010300000001000000050000009a9999999999d9bf9a9999999999d9bf9a9999999999d93f9a9999999999d9bf9a9999999999d93f9a9999999999d93f9a9999999999d9bf9a9999999999d93f9a9999999999d9bf9a9999999999d9bf"
+        },
+        "sample_id": "ncep_gfswave025_2026-10-02T0300"
+      },
+      {
+        "coordinate_oracle_scope": "pinned producer Float32 coordinates; position identity from frozen [ny,nx,ntime] source layout",
+        "coordinate_points_in_region": 4,
+        "coordinate_tolerance_degrees": 0.0001,
+        "expected_region_rows": 456,
+        "first_source_position": 0,
+        "full_output_rows": 135808200,
+        "grid_id": "gem_rdps_10km",
+        "independent_coordinate_reference": {
+          "path": "build/grid-references/pinned-producer-f32-20261008/rotated-cmc-gem-rdps-10km-cape-chunk-4337.coordinates.csv",
+          "sha256": "be2598b5dd60b80248d58ee9f215732eafb8dd133e8305997cec90506e382552",
+          "size_bytes": 63233163
+        },
+        "object": {
+          "axes": [
+            "latitude",
+            "longitude",
+            "time"
+          ],
+          "chunks": [
+            1,
+            26,
+            114
+          ],
+          "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om",
+          "s3_uri": "s3://openmeteo/data/cmc_gem_rdps_10km/cape/chunk_4337.om",
+          "sha256": "3db637197d27c65051e417b850f8c3656d1c5371ab78dcbd9fc05d0e440956f7",
+          "shape": [
+            1045,
+            1140,
+            114
+          ],
+          "size_bytes": 68016448,
+          "uri": "https://openmeteo.s3.us-west-2.amazonaws.com/data/cmc_gem_rdps_10km/cape/chunk_4337.om",
+          "variable_path": "/"
+        },
+        "official_value_reference": {
+          "path": "build/grid-references/revalidated-20261007/rotated-cmc-gem-rdps-10km-cape-chunk-4337.official-reference.csv",
+          "sha256": "cdcd6650b7d9acb6695886f7359ae2c8453e6b9ad972402a0699f35297be7f85",
+          "size_bytes": 1723440347
+        },
+        "queries": {
+          "access_paths": [
+            "local",
+            "https",
+            "s3"
+          ],
+          "full_local_condition": "full object scan; no spatial predicate; source coordinates and all requested value columns materialized",
+          "full_local_sql": "SELECT value, lat, lon, om_source FROM read_om('build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om', dimensions := map(['value'], [['y','x','time']]), domain := 'gem_rdps_10km', include_source := true)",
+          "full_remote_s3_sql": "SELECT value, lat, lon, om_source FROM read_om('s3://openmeteo/data/cmc_gem_rdps_10km/cape/chunk_4337.om', dimensions := map(['value'], [['y','x','time']]), domain := 'gem_rdps_10km', include_source := true)",
+          "full_remote_sql": "SELECT value, lat, lon, om_source FROM read_om('https://openmeteo.s3.us-west-2.amazonaws.com/data/cmc_gem_rdps_10km/cape/chunk_4337.om', dimensions := map(['value'], [['y','x','time']]), domain := 'gem_rdps_10km', include_source := true)",
+          "projection": [
+            "value",
+            "lat",
+            "lon",
+            "om_source"
+          ],
+          "region_local_condition": "frozen Polygon covers point in declared grid_lonlat; no SQL bounding predicate or row limit",
+          "region_local_sql": "SELECT value, lat, lon, region_id, om_source FROM read_om_regions('build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om', regions := [{'id': 'gem_rdps_10km', 'wkb': from_hex('010300000001000000050000009a99999999295fc08fc2f5285c8f0ec01f85eb51b81e5fc08fc2f5285c8f0ec01f85eb51b81e5fc03333333333330dc09a99999999295fc03333333333330dc09a99999999295fc08fc2f5285c8f0ec0')}], region_crs := 'grid_lonlat', dimensions := map(['value'], [['y','x','time']]), domain := 'gem_rdps_10km', include_source := true)",
+          "region_remote_s3_sql": "SELECT value, lat, lon, region_id, om_source FROM read_om_regions('s3://openmeteo/data/cmc_gem_rdps_10km/cape/chunk_4337.om', regions := [{'id': 'gem_rdps_10km', 'wkb': from_hex('010300000001000000050000009a99999999295fc08fc2f5285c8f0ec01f85eb51b81e5fc08fc2f5285c8f0ec01f85eb51b81e5fc03333333333330dc09a99999999295fc03333333333330dc09a99999999295fc08fc2f5285c8f0ec0')}], region_crs := 'grid_lonlat', dimensions := map(['value'], [['y','x','time']]), domain := 'gem_rdps_10km', include_source := true)",
+          "region_remote_sql": "SELECT value, lat, lon, region_id, om_source FROM read_om_regions('https://openmeteo.s3.us-west-2.amazonaws.com/data/cmc_gem_rdps_10km/cape/chunk_4337.om', regions := [{'id': 'gem_rdps_10km', 'wkb': from_hex('010300000001000000050000009a99999999295fc08fc2f5285c8f0ec01f85eb51b81e5fc08fc2f5285c8f0ec01f85eb51b81e5fc03333333333330dc09a99999999295fc03333333333330dc09a99999999295fc08fc2f5285c8f0ec0')}], region_crs := 'grid_lonlat', dimensions := map(['value'], [['y','x','time']]), domain := 'gem_rdps_10km', include_source := true)",
+          "value_columns": [
+            "value"
+          ]
+        },
+        "region_bounds_lonlat": [
+          -124.65,
+          -3.82,
+          -124.48,
+          -3.65
+        ],
+        "region_wkb": {
+          "bytes": 93,
+          "path": "geometries/real_gem_rdps_10km.wkb",
+          "sha256": "40050c99d8b96959b5b25066009fc3e0cbe81ef3c166d10b531d7dd2e1fa9f0b",
+          "wkb_hex": "010300000001000000050000009a99999999295fc08fc2f5285c8f0ec01f85eb51b81e5fc08fc2f5285c8f0ec01f85eb51b81e5fc03333333333330dc09a99999999295fc03333333333330dc09a99999999295fc08fc2f5285c8f0ec0"
+        },
+        "sample_id": "rotated_cmc_gem_rdps_10km_cape_chunk_4337"
+      },
+      {
+        "coordinate_oracle_scope": "pinned producer Float32 coordinates; position identity from frozen [ny,nx,ntime] source layout",
+        "coordinate_points_in_region": 11,
+        "coordinate_tolerance_degrees": 0.0001,
+        "expected_region_rows": 1254,
+        "first_source_position": 0,
+        "full_output_rows": 87830160,
+        "grid_id": "gem_regional",
+        "independent_coordinate_reference": {
+          "path": "build/grid-references/pinned-producer-f32-20261008/stereographic-cmc-gem-rdps-cape-chunk-4337.coordinates.csv",
+          "sha256": "d6556760901be1a17873825f680c3df7e4e51b11704042ae8967653c232d61f0",
+          "size_bytes": 40327501
+        },
+        "object": {
+          "axes": [
+            "latitude",
+            "longitude",
+            "time"
+          ],
+          "chunks": [
+            1,
+            26,
+            114
+          ],
+          "path": "build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.om",
+          "s3_uri": "s3://openmeteo/data/cmc_gem_rdps/cape/chunk_4337.om",
+          "sha256": "1d701b188c8c264532f0d8fa917400a66cf28aa1c8e53a7b40781a775333c7c1",
+          "shape": [
+            824,
+            935,
+            114
+          ],
+          "size_bytes": 23835720,
+          "uri": "https://openmeteo.s3.us-west-2.amazonaws.com/data/cmc_gem_rdps/cape/chunk_4337.om",
+          "variable_path": "/"
+        },
+        "official_value_reference": {
+          "path": "build/grid-references/revalidated-20261007/stereographic-cmc-gem-rdps-cape-chunk-4337.official-reference.csv",
+          "sha256": "ea70e1d945d885e2cc20159afb76db9e5a0c79effe45be2d50ddf018903ba467",
+          "size_bytes": 1106242733
+        },
+        "queries": {
+          "access_paths": [
+            "local",
+            "https",
+            "s3"
+          ],
+          "full_local_condition": "full object scan; no spatial predicate; source coordinates and all requested value columns materialized",
+          "full_local_sql": "SELECT value, lat, lon, om_source FROM read_om('build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.om', dimensions := map(['value'], [['y','x','time']]), domain := 'gem_regional', include_source := true)",
+          "full_remote_s3_sql": "SELECT value, lat, lon, om_source FROM read_om('s3://openmeteo/data/cmc_gem_rdps/cape/chunk_4337.om', dimensions := map(['value'], [['y','x','time']]), domain := 'gem_regional', include_source := true)",
+          "full_remote_sql": "SELECT value, lat, lon, om_source FROM read_om('https://openmeteo.s3.us-west-2.amazonaws.com/data/cmc_gem_rdps/cape/chunk_4337.om', dimensions := map(['value'], [['y','x','time']]), domain := 'gem_regional', include_source := true)",
+          "projection": [
+            "value",
+            "lat",
+            "lon",
+            "om_source"
+          ],
+          "region_local_condition": "frozen Polygon covers point in declared grid_lonlat; no SQL bounding predicate or row limit",
+          "region_local_sql": "SELECT value, lat, lon, region_id, om_source FROM read_om_regions('build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.om', regions := [{'id': 'gem_regional', 'wkb': from_hex('01030000000100000005000000713d0ad7a3e061c09a99999999193240b81e85eb51d861c09a99999999193240b81e85eb51d861c0d7a3703d0a573240713d0ad7a3e061c0d7a3703d0a573240713d0ad7a3e061c09a99999999193240')}], region_crs := 'grid_lonlat', dimensions := map(['value'], [['y','x','time']]), domain := 'gem_regional', include_source := true)",
+          "region_remote_s3_sql": "SELECT value, lat, lon, region_id, om_source FROM read_om_regions('s3://openmeteo/data/cmc_gem_rdps/cape/chunk_4337.om', regions := [{'id': 'gem_regional', 'wkb': from_hex('01030000000100000005000000713d0ad7a3e061c09a99999999193240b81e85eb51d861c09a99999999193240b81e85eb51d861c0d7a3703d0a573240713d0ad7a3e061c0d7a3703d0a573240713d0ad7a3e061c09a99999999193240')}], region_crs := 'grid_lonlat', dimensions := map(['value'], [['y','x','time']]), domain := 'gem_regional', include_source := true)",
+          "region_remote_sql": "SELECT value, lat, lon, region_id, om_source FROM read_om_regions('https://openmeteo.s3.us-west-2.amazonaws.com/data/cmc_gem_rdps/cape/chunk_4337.om', regions := [{'id': 'gem_regional', 'wkb': from_hex('01030000000100000005000000713d0ad7a3e061c09a99999999193240b81e85eb51d861c09a99999999193240b81e85eb51d861c0d7a3703d0a573240713d0ad7a3e061c0d7a3703d0a573240713d0ad7a3e061c09a99999999193240')}], region_crs := 'grid_lonlat', dimensions := map(['value'], [['y','x','time']]), domain := 'gem_regional', include_source := true)",
+          "value_columns": [
+            "value"
+          ]
+        },
+        "region_bounds_lonlat": [
+          -143.02,
+          18.1,
+          -142.76,
+          18.34
+        ],
+        "region_wkb": {
+          "bytes": 93,
+          "path": "geometries/real_gem_regional.wkb",
+          "sha256": "17a686698a295152c7d84a40b2f6d6579abc58bf643b595e2b77d3a966fd44cf",
+          "wkb_hex": "01030000000100000005000000713d0ad7a3e061c09a99999999193240b81e85eb51d861c09a99999999193240b81e85eb51d861c0d7a3703d0a573240713d0ad7a3e061c0d7a3703d0a573240713d0ad7a3e061c09a99999999193240"
+        },
+        "sample_id": "stereographic_cmc_gem_rdps_cape_chunk_4337"
+      },
+      {
+        "coordinate_oracle_scope": "pinned producer Float32 coordinates; position identity from frozen [ny,nx,ntime] source layout",
+        "coordinate_points_in_region": 6,
+        "coordinate_tolerance_degrees": 0.0001,
+        "expected_region_rows": 720,
+        "first_source_position": 0,
+        "full_output_rows": 105763320,
+        "grid_id": "aladin_central_europe_2km",
+        "independent_coordinate_reference": {
+          "path": "build/grid-references/pinned-producer-f32-20261008/lambert-chmi-aladin-ce-cape-chunk-4135.coordinates.csv",
+          "sha256": "c9aebe8aa88a2ce11e3c7789be475b6051c90ebfeece7f2e5412bbfc2dbff719",
+          "size_bytes": 45735346
+        },
+        "object": {
+          "axes": [
+            "latitude",
+            "longitude",
+            "time"
+          ],
+          "chunks": [
+            1,
+            25,
+            120
+          ],
+          "path": "build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om",
+          "s3_uri": "s3://openmeteo/data/chmi_aladin_central_europe_2km/cape/chunk_4135.om",
+          "sha256": "cef407b0aae43498485b8f6e25907c1ecf8a82c6cb8aa2185fe860f0c491132c",
+          "shape": [
+            837,
+            1053,
+            120
+          ],
+          "size_bytes": 48727672,
+          "uri": "https://openmeteo.s3.us-west-2.amazonaws.com/data/chmi_aladin_central_europe_2km/cape/chunk_4135.om",
+          "variable_path": "/"
+        },
+        "official_value_reference": {
+          "path": "build/grid-references/revalidated-20261007/lambert-chmi-aladin-ce-cape-chunk-4135.official-reference.csv",
+          "sha256": "7fc25500b7c6387f2408caf04322a2955f15f89cd401700016f26c4d8355e4dd",
+          "size_bytes": 1282839785
+        },
+        "queries": {
+          "access_paths": [
+            "local",
+            "https",
+            "s3"
+          ],
+          "full_local_condition": "full object scan; no spatial predicate; source coordinates and all requested value columns materialized",
+          "full_local_sql": "SELECT value, lat, lon, om_source FROM read_om('build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om', dimensions := map(['value'], [['y','x','time']]), domain := 'aladin_central_europe_2km', include_source := true)",
+          "full_remote_s3_sql": "SELECT value, lat, lon, om_source FROM read_om('s3://openmeteo/data/chmi_aladin_central_europe_2km/cape/chunk_4135.om', dimensions := map(['value'], [['y','x','time']]), domain := 'aladin_central_europe_2km', include_source := true)",
+          "full_remote_sql": "SELECT value, lat, lon, om_source FROM read_om('https://openmeteo.s3.us-west-2.amazonaws.com/data/chmi_aladin_central_europe_2km/cape/chunk_4135.om', dimensions := map(['value'], [['y','x','time']]), domain := 'aladin_central_europe_2km', include_source := true)",
+          "projection": [
+            "value",
+            "lat",
+            "lon",
+            "om_source"
+          ],
+          "region_local_condition": "frozen Polygon covers point in declared grid_lonlat; no SQL bounding predicate or row limit",
+          "region_local_sql": "SELECT value, lat, lon, region_id, om_source FROM read_om_regions('build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om', regions := [{'id': 'aladin_central_europe_2km', 'wkb': from_hex('01030000000100000005000000cdccccccccccf43f0ad7a3703d4a4340666666666666f63f0ad7a3703d4a4340666666666666f63f713d0ad7a3504340cdccccccccccf43f713d0ad7a3504340cdccccccccccf43f0ad7a3703d4a4340')}], region_crs := 'grid_lonlat', dimensions := map(['value'], [['y','x','time']]), domain := 'aladin_central_europe_2km', include_source := true)",
+          "region_remote_s3_sql": "SELECT value, lat, lon, region_id, om_source FROM read_om_regions('s3://openmeteo/data/chmi_aladin_central_europe_2km/cape/chunk_4135.om', regions := [{'id': 'aladin_central_europe_2km', 'wkb': from_hex('01030000000100000005000000cdccccccccccf43f0ad7a3703d4a4340666666666666f63f0ad7a3703d4a4340666666666666f63f713d0ad7a3504340cdccccccccccf43f713d0ad7a3504340cdccccccccccf43f0ad7a3703d4a4340')}], region_crs := 'grid_lonlat', dimensions := map(['value'], [['y','x','time']]), domain := 'aladin_central_europe_2km', include_source := true)",
+          "region_remote_sql": "SELECT value, lat, lon, region_id, om_source FROM read_om_regions('https://openmeteo.s3.us-west-2.amazonaws.com/data/chmi_aladin_central_europe_2km/cape/chunk_4135.om', regions := [{'id': 'aladin_central_europe_2km', 'wkb': from_hex('01030000000100000005000000cdccccccccccf43f0ad7a3703d4a4340666666666666f63f0ad7a3703d4a4340666666666666f63f713d0ad7a3504340cdccccccccccf43f713d0ad7a3504340cdccccccccccf43f0ad7a3703d4a4340')}], region_crs := 'grid_lonlat', dimensions := map(['value'], [['y','x','time']]), domain := 'aladin_central_europe_2km', include_source := true)",
+          "value_columns": [
+            "value"
+          ]
+        },
+        "region_bounds_lonlat": [
+          1.3,
+          38.58,
+          1.4,
+          38.63
+        ],
+        "region_wkb": {
+          "bytes": 93,
+          "path": "geometries/real_aladin_central_europe_2km.wkb",
+          "sha256": "7cc88e98d74ad0de9ff6b7e53a197803ec019df5a81fef5118d38cfc7fc60a8e",
+          "wkb_hex": "01030000000100000005000000cdccccccccccf43f0ad7a3703d4a4340666666666666f63f0ad7a3703d4a4340666666666666f63f713d0ad7a3504340cdccccccccccf43f713d0ad7a3504340cdccccccccccf43f0ad7a3703d4a4340"
+        },
+        "sample_id": "lambert_chmi_aladin_central_europe_2km_cape_chunk_4135"
+      },
+      {
+        "coordinate_points_in_region": 3,
+        "coordinate_tolerance_degrees": 0.0,
+        "expected_region_rows": 3,
+        "first_source_position": 0,
+        "full_output_rows": 6599680,
+        "grid_id": "ecmwf_ifs",
+        "independent_coordinate_reference": {
+          "max_lat_error_degrees": 0.0,
+          "max_lon_error_degrees": 0.0,
+          "method": "pinned producer Float32 Gaussian coordinate port",
+          "path": "build/hres-o1280/validation-20261010-r3/static-domain.csv",
+          "scope": "Python port of pinned producer, not original GRIB scanning reference",
+          "sha256": "d568d8ac9b46d9a60e43a2ccf64ff44ca101be1d2f69d4ffe8c84de5915523da",
+          "size_bytes": 510554540
+        },
+        "object": {
+          "axes": [
+            "point"
+          ],
+          "chunks": [
+            1,
+            400
+          ],
+          "path": "build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.om",
+          "s3_uri": "s3://openmeteo/data/ecmwf_ifs/static/HSURF.om",
+          "sha256": "2e8279f8bd12052ba5be5a0bcba2293dc4316097e434d6691f9e6711249e1fd3",
+          "shape": [
+            1,
+            6599680
+          ],
+          "size_bytes": 2482560,
+          "uri": "https://openmeteo.s3.us-west-2.amazonaws.com/data/ecmwf_ifs/static/HSURF.om",
+          "variable_path": "/"
+        },
+        "official_value_reference": {
+          "command": "build/release-vcpkg/test/tools/duckomo_fixture_tool --oracle build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.om --csv build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.official-reference.csv",
+          "path": "build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.official-reference.csv",
+          "reader": "fixed official OM C API",
+          "rows": 6599680,
+          "sha256": "083300d4593e326236b76dfb2d55485058fdbf360a27bfab6a04a64d01eab91a",
+          "size_bytes": 83004797
+        },
+        "queries": {
+          "access_paths": [
+            "local",
+            "https",
+            "s3"
+          ],
+          "full_local_condition": "full object scan; no spatial predicate; source coordinates and all requested value columns materialized",
+          "full_local_sql": "SELECT value, lat, lon, om_source FROM read_om('build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.om', domain := 'ecmwf_ifs', include_source := true)",
+          "full_remote_s3_sql": "SELECT value, lat, lon, om_source FROM read_om('s3://openmeteo/data/ecmwf_ifs/static/HSURF.om', domain := 'ecmwf_ifs', include_source := true)",
+          "full_remote_sql": "SELECT value, lat, lon, om_source FROM read_om('https://openmeteo.s3.us-west-2.amazonaws.com/data/ecmwf_ifs/static/HSURF.om', domain := 'ecmwf_ifs', include_source := true)",
+          "projection": [
+            "value",
+            "lat",
+            "lon",
+            "om_source"
+          ],
+          "region_local_condition": "frozen Polygon covers point in declared grid_lonlat; no SQL bounding predicate or row limit",
+          "region_local_sql": "SELECT value, lat, lon, region_id, om_source FROM read_om_regions('build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.om', regions := [{'id': 'ecmwf_ifs', 'wkb': from_hex('01030000000100000005000000000000000000d0bf3333333333735640000000000000d03f3333333333735640000000000000d03f8fc2f5285c7f5640000000000000d0bf8fc2f5285c7f5640000000000000d0bf3333333333735640')}], region_crs := 'grid_lonlat', domain := 'ecmwf_ifs', include_source := true)",
+          "region_remote_s3_sql": "SELECT value, lat, lon, region_id, om_source FROM read_om_regions('s3://openmeteo/data/ecmwf_ifs/static/HSURF.om', regions := [{'id': 'ecmwf_ifs', 'wkb': from_hex('01030000000100000005000000000000000000d0bf3333333333735640000000000000d03f3333333333735640000000000000d03f8fc2f5285c7f5640000000000000d0bf8fc2f5285c7f5640000000000000d0bf3333333333735640')}], region_crs := 'grid_lonlat', domain := 'ecmwf_ifs', include_source := true)",
+          "region_remote_sql": "SELECT value, lat, lon, region_id, om_source FROM read_om_regions('https://openmeteo.s3.us-west-2.amazonaws.com/data/ecmwf_ifs/static/HSURF.om', regions := [{'id': 'ecmwf_ifs', 'wkb': from_hex('01030000000100000005000000000000000000d0bf3333333333735640000000000000d03f3333333333735640000000000000d03f8fc2f5285c7f5640000000000000d0bf8fc2f5285c7f5640000000000000d0bf3333333333735640')}], region_crs := 'grid_lonlat', domain := 'ecmwf_ifs', include_source := true)",
+          "value_columns": [
+            "value"
+          ]
+        },
+        "region_bounds_lonlat": [
+          -0.25,
+          89.8,
+          0.25,
+          89.99
+        ],
+        "region_wkb": {
+          "bytes": 93,
+          "path": "geometries/real_ecmwf_ifs.wkb",
+          "sha256": "125b3a39262d6bba7a30c6167bbc3083ec85ae2207ae4892823839fb5235f04a",
+          "wkb_hex": "01030000000100000005000000000000000000d0bf3333333333735640000000000000d03f3333333333735640000000000000d03f8fc2f5285c7f5640000000000000d0bf8fc2f5285c7f5640000000000000d0bf3333333333735640"
+        },
+        "sample_id": "ecmwf_ifs_static_hsurf_reduced_gaussian_o1280"
+      }
+    ]
+  },
+  "regions": [
+    {
+      "id": "A",
+      "spatial_point_count": 9,
+      "type": "Polygon",
+      "vertex_count": 5,
+      "wkb_bytes": 93,
+      "wkb_path": "geometries/a.wkb",
+      "wkb_sha256": "3dbebb12e18bdefe8369fef75c4990a37c73e8cf90324d1e1715e1c1778d4162"
+    },
+    {
+      "id": "B",
+      "spatial_point_count": 9,
+      "type": "Polygon",
+      "vertex_count": 5,
+      "wkb_bytes": 93,
+      "wkb_path": "geometries/b.wkb",
+      "wkb_sha256": "4c0962ac611456aab6bdf3a7c5a93020486b05e827184605f9df7b7b9e9d0671"
+    },
+    {
+      "id": "Hole",
+      "spatial_point_count": 24,
+      "type": "Polygon",
+      "vertex_count": 10,
+      "wkb_bytes": 177,
+      "wkb_path": "geometries/hole.wkb",
+      "wkb_sha256": "973766be7c8aa75bcc93055b172f45c49112f582d7902e02a2a0975e01001608"
+    },
+    {
+      "id": "Empty",
+      "spatial_point_count": 0,
+      "type": "Polygon",
+      "vertex_count": 0,
+      "wkb_bytes": 9,
+      "wkb_path": "geometries/empty.wkb",
+      "wkb_sha256": "e60dcba9c652b544bf3cedaec7717c107cced114bab8dddb58e6d5a0bae36572"
+    },
+    {
+      "id": "Outside",
+      "spatial_point_count": 0,
+      "type": "Polygon",
+      "vertex_count": 5,
+      "wkb_bytes": 93,
+      "wkb_path": "geometries/outside.wkb",
+      "wkb_sha256": "a249050c689ed456897420dabd2633b4904a96c3782f07b36a9e10aff454544e"
+    },
+    {
+      "id": "Multi",
+      "spatial_point_count": 8,
+      "type": "MultiPolygon",
+      "vertex_count": 10,
+      "wkb_bytes": 195,
+      "wkb_path": "geometries/multi.wkb",
+      "wkb_sha256": "f53da11f242afa6052ddc3a0231b64312b12db026da115ace9c2056a15c94866"
+    },
+    {
+      "id": "CopyA",
+      "spatial_point_count": 9,
+      "type": "Polygon",
+      "vertex_count": 5,
+      "wkb_bytes": 93,
+      "wkb_path": "geometries/copya.wkb",
+      "wkb_sha256": "3dbebb12e18bdefe8369fef75c4990a37c73e8cf90324d1e1715e1c1778d4162"
+    },
+    {
+      "id": "Narrow",
+      "spatial_point_count": 5,
+      "type": "Polygon",
+      "vertex_count": 5,
+      "wkb_bytes": 93,
+      "wkb_path": "geometries/narrow.wkb",
+      "wkb_sha256": "13962b4fc1b82c1328a49c402ec3c09fc3fed0010ca72ff05eccac09459e5877"
+    },
+    {
+      "id": "Gap",
+      "spatial_point_count": 0,
+      "type": "Polygon",
+      "vertex_count": 5,
+      "wkb_bytes": 93,
+      "wkb_path": "geometries/gap.wkb",
+      "wkb_sha256": "aec983661e2efaebeed211b094924106798186e35259fa934c90c40e2a715aa8"
+    },
+    {
+      "id": "Corner",
+      "spatial_point_count": 9,
+      "type": "Polygon",
+      "vertex_count": 5,
+      "wkb_bytes": 93,
+      "wkb_path": "geometries/corner.wkb",
+      "wkb_sha256": "97bfa1625d63ddc16cc5d14571a0babcb91d1656ef2580877da928058f623f41"
+    }
+  ],
+  "schema_version": 1,
+  "supporting_fixtures": [
+    {
+      "path": "regions_region_id_conflict.om",
+      "purpose": "binding rejection when a source value column is named region_id",
+      "sha256": "bbad976f2fb11ff6c42f2add234e9d58649c337b60b2c8270f2d347fa17c0a9e",
+      "size_bytes": 208
+    }
+  ]
+}

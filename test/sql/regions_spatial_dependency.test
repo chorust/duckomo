@@ -1,0 +1,56 @@
+# name: test/sql/regions_spatial_dependency.test
+# description: Verify regions requires an explicitly loaded spatial extension while ordinary reads do not
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+# This isolated test process never loads spatial; the ordinary entry points stay available.
+query I
+SELECT count(*) FROM read_om_raw('__WORKING_DIRECTORY__/test/data/raw.om');
+----
+6
+
+query I
+SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    dimensions := ['member','time','lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'],
+    axes := {
+        'time':{'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},
+        'member':{'axis':'member','values':[0::BIGINT,1::BIGINT]}});
+----
+150
+
+query I
+SELECT count(*) FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row','column']]),
+    grid := {
+        'version':1,'type':'rotated_latlon','numeric_policy':'float64_v1',
+        'earth':{'model':'sphere','radius_m':6371229.0},
+        'layout':{'nx':3,'ny':2,'order':'separate'},
+        'parameters':{'x0':0.0,'y0':0.0,'dx':1.0,'dy':1.0,
+                      'north_pole_latitude':90.0,'north_pole_longitude':0.0,'rotation':0.0}
+    }, spatial_axes := ['row','column']);
+----
+1
+
+# Even a typed empty collection needs spatial and fails without an implicit install or load.
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'],
+    axes := {
+        'time':{'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},
+        'member':{'axis':'member','values':[0::BIGINT,1::BIGINT]}});
+----
+<REGEX>:(?i).*\[spatial_dependency\].*explicitly load.*matching.*

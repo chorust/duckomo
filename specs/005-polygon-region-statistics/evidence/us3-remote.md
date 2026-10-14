@@ -1,0 +1,19 @@
+# US3 P5 remote evidence
+
+**Status: pass** for the frozen five-target manifest on DuckDB v1.5.4. P5 completed 40 scans: full and region reads for each target over local, HTTP, HTTPS, and signed S3. Every scan published a successful complete terminal metric with complete value-decode counts, used a fresh CLI process with client caches disabled, and produced a result hash matching the local result for that target and selection. The frozen full row counts and exact region-pair counts matched for all four sources. Remote audits recorded no failed or incomplete requests.
+
+| Frozen target | Full rows | Exact region pairs | HTTP value bytes, full → region | HTTP decoded blocks, full → region | HTTP service bytes, full → region | Signed-S3 service bytes, full → region |
+|---|---:|---:|---:|---:|---:|---:|
+| `ncep_gfswave025` | 1,038,240 | 9 | 192,571,298 → 25,860 | 506,640 → 45 | 196,607,294 → 38,166 | 196,607,294 → 38,166 |
+| `gem_rdps_10km` | 135,808,200 | 456 | 2,151,824,754 → 7,077 | 1,456,260 → 4 | 2,299,701,499 → 7,822 | 2,299,701,499 → 7,822 |
+| `gem_regional` | 87,830,160 | 1,254 | 755,186,066 → 9,607 | 941,796 → 14 | 850,830,811 → 11,352 | 850,830,811 → 11,352 |
+| `aladin_central_europe_2km` | 105,763,320 | 720 | 1,497,789,016 → 11,559 | 1,087,715 → 6 | 1,608,258,561 → 12,504 | 1,608,258,561 → 12,504 |
+| `ecmwf_ifs` | 6,599,680 | 3 | 4,102,073 → 21 | 27,649 → 3 | 5,071,558 → 840 | 5,071,558 → 840 |
+
+For every target, HTTP and signed S3 strictly reduced value bytes, decoded blocks, and service-sent bytes from full to region. S3 measured the same value bytes and decoded blocks as HTTP for these identical fixture objects. HTTPS was also run cold and matched the local full and region result hashes; the savings gate specifically compares service bytes for HTTP and signed S3.
+
+The complete raw terminal records, result CSVs, per-scan metrics, and request audit events are retained under `build/evidence/regions/p5-remote-20261011-retry-7200/P5/`. The summary is `summary.json`, SHA-256 `cc026df7b8582273976bbee9e6c060d614c373445cb6076cfba9ce8a78cbf252`. The frozen input `test/data/regions/real-targets.json` has SHA-256 `03c2bcc84b4a0081cbf636d0aace7347b5039eb45ad6bc6a132cf78d9988fd80`. HTTP service log (`http-service.jsonl`) is 6,318,149,090 bytes, SHA-256 `625f92db7b9eaed65e602d3339d6397aaacc3a9cd153d8f56a2506060510bdbe`; S3 audit log (`s3-service.jsonl`) is 1,324,688,314 bytes, SHA-256 `c7ae3cfd5d34d77a819aed6677a3229b303a2ab1683911e6b9032c852e2b9f1c`. The corresponding live fixture logs under `build/regions-remote/p5-fixture-20261011-retry-7200/logs/` have matching hashes. The final run used fresh service logs; data from the earlier interrupted attempt was not combined with this evidence.
+
+The run manifest records an authorized S3 bucket match and confirms credentials were not written to evidence. It also records `remote_objects_modified_for_retry=false`: P5 did not inject object mutation, permission denial, or short reads, so their behavior remains unverified. No failed or incomplete requests in this run only establishes the successful path. The S3 service version (`version 30GB 4.48 56fbc3deb linux arm64`) and digest (`sha256:8c63bce99de77850e9189e54a93fce1ac9ba189c4995be3fb3927bcd39ae3ab9`) were caller supplied; `s3_service_identity_independently_verified=false` remains a limitation.
+
+P3 evidence in `us3-resources.md` is a separate local synthetic resource-growth experiment: point count grew from 65,536 to 1,048,576 (16×), while value bytes/decoded blocks stayed at 421/1 and the result stayed at one pair. DuckOMO-owned peak work was 549,193→549,195 bytes and isolated-process peak RSS was 50,040,832→49,704,960 bytes. This supports bounded local work; it is not evidence of remote savings on the five real objects. P4 local lifecycle and input-boundary evidence is recorded separately in `us4-boundaries.md`.

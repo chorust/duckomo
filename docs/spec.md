@@ -2,7 +2,7 @@
 
 # DuckOMO 接口说明
 
-当前工作树包含本地扫描、维度语义、列裁剪、规则/投影/Gaussian 网格、官方 HTTPFS 的 HTTP(S)/S3 范围读取、并行任务、opt-in 源位置、网格描述和 v4 扫描指标实现。004 的新网格真实坐标/值、远程收益、完整内存 ledger 和独立复现门禁尚未通过；DuckDB 2.0 已退出当前支持范围；代码存在不等于生产支持。[README](../README.md) 提供用法示例；原有空间契约见 [002 SQL 契约](../specs/002-spatial-pushdown/contracts/sql-interface.md)，维度与远程约定见 [003 SQL 契约](../specs/003-dimensions-remote-parallel/contracts/sql-interface.md)，新网格接口见 [004 SQL 契约](../specs/004-multi-grid-selection/contracts/sql-interface.md)。
+当前工作树包含本地扫描、维度语义、列裁剪、规则/投影/Gaussian 网格、多区域 polygon 读取、官方 HTTPFS 的 HTTP(S)/S3 范围读取、并行任务、opt-in 源位置、网格描述和 v4 扫描指标实现。005 区域功能仍在 Linux AArch64 的版本矩阵与独立复现验收中，不表示为发布支持；004 的新网格完整验收也尚未通过。DuckDB 2.0 已退出当前支持范围。[README](../README.md) 提供用法示例；原有空间契约见 [002 SQL 契约](../specs/002-spatial-pushdown/contracts/sql-interface.md)，维度与远程约定见 [003 SQL 契约](../specs/003-dimensions-remote-parallel/contracts/sql-interface.md)，多网格接口见 [004 SQL 契约](../specs/004-multi-grid-selection/contracts/sql-interface.md)，区域接口见 [005 SQL 契约](../specs/005-polygon-region-statistics/contracts/sql-interface.md)。
 
 ## 支持范围
 
@@ -18,6 +18,7 @@
 | 扫描 | DuckDB 调度的并行扫描；连接级最大线程设置；列裁剪及安全轴/空间选择 |
 | 远程 | 匹配引擎版本/平台的官方 httpfs；标准范围读取和可观察长度/版本冲突检查，不承诺新鲜 HEAD 或扫描快照 |
 | 缓存 | 自有范围缓存及缓存 SQL 已删除；HTTPFS 内部缓存由官方依赖维护 |
+| Polygon 区域读取 | 开发版 `read_om_regions` 输出原始区域—逻辑记录；调用者提供 `grid_lonlat` WKB，平面 `covers` 判定，统计由 SQL 等权聚合；spatial 必须与 DuckDB 匹配并显式加载 |
 | 尚未实现 | 科学计算算子；新网格已实现，但 004 完整验收和独立复现未完成 |
 
 ## 参数
@@ -55,6 +56,8 @@ read_om(path, dimensions := NULL, grid := NULL,
 根数组输出 `value FLOAT`；层级值列去掉内部路径的前导 `/`，按内部规范路径排序。嵌套列如 `surface/temperature` 需用双引号引用。附属元数据不生成值列。完整命名规则见基础读取契约。
 
 有 grid/domain 时，在值列后追加非 NULL 的 `lat DOUBLE`、`lon DOUBLE`；与原列名称冲突时按 DuckDB 标识符规则（含大小写）拒绝绑定。没有空间配置时只输出值列，`coordinates` 或 `dimensions` 本身不会生成坐标列。这是从 `latitude/longitude` 改名的破坏性开发版变更；不默认附加旧别名，迁移方式及原生轴/JSON 不改名的边界见 [接口迁移](interface-migration.md)。
+
+`read_om_regions(path, regions := STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat', ...)` 使用 spatial 的标准 WKB/geometry 函数，把每个原始点记录匹配到零个或多个区域，并在原列末尾追加 `region_id`；`include_source := true` 时保留 `om_source`。有效空区域不生成占位行。输入坐标系由调用者保证与网格输出经纬度一致；区域边界采用平面 `covers`，外环和洞边界包含，洞内部排除。区域/time/member 等统计由 SQL `GROUP BY` 完成，均值是非 NULL 样本等权平均，不是面积平均。完整参数和约束见 [005 SQL 契约](../specs/005-polygon-region-statistics/contracts/sql-interface.md) 和 [Quickstart](../specs/005-polygon-region-statistics/quickstart.md)。
 
 `include_source := true` 时在最后追加单列 `om_source STRUCT`，含脱敏对象身份、版本强度、grid/layout ID、logical/point/parent point index 和原轴 indices；它不会启用值 decoder。`om_grid_info(path, dimensions := ..., grid := ..., spatial_axes := ..., domain := ..., valid_times := ..., axes := ...)` 复用 metadata binder 并输出一行定义/布局/CRS/能力/provenance，不读取值 LUT/data 或解码值。描述结果证明 metadata 绑定，不证明坐标/值或远程收益已验收。
 

@@ -17,8 +17,9 @@ duckomo 是一个 DuckDB C++ 扩展，将 [Open-Meteo OM](https://github.com/ope
 - **多种网格 mapping**：规则经纬度、[68 个规则 domain](docs/regular-domains.md)、旋转经纬度、Lambert、stereographic 和 reduced Gaussian。
 - **多变量与语义轴**：按有序轴身份对齐变量，支持 `valid_time`、`level`、`lead_time`、`member`、`run`，不自动转置、广播或连接。
 - **并行与可观测性**：DuckDB 调度并行扫描；提供线程上限、扫描指标、可选 `om_source` 源位置及 `om_grid_info` 网格描述。
+- **Polygon 区域读取（实验性）**：源码工作区提供 `read_om_regions`，返回区域内原始网格记录供 SQL 分组统计；005 的完整矩阵与独立复现未收口，暂不作为发布支持。
 
-当前每次读取**单个对象**，不接受目录、glob 或文件列表。新投影/Gaussian 网格的代码已实现，但逐网格真实样本、完整内存审计和独立复现尚未全部验收；实现不等于生产就绪，详见 [支持范围](docs/spec.md) 与 [网格证据](docs/grid-domains.md)。
+当前每次读取**单个对象**，不接受目录、glob 或文件列表。005 区域入口需要显式加载匹配版本的 DuckDB spatial；普通 `read_om` 不需要。区域 WKB 的 `grid_lonlat` 参考由调用者负责，边界按平面 `covers` 处理，统计为 SQL 等权聚合。区域能力仍在验收，详见 [005 Quickstart](specs/005-polygon-region-statistics/quickstart.md)。新投影/Gaussian 网格的代码已实现，但逐网格真实样本、完整内存审计和独立复现尚未全部验收；实现不等于生产就绪，详见 [支持范围](docs/spec.md) 与 [网格证据](docs/grid-domains.md)。
 
 2026-10-10 [范围修订](specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md)：因已调查 Open-Meteo 公开来源未找到匹配对象，负责人批准本轮跳过 N160/N320/N 区域真实验收，保留定义和合成回归，不记为通过也不阻塞当前范围收口。按 [2026-10-10 pinned producer 参考决定](specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md)，`ecmwf_ifs` O1280 与三个投影定义登记为 `coordinate-value-validated`（与 Open-Meteo 发布对象一致，非原生 GRIB 网格等价）；O1280 依据 [真实本地查询验证](specs/004-multi-grid-selection/evidence/baseline-local/o1280-real-local-20261010/final.md)（全量 HSURF 值/坐标、显式/domain、空间与抽样时间序列）。远程收益、完整 gate 与 H9 独立复现仍开放。Phase 8 跨 chunk 入口仍是待评审提案。
 
@@ -193,6 +194,8 @@ LOAD 'build/release/extension/duckomo/duckomo.duckdb_extension';
 
 开发子模块固定 DuckDB v1.5.4；按其他固定版本构建可运行 `scripts/build-version.sh v1.5.6`（也支持 v1.5.4 / v1.5.5）。版本间不共用扩展二进制；官方运行包及完整复现步骤见 [HTTPFS 验证指南](docs/official-httpfs.md)。
 
+普通构建不要求 spatial runtime 产物。需要运行区域 sanitizer 测试时，先通过 `scripts/fetch-region-runtime.py` 准备匹配的 runtime，再向 `scripts/build-version.sh` 传入 `--region-sanitizers`。`--extension-only` 仅构建扩展，跳过区域 runtime 前置检查。
+
 ```sh
 make test                                       # 构建并运行本地 SQL/native/工具验证
 ./scripts/validate.sh build/release --local-only  # 验证已有构建
@@ -211,6 +214,7 @@ python3 test/tools/release_tools_test.py           # 发布契约检查
 | 参数、输出、支持范围与指标 | [接口说明](docs/spec.md) |
 | 公共数据目录、轴声明和 68 个规则 domain | [规则网格指南](docs/regular-domains.md) |
 | 投影 / Gaussian 定义与真实样本证据 | [网格证据表](docs/grid-domains.md) · [SQL 契约](specs/004-multi-grid-selection/contracts/sql-interface.md) |
+| Polygon 区域原始读取、分时统计与验证入口 | [005 Quickstart](specs/005-polygon-region-statistics/quickstart.md) · [SQL 契约](specs/005-polygon-region-statistics/contracts/sql-interface.md) |
 | 模块职责、扫描和 I/O 流程 | [技术架构](docs/architecture.md) |
 | GitHub 下载、安装与 tag 发布 | [Release 指南](docs/releases.md) |
 | 官方 HTTPFS 支持与受控验证 | [HTTPFS 验证指南](docs/official-httpfs.md) |
