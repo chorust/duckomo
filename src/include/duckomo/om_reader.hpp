@@ -238,6 +238,12 @@ struct OmDecoderState final {
 	OmDecoder_t decoder{};
 	OmByteBuffer index_bytes;
 	OmByteBuffer data_bytes;
+	// Valid byte ranges in the existing buffers, private to this decoder.
+	// A failed replacement invalidates its range before any I/O can throw.
+	std::uint64_t index_range_offset = 0;
+	std::uint64_t index_range_size = 0;
+	std::uint64_t data_range_offset = 0;
+	std::uint64_t data_range_size = 0;
 	OmByteBuffer chunk_scratch;
 	OmDecoderCapacityBounds capacity_bounds;
 	std::shared_ptr<ScanMemoryAccount> memory_account;

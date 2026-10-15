@@ -43,6 +43,12 @@ Open-Meteo 公共 AWS bucket `s3://openmeteo` 中的真实 ECMWF IFS HRES O1280 
 
 对象 hash、S3 ETag、原始值比较命令/构建/CSV hash 见样本获取记录及其链接的 [`value-reference-manifest.json`](../test/data/grids/value-reference-manifest.json)。这些是历史无 domain 值证据；本轮新增 [真实本地验证](../specs/004-multi-grid-selection/evidence/baseline-local/o1280-real-local-20261010/final.md) 并修复 HSURF 轴绑定，但 pinned producer 的独立 Python 实现仍不是独立 GRIB 点序参考。历史 manifest 中 HSURF `names_embedded=false` 描述不完整，发现及实际轴名在新 freeze/query/evidence 中补充，不追溯改写旧 manifest。继续使用既有四级，不新增 `value-validated`。
 
+## SEAS5 / EC46 O320 与 N160（v0.3.1）
+
+新增 8 个 O320 产品 domain 和 2 个 N160 上层产品 domain，完整列表及查询见 [季节预测 domain 指南](seasonal-domains.md)。O320 为 421,120 点，不能使用 542,080 点的 `n320`。同网格产品引用共享行表/空间身份；`lon` 在 producer 的 `lat lon time` 轴中为展平点轴。月度/周度时间来自 OM 的 time 坐标，domain 不猜测 cadence 或成员标签。
+
+这些产品注册等级保守保持 `definition-recorded`，真实检查逐对象另记，不把同网格样本升级为每个产品全部验收。公开 O320 静态、月度、周度样本可取得；原始 ensemble 及 N160 run 样本本轮尚未取得。已有 N-grid 历史 gate 不因新增名称改为通过。
+
 ## 构建、来源和支持边界
 
 004 的真实网格本地证据对应 DuckDB v1.5.4、Linux AArch64 的 baseline 构建。官方 HTTPFS 路径另已通过 v1.5.4/v1.5.5/v1.5.6 的受控远程 runtime 和固定样本验证，见 [迁移记录](../specs/004-multi-grid-selection/evidence/official-httpfs-refactor/status.md)，但完整 004 H8 仍未通过；2.0 开发版已退出本轮范围，Linux x86_64 也不在当前验收平台范围。公开匿名 S3 能读不等于该网格的签名 S3 远程收益及服务端审计通过；当前 DuckOMO 不观测 HTTPFS transport attempts/body，网络证据由受控服务日志提供。

@@ -78,6 +78,28 @@ def check_flattened_axis_alias(generator) -> None:
                 raise AssertionError("invalid registered flattened alias was accepted")
 
 
+def check_shared_grid_definitions(generator) -> None:
+    data = json.loads((ROOT / "test/data/grids/definitions.json").read_text())
+    identities = generator.source_grid_identities(data["definitions"])
+    for item in data["definitions"]:
+        if item.get("grid_definition"):
+            if identities[item["id"]] != identities[item["grid_definition"]]:
+                raise AssertionError("product domain must share its referenced spatial identity")
+    with tempfile.TemporaryDirectory(prefix="duckomo-grid-shared-") as temporary:
+        path = Path(temporary) / "definitions.json"
+        for target in ("missing", "ecmwf_seas5_monthly", "gem_rdps_10km"):
+            broken = json.loads(json.dumps(data))
+            alias = next(x for x in broken["definitions"] if x["id"] == "ecmwf_ec46")
+            alias["grid_definition"] = target
+            path.write_text(json.dumps(broken))
+            try:
+                generator.generate_header(path)
+            except ValueError:
+                pass
+            else:
+                raise AssertionError("missing, chained or wrong-family shared definition was accepted")
+
+
 def load_generator():
     spec = importlib.util.spec_from_file_location("grid_registry_generator", GENERATOR)
     if spec is None or spec.loader is None:
@@ -92,6 +114,7 @@ def main() -> int:
     check_n160_sql_rows_match_registry()
     check_sample_query_generation(generator)
     check_flattened_axis_alias(generator)
+    check_shared_grid_definitions(generator)
     vectors = ROOT / "test/data/grids/canonical-vectors.json"
     sample_manifest = ROOT / "test/data/grids/sample-manifest.json"
     generator.canonical_vectors(vectors)

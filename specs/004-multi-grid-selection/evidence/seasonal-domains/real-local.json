@@ -1,0 +1,202 @@
+{
+  "extension_sha256": "0264b630b9b1c53fae94a8a9939d2186908e8270a0542b74ad2e5b84073d9134",
+  "samples": [
+    {
+      "domain": "ecmwf_seas5",
+      "key": "data/ecmwf_seas5/static/HSURF.om",
+      "sha256": "c7c21b0788da8e7b3f45f92ac94efdfd83af44b64cfd86e198f664f3d7c19517",
+      "layout": {
+        "grid_id": "7395a77858ca760079e4ad455c9a4eca6b38239c02ef0cb49c736212894b7b3d",
+        "layout_id": "13d288e81f01973a0c55a8f5bbd8efd3998c9aa545ae22befda8820f93ba134b",
+        "geometry": "gaussian",
+        "shape": [
+          1,
+          421120
+        ],
+        "axes": [
+          "lat",
+          "lon"
+        ],
+        "strides": [
+          421120,
+          1
+        ],
+        "non_spatial_axes": [
+          0
+        ],
+        "flattened": true,
+        "order": "separate",
+        "latitude_axis": null,
+        "longitude_axis": null,
+        "point_axis": 1,
+        "subset_segments": null
+      },
+      "checked_values": 421120
+    },
+    {
+      "domain": "ecmwf_seas5_monthly",
+      "key": "data_run/ecmwf_seas5_monthly/2026/10/01/0000Z/sea_surface_temperature_mean.om",
+      "sha256": "a8f520a75b684ae783ee5ed9664d13ee4d89990cd52a79b43937e9af1fd285c7",
+      "layout": {
+        "grid_id": "7395a77858ca760079e4ad455c9a4eca6b38239c02ef0cb49c736212894b7b3d",
+        "layout_id": "31e18d0b12bfca9abad8db474eb9c38a88c4081f05a5975e4a97609812da75f1",
+        "geometry": "gaussian",
+        "shape": [
+          1,
+          421120,
+          7
+        ],
+        "axes": [
+          "lat",
+          "lon",
+          "time"
+        ],
+        "strides": [
+          2947840,
+          7,
+          1
+        ],
+        "non_spatial_axes": [
+          0,
+          2
+        ],
+        "flattened": true,
+        "order": "separate",
+        "latitude_axis": null,
+        "longitude_axis": null,
+        "point_axis": 1,
+        "subset_segments": null
+      },
+      "checked_values": 42
+    },
+    {
+      "domain": "ecmwf_ec46_weekly",
+      "key": "data_run/ecmwf_ec46_weekly/2026/07/12/0000Z/cloud_cover_anomaly.om",
+      "sha256": "d7e58d2d8a556810887ad3e737a5bd6571198ef7991b49f03c45bb1235dd9115",
+      "layout": {
+        "grid_id": "7395a77858ca760079e4ad455c9a4eca6b38239c02ef0cb49c736212894b7b3d",
+        "layout_id": "d9293ec6c5477a4fd6abdad1734e8c529ca5af45608844bc8a3d467b147e7b5c",
+        "geometry": "gaussian",
+        "shape": [
+          1,
+          421120,
+          6
+        ],
+        "axes": [
+          "lat",
+          "lon",
+          "time"
+        ],
+        "strides": [
+          2526720,
+          6,
+          1
+        ],
+        "non_spatial_axes": [
+          0,
+          2
+        ],
+        "flattened": true,
+        "order": "separate",
+        "latitude_axis": null,
+        "longitude_axis": null,
+        "point_axis": 1,
+        "subset_segments": null
+      },
+      "checked_values": 36
+    }
+  ],
+  "coordinate_reference": "independent pinned producer Float32 port; not native GRIB",
+  "remote": "not-run",
+  "status": "pass",
+  "nino_counts": {
+    "nino34": 6310,
+    "nino12": 1246
+  },
+  "aggregates": [
+    {
+      "region_id": "nino12",
+      "valid_time": "2026-10-01 00:00:00",
+      "n": 1246,
+      "mean_raw": 299.97632697217085
+    },
+    {
+      "region_id": "nino12",
+      "valid_time": "2026-11-01 00:00:00",
+      "n": 1246,
+      "mean_raw": 301.06874471405723
+    },
+    {
+      "region_id": "nino12",
+      "valid_time": "2026-12-01 00:00:00",
+      "n": 1246,
+      "mean_raw": 301.7919124355814
+    },
+    {
+      "region_id": "nino12",
+      "valid_time": "2027-01-01 00:00:00",
+      "n": 1246,
+      "mean_raw": 302.5036643718408
+    },
+    {
+      "region_id": "nino12",
+      "valid_time": "2027-02-01 00:00:00",
+      "n": 1246,
+      "mean_raw": 302.95450744371806
+    },
+    {
+      "region_id": "nino12",
+      "valid_time": "2027-03-01 00:00:00",
+      "n": 1246,
+      "mean_raw": 303.1644057006322
+    },
+    {
+      "region_id": "nino12",
+      "valid_time": "2027-04-01 00:00:00",
+      "n": 1246,
+      "mean_raw": 302.5574137969688
+    },
+    {
+      "region_id": "nino34",
+      "valid_time": "2026-10-01 00:00:00",
+      "n": 6310,
+      "mean_raw": 303.4611566945604
+    },
+    {
+      "region_id": "nino34",
+      "valid_time": "2026-11-01 00:00:00",
+      "n": 6310,
+      "mean_raw": 303.7816956775502
+    },
+    {
+      "region_id": "nino34",
+      "valid_time": "2026-12-01 00:00:00",
+      "n": 6310,
+      "mean_raw": 303.7778767049218
+    },
+    {
+      "region_id": "nino34",
+      "valid_time": "2027-01-01 00:00:00",
+      "n": 6310,
+      "mean_raw": 303.56878749164275
+    },
+    {
+      "region_id": "nino34",
+      "valid_time": "2027-02-01 00:00:00",
+      "n": 6310,
+      "mean_raw": 303.33594190110875
+    },
+    {
+      "region_id": "nino34",
+      "valid_time": "2027-03-01 00:00:00",
+      "n": 6310,
+      "mean_raw": 303.2560691531222
+    },
+    {
+      "region_id": "nino34",
+      "valid_time": "2027-04-01 00:00:00",
+      "n": 6310,
+      "mean_raw": 303.24852531421016
+    }
+  ]
+}

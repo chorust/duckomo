@@ -1,0 +1,144 @@
+{
+  "source_sha256": "007bb7abd89c21fbba6fab9f05c385a1ec9c100f688206252c9da78e1952d2a3",
+  "extension_sha256": "f5a294510d22720c466a33b9ad89397edb0bfb02d96a1470ffda2fd7a8cf97bd",
+  "baseline": {
+    "basis": "same object/query controlled HTTP replay, two threads",
+    "http_requests": 15325,
+    "value_index_requests": 7652,
+    "value_data_requests": 7652,
+    "value_index_bytes": 643333,
+    "value_data_bytes": 1869392
+  },
+  "optimized_actual_s3": {
+    "elapsed_seconds": 24.38337091775611,
+    "method_counts": {
+      "HEAD": 1,
+      "GET": 156
+    },
+    "status_counts": {
+      "OK_200": 1,
+      "PartialContent_206": 156
+    },
+    "reads": {
+      "metadata": {
+        "bind_bytes": 798,
+        "bind_requests": 9,
+        "scan_bytes": 633,
+        "scan_requests": 9
+      },
+      "coordinates": {
+        "physical_bytes": 29,
+        "physical_requests": 2,
+        "logical_bytes": 29,
+        "logical_requests": 2,
+        "index_bytes": 5,
+        "index_requests": 1,
+        "data_bytes": 24,
+        "data_requests": 1,
+        "decoded_chunks": 1,
+        "decode_complete": true
+      },
+      "variables": {
+        "/": {
+          "logical_index_bytes": 643333,
+          "logical_index_requests": 7652,
+          "logical_data_bytes": 1869392,
+          "logical_data_requests": 7652,
+          "index_bytes": 1245,
+          "index_requests": 13,
+          "data_bytes": 31179,
+          "data_requests": 123,
+          "decoded_chunks": 7652,
+          "decode_complete": true
+        }
+      },
+      "value_totals": {
+        "index_bytes": 1245,
+        "index_requests": 13,
+        "data_bytes": 31179,
+        "data_requests": 123,
+        "decoded_chunks": 7652,
+        "decode_complete": true
+      }
+    }
+  },
+  "memory": {
+    "query_owned_peak_bytes": 1269466,
+    "query_owned_complete": true,
+    "query_owned_released_at_terminal": true
+  },
+  "outcome": {
+    "status": "success",
+    "scan_complete": true,
+    "terminal_published": true,
+    "error_category": ""
+  },
+  "local_reads": {
+    "metadata": {
+      "bind_bytes": 798,
+      "bind_requests": 9,
+      "scan_bytes": 633,
+      "scan_requests": 9
+    },
+    "coordinates": {
+      "physical_bytes": 29,
+      "physical_requests": 2,
+      "logical_bytes": 29,
+      "logical_requests": 2,
+      "index_bytes": 5,
+      "index_requests": 1,
+      "data_bytes": 24,
+      "data_requests": 1,
+      "decoded_chunks": 1,
+      "decode_complete": true
+    },
+    "variables": {
+      "/": {
+        "logical_index_bytes": 643333,
+        "logical_index_requests": 7652,
+        "logical_data_bytes": 1869392,
+        "logical_data_requests": 7652,
+        "index_bytes": 1245,
+        "index_requests": 13,
+        "data_bytes": 31179,
+        "data_requests": 123,
+        "decoded_chunks": 7652,
+        "decode_complete": true
+      }
+    },
+    "value_totals": {
+      "index_bytes": 1245,
+      "index_requests": 13,
+      "data_bytes": 31179,
+      "data_requests": 123,
+      "decoded_chunks": 7652,
+      "decode_complete": true
+    }
+  },
+  "notes": [
+    "No additional payload buffers; only range offsets/lengths in worker-local decoder.",
+    "Logical requests and repeated decompressions remain counted; I/O avoided only for fully contained ranges.",
+    "No completed baseline actual S3 timing; original query exceeded 300 seconds.",
+    "Cold OS/HTTPFS cache state is not asserted."
+  ],
+  "validation": {
+    "complete_local_regressions": "pass",
+    "reader_capacity_failure_retry_and_offsets": "pass",
+    "region_scan_cancellation_failure_isolation": "pass",
+    "raw_reader_asan_ubsan": "pass"
+  },
+  "logs": [
+    {
+      "path": "/tmp/duckomo-reuse-final-regressions.log",
+      "sha256": "ca85f4655297b080692d717d5efecf230ace8c48151ae9778c5a6a21c8c4579f"
+    },
+    {
+      "path": "/tmp/duckomo-reuse-sanitizer.log",
+      "sha256": "70acf404655fc07d236cfa0fa68e4f297578445865e1199126bd57f44ef34454"
+    },
+    {
+      "path": "/tmp/duckomo-reuse-region-test.log",
+      "sha256": "ac391da193be7a9c1098c3cd23a29a94119eb7aed3188200cdc5b0f1b7971dc4"
+    }
+  ]
+}

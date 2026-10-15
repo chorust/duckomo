@@ -108,6 +108,16 @@ void TestClosedGaussianWgs84SourceProfile() {
 	    "  ANGLEUNIT[\"degree\",0.0174532925199433],\n"
 	    "  REMARK[\"Reduced Gaussian Grid O1280 (ECMWF)\"],\n"
 	    "  USAGE[SCOPE[\"grid\"], BBOX[-90,-180.0,90,180]]]";
+	for (const auto &label : {std::string("O320"), std::string("N160")}) {
+		auto seasonal_wkt = wkt;
+		seasonal_wkt.replace(seasonal_wkt.find("O1280"), 5, label);
+		const auto seasonal_profile = ClassifySourceCrsProfile(seasonal_wkt);
+		const auto order = label == "O320" ? 320U : 160U;
+		Require(seasonal_profile.kind == SourceCrsProfileKind::ReducedGaussianWgs84V1 &&
+		            seasonal_profile.gaussian_order == order &&
+		            CheckSourceCrsProfile(seasonal_profile, true, true, order) == SourceCrsBindingStatus::Compatible,
+		        "seasonal O320 and N160 producer CRS remarks must bind their declared order");
+	}
 	const auto profile = ClassifySourceCrsProfile(wkt);
 	Require(profile.kind == SourceCrsProfileKind::ReducedGaussianWgs84V1 && profile.gaussian_order == 1280,
 	        "the public ECMWF Gaussian WKT matches the closed WGS84 geographic profile");

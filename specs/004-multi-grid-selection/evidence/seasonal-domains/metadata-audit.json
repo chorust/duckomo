@@ -1,0 +1,290 @@
+[
+  {
+    "domain": "ecmwf_seas5_ensemble_mean",
+    "key": "data_run/ecmwf_seas5_ensemble_mean/2026/08/01/0000Z/cloud_cover.om",
+    "shape": [
+      1,
+      421120,
+      861
+    ],
+    "chunks": [
+      1,
+      1,
+      861
+    ],
+    "attributes": [
+      {
+        "type": 11,
+        "name": "crs_wkt",
+        "printable": "        y       GEOGCRS[\"Reduced Gaussian Grid\",     DATUM[\"World Geodetic System 1984\",         ELLIPSOID[\"WGS 84\",6378137,298.257223563]],     CS[ellipsoidal,2],         AXIS[\"latitude\",north],         AXIS[\"longitude\",east],         ANGLEUNIT[\"degree\",0.0174532925199433],     REMARK[\"Reduced Gaussian Grid O320 (ECMWF)\"],     USAGE[         SCOPE[\"grid\"],         BBOX[-90,-180.0,90,180]]]crs_wkt"
+      },
+      {
+        "type": 11,
+        "name": "unit",
+        "printable": "                %unit"
+      },
+      {
+        "type": 7,
+        "name": "forecast_reference_time",
+        "printable": "         7mj    forecast_reference_time"
+      },
+      {
+        "type": 18,
+        "name": "time",
+        "shape": [
+          861
+        ]
+      },
+      {
+        "type": 11,
+        "name": "coordinates",
+        "printable": "                lat lon timecoordinates"
+      },
+      {
+        "type": 7,
+        "name": "created_at",
+        "printable": "         ;sj    created_at"
+      }
+    ]
+  },
+  {
+    "domain": "ecmwf_seas5_daily_ensemble_mean",
+    "key": "data_run/ecmwf_seas5_daily_ensemble_mean/2026/08/01/0000Z/soil_moisture_0_to_7cm_mean.om",
+    "shape": [
+      1,
+      421120,
+      216
+    ],
+    "chunks": [
+      1,
+      4,
+      216
+    ],
+    "attributes": [
+      {
+        "type": 11,
+        "name": "crs_wkt",
+        "printable": "        y       GEOGCRS[\"Reduced Gaussian Grid\",     DATUM[\"World Geodetic System 1984\",         ELLIPSOID[\"WGS 84\",6378137,298.257223563]],     CS[ellipsoidal,2],         AXIS[\"latitude\",north],         AXIS[\"longitude\",east],         ANGLEUNIT[\"degree\",0.0174532925199433],     REMARK[\"Reduced Gaussian Grid O320 (ECMWF)\"],     USAGE[         SCOPE[\"grid\"],         BBOX[-90,-180.0,90,180]]]crs_wkt"
+      },
+      {
+        "type": 11,
+        "name": "unit",
+        "printable": "                m  /m  unit"
+      },
+      {
+        "type": 7,
+        "name": "forecast_reference_time",
+        "printable": "         7mj    forecast_reference_time"
+      },
+      {
+        "type": 18,
+        "name": "time",
+        "shape": [
+          216
+        ]
+      },
+      {
+        "type": 11,
+        "name": "coordinates",
+        "printable": "                lat lon timecoordinates"
+      },
+      {
+        "type": 7,
+        "name": "created_at",
+        "printable": "        g)sj    created_at"
+      }
+    ]
+  },
+  {
+    "domain": "ecmwf_seas5_monthly",
+    "key": "data_run/ecmwf_seas5_monthly/2026/08/01/0000Z/albedo_anomaly.om",
+    "shape": [
+      1,
+      421120,
+      7
+    ],
+    "chunks": [
+      1,
+      146,
+      7
+    ],
+    "attributes": [
+      {
+        "type": 11,
+        "name": "crs_wkt",
+        "printable": "        y       GEOGCRS[\"Reduced Gaussian Grid\",     DATUM[\"World Geodetic System 1984\",         ELLIPSOID[\"WGS 84\",6378137,298.257223563]],     CS[ellipsoidal,2],         AXIS[\"latitude\",north],         AXIS[\"longitude\",east],         ANGLEUNIT[\"degree\",0.0174532925199433],     REMARK[\"Reduced Gaussian Grid O320 (ECMWF)\"],     USAGE[         SCOPE[\"grid\"],         BBOX[-90,-180.0,90,180]]]crs_wkt"
+      },
+      {
+        "type": 11,
+        "name": "unit",
+        "printable": "                fractionunit"
+      },
+      {
+        "type": 7,
+        "name": "forecast_reference_time",
+        "printable": "         7mj    forecast_reference_time"
+      },
+      {
+        "type": 18,
+        "name": "time",
+        "shape": [
+          7
+        ]
+      },
+      {
+        "type": 11,
+        "name": "coordinates",
+        "printable": "                lat lon timecoordinates"
+      },
+      {
+        "type": 7,
+        "name": "created_at",
+        "printable": "        D'sj    created_at"
+      }
+    ]
+  },
+  {
+    "domain": "ecmwf_ec46_ensemble_mean",
+    "key": "data_run/ecmwf_ec46_ensemble_mean/2026/07/12/0000Z/cloud_cover.om",
+    "shape": [
+      1,
+      421120,
+      185
+    ],
+    "chunks": [
+      1,
+      5,
+      185
+    ],
+    "attributes": [
+      {
+        "type": 11,
+        "name": "crs_wkt",
+        "printable": "        y       GEOGCRS[\"Reduced Gaussian Grid\",     DATUM[\"World Geodetic System 1984\",         ELLIPSOID[\"WGS 84\",6378137,298.257223563]],     CS[ellipsoidal,2],         AXIS[\"latitude\",north],         AXIS[\"longitude\",east],         ANGLEUNIT[\"degree\",0.0174532925199433],     REMARK[\"Reduced Gaussian Grid O320 (ECMWF)\"],     USAGE[         SCOPE[\"grid\"],         BBOX[-90,-180.0,90,180]]]crs_wkt"
+      },
+      {
+        "type": 11,
+        "name": "unit",
+        "printable": "                %unit"
+      },
+      {
+        "type": 7,
+        "name": "forecast_reference_time",
+        "printable": "          Rj    forecast_reference_time"
+      },
+      {
+        "type": 18,
+        "name": "time",
+        "shape": [
+          185
+        ]
+      },
+      {
+        "type": 11,
+        "name": "coordinates",
+        "printable": "                lat lon timecoordinates"
+      },
+      {
+        "type": 7,
+        "name": "created_at",
+        "printable": "        ] Sj    created_at"
+      }
+    ]
+  },
+  {
+    "domain": "ecmwf_ec46_weekly",
+    "key": "data_run/ecmwf_ec46_weekly/2026/07/12/0000Z/cloud_cover_anomaly.om",
+    "shape": [
+      1,
+      421120,
+      6
+    ],
+    "chunks": [
+      1,
+      170,
+      6
+    ],
+    "attributes": [
+      {
+        "type": 11,
+        "name": "crs_wkt",
+        "printable": "        y       GEOGCRS[\"Reduced Gaussian Grid\",     DATUM[\"World Geodetic System 1984\",         ELLIPSOID[\"WGS 84\",6378137,298.257223563]],     CS[ellipsoidal,2],         AXIS[\"latitude\",north],         AXIS[\"longitude\",east],         ANGLEUNIT[\"degree\",0.0174532925199433],     REMARK[\"Reduced Gaussian Grid O320 (ECMWF)\"],     USAGE[         SCOPE[\"grid\"],         BBOX[-90,-180.0,90,180]]]crs_wkt"
+      },
+      {
+        "type": 11,
+        "name": "unit",
+        "printable": "                %unit"
+      },
+      {
+        "type": 7,
+        "name": "forecast_reference_time",
+        "printable": "          Rj    forecast_reference_time"
+      },
+      {
+        "type": 18,
+        "name": "time",
+        "shape": [
+          6
+        ]
+      },
+      {
+        "type": 11,
+        "name": "coordinates",
+        "printable": "                lat lon timecoordinates"
+      },
+      {
+        "type": 7,
+        "name": "created_at",
+        "printable": "          Sj    created_at"
+      }
+    ]
+  },
+  {
+    "domain": "ecmwf_seas5_monthly",
+    "key": "data_run/ecmwf_seas5_monthly/2026/10/01/0000Z/sea_surface_temperature_mean.om",
+    "shape": [
+      1,
+      421120,
+      7
+    ],
+    "chunks": [
+      1,
+      146,
+      7
+    ],
+    "attributes": [
+      {
+        "type": 11,
+        "name": "crs_wkt",
+        "printable": "        y       GEOGCRS[\"Reduced Gaussian Grid\",     DATUM[\"World Geodetic System 1984\",         ELLIPSOID[\"WGS 84\",6378137,298.257223563]],     CS[ellipsoidal,2],         AXIS[\"latitude\",north],         AXIS[\"longitude\",east],         ANGLEUNIT[\"degree\",0.0174532925199433],     REMARK[\"Reduced Gaussian Grid O320 (ECMWF)\"],     USAGE[         SCOPE[\"grid\"],         BBOX[-90,-180.0,90,180]]]crs_wkt"
+      },
+      {
+        "type": 11,
+        "name": "unit",
+        "printable": "                  Cunit"
+      },
+      {
+        "type": 7,
+        "name": "forecast_reference_time",
+        "printable": "           j    forecast_reference_time"
+      },
+      {
+        "type": 18,
+        "name": "time",
+        "shape": [
+          7
+        ]
+      },
+      {
+        "type": 11,
+        "name": "coordinates",
+        "printable": "                lat lon timecoordinates"
+      },
+      {
+        "type": 7,
+        "name": "created_at",
+        "printable": "        H  j    created_at"
+      }
+    ]
+  }
+]

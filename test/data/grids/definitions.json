@@ -23361,6 +23361,4088 @@
         "build_pair": null,
         "claims": "Frozen public HSURF and chunk_817 metadata are checked in sample-manifest.json. Local real-object checks in evidence/baseline-local/o1280-real-local-20261010/ cover all 6,599,680 HSURF values against official OM C Float32 decode, all coordinates against an independent Python port of pinned producer arithmetic (maximum error 0 within the frozen 1e-4 degree tolerance), explicit/domain equivalence, spatial selection and 22 complete 504-slot time series with NULL positions. Per the owner decision in contracts/pinned-producer-reference-20261010.md, the pinned Open-Meteo Swift source is the accepted coordinate/point-order reference for these Open-Meteo-produced objects; this validates consistency with the published object, not equivalence with ECMWF native GRIB Gaussian latitudes (openmeteo_approx_v1 is an equidistant approximation). This run is a local development build with frozen artifact hashes, not an accepted matrix build_pair, so build_pair stays null. HSURF embeds lat/lon axis names; its flattened lon alias is explicitly registered without overriding metadata assertions. Remote full/local benefit, signed-S3/TLS audit, complete memory gate, full time-series value coverage and H9 independent reproduction remain open."
       }
+    },
+    {
+      "id": "ecmwf_seas5",
+      "kind": "reduced_gaussian",
+      "source_path": "Sources/App/EcmwfSeas/EcmwfSeasDomain.swift",
+      "parameters": {
+        "coordinate_rule_id": "openmeteo_gaussian_n320_f32_v1",
+        "numeric_policy": "openmeteo_f32_v1",
+        "earth": {
+          "kind": "wgs84_source",
+          "semi_major_axis_m": 6378137.0,
+          "inverse_flattening": 298.257223563
+        },
+        "N": 320,
+        "latitude_rule": "openmeteo_approx_v1",
+        "point_count": 421120,
+        "rows": [
+          {
+            "latitude": 89.78923034667969,
+            "point_count": 20,
+            "longitude_origin": 0.0,
+            "longitude_step": 18.0
+          },
+          {
+            "latitude": 89.5082015991211,
+            "point_count": 24,
+            "longitude_origin": 0.0,
+            "longitude_step": 15.0
+          },
+          {
+            "latitude": 89.2271728515625,
+            "point_count": 28,
+            "longitude_origin": 0.0,
+            "longitude_step": 12.857142448425293
+          },
+          {
+            "latitude": 88.94613647460938,
+            "point_count": 32,
+            "longitude_origin": 0.0,
+            "longitude_step": 11.25
+          },
+          {
+            "latitude": 88.66510772705078,
+            "point_count": 36,
+            "longitude_origin": 0.0,
+            "longitude_step": 10.0
+          },
+          {
+            "latitude": 88.38407897949219,
+            "point_count": 40,
+            "longitude_origin": 0.0,
+            "longitude_step": 9.0
+          },
+          {
+            "latitude": 88.1030502319336,
+            "point_count": 44,
+            "longitude_origin": 0.0,
+            "longitude_step": 8.181818008422852
+          },
+          {
+            "latitude": 87.82201385498047,
+            "point_count": 48,
+            "longitude_origin": 0.0,
+            "longitude_step": 7.5
+          },
+          {
+            "latitude": 87.54098510742188,
+            "point_count": 52,
+            "longitude_origin": 0.0,
+            "longitude_step": 6.92307710647583
+          },
+          {
+            "latitude": 87.25995635986328,
+            "point_count": 56,
+            "longitude_origin": 0.0,
+            "longitude_step": 6.4285712242126465
+          },
+          {
+            "latitude": 86.97892761230469,
+            "point_count": 60,
+            "longitude_origin": 0.0,
+            "longitude_step": 6.0
+          },
+          {
+            "latitude": 86.6978988647461,
+            "point_count": 64,
+            "longitude_origin": 0.0,
+            "longitude_step": 5.625
+          },
+          {
+            "latitude": 86.41686248779297,
+            "point_count": 68,
+            "longitude_origin": 0.0,
+            "longitude_step": 5.294117450714111
+          },
+          {
+            "latitude": 86.13583374023438,
+            "point_count": 72,
+            "longitude_origin": 0.0,
+            "longitude_step": 5.0
+          },
+          {
+            "latitude": 85.85480499267578,
+            "point_count": 76,
+            "longitude_origin": 0.0,
+            "longitude_step": 4.736842155456543
+          },
+          {
+            "latitude": 85.57377624511719,
+            "point_count": 80,
+            "longitude_origin": 0.0,
+            "longitude_step": 4.5
+          },
+          {
+            "latitude": 85.29273986816406,
+            "point_count": 84,
+            "longitude_origin": 0.0,
+            "longitude_step": 4.285714149475098
+          },
+          {
+            "latitude": 85.01171112060547,
+            "point_count": 88,
+            "longitude_origin": 0.0,
+            "longitude_step": 4.090909004211426
+          },
+          {
+            "latitude": 84.73068237304688,
+            "point_count": 92,
+            "longitude_origin": 0.0,
+            "longitude_step": 3.91304349899292
+          },
+          {
+            "latitude": 84.44965362548828,
+            "point_count": 96,
+            "longitude_origin": 0.0,
+            "longitude_step": 3.75
+          },
+          {
+            "latitude": 84.16862487792969,
+            "point_count": 100,
+            "longitude_origin": 0.0,
+            "longitude_step": 3.5999999046325684
+          },
+          {
+            "latitude": 83.88758850097656,
+            "point_count": 104,
+            "longitude_origin": 0.0,
+            "longitude_step": 3.461538553237915
+          },
+          {
+            "latitude": 83.60655975341797,
+            "point_count": 108,
+            "longitude_origin": 0.0,
+            "longitude_step": 3.3333332538604736
+          },
+          {
+            "latitude": 83.32553100585938,
+            "point_count": 112,
+            "longitude_origin": 0.0,
+            "longitude_step": 3.2142856121063232
+          },
+          {
+            "latitude": 83.04450225830078,
+            "point_count": 116,
+            "longitude_origin": 0.0,
+            "longitude_step": 3.1034483909606934
+          },
+          {
+            "latitude": 82.76346588134766,
+            "point_count": 120,
+            "longitude_origin": 0.0,
+            "longitude_step": 3.0
+          },
+          {
+            "latitude": 82.48243713378906,
+            "point_count": 124,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.903225898742676
+          },
+          {
+            "latitude": 82.20140838623047,
+            "point_count": 128,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.8125
+          },
+          {
+            "latitude": 81.92037963867188,
+            "point_count": 132,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.7272727489471436
+          },
+          {
+            "latitude": 81.63935089111328,
+            "point_count": 136,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.6470587253570557
+          },
+          {
+            "latitude": 81.35831451416016,
+            "point_count": 140,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.5714285373687744
+          },
+          {
+            "latitude": 81.07728576660156,
+            "point_count": 144,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.5
+          },
+          {
+            "latitude": 80.79625701904297,
+            "point_count": 148,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.4324324131011963
+          },
+          {
+            "latitude": 80.51522827148438,
+            "point_count": 152,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.3684210777282715
+          },
+          {
+            "latitude": 80.23419189453125,
+            "point_count": 156,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.307692289352417
+          },
+          {
+            "latitude": 79.95316314697266,
+            "point_count": 160,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.25
+          },
+          {
+            "latitude": 79.67213439941406,
+            "point_count": 164,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.195122003555298
+          },
+          {
+            "latitude": 79.39110565185547,
+            "point_count": 168,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.142857074737549
+          },
+          {
+            "latitude": 79.11007690429688,
+            "point_count": 172,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.0930233001708984
+          },
+          {
+            "latitude": 78.82904052734375,
+            "point_count": 176,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.045454502105713
+          },
+          {
+            "latitude": 78.54801177978516,
+            "point_count": 180,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.0
+          },
+          {
+            "latitude": 78.26698303222656,
+            "point_count": 184,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.95652174949646
+          },
+          {
+            "latitude": 77.98595428466797,
+            "point_count": 188,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.914893627166748
+          },
+          {
+            "latitude": 77.70491790771484,
+            "point_count": 192,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.875
+          },
+          {
+            "latitude": 77.42388916015625,
+            "point_count": 196,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.836734652519226
+          },
+          {
+            "latitude": 77.14286041259766,
+            "point_count": 200,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.7999999523162842
+          },
+          {
+            "latitude": 76.86183166503906,
+            "point_count": 204,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.7647058963775635
+          },
+          {
+            "latitude": 76.58080291748047,
+            "point_count": 208,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.7307692766189575
+          },
+          {
+            "latitude": 76.29976654052734,
+            "point_count": 212,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.698113203048706
+          },
+          {
+            "latitude": 76.01873779296875,
+            "point_count": 216,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.6666666269302368
+          },
+          {
+            "latitude": 75.73770904541016,
+            "point_count": 220,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.6363636255264282
+          },
+          {
+            "latitude": 75.45668029785156,
+            "point_count": 224,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.6071428060531616
+          },
+          {
+            "latitude": 75.17564392089844,
+            "point_count": 228,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.5789474248886108
+          },
+          {
+            "latitude": 74.89461517333984,
+            "point_count": 232,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.5517241954803467
+          },
+          {
+            "latitude": 74.61358642578125,
+            "point_count": 236,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.5254237651824951
+          },
+          {
+            "latitude": 74.33255767822266,
+            "point_count": 240,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.5
+          },
+          {
+            "latitude": 74.05152893066406,
+            "point_count": 244,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.4754098653793335
+          },
+          {
+            "latitude": 73.77049255371094,
+            "point_count": 248,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.451612949371338
+          },
+          {
+            "latitude": 73.48946380615234,
+            "point_count": 252,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.4285714626312256
+          },
+          {
+            "latitude": 73.20843505859375,
+            "point_count": 256,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.40625
+          },
+          {
+            "latitude": 72.92740631103516,
+            "point_count": 260,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.384615421295166
+          },
+          {
+            "latitude": 72.64636993408203,
+            "point_count": 264,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.3636363744735718
+          },
+          {
+            "latitude": 72.36534118652344,
+            "point_count": 268,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.3432835340499878
+          },
+          {
+            "latitude": 72.08431243896484,
+            "point_count": 272,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.3235293626785278
+          },
+          {
+            "latitude": 71.80328369140625,
+            "point_count": 276,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.3043478727340698
+          },
+          {
+            "latitude": 71.52225494384766,
+            "point_count": 280,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.2857142686843872
+          },
+          {
+            "latitude": 71.24121856689453,
+            "point_count": 284,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.2676056623458862
+          },
+          {
+            "latitude": 70.96018981933594,
+            "point_count": 288,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.25
+          },
+          {
+            "latitude": 70.67916107177734,
+            "point_count": 292,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.2328766584396362
+          },
+          {
+            "latitude": 70.39813232421875,
+            "point_count": 296,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.2162162065505981
+          },
+          {
+            "latitude": 70.11709594726562,
+            "point_count": 300,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.2000000476837158
+          },
+          {
+            "latitude": 69.83606719970703,
+            "point_count": 304,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.1842105388641357
+          },
+          {
+            "latitude": 69.55503845214844,
+            "point_count": 308,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.1688311100006104
+          },
+          {
+            "latitude": 69.27400970458984,
+            "point_count": 312,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.1538461446762085
+          },
+          {
+            "latitude": 68.99298095703125,
+            "point_count": 316,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.1392405033111572
+          },
+          {
+            "latitude": 68.71194458007812,
+            "point_count": 320,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.125
+          },
+          {
+            "latitude": 68.43091583251953,
+            "point_count": 324,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.1111111640930176
+          },
+          {
+            "latitude": 68.14988708496094,
+            "point_count": 328,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.097561001777649
+          },
+          {
+            "latitude": 67.86885833740234,
+            "point_count": 332,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.0843373537063599
+          },
+          {
+            "latitude": 67.58782196044922,
+            "point_count": 336,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.0714285373687744
+          },
+          {
+            "latitude": 67.30679321289062,
+            "point_count": 340,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.058823585510254
+          },
+          {
+            "latitude": 67.02576446533203,
+            "point_count": 344,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.0465116500854492
+          },
+          {
+            "latitude": 66.74473571777344,
+            "point_count": 348,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.034482717514038
+          },
+          {
+            "latitude": 66.46370697021484,
+            "point_count": 352,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.0227272510528564
+          },
+          {
+            "latitude": 66.18267059326172,
+            "point_count": 356,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.0112359523773193
+          },
+          {
+            "latitude": 65.90164184570312,
+            "point_count": 360,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.0
+          },
+          {
+            "latitude": 65.62061309814453,
+            "point_count": 364,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.9890109896659851
+          },
+          {
+            "latitude": 65.33958435058594,
+            "point_count": 368,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.97826087474823
+          },
+          {
+            "latitude": 65.05854797363281,
+            "point_count": 372,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.9677419066429138
+          },
+          {
+            "latitude": 64.77751922607422,
+            "point_count": 376,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.957446813583374
+          },
+          {
+            "latitude": 64.49649047851562,
+            "point_count": 380,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.9473684430122375
+          },
+          {
+            "latitude": 64.21546173095703,
+            "point_count": 384,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.9375
+          },
+          {
+            "latitude": 63.934425354003906,
+            "point_count": 388,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.9278350472450256
+          },
+          {
+            "latitude": 63.65339660644531,
+            "point_count": 392,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.918367326259613
+          },
+          {
+            "latitude": 63.37236404418945,
+            "point_count": 396,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.9090909361839294
+          },
+          {
+            "latitude": 63.09133529663086,
+            "point_count": 400,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8999999761581421
+          },
+          {
+            "latitude": 62.810302734375,
+            "point_count": 404,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8910890817642212
+          },
+          {
+            "latitude": 62.529273986816406,
+            "point_count": 408,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8823529481887817
+          },
+          {
+            "latitude": 62.24824142456055,
+            "point_count": 412,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8737863898277283
+          },
+          {
+            "latitude": 61.96721267700195,
+            "point_count": 416,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8653846383094788
+          },
+          {
+            "latitude": 61.68618392944336,
+            "point_count": 420,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8571428656578064
+          },
+          {
+            "latitude": 61.4051513671875,
+            "point_count": 424,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.849056601524353
+          },
+          {
+            "latitude": 61.124122619628906,
+            "point_count": 428,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.84112149477005
+          },
+          {
+            "latitude": 60.84309005737305,
+            "point_count": 432,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8333333134651184
+          },
+          {
+            "latitude": 60.56206130981445,
+            "point_count": 436,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8256880640983582
+          },
+          {
+            "latitude": 60.281028747558594,
+            "point_count": 440,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8181818127632141
+          },
+          {
+            "latitude": 60.0,
+            "point_count": 444,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8108108043670654
+          },
+          {
+            "latitude": 59.71896743774414,
+            "point_count": 448,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8035714030265808
+          },
+          {
+            "latitude": 59.43793869018555,
+            "point_count": 452,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7964601516723633
+          },
+          {
+            "latitude": 59.15690994262695,
+            "point_count": 456,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7894737124443054
+          },
+          {
+            "latitude": 58.875877380371094,
+            "point_count": 460,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.782608687877655
+          },
+          {
+            "latitude": 58.5948486328125,
+            "point_count": 464,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7758620977401733
+          },
+          {
+            "latitude": 58.31381607055664,
+            "point_count": 468,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7692307829856873
+          },
+          {
+            "latitude": 58.03278732299805,
+            "point_count": 472,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7627118825912476
+          },
+          {
+            "latitude": 57.75175476074219,
+            "point_count": 476,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.756302535533905
+          },
+          {
+            "latitude": 57.470726013183594,
+            "point_count": 480,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.75
+          },
+          {
+            "latitude": 57.189693450927734,
+            "point_count": 484,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7438016533851624
+          },
+          {
+            "latitude": 56.90866470336914,
+            "point_count": 488,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7377049326896667
+          },
+          {
+            "latitude": 56.62763595581055,
+            "point_count": 492,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7317073345184326
+          },
+          {
+            "latitude": 56.34660339355469,
+            "point_count": 496,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.725806474685669
+          },
+          {
+            "latitude": 56.065574645996094,
+            "point_count": 500,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7200000286102295
+          },
+          {
+            "latitude": 55.784542083740234,
+            "point_count": 504,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7142857313156128
+          },
+          {
+            "latitude": 55.50351333618164,
+            "point_count": 508,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7086614370346069
+          },
+          {
+            "latitude": 55.22248077392578,
+            "point_count": 512,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.703125
+          },
+          {
+            "latitude": 54.94145202636719,
+            "point_count": 516,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6976743936538696
+          },
+          {
+            "latitude": 54.66041946411133,
+            "point_count": 520,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.692307710647583
+          },
+          {
+            "latitude": 54.379390716552734,
+            "point_count": 524,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6870229244232178
+          },
+          {
+            "latitude": 54.09836196899414,
+            "point_count": 528,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6818181872367859
+          },
+          {
+            "latitude": 53.81732940673828,
+            "point_count": 532,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6766917109489441
+          },
+          {
+            "latitude": 53.53630065917969,
+            "point_count": 536,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6716417670249939
+          },
+          {
+            "latitude": 53.25526809692383,
+            "point_count": 540,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6666666865348816
+          },
+          {
+            "latitude": 52.974239349365234,
+            "point_count": 544,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6617646813392639
+          },
+          {
+            "latitude": 52.693206787109375,
+            "point_count": 548,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6569343209266663
+          },
+          {
+            "latitude": 52.41217803955078,
+            "point_count": 552,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6521739363670349
+          },
+          {
+            "latitude": 52.13114547729492,
+            "point_count": 556,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6474820375442505
+          },
+          {
+            "latitude": 51.85011672973633,
+            "point_count": 560,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6428571343421936
+          },
+          {
+            "latitude": 51.56908416748047,
+            "point_count": 564,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6382978558540344
+          },
+          {
+            "latitude": 51.288055419921875,
+            "point_count": 568,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6338028311729431
+          },
+          {
+            "latitude": 51.00702667236328,
+            "point_count": 572,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6293706297874451
+          },
+          {
+            "latitude": 50.72599411010742,
+            "point_count": 576,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.625
+          },
+          {
+            "latitude": 50.44496536254883,
+            "point_count": 580,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6206896305084229
+          },
+          {
+            "latitude": 50.16393280029297,
+            "point_count": 584,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6164383292198181
+          },
+          {
+            "latitude": 49.882904052734375,
+            "point_count": 588,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6122449040412903
+          },
+          {
+            "latitude": 49.601871490478516,
+            "point_count": 592,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6081081032752991
+          },
+          {
+            "latitude": 49.32084274291992,
+            "point_count": 596,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6040268540382385
+          },
+          {
+            "latitude": 49.03981018066406,
+            "point_count": 600,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6000000238418579
+          },
+          {
+            "latitude": 48.75878143310547,
+            "point_count": 604,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5960264801979065
+          },
+          {
+            "latitude": 48.477752685546875,
+            "point_count": 608,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5921052694320679
+          },
+          {
+            "latitude": 48.196720123291016,
+            "point_count": 612,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5882353186607361
+          },
+          {
+            "latitude": 47.91569137573242,
+            "point_count": 616,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5844155550003052
+          },
+          {
+            "latitude": 47.63465881347656,
+            "point_count": 620,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5806451439857483
+          },
+          {
+            "latitude": 47.35363006591797,
+            "point_count": 624,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5769230723381042
+          },
+          {
+            "latitude": 47.07259750366211,
+            "point_count": 628,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5732483863830566
+          },
+          {
+            "latitude": 46.791568756103516,
+            "point_count": 632,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5696202516555786
+          },
+          {
+            "latitude": 46.510536193847656,
+            "point_count": 636,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5660377144813538
+          },
+          {
+            "latitude": 46.22950744628906,
+            "point_count": 640,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5625
+          },
+          {
+            "latitude": 45.94847869873047,
+            "point_count": 644,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5590062141418457
+          },
+          {
+            "latitude": 45.66744613647461,
+            "point_count": 648,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5555555820465088
+          },
+          {
+            "latitude": 45.386417388916016,
+            "point_count": 652,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5521472096443176
+          },
+          {
+            "latitude": 45.105384826660156,
+            "point_count": 656,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5487805008888245
+          },
+          {
+            "latitude": 44.82435607910156,
+            "point_count": 660,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5454545617103577
+          },
+          {
+            "latitude": 44.5433235168457,
+            "point_count": 664,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5421686768531799
+          },
+          {
+            "latitude": 44.26229476928711,
+            "point_count": 668,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.538922131061554
+          },
+          {
+            "latitude": 43.98126220703125,
+            "point_count": 672,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5357142686843872
+          },
+          {
+            "latitude": 43.700233459472656,
+            "point_count": 676,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5325443744659424
+          },
+          {
+            "latitude": 43.41920471191406,
+            "point_count": 680,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.529411792755127
+          },
+          {
+            "latitude": 43.1381721496582,
+            "point_count": 684,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5263158082962036
+          },
+          {
+            "latitude": 42.85714340209961,
+            "point_count": 688,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5232558250427246
+          },
+          {
+            "latitude": 42.57611083984375,
+            "point_count": 692,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5202311873435974
+          },
+          {
+            "latitude": 42.295082092285156,
+            "point_count": 696,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.517241358757019
+          },
+          {
+            "latitude": 42.0140495300293,
+            "point_count": 700,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5142857432365417
+          },
+          {
+            "latitude": 41.7330207824707,
+            "point_count": 704,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5113636255264282
+          },
+          {
+            "latitude": 41.451988220214844,
+            "point_count": 708,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.508474588394165
+          },
+          {
+            "latitude": 41.17095947265625,
+            "point_count": 712,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5056179761886597
+          },
+          {
+            "latitude": 40.889930725097656,
+            "point_count": 716,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5027933120727539
+          },
+          {
+            "latitude": 40.6088981628418,
+            "point_count": 720,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5
+          },
+          {
+            "latitude": 40.3278694152832,
+            "point_count": 724,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.49723756313323975
+          },
+          {
+            "latitude": 40.046836853027344,
+            "point_count": 728,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.49450549483299255
+          },
+          {
+            "latitude": 39.76580810546875,
+            "point_count": 732,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.49180328845977783
+          },
+          {
+            "latitude": 39.48477554321289,
+            "point_count": 736,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.489130437374115
+          },
+          {
+            "latitude": 39.2037467956543,
+            "point_count": 740,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4864864945411682
+          },
+          {
+            "latitude": 38.92271423339844,
+            "point_count": 744,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4838709533214569
+          },
+          {
+            "latitude": 38.641685485839844,
+            "point_count": 748,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.48128342628479004
+          },
+          {
+            "latitude": 38.36065673828125,
+            "point_count": 752,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.478723406791687
+          },
+          {
+            "latitude": 38.07962417602539,
+            "point_count": 756,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4761904776096344
+          },
+          {
+            "latitude": 37.7985954284668,
+            "point_count": 760,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4736842215061188
+          },
+          {
+            "latitude": 37.51756286621094,
+            "point_count": 764,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4712041914463043
+          },
+          {
+            "latitude": 37.236534118652344,
+            "point_count": 768,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.46875
+          },
+          {
+            "latitude": 36.955501556396484,
+            "point_count": 772,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4663212299346924
+          },
+          {
+            "latitude": 36.67447280883789,
+            "point_count": 776,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4639175236225128
+          },
+          {
+            "latitude": 36.39344024658203,
+            "point_count": 780,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4615384638309479
+          },
+          {
+            "latitude": 36.11241149902344,
+            "point_count": 784,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4591836631298065
+          },
+          {
+            "latitude": 35.831382751464844,
+            "point_count": 788,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4568527936935425
+          },
+          {
+            "latitude": 35.550350189208984,
+            "point_count": 792,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4545454680919647
+          },
+          {
+            "latitude": 35.26932144165039,
+            "point_count": 796,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4522612988948822
+          },
+          {
+            "latitude": 34.98828887939453,
+            "point_count": 800,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.44999998807907104
+          },
+          {
+            "latitude": 34.70726013183594,
+            "point_count": 804,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.447761207818985
+          },
+          {
+            "latitude": 34.42622756958008,
+            "point_count": 808,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4455445408821106
+          },
+          {
+            "latitude": 34.145198822021484,
+            "point_count": 812,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4433497488498688
+          },
+          {
+            "latitude": 33.864166259765625,
+            "point_count": 816,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.44117647409439087
+          },
+          {
+            "latitude": 33.58313751220703,
+            "point_count": 820,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4390243887901306
+          },
+          {
+            "latitude": 33.30210876464844,
+            "point_count": 824,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.43689319491386414
+          },
+          {
+            "latitude": 33.02107620239258,
+            "point_count": 828,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.43478259444236755
+          },
+          {
+            "latitude": 32.740047454833984,
+            "point_count": 832,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4326923191547394
+          },
+          {
+            "latitude": 32.459014892578125,
+            "point_count": 836,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.43062201142311096
+          },
+          {
+            "latitude": 32.17798614501953,
+            "point_count": 840,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4285714328289032
+          },
+          {
+            "latitude": 31.896955490112305,
+            "point_count": 844,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4265402853488922
+          },
+          {
+            "latitude": 31.615924835205078,
+            "point_count": 848,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4245283007621765
+          },
+          {
+            "latitude": 31.33489418029785,
+            "point_count": 852,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4225352108478546
+          },
+          {
+            "latitude": 31.053863525390625,
+            "point_count": 856,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.420560747385025
+          },
+          {
+            "latitude": 30.7728328704834,
+            "point_count": 860,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.41860464215278625
+          },
+          {
+            "latitude": 30.491802215576172,
+            "point_count": 864,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4166666567325592
+          },
+          {
+            "latitude": 30.210771560668945,
+            "point_count": 868,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.41474655270576477
+          },
+          {
+            "latitude": 29.92974090576172,
+            "point_count": 872,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4128440320491791
+          },
+          {
+            "latitude": 29.648712158203125,
+            "point_count": 876,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4109589159488678
+          },
+          {
+            "latitude": 29.3676815032959,
+            "point_count": 880,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.40909090638160706
+          },
+          {
+            "latitude": 29.086650848388672,
+            "point_count": 884,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4072398245334625
+          },
+          {
+            "latitude": 28.805620193481445,
+            "point_count": 888,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4054054021835327
+          },
+          {
+            "latitude": 28.52458953857422,
+            "point_count": 892,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4035874307155609
+          },
+          {
+            "latitude": 28.243558883666992,
+            "point_count": 896,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4017857015132904
+          },
+          {
+            "latitude": 27.962528228759766,
+            "point_count": 900,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4000000059604645
+          },
+          {
+            "latitude": 27.68149757385254,
+            "point_count": 904,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.39823007583618164
+          },
+          {
+            "latitude": 27.400466918945312,
+            "point_count": 908,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.39647576212882996
+          },
+          {
+            "latitude": 27.11943817138672,
+            "point_count": 912,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3947368562221527
+          },
+          {
+            "latitude": 26.838407516479492,
+            "point_count": 916,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3930130898952484
+          },
+          {
+            "latitude": 26.557376861572266,
+            "point_count": 920,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3913043439388275
+          },
+          {
+            "latitude": 26.27634620666504,
+            "point_count": 924,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3896103799343109
+          },
+          {
+            "latitude": 25.995315551757812,
+            "point_count": 928,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.38793104887008667
+          },
+          {
+            "latitude": 25.714284896850586,
+            "point_count": 932,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3862660825252533
+          },
+          {
+            "latitude": 25.43325424194336,
+            "point_count": 936,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.38461539149284363
+          },
+          {
+            "latitude": 25.152223587036133,
+            "point_count": 940,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.38297873735427856
+          },
+          {
+            "latitude": 24.871192932128906,
+            "point_count": 944,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3813559412956238
+          },
+          {
+            "latitude": 24.59016227722168,
+            "point_count": 948,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.37974682450294495
+          },
+          {
+            "latitude": 24.309133529663086,
+            "point_count": 952,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3781512677669525
+          },
+          {
+            "latitude": 24.02810287475586,
+            "point_count": 956,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3765690326690674
+          },
+          {
+            "latitude": 23.747072219848633,
+            "point_count": 960,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.375
+          },
+          {
+            "latitude": 23.466041564941406,
+            "point_count": 964,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.37344399094581604
+          },
+          {
+            "latitude": 23.18501091003418,
+            "point_count": 968,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3719008266925812
+          },
+          {
+            "latitude": 22.903980255126953,
+            "point_count": 972,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.37037035822868347
+          },
+          {
+            "latitude": 22.622949600219727,
+            "point_count": 976,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3688524663448334
+          },
+          {
+            "latitude": 22.3419189453125,
+            "point_count": 980,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.36734694242477417
+          },
+          {
+            "latitude": 22.060888290405273,
+            "point_count": 984,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3658536672592163
+          },
+          {
+            "latitude": 21.77985954284668,
+            "point_count": 988,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.36437246203422546
+          },
+          {
+            "latitude": 21.498828887939453,
+            "point_count": 992,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3629032373428345
+          },
+          {
+            "latitude": 21.217798233032227,
+            "point_count": 996,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3614457845687866
+          },
+          {
+            "latitude": 20.936767578125,
+            "point_count": 1000,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.36000001430511475
+          },
+          {
+            "latitude": 20.655736923217773,
+            "point_count": 1004,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3585657477378845
+          },
+          {
+            "latitude": 20.374706268310547,
+            "point_count": 1008,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3571428656578064
+          },
+          {
+            "latitude": 20.09367561340332,
+            "point_count": 1012,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.35573121905326843
+          },
+          {
+            "latitude": 19.812644958496094,
+            "point_count": 1016,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.35433071851730347
+          },
+          {
+            "latitude": 19.531614303588867,
+            "point_count": 1020,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3529411852359772
+          },
+          {
+            "latitude": 19.250585556030273,
+            "point_count": 1024,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3515625
+          },
+          {
+            "latitude": 18.969554901123047,
+            "point_count": 1028,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3501945436000824
+          },
+          {
+            "latitude": 18.68852424621582,
+            "point_count": 1032,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3488371968269348
+          },
+          {
+            "latitude": 18.407493591308594,
+            "point_count": 1036,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3474903404712677
+          },
+          {
+            "latitude": 18.126462936401367,
+            "point_count": 1040,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3461538553237915
+          },
+          {
+            "latitude": 17.84543228149414,
+            "point_count": 1044,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3448275923728943
+          },
+          {
+            "latitude": 17.564401626586914,
+            "point_count": 1048,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3435114622116089
+          },
+          {
+            "latitude": 17.283370971679688,
+            "point_count": 1052,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.34220531582832336
+          },
+          {
+            "latitude": 17.00234031677246,
+            "point_count": 1056,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.34090909361839294
+          },
+          {
+            "latitude": 16.721311569213867,
+            "point_count": 1060,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3396226465702057
+          },
+          {
+            "latitude": 16.44028091430664,
+            "point_count": 1064,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.33834585547447205
+          },
+          {
+            "latitude": 16.159250259399414,
+            "point_count": 1068,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.33707866072654724
+          },
+          {
+            "latitude": 15.878220558166504,
+            "point_count": 1072,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.33582088351249695
+          },
+          {
+            "latitude": 15.597189903259277,
+            "point_count": 1076,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3345724940299988
+          },
+          {
+            "latitude": 15.31615924835205,
+            "point_count": 1080,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3333333432674408
+          },
+          {
+            "latitude": 15.035128593444824,
+            "point_count": 1084,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.33210331201553345
+          },
+          {
+            "latitude": 14.754098892211914,
+            "point_count": 1088,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.33088234066963196
+          },
+          {
+            "latitude": 14.473068237304688,
+            "point_count": 1092,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.32967033982276917
+          },
+          {
+            "latitude": 14.192037582397461,
+            "point_count": 1096,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.32846716046333313
+          },
+          {
+            "latitude": 13.911006927490234,
+            "point_count": 1100,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3272727131843567
+          },
+          {
+            "latitude": 13.629977226257324,
+            "point_count": 1104,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.32608696818351746
+          },
+          {
+            "latitude": 13.348946571350098,
+            "point_count": 1108,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3249097466468811
+          },
+          {
+            "latitude": 13.067915916442871,
+            "point_count": 1112,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.32374101877212524
+          },
+          {
+            "latitude": 12.786885261535645,
+            "point_count": 1116,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.32258063554763794
+          },
+          {
+            "latitude": 12.505854606628418,
+            "point_count": 1120,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3214285671710968
+          },
+          {
+            "latitude": 12.224824905395508,
+            "point_count": 1124,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3202846944332123
+          },
+          {
+            "latitude": 11.943794250488281,
+            "point_count": 1128,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3191489279270172
+          },
+          {
+            "latitude": 11.662763595581055,
+            "point_count": 1132,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3180212080478668
+          },
+          {
+            "latitude": 11.381732940673828,
+            "point_count": 1136,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.31690141558647156
+          },
+          {
+            "latitude": 11.100702285766602,
+            "point_count": 1140,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.31578946113586426
+          },
+          {
+            "latitude": 10.819672584533691,
+            "point_count": 1144,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.31468531489372253
+          },
+          {
+            "latitude": 10.538641929626465,
+            "point_count": 1148,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.31358885765075684
+          },
+          {
+            "latitude": 10.257611274719238,
+            "point_count": 1152,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3125
+          },
+          {
+            "latitude": 9.976580619812012,
+            "point_count": 1156,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.31141868233680725
+          },
+          {
+            "latitude": 9.695550918579102,
+            "point_count": 1160,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3103448152542114
+          },
+          {
+            "latitude": 9.414520263671875,
+            "point_count": 1164,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.30927833914756775
+          },
+          {
+            "latitude": 9.133489608764648,
+            "point_count": 1168,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.30821916460990906
+          },
+          {
+            "latitude": 8.852458953857422,
+            "point_count": 1172,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3071672320365906
+          },
+          {
+            "latitude": 8.571428298950195,
+            "point_count": 1176,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.30612245202064514
+          },
+          {
+            "latitude": 8.290398597717285,
+            "point_count": 1180,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3050847351551056
+          },
+          {
+            "latitude": 8.009367942810059,
+            "point_count": 1184,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.30405405163764954
+          },
+          {
+            "latitude": 7.728337287902832,
+            "point_count": 1188,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3030303120613098
+          },
+          {
+            "latitude": 7.447307109832764,
+            "point_count": 1192,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.30201342701911926
+          },
+          {
+            "latitude": 7.166276454925537,
+            "point_count": 1196,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3010033369064331
+          },
+          {
+            "latitude": 6.885246276855469,
+            "point_count": 1200,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.30000001192092896
+          },
+          {
+            "latitude": 6.604215621948242,
+            "point_count": 1204,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.29900333285331726
+          },
+          {
+            "latitude": 6.323184967041016,
+            "point_count": 1208,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.29801324009895325
+          },
+          {
+            "latitude": 6.042154788970947,
+            "point_count": 1212,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2970297038555145
+          },
+          {
+            "latitude": 5.761124134063721,
+            "point_count": 1216,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.29605263471603394
+          },
+          {
+            "latitude": 5.480093955993652,
+            "point_count": 1220,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2950819730758667
+          },
+          {
+            "latitude": 5.199063301086426,
+            "point_count": 1224,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.29411765933036804
+          },
+          {
+            "latitude": 4.918033123016357,
+            "point_count": 1228,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2931596040725708
+          },
+          {
+            "latitude": 4.637002468109131,
+            "point_count": 1232,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2922077775001526
+          },
+          {
+            "latitude": 4.355971813201904,
+            "point_count": 1236,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.291262149810791
+          },
+          {
+            "latitude": 4.074941635131836,
+            "point_count": 1240,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.29032257199287415
+          },
+          {
+            "latitude": 3.7939112186431885,
+            "point_count": 1244,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.28938907384872437
+          },
+          {
+            "latitude": 3.512880802154541,
+            "point_count": 1248,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2884615361690521
+          },
+          {
+            "latitude": 3.2318501472473145,
+            "point_count": 1252,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.28753992915153503
+          },
+          {
+            "latitude": 2.950819730758667,
+            "point_count": 1256,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2866241931915283
+          },
+          {
+            "latitude": 2.6697893142700195,
+            "point_count": 1260,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2857142984867096
+          },
+          {
+            "latitude": 2.388758897781372,
+            "point_count": 1264,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2848101258277893
+          },
+          {
+            "latitude": 2.1077284812927246,
+            "point_count": 1268,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.28391167521476746
+          },
+          {
+            "latitude": 1.8266979455947876,
+            "point_count": 1272,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2830188572406769
+          },
+          {
+            "latitude": 1.5456674098968506,
+            "point_count": 1276,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2821316719055176
+          },
+          {
+            "latitude": 1.2646369934082031,
+            "point_count": 1280,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.28125
+          },
+          {
+            "latitude": 0.9836065769195557,
+            "point_count": 1284,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.28037384152412415
+          },
+          {
+            "latitude": 0.7025761008262634,
+            "point_count": 1288,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.27950310707092285
+          },
+          {
+            "latitude": 0.42154568433761597,
+            "point_count": 1292,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.27863776683807373
+          },
+          {
+            "latitude": 0.14051522314548492,
+            "point_count": 1296,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2777777910232544
+          },
+          {
+            "latitude": -0.14051522314548492,
+            "point_count": 1296,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2777777910232544
+          },
+          {
+            "latitude": -0.42154568433761597,
+            "point_count": 1292,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.27863776683807373
+          },
+          {
+            "latitude": -0.7025761604309082,
+            "point_count": 1288,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.27950310707092285
+          },
+          {
+            "latitude": -0.9836065769195557,
+            "point_count": 1284,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.28037384152412415
+          },
+          {
+            "latitude": -1.2646369934082031,
+            "point_count": 1280,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.28125
+          },
+          {
+            "latitude": -1.5456675291061401,
+            "point_count": 1276,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2821316719055176
+          },
+          {
+            "latitude": -1.8266979455947876,
+            "point_count": 1272,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2830188572406769
+          },
+          {
+            "latitude": -2.1077282428741455,
+            "point_count": 1268,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.28391167521476746
+          },
+          {
+            "latitude": -2.388758659362793,
+            "point_count": 1264,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2848101258277893
+          },
+          {
+            "latitude": -2.6697890758514404,
+            "point_count": 1260,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2857142984867096
+          },
+          {
+            "latitude": -2.950819492340088,
+            "point_count": 1256,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2866241931915283
+          },
+          {
+            "latitude": -3.2318501472473145,
+            "point_count": 1252,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.28753992915153503
+          },
+          {
+            "latitude": -3.512880563735962,
+            "point_count": 1248,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2884615361690521
+          },
+          {
+            "latitude": -3.7939109802246094,
+            "point_count": 1244,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.28938907384872437
+          },
+          {
+            "latitude": -4.074941158294678,
+            "point_count": 1240,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.29032257199287415
+          },
+          {
+            "latitude": -4.355971813201904,
+            "point_count": 1236,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.291262149810791
+          },
+          {
+            "latitude": -4.637002468109131,
+            "point_count": 1232,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2922077775001526
+          },
+          {
+            "latitude": -4.918032646179199,
+            "point_count": 1228,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2931596040725708
+          },
+          {
+            "latitude": -5.199063301086426,
+            "point_count": 1224,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.29411765933036804
+          },
+          {
+            "latitude": -5.480093479156494,
+            "point_count": 1220,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2950819730758667
+          },
+          {
+            "latitude": -5.761124134063721,
+            "point_count": 1216,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.29605263471603394
+          },
+          {
+            "latitude": -6.042154312133789,
+            "point_count": 1212,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.2970297038555145
+          },
+          {
+            "latitude": -6.323184967041016,
+            "point_count": 1208,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.29801324009895325
+          },
+          {
+            "latitude": -6.604215621948242,
+            "point_count": 1204,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.29900333285331726
+          },
+          {
+            "latitude": -6.8852458000183105,
+            "point_count": 1200,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.30000001192092896
+          },
+          {
+            "latitude": -7.166276454925537,
+            "point_count": 1196,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3010033369064331
+          },
+          {
+            "latitude": -7.4473066329956055,
+            "point_count": 1192,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.30201342701911926
+          },
+          {
+            "latitude": -7.728337287902832,
+            "point_count": 1188,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3030303120613098
+          },
+          {
+            "latitude": -8.009367942810059,
+            "point_count": 1184,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.30405405163764954
+          },
+          {
+            "latitude": -8.290397644042969,
+            "point_count": 1180,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3050847351551056
+          },
+          {
+            "latitude": -8.571428298950195,
+            "point_count": 1176,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.30612245202064514
+          },
+          {
+            "latitude": -8.852458953857422,
+            "point_count": 1172,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3071672320365906
+          },
+          {
+            "latitude": -9.133489608764648,
+            "point_count": 1168,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.30821916460990906
+          },
+          {
+            "latitude": -9.414520263671875,
+            "point_count": 1164,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.30927833914756775
+          },
+          {
+            "latitude": -9.695549964904785,
+            "point_count": 1160,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3103448152542114
+          },
+          {
+            "latitude": -9.976580619812012,
+            "point_count": 1156,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.31141868233680725
+          },
+          {
+            "latitude": -10.257611274719238,
+            "point_count": 1152,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3125
+          },
+          {
+            "latitude": -10.538641929626465,
+            "point_count": 1148,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.31358885765075684
+          },
+          {
+            "latitude": -10.819671630859375,
+            "point_count": 1144,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.31468531489372253
+          },
+          {
+            "latitude": -11.100702285766602,
+            "point_count": 1140,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.31578946113586426
+          },
+          {
+            "latitude": -11.381732940673828,
+            "point_count": 1136,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.31690141558647156
+          },
+          {
+            "latitude": -11.662763595581055,
+            "point_count": 1132,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3180212080478668
+          },
+          {
+            "latitude": -11.943794250488281,
+            "point_count": 1128,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3191489279270172
+          },
+          {
+            "latitude": -12.224823951721191,
+            "point_count": 1124,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3202846944332123
+          },
+          {
+            "latitude": -12.505854606628418,
+            "point_count": 1120,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3214285671710968
+          },
+          {
+            "latitude": -12.786885261535645,
+            "point_count": 1116,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.32258063554763794
+          },
+          {
+            "latitude": -13.067915916442871,
+            "point_count": 1112,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.32374101877212524
+          },
+          {
+            "latitude": -13.348946571350098,
+            "point_count": 1108,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3249097466468811
+          },
+          {
+            "latitude": -13.629976272583008,
+            "point_count": 1104,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.32608696818351746
+          },
+          {
+            "latitude": -13.911006927490234,
+            "point_count": 1100,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3272727131843567
+          },
+          {
+            "latitude": -14.192037582397461,
+            "point_count": 1096,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.32846716046333313
+          },
+          {
+            "latitude": -14.473068237304688,
+            "point_count": 1092,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.32967033982276917
+          },
+          {
+            "latitude": -14.754097938537598,
+            "point_count": 1088,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.33088234066963196
+          },
+          {
+            "latitude": -15.035128593444824,
+            "point_count": 1084,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.33210331201553345
+          },
+          {
+            "latitude": -15.31615924835205,
+            "point_count": 1080,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3333333432674408
+          },
+          {
+            "latitude": -15.597189903259277,
+            "point_count": 1076,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3345724940299988
+          },
+          {
+            "latitude": -15.878220558166504,
+            "point_count": 1072,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.33582088351249695
+          },
+          {
+            "latitude": -16.159252166748047,
+            "point_count": 1068,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.33707866072654724
+          },
+          {
+            "latitude": -16.440282821655273,
+            "point_count": 1064,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.33834585547447205
+          },
+          {
+            "latitude": -16.721311569213867,
+            "point_count": 1060,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3396226465702057
+          },
+          {
+            "latitude": -17.002342224121094,
+            "point_count": 1056,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.34090909361839294
+          },
+          {
+            "latitude": -17.28337287902832,
+            "point_count": 1052,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.34220531582832336
+          },
+          {
+            "latitude": -17.564403533935547,
+            "point_count": 1048,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3435114622116089
+          },
+          {
+            "latitude": -17.845434188842773,
+            "point_count": 1044,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3448275923728943
+          },
+          {
+            "latitude": -18.12646484375,
+            "point_count": 1040,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3461538553237915
+          },
+          {
+            "latitude": -18.407495498657227,
+            "point_count": 1036,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3474903404712677
+          },
+          {
+            "latitude": -18.688526153564453,
+            "point_count": 1032,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3488371968269348
+          },
+          {
+            "latitude": -18.96955680847168,
+            "point_count": 1028,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3501945436000824
+          },
+          {
+            "latitude": -19.250585556030273,
+            "point_count": 1024,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3515625
+          },
+          {
+            "latitude": -19.5316162109375,
+            "point_count": 1020,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3529411852359772
+          },
+          {
+            "latitude": -19.812646865844727,
+            "point_count": 1016,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.35433071851730347
+          },
+          {
+            "latitude": -20.093677520751953,
+            "point_count": 1012,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.35573121905326843
+          },
+          {
+            "latitude": -20.37470817565918,
+            "point_count": 1008,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3571428656578064
+          },
+          {
+            "latitude": -20.655738830566406,
+            "point_count": 1004,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3585657477378845
+          },
+          {
+            "latitude": -20.936769485473633,
+            "point_count": 1000,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.36000001430511475
+          },
+          {
+            "latitude": -21.21780014038086,
+            "point_count": 996,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3614457845687866
+          },
+          {
+            "latitude": -21.498830795288086,
+            "point_count": 992,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3629032373428345
+          },
+          {
+            "latitude": -21.77985954284668,
+            "point_count": 988,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.36437246203422546
+          },
+          {
+            "latitude": -22.060890197753906,
+            "point_count": 984,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3658536672592163
+          },
+          {
+            "latitude": -22.341920852661133,
+            "point_count": 980,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.36734694242477417
+          },
+          {
+            "latitude": -22.62295150756836,
+            "point_count": 976,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3688524663448334
+          },
+          {
+            "latitude": -22.903982162475586,
+            "point_count": 972,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.37037035822868347
+          },
+          {
+            "latitude": -23.185012817382812,
+            "point_count": 968,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3719008266925812
+          },
+          {
+            "latitude": -23.46604347229004,
+            "point_count": 964,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.37344399094581604
+          },
+          {
+            "latitude": -23.747074127197266,
+            "point_count": 960,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.375
+          },
+          {
+            "latitude": -24.028104782104492,
+            "point_count": 956,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3765690326690674
+          },
+          {
+            "latitude": -24.309133529663086,
+            "point_count": 952,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3781512677669525
+          },
+          {
+            "latitude": -24.590164184570312,
+            "point_count": 948,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.37974682450294495
+          },
+          {
+            "latitude": -24.87119483947754,
+            "point_count": 944,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3813559412956238
+          },
+          {
+            "latitude": -25.152225494384766,
+            "point_count": 940,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.38297873735427856
+          },
+          {
+            "latitude": -25.433256149291992,
+            "point_count": 936,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.38461539149284363
+          },
+          {
+            "latitude": -25.71428680419922,
+            "point_count": 932,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3862660825252533
+          },
+          {
+            "latitude": -25.995317459106445,
+            "point_count": 928,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.38793104887008667
+          },
+          {
+            "latitude": -26.276348114013672,
+            "point_count": 924,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3896103799343109
+          },
+          {
+            "latitude": -26.5573787689209,
+            "point_count": 920,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3913043439388275
+          },
+          {
+            "latitude": -26.838409423828125,
+            "point_count": 916,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3930130898952484
+          },
+          {
+            "latitude": -27.11943817138672,
+            "point_count": 912,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.3947368562221527
+          },
+          {
+            "latitude": -27.400468826293945,
+            "point_count": 908,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.39647576212882996
+          },
+          {
+            "latitude": -27.681499481201172,
+            "point_count": 904,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.39823007583618164
+          },
+          {
+            "latitude": -27.9625301361084,
+            "point_count": 900,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4000000059604645
+          },
+          {
+            "latitude": -28.243560791015625,
+            "point_count": 896,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4017857015132904
+          },
+          {
+            "latitude": -28.52459144592285,
+            "point_count": 892,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4035874307155609
+          },
+          {
+            "latitude": -28.805622100830078,
+            "point_count": 888,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4054054021835327
+          },
+          {
+            "latitude": -29.086652755737305,
+            "point_count": 884,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4072398245334625
+          },
+          {
+            "latitude": -29.36768341064453,
+            "point_count": 880,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.40909090638160706
+          },
+          {
+            "latitude": -29.648712158203125,
+            "point_count": 876,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4109589159488678
+          },
+          {
+            "latitude": -29.92974281311035,
+            "point_count": 872,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4128440320491791
+          },
+          {
+            "latitude": -30.210773468017578,
+            "point_count": 868,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.41474655270576477
+          },
+          {
+            "latitude": -30.491804122924805,
+            "point_count": 864,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4166666567325592
+          },
+          {
+            "latitude": -30.77283477783203,
+            "point_count": 860,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.41860464215278625
+          },
+          {
+            "latitude": -31.053865432739258,
+            "point_count": 856,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.420560747385025
+          },
+          {
+            "latitude": -31.334896087646484,
+            "point_count": 852,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4225352108478546
+          },
+          {
+            "latitude": -31.61592674255371,
+            "point_count": 848,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4245283007621765
+          },
+          {
+            "latitude": -31.896957397460938,
+            "point_count": 844,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4265402853488922
+          },
+          {
+            "latitude": -32.17798614501953,
+            "point_count": 840,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4285714328289032
+          },
+          {
+            "latitude": -32.45901870727539,
+            "point_count": 836,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.43062201142311096
+          },
+          {
+            "latitude": -32.740047454833984,
+            "point_count": 832,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4326923191547394
+          },
+          {
+            "latitude": -33.021080017089844,
+            "point_count": 828,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.43478259444236755
+          },
+          {
+            "latitude": -33.30210876464844,
+            "point_count": 824,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.43689319491386414
+          },
+          {
+            "latitude": -33.58313751220703,
+            "point_count": 820,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4390243887901306
+          },
+          {
+            "latitude": -33.86417007446289,
+            "point_count": 816,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.44117647409439087
+          },
+          {
+            "latitude": -34.145198822021484,
+            "point_count": 812,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4433497488498688
+          },
+          {
+            "latitude": -34.426231384277344,
+            "point_count": 808,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4455445408821106
+          },
+          {
+            "latitude": -34.70726013183594,
+            "point_count": 804,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.447761207818985
+          },
+          {
+            "latitude": -34.9882926940918,
+            "point_count": 800,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.44999998807907104
+          },
+          {
+            "latitude": -35.26932144165039,
+            "point_count": 796,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4522612988948822
+          },
+          {
+            "latitude": -35.55035400390625,
+            "point_count": 792,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4545454680919647
+          },
+          {
+            "latitude": -35.831382751464844,
+            "point_count": 788,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4568527936935425
+          },
+          {
+            "latitude": -36.11241149902344,
+            "point_count": 784,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4591836631298065
+          },
+          {
+            "latitude": -36.3934440612793,
+            "point_count": 780,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4615384638309479
+          },
+          {
+            "latitude": -36.67447280883789,
+            "point_count": 776,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4639175236225128
+          },
+          {
+            "latitude": -36.95550537109375,
+            "point_count": 772,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4663212299346924
+          },
+          {
+            "latitude": -37.236534118652344,
+            "point_count": 768,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.46875
+          },
+          {
+            "latitude": -37.5175666809082,
+            "point_count": 764,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4712041914463043
+          },
+          {
+            "latitude": -37.7985954284668,
+            "point_count": 760,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4736842215061188
+          },
+          {
+            "latitude": -38.079627990722656,
+            "point_count": 756,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4761904776096344
+          },
+          {
+            "latitude": -38.36065673828125,
+            "point_count": 752,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.478723406791687
+          },
+          {
+            "latitude": -38.641685485839844,
+            "point_count": 748,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.48128342628479004
+          },
+          {
+            "latitude": -38.9227180480957,
+            "point_count": 744,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4838709533214569
+          },
+          {
+            "latitude": -39.2037467956543,
+            "point_count": 740,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.4864864945411682
+          },
+          {
+            "latitude": -39.484779357910156,
+            "point_count": 736,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.489130437374115
+          },
+          {
+            "latitude": -39.76580810546875,
+            "point_count": 732,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.49180328845977783
+          },
+          {
+            "latitude": -40.04684066772461,
+            "point_count": 728,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.49450549483299255
+          },
+          {
+            "latitude": -40.3278694152832,
+            "point_count": 724,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.49723756313323975
+          },
+          {
+            "latitude": -40.60890197753906,
+            "point_count": 720,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5
+          },
+          {
+            "latitude": -40.889930725097656,
+            "point_count": 716,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5027933120727539
+          },
+          {
+            "latitude": -41.17095947265625,
+            "point_count": 712,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5056179761886597
+          },
+          {
+            "latitude": -41.45199203491211,
+            "point_count": 708,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.508474588394165
+          },
+          {
+            "latitude": -41.7330207824707,
+            "point_count": 704,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5113636255264282
+          },
+          {
+            "latitude": -42.01405334472656,
+            "point_count": 700,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5142857432365417
+          },
+          {
+            "latitude": -42.295082092285156,
+            "point_count": 696,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.517241358757019
+          },
+          {
+            "latitude": -42.576114654541016,
+            "point_count": 692,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5202311873435974
+          },
+          {
+            "latitude": -42.85714340209961,
+            "point_count": 688,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5232558250427246
+          },
+          {
+            "latitude": -43.13817596435547,
+            "point_count": 684,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5263158082962036
+          },
+          {
+            "latitude": -43.41920471191406,
+            "point_count": 680,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.529411792755127
+          },
+          {
+            "latitude": -43.700233459472656,
+            "point_count": 676,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5325443744659424
+          },
+          {
+            "latitude": -43.981266021728516,
+            "point_count": 672,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5357142686843872
+          },
+          {
+            "latitude": -44.26229476928711,
+            "point_count": 668,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.538922131061554
+          },
+          {
+            "latitude": -44.54332733154297,
+            "point_count": 664,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5421686768531799
+          },
+          {
+            "latitude": -44.82435607910156,
+            "point_count": 660,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5454545617103577
+          },
+          {
+            "latitude": -45.10538864135742,
+            "point_count": 656,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5487805008888245
+          },
+          {
+            "latitude": -45.386417388916016,
+            "point_count": 652,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5521472096443176
+          },
+          {
+            "latitude": -45.667449951171875,
+            "point_count": 648,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5555555820465088
+          },
+          {
+            "latitude": -45.94847869873047,
+            "point_count": 644,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5590062141418457
+          },
+          {
+            "latitude": -46.22950744628906,
+            "point_count": 640,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5625
+          },
+          {
+            "latitude": -46.51054000854492,
+            "point_count": 636,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5660377144813538
+          },
+          {
+            "latitude": -46.791568756103516,
+            "point_count": 632,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5696202516555786
+          },
+          {
+            "latitude": -47.072601318359375,
+            "point_count": 628,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5732483863830566
+          },
+          {
+            "latitude": -47.35363006591797,
+            "point_count": 624,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5769230723381042
+          },
+          {
+            "latitude": -47.63466262817383,
+            "point_count": 620,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5806451439857483
+          },
+          {
+            "latitude": -47.91569137573242,
+            "point_count": 616,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5844155550003052
+          },
+          {
+            "latitude": -48.19672393798828,
+            "point_count": 612,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5882353186607361
+          },
+          {
+            "latitude": -48.477752685546875,
+            "point_count": 608,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5921052694320679
+          },
+          {
+            "latitude": -48.75878143310547,
+            "point_count": 604,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.5960264801979065
+          },
+          {
+            "latitude": -49.03981399536133,
+            "point_count": 600,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6000000238418579
+          },
+          {
+            "latitude": -49.32084274291992,
+            "point_count": 596,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6040268540382385
+          },
+          {
+            "latitude": -49.60187530517578,
+            "point_count": 592,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6081081032752991
+          },
+          {
+            "latitude": -49.882904052734375,
+            "point_count": 588,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6122449040412903
+          },
+          {
+            "latitude": -50.163936614990234,
+            "point_count": 584,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6164383292198181
+          },
+          {
+            "latitude": -50.44496536254883,
+            "point_count": 580,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6206896305084229
+          },
+          {
+            "latitude": -50.72599792480469,
+            "point_count": 576,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.625
+          },
+          {
+            "latitude": -51.00702667236328,
+            "point_count": 572,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6293706297874451
+          },
+          {
+            "latitude": -51.288055419921875,
+            "point_count": 568,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6338028311729431
+          },
+          {
+            "latitude": -51.569087982177734,
+            "point_count": 564,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6382978558540344
+          },
+          {
+            "latitude": -51.85011672973633,
+            "point_count": 560,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6428571343421936
+          },
+          {
+            "latitude": -52.13114929199219,
+            "point_count": 556,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6474820375442505
+          },
+          {
+            "latitude": -52.41217803955078,
+            "point_count": 552,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6521739363670349
+          },
+          {
+            "latitude": -52.69321060180664,
+            "point_count": 548,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6569343209266663
+          },
+          {
+            "latitude": -52.974239349365234,
+            "point_count": 544,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6617646813392639
+          },
+          {
+            "latitude": -53.255271911621094,
+            "point_count": 540,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6666666865348816
+          },
+          {
+            "latitude": -53.53630065917969,
+            "point_count": 536,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6716417670249939
+          },
+          {
+            "latitude": -53.81733322143555,
+            "point_count": 532,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6766917109489441
+          },
+          {
+            "latitude": -54.09836196899414,
+            "point_count": 528,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6818181872367859
+          },
+          {
+            "latitude": -54.379390716552734,
+            "point_count": 524,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6870229244232178
+          },
+          {
+            "latitude": -54.660423278808594,
+            "point_count": 520,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.692307710647583
+          },
+          {
+            "latitude": -54.94145202636719,
+            "point_count": 516,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.6976743936538696
+          },
+          {
+            "latitude": -55.22248458862305,
+            "point_count": 512,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.703125
+          },
+          {
+            "latitude": -55.50351333618164,
+            "point_count": 508,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7086614370346069
+          },
+          {
+            "latitude": -55.7845458984375,
+            "point_count": 504,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7142857313156128
+          },
+          {
+            "latitude": -56.065574645996094,
+            "point_count": 500,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7200000286102295
+          },
+          {
+            "latitude": -56.34660720825195,
+            "point_count": 496,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.725806474685669
+          },
+          {
+            "latitude": -56.62763595581055,
+            "point_count": 492,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7317073345184326
+          },
+          {
+            "latitude": -56.90866470336914,
+            "point_count": 488,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7377049326896667
+          },
+          {
+            "latitude": -57.189697265625,
+            "point_count": 484,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7438016533851624
+          },
+          {
+            "latitude": -57.470726013183594,
+            "point_count": 480,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.75
+          },
+          {
+            "latitude": -57.75175857543945,
+            "point_count": 476,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.756302535533905
+          },
+          {
+            "latitude": -58.03278732299805,
+            "point_count": 472,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7627118825912476
+          },
+          {
+            "latitude": -58.313819885253906,
+            "point_count": 468,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7692307829856873
+          },
+          {
+            "latitude": -58.5948486328125,
+            "point_count": 464,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7758620977401733
+          },
+          {
+            "latitude": -58.87588119506836,
+            "point_count": 460,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.782608687877655
+          },
+          {
+            "latitude": -59.15690994262695,
+            "point_count": 456,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7894737124443054
+          },
+          {
+            "latitude": -59.43793869018555,
+            "point_count": 452,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.7964601516723633
+          },
+          {
+            "latitude": -59.718971252441406,
+            "point_count": 448,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8035714030265808
+          },
+          {
+            "latitude": -60.0,
+            "point_count": 444,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8108108043670654
+          },
+          {
+            "latitude": -60.28103256225586,
+            "point_count": 440,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8181818127632141
+          },
+          {
+            "latitude": -60.56206130981445,
+            "point_count": 436,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8256880640983582
+          },
+          {
+            "latitude": -60.84309387207031,
+            "point_count": 432,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8333333134651184
+          },
+          {
+            "latitude": -61.124122619628906,
+            "point_count": 428,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.84112149477005
+          },
+          {
+            "latitude": -61.405155181884766,
+            "point_count": 424,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.849056601524353
+          },
+          {
+            "latitude": -61.68618392944336,
+            "point_count": 420,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8571428656578064
+          },
+          {
+            "latitude": -61.96721267700195,
+            "point_count": 416,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8653846383094788
+          },
+          {
+            "latitude": -62.24824523925781,
+            "point_count": 412,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8737863898277283
+          },
+          {
+            "latitude": -62.529273986816406,
+            "point_count": 408,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8823529481887817
+          },
+          {
+            "latitude": -62.810306549072266,
+            "point_count": 404,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8910890817642212
+          },
+          {
+            "latitude": -63.09133529663086,
+            "point_count": 400,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.8999999761581421
+          },
+          {
+            "latitude": -63.37236785888672,
+            "point_count": 396,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.9090909361839294
+          },
+          {
+            "latitude": -63.65339660644531,
+            "point_count": 392,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.918367326259613
+          },
+          {
+            "latitude": -63.93442916870117,
+            "point_count": 388,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.9278350472450256
+          },
+          {
+            "latitude": -64.2154541015625,
+            "point_count": 384,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.9375
+          },
+          {
+            "latitude": -64.4964828491211,
+            "point_count": 380,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.9473684430122375
+          },
+          {
+            "latitude": -64.77751159667969,
+            "point_count": 376,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.957446813583374
+          },
+          {
+            "latitude": -65.05854797363281,
+            "point_count": 372,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.9677419066429138
+          },
+          {
+            "latitude": -65.3395767211914,
+            "point_count": 368,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.97826087474823
+          },
+          {
+            "latitude": -65.62060546875,
+            "point_count": 364,
+            "longitude_origin": 0.0,
+            "longitude_step": 0.9890109896659851
+          },
+          {
+            "latitude": -65.9016342163086,
+            "point_count": 360,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.0
+          },
+          {
+            "latitude": -66.18267059326172,
+            "point_count": 356,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.0112359523773193
+          },
+          {
+            "latitude": -66.46369934082031,
+            "point_count": 352,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.0227272510528564
+          },
+          {
+            "latitude": -66.7447280883789,
+            "point_count": 348,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.034482717514038
+          },
+          {
+            "latitude": -67.0257568359375,
+            "point_count": 344,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.0465116500854492
+          },
+          {
+            "latitude": -67.3067855834961,
+            "point_count": 340,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.058823585510254
+          },
+          {
+            "latitude": -67.58782196044922,
+            "point_count": 336,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.0714285373687744
+          },
+          {
+            "latitude": -67.86885070800781,
+            "point_count": 332,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.0843373537063599
+          },
+          {
+            "latitude": -68.1498794555664,
+            "point_count": 328,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.097561001777649
+          },
+          {
+            "latitude": -68.430908203125,
+            "point_count": 324,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.1111111640930176
+          },
+          {
+            "latitude": -68.71194458007812,
+            "point_count": 320,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.125
+          },
+          {
+            "latitude": -68.99297332763672,
+            "point_count": 316,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.1392405033111572
+          },
+          {
+            "latitude": -69.27400207519531,
+            "point_count": 312,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.1538461446762085
+          },
+          {
+            "latitude": -69.5550308227539,
+            "point_count": 308,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.1688311100006104
+          },
+          {
+            "latitude": -69.8360595703125,
+            "point_count": 304,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.1842105388641357
+          },
+          {
+            "latitude": -70.11709594726562,
+            "point_count": 300,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.2000000476837158
+          },
+          {
+            "latitude": -70.39812469482422,
+            "point_count": 296,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.2162162065505981
+          },
+          {
+            "latitude": -70.67915344238281,
+            "point_count": 292,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.2328766584396362
+          },
+          {
+            "latitude": -70.9601821899414,
+            "point_count": 288,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.25
+          },
+          {
+            "latitude": -71.24121856689453,
+            "point_count": 284,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.2676056623458862
+          },
+          {
+            "latitude": -71.52224731445312,
+            "point_count": 280,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.2857142686843872
+          },
+          {
+            "latitude": -71.80327606201172,
+            "point_count": 276,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.3043478727340698
+          },
+          {
+            "latitude": -72.08430480957031,
+            "point_count": 272,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.3235293626785278
+          },
+          {
+            "latitude": -72.3653335571289,
+            "point_count": 268,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.3432835340499878
+          },
+          {
+            "latitude": -72.64636993408203,
+            "point_count": 264,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.3636363744735718
+          },
+          {
+            "latitude": -72.92739868164062,
+            "point_count": 260,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.384615421295166
+          },
+          {
+            "latitude": -73.20842742919922,
+            "point_count": 256,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.40625
+          },
+          {
+            "latitude": -73.48945617675781,
+            "point_count": 252,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.4285714626312256
+          },
+          {
+            "latitude": -73.77049255371094,
+            "point_count": 248,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.451612949371338
+          },
+          {
+            "latitude": -74.05152130126953,
+            "point_count": 244,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.4754098653793335
+          },
+          {
+            "latitude": -74.33255004882812,
+            "point_count": 240,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.5
+          },
+          {
+            "latitude": -74.61357879638672,
+            "point_count": 236,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.5254237651824951
+          },
+          {
+            "latitude": -74.89460754394531,
+            "point_count": 232,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.5517241954803467
+          },
+          {
+            "latitude": -75.17564392089844,
+            "point_count": 228,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.5789474248886108
+          },
+          {
+            "latitude": -75.45667266845703,
+            "point_count": 224,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.6071428060531616
+          },
+          {
+            "latitude": -75.73770141601562,
+            "point_count": 220,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.6363636255264282
+          },
+          {
+            "latitude": -76.01873016357422,
+            "point_count": 216,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.6666666269302368
+          },
+          {
+            "latitude": -76.29976654052734,
+            "point_count": 212,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.698113203048706
+          },
+          {
+            "latitude": -76.58079528808594,
+            "point_count": 208,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.7307692766189575
+          },
+          {
+            "latitude": -76.86182403564453,
+            "point_count": 204,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.7647058963775635
+          },
+          {
+            "latitude": -77.14285278320312,
+            "point_count": 200,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.7999999523162842
+          },
+          {
+            "latitude": -77.42388153076172,
+            "point_count": 196,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.836734652519226
+          },
+          {
+            "latitude": -77.70491790771484,
+            "point_count": 192,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.875
+          },
+          {
+            "latitude": -77.98594665527344,
+            "point_count": 188,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.914893627166748
+          },
+          {
+            "latitude": -78.26697540283203,
+            "point_count": 184,
+            "longitude_origin": 0.0,
+            "longitude_step": 1.95652174949646
+          },
+          {
+            "latitude": -78.54800415039062,
+            "point_count": 180,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.0
+          },
+          {
+            "latitude": -78.82904052734375,
+            "point_count": 176,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.045454502105713
+          },
+          {
+            "latitude": -79.11006927490234,
+            "point_count": 172,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.0930233001708984
+          },
+          {
+            "latitude": -79.39109802246094,
+            "point_count": 168,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.142857074737549
+          },
+          {
+            "latitude": -79.67212677001953,
+            "point_count": 164,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.195122003555298
+          },
+          {
+            "latitude": -79.95315551757812,
+            "point_count": 160,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.25
+          },
+          {
+            "latitude": -80.23419189453125,
+            "point_count": 156,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.307692289352417
+          },
+          {
+            "latitude": -80.51522064208984,
+            "point_count": 152,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.3684210777282715
+          },
+          {
+            "latitude": -80.79624938964844,
+            "point_count": 148,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.4324324131011963
+          },
+          {
+            "latitude": -81.07727813720703,
+            "point_count": 144,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.5
+          },
+          {
+            "latitude": -81.35831451416016,
+            "point_count": 140,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.5714285373687744
+          },
+          {
+            "latitude": -81.63934326171875,
+            "point_count": 136,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.6470587253570557
+          },
+          {
+            "latitude": -81.92037200927734,
+            "point_count": 132,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.7272727489471436
+          },
+          {
+            "latitude": -82.20140075683594,
+            "point_count": 128,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.8125
+          },
+          {
+            "latitude": -82.48242950439453,
+            "point_count": 124,
+            "longitude_origin": 0.0,
+            "longitude_step": 2.903225898742676
+          },
+          {
+            "latitude": -82.76346588134766,
+            "point_count": 120,
+            "longitude_origin": 0.0,
+            "longitude_step": 3.0
+          },
+          {
+            "latitude": -83.04449462890625,
+            "point_count": 116,
+            "longitude_origin": 0.0,
+            "longitude_step": 3.1034483909606934
+          },
+          {
+            "latitude": -83.32552337646484,
+            "point_count": 112,
+            "longitude_origin": 0.0,
+            "longitude_step": 3.2142856121063232
+          },
+          {
+            "latitude": -83.60655212402344,
+            "point_count": 108,
+            "longitude_origin": 0.0,
+            "longitude_step": 3.3333332538604736
+          },
+          {
+            "latitude": -83.88758850097656,
+            "point_count": 104,
+            "longitude_origin": 0.0,
+            "longitude_step": 3.461538553237915
+          },
+          {
+            "latitude": -84.16861724853516,
+            "point_count": 100,
+            "longitude_origin": 0.0,
+            "longitude_step": 3.5999999046325684
+          },
+          {
+            "latitude": -84.44964599609375,
+            "point_count": 96,
+            "longitude_origin": 0.0,
+            "longitude_step": 3.75
+          },
+          {
+            "latitude": -84.73067474365234,
+            "point_count": 92,
+            "longitude_origin": 0.0,
+            "longitude_step": 3.91304349899292
+          },
+          {
+            "latitude": -85.01170349121094,
+            "point_count": 88,
+            "longitude_origin": 0.0,
+            "longitude_step": 4.090909004211426
+          },
+          {
+            "latitude": -85.29273986816406,
+            "point_count": 84,
+            "longitude_origin": 0.0,
+            "longitude_step": 4.285714149475098
+          },
+          {
+            "latitude": -85.57376861572266,
+            "point_count": 80,
+            "longitude_origin": 0.0,
+            "longitude_step": 4.5
+          },
+          {
+            "latitude": -85.85479736328125,
+            "point_count": 76,
+            "longitude_origin": 0.0,
+            "longitude_step": 4.736842155456543
+          },
+          {
+            "latitude": -86.13582611083984,
+            "point_count": 72,
+            "longitude_origin": 0.0,
+            "longitude_step": 5.0
+          },
+          {
+            "latitude": -86.41686248779297,
+            "point_count": 68,
+            "longitude_origin": 0.0,
+            "longitude_step": 5.294117450714111
+          },
+          {
+            "latitude": -86.69789123535156,
+            "point_count": 64,
+            "longitude_origin": 0.0,
+            "longitude_step": 5.625
+          },
+          {
+            "latitude": -86.97891998291016,
+            "point_count": 60,
+            "longitude_origin": 0.0,
+            "longitude_step": 6.0
+          },
+          {
+            "latitude": -87.25994873046875,
+            "point_count": 56,
+            "longitude_origin": 0.0,
+            "longitude_step": 6.4285712242126465
+          },
+          {
+            "latitude": -87.54097747802734,
+            "point_count": 52,
+            "longitude_origin": 0.0,
+            "longitude_step": 6.92307710647583
+          },
+          {
+            "latitude": -87.82201385498047,
+            "point_count": 48,
+            "longitude_origin": 0.0,
+            "longitude_step": 7.5
+          },
+          {
+            "latitude": -88.10304260253906,
+            "point_count": 44,
+            "longitude_origin": 0.0,
+            "longitude_step": 8.181818008422852
+          },
+          {
+            "latitude": -88.38407135009766,
+            "point_count": 40,
+            "longitude_origin": 0.0,
+            "longitude_step": 9.0
+          },
+          {
+            "latitude": -88.66510009765625,
+            "point_count": 36,
+            "longitude_origin": 0.0,
+            "longitude_step": 10.0
+          },
+          {
+            "latitude": -88.94613647460938,
+            "point_count": 32,
+            "longitude_origin": 0.0,
+            "longitude_step": 11.25
+          },
+          {
+            "latitude": -89.22716522216797,
+            "point_count": 28,
+            "longitude_origin": 0.0,
+            "longitude_step": 12.857142448425293
+          },
+          {
+            "latitude": -89.50819396972656,
+            "point_count": 24,
+            "longitude_origin": 0.0,
+            "longitude_step": 15.0
+          },
+          {
+            "latitude": -89.78922271728516,
+            "point_count": 20,
+            "longitude_origin": 0.0,
+            "longitude_step": 18.0
+          }
+        ]
+      },
+      "expected_spatial_axis_profile": {
+        "layout": "flattened",
+        "spatial_axis_count": 1,
+        "axis_order": [
+          "point"
+        ],
+        "flattened_axis_alias": "lon",
+        "object_profile_status": "pinned producer O320: 421120 points, ny=1; lon is the flattened spatial axis in embedded lat/lon profiles; time/member/level dimensions are retained, not inferred from the product name"
+      },
+      "evidence": {
+        "level": "definition-recorded",
+        "sample_id": null,
+        "source_uri": null,
+        "build_pair": null,
+        "claims": "Grid and product mapping derived from pinned EcmwfSeasDomain.swift and GaussianGrid.swift. Coordinates reproduce Open-Meteo Float32 arithmetic, not native ECMWF Legendre latitudes. Synthetic full-shape spatial/time/member regression coverage is recorded separately; real-object checks and public availability are product-specific."
+      }
+    },
+    {
+      "id": "ecmwf_seas5_ensemble_mean",
+      "kind": "reduced_gaussian",
+      "source_path": "Sources/App/EcmwfSeas/EcmwfSeasDomain.swift",
+      "parameters": {},
+      "grid_definition": "ecmwf_seas5",
+      "expected_spatial_axis_profile": {
+        "layout": "flattened",
+        "spatial_axis_count": 1,
+        "axis_order": [
+          "point"
+        ],
+        "flattened_axis_alias": "lon",
+        "object_profile_status": "pinned producer O320: 421120 points, ny=1; lon is the flattened spatial axis in embedded lat/lon profiles; time/member/level dimensions are retained, not inferred from the product name"
+      },
+      "evidence": {
+        "level": "definition-recorded",
+        "sample_id": null,
+        "source_uri": null,
+        "build_pair": null,
+        "claims": "Grid and product mapping derived from pinned EcmwfSeasDomain.swift and GaussianGrid.swift. Coordinates reproduce Open-Meteo Float32 arithmetic, not native ECMWF Legendre latitudes. Synthetic full-shape spatial/time/member regression coverage is recorded separately; real-object checks and public availability are product-specific."
+      }
+    },
+    {
+      "id": "ecmwf_seas5_daily",
+      "kind": "reduced_gaussian",
+      "source_path": "Sources/App/EcmwfSeas/EcmwfSeasDomain.swift",
+      "parameters": {},
+      "grid_definition": "ecmwf_seas5",
+      "expected_spatial_axis_profile": {
+        "layout": "flattened",
+        "spatial_axis_count": 1,
+        "axis_order": [
+          "point"
+        ],
+        "flattened_axis_alias": "lon",
+        "object_profile_status": "pinned producer O320: 421120 points, ny=1; lon is the flattened spatial axis in embedded lat/lon profiles; time/member/level dimensions are retained, not inferred from the product name"
+      },
+      "evidence": {
+        "level": "definition-recorded",
+        "sample_id": null,
+        "source_uri": null,
+        "build_pair": null,
+        "claims": "Grid and product mapping derived from pinned EcmwfSeasDomain.swift and GaussianGrid.swift. Coordinates reproduce Open-Meteo Float32 arithmetic, not native ECMWF Legendre latitudes. Synthetic full-shape spatial/time/member regression coverage is recorded separately; real-object checks and public availability are product-specific."
+      }
+    },
+    {
+      "id": "ecmwf_seas5_daily_ensemble_mean",
+      "kind": "reduced_gaussian",
+      "source_path": "Sources/App/EcmwfSeas/EcmwfSeasDomain.swift",
+      "parameters": {},
+      "grid_definition": "ecmwf_seas5",
+      "expected_spatial_axis_profile": {
+        "layout": "flattened",
+        "spatial_axis_count": 1,
+        "axis_order": [
+          "point"
+        ],
+        "flattened_axis_alias": "lon",
+        "object_profile_status": "pinned producer O320: 421120 points, ny=1; lon is the flattened spatial axis in embedded lat/lon profiles; time/member/level dimensions are retained, not inferred from the product name"
+      },
+      "evidence": {
+        "level": "definition-recorded",
+        "sample_id": null,
+        "source_uri": null,
+        "build_pair": null,
+        "claims": "Grid and product mapping derived from pinned EcmwfSeasDomain.swift and GaussianGrid.swift. Coordinates reproduce Open-Meteo Float32 arithmetic, not native ECMWF Legendre latitudes. Synthetic full-shape spatial/time/member regression coverage is recorded separately; real-object checks and public availability are product-specific."
+      }
+    },
+    {
+      "id": "ecmwf_seas5_monthly",
+      "kind": "reduced_gaussian",
+      "source_path": "Sources/App/EcmwfSeas/EcmwfSeasDomain.swift",
+      "parameters": {},
+      "grid_definition": "ecmwf_seas5",
+      "expected_spatial_axis_profile": {
+        "layout": "flattened",
+        "spatial_axis_count": 1,
+        "axis_order": [
+          "point"
+        ],
+        "flattened_axis_alias": "lon",
+        "object_profile_status": "pinned producer O320: 421120 points, ny=1; lon is the flattened spatial axis in embedded lat/lon profiles; time/member/level dimensions are retained, not inferred from the product name"
+      },
+      "evidence": {
+        "level": "definition-recorded",
+        "sample_id": null,
+        "source_uri": null,
+        "build_pair": null,
+        "claims": "Grid and product mapping derived from pinned EcmwfSeasDomain.swift and GaussianGrid.swift. Coordinates reproduce Open-Meteo Float32 arithmetic, not native ECMWF Legendre latitudes. Synthetic full-shape spatial/time/member regression coverage is recorded separately; real-object checks and public availability are product-specific."
+      }
+    },
+    {
+      "id": "ecmwf_ec46",
+      "kind": "reduced_gaussian",
+      "source_path": "Sources/App/EcmwfSeas/EcmwfSeasDomain.swift",
+      "parameters": {},
+      "grid_definition": "ecmwf_seas5",
+      "expected_spatial_axis_profile": {
+        "layout": "flattened",
+        "spatial_axis_count": 1,
+        "axis_order": [
+          "point"
+        ],
+        "flattened_axis_alias": "lon",
+        "object_profile_status": "pinned producer O320: 421120 points, ny=1; lon is the flattened spatial axis in embedded lat/lon profiles; time/member/level dimensions are retained, not inferred from the product name"
+      },
+      "evidence": {
+        "level": "definition-recorded",
+        "sample_id": null,
+        "source_uri": null,
+        "build_pair": null,
+        "claims": "Grid and product mapping derived from pinned EcmwfSeasDomain.swift and GaussianGrid.swift. Coordinates reproduce Open-Meteo Float32 arithmetic, not native ECMWF Legendre latitudes. Synthetic full-shape spatial/time/member regression coverage is recorded separately; real-object checks and public availability are product-specific."
+      }
+    },
+    {
+      "id": "ecmwf_ec46_ensemble_mean",
+      "kind": "reduced_gaussian",
+      "source_path": "Sources/App/EcmwfSeas/EcmwfSeasDomain.swift",
+      "parameters": {},
+      "grid_definition": "ecmwf_seas5",
+      "expected_spatial_axis_profile": {
+        "layout": "flattened",
+        "spatial_axis_count": 1,
+        "axis_order": [
+          "point"
+        ],
+        "flattened_axis_alias": "lon",
+        "object_profile_status": "pinned producer O320: 421120 points, ny=1; lon is the flattened spatial axis in embedded lat/lon profiles; time/member/level dimensions are retained, not inferred from the product name"
+      },
+      "evidence": {
+        "level": "definition-recorded",
+        "sample_id": null,
+        "source_uri": null,
+        "build_pair": null,
+        "claims": "Grid and product mapping derived from pinned EcmwfSeasDomain.swift and GaussianGrid.swift. Coordinates reproduce Open-Meteo Float32 arithmetic, not native ECMWF Legendre latitudes. Synthetic full-shape spatial/time/member regression coverage is recorded separately; real-object checks and public availability are product-specific."
+      }
+    },
+    {
+      "id": "ecmwf_ec46_weekly",
+      "kind": "reduced_gaussian",
+      "source_path": "Sources/App/EcmwfSeas/EcmwfSeasDomain.swift",
+      "parameters": {},
+      "grid_definition": "ecmwf_seas5",
+      "expected_spatial_axis_profile": {
+        "layout": "flattened",
+        "spatial_axis_count": 1,
+        "axis_order": [
+          "point"
+        ],
+        "flattened_axis_alias": "lon",
+        "object_profile_status": "pinned producer O320: 421120 points, ny=1; lon is the flattened spatial axis in embedded lat/lon profiles; time/member/level dimensions are retained, not inferred from the product name"
+      },
+      "evidence": {
+        "level": "definition-recorded",
+        "sample_id": null,
+        "source_uri": null,
+        "build_pair": null,
+        "claims": "Grid and product mapping derived from pinned EcmwfSeasDomain.swift and GaussianGrid.swift. Coordinates reproduce Open-Meteo Float32 arithmetic, not native ECMWF Legendre latitudes. Synthetic full-shape spatial/time/member regression coverage is recorded separately; real-object checks and public availability are product-specific."
+      }
+    },
+    {
+      "id": "ecmwf_seas5_12hourly",
+      "kind": "reduced_gaussian",
+      "source_path": "Sources/App/EcmwfSeas/EcmwfSeasDomain.swift",
+      "parameters": {},
+      "grid_definition": "n160",
+      "expected_spatial_axis_profile": {
+        "layout": "flattened",
+        "spatial_axis_count": 1,
+        "axis_order": [
+          "point"
+        ],
+        "flattened_axis_alias": "lon",
+        "object_profile_status": "pinned producer N160: 138346 points, ny=1; lon is the flattened spatial axis in embedded lat/lon profiles; time/member/level dimensions are retained, not inferred from the product name"
+      },
+      "evidence": {
+        "level": "definition-recorded",
+        "sample_id": null,
+        "source_uri": null,
+        "build_pair": null,
+        "claims": "Grid and product mapping derived from pinned EcmwfSeasDomain.swift and GaussianGrid.swift. Coordinates reproduce Open-Meteo Float32 arithmetic, not native ECMWF Legendre latitudes. Synthetic full-shape spatial/time/member regression coverage is recorded separately; real-object checks and public availability are product-specific."
+      }
+    },
+    {
+      "id": "ecmwf_seas5_monthly_upper_level",
+      "kind": "reduced_gaussian",
+      "source_path": "Sources/App/EcmwfSeas/EcmwfSeasDomain.swift",
+      "parameters": {},
+      "grid_definition": "n160",
+      "expected_spatial_axis_profile": {
+        "layout": "flattened",
+        "spatial_axis_count": 1,
+        "axis_order": [
+          "point"
+        ],
+        "flattened_axis_alias": "lon",
+        "object_profile_status": "pinned producer N160: 138346 points, ny=1; lon is the flattened spatial axis in embedded lat/lon profiles; time/member/level dimensions are retained, not inferred from the product name"
+      },
+      "evidence": {
+        "level": "definition-recorded",
+        "sample_id": null,
+        "source_uri": null,
+        "build_pair": null,
+        "claims": "Grid and product mapping derived from pinned EcmwfSeasDomain.swift and GaussianGrid.swift. Coordinates reproduce Open-Meteo Float32 arithmetic, not native ECMWF Legendre latitudes. Synthetic full-shape spatial/time/member regression coverage is recorded separately; real-object checks and public availability are product-specific."
+      }
     }
   ],
   "profiles_note": "Axis names above are expected binding roles only. Actual OM object axis metadata requires frozen real objects and remains not-run."

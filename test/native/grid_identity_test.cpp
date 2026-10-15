@@ -153,6 +153,23 @@ void TestGeneratedDefinitionRegistry() {
 	            std::get<GaussianGrid>(n320->definition.geometry).PointCount() == 542080 &&
 	            std::get<GaussianGrid>(region->definition.geometry).PointCount() == 14747,
 	        "generated Gaussian full and regional point counts are loaded from the frozen definitions");
+	const auto *seasonal = FindRegisteredGridDefinition("ecmwf_seas5");
+	Require(seasonal && seasonal->domain_bindable, "SEAS5 O320 must be a registered producer domain");
+	const auto seasonal_id = GridId(seasonal->definition);
+	Require(std::get<GaussianGrid>(seasonal->definition.geometry).PointCount() == 421120 &&
+	            seasonal_id != GridId(n320->definition), "O320 must retain its own point layout, distinct from N320");
+	for (const auto *name : {"ecmwf_seas5", "ecmwf_seas5_ensemble_mean", "ecmwf_seas5_daily",
+	                         "ecmwf_seas5_daily_ensemble_mean", "ecmwf_seas5_monthly", "ecmwf_ec46",
+	                         "ecmwf_ec46_ensemble_mean", "ecmwf_ec46_weekly"}) {
+		const auto *domain = FindRegisteredGridDefinition(name);
+		Require(domain && domain->domain_bindable && GridId(domain->definition) == seasonal_id &&
+		            domain->flattened_axis_alias == "lon", "all O320 seasonal products must share the exact grid");
+	}
+	for (const auto *name : {"ecmwf_seas5_12hourly", "ecmwf_seas5_monthly_upper_level"}) {
+		const auto *domain = FindRegisteredGridDefinition(name);
+		Require(domain && domain->domain_bindable && GridId(domain->definition) == GridId(n160->definition) &&
+		            domain->flattened_axis_alias == "lon", "upper-level SEAS5 products must use the N160 grid");
+	}
 	const auto *hres = FindRegisteredGridDefinition("ecmwf_ifs");
 	Require(hres && hres->domain_bindable && hres->expected_axis_order == std::vector<std::string>({"point"}),
 	        "HRES is registered with a native point axis, not separate lat/lon axes");

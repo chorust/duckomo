@@ -1,0 +1,27 @@
+{
+  "source_sha256": "1ff509767926d1dbbd7b3615ca81aaea4e35335255f93dfac2ebbc35e2f80c9c",
+  "extension_sha256": "0264b630b9b1c53fae94a8a9939d2186908e8270a0542b74ad2e5b84073d9134",
+  "platform": "Linux AArch64",
+  "version": "v1.5.4",
+  "checks": {
+    "complete_local_validation": "pass: scripts/validate.sh build/release --local-only",
+    "gaussian_full_o320_coordinates": "pass: all 421120 positions",
+    "all_ten_domains": "pass: time/member/CRS and independent coordinate references",
+    "spatial_selection_asan_ubsan": "pass",
+    "official_v1.5.5_ten_domains": "pass"
+  },
+  "logs": [
+    {
+      "path": "/tmp/duckomo-seasonal-final-regressions.log",
+      "sha256": "857a177a3d02a6179b926cd138ee2c3c474a15e9e5c84a465cef6b63a9db7ab0"
+    },
+    {
+      "path": "/tmp/duckomo-seasonal-sanitizer.log",
+      "sha256": "3d161f8faf513f28432fbdb4b3c065ca1d7d24b7aadcdb6935b0627c79b72fe6"
+    },
+    {
+      "path": "/tmp/duckomo-seasonal-final-real-local.log",
+      "sha256": "e7a03fb94546121d3b2ad7157f153661d60ac318da34a1784be0f0c6b1f1e04b"
+    }
+  ]
+}

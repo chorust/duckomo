@@ -280,18 +280,18 @@ void TestFrozenN160N320TablesAndN320RegionMapping() {
 	}
 }
 
-void TestFrozenHresO1280Rows() {
-	const auto rows = ReadFrozenGaussianRows("ecmwf_ifs");
-	GaussianGrid grid(1280, "openmeteo_approx_v1", rows);
-	Require(rows.size() == 2560 && grid.PointCount() == 6599680,
+void TestFrozenOctahedralRows(const std::string &definition, std::uint64_t n, std::uint64_t points) {
+	const auto rows = ReadFrozenGaussianRows(definition);
+	GaussianGrid grid(n, "openmeteo_approx_v1", rows);
+	Require(rows.size() == 2 * n && grid.PointCount() == points,
 	        "HRES O1280 has its own octahedral row table, not N160/N320 or a rectangular grid");
-	const float dy = 180.0F / (2.0F * 1280.0F + 0.5F);
+	const float dy = 180.0F / (2.0F * static_cast<float>(n) + 0.5F);
 	std::uint64_t prefix = 0;
-	for (std::uint64_t y = 0; y < 2560; y++) {
-		const auto nx = 20 + 4 * std::min(y, std::uint64_t(2559) - y);
+	for (std::uint64_t y = 0; y < 2 * n; y++) {
+		const auto nx = 20 + 4 * std::min(y, 2 * n - 1 - y);
 		// Split multiply/add so the compiler cannot contract them into an FMA;
 		// the pinned producer semantics are two separate Float32 roundings.
-		const float scaled_latitude = static_cast<float>(1279 - static_cast<std::int64_t>(y)) * dy;
+		const float scaled_latitude = static_cast<float>(static_cast<std::int64_t>(n) - 1 - static_cast<std::int64_t>(y)) * dy;
 		const float latitude = scaled_latitude + dy / 2.0F;
 		const float dx = 360.0F / static_cast<float>(nx);
 		if (rows[y].point_count != nx || rows[y].latitude != latitude || rows[y].longitude_step != dx) {
@@ -300,8 +300,8 @@ void TestFrozenHresO1280Rows() {
 			          << " dx " << rows[y].longitude_step << '/' << static_cast<double>(dx) << '\n';
 			throw std::runtime_error("O1280 row rule mismatch");
 		}
-		const auto source_prefix = y < 1280 ? 2 * y * y + 18 * y :
-		    6599680 - (2 * (2560 - y) * (2560 - y) + 18 * (2560 - y));
+		const auto source_prefix = y < n ? 2 * y * y + 18 * y :
+		    points - (2 * (2 * n - y) * (2 * n - y) + 18 * (2 * n - y));
 		Require(prefix == source_prefix, "O1280 row offsets follow the producer integral point order");
 		for (std::uint64_t x = 0; x < nx; x++) {
 			const float unwrapped = static_cast<float>(x) * dx;
@@ -340,7 +340,8 @@ int main() {
 		TestOrderedRegionSegmentsAndParentMap();
 		TestMalformedRowsAndSegmentsReject();
 		TestFrozenN160N320TablesAndN320RegionMapping();
-		TestFrozenHresO1280Rows();
+		TestFrozenOctahedralRows("ecmwf_ifs", 1280, 6599680);
+		TestFrozenOctahedralRows("ecmwf_seas5", 320, 421120);
 		TestIndependentLegendreRootReference();
 		std::cout << "Gaussian grid checks passed\n";
 		return 0;

@@ -1,0 +1,50 @@
+{
+  "status": "pass",
+  "scope": "bounded polar polygon, seven complete monthly groups, local/S3 equality",
+  "extension_sha256": "0264b630b9b1c53fae94a8a9939d2186908e8270a0542b74ad2e5b84073d9134",
+  "rows": [
+    {
+      "region_id": "polar",
+      "valid_time": "2026-10-01 00:00:00",
+      "n": 3,
+      "mean_raw": 271.3500061035156
+    },
+    {
+      "region_id": "polar",
+      "valid_time": "2026-11-01 00:00:00",
+      "n": 3,
+      "mean_raw": 271.3500061035156
+    },
+    {
+      "region_id": "polar",
+      "valid_time": "2026-12-01 00:00:00",
+      "n": 3,
+      "mean_raw": 271.3500061035156
+    },
+    {
+      "region_id": "polar",
+      "valid_time": "2027-01-01 00:00:00",
+      "n": 3,
+      "mean_raw": 271.3500061035156
+    },
+    {
+      "region_id": "polar",
+      "valid_time": "2027-02-01 00:00:00",
+      "n": 3,
+      "mean_raw": 271.3500061035156
+    },
+    {
+      "region_id": "polar",
+      "valid_time": "2027-03-01 00:00:00",
+      "n": 3,
+      "mean_raw": 271.3500061035156
+    },
+    {
+      "region_id": "polar",
+      "valid_time": "2027-04-01 00:00:00",
+      "n": 3,
+      "mean_raw": 271.3500061035156
+    }
+  ],
+  "full_nino_remote": "first attempt timed out at 300 seconds; retry stopped after 380 seconds because superseded by final CRS build"
+}

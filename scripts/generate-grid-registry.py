@@ -153,6 +153,11 @@ def encode_grid(definition: dict[str, Any]) -> bytes:
 
 
 def source_grid_definition(item: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    if item.get("grid_definition"):
+        target = by_id.get(item["grid_definition"])
+        if target is None or target.get("grid_definition") or target["kind"] != item["kind"]:
+            raise ValueError(f"invalid shared grid definition for {item['id']}")
+        return source_grid_definition(target, by_id)
     parameters = item["parameters"]
     earth = parameters["earth"]
     common = {
@@ -288,6 +293,8 @@ def segment_vector_cpp(segments: list[dict[str, Any]]) -> str:
 
 
 def definition_expression(item: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> str:
+    if item.get("grid_definition"):
+        return f"definitions.at({cpp_string(item['grid_definition'])})"
     parameters = item["parameters"]
     policy = numeric_policy_cpp(parameters["numeric_policy"])
     earth = earth_cpp(parameters["earth"])
@@ -403,7 +410,11 @@ def generate_header(input_path: Path) -> str:
     identities = source_grid_identities(definitions)
     result_records = []
     definition_lines = []
+    generated_ids = set()
     for item in definitions:
+        if item.get("grid_definition") and item["grid_definition"] not in generated_ids:
+            raise ValueError(f"shared grid definition must precede {item['id']}")
+        generated_ids.add(item["id"])
         definition_json = json.dumps(item, ensure_ascii=True, separators=(",", ":"), sort_keys=True)
         profile = item.get("expected_spatial_axis_profile", {})
         axes_json = json.dumps(profile, ensure_ascii=True, separators=(",", ":"), sort_keys=True)
@@ -534,6 +545,8 @@ def sql_literal(value: Any, indent: int = 0) -> str:
 
 def sql_grid_definition(item: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> dict[str, Any]:
     """Convert one frozen producer entry to the public version=1 SQL contract."""
+    if item.get("grid_definition"):
+        return sql_grid_definition(by_id[item["grid_definition"]], by_id)
     source = item["parameters"]
     kind = item["kind"]
     policy = source["numeric_policy"]

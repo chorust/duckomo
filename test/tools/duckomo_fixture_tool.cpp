@@ -2353,6 +2353,41 @@ void GenerateHresFixtures(const std::filesystem::path &output) {
 	std::cout << "generated synthetic HRES shape fixtures in " << output << '\n';
 }
 
+// Seasonal producer-shaped fixtures; generated on demand, outside frozen samples.
+void GenerateSeasonalFixtures(const std::filesystem::path &output) {
+	for (const auto points : {std::uint64_t(421120), std::uint64_t(138346)}) {
+		for (const bool ensemble : {false, true}) {
+			TreeArray array;
+			array.segments = {"value"};
+			array.fixture.shape = ensemble ? std::vector<std::uint64_t>{1, points, 2, 3} :
+			                                std::vector<std::uint64_t>{1, points, 3};
+			array.fixture.chunks = ensemble ? std::vector<std::uint64_t>{1, 100, 1, 3} :
+			                                 std::vector<std::uint64_t>{1, 100, 3};
+			const auto members = ensemble ? 2U : 1U;
+			array.fixture.values.reserve(points * members * 3);
+			for (std::uint64_t point = 0; point < points; ++point) {
+				for (unsigned member = 0; member < members; ++member) {
+					for (unsigned time = 0; time < 3; ++time) {
+						array.fixture.values.push_back(static_cast<float>(point % 4096) + member * 10.0F + time * 0.25F);
+					}
+				}
+			}
+			const auto label = points == 421120 ? "O320" : "N160";
+			const auto wkt = std::string("GEOGCRS[\"Reduced Gaussian Grid\",DATUM[\"World Geodetic System 1984\","
+			    "ELLIPSOID[\"WGS 84\",6378137,298.257223563]],CS[ellipsoidal,2],"
+			    "AXIS[\"latitude\",north],AXIS[\"longitude\",east],ANGLEUNIT[\"degree\",0.0174532925199433],"
+			    "REMARK[\"Reduced Gaussian Grid ") + label + " (ECMWF)\"]]";
+			array.string_attributes = {{"coordinates", ensemble ? "lat lon member time" : "lat lon time"},
+			                           {"crs_wkt", wkt}};
+			std::vector<TreeArray> arrays;
+			arrays.push_back(std::move(array));
+			WriteFile(output / ((points == 421120 ? std::string("o320") : std::string("n160")) +
+			                    (ensemble ? "-ensemble.om" : "-time.om")), EncodeTreeFile(arrays));
+		}
+	}
+	std::cout << "generated seasonal Gaussian fixtures in " << output << '\n';
+}
+
 std::vector<std::uint64_t> ParseOracleShape(const std::string &text) {
 	std::vector<std::uint64_t> result;
 	std::istringstream stream(text);
@@ -2377,7 +2412,8 @@ void PrintUsage(std::ostream &output) {
 	          "negative mutation assets, and manifest.json.\n"
 	       << "--oracle runs the independent fixed official OM reader over a full root array and exports index,value CSV.\n"
 	       << "--regions-output writes only the region-statistics fixtures and official-reader references under DIR.\n"
-	       << "--hres-output DIR generates synthetic HRES static/time-series fixtures without changing the frozen manifest.\n";
+	       << "--hres-output DIR generates synthetic HRES static/time-series fixtures without changing the frozen manifest.\n"
+	       << "--seasonal-output DIR generates O320/N160 time/member fixtures outside the frozen manifest.\n";
 }
 
 } // namespace
@@ -2387,6 +2423,7 @@ int main(int argc, char **argv) {
 		std::filesystem::path output_directory;
 		std::filesystem::path regions_output;
 		std::filesystem::path hres_output;
+		std::filesystem::path seasonal_output;
 		std::filesystem::path oracle_input;
 		std::filesystem::path oracle_prefix_input;
 		std::filesystem::path oracle_slice_input;
@@ -2407,6 +2444,10 @@ int main(int argc, char **argv) {
 			}
 			if (argument == "--regions-output" && index + 1 < argc) {
 				regions_output = argv[++index];
+				continue;
+			}
+			if (argument == "--seasonal-output" && index + 1 < argc) {
+				seasonal_output = argv[++index];
 				continue;
 			}
 			if (argument == "--hres-output" && index + 1 < argc) {
@@ -2449,6 +2490,14 @@ int main(int argc, char **argv) {
 			throw std::runtime_error("unknown or incomplete argument: " + argument);
 		}
 
+		if (!seasonal_output.empty()) {
+			Require(output_directory.empty() && regions_output.empty() && hres_output.empty() &&
+			            oracle_input.empty() && oracle_prefix_input.empty() && oracle_slice_input.empty() &&
+			            slice_offset.empty() && slice_count.empty() && oracle_csv.empty() &&
+			            variable_path.empty() && prefix_count == 0, "--seasonal-output cannot be combined with another mode");
+			GenerateSeasonalFixtures(seasonal_output);
+			return 0;
+		}
 		if (!oracle_slice_input.empty() || !slice_offset.empty() || !slice_count.empty()) {
 			Require(!oracle_slice_input.empty() && !oracle_csv.empty() && !slice_offset.empty() &&
 			            !slice_count.empty() && output_directory.empty() && hres_output.empty() &&

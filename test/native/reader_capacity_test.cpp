@@ -79,7 +79,10 @@ public:
 			index_reads_++;
 			if (before_index_read_) before_index_read_();
 		}
-		if (phase == ScanReadPhase::Data) data_reads_++;
+		if (phase == ScanReadPhase::Data) {
+			data_reads_++;
+			if (before_data_read_) before_data_read_();
+		}
 		if (size != 0) std::memcpy(destination, bytes_.data() + static_cast<std::size_t>(offset),
 		                          static_cast<std::size_t>(size));
 	}
@@ -96,6 +99,9 @@ public:
 	void SetBeforeIndexRead(std::function<void()> callback) {
 		before_index_read_ = std::move(callback);
 	}
+	void SetBeforeDataRead(std::function<void()> callback) {
+		before_data_read_ = std::move(callback);
+	}
 
 private:
 	std::vector<std::uint8_t> bytes_;
@@ -104,6 +110,7 @@ private:
 	mutable std::uint64_t index_reads_ = 0;
 	mutable std::uint64_t data_reads_ = 0;
 	std::function<void()> before_index_read_;
+	std::function<void()> before_data_read_;
 };
 
 void CheckRawLargeBounds() {
@@ -175,6 +182,59 @@ void CheckRawLargeBounds() {
 	        "io_size_max remains a planner target, not a hard data-buffer memory cap");
 }
 
+void CheckAdjacentSelectionsReuseRanges() {
+	auto file = std::make_unique<MemoryReadAtFile>(ReadBinaryFile("test/data/raw_large.om"));
+	auto *observed = file.get();
+	OmV3Reader reader(std::move(file));
+	OmDecoderState state(reader.ReadRootVariable());
+	float first = 0, adjacent = 0, repeated = 0;
+	reader.DecodeSelection(state, {0, 0}, {1, 1}, {0, 0}, {1, 1}, &first, sizeof(first));
+	const auto index_reads = observed->IndexReads();
+	const auto data_reads = observed->DataReads();
+	reader.DecodeSelection(state, {0, 1}, {1, 1}, {0, 0}, {1, 1}, &adjacent, sizeof(adjacent));
+	reader.DecodeSelection(state, {0, 0}, {1, 1}, {0, 0}, {1, 1}, &repeated, sizeof(repeated));
+	Require(first == repeated && adjacent != first, "range reuse must preserve each requested output slice");
+	Require(observed->IndexReads() == index_reads && observed->DataReads() == data_reads,
+	        "adjacent points within one chunk must reuse index and compressed data reads");
+	OmDecoderState independent(reader.ReadRootVariable());
+	reader.DecodeSelection(independent, {0, 0}, {1, 1}, {0, 0}, {1, 1}, &repeated, sizeof(repeated));
+	Require(observed->DataReads() == data_reads + 1,
+	        "independent decoder states must not share range reuse");
+	// A larger request followed by a contained subrange uses the right byte
+	// offsets, rather than interpreting the retained buffer from its beginning.
+	std::vector<float> full(om_variable_get_dimensions(state.variable_owner.Get())[0] *
+	                        om_variable_get_dimensions(state.variable_owner.Get())[1]);
+	const auto *dims = om_variable_get_dimensions(state.variable_owner.Get());
+	reader.DecodeSelection(state, {0, 0}, {dims[0], dims[1]}, {0, 0}, {dims[0], dims[1]},
+	                       full.data(), full.size() * sizeof(float));
+	reader.DecodeSelection(state, {0, 1}, {1, 1}, {0, 0}, {1, 1}, &adjacent, sizeof(adjacent));
+	Require(adjacent == full[1], "contained range reuse must preserve byte offsets");
+	bool failed = false;
+	observed->SetBeforeIndexRead([&] { throw std::runtime_error("injected range read failure"); });
+	state.index_range_size = 0;
+	try {
+		reader.DecodeSelection(state, {0, 0}, {1, 1}, {0, 0}, {1, 1}, &repeated, sizeof(repeated));
+	} catch (const std::runtime_error &) { failed = true; }
+	Require(failed && state.index_range_size == 0, "failed index replacement must invalidate retained range");
+	observed->SetBeforeIndexRead({});
+	const auto failed_reads = observed->IndexReads();
+	reader.DecodeSelection(state, {0, 0}, {1, 1}, {0, 0}, {1, 1}, &repeated, sizeof(repeated));
+	Require(observed->IndexReads() == failed_reads + 1 && repeated == first,
+	        "retry after a failed replacement must read and validate the new bytes");
+	observed->SetBeforeDataRead([&] { throw std::runtime_error("injected data read failure"); });
+	state.data_range_size = 0;
+	failed = false;
+	try {
+		reader.DecodeSelection(state, {0, 0}, {1, 1}, {0, 0}, {1, 1}, &repeated, sizeof(repeated));
+	} catch (const std::runtime_error &) { failed = true; }
+	Require(failed && state.data_range_size == 0, "failed data replacement must invalidate retained range");
+	observed->SetBeforeDataRead({});
+	const auto failed_data_reads = observed->DataReads();
+	reader.DecodeSelection(state, {0, 0}, {1, 1}, {0, 0}, {1, 1}, &repeated, sizeof(repeated));
+	Require(observed->DataReads() == failed_data_reads + 1 && repeated == first,
+	        "retry after data read failure must not reuse incomplete bytes");
+}
+
 void CheckBufferReplacementReleasesBeforeAllocation() {
 	using duckdb::duckomo::OmByteBuffer;
 
@@ -199,6 +259,7 @@ void CheckBufferReplacementReleasesBeforeAllocation() {
 int main() {
 	try {
 		CheckRawLargeBounds();
+		CheckAdjacentSelectionsReuseRanges();
 		CheckBufferReplacementReleasesBeforeAllocation();
 		std::cout << "reader capacity bounds passed\n";
 		return 0;

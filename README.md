@@ -17,7 +17,7 @@ duckomo 是一个 DuckDB C++ 扩展，将 [Open-Meteo OM](https://github.com/ope
 - **多种网格 mapping**：规则经纬度、[68 个规则 domain](docs/regular-domains.md)、旋转经纬度、Lambert、stereographic 和 reduced Gaussian。
 - **多变量与语义轴**：按有序轴身份对齐变量，支持 `valid_time`、`level`、`lead_time`、`member`、`run`，不自动转置、广播或连接。
 - **并行与可观测性**：DuckDB 调度并行扫描；提供线程上限、扫描指标、可选 `om_source` 源位置及 `om_grid_info` 网格描述。
-- **Polygon 区域读取（实验性）**：v0.3.0 GitHub 包提供 `read_om_regions`，返回区域内原始网格记录供 SQL 分组统计；当前优化的完整跨平台验收仍未收口，作为实验功能供试用。
+- **Polygon 区域读取（实验性）**：v0.3.1 GitHub 包提供 `read_om_regions`，返回区域内原始网格记录供 SQL 分组统计；当前优化的完整跨平台验收仍未收口，作为实验功能供试用。
 
 当前每次读取**单个对象**，不接受目录、glob 或文件列表。005 区域入口需要显式加载匹配版本的 DuckDB spatial；普通 `read_om` 不需要。区域 WKB 的 `grid_lonlat` 参考由调用者负责，边界按平面 `covers` 处理，统计为 SQL 等权聚合。区域能力仍在验收，详见 [005 Quickstart](specs/005-polygon-region-statistics/quickstart.md)。新投影/Gaussian 网格的代码已实现，但逐网格真实样本、完整内存审计和独立复现尚未全部验收；实现不等于生产就绪，详见 [支持范围](docs/spec.md) 与 [网格证据](docs/grid-domains.md)。
 
@@ -39,7 +39,7 @@ PRAGMA platform;
 GitHub 包未签名，只加载可信来源。用 `duckdb -unsigned` 启动后安装。Release 资产文件名带有版本和平台，直接把 URL 传给 `INSTALL` 时 DuckDB 会按第一个 `.` 截断扩展名（存成 `duckomo-v0.duckdb_extension`），导致后续 `LOAD duckomo` 找不到文件。因此先下载 `.duckdb_extension.gz` 并解压为标准文件名，再本地安装：
 
 ```bash
-DUCKOMO_VERSION=v0.3.0                                                    # DuckOMO 版本
+DUCKOMO_VERSION=v0.3.1                                                    # DuckOMO 版本
 DUCKDB_VERSION=$(duckdb -list -noheader :memory: "SELECT version();")      # 从本机 DuckDB 获取
 PLATFORM=$(duckdb -list -noheader :memory: "PRAGMA platform;")            # 从本机 DuckDB 获取
 
@@ -129,7 +129,7 @@ LIMIT 10;
 | `data_run/` | 一次起报，通常 `[lat, lon, time]` | 通常只需 `domain` |
 | `data/` | 滚动序列或静态数据，样本常缺少轴元数据 | `domain` + 完整 `dimensions` |
 
-`dimensions` 支持共享轴列表或逐变量 MAP；目录布局与更多示例见 [规则网格指南](docs/regular-domains.md)。v0.3.0 的 `read_om`、`read_om_regions`、`om_grid_info` 均支持 `variable := '列名'`，在绑定时仅保留该值数组，适合变量很多的远程文件。嵌套列按编码路径选择，如 `weird%2Fname%25/value`；维度 MAP 只声明所选数组。默认扫描复用绑定元数据；如需全树重读检查，设置 `duckomo_revalidate_metadata=true`，会增加读取成本。
+`dimensions` 支持共享轴列表或逐变量 MAP；目录布局与更多示例见 [规则网格指南](docs/regular-domains.md)。v0.3.1 的 `read_om`、`read_om_regions`、`om_grid_info` 均支持 `variable := '列名'`，在绑定时仅保留该值数组，适合变量很多的远程文件。嵌套列按编码路径选择，如 `weird%2Fname%25/value`；维度 MAP 只声明所选数组。默认扫描复用绑定元数据；如需全树重读检查，设置 `duckomo_revalidate_metadata=true`，会增加读取成本。
 
 ### 按多边形筛选并聚合
 
@@ -155,7 +155,7 @@ PY
 该文件声明 CRS84（x=经度、y=纬度），下例据此传入 `grid_lonlat`。边界版本为 GADM 4.1，不代表实时行政区划；不再使用未核实坐标参考的 DataV 绘图边界。
 
 ```sql
--- 先按 Install 章节安装 v0.3.0 的匹配包，并以 duckdb -unsigned 启动。
+-- 先按 Install 章节安装 v0.3.1 的匹配包，并以 duckdb -unsigned 启动。
 LOAD duckomo;
 INSTALL httpfs; LOAD httpfs;
 INSTALL spatial; LOAD spatial; -- 与当前 DuckDB 匹配；首次安装需要联网
@@ -183,6 +183,23 @@ ORDER BY region_id;
 ```
 
 该快照没有 `temperature_2m`，上例使用实际存在的 `temperature_80m`。对象会过期，替换前先从 Open-Meteo 目录确认新的对象键。
+
+v0.3.1 新增 SEAS5/EC46 的 8 个 O320 与 2 个 N160 domain，并复用 decoder 已读范围，减少逐点重复的索引/数据请求。完整 Nino S3 示例实测约 24–26 秒完成；产品列表、月度查询及单位边界见 [季节预测 domain 指南](docs/seasonal-domains.md)。
+
+### SEAS5 月度海温
+
+月度文件内嵌真实时间坐标，无需手动设置 `axes.start`：
+
+```sql
+SELECT valid_time, avg(value) AS mean_raw
+FROM read_om(
+  's3://openmeteo/data_run/ecmwf_seas5_monthly/2026/10/01/0000Z/sea_surface_temperature_mean.om',
+  domain := 'ecmwf_seas5_monthly')
+WHERE lat BETWEEN -5 AND 5 AND lon BETWEEN -170 AND -120
+GROUP BY valid_time ORDER BY valid_time;
+```
+
+该样本的 unit 标签与数值量级存在疑点，因此输出保留原值 `mean_raw`，不标作摄氏度；完整双区域 polygon 示例见上述指南。
 
 ### 区域平均：Nino 海温
 

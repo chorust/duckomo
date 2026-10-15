@@ -222,9 +222,11 @@ bool ParseGaussianOrderRemark(std::string_view text, std::optional<std::uint64_t
 		order.reset();
 		return true;
 	}
-	constexpr std::string_view prefix = "Reduced Gaussian Grid O";
-	if (value.size() <= prefix.size() || !EqualInsensitive(value.substr(0, prefix.size()), prefix)) return false;
-	std::size_t cursor = prefix.size();
+	constexpr std::string_view prefix = "Reduced Gaussian Grid ";
+	if (value.size() <= prefix.size() + 1 || !EqualInsensitive(value.substr(0, prefix.size()), prefix)) return false;
+	const auto family = value[prefix.size()];
+	if (family != 'O' && family != 'N') return false;
+	std::size_t cursor = prefix.size() + 1;
 	const auto digit_start = cursor;
 	std::uint64_t parsed = 0;
 	while (cursor < value.size() && std::isdigit(static_cast<unsigned char>(value[cursor]))) {

@@ -354,28 +354,31 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 		if (index_read.count > static_cast<std::uint64_t>(std::numeric_limits<std::size_t>::max())) {
 			ThrowAllocationError("OM index buffer exceeds addressable memory");
 		}
-		try {
-			state.index_bytes.EnsureSize(static_cast<std::size_t>(index_read.count));
-		} catch (const std::bad_alloc &) {
-			ThrowAllocationError("unable to allocate OM index buffer");
+		const bool reuse_index = state.index_range_size != 0 && index_read.offset >= state.index_range_offset &&
+		    index_read.offset - state.index_range_offset <= state.index_range_size &&
+		    index_read.count <= state.index_range_size - (index_read.offset - state.index_range_offset);
+		if (!reuse_index) {
+			state.index_range_size = 0;
+			try {
+				state.index_bytes.EnsureSize(static_cast<std::size_t>(index_read.count));
+				RefreshDecoderMemoryAccount(state, metrics);
+				file_->ReadRange(index_read.offset, index_read.count, state.index_bytes.Data(), index_phase,
+				                 metric_variable_path);
+			} catch (const std::bad_alloc &) {
+				ThrowAllocationError("unable to allocate OM index buffer");
+			}
+			state.index_range_offset = index_read.offset;
+			state.index_range_size = index_read.count;
+		} else if (metrics) {
+			metrics->RecordLogicalRead(index_phase, index_read.count, metric_variable_path);
 		}
-		RefreshDecoderMemoryAccount(state, metrics);
-		if (state.index_bytes.Size() != index_read.count || state.index_bytes.Size() == 0) {
-			throw ReaderError(ReaderErrorCode::IndexRead,
-			                  "official OM decoder requested an empty or incomplete index read");
-		}
-		try {
-			file_->ReadRange(index_read.offset, index_read.count, state.index_bytes.Data(), index_phase,
-			                 metric_variable_path);
-		} catch (const std::bad_alloc &) {
-			ThrowAllocationError("unable to allocate OM index buffer");
-		}
+		const auto *index_data = state.index_bytes.Data() + (index_read.offset - state.index_range_offset);
 
 		OmDecoder_dataRead_t data_read{};
 		om_decoder_init_data_read(&data_read, &index_read);
 		OmError_t read_error = ERROR_OK;
-		while (om_decoder_next_data_read(&state.decoder, &data_read, state.index_bytes.Data(),
-		                                 state.index_bytes.Size(), &read_error)) {
+		while (om_decoder_next_data_read(&state.decoder, &data_read, index_data,
+		                                 index_read.count, &read_error)) {
 			ValidateBodyRange(data_read.offset, data_read.count, "data");
 			if (data_read.count > state.capacity_bounds.data_buffer_upper_bound_bytes) {
 				throw ReaderError(ReaderErrorCode::DataRead,
@@ -384,25 +387,28 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 			if (data_read.count > static_cast<std::uint64_t>(std::numeric_limits<std::size_t>::max())) {
 				ThrowAllocationError("OM data buffer exceeds addressable memory");
 			}
-			try {
-				state.data_bytes.EnsureSize(static_cast<std::size_t>(data_read.count));
-			} catch (const std::bad_alloc &) {
-				ThrowAllocationError("unable to allocate OM data buffer");
+			const bool reuse_data = state.data_range_size != 0 && data_read.offset >= state.data_range_offset &&
+			    data_read.offset - state.data_range_offset <= state.data_range_size &&
+			    data_read.count <= state.data_range_size - (data_read.offset - state.data_range_offset);
+			if (!reuse_data) {
+				state.data_range_size = 0;
+				try {
+					state.data_bytes.EnsureSize(static_cast<std::size_t>(data_read.count));
+					RefreshDecoderMemoryAccount(state, metrics);
+					file_->ReadRange(data_read.offset, data_read.count, state.data_bytes.Data(), data_phase,
+					                 metric_variable_path);
+				} catch (const std::bad_alloc &) {
+					ThrowAllocationError("unable to allocate OM data buffer");
+				}
+				state.data_range_offset = data_read.offset;
+				state.data_range_size = data_read.count;
+			} else if (metrics) {
+				metrics->RecordLogicalRead(data_phase, data_read.count, metric_variable_path);
 			}
-			RefreshDecoderMemoryAccount(state, metrics);
-			if (state.data_bytes.Size() != data_read.count || state.data_bytes.Size() == 0) {
-				throw ReaderError(ReaderErrorCode::DataRead,
-				                  "official OM decoder requested an empty or incomplete data read");
-			}
-			try {
-				file_->ReadRange(data_read.offset, data_read.count, state.data_bytes.Data(), data_phase,
-				                 metric_variable_path);
-			} catch (const std::bad_alloc &) {
-				ThrowAllocationError("unable to allocate OM data buffer");
-			}
+			const auto *data = state.data_bytes.Data() + (data_read.offset - state.data_range_offset);
 
 			OmError_t decode_error = ERROR_OK;
-			if (!om_decoder_decode_chunks(&state.decoder, data_read.chunkIndex, state.data_bytes.Data(),
+			if (!om_decoder_decode_chunks(&state.decoder, data_read.chunkIndex, data,
 			                              data_read.count, output, state.chunk_scratch.Data(), &decode_error)) {
 				if (metrics) {
 					if (purpose == ScanDecodePurpose::Coordinate) metrics->MarkCoordinateDecodeCountIncomplete();

@@ -1,0 +1,77 @@
+{
+  "ecmwf_seas5": [],
+  "ecmwf_seas5_ensemble_mean": [
+    {
+      "key": "data_run/ecmwf_seas5_ensemble_mean/2026/08/01/0000Z/cloud_cover.om",
+      "size": 238144592
+    },
+    {
+      "key": "data_run/ecmwf_seas5_ensemble_mean/2026/08/01/0000Z/cloud_cover_spread.om",
+      "size": 209106584
+    },
+    {
+      "key": "data_run/ecmwf_seas5_ensemble_mean/2026/08/01/0000Z/dew_point_2m.om",
+      "size": 238162216
+    }
+  ],
+  "ecmwf_seas5_daily": [],
+  "ecmwf_seas5_daily_ensemble_mean": [
+    {
+      "key": "data_run/ecmwf_seas5_daily_ensemble_mean/2026/08/01/0000Z/meta.json",
+      "size": 5667
+    },
+    {
+      "key": "data_run/ecmwf_seas5_daily_ensemble_mean/2026/08/01/0000Z/soil_moisture_0_to_7cm_mean.om",
+      "size": 12459128
+    },
+    {
+      "key": "data_run/ecmwf_seas5_daily_ensemble_mean/2026/08/01/0000Z/soil_moisture_0_to_7cm_mean_spread.om",
+      "size": 13108032
+    }
+  ],
+  "ecmwf_seas5_monthly": [
+    {
+      "key": "data_run/ecmwf_seas5_monthly/2026/08/01/0000Z/albedo_anomaly.om",
+      "size": 224272
+    },
+    {
+      "key": "data_run/ecmwf_seas5_monthly/2026/08/01/0000Z/albedo_mean.om",
+      "size": 502760
+    },
+    {
+      "key": "data_run/ecmwf_seas5_monthly/2026/08/01/0000Z/cloud_cover_anomaly.om",
+      "size": 883112
+    }
+  ],
+  "ecmwf_ec46": [],
+  "ecmwf_ec46_ensemble_mean": [
+    {
+      "key": "data_run/ecmwf_ec46_ensemble_mean/2026/07/12/0000Z/cloud_cover.om",
+      "size": 45139056
+    },
+    {
+      "key": "data_run/ecmwf_ec46_ensemble_mean/2026/07/12/0000Z/cloud_cover_spread.om",
+      "size": 42924792
+    },
+    {
+      "key": "data_run/ecmwf_ec46_ensemble_mean/2026/07/12/0000Z/dew_point_2m.om",
+      "size": 42661576
+    }
+  ],
+  "ecmwf_ec46_weekly": [
+    {
+      "key": "data_run/ecmwf_ec46_weekly/2026/07/12/0000Z/cloud_cover_anomaly.om",
+      "size": 886424
+    },
+    {
+      "key": "data_run/ecmwf_ec46_weekly/2026/07/12/0000Z/cloud_cover_mean.om",
+      "size": 1820928
+    },
+    {
+      "key": "data_run/ecmwf_ec46_weekly/2026/07/12/0000Z/dew_point_2m_anomaly.om",
+      "size": 1070528
+    }
+  ],
+  "ecmwf_seas5_12hourly": [],
+  "ecmwf_seas5_monthly_upper_level": []
+}

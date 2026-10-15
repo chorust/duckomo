@@ -54,6 +54,8 @@ read_om(path, dimensions := NULL, grid := NULL,
 - **登记 domain**：使用固定网格及登记的空间轴身份，不接受额外 `grid` 或 `spatial_axes`。68 个规则 domain 使用 `lat` / `lon`；新增投影/Gaussian domain 按各自登记的轴/点序 profile 绑定，不能一概要求 `lat` / `lon`。检查全部值变量的空间轴长度及规则 domain 文件中存在的 WKT BBOX；不从文件路径自动识别。名称、来源和样本覆盖见 [规则网格 domain](regular-domains.md) 与 [多网格证据表](grid-domains.md)。
 - **version=1 grid**：使用精确 `version/type/numeric_policy/earth/layout/parameters` 字段；支持 rotated、Lambert、stereographic 和逐行表 reduced Gaussian。CRS、数值规则、轴布局和每个变量的 shape 均做封闭校验。区域 Gaussian 必须显式给出 local-to-parent segments；BBOX 仅作诊断。逐类型及 domain 的证据等级见 [多网格证据表](grid-domains.md)。
 
+v0.3.1 新增 SEAS5/EC46 的 O320 与 N160 产品 domain，名称及实际轴布局见 [季节预测 domain 指南](seasonal-domains.md)。它们沿用展平 Gaussian 布局，保留所有时间/成员/层次轴；domain 不推定单位或缺失的时间标签。v0.3.0 发布包不包含这次新增注册。查询示例与读取优化从 v0.3.1 起可用。
+
 ## 输出与查询语义
 
 根数组输出 `value FLOAT`；层级值列去掉内部路径的前导 `/`，按内部规范路径排序。嵌套列如 `surface/temperature` 需用双引号引用。附属元数据不生成值列。完整命名规则见基础读取契约。
@@ -74,7 +76,7 @@ read_om(path, dimensions := NULL, grid := NULL,
 
 列裁剪保留输出及过滤依赖，重复引用的值变量只解码一次。仅坐标、无值依赖的 `COUNT(*)` 和可证明的空选择不读取值数组的 index/data；仍可能读取元数据及坐标。区域读取节省取决于 OM 块布局，不能只凭返回行数或 `EXPLAIN` 判断。
 
-HTTP(S)/S3 需要匹配 DuckDB 版本及平台的官方 `httpfs`；已安装且允许自动加载时，标准文件系统可按需加载它，无需显式 `LOAD httpfs`。离线准备或禁用自动加载时按 [HTTPFS 指南](official-httpfs.md) 显式安装/加载；DuckOMO 不强制开启自动安装或绕过外部访问限制。本地读取无需 HTTPFS。`s3://openmeteo/` 在无自定义 S3 配置时可直接匿名读取，无需预先创建 secret；DuckOMO 不自动创建/覆盖 secret，已有配置遵循官方 HTTPFS 规则。对象须在扫描期间稳定，每 worker 独立句柄和 decoder。默认 `duckomo_revalidate_metadata=false`，扫描复用绑定阶段的不可变元数据。`SET duckomo_revalidate_metadata=true` 启用全树重读并比较相同绑定视图；显式选变量时比较该变量及共享元数据。此设置增加 I/O，仍不提供对象快照保证。连接级 `duckomo_max_threads` 默认为 0（使用 DuckDB 上限），正数限制 worker。`duckomo_cache_enabled`、`duckomo_cache_capacity` 和 `duckomo_clear_cache()` 已移除，旧 SQL 会报未知设置/函数；不承诺重复查询热缓存收益、强制刷新或任意上游缓存即时撤权。
+HTTP(S)/S3 需要匹配 DuckDB 版本及平台的官方 `httpfs`；已安装且允许自动加载时，标准文件系统可按需加载它，无需显式 `LOAD httpfs`。离线准备或禁用自动加载时按 [HTTPFS 指南](official-httpfs.md) 显式安装/加载；DuckOMO 不强制开启自动安装或绕过外部访问限制。本地读取无需 HTTPFS。`s3://openmeteo/` 在无自定义 S3 配置时可直接匿名读取，无需预先创建 secret；DuckOMO 不自动创建/覆盖 secret，已有配置遵循官方 HTTPFS 规则。对象须在扫描期间稳定，每 worker 独立句柄和 decoder。默认 `duckomo_revalidate_metadata=false`，扫描复用绑定阶段的不可变元数据。`SET duckomo_revalidate_metadata=true` 启用全树重读并比较相同绑定视图；显式选变量时比较该变量及共享元数据。此设置增加 I/O，仍不提供对象快照保证。连接级 `duckomo_max_threads` 默认为 0（使用 DuckDB 上限），正数限制 worker。`duckomo_cache_enabled`、`duckomo_cache_capacity` 和 `duckomo_clear_cache()` 已移除，旧 SQL 会报未知设置/函数；不承诺重复查询热缓存收益、强制刷新或任意上游缓存即时撤权。v0.3.1 在单 worker/单变量 decoder 内复用最近一次已成功读取的索引与压缩数据范围：只使用现有两个缓冲区，请求完全被已读范围覆盖时避免再次 I/O；不跨查询、变量或 worker 共享。对象须保持稳定，`duckomo_revalidate_metadata` 仍只检查元数据。逻辑 index/data 请求计入全部解码需求，成功位置读取只计实际 I/O；重复解压次数仍如实累计。
 
 `duckomo_last_scan_metrics()` 返回最近一次已结束、含 `read_om` 的 SQL query 的每个扫描一行，列为 `query_id VARCHAR, scan_id UBIGINT, metrics VARCHAR`。`metrics` 是 v4 JSON，完整兼容快照保存在 `legacy_v3`（包含 `legacy_v2`）。逻辑请求与标准文件接口成功读取分开计数；远程 transport body/attempts/responses 为 `null`、`complete=false`，本地为 0/true；原自有 cache 为 false/0，原因 `removed`。网络发送量由验收侧服务日志独立记录，不当作客户端接收量；coordinate 的 index/data/decode 单独列出，逐变量 map 只记录值数组。`scan_complete=false` 可与成功状态并存，例如下游 `LIMIT` 提前停止。`peak_rss_bytes` 的 scope 为 process。`peak_query_owned_bytes` 是当前接入 DuckOMO memory account 的 owned-capacity 峰值；完整逐组件 bound ledger 与远程控制内存核对仍待完成，因此不得将该字段单独解释为进程或全查询所有内存。它不包括 DuckDB 输出 vector、httpfs/引擎内部内存或 allocator bookkeeping。失败、取消及计数失效时该字段为 JSON `null`，并将 `query_memory_count_complete` 置为 false。读取/清理指标不会覆盖最近扫描；错误和取消会保留已观察成本及终态。
 
