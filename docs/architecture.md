@@ -1,6 +1,6 @@
 # DuckOMO 技术架构
 
-当前工作树实现本地 OM 扫描、语义维度选择、列裁剪、规则/投影/Gaussian 网格、多区域 polygon 扫描、native-window 空间选择、opt-in source 身份、grid-info 描述、DuckDB 并行任务及 v4 指标。005 的区域功能使用匹配版 spatial adapter、受检 WKB、惰性区域任务和逐 query owned-memory accounting；版本矩阵和 P6 审计状态见 [005 版本矩阵](../specs/005-polygon-region-statistics/evidence/version-matrix.md) 与 [P6 摘要](../specs/005-polygon-region-statistics/evidence/p6-summary.md)；P7 独立复现由未参与实现者执行。004 的验收仍按自身网格/远程/内存和独立复现门禁判断。官方 HTTPFS 路径已通过 v1.5.4/v1.5.5/v1.5.6 的受控验证；2.0 开发版不在本轮范围。用户接口见 [接口说明](spec.md)，定义与证据等级见 [多网格证据表](grid-domains.md)。
+当前工作树实现本地 OM 扫描、语义维度选择、列裁剪、规则/投影/Gaussian 网格、多区域 polygon 扫描、nearest 区域代表值采样、native-window 空间选择、opt-in source 身份、grid-info 描述、DuckDB 并行任务及 v4 指标。005 的 points 区域功能使用匹配版 spatial adapter、受检 WKB、惰性区域任务和逐 query owned-memory accounting；版本矩阵和 P6 审计状态见 [005 版本矩阵](../specs/005-polygon-region-statistics/evidence/version-matrix.md) 与 [P6 摘要](../specs/005-polygon-region-statistics/evidence/p6-summary.md)；P7 独立复现由未参与实现者执行。006 nearest 在既有 `read_om_regions` 内以 `method` 选择，points 默认兼容；N0–N4在各自声明范围内通过，N5真实和受控传输子检查通过但原始数据授权/持久归档未解决，N6未完成；已有N7本地5×5复现由实现worker执行，不满足独立执行者要求，见[006最终状态](../specs/006-region-nearest-sampling/evidence/final.md)、[006证据](../specs/006-region-nearest-sampling/evidence/)与[支持说明](spec.md)。004 的验收仍按自身网格/远程/内存和独立复现门禁判断。官方 HTTPFS 路径已通过 v1.5.4/v1.5.5/v1.5.6 的受控验证；2.0 开发版不在本轮范围。用户接口见 [接口说明](spec.md)，定义与证据等级见 [多网格证据表](grid-domains.md)。
 
 ## 模块职责
 
@@ -35,7 +35,7 @@ DuckDB SQL
 
 不带空间或语义条件时沿用完整 row-major 逻辑扫描；未映射轴仍参与行索引，不被折叠。task cursor 不物化全域行或任务表。查询成功与扫描完整是两个状态：下游 LIMIT 可以令 SQL 成功、`scan_complete=false`。
 
-区域扫描在绑定阶段先验证并保留整个 regions 输入，随后为每个区域和原始空间窗口惰性生成任务。worker 只持有当前区域 geometry 与 bounded point batch；官方 spatial 执行最终 `covers` 判断。区域集合、geometry opaque copy、bound predicates、task/worker scratch 均纳入 DuckOMO query-owned memory accounting；spatial/GEOS 内部内存仍单列 unknown，进程 RSS 作为独立增长检查。取消和异常在 task/QueryEnd 汇合时发布不完整终态并清理状态。SQL 侧按 region_id/time/member 等分组，不在扫描器里预聚合。
+区域points扫描在绑定阶段先验证并保留整个 regions 输入，随后为每个区域和原始空间窗口惰性生成任务。worker只持有当前区域geometry与bounded point batch；官方 spatial 执行最终 `covers` 判断。nearest模式为每个区域×原始非空间轴组合生成一行，使用官方代表点函数取得面内目标，再由独立规则球面locator选取网格源。两种模式都在 SQL侧按region_id/time/member等分组，不在扫描器里预聚合。区域集合、geometry opaque copy、bound predicates、task/worker scratch均纳入DuckOMO query-owned memory accounting；spatial/GEOS内部内存仍单列unknown，进程RSS作为独立增长检查。取消和异常在task/QueryEnd汇合时发布不完整终态并清理状态。
 
 ## 条件分析与正确性
 
@@ -45,7 +45,7 @@ DuckDB SQL
 
 有限常量比较、`BETWEEN` 和安全 `AND` 可缩小候选。跨接缝最多两个完整安全经度区间可作并集；任一不安全 `OR` 分支会令整个 `OR` 回退。完整 DuckDB `WHERE` 始终保留。候选必须覆盖所有匹配行，精确过滤由 DuckDB 执行。
 
-`SpatialLayout` 把逻辑索引映射到分离轴或明确存储顺序的展平轴。投影/旋转按与输出相同的坐标函数逐原生点筛选；Gaussian 使用逐行点数及区域 local 段，不从 BBOX 重建偏移。每个 native window 最多 65,536 点，selector 最多保留 4,096 ranges；超预算时在窗口发出候选前扩大该窗口并保留 residual。多轴 stride 决定原始 logical positions，非空间组合中重复评估的坐标成本计入 `coordinate_evaluations`。不物化全域坐标或任务表。空选择、仅坐标和无值依赖计数不读取值变量，值过滤依赖仍保留。
+`SpatialLayout` 把逻辑索引映射到分离轴或明确存储顺序的展平轴。投影/旋转按与输出相同的坐标函数逐原生点筛选；Gaussian 使用逐行点数及区域 local 段，不从 BBOX 重建偏移。每个 native window 最多 65,536 点，selector 最多保留 4,096 ranges；超预算时在窗口发出候选前扩大该窗口并保留 residual。nearest 使用 `sphere_haversine_f64_v1` 对合格规则球面网格穷举候选，以距离、原始 point index 排序并周期检查取消；超距结果保留候选坐标/距离但不发布有效 source。多轴 stride 决定原始 logical positions，非空间组合中重复评估的坐标成本计入 `coordinate_evaluations`。points不物化全域坐标或任务表；nearest不物化所有空间坐标或 region×axis任务表。COUNT与几何leaf可零值I/O；值与变量状态投影按实际依赖读取值数组。
 
 ## I/O 与指标
 

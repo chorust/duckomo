@@ -1,0 +1,6 @@
+duckdb_version=v1.5.4
+duckdb_source_id=08e34c44
+spatial_extension_version=28db190
+spatial_install_path=
+spatial_package_sha256=af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a
+region_geometry_test: ok

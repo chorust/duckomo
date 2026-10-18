@@ -1,0 +1,7 @@
+Filters: /home/blizhan/repo/github/duckomo/test/sql/read_om.test
+
+[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/read_om.test
+[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/read_om.test
+===============================================================================
+All tests passed (119 assertions in 1 test case)
+

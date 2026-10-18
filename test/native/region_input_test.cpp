@@ -276,9 +276,39 @@ void TestLimitsAndCancellation() {
 
 	std::vector<std::pair<std::string, std::string>> total_wkb;
 	total_wkb.reserve(17);
-	for (std::uint32_t i = 0; i < 17; ++i) total_wkb.emplace_back("large-" + std::to_string(i), RepeatedRingWkb(61681));
-	RequireRegionError(RegionList(std::move(total_wkb)), "[region_input_limit]",
-	                   "the 16 MiB collection WKB cap is checked before parsing or copying");
+	std::uint64_t total_wkb_bytes = 0;
+	std::uint64_t total_vertices = 0;
+	std::uint64_t total_id_bytes = 0;
+	for (std::uint32_t i = 0; i < 17; ++i) {
+		// 17 individually valid WKBs exceed 16 MiB by 77 bytes, while their
+		// 1,048,567 points remain below the independent aggregate vertex limit.
+		auto id = "large-" + std::to_string(i);
+		const auto point_count = i == 0 ? 61671U : 61681U;
+		auto wkb = RepeatedRingWkb(point_count);
+		Require(wkb.size() <= REGION_MAX_WKB_BYTES, "aggregate fixture items must fit the per-region byte cap");
+		total_wkb_bytes += wkb.size();
+		total_vertices += point_count;
+		total_id_bytes += id.size();
+		total_wkb.emplace_back(std::move(id), std::move(wkb));
+	}
+	const auto estimated_owned_bytes = sizeof(RegionCollection) + total_wkb.size() * sizeof(Region) +
+	                                   total_wkb_bytes + total_id_bytes +
+	                                   total_wkb.size() * (sizeof(std::uint64_t) + sizeof(RegionEnvelope) +
+	                                                       sizeof(std::vector<std::uint8_t>));
+	Require(total_wkb_bytes == REGION_MAX_TOTAL_WKB_BYTES + 77 &&
+	            total_vertices < REGION_MAX_TOTAL_VERTICES && estimated_owned_bytes < REGION_MAX_OWNED_BYTES,
+	        "aggregate WKB fixture must isolate limits: bytes=" + std::to_string(total_wkb_bytes) +
+	            ", vertices=" + std::to_string(total_vertices) + ", owned=" +
+	            std::to_string(estimated_owned_bytes));
+	try {
+		(void)RegionCollection::Build(RegionList(std::move(total_wkb)));
+		throw std::runtime_error("the 16 MiB collection WKB cap was not enforced");
+	} catch (const Exception &error) {
+		const auto message = std::string(error.what());
+		Require(message.find("[region_input_limit]") != std::string::npos &&
+		            message.find("total WKB exceeds the 16 MiB collection byte limit") != std::string::npos,
+		        "the 16 MiB WKB cap must be the rejecting guard for its isolated boundary fixture: " + message);
+	}
 
 	std::string long_ring(1, '\x01');
 	U32(long_ring, 3, true);

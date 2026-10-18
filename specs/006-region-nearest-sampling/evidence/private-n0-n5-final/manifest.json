@@ -1,0 +1,3495 @@
+{
+  "commands_path": "commands.jsonl",
+  "commands_sha256": "918efd2c0f301be71cfe8d44a0cf9e3cadf419b77188f0e9bfab8d1db32a8b3e",
+  "gates": {
+    "N0": {
+      "commands": [
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 129.31,
+          "executable_sha256": "7c4476fea1c5804d2fe829b136587875435535072ddb770f89a899003f7329d3",
+          "exit_code": 0,
+          "gate": "N0",
+          "output_path": "N0-01.stdout.txt",
+          "output_sha256": "9f1dab7fdacd2356c974428fbd4bf657fc37f1d376ae573584790cd14c98f7e3",
+          "started_at": "2026-10-17T10:07:22.848410+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions_spatial_dependency.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 18.684,
+          "executable_sha256": "7c4476fea1c5804d2fe829b136587875435535072ddb770f89a899003f7329d3",
+          "exit_code": 0,
+          "gate": "N0",
+          "output_path": "N0-02.stdout.txt",
+          "output_sha256": "4419997760beec3b6044ce48980cf163e3c86fa99b5439ae3110836b6883b93d",
+          "started_at": "2026-10-17T10:07:22.892180+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling_spatial_dependency.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 18.526,
+          "executable_sha256": "7c4476fea1c5804d2fe829b136587875435535072ddb770f89a899003f7329d3",
+          "exit_code": 0,
+          "gate": "N0",
+          "output_path": "N0-03.stdout.txt",
+          "output_sha256": "d5a7fe3abf1c110c5c4d002bf449e150ea237eb6f9affcf70fa83901ec4201f4",
+          "started_at": "2026-10-17T10:07:22.935902+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/duckdb",
+            "-unsigned",
+            "-f",
+            "/home/blizhan/repo/github/duckomo/build/evidence/sampling/private-n0-n5-final/N0-points-v1.5.4.sql"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 40.954,
+          "executable_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "gate": "N0",
+          "output_path": "N0-04.stdout.txt",
+          "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "started_at": "2026-10-17T10:07:23.004146+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 125.186,
+          "executable_sha256": "1f990190d87e74cd3c798db8e5e58414159b726cd6e088fb4264248d1c312890",
+          "exit_code": 0,
+          "gate": "N0",
+          "output_path": "N0-05.stdout.txt",
+          "output_sha256": "9f1dab7fdacd2356c974428fbd4bf657fc37f1d376ae573584790cd14c98f7e3",
+          "started_at": "2026-10-17T10:07:23.224067+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions_spatial_dependency.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 13.038,
+          "executable_sha256": "1f990190d87e74cd3c798db8e5e58414159b726cd6e088fb4264248d1c312890",
+          "exit_code": 0,
+          "gate": "N0",
+          "output_path": "N0-06.stdout.txt",
+          "output_sha256": "4419997760beec3b6044ce48980cf163e3c86fa99b5439ae3110836b6883b93d",
+          "started_at": "2026-10-17T10:07:23.262869+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling_spatial_dependency.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 18.204,
+          "executable_sha256": "1f990190d87e74cd3c798db8e5e58414159b726cd6e088fb4264248d1c312890",
+          "exit_code": 0,
+          "gate": "N0",
+          "output_path": "N0-07.stdout.txt",
+          "output_sha256": "d5a7fe3abf1c110c5c4d002bf449e150ea237eb6f9affcf70fa83901ec4201f4",
+          "started_at": "2026-10-17T10:07:23.306564+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.5/official/duckdb",
+            "-unsigned",
+            "-f",
+            "/home/blizhan/repo/github/duckomo/build/evidence/sampling/private-n0-n5-final/N0-points-v1.5.5.sql"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 33.811,
+          "executable_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "gate": "N0",
+          "output_path": "N0-08.stdout.txt",
+          "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "started_at": "2026-10-17T10:07:23.367935+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 141.537,
+          "executable_sha256": "f4ada8ce15eb9192b5e3344b49e917c1ed7c103120181d4cf2a273b704b7a0c3",
+          "exit_code": 0,
+          "gate": "N0",
+          "output_path": "N0-09.stdout.txt",
+          "output_sha256": "9f1dab7fdacd2356c974428fbd4bf657fc37f1d376ae573584790cd14c98f7e3",
+          "started_at": "2026-10-17T10:07:23.604277+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions_spatial_dependency.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 19.447,
+          "executable_sha256": "f4ada8ce15eb9192b5e3344b49e917c1ed7c103120181d4cf2a273b704b7a0c3",
+          "exit_code": 0,
+          "gate": "N0",
+          "output_path": "N0-10.stdout.txt",
+          "output_sha256": "4419997760beec3b6044ce48980cf163e3c86fa99b5439ae3110836b6883b93d",
+          "started_at": "2026-10-17T10:07:23.649271+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling_spatial_dependency.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 19.141,
+          "executable_sha256": "f4ada8ce15eb9192b5e3344b49e917c1ed7c103120181d4cf2a273b704b7a0c3",
+          "exit_code": 0,
+          "gate": "N0",
+          "output_path": "N0-11.stdout.txt",
+          "output_sha256": "d5a7fe3abf1c110c5c4d002bf449e150ea237eb6f9affcf70fa83901ec4201f4",
+          "started_at": "2026-10-17T10:07:23.694043+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.6/official/duckdb",
+            "-unsigned",
+            "-f",
+            "/home/blizhan/repo/github/duckomo/build/evidence/sampling/private-n0-n5-final/N0-points-v1.5.6.sql"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 25.744,
+          "executable_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "gate": "N0",
+          "output_path": "N0-12.stdout.txt",
+          "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "started_at": "2026-10-17T10:07:23.747256+00:00"
+        }
+      ],
+      "reason": "three pinned runtime signatures, no-spatial/points regressions, frozen ordered rows and logical metrics match; physical index reuse costs do not exceed the frozen baseline",
+      "runtime_comparisons": {
+        "v1.5.4": {
+          "actual_metrics_sha256": "3769ecfc1f70943dfc6299f39999cc41aedc396d0ba3bf8dd32e844b072819a5",
+          "actual_rows_sha256": "b453c656c5013c53568c123b331ff3617fe0fcb51f0e6476cf15c4313c1596e6",
+          "duckdb_cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "expected_metrics_sha256": "7de4d3b7f379800e6ad4a64943f1f86aef8415522c36a680fb5bd019f8ba8fbd",
+          "expected_rows_sha256": "b453c656c5013c53568c123b331ff3617fe0fcb51f0e6476cf15c4313c1596e6",
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "rows_match": true,
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "stable_metrics_match": true
+        },
+        "v1.5.5": {
+          "actual_metrics_sha256": "96f51b4e745ecb68c3b8cce9e3d78d3b7dc14733e4de65b0b8e9b97b2a9a501c",
+          "actual_rows_sha256": "b453c656c5013c53568c123b331ff3617fe0fcb51f0e6476cf15c4313c1596e6",
+          "duckdb_cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "expected_metrics_sha256": "7de4d3b7f379800e6ad4a64943f1f86aef8415522c36a680fb5bd019f8ba8fbd",
+          "expected_rows_sha256": "b453c656c5013c53568c123b331ff3617fe0fcb51f0e6476cf15c4313c1596e6",
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "rows_match": true,
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "stable_metrics_match": true
+        },
+        "v1.5.6": {
+          "actual_metrics_sha256": "4714b105dc924c7f1d9f29657fa882e63db1db9b4bbf9f64250004a50b9d09f0",
+          "actual_rows_sha256": "b453c656c5013c53568c123b331ff3617fe0fcb51f0e6476cf15c4313c1596e6",
+          "duckdb_cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "expected_metrics_sha256": "7de4d3b7f379800e6ad4a64943f1f86aef8415522c36a680fb5bd019f8ba8fbd",
+          "expected_rows_sha256": "b453c656c5013c53568c123b331ff3617fe0fcb51f0e6476cf15c4313c1596e6",
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "rows_match": true,
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "stable_metrics_match": true
+        }
+      },
+      "status": "pass"
+    },
+    "N1": {
+      "commands": [
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/native/nearest_sampling_test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 709.644,
+          "executable_sha256": "678e9950cdf5072a77e39b921275f065ce00146275d871195a4721ec02b0c14a",
+          "exit_code": 0,
+          "gate": "N1",
+          "output_path": "N1-13.stdout.txt",
+          "output_sha256": "deb0986da499622355951d2b0da97b47176351efc2768fbd59aad0f75d84f3d2",
+          "started_at": "2026-10-17T10:07:24.531437+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/native/region_geometry_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/spatial.duckdb_extension",
+            "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 61.444,
+          "executable_sha256": "51ab2576f533aa4af77d2a56b78b1711a4ed893b6ddc132132bd13ad3ea81e66",
+          "exit_code": 0,
+          "gate": "N1",
+          "output_path": "N1-14.stdout.txt",
+          "output_sha256": "12c11916f00549cc40bc2a7509cb5a7fb302724cb823cd67ae2e5a82a896c4be",
+          "started_at": "2026-10-17T10:07:24.646231+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/native/nearest_sampling_test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 721.002,
+          "executable_sha256": "678e9950cdf5072a77e39b921275f065ce00146275d871195a4721ec02b0c14a",
+          "exit_code": 0,
+          "gate": "N1",
+          "output_path": "N1-15.stdout.txt",
+          "output_sha256": "deb0986da499622355951d2b0da97b47176351efc2768fbd59aad0f75d84f3d2",
+          "started_at": "2026-10-17T10:07:25.367645+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/native/region_geometry_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.5/official/spatial.duckdb_extension",
+            "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 51.645,
+          "executable_sha256": "7d0d46718342b4e77e75c3cdf069ff3eeb60ceabba3e56bda8db0395818a7a55",
+          "exit_code": 0,
+          "gate": "N1",
+          "output_path": "N1-16.stdout.txt",
+          "output_sha256": "ac79df989598e53e753c059e3eb34cbea29958af836dc64310847f9616ca9816",
+          "started_at": "2026-10-17T10:07:25.472913+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/native/nearest_sampling_test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 696.665,
+          "executable_sha256": "678e9950cdf5072a77e39b921275f065ce00146275d871195a4721ec02b0c14a",
+          "exit_code": 0,
+          "gate": "N1",
+          "output_path": "N1-17.stdout.txt",
+          "output_sha256": "deb0986da499622355951d2b0da97b47176351efc2768fbd59aad0f75d84f3d2",
+          "started_at": "2026-10-17T10:07:26.170152+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/native/region_geometry_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.6/official/spatial.duckdb_extension",
+            "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 58.082,
+          "executable_sha256": "6696de1e99ed0074e440d90d31445495653a385d1700d419ee5752a0fd630b4d",
+          "exit_code": 0,
+          "gate": "N1",
+          "output_path": "N1-18.stdout.txt",
+          "output_sha256": "b967308c3952a59102dd151b71af3066065bf503fecb641a4f7ead41d1f0481d",
+          "started_at": "2026-10-17T10:07:26.299968+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/native/spatial_layout_test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 3.083,
+          "executable_sha256": "c0a17a9df5415eb039cbc0175a773962c55e450ae1c41276de48392791d377c7",
+          "exit_code": 0,
+          "gate": "N1",
+          "output_path": "N1-19.stdout.txt",
+          "output_sha256": "ec79a5034a866bb06266adde78ccca97cf411016922e919fe2d92771b3241008",
+          "started_at": "2026-10-17T10:07:26.320193+00:00"
+        }
+      ],
+      "reason": "declared acceptance scope passed: synthetic regular spherical grids and NCEP GFS025; other registered domains are excluded. Locked finite capability cases, ten scientific vectors using independent 90-digit Decimal unit-vector cross/dot distance, 12 exhaustive full-grid GFS025 target profiles, spatial adapter signatures, representative point, source-point mapping and layout checks passed on all three pinned builds. The reviewed oracle derivation and all reachable rejection classes are mapped. Periodic closure is independent of the regional first-to-last endpoint span. This finite acceptance matrix does not claim arbitrary binary64 or complete target-space coverage",
+      "status": "pass"
+    },
+    "N2": {
+      "commands": [
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 145.322,
+          "executable_sha256": "7c4476fea1c5804d2fe829b136587875435535072ddb770f89a899003f7329d3",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-20.stdout.txt",
+          "output_sha256": "f2014af769aa200d65e74cdbbbda9cc030cf8793bc6445de856e91ecfa2e1fe2",
+          "started_at": "2026-10-17T10:07:26.491132+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 119.185,
+          "executable_sha256": "7c4476fea1c5804d2fe829b136587875435535072ddb770f89a899003f7329d3",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-21.stdout.txt",
+          "output_sha256": "9f1dab7fdacd2356c974428fbd4bf657fc37f1d376ae573584790cd14c98f7e3",
+          "started_at": "2026-10-17T10:07:26.642834+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/read_om.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 40.884,
+          "executable_sha256": "7c4476fea1c5804d2fe829b136587875435535072ddb770f89a899003f7329d3",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-22.stdout.txt",
+          "output_sha256": "33c4b57ffd1502daa495f2c8ea250e182abbb86ad912105f93344f540b2d66f6",
+          "started_at": "2026-10-17T10:07:26.709155+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/semantic_axes.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 15.898,
+          "executable_sha256": "7c4476fea1c5804d2fe829b136587875435535072ddb770f89a899003f7329d3",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-23.stdout.txt",
+          "output_sha256": "4f66af5a2f31edf2e0ef6ade726e8a9cd8c49a7f9887cbc07ca51f57b291f18b",
+          "started_at": "2026-10-17T10:07:26.757272+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions_spatial_dependency.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 19.398,
+          "executable_sha256": "7c4476fea1c5804d2fe829b136587875435535072ddb770f89a899003f7329d3",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-24.stdout.txt",
+          "output_sha256": "4419997760beec3b6044ce48980cf163e3c86fa99b5439ae3110836b6883b93d",
+          "started_at": "2026-10-17T10:07:26.808300+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling_spatial_dependency.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 12.031,
+          "executable_sha256": "7c4476fea1c5804d2fe829b136587875435535072ddb770f89a899003f7329d3",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-25.stdout.txt",
+          "output_sha256": "d5a7fe3abf1c110c5c4d002bf449e150ea237eb6f9affcf70fa83901ec4201f4",
+          "started_at": "2026-10-17T10:07:26.845660+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/spatial.duckdb_extension"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 487.627,
+          "executable_sha256": "0c0d54792780e5d30b19c856f0e5de58a3601a017bb4ec1acfcd82f058ba5363",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-26.stdout.txt",
+          "output_sha256": "b343504550bb6a5bb61543704206d43e52fe73acd28f3f8d2fbc093e822e9b3c",
+          "started_at": "2026-10-17T10:07:27.356182+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/native/region_input_test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 71.838,
+          "executable_sha256": "8ded48225c51ac3b718feaffa6df8f2fed492d9027536bcec99c4553c683bacf",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-27.stdout.txt",
+          "output_sha256": "f14746be3b28b7da7de4d044f8b95cce04f56457fc7112404273971f6da10672",
+          "started_at": "2026-10-17T10:07:27.449883+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 129.882,
+          "executable_sha256": "1f990190d87e74cd3c798db8e5e58414159b726cd6e088fb4264248d1c312890",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-28.stdout.txt",
+          "output_sha256": "f2014af769aa200d65e74cdbbbda9cc030cf8793bc6445de856e91ecfa2e1fe2",
+          "started_at": "2026-10-17T10:07:27.613138+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 141.222,
+          "executable_sha256": "1f990190d87e74cd3c798db8e5e58414159b726cd6e088fb4264248d1c312890",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-29.stdout.txt",
+          "output_sha256": "9f1dab7fdacd2356c974428fbd4bf657fc37f1d376ae573584790cd14c98f7e3",
+          "started_at": "2026-10-17T10:07:27.787074+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/read_om.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 39.11,
+          "executable_sha256": "1f990190d87e74cd3c798db8e5e58414159b726cd6e088fb4264248d1c312890",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-30.stdout.txt",
+          "output_sha256": "33c4b57ffd1502daa495f2c8ea250e182abbb86ad912105f93344f540b2d66f6",
+          "started_at": "2026-10-17T10:07:27.859001+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/semantic_axes.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 26.792,
+          "executable_sha256": "1f990190d87e74cd3c798db8e5e58414159b726cd6e088fb4264248d1c312890",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-31.stdout.txt",
+          "output_sha256": "4f66af5a2f31edf2e0ef6ade726e8a9cd8c49a7f9887cbc07ca51f57b291f18b",
+          "started_at": "2026-10-17T10:07:27.918582+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions_spatial_dependency.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 13.255,
+          "executable_sha256": "1f990190d87e74cd3c798db8e5e58414159b726cd6e088fb4264248d1c312890",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-32.stdout.txt",
+          "output_sha256": "4419997760beec3b6044ce48980cf163e3c86fa99b5439ae3110836b6883b93d",
+          "started_at": "2026-10-17T10:07:27.964534+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling_spatial_dependency.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 13.242,
+          "executable_sha256": "1f990190d87e74cd3c798db8e5e58414159b726cd6e088fb4264248d1c312890",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-33.stdout.txt",
+          "output_sha256": "d5a7fe3abf1c110c5c4d002bf449e150ea237eb6f9affcf70fa83901ec4201f4",
+          "started_at": "2026-10-17T10:07:28.003631+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.5/official/spatial.duckdb_extension"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 493.218,
+          "executable_sha256": "d119c2d75090e9e9ab34579e38793243125b9f41ff64577ef39203ad62e02c04",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-34.stdout.txt",
+          "output_sha256": "afd9d98aa1fb2d3f5374fd838c535c14fd9d469f91a7cc5978c364fd1317549e",
+          "started_at": "2026-10-17T10:07:28.519882+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/native/region_input_test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 55.749,
+          "executable_sha256": "10d6f166ee032f6a5485a4098d0a8dacaf288bea27ee3edb52ac9cc7cec3cae1",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-35.stdout.txt",
+          "output_sha256": "f14746be3b28b7da7de4d044f8b95cce04f56457fc7112404273971f6da10672",
+          "started_at": "2026-10-17T10:07:28.592712+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 128.138,
+          "executable_sha256": "f4ada8ce15eb9192b5e3344b49e917c1ed7c103120181d4cf2a273b704b7a0c3",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-36.stdout.txt",
+          "output_sha256": "f2014af769aa200d65e74cdbbbda9cc030cf8793bc6445de856e91ecfa2e1fe2",
+          "started_at": "2026-10-17T10:07:28.746498+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 124.257,
+          "executable_sha256": "f4ada8ce15eb9192b5e3344b49e917c1ed7c103120181d4cf2a273b704b7a0c3",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-37.stdout.txt",
+          "output_sha256": "9f1dab7fdacd2356c974428fbd4bf657fc37f1d376ae573584790cd14c98f7e3",
+          "started_at": "2026-10-17T10:07:28.896325+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/read_om.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 24.256,
+          "executable_sha256": "f4ada8ce15eb9192b5e3344b49e917c1ed7c103120181d4cf2a273b704b7a0c3",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-38.stdout.txt",
+          "output_sha256": "33c4b57ffd1502daa495f2c8ea250e182abbb86ad912105f93344f540b2d66f6",
+          "started_at": "2026-10-17T10:07:28.946412+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/semantic_axes.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 16.888,
+          "executable_sha256": "f4ada8ce15eb9192b5e3344b49e917c1ed7c103120181d4cf2a273b704b7a0c3",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-39.stdout.txt",
+          "output_sha256": "4f66af5a2f31edf2e0ef6ade726e8a9cd8c49a7f9887cbc07ca51f57b291f18b",
+          "started_at": "2026-10-17T10:07:28.989110+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions_spatial_dependency.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 12.658,
+          "executable_sha256": "f4ada8ce15eb9192b5e3344b49e917c1ed7c103120181d4cf2a273b704b7a0c3",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-40.stdout.txt",
+          "output_sha256": "4419997760beec3b6044ce48980cf163e3c86fa99b5439ae3110836b6883b93d",
+          "started_at": "2026-10-17T10:07:29.027369+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling_spatial_dependency.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 13.61,
+          "executable_sha256": "f4ada8ce15eb9192b5e3344b49e917c1ed7c103120181d4cf2a273b704b7a0c3",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-41.stdout.txt",
+          "output_sha256": "d5a7fe3abf1c110c5c4d002bf449e150ea237eb6f9affcf70fa83901ec4201f4",
+          "started_at": "2026-10-17T10:07:29.066467+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.6/official/spatial.duckdb_extension"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 472.42,
+          "executable_sha256": "d1c764c3421b3ea83127bddac8bcae5eaf388fa5e2f4851b6b4698c355d306fd",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-42.stdout.txt",
+          "output_sha256": "687f0d1ab16129d257973d776584a2ac825292277774791def2a6859a85d4830",
+          "started_at": "2026-10-17T10:07:29.566942+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/native/region_input_test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 73.665,
+          "executable_sha256": "46bc2c2bbf9b7041c7313612b2d23204470d25ac9ed003fc656668152974e23a",
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-43.stdout.txt",
+          "output_sha256": "f14746be3b28b7da7de4d044f8b95cce04f56457fc7112404273971f6da10672",
+          "started_at": "2026-10-17T10:07:29.664165+00:00"
+        }
+      ],
+      "reason": "declared acceptance scope passed: synthetic regular spherical grids and NCEP GFS025; other registered domains are excluded. Nearest SQL/value/source/state/options/layout/rebind, legacy points compatibility, inherited read_om/semantic-axis SQL, native official-reader parity, and inherited 005 region-input/limit checks passed on all three runtimes. Nearest SQL covers bind behavior, schema/name conflicts, states, residual filters and strict failures. Combined-invalid probes cover four binder-precedence edges: method options before required region arguments, region presence before CRS validation, CRS validation before collection parsing, and collection parsing before later grid/domain binding. Shared RegionCollection::Build native checks cover reachable count, per-region WKB rejection, aggregate WKB rejection isolated from vertex/owned-memory limits with a specific diagnostic, opaque-geometry allocation and WKB-form limits; per-region/aggregate vertex-count guards and the owned-input cap are unreachable under stricter WKB/count limits. Parser permutations and combined-invalid precedence are finite samples; exhaustive cross-products are outside the declared acceptance contract",
+      "status": "pass"
+    },
+    "N3": {
+      "blocking_scope": [],
+      "commands": [
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/spatial.duckdb_extension"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 521.974,
+          "executable_sha256": "0c0d54792780e5d30b19c856f0e5de58a3601a017bb4ec1acfcd82f058ba5363",
+          "exit_code": 0,
+          "gate": "N3",
+          "output_path": "N3-44.stdout.txt",
+          "output_sha256": "0d8592e86a57511c150eeb54bca6774e9bafda999757ab877dfa93f57000390c",
+          "started_at": "2026-10-17T10:07:30.209508+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 133.198,
+          "executable_sha256": "7c4476fea1c5804d2fe829b136587875435535072ddb770f89a899003f7329d3",
+          "exit_code": 0,
+          "gate": "N3",
+          "output_path": "N3-45.stdout.txt",
+          "output_sha256": "f2014af769aa200d65e74cdbbbda9cc030cf8793bc6445de856e91ecfa2e1fe2",
+          "started_at": "2026-10-17T10:07:30.368373+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.5/official/spatial.duckdb_extension"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 517.279,
+          "executable_sha256": "d119c2d75090e9e9ab34579e38793243125b9f41ff64577ef39203ad62e02c04",
+          "exit_code": 0,
+          "gate": "N3",
+          "output_path": "N3-49.stdout.txt",
+          "output_sha256": "2388bd7f0ba8c579420f000430f5f215eabf250009932b039d0d356c5cfa4d0c",
+          "started_at": "2026-10-17T10:07:31.801175+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 158.74,
+          "executable_sha256": "1f990190d87e74cd3c798db8e5e58414159b726cd6e088fb4264248d1c312890",
+          "exit_code": 0,
+          "gate": "N3",
+          "output_path": "N3-50.stdout.txt",
+          "output_sha256": "f2014af769aa200d65e74cdbbbda9cc030cf8793bc6445de856e91ecfa2e1fe2",
+          "started_at": "2026-10-17T10:07:32.005771+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.6/official/spatial.duckdb_extension"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 560.505,
+          "executable_sha256": "d1c764c3421b3ea83127bddac8bcae5eaf388fa5e2f4851b6b4698c355d306fd",
+          "exit_code": 0,
+          "gate": "N3",
+          "output_path": "N3-54.stdout.txt",
+          "output_sha256": "dfbd7b710c41519d2b4022f37cb1ce2203ddfbc0aaeb5b364b54bd78533e4a6d",
+          "started_at": "2026-10-17T10:07:33.538429+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling.test"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 172.581,
+          "executable_sha256": "f4ada8ce15eb9192b5e3344b49e917c1ed7c103120181d4cf2a273b704b7a0c3",
+          "exit_code": 0,
+          "gate": "N3",
+          "output_path": "N3-55.stdout.txt",
+          "output_sha256": "f2014af769aa200d65e74cdbbbda9cc030cf8793bc6445de856e91ecfa2e1fe2",
+          "started_at": "2026-10-17T10:07:33.744082+00:00"
+        }
+      ],
+      "local_checks_passed": true,
+      "reason": "cross-version SQL/native projection, residual-filter, geometry/count zero-value-I/O, and same-object full-read acceptance passed",
+      "status": "pass"
+    },
+    "N4": {
+      "blocking_scope": [],
+      "commands": [
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/spatial.duckdb_extension"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 534.82,
+          "executable_sha256": "0c0d54792780e5d30b19c856f0e5de58a3601a017bb4ec1acfcd82f058ba5363",
+          "exit_code": 0,
+          "gate": "N4",
+          "output_path": "N4-46.stdout.txt",
+          "output_sha256": "845c70218f5480266cab1341a755ecd59e5c26df03f79de4127890d2e70390b4",
+          "started_at": "2026-10-17T10:07:30.941272+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/spatial.duckdb_extension",
+            "--memory-dimension=64"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 95.738,
+          "executable_sha256": "0c0d54792780e5d30b19c856f0e5de58a3601a017bb4ec1acfcd82f058ba5363",
+          "exit_code": 0,
+          "gate": "N4",
+          "output_path": "N4-47.stdout.txt",
+          "output_sha256": "c2a298b0671e2e9b207139e76b9fb993ba564f3ef4cb286c6d55982973d8ff8d",
+          "started_at": "2026-10-17T10:07:31.074755+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/spatial.duckdb_extension",
+            "--memory-dimension=256"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 139.306,
+          "executable_sha256": "0c0d54792780e5d30b19c856f0e5de58a3601a017bb4ec1acfcd82f058ba5363",
+          "exit_code": 0,
+          "gate": "N4",
+          "output_path": "N4-48.stdout.txt",
+          "output_sha256": "05570068c4904afc5e379201149f6c6bfcceee19223d9b3c7f4d15c2f95b887c",
+          "started_at": "2026-10-17T10:07:31.245474+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.5/official/spatial.duckdb_extension"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 537.059,
+          "executable_sha256": "d119c2d75090e9e9ab34579e38793243125b9f41ff64577ef39203ad62e02c04",
+          "exit_code": 0,
+          "gate": "N4",
+          "output_path": "N4-51.stdout.txt",
+          "output_sha256": "8ef44fd145368255c5b8d654437449fedb784e1d66a3b3b97322d933e6d0af30",
+          "started_at": "2026-10-17T10:07:32.573396+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.5/official/spatial.duckdb_extension",
+            "--memory-dimension=64"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 140.2,
+          "executable_sha256": "d119c2d75090e9e9ab34579e38793243125b9f41ff64577ef39203ad62e02c04",
+          "exit_code": 0,
+          "gate": "N4",
+          "output_path": "N4-52.stdout.txt",
+          "output_sha256": "b36513c2bbf012d90912c5f62520665fec686797c9c3b1b4a68de450c898f79d",
+          "started_at": "2026-10-17T10:07:32.737715+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.5/official/spatial.duckdb_extension",
+            "--memory-dimension=256"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 178.305,
+          "executable_sha256": "d119c2d75090e9e9ab34579e38793243125b9f41ff64577ef39203ad62e02c04",
+          "exit_code": 0,
+          "gate": "N4",
+          "output_path": "N4-53.stdout.txt",
+          "output_sha256": "e4faa182bec26d5d63d29a873b582adfb7b9534f28214b8d5b44309c6396581f",
+          "started_at": "2026-10-17T10:07:32.946410+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.6/official/spatial.duckdb_extension"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 628.301,
+          "executable_sha256": "d1c764c3421b3ea83127bddac8bcae5eaf388fa5e2f4851b6b4698c355d306fd",
+          "exit_code": 0,
+          "gate": "N4",
+          "output_path": "N4-56.stdout.txt",
+          "output_sha256": "6cb3da4a82cacd96a5f86247d476f8eeaca2123aaef8834a8daa91aa6eeb0119",
+          "started_at": "2026-10-17T10:07:34.405110+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.6/official/spatial.duckdb_extension",
+            "--memory-dimension=64"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 130.521,
+          "executable_sha256": "d1c764c3421b3ea83127bddac8bcae5eaf388fa5e2f4851b6b4698c355d306fd",
+          "exit_code": 0,
+          "gate": "N4",
+          "output_path": "N4-57.stdout.txt",
+          "output_sha256": "12dfce4066a4db4e90bb0493a1df2f8f4ae038290844309e82238ac063ff5191",
+          "started_at": "2026-10-17T10:07:34.565253+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.6/official/spatial.duckdb_extension",
+            "--memory-dimension=256"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 163.676,
+          "executable_sha256": "d1c764c3421b3ea83127bddac8bcae5eaf388fa5e2f4851b6b4698c355d306fd",
+          "exit_code": 0,
+          "gate": "N4",
+          "output_path": "N4-58.stdout.txt",
+          "output_sha256": "12dd89a099bd0e9b9ea560fc0cdf64d4cd9c6d3809955b54770e527241757ae4",
+          "started_at": "2026-10-17T10:07:34.767830+00:00"
+        },
+        {
+          "argv": [
+            "ctest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo/build/release/extension/duckomo/test",
+            "--output-on-failure",
+            "-R",
+            "^duckomo_sanitizer_region_sampling_test$"
+          ],
+          "build_manifest_sha256": {
+            "v1.5.4": "d62f3a1c8e3b72700b671232ccc36763d81789903e636cec9a03f338e3169315",
+            "v1.5.5": "57bb0654066471db40535c7d111eac1c75b48f8c0ae8214671e49643d8ee64c5",
+            "v1.5.6": "4f9f2f4e7ee08b1ae539bef9b8d659b3519a798cb82c16b790086e8aad878587"
+          },
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 26169.458,
+          "executable_sha256": null,
+          "exit_code": 0,
+          "gate": "N4",
+          "output_path": "N4-59.stdout.txt",
+          "output_sha256": "0d71f7f6e52a8e44641abed97a822f478f988291b43d5808d452b0f887a0e48d",
+          "started_at": "2026-10-17T10:08:00.938764+00:00"
+        }
+      ],
+      "isolated_memory_measurements": {
+        "v1.5.4": {
+          "256": {
+            "dimension": 256,
+            "full_decoded_chunks": 50952,
+            "full_value_bytes": 346377,
+            "locator_cpu_ns": 4894688,
+            "nearest_decoded_chunks": 12,
+            "nearest_value_bytes": 1290,
+            "query_owned_upper_bound_bytes": 85861,
+            "work_peak_bytes": 16506
+          },
+          "64": {
+            "dimension": 64,
+            "full_decoded_chunks": 3185,
+            "full_value_bytes": 20392,
+            "locator_cpu_ns": 200848,
+            "nearest_decoded_chunks": 12,
+            "nearest_value_bytes": 1233,
+            "query_owned_upper_bound_bytes": 61193,
+            "work_peak_bytes": 16491
+          }
+        },
+        "v1.5.5": {
+          "256": {
+            "dimension": 256,
+            "full_decoded_chunks": 50952,
+            "full_value_bytes": 346377,
+            "locator_cpu_ns": 4885376,
+            "nearest_decoded_chunks": 12,
+            "nearest_value_bytes": 1290,
+            "query_owned_upper_bound_bytes": 85861,
+            "work_peak_bytes": 16506
+          },
+          "64": {
+            "dimension": 64,
+            "full_decoded_chunks": 3185,
+            "full_value_bytes": 20392,
+            "locator_cpu_ns": 323648,
+            "nearest_decoded_chunks": 12,
+            "nearest_value_bytes": 1233,
+            "query_owned_upper_bound_bytes": 61193,
+            "work_peak_bytes": 16491
+          }
+        },
+        "v1.5.6": {
+          "256": {
+            "dimension": 256,
+            "full_decoded_chunks": 50952,
+            "full_value_bytes": 346377,
+            "locator_cpu_ns": 4886160,
+            "nearest_decoded_chunks": 12,
+            "nearest_value_bytes": 1290,
+            "query_owned_upper_bound_bytes": 85861,
+            "work_peak_bytes": 16506
+          },
+          "64": {
+            "dimension": 64,
+            "full_decoded_chunks": 3185,
+            "full_value_bytes": 20392,
+            "locator_cpu_ns": 320800,
+            "nearest_decoded_chunks": 12,
+            "nearest_value_bytes": 1233,
+            "query_owned_upper_bound_bytes": 61193,
+            "work_peak_bytes": 16491
+          }
+        }
+      },
+      "local_checks_passed": true,
+      "reason": "three-version worker/task/lifecycle matrix, separate-process 64x64 versus 256x256 memory scaling, and matching-spatial v1.5.4 sampling ASan/UBSan passed",
+      "status": "pass"
+    },
+    "N5": {
+      "archive": {
+        "manifest_sha256": "d28a3dc606a3f48db834663c4062c141ca57e2ce9ee20dd4d8b5d20513c81d50",
+        "public_redistribution": false,
+        "retention": "retain until owner explicitly authorizes removal; independent hardware backup not established",
+        "retrieval_verified": true,
+        "sha256": "676742c9fe81dd7af7472c7f41d3651d8bd3ff5bcaf1c47b965d415310472375",
+        "size_bytes": 112068504
+      },
+      "authorization_inventory_sha256": "14a885635416f35533a117d2ab9b782363073068f1213b0c48c44fb82b8f4cbc",
+      "commands": [
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "real-local-points",
+          "output_path": "N5-v1.5.4-real-local-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-real-local-points.sql",
+          "sql_sha256": "adb850d0fa6a048596ea295a486136ec7818cee8b1c562825f46857561bd2ef9",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "real-local-nearest",
+          "output_path": "N5-v1.5.4-real-local-nearest.csv",
+          "output_sha256": "577dbd0af0dd3af6376ae85971cc6ba44fc3088189b6cfc397c5e80db5a9e587",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-real-local-nearest.sql",
+          "sql_sha256": "9970692c3dd44a61f5e39ded4460abd62c3bacec56f74e6456e2e154f03c0774",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "real-http-points",
+          "output_path": "N5-v1.5.4-real-http-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-real-http-points.sql",
+          "sql_sha256": "82eb16a3c8d912a126edd63025bb9e7801d46cf820984fa6386f8914cb13a420",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "real-http-nearest",
+          "output_path": "N5-v1.5.4-real-http-nearest.csv",
+          "output_sha256": "b0b56c74a0930fd1e7da376c04d8a809cf12c4635680e980f21764d360de0e43",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-real-http-nearest.sql",
+          "sql_sha256": "47cf45cb6346478805bd65a4fe2bf18ef33f783745ec7835e43d61edde5011e7",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "real-https-points",
+          "output_path": "N5-v1.5.4-real-https-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-real-https-points.sql",
+          "sql_sha256": "a4c0b04f7fe063ca71ee1744784ac40ce4c39872e09083f32a849afc1b15c622",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "real-https-nearest",
+          "output_path": "N5-v1.5.4-real-https-nearest.csv",
+          "output_sha256": "99ee26c3fb5faa0e5e24ddf261d98e8f7a8e9793c6ad9a4f96436a32e237ee00",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-real-https-nearest.sql",
+          "sql_sha256": "5f5cd6362bd470811e14615fbc708ae8eed925533e4ee8997fedac3036e0c9af",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "real-s3-points",
+          "output_path": "N5-v1.5.4-real-s3-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-real-s3-points.sql",
+          "sql_sha256": "d8d663f4298ecf86c9bf5f29d111ad010285119e3ed8eae569e9e7f82f02c61c",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "real-s3-nearest",
+          "output_path": "N5-v1.5.4-real-s3-nearest.csv",
+          "output_sha256": "c20f8a5175497e3370cb02dd0fb0e348862b8948f6de115f85f45d00e43b2e0f",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-real-s3-nearest.sql",
+          "sql_sha256": "1e6a0d85be0bb2417db5c3b8cf7e7c21ad4e2cd3ac98e1ae26eca402a13951b0",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "synthetic-local-points",
+          "output_path": "N5-v1.5.4-synthetic-local-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-synthetic-local-points.sql",
+          "sql_sha256": "240ee7565de6d26aa97192de26aca8c2f4c45eae2dbb8f53cd4b6e50ab065fd4",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "synthetic-local-nearest",
+          "output_path": "N5-v1.5.4-synthetic-local-nearest.csv",
+          "output_sha256": "905085fdfd9b6cab12c51ed85c01fb568acc45cbf6574cd6c7f72ea67e2faa37",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-synthetic-local-nearest.sql",
+          "sql_sha256": "064d6c8f95a0643ce4fad94d789105e8bc9163543cd8e457663a5d9b4a0ef02d",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "synthetic-http-points",
+          "output_path": "N5-v1.5.4-synthetic-http-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-synthetic-http-points.sql",
+          "sql_sha256": "9f4c2b0a786724b148230eac7def72a1bab1663606cc3b343a9a2ef31138cdcf",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "synthetic-http-nearest",
+          "output_path": "N5-v1.5.4-synthetic-http-nearest.csv",
+          "output_sha256": "72ab76bc991e6ef056133f176b141f78535d540a90ea3369e1d7012a6ead470d",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-synthetic-http-nearest.sql",
+          "sql_sha256": "7bd29d0374cd0801eac7f5312c46734ca7cfd3d27d28d9dc7c8694d7c4220f5a",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "synthetic-https-points",
+          "output_path": "N5-v1.5.4-synthetic-https-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-synthetic-https-points.sql",
+          "sql_sha256": "7ff33bced40b04949d7f578a5ed97c0d8f395169e8a0f308c1db6e8be1271020",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "synthetic-https-nearest",
+          "output_path": "N5-v1.5.4-synthetic-https-nearest.csv",
+          "output_sha256": "0052f270dfd44514dfe646c495718a997052c2397ccf52927eb9ededc3f1a402",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-synthetic-https-nearest.sql",
+          "sql_sha256": "6745d18bc90d377b1a3733b027888a4866db6be93bf729f50dfb803983fa190f",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "synthetic-s3-points",
+          "output_path": "N5-v1.5.4-synthetic-s3-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-synthetic-s3-points.sql",
+          "sql_sha256": "eea483390f67bd6648420a4b10bfacc1bc97a987f1e8ea7bd0a1ce0f68fad894",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "synthetic-s3-nearest",
+          "output_path": "N5-v1.5.4-synthetic-s3-nearest.csv",
+          "output_sha256": "740df420ac34939935e537357599f550c2a9d26c6dc90ed01a3f4f2c56f80031",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-synthetic-s3-nearest.sql",
+          "sql_sha256": "7009f518b8e4ad6e7cf72d0fdbe2bd13fb7abf17bbdf94cd6f9aba95c843dfc8",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "real-direct",
+          "output_path": "N5-v1.5.4-real-direct.csv",
+          "output_sha256": "9f9e4f7279b6db8c74d436eb313a6a134e7bb2ef3f734f506aab0aeab66b8b3d",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-real-direct.sql",
+          "sql_sha256": "9e23a8ffbd22c00edac4df77f41cd3b7a1201ddb5790c0ab0f7a5b957bf759d2",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "real-exact-source",
+          "output_path": "N5-v1.5.4-real-exact-source.csv",
+          "output_sha256": "2639fca4ecf7da10fd3f1ccdf8917fe1fd9852a29ac0e721c7eb3b7575201f11",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-real-exact-source.sql",
+          "sql_sha256": "6e26c6465203581b04b4ed870ef5dcdde8d58a031b3ec4471a18364eef5976a7",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 1,
+          "expected_error": true,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "http-denied",
+          "output_path": "N5-v1.5.4-http-denied.csv",
+          "output_sha256": "76d12c1a25a76e2844738d48bf4aef3948cb8c806f39434fb38d7c92853103b2",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-http-denied.sql",
+          "sql_sha256": "1033dd7fd897866a2ace20b2ad03197db663cb31a4acf2ef5e5000dd5838c228",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+          "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "label": "http-recovered",
+          "output_path": "N5-v1.5.4-http-recovered.csv",
+          "output_sha256": "9880da288d67663c7d5485ef641d59e6739c4a62b26835b5febdecc1c7f8bc1b",
+          "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+          "sql_path": "N5-v1.5.4-http-recovered.sql",
+          "sql_sha256": "1033dd7fd897866a2ace20b2ad03197db663cb31a4acf2ef5e5000dd5838c228",
+          "version": "v1.5.4"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "real-local-points",
+          "output_path": "N5-v1.5.5-real-local-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-real-local-points.sql",
+          "sql_sha256": "8b951cad9eaa1cae74df60bcbdadebe1fee126c5dcecec3008c17acbc691b347",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "real-local-nearest",
+          "output_path": "N5-v1.5.5-real-local-nearest.csv",
+          "output_sha256": "577dbd0af0dd3af6376ae85971cc6ba44fc3088189b6cfc397c5e80db5a9e587",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-real-local-nearest.sql",
+          "sql_sha256": "13a6a916fb85fb2fd1787011e24f56ba296f7d8bcb84ceaad0ce84a9582987c6",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "real-http-points",
+          "output_path": "N5-v1.5.5-real-http-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-real-http-points.sql",
+          "sql_sha256": "643548599451d2c2cefc2391f300e11ddbee242008d441fa2e0fac3bd6500752",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "real-http-nearest",
+          "output_path": "N5-v1.5.5-real-http-nearest.csv",
+          "output_sha256": "b0b56c74a0930fd1e7da376c04d8a809cf12c4635680e980f21764d360de0e43",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-real-http-nearest.sql",
+          "sql_sha256": "3fa252e0eb82ab86887d8cda63d04850aa08ce2266b22b9905fc38f239730bfa",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "real-https-points",
+          "output_path": "N5-v1.5.5-real-https-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-real-https-points.sql",
+          "sql_sha256": "d6f293049c0b7a1d41685525e5dc168b191b81c54e504b99555aed63e91da68d",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "real-https-nearest",
+          "output_path": "N5-v1.5.5-real-https-nearest.csv",
+          "output_sha256": "99ee26c3fb5faa0e5e24ddf261d98e8f7a8e9793c6ad9a4f96436a32e237ee00",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-real-https-nearest.sql",
+          "sql_sha256": "07fbc98d652b7635cdcc770a84d0f8ca545f371827f06ee45e81558dac2fb408",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "real-s3-points",
+          "output_path": "N5-v1.5.5-real-s3-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-real-s3-points.sql",
+          "sql_sha256": "dc68a56fe79ba4e14121acaac30f0262fa7a3add94469146d34b8c11f29e16f0",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "real-s3-nearest",
+          "output_path": "N5-v1.5.5-real-s3-nearest.csv",
+          "output_sha256": "c20f8a5175497e3370cb02dd0fb0e348862b8948f6de115f85f45d00e43b2e0f",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-real-s3-nearest.sql",
+          "sql_sha256": "6d755e75bf9f4260faa4bc16699f34544e9da0f5ace0cf8f823ccfd5c9ca8e4d",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "synthetic-local-points",
+          "output_path": "N5-v1.5.5-synthetic-local-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-synthetic-local-points.sql",
+          "sql_sha256": "3143d9238077afc8a680990f99b05896de099154e4434e16745830aeefc674f1",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "synthetic-local-nearest",
+          "output_path": "N5-v1.5.5-synthetic-local-nearest.csv",
+          "output_sha256": "905085fdfd9b6cab12c51ed85c01fb568acc45cbf6574cd6c7f72ea67e2faa37",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-synthetic-local-nearest.sql",
+          "sql_sha256": "79708d5b4933ead836e101123a0c75e920be467bde55f5e278b8bc9e03c6a3e1",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "synthetic-http-points",
+          "output_path": "N5-v1.5.5-synthetic-http-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-synthetic-http-points.sql",
+          "sql_sha256": "d677e55bcff16a922478cdaadde41ae325d4b949cd0a6aab19cbd97f51374441",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "synthetic-http-nearest",
+          "output_path": "N5-v1.5.5-synthetic-http-nearest.csv",
+          "output_sha256": "72ab76bc991e6ef056133f176b141f78535d540a90ea3369e1d7012a6ead470d",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-synthetic-http-nearest.sql",
+          "sql_sha256": "772a8217a4aaee872c46d9df5dd0a50a3b99e8d220ed46e5c775bb5936f81c67",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "synthetic-https-points",
+          "output_path": "N5-v1.5.5-synthetic-https-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-synthetic-https-points.sql",
+          "sql_sha256": "fa801c50d3fe09fd28fc3f73ea22b2a671aeaacd672676e6667e544b873f7441",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "synthetic-https-nearest",
+          "output_path": "N5-v1.5.5-synthetic-https-nearest.csv",
+          "output_sha256": "0052f270dfd44514dfe646c495718a997052c2397ccf52927eb9ededc3f1a402",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-synthetic-https-nearest.sql",
+          "sql_sha256": "3650eb299613d7fca42707f22a0bd05ecdcd6439f38940a356c4913032d616df",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "synthetic-s3-points",
+          "output_path": "N5-v1.5.5-synthetic-s3-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-synthetic-s3-points.sql",
+          "sql_sha256": "08a560eef1c0c6aff34e996e7cd46b435ec644b0acf7e235b6eaa12f58476620",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "synthetic-s3-nearest",
+          "output_path": "N5-v1.5.5-synthetic-s3-nearest.csv",
+          "output_sha256": "740df420ac34939935e537357599f550c2a9d26c6dc90ed01a3f4f2c56f80031",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-synthetic-s3-nearest.sql",
+          "sql_sha256": "3de13f5ba20e081358609cdd37f32602e3e8a7936688dcc684c53eb672933c8e",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "real-direct",
+          "output_path": "N5-v1.5.5-real-direct.csv",
+          "output_sha256": "9f9e4f7279b6db8c74d436eb313a6a134e7bb2ef3f734f506aab0aeab66b8b3d",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-real-direct.sql",
+          "sql_sha256": "60cac0fdb9ab2edf523697801af9d62103407f04f03e0da410c6f80fd5444780",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "real-exact-source",
+          "output_path": "N5-v1.5.5-real-exact-source.csv",
+          "output_sha256": "2639fca4ecf7da10fd3f1ccdf8917fe1fd9852a29ac0e721c7eb3b7575201f11",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-real-exact-source.sql",
+          "sql_sha256": "c0725530ff901c2d57517396039894af928ddb5b2dc666983e8edf6220d33e6d",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 1,
+          "expected_error": true,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "http-denied",
+          "output_path": "N5-v1.5.5-http-denied.csv",
+          "output_sha256": "76d12c1a25a76e2844738d48bf4aef3948cb8c806f39434fb38d7c92853103b2",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-http-denied.sql",
+          "sql_sha256": "9d28470060f565b3f9c7be598364ddf37162860b5a1d3ab03c310c70ffb7b11f",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197",
+          "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "label": "http-recovered",
+          "output_path": "N5-v1.5.5-http-recovered.csv",
+          "output_sha256": "9880da288d67663c7d5485ef641d59e6739c4a62b26835b5febdecc1c7f8bc1b",
+          "spatial_sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d",
+          "sql_path": "N5-v1.5.5-http-recovered.sql",
+          "sql_sha256": "9d28470060f565b3f9c7be598364ddf37162860b5a1d3ab03c310c70ffb7b11f",
+          "version": "v1.5.5"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "real-local-points",
+          "output_path": "N5-v1.5.6-real-local-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-real-local-points.sql",
+          "sql_sha256": "3c8f8540d10804454eeb84ba8a6354a34b4d1915025cd88d589e12df22fe59bf",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "real-local-nearest",
+          "output_path": "N5-v1.5.6-real-local-nearest.csv",
+          "output_sha256": "577dbd0af0dd3af6376ae85971cc6ba44fc3088189b6cfc397c5e80db5a9e587",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-real-local-nearest.sql",
+          "sql_sha256": "66dd2a3b352c646c17fc44471611f16ba3e6d56b28197e0b0fa5af9446d96404",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "real-http-points",
+          "output_path": "N5-v1.5.6-real-http-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-real-http-points.sql",
+          "sql_sha256": "1dc88b60e893aee4cdd10f804236434b070092e228d452d7989d537a464aee11",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "real-http-nearest",
+          "output_path": "N5-v1.5.6-real-http-nearest.csv",
+          "output_sha256": "b0b56c74a0930fd1e7da376c04d8a809cf12c4635680e980f21764d360de0e43",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-real-http-nearest.sql",
+          "sql_sha256": "b7115a184828d941e25894e31b1b689785731b546920fa2c9ac95e039ba528da",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "real-https-points",
+          "output_path": "N5-v1.5.6-real-https-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-real-https-points.sql",
+          "sql_sha256": "7241f00b9e6e4b98e552fbb0d421ab1a375fe7813c6aafe88aeeb67728f0832a",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "real-https-nearest",
+          "output_path": "N5-v1.5.6-real-https-nearest.csv",
+          "output_sha256": "99ee26c3fb5faa0e5e24ddf261d98e8f7a8e9793c6ad9a4f96436a32e237ee00",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-real-https-nearest.sql",
+          "sql_sha256": "a95a2cfaa017b2e77a05b9f6ba9e598758d22cd068afdf61386f723ac0599195",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "real-s3-points",
+          "output_path": "N5-v1.5.6-real-s3-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-real-s3-points.sql",
+          "sql_sha256": "b88a459a02033cd2ea5231eff40f85b8d7dc7a07adfbeb6e9c0d6baa79d13b17",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "real-s3-nearest",
+          "output_path": "N5-v1.5.6-real-s3-nearest.csv",
+          "output_sha256": "c20f8a5175497e3370cb02dd0fb0e348862b8948f6de115f85f45d00e43b2e0f",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-real-s3-nearest.sql",
+          "sql_sha256": "bf34b75a0befc45a6082e0e70514e68598495bc7c341bfd26970be116c3d1b92",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "synthetic-local-points",
+          "output_path": "N5-v1.5.6-synthetic-local-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-synthetic-local-points.sql",
+          "sql_sha256": "2c518e25d75d3d775ed32c8262e5e562e50129f499cfcb24b631286af122e05a",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "synthetic-local-nearest",
+          "output_path": "N5-v1.5.6-synthetic-local-nearest.csv",
+          "output_sha256": "905085fdfd9b6cab12c51ed85c01fb568acc45cbf6574cd6c7f72ea67e2faa37",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-synthetic-local-nearest.sql",
+          "sql_sha256": "bea55d0036c16499d3d209905a0a99cd1148e847f71ccae64f6ebe8874070cfb",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "synthetic-http-points",
+          "output_path": "N5-v1.5.6-synthetic-http-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-synthetic-http-points.sql",
+          "sql_sha256": "230fb99106edc17a580d39ce02bcf43232e5e5cc5698fd5b65de8e3c4849d0dc",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "synthetic-http-nearest",
+          "output_path": "N5-v1.5.6-synthetic-http-nearest.csv",
+          "output_sha256": "72ab76bc991e6ef056133f176b141f78535d540a90ea3369e1d7012a6ead470d",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-synthetic-http-nearest.sql",
+          "sql_sha256": "f125f42174e47adf237d923a3531fb36a795975db2ee3c2c37ad3a2f8ea2b259",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "synthetic-https-points",
+          "output_path": "N5-v1.5.6-synthetic-https-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-synthetic-https-points.sql",
+          "sql_sha256": "d8c3b051f8f058bf52a1dcfa0acf67d25aa771963b53a4af96c7afa26d277263",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "synthetic-https-nearest",
+          "output_path": "N5-v1.5.6-synthetic-https-nearest.csv",
+          "output_sha256": "0052f270dfd44514dfe646c495718a997052c2397ccf52927eb9ededc3f1a402",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-synthetic-https-nearest.sql",
+          "sql_sha256": "82623dafcf39c3d21b14f8dae0f807557cc32b49dc94a83292997cd5228e857b",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "synthetic-s3-points",
+          "output_path": "N5-v1.5.6-synthetic-s3-points.csv",
+          "output_sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-synthetic-s3-points.sql",
+          "sql_sha256": "c792225a2e0f74b55853c881ff227151f026cf8877cecd9960bb331c48555b57",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "synthetic-s3-nearest",
+          "output_path": "N5-v1.5.6-synthetic-s3-nearest.csv",
+          "output_sha256": "740df420ac34939935e537357599f550c2a9d26c6dc90ed01a3f4f2c56f80031",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-synthetic-s3-nearest.sql",
+          "sql_sha256": "302b3a68b5640c7b9d1e33d76a6ad356e3832b22eb16783dd48baaf2f5b9efd1",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "real-direct",
+          "output_path": "N5-v1.5.6-real-direct.csv",
+          "output_sha256": "9f9e4f7279b6db8c74d436eb313a6a134e7bb2ef3f734f506aab0aeab66b8b3d",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-real-direct.sql",
+          "sql_sha256": "612bb9bc1cd00ba70e24b67bf8d4152ca680e8394050a68f7c29ef1c1c16571a",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "real-exact-source",
+          "output_path": "N5-v1.5.6-real-exact-source.csv",
+          "output_sha256": "2639fca4ecf7da10fd3f1ccdf8917fe1fd9852a29ac0e721c7eb3b7575201f11",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-real-exact-source.sql",
+          "sql_sha256": "6247c73d65abab1fd5365326cb0918bffb6698461a9f0c7932baf2c3994e40e5",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 1,
+          "expected_error": true,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "http-denied",
+          "output_path": "N5-v1.5.6-http-denied.csv",
+          "output_sha256": "76d12c1a25a76e2844738d48bf4aef3948cb8c806f39434fb38d7c92853103b2",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-http-denied.sql",
+          "sql_sha256": "9e7cf1524fd154c8e115768ee918018f87c4dcff789d00f84825831554f571a0",
+          "version": "v1.5.6"
+        },
+        {
+          "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "exit_code": 0,
+          "expected_error": false,
+          "extension_sha256": "a1e4c901f994a7bec26315882dc6adc464dc48f2c86a132b0cf53d5fb2ea1209",
+          "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "label": "http-recovered",
+          "output_path": "N5-v1.5.6-http-recovered.csv",
+          "output_sha256": "9880da288d67663c7d5485ef641d59e6739c4a62b26835b5febdecc1c7f8bc1b",
+          "spatial_sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14",
+          "sql_path": "N5-v1.5.6-http-recovered.sql",
+          "sql_sha256": "9e7cf1524fd154c8e115768ee918018f87c4dcff789d00f84825831554f571a0",
+          "version": "v1.5.6"
+        }
+      ],
+      "comparisons": {
+        "v1.5.4": {
+          "real": {
+            "rows": 1,
+            "semantic_rows": [
+              {
+                "axis_indices": "[]",
+                "distance_m": "12266.306480960757",
+                "geometry_status": "ok",
+                "grid_id": "22dde336af18129757dbf49dd23d8c34c093e65598403dd45272a6a03095363e",
+                "lat": "39.91557869989714",
+                "layout_id": "b795440fd6bb8a825ba3c83dbf2ca590e1b6bc54b80b510aa75112b9d6420de4",
+                "logical_index": "749986",
+                "lon": "116.40737101384086",
+                "point_index": "749986",
+                "region_id": "Dongcheng",
+                "source_lat": "40.0",
+                "source_lon": "116.5",
+                "source_point_index": "749986",
+                "temperature_80m": "13.45",
+                "value_status": "ok"
+              }
+            ],
+            "transports_match": true
+          },
+          "synthetic": {
+            "rows": 18,
+            "semantic_rows": [
+              {
+                "axis_indices": "[0, 0]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "0",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "0.0",
+                "value_status": "ok"
+              },
+              {
+                "axis_indices": "[0, 0]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[0, 0]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              },
+              {
+                "axis_indices": "[0, 1]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "25",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "100.0",
+                "value_status": "ok"
+              },
+              {
+                "axis_indices": "[0, 1]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[0, 1]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              },
+              {
+                "axis_indices": "[0, 2]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "50",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "NULL",
+                "value_status": "source_null"
+              },
+              {
+                "axis_indices": "[0, 2]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[0, 2]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              },
+              {
+                "axis_indices": "[1, 0]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "75",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "1000.0",
+                "value_status": "ok"
+              },
+              {
+                "axis_indices": "[1, 0]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[1, 0]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              },
+              {
+                "axis_indices": "[1, 1]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "100",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "1100.0",
+                "value_status": "ok"
+              },
+              {
+                "axis_indices": "[1, 1]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[1, 1]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              },
+              {
+                "axis_indices": "[1, 2]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "125",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "NULL",
+                "value_status": "source_null"
+              },
+              {
+                "axis_indices": "[1, 2]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[1, 2]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              }
+            ],
+            "transports_match": true
+          }
+        },
+        "v1.5.5": {
+          "real": {
+            "rows": 1,
+            "semantic_rows": [
+              {
+                "axis_indices": "[]",
+                "distance_m": "12266.306480960757",
+                "geometry_status": "ok",
+                "grid_id": "22dde336af18129757dbf49dd23d8c34c093e65598403dd45272a6a03095363e",
+                "lat": "39.91557869989714",
+                "layout_id": "b795440fd6bb8a825ba3c83dbf2ca590e1b6bc54b80b510aa75112b9d6420de4",
+                "logical_index": "749986",
+                "lon": "116.40737101384086",
+                "point_index": "749986",
+                "region_id": "Dongcheng",
+                "source_lat": "40.0",
+                "source_lon": "116.5",
+                "source_point_index": "749986",
+                "temperature_80m": "13.45",
+                "value_status": "ok"
+              }
+            ],
+            "transports_match": true
+          },
+          "synthetic": {
+            "rows": 18,
+            "semantic_rows": [
+              {
+                "axis_indices": "[0, 0]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "0",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "0.0",
+                "value_status": "ok"
+              },
+              {
+                "axis_indices": "[0, 0]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[0, 0]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              },
+              {
+                "axis_indices": "[0, 1]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "25",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "100.0",
+                "value_status": "ok"
+              },
+              {
+                "axis_indices": "[0, 1]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[0, 1]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              },
+              {
+                "axis_indices": "[0, 2]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "50",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "NULL",
+                "value_status": "source_null"
+              },
+              {
+                "axis_indices": "[0, 2]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[0, 2]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              },
+              {
+                "axis_indices": "[1, 0]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "75",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "1000.0",
+                "value_status": "ok"
+              },
+              {
+                "axis_indices": "[1, 0]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[1, 0]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              },
+              {
+                "axis_indices": "[1, 1]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "100",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "1100.0",
+                "value_status": "ok"
+              },
+              {
+                "axis_indices": "[1, 1]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[1, 1]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              },
+              {
+                "axis_indices": "[1, 2]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "125",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "NULL",
+                "value_status": "source_null"
+              },
+              {
+                "axis_indices": "[1, 2]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[1, 2]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              }
+            ],
+            "transports_match": true
+          }
+        },
+        "v1.5.6": {
+          "real": {
+            "rows": 1,
+            "semantic_rows": [
+              {
+                "axis_indices": "[]",
+                "distance_m": "12266.306480960757",
+                "geometry_status": "ok",
+                "grid_id": "22dde336af18129757dbf49dd23d8c34c093e65598403dd45272a6a03095363e",
+                "lat": "39.91557869989714",
+                "layout_id": "b795440fd6bb8a825ba3c83dbf2ca590e1b6bc54b80b510aa75112b9d6420de4",
+                "logical_index": "749986",
+                "lon": "116.40737101384086",
+                "point_index": "749986",
+                "region_id": "Dongcheng",
+                "source_lat": "40.0",
+                "source_lon": "116.5",
+                "source_point_index": "749986",
+                "temperature_80m": "13.45",
+                "value_status": "ok"
+              }
+            ],
+            "transports_match": true
+          },
+          "synthetic": {
+            "rows": 18,
+            "semantic_rows": [
+              {
+                "axis_indices": "[0, 0]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "0",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "0.0",
+                "value_status": "ok"
+              },
+              {
+                "axis_indices": "[0, 0]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[0, 0]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              },
+              {
+                "axis_indices": "[0, 1]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "25",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "100.0",
+                "value_status": "ok"
+              },
+              {
+                "axis_indices": "[0, 1]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[0, 1]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              },
+              {
+                "axis_indices": "[0, 2]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "50",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "NULL",
+                "value_status": "source_null"
+              },
+              {
+                "axis_indices": "[0, 2]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[0, 2]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              },
+              {
+                "axis_indices": "[1, 0]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "75",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "1000.0",
+                "value_status": "ok"
+              },
+              {
+                "axis_indices": "[1, 0]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[1, 0]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              },
+              {
+                "axis_indices": "[1, 1]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "100",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "1100.0",
+                "value_status": "ok"
+              },
+              {
+                "axis_indices": "[1, 1]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[1, 1]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              },
+              {
+                "axis_indices": "[1, 2]",
+                "distance_m": "22883.490692907973",
+                "geometry_status": "ok",
+                "grid_id": "24d3fdba68856997e9868c9367ab68696a969a6f7faa30b4d3f771e5ba8ac625",
+                "lat": "20.15",
+                "layout_id": "eceb1ae7d0b672bc7a88a603e73e95d677eced1886f56998f8f98c6bc9c7d2f1",
+                "logical_index": "125",
+                "lon": "100.15",
+                "point_index": "0",
+                "region_id": "Gap",
+                "source_lat": "20.0",
+                "source_lon": "100.0",
+                "source_point_index": "0",
+                "value": "NULL",
+                "value_status": "source_null"
+              },
+              {
+                "axis_indices": "[1, 2]",
+                "distance_m": "NULL",
+                "geometry_status": "empty_geometry",
+                "grid_id": "NULL",
+                "lat": "NULL",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "NULL",
+                "point_index": "NULL",
+                "region_id": "Empty",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "empty_geometry"
+              },
+              {
+                "axis_indices": "[1, 2]",
+                "distance_m": "NULL",
+                "geometry_status": "outside_domain",
+                "grid_id": "NULL",
+                "lat": "30.5",
+                "layout_id": "NULL",
+                "logical_index": "NULL",
+                "lon": "110.5",
+                "point_index": "NULL",
+                "region_id": "Outside",
+                "source_lat": "NULL",
+                "source_lon": "NULL",
+                "source_point_index": "NULL",
+                "value": "NULL",
+                "value_status": "outside_domain"
+              }
+            ],
+            "transports_match": true
+          }
+        }
+      },
+      "fixture_manifest_sha256": "54ee9846d1d80779541dbd8b00f17c80a4004e7c0259b5cd8e1a786345545650",
+      "geometry_sha256": "5a3be71b77a44fcd2d0132e57345fd679155fa07b70de4a13b9df706cf98c508",
+      "outputs": [
+        {
+          "path": "N5-v1.5.4-real-local-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.4-real-local-nearest.csv",
+          "sha256": "577dbd0af0dd3af6376ae85971cc6ba44fc3088189b6cfc397c5e80db5a9e587"
+        },
+        {
+          "path": "N5-v1.5.4-real-http-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.4-real-http-nearest.csv",
+          "sha256": "b0b56c74a0930fd1e7da376c04d8a809cf12c4635680e980f21764d360de0e43"
+        },
+        {
+          "path": "N5-v1.5.4-real-https-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.4-real-https-nearest.csv",
+          "sha256": "99ee26c3fb5faa0e5e24ddf261d98e8f7a8e9793c6ad9a4f96436a32e237ee00"
+        },
+        {
+          "path": "N5-v1.5.4-real-s3-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.4-real-s3-nearest.csv",
+          "sha256": "c20f8a5175497e3370cb02dd0fb0e348862b8948f6de115f85f45d00e43b2e0f"
+        },
+        {
+          "path": "N5-v1.5.4-synthetic-local-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.4-synthetic-local-nearest.csv",
+          "sha256": "905085fdfd9b6cab12c51ed85c01fb568acc45cbf6574cd6c7f72ea67e2faa37"
+        },
+        {
+          "path": "N5-v1.5.4-synthetic-http-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.4-synthetic-http-nearest.csv",
+          "sha256": "72ab76bc991e6ef056133f176b141f78535d540a90ea3369e1d7012a6ead470d"
+        },
+        {
+          "path": "N5-v1.5.4-synthetic-https-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.4-synthetic-https-nearest.csv",
+          "sha256": "0052f270dfd44514dfe646c495718a997052c2397ccf52927eb9ededc3f1a402"
+        },
+        {
+          "path": "N5-v1.5.4-synthetic-s3-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.4-synthetic-s3-nearest.csv",
+          "sha256": "740df420ac34939935e537357599f550c2a9d26c6dc90ed01a3f4f2c56f80031"
+        },
+        {
+          "path": "N5-v1.5.4-real-direct.csv",
+          "sha256": "9f9e4f7279b6db8c74d436eb313a6a134e7bb2ef3f734f506aab0aeab66b8b3d"
+        },
+        {
+          "path": "N5-v1.5.4-real-exact-source.csv",
+          "sha256": "2639fca4ecf7da10fd3f1ccdf8917fe1fd9852a29ac0e721c7eb3b7575201f11"
+        },
+        {
+          "path": "N5-v1.5.4-http-denied.csv",
+          "sha256": "76d12c1a25a76e2844738d48bf4aef3948cb8c806f39434fb38d7c92853103b2"
+        },
+        {
+          "path": "N5-v1.5.4-http-recovered.csv",
+          "sha256": "9880da288d67663c7d5485ef641d59e6739c4a62b26835b5febdecc1c7f8bc1b"
+        },
+        {
+          "path": "N5-v1.5.5-real-local-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.5-real-local-nearest.csv",
+          "sha256": "577dbd0af0dd3af6376ae85971cc6ba44fc3088189b6cfc397c5e80db5a9e587"
+        },
+        {
+          "path": "N5-v1.5.5-real-http-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.5-real-http-nearest.csv",
+          "sha256": "b0b56c74a0930fd1e7da376c04d8a809cf12c4635680e980f21764d360de0e43"
+        },
+        {
+          "path": "N5-v1.5.5-real-https-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.5-real-https-nearest.csv",
+          "sha256": "99ee26c3fb5faa0e5e24ddf261d98e8f7a8e9793c6ad9a4f96436a32e237ee00"
+        },
+        {
+          "path": "N5-v1.5.5-real-s3-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.5-real-s3-nearest.csv",
+          "sha256": "c20f8a5175497e3370cb02dd0fb0e348862b8948f6de115f85f45d00e43b2e0f"
+        },
+        {
+          "path": "N5-v1.5.5-synthetic-local-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.5-synthetic-local-nearest.csv",
+          "sha256": "905085fdfd9b6cab12c51ed85c01fb568acc45cbf6574cd6c7f72ea67e2faa37"
+        },
+        {
+          "path": "N5-v1.5.5-synthetic-http-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.5-synthetic-http-nearest.csv",
+          "sha256": "72ab76bc991e6ef056133f176b141f78535d540a90ea3369e1d7012a6ead470d"
+        },
+        {
+          "path": "N5-v1.5.5-synthetic-https-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.5-synthetic-https-nearest.csv",
+          "sha256": "0052f270dfd44514dfe646c495718a997052c2397ccf52927eb9ededc3f1a402"
+        },
+        {
+          "path": "N5-v1.5.5-synthetic-s3-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.5-synthetic-s3-nearest.csv",
+          "sha256": "740df420ac34939935e537357599f550c2a9d26c6dc90ed01a3f4f2c56f80031"
+        },
+        {
+          "path": "N5-v1.5.5-real-direct.csv",
+          "sha256": "9f9e4f7279b6db8c74d436eb313a6a134e7bb2ef3f734f506aab0aeab66b8b3d"
+        },
+        {
+          "path": "N5-v1.5.5-real-exact-source.csv",
+          "sha256": "2639fca4ecf7da10fd3f1ccdf8917fe1fd9852a29ac0e721c7eb3b7575201f11"
+        },
+        {
+          "path": "N5-v1.5.5-http-denied.csv",
+          "sha256": "76d12c1a25a76e2844738d48bf4aef3948cb8c806f39434fb38d7c92853103b2"
+        },
+        {
+          "path": "N5-v1.5.5-http-recovered.csv",
+          "sha256": "9880da288d67663c7d5485ef641d59e6739c4a62b26835b5febdecc1c7f8bc1b"
+        },
+        {
+          "path": "N5-v1.5.6-real-local-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.6-real-local-nearest.csv",
+          "sha256": "577dbd0af0dd3af6376ae85971cc6ba44fc3088189b6cfc397c5e80db5a9e587"
+        },
+        {
+          "path": "N5-v1.5.6-real-http-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.6-real-http-nearest.csv",
+          "sha256": "b0b56c74a0930fd1e7da376c04d8a809cf12c4635680e980f21764d360de0e43"
+        },
+        {
+          "path": "N5-v1.5.6-real-https-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.6-real-https-nearest.csv",
+          "sha256": "99ee26c3fb5faa0e5e24ddf261d98e8f7a8e9793c6ad9a4f96436a32e237ee00"
+        },
+        {
+          "path": "N5-v1.5.6-real-s3-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.6-real-s3-nearest.csv",
+          "sha256": "c20f8a5175497e3370cb02dd0fb0e348862b8948f6de115f85f45d00e43b2e0f"
+        },
+        {
+          "path": "N5-v1.5.6-synthetic-local-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.6-synthetic-local-nearest.csv",
+          "sha256": "905085fdfd9b6cab12c51ed85c01fb568acc45cbf6574cd6c7f72ea67e2faa37"
+        },
+        {
+          "path": "N5-v1.5.6-synthetic-http-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.6-synthetic-http-nearest.csv",
+          "sha256": "72ab76bc991e6ef056133f176b141f78535d540a90ea3369e1d7012a6ead470d"
+        },
+        {
+          "path": "N5-v1.5.6-synthetic-https-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.6-synthetic-https-nearest.csv",
+          "sha256": "0052f270dfd44514dfe646c495718a997052c2397ccf52927eb9ededc3f1a402"
+        },
+        {
+          "path": "N5-v1.5.6-synthetic-s3-points.csv",
+          "sha256": "4faf10a245e3e66fcd73082bd500d87983f8ee368448e7de0b5a82c7b423fa41"
+        },
+        {
+          "path": "N5-v1.5.6-synthetic-s3-nearest.csv",
+          "sha256": "740df420ac34939935e537357599f550c2a9d26c6dc90ed01a3f4f2c56f80031"
+        },
+        {
+          "path": "N5-v1.5.6-real-direct.csv",
+          "sha256": "9f9e4f7279b6db8c74d436eb313a6a134e7bb2ef3f734f506aab0aeab66b8b3d"
+        },
+        {
+          "path": "N5-v1.5.6-real-exact-source.csv",
+          "sha256": "2639fca4ecf7da10fd3f1ccdf8917fe1fd9852a29ac0e721c7eb3b7575201f11"
+        },
+        {
+          "path": "N5-v1.5.6-http-denied.csv",
+          "sha256": "76d12c1a25a76e2844738d48bf4aef3948cb8c806f39434fb38d7c92853103b2"
+        },
+        {
+          "path": "N5-v1.5.6-http-recovered.csv",
+          "sha256": "9880da288d67663c7d5485ef641d59e6739c4a62b26835b5febdecc1c7f8bc1b"
+        }
+      ],
+      "real_input_sha256": "676742c9fe81dd7af7472c7f41d3651d8bd3ff5bcaf1c47b965d415310472375",
+      "reason": "private fixed-input three-version local/HTTP/HTTPS/signed-S3 real and synthetic semantics, exact source parity and HTTP denial/recovery passed",
+      "service_image_digest": "sha256:8c63bce99de77850e9189e54a93fce1ac9ba189c4995be3fb3927bcd39ae3ab9",
+      "service_logs": [
+        {
+          "path": "N5-http-service.jsonl",
+          "records": 5224,
+          "sha256": "2749e8a6f8aa233f768cfee8b74ef3e4976f8f49da1ffd6b9682309da34c6aba"
+        },
+        {
+          "path": "N5-s3-service.jsonl",
+          "records": 945,
+          "sha256": "59387c5f452f2fbe589531955f34cd15e402918041a2c3a3c954fa20d735ec6c"
+        }
+      ],
+      "status": "pass",
+      "transport_body_scope": "server application logs only; HTTPFS network body remains unknown"
+    },
+    "N6": {
+      "commands": [],
+      "reason": "not selected or not reached",
+      "status": "not-run"
+    },
+    "N7": {
+      "commands": [],
+      "reason": "not selected or not reached",
+      "status": "not-run"
+    }
+  },
+  "inputs_path": "inputs.json",
+  "inputs_sha256": "14c2375a4a0570a98f8fa9d53b3ef5dc6d904c72ac80bd6b16cf90d5af109565",
+  "requested_gates": [
+    "N0",
+    "N1",
+    "N2",
+    "N3",
+    "N4",
+    "N5"
+  ],
+  "runtime": {
+    "duckdb_cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+    "duckdb_source_sha": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+    "duckdb_version": "v1.5.4",
+    "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+    "runtime_matrix_sha256": "159c00b3aff2c90d8ff10d0522e9488e998ee4f71375be3f49fc4ff43d786753",
+    "spatial_extension_version": "28db190",
+    "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+    "spatial_source_sha": "28db190f7184bcf61eb01d291e0cba79849bddb6"
+  },
+  "schema_version": 1,
+  "status": "pass"
+}

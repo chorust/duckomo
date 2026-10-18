@@ -99,7 +99,10 @@ std::uint64_t CheckedByteSize(std::uint64_t elements, std::uint64_t bytes_per_el
 OmDecoderCapacityBounds CalculateCapacityBounds(const OmDecoderState &state, std::uint64_t file_size,
 	                                             std::uint64_t declared_lut_size,
 	                                             std::uint64_t output_bytes,
-	                                             std::uint64_t chunk_scratch_bytes) {
+	                                             std::uint64_t chunk_scratch_bytes,
+	                                             std::uint64_t io_size_max,
+	                                             std::uint64_t chunk_product,
+	                                             std::uint8_t compressed_bytes_per_element) {
 	OmDecoderCapacityBounds bounds;
 	// Includes the fixed-rank selection arrays and OmDecoder_t in the state,
 	// the account object, and the official per-request control records. The OM
@@ -111,10 +114,20 @@ OmDecoderCapacityBounds CalculateCapacityBounds(const OmDecoderState &state, std
 	bounds.decoder_control_bytes = CheckedAddBytes(bounds.decoder_control_bytes, sizeof(OmDecoder_dataRead_t),
 	                                               "OM decoder control capacity");
 	bounds.index_buffer_upper_bound_bytes = std::min(file_size, declared_lut_size);
-	bounds.data_buffer_upper_bound_bytes = file_size;
+	// The pinned PFor encoder chooses a representation no larger than raw
+	// elements plus one header byte per block; FPX adds a predictor byte.
+	// FPX uses 128-element blocks, including a final partial block. Using
+	// that smaller block size also bounds the supported PFor codecs.
+	const auto blocks = chunk_product / 128 + (chunk_product % 128 != 0);
+	const auto framing_bytes = CheckedByteSize(blocks, 2, "OM compressed block framing");
+	bounds.maximum_compressed_chunk_bytes = CheckedAddBytes(
+	    CheckedAddBytes(CheckedByteSize(chunk_product, compressed_bytes_per_element, "OM compressed chunk"),
+	                    framing_bytes, "OM compressed chunk framing"),
+	    4096, "OM compressed chunk capacity");
+	bounds.data_buffer_upper_bound_bytes = std::min(file_size,
+	                                               std::max(io_size_max, bounds.maximum_compressed_chunk_bytes));
 	bounds.output_bytes = output_bytes;
 	bounds.chunk_scratch_bytes = chunk_scratch_bytes;
-	bounds.data_bound_uses_object_size = true;
 	bounds.decoder_peak_upper_bound_bytes = bounds.decoder_control_bytes;
 	bounds.decoder_peak_upper_bound_bytes = CheckedAddBytes(bounds.decoder_peak_upper_bound_bytes,
 	                                                       bounds.index_buffer_upper_bound_bytes,
@@ -298,8 +311,17 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 	}
 	const auto chunk_scratch_bytes = CheckedByteSize(chunk_product, element_size, "OM chunk scratch");
 	const auto *array_metadata = reinterpret_cast<const OmVariableArrayV3_t *>(variable);
+	OmError_t compressed_type_error = ERROR_OK;
+	const auto compressed_bytes_per_element =
+	    om_get_bytes_per_element_compressed(type, compression, &compressed_type_error);
+	if (compressed_type_error != ERROR_OK) {
+		ThrowOmError(compressed_type_error, ReaderErrorCode::UnsupportedCompression, file_->Path(),
+		             "OM decoder compressed element-size lookup");
+	}
 	state.capacity_bounds = CalculateCapacityBounds(state, file_->Size(), array_metadata->lut_size,
-	                                                 required_output_bytes, chunk_scratch_bytes);
+	                                                 required_output_bytes, chunk_scratch_bytes,
+	                                                 io_size_max, chunk_product,
+	                                                 compressed_bytes_per_element);
 	if (io_size_max < sizeof(std::uint64_t) * 64) {
 		throw ReaderError(ReaderErrorCode::InvalidSelection,
 		                  "OM decoder maximum I/O size must be at least 512 bytes");
@@ -382,7 +404,7 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 			ValidateBodyRange(data_read.offset, data_read.count, "data");
 			if (data_read.count > state.capacity_bounds.data_buffer_upper_bound_bytes) {
 				throw ReaderError(ReaderErrorCode::DataRead,
-				                  "official OM data request exceeds the object-size capacity bound");
+				                  "official OM data request exceeds the decoder data-buffer capacity bound");
 			}
 			if (data_read.count > static_cast<std::uint64_t>(std::numeric_limits<std::size_t>::max())) {
 				ThrowAllocationError("OM data buffer exceeds addressable memory");

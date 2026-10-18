@@ -1,0 +1,533 @@
+{
+  "artifacts": {
+    "duckdb": "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/duckdb",
+    "extension": "/home/blizhan/repo/github/duckomo/build/release/extension/duckomo/duckomo.duckdb_extension",
+    "spatial": "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/spatial.duckdb_extension"
+  },
+  "build": "/home/blizhan/repo/github/duckomo/build/release",
+  "fixture_check": "{\"geometries\": 8, \"nearest_references\": 47, \"om_fixtures\": 15, \"om_manifest_sha256\": \"8e1d7848aac4443cb6c045e4864b3f9350a0564e1a2e86f799edfaaac8f7a886\", \"reference_manifest_sha256\": \"f9dccf53eaa355f286e0efe07426d45111e2569a5e0a7724ca70d5b04c183e5f\", \"status\": \"pass\", \"variables\": 27}",
+  "gate_limits": {
+    "N0": "frozen ordered points rows/stable points metrics replay is automated; nearest-only additive applicability keys are excluded from the legacy comparison; runtime probe and no-spatial dependency checks run per selected version",
+    "N1": "partial until complete high-precision, tie, threshold, and capability boundary acceptance is recorded",
+    "N2": "partial until full failure/status/rebind/profile acceptance is recorded and audited across three versions",
+    "N3": "blocked until projection, measured same-object full-read reduction, and cross-version evidence exists",
+    "N4": "blocked until worker/memory/lifecycle matrix evidence and sanitizer coverage are complete",
+    "N5": "blocked pending authorized real inputs and controlled remote service",
+    "N6": "blocked until complete three-version N0-N5 evidence exists",
+    "N7": "blocked pending independent execution evidence"
+  },
+  "manifest": {
+    "path": "/home/blizhan/repo/github/duckomo/test/data/sampling/manifest.json",
+    "sha256": "f9dccf53eaa355f286e0efe07426d45111e2569a5e0a7724ca70d5b04c183e5f"
+  },
+  "root": "/home/blizhan/repo/github/duckomo",
+  "runtime": {
+    "duckdb_cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+    "duckdb_source_sha": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+    "duckdb_version": "v1.5.4",
+    "extension_sha256": "0e8dffaf0e57b324bc302c7a27c9bc738116e2ff1df88695aa191679d4bbf83b",
+    "runtime_matrix_sha256": "159c00b3aff2c90d8ff10d0522e9488e998ee4f71375be3f49fc4ff43d786753",
+    "spatial_extension_version": "28db190",
+    "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+    "spatial_source_sha": "28db190f7184bcf61eb01d291e0cba79849bddb6"
+  },
+  "source": {
+    "dirty_patch_sha256": "8a58c8c45902ee4c1b5b1919559c7ce8e7ff68b44d85f38efe2881a9e09a0dc6",
+    "head": "d2a134d04ba4fd95b9c26e9f6ec656926709c336",
+    "untracked_files": [
+      {
+        "path": "docs/plans/2026-10-14-spatial-sampling-and-computation.md",
+        "sha256": "cde0edfbbdae1d3ef332107495adc604915a2310cc454106a3bd6434ec0bd893"
+      },
+      {
+        "path": "docs/research/2026-10-14-spatial-computation-ecosystem.md",
+        "sha256": "c05868d938125605232268264f9be28950348f0056d4f47c400217131a8acbab"
+      },
+      {
+        "path": "scripts/check-sampling-fixtures.py",
+        "sha256": "46f8071878d91c51e207e898996b297fc13086aa9b9d225210b415b7b2847314"
+      },
+      {
+        "path": "scripts/generate-sampling-reference.py",
+        "sha256": "f336b92aff0e6f213a3b670189af1debfc8070830b4e16e962bcd2db86c383c6"
+      },
+      {
+        "path": "scripts/validate-sampling.py",
+        "sha256": "37ce24aeb2fbd8a0c410277d55184e5941e8d948178382eea3301d9912d46fbb"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/checklists/requirements.md",
+        "sha256": "48bd8a22877e66ca42ea93cc2e74350cfd15c1946e65ca639445b0c59ac000de"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/contracts/execution-and-metrics.md",
+        "sha256": "5ea9821a30b9934818f2ffe79a3538b7d52ce75eecdf25845fce343a2f40b837"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/contracts/numeric-and-capability.md",
+        "sha256": "1b9021639c9bfcb5dbabcd51ac3d18804d2085265bd6709c759718fbe2f5ad12"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/contracts/sql-interface.md",
+        "sha256": "f2a478fc191698fa68658152a31b83f7254d5fd086a7631bdb88d9d95606add7"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/contracts/validation-evidence.md",
+        "sha256": "6a6a47b01d5ff0915b3fb45bc6018fa817dd69895d7e7ba1ce0090859b64bc8d"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/data-model.md",
+        "sha256": "424cc9bd226b6f6d6df31d80a051db67b54c3ec6c37eb0c6c8d8b4d0295f6bc0"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/evidence/N0-points-baseline.md",
+        "sha256": "08579403d3f3f4e188f84de668ab70a96ed89905dc3f9fa15c2c2e61a507dca4"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/evidence/N0-points-metrics.csv",
+        "sha256": "7de4d3b7f379800e6ad4a64943f1f86aef8415522c36a680fb5bd019f8ba8fbd"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/evidence/N0-points-rows.csv",
+        "sha256": "b453c656c5013c53568c123b331ff3617fe0fcb51f0e6476cf15c4313c1596e6"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/evidence/N0-points.sql",
+        "sha256": "f658ac5c08464aab2c02f102fb9a66abb50a9a99073a67b71de3c5e4fcf49858"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/evidence/N1-locator.md",
+        "sha256": "31654daefa3cf802d25267d520c8b9a21c50f23e8e9e8548a692da99e1b449cf"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/evidence/N2-sql-matrix.md",
+        "sha256": "52d082815cf5ffb3b5df4ccc0619c48a705741f4eaa86a2099438b33aa9d9b2a"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/evidence/T003-T004-fixture-generation.md",
+        "sha256": "b9c7b9a2cf02421f6e03d5865329107cee0652e2972be1c0830002d70650ceee"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/evidence/T005-real-inputs.md",
+        "sha256": "9f9dbf26ab5923cea58a30b480d38df041d621429a94be2a24610a33f8b70cb8"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/evidence/US1-core-rows.csv",
+        "sha256": "8bd2fe02e264d0f11b6107e61a9c9134797ca7f0fb2933d5fb94cd9d7ff5e4f0"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/evidence/US1-core.md",
+        "sha256": "5687626bdb846d19e34e5f76c4737a008980f256f5fdce47921a5a6e66217592"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/evidence/US1-core.sql",
+        "sha256": "f02ce8aed1b629d63932c5f8a2b53c90c1a01f895f88eda7e65b41297ef4760f"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/evidence/US2-compatibility.md",
+        "sha256": "26871ed311b9eac7beb951fdfb297b9fab9585b924aeedd87ca40cb04ded471e"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/evidence/US3-states.md",
+        "sha256": "4d500255d3950f1d2da3d7c66e735e995a4082f82dec11bc65a579f9a8007537"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/evidence/US4-projection.md",
+        "sha256": "628e69c8af713d7bd73c293d04d0d712180d91f524e2da5d5146ae4d382ba399"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/plan.md",
+        "sha256": "d38c9abeef3f806b66cf7800337b47ee30ded7a5b68b99b3ae2f123119f5c2ae"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/quickstart.md",
+        "sha256": "896f36475306a65c5d5d2e03bd6b4122a4146d36fd993120acc3a2a7e75d53bf"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/research.md",
+        "sha256": "4f3f41cf8c0c22e1df087ce24a755eb86be150f49a18e8b4cf16f1464860ddae"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/roadmap-reviews/brief-20261015-101656.md",
+        "sha256": "076c10d96818d7e841ff6f12e3fdea15178f4f01878bb9b1fe2660b7f813a088"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/spec.md",
+        "sha256": "98c167bc33bcb074c3a024f24922661c74b77df64a01388ccfb9498dcd1433a8"
+      },
+      {
+        "path": "specs/006-region-nearest-sampling/tasks.md",
+        "sha256": "6ff941120261366d080f75e48d17abe625bf7d5e4251ab09a5b6921262c7645e"
+      },
+      {
+        "path": "src/grid/nearest_sampling.cpp",
+        "sha256": "becfae16493b6f65a27c2652b1b9a3f4ef34fa7d0767f242cfde64b1df55e650"
+      },
+      {
+        "path": "src/include/duckomo/nearest_sampling.hpp",
+        "sha256": "c3caadc153d6ff0f1f92a121f5867e707b0f32bfa503e6e88c7a2f895530eadf"
+      },
+      {
+        "path": "src/include/duckomo/region_sampling.hpp",
+        "sha256": "dbd0eaff3687826ba1b1a54b044751070262846c6672b245080b5816d0421100"
+      },
+      {
+        "path": "src/scan/region_sampling.cpp",
+        "sha256": "ebd0fb2bc90683be022e41ed08f40e61e3ba762030a77588226c89bdb5b53115"
+      },
+      {
+        "path": "test/data/sampling/generated/memory-256.humidity.csv",
+        "sha256": "e782ce416cc6416cfe9acc8d0d1c3773627cd38ad6f3f44929c85c1bcbe409b1"
+      },
+      {
+        "path": "test/data/sampling/generated/memory-256.om",
+        "sha256": "f4550890252934046167ea41d932b637febc83d3b0c2f208e0a59f45ad054153"
+      },
+      {
+        "path": "test/data/sampling/generated/memory-256.temperature.csv",
+        "sha256": "e8aee91cef1c2572e46b01e4e05519a0b2bb4cc081e7df1dc9725bdd033e33bb"
+      },
+      {
+        "path": "test/data/sampling/generated/memory-64.humidity.csv",
+        "sha256": "898b74187aa93de3c31a664bc477f80f226069eb19014117a3374379ac2b40bc"
+      },
+      {
+        "path": "test/data/sampling/generated/memory-64.om",
+        "sha256": "7af7cec767463a4cf8161da86f98affe1e1714c7f77181695b967618522e51f3"
+      },
+      {
+        "path": "test/data/sampling/generated/memory-64.temperature.csv",
+        "sha256": "2dd2dcd656087c81814564fab0d75c31fc11bae1aa339608ff390b3782d9566a"
+      },
+      {
+        "path": "test/data/sampling/generated/om-fixtures.json",
+        "sha256": "b14c77a9c69f00eaeaec7921adfe72263c7438d512735c344c2d0b0714725c55"
+      },
+      {
+        "path": "test/data/sampling/generated/small-flat-lat.humidity.csv",
+        "sha256": "341dae27117c8b70f54fa8c35f750c7820eab30b1eec76e8d662cc357625222b"
+      },
+      {
+        "path": "test/data/sampling/generated/small-flat-lat.om",
+        "sha256": "8ab30f2cd53da1f9d5191be68aa86720d09bf4bc9ecd4c0d87c32e7689f4da34"
+      },
+      {
+        "path": "test/data/sampling/generated/small-flat-lat.temperature.csv",
+        "sha256": "1ed63f510d70fcf1601ba8fd1a74e35df872dca48ee0a1147aa780057d0cc07e"
+      },
+      {
+        "path": "test/data/sampling/generated/small-flat-lon.humidity.csv",
+        "sha256": "cebbe966fc1d4bc485d272479cd8664ce987c19caf5cfc5ae39273ae06608c66"
+      },
+      {
+        "path": "test/data/sampling/generated/small-flat-lon.om",
+        "sha256": "7f8c7826b3e5dd4fb936612d79c960e8aa5632bf4057dad7af9d4b1a0766018b"
+      },
+      {
+        "path": "test/data/sampling/generated/small-flat-lon.temperature.csv",
+        "sha256": "a0a5df29466f62c04c3f882e034a70f515dc1a8e282b2654c0c2557b99ca422c"
+      },
+      {
+        "path": "test/data/sampling/generated/small-interleaved.humidity.csv",
+        "sha256": "e210f385efacf2c22cf6cbf15b42a22ea8e8d361e2c9f041e6a85d2a1b4430e5"
+      },
+      {
+        "path": "test/data/sampling/generated/small-interleaved.om",
+        "sha256": "d01aec878f762af2588e068d899063ec27a043cc72823e14b4f1158593f32e3d"
+      },
+      {
+        "path": "test/data/sampling/generated/small-interleaved.temperature.csv",
+        "sha256": "7af9bab47fc6e7cfd9486ffa20bd3bdd751c9bbe1fa799a87e991dfc4da29b70"
+      },
+      {
+        "path": "test/data/sampling/generated/small-reverse-both.humidity.csv",
+        "sha256": "43eae09f7141891e1f40ecf73c45093fd6cb1d7338842c345d34056624785de5"
+      },
+      {
+        "path": "test/data/sampling/generated/small-reverse-both.om",
+        "sha256": "3515fe8d2abc384b9a67c675f887fae057e6c41a5062c00d253000c827871ec5"
+      },
+      {
+        "path": "test/data/sampling/generated/small-reverse-both.temperature.csv",
+        "sha256": "c47aec6376a80abdbb85c68f9904823310cb7235de8701fdaed2a6901c6fedc9"
+      },
+      {
+        "path": "test/data/sampling/generated/small-reverse-lat.humidity.csv",
+        "sha256": "0e2a054f87745db7008670cdec1ced1b521f85647e70ab5ce582f7b74c8a696b"
+      },
+      {
+        "path": "test/data/sampling/generated/small-reverse-lat.om",
+        "sha256": "90611a9f7ef0ea73a7631bc73b6aece02038d258e21e8b1a55a4eef1f5a740e8"
+      },
+      {
+        "path": "test/data/sampling/generated/small-reverse-lat.temperature.csv",
+        "sha256": "d03e2124626c4d83909ed1df1c3b52a70d1ebf520e3cda230d4bbc0f38502c55"
+      },
+      {
+        "path": "test/data/sampling/generated/small-reverse-lon.humidity.csv",
+        "sha256": "d27d252b9a95d524876b85297cb551ab0ede41af2d2bfec925dfe6c28f5e3196"
+      },
+      {
+        "path": "test/data/sampling/generated/small-reverse-lon.om",
+        "sha256": "30e2fbfe0f2f27474bfb1a0caacdd42b1769c5d738a64852ec3c868a02cc8eda"
+      },
+      {
+        "path": "test/data/sampling/generated/small-reverse-lon.temperature.csv",
+        "sha256": "dc72dec61e0df4f52d94fb4ed675dc9c9a857e58fa2000364a7e5e1bcc9602b1"
+      },
+      {
+        "path": "test/data/sampling/generated/small-separate.humidity.csv",
+        "sha256": "9b3ca031d4f7e1e63336d724ce276aa2eeecff718dd08f7765572e6449f91aca"
+      },
+      {
+        "path": "test/data/sampling/generated/small-separate.om",
+        "sha256": "33c3ae3c4c71c38be172bed72d3fbdc5f9d8a87ab51bcec533f2e26bbf0c400e"
+      },
+      {
+        "path": "test/data/sampling/generated/small-separate.temperature.csv",
+        "sha256": "07693c926d2365a0d33edf2dc03472fd3aa67b48e5624faf15beda3b67a479d3"
+      },
+      {
+        "path": "test/data/sampling/geometries/empty-polygon.wkb",
+        "sha256": "e60dcba9c652b544bf3cedaec7717c107cced114bab8dddb58e6d5a0bae36572"
+      },
+      {
+        "path": "test/data/sampling/geometries/exact-source.wkb",
+        "sha256": "04d06286e953c2922a78902ebd9c1fbddc3bf3eb5e4b82d34fcdcba117e5dd2d"
+      },
+      {
+        "path": "test/data/sampling/geometries/four-point-tie.wkb",
+        "sha256": "05a5243f7b828dfd18a3f4794d42a3ac8a5d1ce997e927d9036c00845577de20"
+      },
+      {
+        "path": "test/data/sampling/geometries/interior-gap.wkb",
+        "sha256": "cfd617a0a1c2370e6b4662da707f8c4166d702d352d653b3961fc41eedd5fa08"
+      },
+      {
+        "path": "test/data/sampling/geometries/near-equal.wkb",
+        "sha256": "80b1636f182f904508ac5c40bb1f4f1f96e0a90f8d8813c83d4deb1868c232be"
+      },
+      {
+        "path": "test/data/sampling/geometries/outside-domain.wkb",
+        "sha256": "b694391366e7232f2a2435d65a0ab4599efa64b634eba043c20b42230cd64142"
+      },
+      {
+        "path": "test/data/sampling/geometries/polygon-with-hole.wkb",
+        "sha256": "ce2d369b0cf334c2e5b232e51e1d39da7fd4f771920bb4460c43f3020664b51e"
+      },
+      {
+        "path": "test/data/sampling/geometries/two-component-multipolygon.wkb",
+        "sha256": "81815853b4d7c67746afb9b433f336c3d7c78729fbb193f648d11b1f268f8b19"
+      },
+      {
+        "path": "test/data/sampling/locator.reference.csv",
+        "sha256": "b89da53f2a51caec9bed1249148ff8efebe2c225ebc445066313589d882ab039"
+      },
+      {
+        "path": "test/data/sampling/manifest.json",
+        "sha256": "f9dccf53eaa355f286e0efe07426d45111e2569a5e0a7724ca70d5b04c183e5f"
+      },
+      {
+        "path": "test/data/sampling/memory-256.humidity.csv",
+        "sha256": "e782ce416cc6416cfe9acc8d0d1c3773627cd38ad6f3f44929c85c1bcbe409b1"
+      },
+      {
+        "path": "test/data/sampling/memory-256.om",
+        "sha256": "607646f4210906e93b44045c0d593d2562ecfe76c6f795d44e21986df96b1667"
+      },
+      {
+        "path": "test/data/sampling/memory-256.temperature.csv",
+        "sha256": "e8aee91cef1c2572e46b01e4e05519a0b2bb4cc081e7df1dc9725bdd033e33bb"
+      },
+      {
+        "path": "test/data/sampling/memory-64.humidity.csv",
+        "sha256": "898b74187aa93de3c31a664bc477f80f226069eb19014117a3374379ac2b40bc"
+      },
+      {
+        "path": "test/data/sampling/memory-64.om",
+        "sha256": "669ac368f8617655566e415a154f990a76cfa472228ca9c69c6585c37545737e"
+      },
+      {
+        "path": "test/data/sampling/memory-64.temperature.csv",
+        "sha256": "2dd2dcd656087c81814564fab0d75c31fc11bae1aa339608ff390b3782d9566a"
+      },
+      {
+        "path": "test/data/sampling/om-fixtures.json",
+        "sha256": "8e1d7848aac4443cb6c045e4864b3f9350a0564e1a2e86f799edfaaac8f7a886"
+      },
+      {
+        "path": "test/data/sampling/real-inputs.json",
+        "sha256": "4c065e1ead3bb108868a8603a6347a380715ac5153864ee062b20b48969f0db9"
+      },
+      {
+        "path": "test/data/sampling/runtime-matrix.json",
+        "sha256": "159c00b3aff2c90d8ff10d0522e9488e998ee4f71375be3f49fc4ff43d786753"
+      },
+      {
+        "path": "test/data/sampling/sampling-conflict.om",
+        "sha256": "2f94c18fd30893805e6979e84556af59467f7e0908a6db596be1555e453d33a8"
+      },
+      {
+        "path": "test/data/sampling/sampling-conflict.sampling.csv",
+        "sha256": "60351e664c6730fba507d917f3172e53c38823fad2370868d66dacf45320223d"
+      },
+      {
+        "path": "test/data/sampling/skippable-values.om",
+        "sha256": "4b9c2f249da62bb4b77cfeb5e07f3a358b9390a952dba770f487422ba8befb50"
+      },
+      {
+        "path": "test/data/sampling/skippable-values.temperature.csv",
+        "sha256": "dfaada201bb69de25a80888a71394af7f88c4da4a3490a3db4ec31d18f4de7ca"
+      },
+      {
+        "path": "test/data/sampling/small-flat-lat.humidity.csv",
+        "sha256": "39d03d28c86c2b59496fe0cd088c930282498eaccdfda14d0ba18a809f06abd8"
+      },
+      {
+        "path": "test/data/sampling/small-flat-lat.om",
+        "sha256": "6fac1bbcb38733c4c60f3547f0c5dbd976aea2a7a2b107de335df62d2fafc904"
+      },
+      {
+        "path": "test/data/sampling/small-flat-lat.temperature.csv",
+        "sha256": "6ecbcae9f54ff9af25db7360a36e33d9a0b08e074dad0ebcffe5d29cb585fa1d"
+      },
+      {
+        "path": "test/data/sampling/small-flat-lon.humidity.csv",
+        "sha256": "9b3ca031d4f7e1e63336d724ce276aa2eeecff718dd08f7765572e6449f91aca"
+      },
+      {
+        "path": "test/data/sampling/small-flat-lon.om",
+        "sha256": "602d3e5c3658c12e77c75c9d11f00659a12cacf4f044313acd74118d1f034312"
+      },
+      {
+        "path": "test/data/sampling/small-flat-lon.temperature.csv",
+        "sha256": "07693c926d2365a0d33edf2dc03472fd3aa67b48e5624faf15beda3b67a479d3"
+      },
+      {
+        "path": "test/data/sampling/small-interleaved.humidity.csv",
+        "sha256": "e210f385efacf2c22cf6cbf15b42a22ea8e8d361e2c9f041e6a85d2a1b4430e5"
+      },
+      {
+        "path": "test/data/sampling/small-interleaved.om",
+        "sha256": "d01aec878f762af2588e068d899063ec27a043cc72823e14b4f1158593f32e3d"
+      },
+      {
+        "path": "test/data/sampling/small-interleaved.temperature.csv",
+        "sha256": "7af9bab47fc6e7cfd9486ffa20bd3bdd751c9bbe1fa799a87e991dfc4da29b70"
+      },
+      {
+        "path": "test/data/sampling/small-many-axis.humidity.csv",
+        "sha256": "956789af0e6b977dfe44da4fb2181fce923a77a0be358166f652f4ec4d8018af"
+      },
+      {
+        "path": "test/data/sampling/small-many-axis.om",
+        "sha256": "99b2cc93a753f1b71b0615bf25a84e8f3b1b8516041ac0a105367342246071fa"
+      },
+      {
+        "path": "test/data/sampling/small-many-axis.temperature.csv",
+        "sha256": "fbe40d7f747408c2f04653a9c0e004aecf5c2638a977a671441be0a2bf44d2b8"
+      },
+      {
+        "path": "test/data/sampling/small-reverse-both.humidity.csv",
+        "sha256": "43eae09f7141891e1f40ecf73c45093fd6cb1d7338842c345d34056624785de5"
+      },
+      {
+        "path": "test/data/sampling/small-reverse-both.om",
+        "sha256": "3515fe8d2abc384b9a67c675f887fae057e6c41a5062c00d253000c827871ec5"
+      },
+      {
+        "path": "test/data/sampling/small-reverse-both.temperature.csv",
+        "sha256": "c47aec6376a80abdbb85c68f9904823310cb7235de8701fdaed2a6901c6fedc9"
+      },
+      {
+        "path": "test/data/sampling/small-reverse-lat.humidity.csv",
+        "sha256": "0e2a054f87745db7008670cdec1ced1b521f85647e70ab5ce582f7b74c8a696b"
+      },
+      {
+        "path": "test/data/sampling/small-reverse-lat.om",
+        "sha256": "90611a9f7ef0ea73a7631bc73b6aece02038d258e21e8b1a55a4eef1f5a740e8"
+      },
+      {
+        "path": "test/data/sampling/small-reverse-lat.temperature.csv",
+        "sha256": "d03e2124626c4d83909ed1df1c3b52a70d1ebf520e3cda230d4bbc0f38502c55"
+      },
+      {
+        "path": "test/data/sampling/small-reverse-lon.humidity.csv",
+        "sha256": "d27d252b9a95d524876b85297cb551ab0ede41af2d2bfec925dfe6c28f5e3196"
+      },
+      {
+        "path": "test/data/sampling/small-reverse-lon.om",
+        "sha256": "30e2fbfe0f2f27474bfb1a0caacdd42b1769c5d738a64852ec3c868a02cc8eda"
+      },
+      {
+        "path": "test/data/sampling/small-reverse-lon.temperature.csv",
+        "sha256": "dc72dec61e0df4f52d94fb4ed675dc9c9a857e58fa2000364a7e5e1bcc9602b1"
+      },
+      {
+        "path": "test/data/sampling/small-separate.humidity.csv",
+        "sha256": "9b3ca031d4f7e1e63336d724ce276aa2eeecff718dd08f7765572e6449f91aca"
+      },
+      {
+        "path": "test/data/sampling/small-separate.om",
+        "sha256": "33c3ae3c4c71c38be172bed72d3fbdc5f9d8a87ab51bcec533f2e26bbf0c400e"
+      },
+      {
+        "path": "test/data/sampling/small-separate.temperature.csv",
+        "sha256": "07693c926d2365a0d33edf2dc03472fd3aa67b48e5624faf15beda3b67a479d3"
+      },
+      {
+        "path": "test/data/sampling/small-spatial-first.humidity.csv",
+        "sha256": "74e11ab03a05bcf86e1dc1de63e551dc6b3a5b95a62a774b253e4e272b4305d3"
+      },
+      {
+        "path": "test/data/sampling/small-spatial-first.om",
+        "sha256": "78b984a076b7bd42a93c5992b46ca8455fc71c3c69573012cb27ee1f13c5cc45"
+      },
+      {
+        "path": "test/data/sampling/small-spatial-first.temperature.csv",
+        "sha256": "d7325095d02b3884b85edfdcba7703dc886ae37b49147b1ca079ae688e74017e"
+      },
+      {
+        "path": "test/data/sampling/small-spatial-only.om",
+        "sha256": "be90c8c5f0f50cc5d7064e41ea72ce7191cdeab0b6c4f17cc374162f053fa2b4"
+      },
+      {
+        "path": "test/data/sampling/small-spatial-only.temperature.csv",
+        "sha256": "bb715ab28a7af047a1f16da28b36d0424ceeea19b5f3ae97b39c5e18ac899eff"
+      },
+      {
+        "path": "test/data/sampling/small-unmapped.humidity.csv",
+        "sha256": "3a23c3d34216998bfd52435655756d9329466857e624a8f7e401365190e94847"
+      },
+      {
+        "path": "test/data/sampling/small-unmapped.om",
+        "sha256": "18b09da64ed814706e5ec8fa532e085815670248ae70924d0edd48f156f6bc05"
+      },
+      {
+        "path": "test/data/sampling/small-unmapped.temperature.csv",
+        "sha256": "ac13ecf455820b9cd8ff102f359b15b74d7fb80ec29cc7655535f1315ac777d0"
+      },
+      {
+        "path": "test/native/nearest_sampling_test.cpp",
+        "sha256": "70cce025e33dd5cf30bd203f59fc8f8ab5792965bb81e315ab46e36fd95a0fbd"
+      },
+      {
+        "path": "test/native/region_sampling_test.cpp",
+        "sha256": "9fde2a2813f9e9d86a13e53be44db52e522a2b8f468e7646053413bbcdf47137"
+      },
+      {
+        "path": "test/sql/region_sampling.test",
+        "sha256": "e39181f340425b35d88ea1d3864f5bf52d1b026f925cbcafbce26ad43586cdab"
+      },
+      {
+        "path": "test/sql/region_sampling_spatial_dependency.test",
+        "sha256": "6ce8da0a7423a604929814ae7abe9d7d07110a04b2f43f6fc06952786f342af2"
+      },
+      {
+        "path": "test/tools/sampling_evidence_test.py",
+        "sha256": "e7414b3e9e7994a33edacdabae84963f98adb8a699ea0e453d9ff4b6dbf7cf68"
+      }
+    ]
+  },
+  "started_at": "2026-10-15T18:16:16.966551+00:00"
+}

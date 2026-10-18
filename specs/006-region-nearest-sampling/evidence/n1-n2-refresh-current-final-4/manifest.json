@@ -1,0 +1,501 @@
+{
+  "commands_path": "commands.jsonl",
+  "commands_sha256": "decf368fe44b8087e35760f20c28cf20e3f76973f1a9c9f93460724ec33d7c12",
+  "gates": {
+    "N0": {
+      "commands": [],
+      "reason": "not selected or not reached",
+      "status": "not-run"
+    },
+    "N1": {
+      "commands": [
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/native/nearest_sampling_test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 701.543,
+          "exit_code": 0,
+          "gate": "N1",
+          "output_path": "N1-01.stdout.txt",
+          "output_sha256": "deb0986da499622355951d2b0da97b47176351efc2768fbd59aad0f75d84f3d2",
+          "started_at": "2026-10-16T15:53:29.626319+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/native/region_geometry_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/spatial.duckdb_extension",
+            "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 41.119,
+          "exit_code": 0,
+          "gate": "N1",
+          "output_path": "N1-02.stdout.txt",
+          "output_sha256": "12c11916f00549cc40bc2a7509cb5a7fb302724cb823cd67ae2e5a82a896c4be",
+          "started_at": "2026-10-16T15:53:29.700572+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/native/nearest_sampling_test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 711.358,
+          "exit_code": 0,
+          "gate": "N1",
+          "output_path": "N1-03.stdout.txt",
+          "output_sha256": "deb0986da499622355951d2b0da97b47176351efc2768fbd59aad0f75d84f3d2",
+          "started_at": "2026-10-16T15:53:30.412272+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/native/region_geometry_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.5/official/spatial.duckdb_extension",
+            "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 52.093,
+          "exit_code": 0,
+          "gate": "N1",
+          "output_path": "N1-04.stdout.txt",
+          "output_sha256": "ac79df989598e53e753c059e3eb34cbea29958af836dc64310847f9616ca9816",
+          "started_at": "2026-10-16T15:53:30.506808+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/native/nearest_sampling_test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 709.037,
+          "exit_code": 0,
+          "gate": "N1",
+          "output_path": "N1-05.stdout.txt",
+          "output_sha256": "deb0986da499622355951d2b0da97b47176351efc2768fbd59aad0f75d84f3d2",
+          "started_at": "2026-10-16T15:53:31.216176+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/native/region_geometry_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.6/official/spatial.duckdb_extension",
+            "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 44.075,
+          "exit_code": 0,
+          "gate": "N1",
+          "output_path": "N1-06.stdout.txt",
+          "output_sha256": "b967308c3952a59102dd151b71af3066065bf503fecb641a4f7ead41d1f0481d",
+          "started_at": "2026-10-16T15:53:31.308101+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/native/spatial_layout_test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 2.058,
+          "exit_code": 0,
+          "gate": "N1",
+          "output_path": "N1-07.stdout.txt",
+          "output_sha256": "ec79a5034a866bb06266adde78ccca97cf411016922e919fe2d92771b3241008",
+          "started_at": "2026-10-16T15:53:31.310383+00:00"
+        }
+      ],
+      "reason": "declared profiles are synthetic regular spherical grids and NCEP GFS025; other registered domains are excluded from per-profile acceptance. Locked finite capability cases, ten scientific vectors using independent 90-digit Decimal unit-vector cross/dot distance, 12 exhaustive full-grid GFS025 target profiles, spatial adapter signatures, representative point, source-point mapping and layout checks passed on all three pinned builds; complete numeric-contract review remains open",
+      "status": "blocked"
+    },
+    "N2": {
+      "commands": [
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 130.23,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-08.stdout.txt",
+          "output_sha256": "3cae6c7ce0004a778e79f38d6417bb157e833f1134095ea8c10220a9225dcef4",
+          "started_at": "2026-10-16T15:53:31.441190+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 146.402,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-09.stdout.txt",
+          "output_sha256": "9f1dab7fdacd2356c974428fbd4bf657fc37f1d376ae573584790cd14c98f7e3",
+          "started_at": "2026-10-16T15:53:31.588041+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/read_om.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 21.612,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-10.stdout.txt",
+          "output_sha256": "33c4b57ffd1502daa495f2c8ea250e182abbb86ad912105f93344f540b2d66f6",
+          "started_at": "2026-10-16T15:53:31.610040+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/semantic_axes.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 16.319,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-11.stdout.txt",
+          "output_sha256": "4f66af5a2f31edf2e0ef6ade726e8a9cd8c49a7f9887cbc07ca51f57b291f18b",
+          "started_at": "2026-10-16T15:53:31.626762+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions_spatial_dependency.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 13.596,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-12.stdout.txt",
+          "output_sha256": "4419997760beec3b6044ce48980cf163e3c86fa99b5439ae3110836b6883b93d",
+          "started_at": "2026-10-16T15:53:31.640749+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling_spatial_dependency.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 19.545,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-13.stdout.txt",
+          "output_sha256": "d5a7fe3abf1c110c5c4d002bf449e150ea237eb6f9affcf70fa83901ec4201f4",
+          "started_at": "2026-10-16T15:53:31.660656+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/spatial.duckdb_extension"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 450.621,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-14.stdout.txt",
+          "output_sha256": "e0b31c5d91a46d5c937e40ab1e2471303473ebd01aa66bf1e90852f196173228",
+          "started_at": "2026-10-16T15:53:32.111682+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/release/test/native/region_input_test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 55.407,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-15.stdout.txt",
+          "output_sha256": "f14746be3b28b7da7de4d044f8b95cce04f56457fc7112404273971f6da10672",
+          "started_at": "2026-10-16T15:53:32.167402+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 127.035,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-16.stdout.txt",
+          "output_sha256": "3cae6c7ce0004a778e79f38d6417bb157e833f1134095ea8c10220a9225dcef4",
+          "started_at": "2026-10-16T15:53:32.294696+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 121.093,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-17.stdout.txt",
+          "output_sha256": "9f1dab7fdacd2356c974428fbd4bf657fc37f1d376ae573584790cd14c98f7e3",
+          "started_at": "2026-10-16T15:53:32.416029+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/read_om.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 23.269,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-18.stdout.txt",
+          "output_sha256": "33c4b57ffd1502daa495f2c8ea250e182abbb86ad912105f93344f540b2d66f6",
+          "started_at": "2026-10-16T15:53:32.439524+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/semantic_axes.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 29.303,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-19.stdout.txt",
+          "output_sha256": "4f66af5a2f31edf2e0ef6ade726e8a9cd8c49a7f9887cbc07ca51f57b291f18b",
+          "started_at": "2026-10-16T15:53:32.469173+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions_spatial_dependency.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 12.997,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-20.stdout.txt",
+          "output_sha256": "4419997760beec3b6044ce48980cf163e3c86fa99b5439ae3110836b6883b93d",
+          "started_at": "2026-10-16T15:53:32.482550+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling_spatial_dependency.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 13.647,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-21.stdout.txt",
+          "output_sha256": "d5a7fe3abf1c110c5c4d002bf449e150ea237eb6f9affcf70fa83901ec4201f4",
+          "started_at": "2026-10-16T15:53:32.496501+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.5/official/spatial.duckdb_extension"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 470.556,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-22.stdout.txt",
+          "output_sha256": "1a79a362dee96b8bf58522a64c252f90944e0d9060caac06b18be3cc975335ec",
+          "started_at": "2026-10-16T15:53:32.967412+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/test/native/region_input_test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 59.001,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-23.stdout.txt",
+          "output_sha256": "f14746be3b28b7da7de4d044f8b95cce04f56457fc7112404273971f6da10672",
+          "started_at": "2026-10-16T15:53:33.026698+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 129.378,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-24.stdout.txt",
+          "output_sha256": "3cae6c7ce0004a778e79f38d6417bb157e833f1134095ea8c10220a9225dcef4",
+          "started_at": "2026-10-16T15:53:33.156436+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 119.36,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-25.stdout.txt",
+          "output_sha256": "9f1dab7fdacd2356c974428fbd4bf657fc37f1d376ae573584790cd14c98f7e3",
+          "started_at": "2026-10-16T15:53:33.276093+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/read_om.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 23.985,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-26.stdout.txt",
+          "output_sha256": "33c4b57ffd1502daa495f2c8ea250e182abbb86ad912105f93344f540b2d66f6",
+          "started_at": "2026-10-16T15:53:33.300439+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/semantic_axes.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 28.42,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-27.stdout.txt",
+          "output_sha256": "4f66af5a2f31edf2e0ef6ade726e8a9cd8c49a7f9887cbc07ca51f57b291f18b",
+          "started_at": "2026-10-16T15:53:33.329126+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/regions_spatial_dependency.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 21.99,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-28.stdout.txt",
+          "output_sha256": "4419997760beec3b6044ce48980cf163e3c86fa99b5439ae3110836b6883b93d",
+          "started_at": "2026-10-16T15:53:33.351423+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/unittest",
+            "--test-dir",
+            "/home/blizhan/repo/github/duckomo",
+            "/home/blizhan/repo/github/duckomo/test/sql/region_sampling_spatial_dependency.test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 18.904,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-29.stdout.txt",
+          "output_sha256": "d5a7fe3abf1c110c5c4d002bf449e150ea237eb6f9affcf70fa83901ec4201f4",
+          "started_at": "2026-10-16T15:53:33.370646+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/native/region_sampling_test",
+            "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.6/official/spatial.duckdb_extension"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 444.204,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-30.stdout.txt",
+          "output_sha256": "8200720b37c00d215e2b08891ae1aa3a4e6d16b9356927b71c64354a134c385a",
+          "started_at": "2026-10-16T15:53:33.815142+00:00"
+        },
+        {
+          "argv": [
+            "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/cf0e88531eb34e8a357a8926a2d54e841245a6ffb6833ca783d15e9216620125/release/test/native/region_input_test"
+          ],
+          "cwd": "/home/blizhan/repo/github/duckomo",
+          "elapsed_ms": 63.311,
+          "exit_code": 0,
+          "gate": "N2",
+          "output_path": "N2-31.stdout.txt",
+          "output_sha256": "f14746be3b28b7da7de4d044f8b95cce04f56457fc7112404273971f6da10672",
+          "started_at": "2026-10-16T15:53:33.878702+00:00"
+        }
+      ],
+      "reason": "declared per-profile scope is synthetic regular spherical grids and NCEP GFS025; other registered domains are excluded. Nearest SQL/value/source/state/options/layout/rebind, legacy points compatibility, inherited read_om/semantic-axis SQL, native official-reader parity, and inherited 005 region-input/limit checks passed on all three runtimes; N2 remains blocked pending review of residual contract partitions and nearest-specific error ordering",
+      "status": "blocked"
+    },
+    "N3": {
+      "commands": [],
+      "reason": "not selected or not reached",
+      "status": "not-run"
+    },
+    "N4": {
+      "commands": [],
+      "reason": "not selected or not reached",
+      "status": "not-run"
+    },
+    "N5": {
+      "commands": [],
+      "reason": "not selected or not reached",
+      "status": "not-run"
+    },
+    "N6": {
+      "commands": [],
+      "reason": "not selected or not reached",
+      "status": "not-run"
+    },
+    "N7": {
+      "commands": [],
+      "reason": "not selected or not reached",
+      "status": "not-run"
+    }
+  },
+  "inputs_path": "inputs.json",
+  "inputs_sha256": "b9da65f64234bfa2e17b5d84d45e43ff806ee550cccd494e41809231a00472c9",
+  "requested_gates": [
+    "N1",
+    "N2"
+  ],
+  "runtime": {
+    "duckdb_cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+    "duckdb_source_sha": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+    "duckdb_version": "v1.5.4",
+    "extension_sha256": "9f6c4b9d16228ae1b4db0649c313a82cf6e497976fd67a68308d994b74ee01ce",
+    "runtime_matrix_sha256": "159c00b3aff2c90d8ff10d0522e9488e998ee4f71375be3f49fc4ff43d786753",
+    "spatial_extension_version": "28db190",
+    "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+    "spatial_source_sha": "28db190f7184bcf61eb01d291e0cba79849bddb6"
+  },
+  "schema_version": 1,
+  "status": "blocked"
+}

@@ -46,6 +46,8 @@ set(DUCKOMO_NATIVE_TEST_SOURCES
     region_input_test
     region_geometry_test
     region_scan_test
+    nearest_sampling_test
+    region_sampling_test
 )
 
 set(DUCKOMO_SQLLOGICTEST_FILES
@@ -68,6 +70,8 @@ set(DUCKOMO_SQLLOGICTEST_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/grid_version_compat.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/regions.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/regions_spatial_dependency.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/region_sampling.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/region_sampling_spatial_dependency.test"
 )
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
     ${DUCKOMO_SQLLOGICTEST_FILES}
@@ -80,6 +84,13 @@ foreach(sql_test IN LISTS DUCKOMO_SQLLOGICTEST_FILES)
 endforeach()
 add_custom_target(duckomo_sql_tests SOURCES ${DUCKOMO_EXISTING_SQLLOGICTEST_FILES})
 # The root Makefile runs these files through DuckDB's SQLLogicTest runner.
+set(DUCKOMO_SAMPLING_REFERENCE_TOOLS
+    "${CMAKE_CURRENT_SOURCE_DIR}/../scripts/generate-sampling-reference.py"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../scripts/check-sampling-fixtures.py"
+    "${CMAKE_CURRENT_SOURCE_DIR}/data/sampling/manifest.json"
+    "${CMAKE_CURRENT_SOURCE_DIR}/data/sampling/om-fixtures.json"
+)
+add_custom_target(duckomo_sampling_reference_tools SOURCES ${DUCKOMO_SAMPLING_REFERENCE_TOOLS})
 set(DUCKOMO_GRID_REFERENCE_TOOLS
     "${CMAKE_CURRENT_SOURCE_DIR}/../scripts/generate-grid-reference.py"
     "${CMAKE_CURRENT_SOURCE_DIR}/../scripts/generate-grid-coordinate-reference.py"
@@ -165,10 +176,45 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
                 "${PROJECT_SOURCE_DIR}/duckdb/extension/loader/dummy_static_extension_loader.cpp"
             )
             target_link_libraries("${test}" PRIVATE duckdb_static duckomo_extension duckomo_om)
+        elseif(test STREQUAL "nearest_sampling_test")
+            target_compile_definitions("${test}" PRIVATE
+                DUCKOMO_SAMPLING_MANIFEST_PATH="${PROJECT_SOURCE_DIR}/test/data/sampling/manifest.json"
+                DUCKOMO_SAMPLING_SCIENTIFIC_REFERENCE_PATH="${PROJECT_SOURCE_DIR}/test/data/sampling/scientific.reference.csv"
+                DUCKOMO_SAMPLING_CAPABILITY_REFERENCE_PATH="${PROJECT_SOURCE_DIR}/test/data/sampling/capability-boundaries.reference.csv"
+                DUCKOMO_SAMPLING_GFS025_PROFILE_REFERENCE_PATH="${PROJECT_SOURCE_DIR}/test/data/sampling/ncep-gfs025-profile.reference.csv"
+            )
+            if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+                target_compile_options("${test}" PRIVATE -ffp-contract=off)
+            endif()
+            target_sources("${test}" PRIVATE
+                "${PROJECT_SOURCE_DIR}/src/grid/nearest_sampling.cpp"
+                "${PROJECT_SOURCE_DIR}/src/grid/regular_grid.cpp"
+                "${PROJECT_SOURCE_DIR}/src/grid/grid_definition.cpp"
+                "${PROJECT_SOURCE_DIR}/src/grid/projected_grid.cpp"
+                "${PROJECT_SOURCE_DIR}/src/grid/gaussian_grid.cpp"
+            )
         elseif(test STREQUAL "region_input_test" OR test STREQUAL "region_geometry_test")
             target_link_libraries("${test}" PRIVATE duckdb_static duckomo_extension duckomo_om)
             duckomo_link_generated_extension_loader("${test}")
-		elseif(test STREQUAL "region_scan_test")
+        elseif(test STREQUAL "region_sampling_test")
+            target_compile_definitions("${test}" PRIVATE
+                DUCKOMO_SAMPLING_MANIFEST_PATH="${PROJECT_SOURCE_DIR}/test/data/sampling/manifest.json"
+                DUCKOMO_SAMPLING_FIXTURE_PATH="${PROJECT_SOURCE_DIR}/test/data/sampling"
+            )
+            if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+                target_compile_options("${test}" PRIVATE -ffp-contract=off)
+            endif()
+            target_include_directories("${test}" PRIVATE
+                "${PROJECT_SOURCE_DIR}/duckdb/extension/core_functions/include"
+            )
+            target_link_libraries("${test}" PRIVATE
+                duckdb_static duckomo_extension duckomo_om core_functions_extension
+            )
+            duckomo_link_generated_extension_loader("${test}")
+        elseif(test STREQUAL "region_scan_test")
+			target_compile_definitions("${test}" PRIVATE
+				DUCKOMO_SAMPLING_FIXTURE_PATH="${PROJECT_SOURCE_DIR}/test/data/sampling"
+			)
 			target_include_directories("${test}" PRIVATE
 				"${PROJECT_SOURCE_DIR}/duckdb/extension/core_functions/include"
 			)
@@ -250,6 +296,35 @@ add_custom_target(duckomo_developer_tools DEPENDS
 	${DUCKOMO_EXISTING_TOOL_TARGETS}
 	${DUCKOMO_EXISTING_NATIVE_TEST_TARGETS}
 )
+set(DUCKOMO_SAMPLING_BUNDLE_DEPENDS duckomo_fixture_tool duckomo_sampling_reference_tools)
+foreach(target nearest_sampling_test region_sampling_test)
+    if(TARGET "${target}")
+        list(APPEND DUCKOMO_SAMPLING_BUNDLE_DEPENDS "${target}")
+    endif()
+endforeach()
+set(DUCKOMO_SAMPLING_BUNDLE_SOURCES
+    "${PROJECT_SOURCE_DIR}/scripts/generate-sampling-reference.py"
+    "${PROJECT_SOURCE_DIR}/scripts/check-sampling-fixtures.py"
+    "${PROJECT_SOURCE_DIR}/scripts/validate-sampling.py"
+    "${CMAKE_CURRENT_SOURCE_DIR}/tools/sampling_evidence_test.py"
+    "${CMAKE_CURRENT_SOURCE_DIR}/tools/sampling_audit_test.py"
+    "${PROJECT_SOURCE_DIR}/scripts/sampling_remote.py"
+    "${PROJECT_SOURCE_DIR}/test/data/sampling/manifest.json"
+    "${PROJECT_SOURCE_DIR}/test/data/sampling/om-fixtures.json"
+)
+foreach(source
+        "${CMAKE_CURRENT_SOURCE_DIR}/sql/region_sampling.test"
+        "${CMAKE_CURRENT_SOURCE_DIR}/sql/region_sampling_spatial_dependency.test"
+        "${CMAKE_CURRENT_SOURCE_DIR}/native/nearest_sampling_test.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/native/region_sampling_test.cpp")
+    if(EXISTS "${source}")
+        list(APPEND DUCKOMO_SAMPLING_BUNDLE_SOURCES "${source}")
+    endif()
+endforeach()
+add_custom_target(duckomo_sampling_validation_bundle
+    DEPENDS ${DUCKOMO_SAMPLING_BUNDLE_DEPENDS}
+    SOURCES ${DUCKOMO_SAMPLING_BUNDLE_SOURCES}
+)
 add_custom_target(duckomo_region_validation_bundle
     DEPENDS duckomo_region_validation duckomo_fixture_tool
             region_input_test region_geometry_test region_scan_test
@@ -267,14 +342,22 @@ add_custom_target(duckomo_region_validation_bundle
         "${PROJECT_SOURCE_DIR}/scripts/freeze-region-targets.py"
 )
 set(DUCKOMO_VALIDATION_EXECUTABLES "")
+set(DUCKOMO_SAMPLING_VALIDATION_EXECUTABLES "")
 foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
-    string(APPEND DUCKOMO_VALIDATION_EXECUTABLES "native/${test}\n")
+    if(test STREQUAL "nearest_sampling_test" OR test STREQUAL "region_sampling_test")
+        string(APPEND DUCKOMO_SAMPLING_VALIDATION_EXECUTABLES "native/${test}\n")
+    else()
+        string(APPEND DUCKOMO_VALIDATION_EXECUTABLES "native/${test}\n")
+    endif()
 endforeach()
 foreach(tool IN LISTS DUCKOMO_TOOL_SOURCES)
     string(APPEND DUCKOMO_VALIDATION_EXECUTABLES "tools/${tool}\n")
 endforeach()
 file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/test/duckomo-validation-executables.txt"
     CONTENT "${DUCKOMO_VALIDATION_EXECUTABLES}"
+)
+file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/test/duckomo-sampling-validation-executables.txt"
+    CONTENT "${DUCKOMO_SAMPLING_VALIDATION_EXECUTABLES}"
 )
 
 # Sanitizer runs compile separate, instrumented copies of the extension's C++
@@ -286,6 +369,14 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
     set(DUCKOMO_REGION_SANITIZER_SPATIAL_SHA256 "" CACHE STRING
         "Verified SHA-256 of the spatial extension used by region sanitizer tests")
     string(LENGTH "${DUCKOMO_REGION_SANITIZER_SPATIAL_SHA256}" DUCKOMO_REGION_SANITIZER_SPATIAL_SHA_LENGTH)
+    set(DUCKOMO_REGION_SANITIZER_SPATIAL_SHA_VALID FALSE)
+    if(DUCKOMO_REGION_SANITIZER_SPATIAL_SHA_LENGTH EQUAL 64 AND
+       DUCKOMO_REGION_SANITIZER_SPATIAL_SHA256 MATCHES "^[0-9a-fA-F]+$")
+        file(SHA256 "${DUCKOMO_REGION_SANITIZER_SPATIAL_PATH}" DUCKOMO_REGION_SANITIZER_ACTUAL_SPATIAL_SHA256)
+        if(DUCKOMO_REGION_SANITIZER_ACTUAL_SPATIAL_SHA256 STREQUAL DUCKOMO_REGION_SANITIZER_SPATIAL_SHA256)
+            set(DUCKOMO_REGION_SANITIZER_SPATIAL_SHA_VALID TRUE)
+        endif()
+    endif()
     set(DUCKOMO_SANITIZER_COMPILE_OPTIONS
         -O1 -g -UNDEBUG -fno-omit-frame-pointer -fsanitize=address,undefined
     )
@@ -478,7 +569,7 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
         endif()
     endforeach()
 
-    foreach(test region_input_test region_geometry_test region_scan_test)
+    foreach(test region_input_test region_geometry_test region_scan_test region_sampling_test)
         set(test_target "${test}_sanitizer")
         duckomo_add_source_target("${test_target}" "native/${test}.cpp" "sanitizer/native")
         if(TARGET "${test_target}")
@@ -488,7 +579,7 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
             target_link_libraries("${test_target}" PRIVATE
                 duckdb_static duckomo_extension_sanitized duckomo_om
             )
-            if(test STREQUAL "region_scan_test")
+            if(test STREQUAL "region_scan_test" OR test STREQUAL "region_sampling_test")
                 target_include_directories("${test_target}" PRIVATE
                     "${PROJECT_SOURCE_DIR}/duckdb/extension/core_functions/include"
                 )
@@ -505,13 +596,17 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
                 )
             elseif(DUCKOMO_REGION_SANITIZER_SPATIAL_PATH AND
                    EXISTS "${DUCKOMO_REGION_SANITIZER_SPATIAL_PATH}" AND
-                   DUCKOMO_REGION_SANITIZER_SPATIAL_SHA_LENGTH EQUAL 64 AND
-                   DUCKOMO_REGION_SANITIZER_SPATIAL_SHA256 MATCHES "^[0-9a-f]+$")
+                   DUCKOMO_REGION_SANITIZER_SPATIAL_SHA_VALID)
                 if(test STREQUAL "region_geometry_test")
                     add_test(NAME "duckomo_sanitizer_${test}"
                         COMMAND "$<TARGET_FILE:${test_target}>"
                                 "${DUCKOMO_REGION_SANITIZER_SPATIAL_PATH}"
                                 "${DUCKOMO_REGION_SANITIZER_SPATIAL_SHA256}"
+                    )
+                elseif(test STREQUAL "region_sampling_test")
+                    add_test(NAME "duckomo_sanitizer_${test}"
+                        COMMAND "$<TARGET_FILE:${test_target}>"
+                                "${DUCKOMO_REGION_SANITIZER_SPATIAL_PATH}"
                     )
                 else()
                     add_test(NAME "duckomo_sanitizer_${test}"

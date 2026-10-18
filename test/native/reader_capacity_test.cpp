@@ -17,6 +17,8 @@
 
 extern "C" {
 #include "om_variable.h"
+#include "om_encoder.h"
+#include "om_file.h"
 }
 
 namespace duckdb {
@@ -132,10 +134,25 @@ void CheckRawLargeBounds() {
 
 	OmDecoderState state(borrowed);
 	bool bounds_ready_before_index_read = false;
+	std::uint64_t chunk_product = 1;
+	for (const auto chunk : chunks) {
+		Require(chunk_product <= std::numeric_limits<std::uint64_t>::max() / chunk,
+		        "fixture chunk product must not overflow");
+		chunk_product *= chunk;
+	}
+	OmError_t compressed_type_error = ERROR_OK;
+	const auto compressed_bytes_per_element =
+	    om_get_bytes_per_element_compressed(om_variable_get_type(variable),
+	                                        om_variable_get_compression(variable), &compressed_type_error);
+	Require(compressed_type_error == ERROR_OK, "fixture compressed element width must be valid");
+	const auto expected_compressed_chunk_bound = chunk_product * compressed_bytes_per_element +
+	    2 * (chunk_product / 128 + (chunk_product % 128 != 0)) + 4096;
 	file_observer->SetBeforeIndexRead([&] {
-		bounds_ready_before_index_read = state.capacity_bounds.data_bound_uses_object_size &&
-		                                 state.capacity_bounds.index_buffer_upper_bound_bytes ==
-		                                     std::min<std::uint64_t>(object.size(), metadata->lut_size);
+		bounds_ready_before_index_read = state.capacity_bounds.index_buffer_upper_bound_bytes ==
+		                                     std::min<std::uint64_t>(object.size(), metadata->lut_size) &&
+		                                 state.capacity_bounds.data_buffer_upper_bound_bytes ==
+		                                     std::min<std::uint64_t>(object.size(),
+		                                         std::max<std::uint64_t>(512, expected_compressed_chunk_bound));
 	});
 	const std::vector<std::uint64_t> read_offset{0, 0};
 	std::vector<std::uint64_t> first_chunk_count{chunks[0], chunks[1]};
@@ -156,8 +173,10 @@ void CheckRawLargeBounds() {
 	        "index capacity bound must come from declared v3 LUT bytes and object size");
 	Require(bounds_ready_before_index_read,
 	        "reader capacity bounds must be ready before the first value LUT read");
-	Require(bounds.data_buffer_upper_bound_bytes == object.size() && bounds.data_bound_uses_object_size,
-	        "unknown compressed block Cmax must use the complete object size as its conservative bound");
+	Require(bounds.maximum_compressed_chunk_bytes == expected_compressed_chunk_bound &&
+	            bounds.data_buffer_upper_bound_bytes ==
+	                std::min<std::uint64_t>(object.size(), std::max<std::uint64_t>(512, expected_compressed_chunk_bound)),
+	        "decoder data buffer bound must cover request merging and one worst-case compressed chunk");
 	Require(bounds.output_bytes == expected_output_bytes, "output capacity must match the declared decode cube");
 	Require(bounds.chunk_scratch_bytes == expected_scratch_bytes,
 	        "chunk scratch bound must match the checked chunk shape and element width");
@@ -178,8 +197,57 @@ void CheckRawLargeBounds() {
 	Require(state.data_bytes.Capacity() >= first_data_capacity && file_observer->IndexReads() > 0 &&
 	            file_observer->DataReads() > 0,
 	        "full decode must reuse or grow the range buffers and exercise official index/data reads");
-	Require(bounds.data_buffer_upper_bound_bytes > 512,
-	        "io_size_max remains a planner target, not a hard data-buffer memory cap");
+	Require(bounds.data_buffer_upper_bound_bytes <= object.size() && bounds.data_buffer_upper_bound_bytes > 512,
+	        "decoder request bound is capped by object size and includes an oversized first chunk");
+}
+
+void CheckIncompressibleFpxChunk() {
+	const std::uint64_t dimensions[] = {2048, 2048}, offset[] = {0, 0};
+	const auto elements = dimensions[0] * dimensions[1];
+	std::vector<float> values(elements);
+	std::uint32_t seed = 173;
+	for (auto &value : values) {
+		seed ^= seed << 13;
+		seed ^= seed >> 17;
+		seed ^= seed << 5;
+		auto bits = seed;
+		if ((bits & 0x7f800000U) == 0x7f800000U) bits ^= 0x00800000U;
+		std::memcpy(&value, &bits, sizeof(value));
+	}
+	OmEncoder_t encoder{};
+	Require(om_encoder_init(&encoder, 1, 0, COMPRESSION_FPX_XOR2D, DATA_TYPE_FLOAT_ARRAY,
+	                        dimensions, dimensions, 2) == ERROR_OK, "FPX encoder initialization failed");
+	std::vector<std::uint8_t> compressed(elements * 8 + 65536);
+	std::vector<std::uint8_t> scratch(om_encoder_chunk_buffer_size(&encoder));
+	const auto bytes = om_encoder_compress_chunk(&encoder, values.data(), dimensions, offset, dimensions,
+	                                             0, 0, compressed.data(), scratch.data());
+	Require(bytes > elements * sizeof(float) + 4096, "FPX regression must exceed the old fixed padding bound");
+	std::vector<std::uint8_t> object(om_header_write_size());
+	om_header_write(object.data());
+	const std::uint64_t lut[] = {object.size(), object.size() + bytes};
+	object.insert(object.end(), compressed.begin(), compressed.begin() + bytes);
+	std::vector<std::uint8_t> compressed_lut(om_encoder_lut_buffer_size(lut, 2));
+	const auto lut_bytes = om_encoder_compress_lut(lut, 2, compressed_lut.data(), compressed_lut.size());
+	const auto lut_offset = object.size();
+	object.insert(object.end(), compressed_lut.begin(), compressed_lut.begin() + lut_bytes);
+	while (object.size() % 8) object.push_back(0);
+	const auto root_offset = object.size();
+	std::vector<std::uint8_t> root(om_variable_write_numeric_array_size(0, 0, 2));
+	om_variable_write_numeric_array(root.data(), 0, 0, nullptr, nullptr, "", DATA_TYPE_FLOAT_ARRAY,
+	                                COMPRESSION_FPX_XOR2D, 1, 0, 2, dimensions, dimensions, lut_bytes, lut_offset);
+	object.insert(object.end(), root.begin(), root.end());
+	while (object.size() % 8) object.push_back(0);
+	const auto trailer_offset = object.size();
+	object.resize(trailer_offset + om_trailer_size());
+	om_trailer_write(object.data() + trailer_offset, root_offset, root.size());
+	OmV3Reader reader(std::make_unique<MemoryReadAtFile>(std::move(object)));
+	OmDecoderState state(reader.ReadRootVariable());
+	float actual = 0;
+	reader.DecodeSelection(state, {0, 0}, {1, 1}, {0, 0}, {1, 1}, &actual, sizeof(actual));
+	Require(std::memcmp(&actual, values.data(), sizeof(actual)) == 0,
+	        "large incompressible FPX chunk must decode with exact value bits");
+	Require(bytes <= state.capacity_bounds.maximum_compressed_chunk_bytes,
+	        "compressed chunk bound must include framing for every FPX block");
 }
 
 void CheckAdjacentSelectionsReuseRanges() {
@@ -259,6 +327,7 @@ void CheckBufferReplacementReleasesBeforeAllocation() {
 int main() {
 	try {
 		CheckRawLargeBounds();
+		CheckIncompressibleFpxChunk();
 		CheckAdjacentSelectionsReuseRanges();
 		CheckBufferReplacementReleasesBeforeAllocation();
 		std::cout << "reader capacity bounds passed\n";

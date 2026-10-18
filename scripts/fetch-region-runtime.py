@@ -107,6 +107,130 @@ SELECT version() AS duckdb_version,
     return row
 
 
+def probe_sampling(cli: Path, extension: Path, version: str, pins: dict) -> dict:
+    escaped = str(extension.resolve()).replace("'", "''")
+    geometry = "POLYGON((100.1 20.1,100.2 20.1,100.2 20.2,100.1 20.2,100.1 20.1))"
+    sql = f"""
+LOAD '{escaped}';
+SELECT
+       version() AS duckdb_version,
+       (SELECT source_id FROM pragma_version()) AS duckdb_source_id,
+       (SELECT extension_version FROM duckdb_extensions() WHERE extension_name='spatial' AND loaded) AS extension_version,
+       (SELECT install_path FROM duckdb_extensions() WHERE extension_name='spatial' AND loaded) AS install_path,
+       (SELECT count(*) FROM duckdb_functions() WHERE function_name='ST_PointOnSurface' AND parameter_types=['GEOMETRY'] AND return_type='GEOMETRY') >= 1 AS point_on_surface_signature,
+       (SELECT count(*) FROM duckdb_functions() WHERE function_name='ST_X' AND parameter_types=['GEOMETRY'] AND return_type='DOUBLE') >= 1 AS st_x_signature,
+       (SELECT count(*) FROM duckdb_functions() WHERE function_name='ST_Y' AND parameter_types=['GEOMETRY'] AND return_type='DOUBLE') >= 1 AS st_y_signature,
+       (SELECT count(*) FROM duckdb_functions() WHERE function_name='ST_Covers' AND parameter_types=['GEOMETRY','GEOMETRY'] AND return_type='BOOLEAN') >= 1 AS covers_signature,
+       ST_AsText(p) AS point_wkt, ST_X(p) AS x, ST_Y(p) AS y,
+       ST_Covers(ST_GeomFromText('{geometry}'), p) AS covered
+FROM (SELECT ST_PointOnSurface(ST_GeomFromText('{geometry}')) AS p);
+"""
+    result = subprocess.run(
+        [str(cli), "-unsigned", "-json", "-c", sql], text=True, capture_output=True, check=False
+    )
+    if result.returncode:
+        raise RuntimeError(f"nearest spatial probe failed for {version}: {result.stderr.strip()}")
+    try:
+        rows = json.loads(result.stdout)
+        row = rows[-1] if isinstance(rows, list) else rows
+    except (json.JSONDecodeError, IndexError, TypeError) as error:
+        raise RuntimeError(f"DuckDB {version} did not return JSON nearest probe output") from error
+    signatures = {
+        "ST_PointOnSurface": {"parameters": ["GEOMETRY"], "return_type": "GEOMETRY"},
+        "ST_X": {"parameters": ["GEOMETRY"], "return_type": "DOUBLE"},
+        "ST_Y": {"parameters": ["GEOMETRY"], "return_type": "DOUBLE"},
+        "ST_Covers": {"parameters": ["GEOMETRY", "GEOMETRY"], "return_type": "BOOLEAN"},
+    }
+    signature_fields = [
+        "point_on_surface_signature", "st_x_signature", "st_y_signature", "covers_signature"
+    ]
+    if any(row.get(field) is not True for field in signature_fields):
+        raise RuntimeError(f"nearest spatial signature probe failed for {version}: {row}")
+    if row.get("duckdb_version") != version or not row.get("extension_version"):
+        raise RuntimeError(f"nearest spatial runtime identity probe failed for {version}: {row}")
+    if row.get("duckdb_source_id") != pins["duckdb"][:10]:
+        raise RuntimeError(f"DuckDB source identity mismatch for {version}: {row}")
+    if not str(row["extension_version"]).startswith(pins["spatial"][:7]):
+        raise RuntimeError(f"spatial source identity mismatch for {version}: {row}")
+    if row.get("point_wkt") != "POINT (100.15 20.15)" or row.get("x") != 100.15 or row.get("y") != 20.15 or row.get("covered") is not True:
+        raise RuntimeError(f"nearest interior point probe failed for {version}: {row}")
+    return {
+        "version": version,
+        "platform": "linux_arm64",
+        "duckdb_source_sha": pins["duckdb"],
+        "duckdb_cli": {"path": str(cli.resolve()), "sha256": sha256(cli)},
+        "spatial_source_sha": pins["spatial"],
+        "extension_version": row["extension_version"],
+        "spatial_package": {"path": str(extension.resolve()), "sha256": sha256(extension)},
+        "duckdb_probe_version": row["duckdb_version"],
+        "spatial_install_path": row.get("install_path", ""),
+        "exact_function_signatures": signatures,
+        "geometry_probe": {
+            "covered": row["covered"],
+            "point": row["point_wkt"],
+            "x": row["x"],
+            "y": row["y"],
+        },
+        "status": "probe_pass",
+    }
+
+
+def run_sampling(args: argparse.Namespace) -> dict:
+    source_matrix = json.loads(args.matrix.resolve().read_text())
+    pairs = {pair["pair_id"]: pair for pair in source_matrix["pairs"]}
+    if set(pairs) != set(PINS):
+        raise RuntimeError("grid version matrix must contain exactly the pinned v1.5.4-v1.5.6 pairs")
+
+    runtimes = []
+    errors = []
+    signatures = {
+        "ST_PointOnSurface": {"parameters": ["GEOMETRY"], "return_type": "GEOMETRY"},
+        "ST_X": {"parameters": ["GEOMETRY"], "return_type": "DOUBLE"},
+        "ST_Y": {"parameters": ["GEOMETRY"], "return_type": "DOUBLE"},
+        "ST_Covers": {"parameters": ["GEOMETRY", "GEOMETRY"], "return_type": "BOOLEAN"},
+    }
+    for version, pins in PINS.items():
+        if pairs[version]["duckdb"]["commit"] != pins["duckdb"]:
+            raise RuntimeError(f"DuckDB commit pin changed for {version}")
+        record = {"version": version, "status": "blocked"}
+        try:
+            runtime_dir = args.runtime_root.resolve() / version / "official"
+            cli = runtime_dir / "duckdb"
+            extension = runtime_dir / "spatial.duckdb_extension"
+            if not cli.is_file() or not extension.is_file():
+                raise RuntimeError(f"pinned local CLI/spatial artifacts are missing under {runtime_dir}")
+            official = pairs[version]["official_runtime"]
+            if sha256(cli) != official["cli_sha256"]:
+                raise RuntimeError(f"official CLI SHA-256 mismatch for {version}")
+            result = subprocess.run([str(cli), "--version"], text=True, capture_output=True, check=False)
+            if result.returncode or not result.stdout.startswith(f"{version} "):
+                raise RuntimeError(f"official CLI version mismatch for {version}: {result.stdout.strip()}")
+            record = probe_sampling(cli, extension, version, pins)
+        except (OSError, KeyError, RuntimeError, subprocess.SubprocessError) as error:
+            record["error"] = str(error)
+            errors.append(f"{version}: {error}")
+        runtimes.append(record)
+
+    document = {
+        "schema_version": 1,
+        "scope": "006 nearest-only representative geometry adapter probe; separate from the historical 005 regions runtime matrix",
+        "platform": {"target": "Linux AArch64", "extension_platform": "linux_arm64"},
+        "probe_geometry": "POLYGON((100.1 20.1,100.2 20.1,100.2 20.2,100.1 20.2,100.1 20.1))",
+        "expected_point_wkt": "POINT (100.15 20.15)",
+        "signatures": signatures,
+        "runtimes": runtimes,
+        "status": "probe_pass" if not errors else "blocked",
+    }
+    output_path = args.sampling_output.resolve()
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = output_path.with_suffix(output_path.suffix + ".tmp")
+    temporary.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n")
+    temporary.replace(output_path)
+    if errors:
+        raise RuntimeError(f"sampling runtime evidence saved to {output_path}; review required: " + "; ".join(errors))
+    return document
+
+
 def run(args: argparse.Namespace) -> dict:
     matrix_path = args.matrix.resolve()
     output_path = args.output.resolve()
@@ -180,9 +304,15 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--matrix", type=Path, default=MATRIX)
     parser.add_argument("--output", type=Path, default=OUTPUT)
+    parser.add_argument("--sampling-output", type=Path,
+                        help="probe nearest-only public spatial signatures into a separate 006 matrix")
     parser.add_argument("--runtime-root", type=Path, default=RUNTIME_ROOT)
     args = parser.parse_args()
     try:
+        if args.sampling_output is not None:
+            result = run_sampling(args)
+            print(json.dumps({"output": str(args.sampling_output.resolve()), "runtimes": len(result["runtimes"])}))
+            return 0
         result = run(args)
     except (OSError, KeyError, TypeError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
         print(f"fetch-region-runtime: {error}", file=sys.stderr)

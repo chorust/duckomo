@@ -73,19 +73,20 @@ private:
 	std::size_t capacity_ = 0;
 };
 
-// Per-decoder bounds computed from the variable metadata, selected output
-// shape, and object size. The data bound deliberately uses the complete object
-// size while the largest compressed block (Cmax) remains unknown; it does not
-// read the value LUT to estimate that bound.
+// Per-decoder bounds computed from the variable metadata and configured
+// request size. OM v3 range requests merge at most io_size_max bytes, except
+// that the first compressed chunk may be larger. The compressed-size bound
+// includes two framing bytes per 128 elements (FPX predictor and PFor header),
+// plus 4096 bytes for the pinned parser's padding and request framing.
 struct OmDecoderCapacityBounds final {
 	std::uint64_t decoder_control_bytes = 0;
 	std::uint64_t index_buffer_upper_bound_bytes = 0;
 	std::uint64_t data_buffer_upper_bound_bytes = 0;
+	std::uint64_t maximum_compressed_chunk_bytes = 0;
 	std::uint64_t output_bytes = 0;
 	std::uint64_t chunk_scratch_bytes = 0;
 	std::uint64_t decoder_peak_upper_bound_bytes = 0;
 	std::uint64_t peak_including_output_upper_bound_bytes = 0;
-	bool data_bound_uses_object_size = false;
 };
 
 // Reader errors retain a stable category while allowing callers to include the

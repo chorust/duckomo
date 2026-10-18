@@ -1,0 +1,41 @@
+Filters: /home/blizhan/repo/github/duckomo/test/sql/region_sampling.test
+
+[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/region_sampling.test
+1. /home/blizhan/repo/github/duckomo/test/sql/region_sampling.test:418
+================================================================================
+Query failed, but error message did not match expected error message: <REGEX>:(?i).*sampling column name conflicts.* (/home/blizhan/repo/github/duckomo/test/sql/region_sampling.test:418)!
+================================================================================
+SELECT * FROM read_om_regions(
+    '/home/blizhan/repo/github/duckomo/test/data/sampling/sampling-conflict.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], variable := 'missing/path', method := 'nearest');
+================================================================================
+Actual result:
+================================================================================
+Invalid Error: OM variable 'missing/path' was not found
+
+LINE 1: SELECT * FROM read_om_regions(
+                      ^
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+unittest is a Catch v2.13.7 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+/home/blizhan/repo/github/duckomo/test/sql/region_sampling.test
+-------------------------------------------------------------------------------
+/home/blizhan/repo/github/duckomo/duckdb/test/sqlite/test_sqllogictest.cpp:220
+...............................................................................
+
+/home/blizhan/repo/github/duckomo/test/sql/region_sampling.test:418: FAILED:
+explicitly with message:
+  0
+
+
+[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/region_sampling.test
+===============================================================================
+test cases:  1 |  0 passed | 1 failed
+assertions: 64 | 63 passed | 1 failed
+

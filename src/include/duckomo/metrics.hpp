@@ -104,6 +104,15 @@ struct ScanCoordinateMetrics final {
 	bool decode_count_complete = true;
 };
 
+struct ScanSamplingVariableStatusMetrics final {
+	std::uint64_t rows_observed = 0;
+	std::uint64_t ok = 0;
+	std::uint64_t source_null = 0;
+	std::uint64_t empty_geometry = 0;
+	std::uint64_t outside_domain = 0;
+	std::uint64_t beyond_max_distance = 0;
+};
+
 // A stable, transport-neutral copy of one query's evidence. The harness can
 // consume this snapshot directly or use ToEvidenceJson() below.
 struct ScanMetricsSnapshot final {
@@ -222,6 +231,31 @@ struct ScanMetricsSnapshot final {
 	std::optional<bool> match_count_complete;
 	std::uint64_t geometry_prepare_ns = 0;
 	std::uint64_t geometry_evaluate_ns = 0;
+	bool nearest_sampling = false;
+	std::optional<std::uint64_t> sampling_result_upper_bound;
+	std::optional<std::uint64_t> sampling_result_rows_exact;
+	std::optional<bool> sampling_result_count_complete;
+	std::uint64_t sampling_source_rows_requested = 0;
+	std::uint64_t sampling_distinct_sources_observed = 0;
+	std::uint64_t sampling_result_rows_observed = 0;
+	std::uint64_t sampling_coordinate_comparisons = 0;
+	std::uint64_t sampling_target_count = 0;
+	std::uint64_t sampling_target_prepare_nanoseconds = 0;
+	std::uint64_t sampling_locator_nanoseconds = 0;
+	std::optional<std::uint64_t> sampling_locator_cpu_nanoseconds;
+	std::uint64_t sampling_max_task_rows = 0;
+	std::uint64_t sampling_status_rows_observed = 0;
+	std::optional<bool> sampling_status_dependency_complete;
+	std::vector<std::string> sampling_required_state_variables;
+	std::map<std::string, ScanSamplingVariableStatusMetrics> sampling_variable_status;
+	std::string sampling_method;
+	std::string sampling_algorithm;
+	std::string sampling_representative;
+	std::string sampling_spatial_version;
+	std::string sampling_grid_id;
+	std::string sampling_layout_id;
+	std::string sampling_distance_model;
+	double sampling_earth_radius_m = 0;
 };
 
 // Per-query counters with no global registry or persistence. Instances may be
@@ -272,6 +306,11 @@ public:
 			candidate_count_complete_ = false;
 			region_matched_pairs_exact_.reset();
 			region_match_count_complete_ = false;
+			if (nearest_sampling_) {
+				sampling_result_rows_exact_.reset();
+				sampling_result_count_complete_ = false;
+				if (!sampling_required_state_variables_.empty()) sampling_status_dependency_complete_ = false;
+			}
 		}
 	}
 
@@ -419,7 +458,11 @@ public:
 		if (!query_memory_accounting_enabled_) return;
 		query_owned_released_at_terminal_ =
 		    memory_accounts_.empty() && memory_current_bytes_ == 0 && memory_current_upper_bound_bytes_ == 0;
-		if (!query_succeeded) query_memory_count_complete_ = false;
+		if (!query_succeeded) {
+			query_memory_count_complete_ = false;
+			if (nearest_sampling_ && !sampling_required_state_variables_.empty())
+				sampling_status_dependency_complete_ = false;
+		}
 		if (query_memory_count_complete_) {
 			peak_query_owned_bytes_ = memory_peak_bytes_;
 			peak_query_owned_upper_bound_bytes_ = memory_peak_upper_bound_bytes_;
@@ -616,6 +659,94 @@ public:
 		if (operation.empty()) throw std::invalid_argument("metrics operation must not be empty");
 		std::lock_guard<std::mutex> guard(mutex_);
 		operation_ = std::move(operation);
+	}
+
+	void SetNearestSamplingIdentity(std::string method, std::string algorithm, std::string representative,
+	                               std::string spatial_version, std::string grid_id, std::string layout_id,
+	                               std::string distance_model, double earth_radius_m, std::uint64_t target_count,
+	                               std::uint64_t result_upper_bound, std::uint64_t target_prepare_nanoseconds) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		nearest_sampling_ = true;
+		sampling_method_ = std::move(method);
+		sampling_algorithm_ = std::move(algorithm);
+		sampling_representative_ = std::move(representative);
+		sampling_spatial_version_ = std::move(spatial_version);
+		sampling_grid_id_ = std::move(grid_id);
+		sampling_layout_id_ = std::move(layout_id);
+		sampling_distance_model_ = std::move(distance_model);
+		sampling_earth_radius_m_ = earth_radius_m;
+		sampling_target_count_ = target_count;
+		sampling_result_upper_bound_ = result_upper_bound;
+		sampling_target_prepare_nanoseconds_ = target_prepare_nanoseconds;
+	}
+
+	void SetNearestSamplingStatusDependencies(const std::vector<std::string> &variable_paths) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		sampling_required_state_variables_.clear();
+		sampling_required_state_variables_.insert(variable_paths.begin(), variable_paths.end());
+		if (!variable_paths.empty()) sampling_status_dependency_complete_ = false;
+	}
+
+	void RecordNearestSamplingLocation(std::uint64_t coordinate_comparisons, std::uint64_t wall_elapsed_ns,
+	                                  std::optional<std::uint64_t> cpu_elapsed_ns) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		AddChecked(sampling_coordinate_comparisons_, coordinate_comparisons);
+		AddChecked(sampling_locator_nanoseconds_, wall_elapsed_ns);
+		if (cpu_elapsed_ns) {
+			if (!sampling_locator_cpu_nanoseconds_) sampling_locator_cpu_nanoseconds_ = 0;
+			AddChecked(*sampling_locator_cpu_nanoseconds_, *cpu_elapsed_ns);
+		}
+	}
+
+	void RecordNearestSamplingSources(std::uint64_t source_rows_requested, std::uint64_t distinct_sources) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		AddChecked(sampling_source_rows_requested_, source_rows_requested);
+		AddChecked(sampling_distinct_sources_observed_, distinct_sources);
+	}
+
+	void RecordNearestSamplingStatuses(
+	    const std::map<std::string, ScanSamplingVariableStatusMetrics> &batch_statuses,
+	    std::uint64_t result_rows) {
+		if (batch_statuses.empty()) return;
+		std::lock_guard<std::mutex> guard(mutex_);
+		AddChecked(sampling_status_rows_observed_, result_rows);
+		for (const auto &entry : batch_statuses) {
+			auto &total = sampling_variable_status_[entry.first];
+			AddChecked(total.rows_observed, entry.second.rows_observed);
+			AddChecked(total.ok, entry.second.ok);
+			AddChecked(total.source_null, entry.second.source_null);
+			AddChecked(total.empty_geometry, entry.second.empty_geometry);
+			AddChecked(total.outside_domain, entry.second.outside_domain);
+			AddChecked(total.beyond_max_distance, entry.second.beyond_max_distance);
+		}
+	}
+
+	void SetNearestSamplingStatusDependencyComplete(bool complete) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		if (!sampling_required_state_variables_.empty()) sampling_status_dependency_complete_ = complete;
+	}
+
+	void MarkNearestSamplingStatusDependencyIncomplete() {
+		std::lock_guard<std::mutex> guard(mutex_);
+		if (!sampling_required_state_variables_.empty()) sampling_status_dependency_complete_ = false;
+	}
+
+	void RecordNearestSamplingRows(std::uint64_t rows) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		AddChecked(sampling_result_rows_observed_, rows);
+	}
+
+	void RecordNearestSamplingTaskRows(std::uint64_t rows) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		sampling_max_task_rows_ = std::max(sampling_max_task_rows_, rows);
+	}
+
+	void SetNearestSamplingResultCount(std::optional<std::uint64_t> exact_rows, std::optional<bool> complete) {
+		if (complete.value_or(false) && !exact_rows)
+			throw std::invalid_argument("complete nearest sampling result count requires an exact value");
+		std::lock_guard<std::mutex> guard(mutex_);
+		sampling_result_rows_exact_ = exact_rows;
+		sampling_result_count_complete_ = complete;
 	}
 
 	void SetRegionInputMetrics(std::uint64_t region_count, std::uint64_t empty_count,
@@ -914,6 +1045,32 @@ public:
 		snapshot.match_count_complete = region_match_count_complete_;
 		snapshot.geometry_prepare_ns = region_geometry_prepare_ns_;
 		snapshot.geometry_evaluate_ns = region_geometry_evaluate_ns_;
+		snapshot.nearest_sampling = nearest_sampling_;
+		snapshot.sampling_result_upper_bound = sampling_result_upper_bound_;
+		snapshot.sampling_result_rows_exact = sampling_result_rows_exact_;
+		snapshot.sampling_result_count_complete = sampling_result_count_complete_;
+		snapshot.sampling_source_rows_requested = sampling_source_rows_requested_;
+		snapshot.sampling_distinct_sources_observed = sampling_distinct_sources_observed_;
+		snapshot.sampling_result_rows_observed = sampling_result_rows_observed_;
+		snapshot.sampling_coordinate_comparisons = sampling_coordinate_comparisons_;
+		snapshot.sampling_target_count = sampling_target_count_;
+		snapshot.sampling_target_prepare_nanoseconds = sampling_target_prepare_nanoseconds_;
+		snapshot.sampling_locator_nanoseconds = sampling_locator_nanoseconds_;
+		snapshot.sampling_locator_cpu_nanoseconds = sampling_locator_cpu_nanoseconds_;
+		snapshot.sampling_max_task_rows = sampling_max_task_rows_;
+		snapshot.sampling_status_rows_observed = sampling_status_rows_observed_;
+		snapshot.sampling_status_dependency_complete = sampling_status_dependency_complete_;
+		snapshot.sampling_required_state_variables.assign(sampling_required_state_variables_.begin(),
+		                                                  sampling_required_state_variables_.end());
+		snapshot.sampling_variable_status = sampling_variable_status_;
+		snapshot.sampling_method = sampling_method_;
+		snapshot.sampling_algorithm = sampling_algorithm_;
+		snapshot.sampling_representative = sampling_representative_;
+		snapshot.sampling_spatial_version = sampling_spatial_version_;
+		snapshot.sampling_grid_id = sampling_grid_id_;
+		snapshot.sampling_layout_id = sampling_layout_id_;
+		snapshot.sampling_distance_model = sampling_distance_model_;
+		snapshot.sampling_earth_radius_m = sampling_earth_radius_m_;
 		snapshot.decode_count_complete = coordinate_metrics_.decode_count_complete;
 		snapshot.bytes_fetched = snapshot.metadata_bytes;
 		snapshot.read_requests = snapshot.metadata_requests;
@@ -1123,26 +1280,67 @@ public:
 	     << ",\"fallback_windows\":" << snapshot.selection_fallback_windows
 	     << ",\"coordinate_evaluations\":" << JsonOptionalUint(snapshot.coordinate_preparation_evaluations) << '}';
 		if (snapshot.operation == "read_om_regions") {
-			json << ",\"regions\":{\"input_region_count\":" << snapshot.input_region_count
+			json << ",\"regions\":{\"applicable\":" << JsonBool(!snapshot.nearest_sampling)
+			     << ",\"not_applicable_reason\":"
+			     << (snapshot.nearest_sampling ? JsonString("nearest_uses_target_sampling") : "null")
+			     << ",\"input_region_count\":" << snapshot.input_region_count
 			     << ",\"empty_region_count\":" << snapshot.empty_region_count
 			     << ",\"input_wkb_bytes\":" << snapshot.input_wkb_bytes
 			     << ",\"input_vertex_count\":" << snapshot.input_vertex_count
 			     << ",\"owned_input_peak_bytes\":" << snapshot.owned_input_peak_bytes
 			     << ",\"count_unit\":\"region_record_pair\""
-			     << ",\"candidate_pairs_observed\":" << snapshot.candidate_pairs_observed
-			     << ",\"geometry_tested_pairs\":" << snapshot.geometry_tested_pairs
-			     << ",\"matched_pairs_observed\":" << snapshot.matched_pairs_observed
-			     << ",\"geometry_batches\":" << snapshot.geometry_batches
-			     << ",\"geometry_evaluations\":" << snapshot.geometry_evaluations
-			     << ",\"envelope_rejected_pairs\":" << snapshot.envelope_rejected_pairs
-			     << ",\"matched_pairs_exact\":" << JsonOptionalUint(snapshot.matched_pairs_exact)
-			     << ",\"match_count_complete\":" << JsonOptionalBool(snapshot.match_count_complete)
+			     << ",\"candidate_pairs_observed\":" << (snapshot.nearest_sampling ? "null" : std::to_string(snapshot.candidate_pairs_observed))
+			     << ",\"geometry_tested_pairs\":" << (snapshot.nearest_sampling ? "null" : std::to_string(snapshot.geometry_tested_pairs))
+			     << ",\"matched_pairs_observed\":" << (snapshot.nearest_sampling ? "null" : std::to_string(snapshot.matched_pairs_observed))
+			     << ",\"geometry_batches\":" << (snapshot.nearest_sampling ? "null" : std::to_string(snapshot.geometry_batches))
+			     << ",\"geometry_evaluations\":" << (snapshot.nearest_sampling ? "null" : std::to_string(snapshot.geometry_evaluations))
+			     << ",\"envelope_rejected_pairs\":" << (snapshot.nearest_sampling ? "null" : std::to_string(snapshot.envelope_rejected_pairs))
+			     << ",\"matched_pairs_exact\":" << (snapshot.nearest_sampling ? "null" : JsonOptionalUint(snapshot.matched_pairs_exact))
+			     << ",\"match_count_complete\":" << (snapshot.nearest_sampling ? "null" : JsonOptionalBool(snapshot.match_count_complete))
 			     << ",\"geometry_prepare_ns\":" << snapshot.geometry_prepare_ns
 			     << ",\"geometry_evaluate_ns\":" << snapshot.geometry_evaluate_ns
 			     << ",\"owned_work_peak_bytes\":" << JsonOptionalUint(snapshot.peak_work_owned_bytes)
 			     << ",\"owned_work_bound_bytes\":" << JsonOptionalUint(snapshot.peak_work_owned_upper_bound_bytes)
 			     << ",\"spatial_internal_peak_bytes\":null"
 			     << ",\"spatial_internal_memory_complete\":false}";
+			if (snapshot.nearest_sampling) {
+				json << ",\"sampling\":{\"method\":" << JsonString(snapshot.sampling_method)
+				     << ",\"algorithm\":" << JsonString(snapshot.sampling_algorithm)
+				     << ",\"representative\":" << JsonString(snapshot.sampling_representative)
+				     << ",\"spatial_version\":" << JsonString(snapshot.sampling_spatial_version)
+				     << ",\"grid_id\":" << JsonString(snapshot.sampling_grid_id)
+				     << ",\"layout_id\":" << JsonString(snapshot.sampling_layout_id)
+				     << ",\"distance_model\":" << JsonString(snapshot.sampling_distance_model)
+				     << ",\"earth_radius_m\":" << std::setprecision(17) << snapshot.sampling_earth_radius_m
+				     << ",\"count_unit\":\"region_axis_result\",\"region_target_count\":" << snapshot.sampling_target_count
+				     << ",\"result_upper_bound\":" << JsonOptionalUint(snapshot.sampling_result_upper_bound)
+				     << ",\"result_rows_observed\":" << snapshot.sampling_result_rows_observed
+			     << ",\"result_rows_exact\":" << JsonOptionalUint(snapshot.sampling_result_rows_exact)
+				     << ",\"result_count_complete\":" << JsonOptionalBool(snapshot.sampling_result_count_complete)
+				     << ",\"source_rows_requested\":" << snapshot.sampling_source_rows_requested
+				     << ",\"distinct_sources_observed\":" << snapshot.sampling_distinct_sources_observed
+				     << ",\"coordinate_comparisons\":" << snapshot.sampling_coordinate_comparisons
+				     << ",\"target_prepare_ns\":" << snapshot.sampling_target_prepare_nanoseconds
+				     << ",\"locator_ns\":" << snapshot.sampling_locator_nanoseconds
+				     << ",\"locator_cpu_ns\":" << JsonOptionalUint(snapshot.sampling_locator_cpu_nanoseconds)
+				     << ",\"max_task_rows\":" << snapshot.sampling_max_task_rows
+				     << ",\"status_rows_observed\":" << snapshot.sampling_status_rows_observed
+				     << ",\"status_dependency_complete\":" << JsonOptionalBool(snapshot.sampling_status_dependency_complete)
+				     << ",\"required_state_variables\":" << JsonStringArray(snapshot.sampling_required_state_variables)
+				     << ",\"variable_status\":{";
+				bool first_sampling_variable = true;
+				for (const auto &entry : snapshot.sampling_variable_status) {
+					if (!first_sampling_variable) json << ',';
+					first_sampling_variable = false;
+					const auto &status = entry.second;
+					json << JsonString(entry.first) << ":{\"rows_observed\":" << status.rows_observed
+					     << ",\"ok\":" << status.ok << ",\"source_null\":" << status.source_null
+					     << ",\"empty_geometry\":" << status.empty_geometry
+					     << ",\"outside_domain\":" << status.outside_domain
+					     << ",\"beyond_max_distance\":" << status.beyond_max_distance << '}';
+				}
+				json << "}}";
+			}
 		}
 		json << ",\"coordinate_preparation\":{\"evaluations\":"
 	     << JsonOptionalUint(snapshot.coordinate_preparation_evaluations)
@@ -1215,7 +1413,7 @@ public:
 		     << ",\"coordinate_decoded_chunks\":" << snapshot.coordinate.decoded_chunks
 		     << ",\"deduplicated\":false}"
 		     << ",\"coalescing_scope\":\"no coalescing buffers are currently allocated\""
-		     << ",\"decoder_upper_bound_basis\":\"control+min(object_size,lut_size)+object_size+chunk_scratch per active decoder; engine output reported separately\""
+		     << ",\"decoder_upper_bound_basis\":\"control+min(object_size,lut_size)+min(object_size,max(io_size_max,raw_compressed_width_bytes+2*ceil(chunk_elements/128)+4096))+chunk_scratch per active decoder; engine output reported separately\""
 		     << ",\"engine_output_vector_bytes\":null"
 		     << ",\"engine_output_vector_scope\":\"DuckDB-owned; not included in query-owned totals\""
 		     << ",\"shared_cache_peak_charged_bytes\":" << snapshot.cache_peak_charged_bytes
@@ -1474,6 +1672,31 @@ private:
 	std::optional<bool> region_match_count_complete_;
 	std::uint64_t region_geometry_prepare_ns_ = 0;
 	std::uint64_t region_geometry_evaluate_ns_ = 0;
+	bool nearest_sampling_ = false;
+	std::optional<std::uint64_t> sampling_result_upper_bound_;
+	std::optional<std::uint64_t> sampling_result_rows_exact_;
+	std::optional<bool> sampling_result_count_complete_;
+	std::uint64_t sampling_source_rows_requested_ = 0;
+	std::uint64_t sampling_distinct_sources_observed_ = 0;
+	std::uint64_t sampling_result_rows_observed_ = 0;
+	std::uint64_t sampling_coordinate_comparisons_ = 0;
+	std::uint64_t sampling_target_count_ = 0;
+	std::uint64_t sampling_target_prepare_nanoseconds_ = 0;
+	std::uint64_t sampling_locator_nanoseconds_ = 0;
+	std::optional<std::uint64_t> sampling_locator_cpu_nanoseconds_;
+	std::uint64_t sampling_max_task_rows_ = 0;
+	std::uint64_t sampling_status_rows_observed_ = 0;
+	std::optional<bool> sampling_status_dependency_complete_;
+	std::set<std::string> sampling_required_state_variables_;
+	std::map<std::string, ScanSamplingVariableStatusMetrics> sampling_variable_status_;
+	std::string sampling_method_;
+	std::string sampling_algorithm_;
+	std::string sampling_representative_;
+	std::string sampling_spatial_version_;
+	std::string sampling_grid_id_;
+	std::string sampling_layout_id_;
+	std::string sampling_distance_model_;
+	double sampling_earth_radius_m_ = 0;
 	bool value_decode_evidence_observed_ = false;
 	bool coordinate_decode_evidence_observed_ = false;
 	bool query_terminal_published_ = false;

@@ -1,6 +1,6 @@
 # DuckOMO Roadmap
 
-本地扫描、列裁剪和规则网格空间查询（Phase 0–3）已实现。Phase 4 的维度语义已实现；Phase 5 的官方 HTTPFS 远程与并行路径已通过 v1.5.4/v1.5.5/v1.5.6 的受控验证，独立复现仍待完成。Phase 6 的 [004 多网格](../specs/004-multi-grid-selection/spec.md) 功能已实现，逐网格真实样本和完整验收仍在进行。[005 Polygon 区域读取](../specs/005-polygon-region-statistics/spec.md) 已实现，版本矩阵和独立复现状态见该 spec 的 evidence；只有实际完成的 gate 才计为通过。当前行为见 [接口说明](spec.md)，模块边界见 [技术架构](architecture.md)。
+本地扫描、列裁剪和规则网格空间查询（Phase 0–3）已实现。Phase 4 的维度语义已实现；Phase 5 的官方 HTTPFS 远程与并行路径已通过 v1.5.4/v1.5.5/v1.5.6 的受控验证，独立复现仍待完成。Phase 6 的 [004 多网格](../specs/004-multi-grid-selection/spec.md) 功能已实现，逐网格真实样本和完整验收仍在进行。[005 Polygon 区域读取](../specs/005-polygon-region-statistics/spec.md) 已实现，版本矩阵和独立复现状态见该 spec 的 evidence。[006 nearest polygon sampling](../specs/006-region-nearest-sampling/spec.md) 已在既有 `read_om_regions` 中实现，points 默认兼容；N0–N4在各自声明范围内通过；N5真实数据与受控传输子检查通过，但原始数据授权和持久归档未解决；N6未完成；N7已有本地5×5复现，但执行者参与实现，不满足独立执行者要求。当前gate状态见[006最终状态报告](../specs/006-region-nearest-sampling/evidence/final.md)。只有实际完成的 gate 才计为通过。当前行为见 [接口说明](spec.md)，模块边界见 [技术架构](architecture.md)。
 
 ## 阶段
 
@@ -14,10 +14,15 @@
 | **5 — 远程与并行** | 官方 HTTPFS 实现及三版本受控验证通过；独立复现待完成 | HTTP(S)/S3 标准文件系统、任务切分和 profiling；自有缓存已移除，不承诺热缓存收益 |
 | **6 — 更多网格** | 功能已实现；完整验收未通过 | 旋转、Lambert、stereographic 与 Gaussian 定义、局部空间选择、source/grid-info；每类真实坐标/值、远程收益和独立复现门禁按 [004 spec](../specs/004-multi-grid-selection/spec.md) 完成 |
 | **005 — Polygon 区域读取** | 功能已实现；独立复现待完成 | 匹配版 spatial 依赖、原始区域点值、SQL 分时统计、owned memory/lifecycle、HTTP/S3 收益和三版本矩阵按 [005 gates](../specs/005-polygon-region-statistics/contracts/validation-evidence.md) 留证；P7 由未参与实现者执行 |
+| **006 — 区域最近邻采样** | 功能已实现；N0–N4 在各自声明范围内通过，整体验收进行中 | 既有 `read_om_regions` 的 points/nearest，规则球面最近源值及状态/来源解释；N5真实数据/受控传输子检查通过但完整gate未完成，N6版本审计未完成；N7本地5×5复现未满足独立执行者要求，详见[006最终状态](../specs/006-region-nearest-sampling/evidence/final.md)与[006 evidence](../specs/006-region-nearest-sampling/evidence/) |
 | **7 — 科学计算** | 计划中 | 独立设计 `om_slice`、`om_reduce`、`om_interp`、`om_regrid` |
 | **8 — 跨 chunk 时间序列入口** | 待评审提案；未立项、未实现 | `read_om_series` 按 model 登记的 chunk 时间参数把任意时间窗展开为多个 `data/` 布局 `chunk_*.om` 对象并按 `valid_time` 对齐拼接，用户无需知道目标时间落在哪个 chunk；设计细节见下节 |
 
 Phase 4 的语义维度和本地筛选已实现。Phase 5 已切换为官方 HTTPFS，跨来源结果、1/2/4 worker、冷局部收益、访问变化、故障恢复、取消及隔离有三版本受控记录；旧自有缓存及其 SQL 已删除，旧 G5 为 superseded，历史失败不改写。Phase 6 的 version=1 新网格与 source/grid-info 已实现；三类真实投影样本的全量坐标/值子比较及 source-only 辅助检查已通过；按 [2026-10-10 pinned producer 参考决定](../specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md)，producer 源码即参考，四个 Open-Meteo 定义登记 coordinate-value-validated；完整 H1/H2 尚未通过。**2026-10-10 修订**：按 [负责人批准的范围修订](../specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md)，N160/N320/N 区域真实样本本轮跳过，不阻塞当前范围收口，定义及合成回归保留。`ecmwf_ifs` O1280（HRES）为本轮 Gaussian 验收目标，已登记 coordinate-value-validated（与 Open-Meteo 发布对象一致，非 ECMWF 原生 GRIB 等价）；[本地真实 domain/空间/抽样时间查询](../specs/004-multi-grid-selection/evidence/baseline-local/o1280-real-local-20261010/final.md) 已留证并通过，完整远程 gate 与 H9 仍开放，详见 [网格证据表](grid-domains.md)。2.0 开发版已退出本轮范围。科学算子仍独立于扫描入口实现；普通 `read_om` 继续直接输出 DuckDB Vector。
+
+## 空间采样与计算
+
+针对小行政区在粗网格上没有内部采样点的情况，nearest 已按[空间采样与区域计算设计提案](plans/2026-10-14-spatial-sampling-and-computation.md)和[生态调研](research/2026-10-14-spatial-computation-ecosystem.md)实现在现有 `read_om_regions` 内，以 `method` 选择处理方式：省略或 points 保持原始区内点；nearest 对每个区域和非空间轴组合选取代表点最近的规则球面网格源值。`read_om` 继续用于普通网格读取或坐标范围筛选；已有 polygon 的查询使用 `read_om_regions`。功能与验收范围见 [006 spec](../specs/006-region-nearest-sampling/spec.md)、[实施计划及契约](../specs/006-region-nearest-sampling/plan.md)、[65项任务](../specs/006-region-nearest-sampling/tasks.md) 和 [evidence](../specs/006-region-nearest-sampling/evidence/)；当前56/65项任务完成，N0–N4在各自声明范围内通过；N5真实数据和受控传输子检查通过，但原始数据授权与持久归档未解决；N6完整审计未完成；N7已有本地复现由实现worker执行，不满足独立执行者要求，因此006整体验收仍在进行，详见[006最终状态报告](../specs/006-region-nearest-sampling/evidence/final.md)。bilinear、Line、面积/权重及缓存不纳入006；005的当前实现或历史验收状态不变。
 
 ## Phase 8 — 跨 chunk 时间序列入口（待评审提案）
 

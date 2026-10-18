@@ -1,0 +1,19 @@
+region_id,member,valid_time,lat,lon,geom_status,source_lat,source_lon,distance_m,source_point_index,value_status,value,logical_index,point_index,object_id
+Gap,0,2026-01-01 00:00:00,20.15,100.15,ok,20.0,100.0,22883.490692907973,0,ok,0.0,0,0,sha256:d2bfb3ac16b3b8ff8ca35d497a4151da1edbbf7ae7595029b6ce4b17ae5263b5
+Gap,0,2026-01-01 01:00:00,20.15,100.15,ok,20.0,100.0,22883.490692907973,0,ok,100.0,25,0,sha256:d2bfb3ac16b3b8ff8ca35d497a4151da1edbbf7ae7595029b6ce4b17ae5263b5
+Gap,0,2026-01-01 02:00:00,20.15,100.15,ok,20.0,100.0,22883.490692907973,0,source_null,,50,0,sha256:d2bfb3ac16b3b8ff8ca35d497a4151da1edbbf7ae7595029b6ce4b17ae5263b5
+Gap,1,2026-01-01 00:00:00,20.15,100.15,ok,20.0,100.0,22883.490692907973,0,ok,1000.0,75,0,sha256:d2bfb3ac16b3b8ff8ca35d497a4151da1edbbf7ae7595029b6ce4b17ae5263b5
+Gap,1,2026-01-01 01:00:00,20.15,100.15,ok,20.0,100.0,22883.490692907973,0,ok,1100.0,100,0,sha256:d2bfb3ac16b3b8ff8ca35d497a4151da1edbbf7ae7595029b6ce4b17ae5263b5
+Gap,1,2026-01-01 02:00:00,20.15,100.15,ok,20.0,100.0,22883.490692907973,0,source_null,,125,0,sha256:d2bfb3ac16b3b8ff8ca35d497a4151da1edbbf7ae7595029b6ce4b17ae5263b5
+Outside,0,2026-01-01 00:00:00,30.5,110.5,outside_domain,,,,,outside_domain,,,,
+Outside,0,2026-01-01 01:00:00,30.5,110.5,outside_domain,,,,,outside_domain,,,,
+Outside,0,2026-01-01 02:00:00,30.5,110.5,outside_domain,,,,,outside_domain,,,,
+Outside,1,2026-01-01 00:00:00,30.5,110.5,outside_domain,,,,,outside_domain,,,,
+Outside,1,2026-01-01 01:00:00,30.5,110.5,outside_domain,,,,,outside_domain,,,,
+Outside,1,2026-01-01 02:00:00,30.5,110.5,outside_domain,,,,,outside_domain,,,,
+Empty,0,2026-01-01 00:00:00,,,empty_geometry,,,,,empty_geometry,,,,
+Empty,0,2026-01-01 01:00:00,,,empty_geometry,,,,,empty_geometry,,,,
+Empty,0,2026-01-01 02:00:00,,,empty_geometry,,,,,empty_geometry,,,,
+Empty,1,2026-01-01 00:00:00,,,empty_geometry,,,,,empty_geometry,,,,
+Empty,1,2026-01-01 01:00:00,,,empty_geometry,,,,,empty_geometry,,,,
+Empty,1,2026-01-01 02:00:00,,,empty_geometry,,,,,empty_geometry,,,,

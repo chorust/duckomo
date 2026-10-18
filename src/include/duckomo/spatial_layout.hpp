@@ -17,6 +17,11 @@ enum class SpatialLayoutGeometry : std::uint8_t { Regular, Projected, Gaussian }
 
 // Maps a verified ordered OM axis identity to the latitude/longitude points.
 // Extra axes remain ordinary logical positions and receive no inferred meaning.
+struct SpatialLayoutPosition final {
+	std::vector<std::uint64_t> axis_indices;
+	std::uint64_t logical_index = 0;
+};
+
 struct SpatialLayout final {
 	std::vector<std::uint64_t> shape;
 	std::vector<std::string> axes;
@@ -32,6 +37,9 @@ struct SpatialLayout final {
 	// Convert a row-major source position to each declared file-axis index.
 	// No inferred labels are attached to non-spatial axes.
 	std::vector<std::uint64_t> AxisIndices(std::uint64_t logical_index) const;
+	SpatialLayoutPosition SourcePosition(const std::vector<std::uint64_t> &non_spatial_indices,
+	                                    std::uint64_t x, std::uint64_t y,
+	                                    std::uint64_t point_index) const;
 
 	// Map the source position to (y, x) in the grid. Repeated geographic
 	// coordinates remain separate source positions when the grid wraps.

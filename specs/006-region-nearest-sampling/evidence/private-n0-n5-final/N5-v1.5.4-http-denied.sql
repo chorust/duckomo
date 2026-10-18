@@ -1,0 +1,6 @@
+LOAD '/home/blizhan/repo/github/duckomo/build/release/extension/duckomo/duckomo.duckdb_extension';
+LOAD '/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/spatial.duckdb_extension';
+LOAD '/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/httpfs.duckdb_extension';
+SET ca_cert_file='/home/blizhan/repo/github/duckomo/build/regions-remote/005-completion-20261013/tls/loopback.crt';
+-- Private S3 setup supplied via stdin.
+SELECT sum(temperature_80m) FROM read_om('http://127.0.0.1:38829/real.om?state_key=n5-v1.5.4',domain:='ncep_gfs025',variable:='temperature_80m') WHERE lon=116.5 AND lat=40.0;

@@ -1,0 +1,2 @@
+region_id,lat,lon,geometry_status,source_lat,source_lon,distance_m,source_point_index,axis_indices,value_status,temperature_80m,logical_index,point_index,object_id,grid_id,layout_id
+Dongcheng,39.91557869989714,116.40737101384086,ok,40.0,116.5,12266.306480960757,749986,[],ok,13.45,749986,749986,sha256:8e4182215d5c9062fb0b864add246667ee51836babd106c4b9fbcbc4d409d091,22dde336af18129757dbf49dd23d8c34c093e65598403dd45272a6a03095363e,b795440fd6bb8a825ba3c83dbf2ca590e1b6bc54b80b510aa75112b9d6420de4

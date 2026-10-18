@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <vector>
 
+#include "duckdb/common/column_index.hpp"
 #include "duckdb/common/constants.hpp"
 #include "duckdb/common/typedefs.hpp"
 #include "duckomo/schema.hpp"
@@ -19,6 +20,8 @@ enum class OutputColumnKind : std::uint8_t {
 	SemanticCoordinate,
 	Source,
 	RegionId,
+	Sampling,
+	SamplingField,
 	Cardinality
 };
 
@@ -29,6 +32,7 @@ struct OutputColumn final {
 	idx_t source_index = DConstants::INVALID_INDEX;
 	idx_t required_variable_index = DConstants::INVALID_INDEX;
 	idx_t semantic_axis_index = DConstants::INVALID_INDEX;
+	idx_t sampling_field_index = DConstants::INVALID_INDEX;
 };
 
 // Immutable mapping from DuckDB's requested scan columns to the bound schema.
@@ -42,7 +46,11 @@ public:
 	               bool has_time_column);
 	ProjectionPlan(const BoundSchema &schema, const std::vector<column_t> &column_ids, bool has_spatial_columns,
 	               bool has_time_column, const SemanticAxes &semantic_axes, bool has_source_column = false,
-	               bool has_region_id_column = false);
+	               bool has_region_id_column = false, bool has_sampling_column = false);
+	ProjectionPlan(const BoundSchema &schema, const std::vector<ColumnIndex> &column_indexes,
+	               bool has_spatial_columns, bool has_time_column, const SemanticAxes &semantic_axes,
+	               bool has_source_column, bool has_region_id_column, bool has_sampling_column,
+	               bool supports_sampling_extract);
 
 	const std::vector<OutputColumn> &GetOutputSlots() const {
 		return output_slots;
@@ -56,6 +64,10 @@ public:
 		return required_variable_ids.empty();
 	}
 
+	bool RequiresSamplingVariables() const {
+		return requires_sampling_variables;
+	}
+
 	bool HasCardinalitySlot() const {
 		return has_cardinality_slot;
 	}
@@ -64,6 +76,7 @@ private:
 	std::vector<OutputColumn> output_slots;
 	std::vector<idx_t> required_variable_ids;
 	bool has_cardinality_slot = false;
+	bool requires_sampling_variables = false;
 };
 
 } // namespace duckomo

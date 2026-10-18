@@ -1,0 +1,3 @@
+nearest_skippable 224,1,15449547,66432
+nearest_memory 256:86533,17178,1290,12,3009472,346377,50952
+region_sampling_test: ok

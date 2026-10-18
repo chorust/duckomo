@@ -1,0 +1,7 @@
+Filters: /home/blizhan/repo/github/duckomo/test/sql/region_sampling.test
+
+[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/region_sampling.test
+[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/region_sampling.test
+===============================================================================
+All tests passed (176 assertions in 1 test case)
+

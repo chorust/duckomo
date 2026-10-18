@@ -1,6 +1,7 @@
 #include "duckomo/read_om.hpp"
 #include "duckomo/region_geometry.hpp"
 #include "duckomo/region_input.hpp"
+#include "duckomo/region_sampling.hpp"
 
 #include <algorithm>
 #include <array>
@@ -804,6 +805,32 @@ std::string OpaqueObjectId(const std::string &identity_path) {
 	return result;
 }
 
+LogicalType NearestSamplingType(const BoundSchema &schema) {
+	child_list_t<LogicalType> variable_type;
+	variable_type.emplace_back("status", LogicalType::VARCHAR);
+	variable_type.emplace_back("source_count", LogicalType::UBIGINT);
+	variable_type.emplace_back("valid_source_count", LogicalType::UBIGINT);
+	const auto variables_type = LogicalType::MAP(LogicalType::VARCHAR, LogicalType::STRUCT(variable_type));
+	child_list_t<LogicalType> fields;
+	fields.emplace_back("method", LogicalType::VARCHAR);
+	fields.emplace_back("algorithm", LogicalType::VARCHAR);
+	fields.emplace_back("representative", LogicalType::VARCHAR);
+	fields.emplace_back("spatial_version", LogicalType::VARCHAR);
+	fields.emplace_back("grid_id", LogicalType::VARCHAR);
+	fields.emplace_back("layout_id", LogicalType::VARCHAR);
+	fields.emplace_back("distance_model", LogicalType::VARCHAR);
+	fields.emplace_back("earth_radius_m", LogicalType::DOUBLE);
+	fields.emplace_back("status", LogicalType::VARCHAR);
+	fields.emplace_back("source_lon", LogicalType::DOUBLE);
+	fields.emplace_back("source_lat", LogicalType::DOUBLE);
+	fields.emplace_back("source_point_index", LogicalType::UBIGINT);
+	fields.emplace_back("distance_m", LogicalType::DOUBLE);
+	fields.emplace_back("axis_indices", LogicalType::LIST(LogicalType::UBIGINT));
+	fields.emplace_back("variables", variables_type);
+	(void)schema;
+	return LogicalType::STRUCT(fields);
+}
+
 LogicalType OmSourceType() {
 	return LogicalType::STRUCT({
 	    {"object_id", LogicalType::VARCHAR},
@@ -1237,7 +1264,8 @@ struct ReadOmBindData final : TableFunctionData {
 	               std::string region_crs_p = {},
 	               std::vector<Value> region_geometries_p = {},
 	               std::vector<unique_ptr<Expression>> region_predicates_p = {},
-	               bool variable_selected_p = false)
+	               bool variable_selected_p = false, RegionSamplingOptions sampling_options_p = {},
+	               std::shared_ptr<const NearestSamplingPlan> nearest_plan_p = {})
 	    : path(std::move(path_p)), schema(std::move(schema_p)), axes(std::move(axes_p)), spatial(std::move(spatial_p)),
 	      temporal(std::move(temporal_p)), semantic_axes(std::move(semantic_axes_p)),
 	      remote_session(std::move(remote_session_p)), metrics(std::move(metrics_p)),
@@ -1250,7 +1278,8 @@ struct ReadOmBindData final : TableFunctionData {
 	      region_bind_memory_account(regions ? std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::RegionInput)
 	                                         : nullptr),
 	      region_geometries(std::move(region_geometries_p)), region_predicates(std::move(region_predicates_p)),
-	      variable_selected(variable_selected_p) {
+	      variable_selected(variable_selected_p), sampling_options(std::move(sampling_options_p)),
+	      nearest_plan(std::move(nearest_plan_p)) {
 		memory_account->Set(EstimateBindMemory(*this));
 		if (region_collection_memory_account) {
 			region_collection_memory_account->Set(EstimateRegionInputMemory(*regions));
@@ -1272,7 +1301,8 @@ struct ReadOmBindData final : TableFunctionData {
 	      region_collection_memory_account(other.region_collection_memory_account),
 	      region_bind_memory_account(regions ? std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::RegionInput)
 	                                         : nullptr),
-	      region_geometries(other.region_geometries), variable_selected(other.variable_selected) {
+	      region_geometries(other.region_geometries), variable_selected(other.variable_selected),
+	      sampling_options(other.sampling_options), nearest_plan(other.nearest_plan) {
 		region_predicates.reserve(other.region_predicates.size());
 		for (const auto &predicate : other.region_predicates) region_predicates.emplace_back(predicate->Copy());
 		memory_account->Set(EstimateBindMemory(*this));
@@ -1294,7 +1324,9 @@ struct ReadOmBindData final : TableFunctionData {
 		       semantic_axes == other.semantic_axes &&
 		       spatial.grid_signature == other.spatial.grid_signature &&
 		       spatial.layout_name == other.spatial.layout_name && spatial.source == other.spatial.source &&
-		       spatial.include_source == other.spatial.include_source &&
+		       spatial.include_source == other.spatial.include_source && sampling_options == other.sampling_options &&
+		       ((!nearest_plan && !other.nearest_plan) ||
+		        (nearest_plan && other.nearest_plan && nearest_plan->Equals(*other.nearest_plan))) &&
 		       spatial.object_id == other.spatial.object_id &&
 		       SameSpatialPredicate(*spatial.predicate, *other.spatial.predicate) &&
 		       SameAxisPredicate(*axis_predicate, *other.axis_predicate) && SameSchema(schema, other.schema);
@@ -1324,6 +1356,8 @@ struct ReadOmBindData final : TableFunctionData {
 	std::vector<Value> region_geometries;
 	std::vector<unique_ptr<Expression>> region_predicates;
 	bool variable_selected = false;
+	RegionSamplingOptions sampling_options;
+	std::shared_ptr<const NearestSamplingPlan> nearest_plan;
 };
 
 std::uint64_t AddMemoryBytes(std::uint64_t total, std::uint64_t bytes) {
@@ -1521,6 +1555,7 @@ std::uint64_t EstimateBindMemory(const ReadOmBindData &data) {
 	bytes = AddMemoryBytes(bytes, EstimateSpatialBindMemory(data.spatial));
 	bytes = AddMemoryBytes(bytes, EstimateTemporalMemory(data.temporal));
 	bytes = AddMemoryBytes(bytes, EstimateSemanticAxesMemory(data.semantic_axes));
+	bytes = AddMemoryBytes(bytes, data.nearest_plan ? data.nearest_plan->EstimatedBytes() : 0);
 	return bytes;
 }
 
@@ -1548,6 +1583,38 @@ std::uint64_t EstimateSegmentsMemory(const std::vector<BatchSegment> &segments) 
 	return bytes;
 }
 
+std::optional<std::uint64_t> CurrentThreadCpuNanoseconds() {
+	timespec value{};
+	if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &value) != 0 || value.tv_sec < 0 || value.tv_nsec < 0) return std::nullopt;
+	const auto seconds = static_cast<std::uint64_t>(value.tv_sec);
+	if (seconds > (std::numeric_limits<std::uint64_t>::max() - static_cast<std::uint64_t>(value.tv_nsec)) / 1000000000ULL)
+		return std::nullopt;
+	return seconds * 1000000000ULL + static_cast<std::uint64_t>(value.tv_nsec);
+}
+
+std::uint64_t NearestSamplingScratchUpperBound(std::size_t rank, std::size_t axis_count,
+                                               std::size_t variable_count, bool status_map,
+                                               std::uint64_t rows, const BoundSchema &schema) {
+	std::uint64_t bytes = WorstCaseBatchMappingBytes(rank, rows);
+	bytes = AddMemoryBytes(bytes, VectorMemoryBytes(static_cast<std::size_t>(rows), 2 * sizeof(std::uint64_t)));
+	bytes = AddMemoryBytes(bytes, sizeof(std::vector<std::vector<float>>));
+	bytes = AddMemoryBytes(bytes, VectorMemoryBytes(variable_count, sizeof(std::vector<float>)));
+	bytes = AddMemoryBytes(bytes, VectorMemoryBytes(static_cast<std::size_t>(rows),
+	                                               variable_count * sizeof(float)));
+	bytes = AddMemoryBytes(bytes, 2048 + VectorMemoryBytes(axis_count, sizeof(Value) + sizeof(std::uint64_t)));
+	if (status_map) {
+		const auto per_variable = 4 * sizeof(Value) + sizeof(std::string) + 128;
+		bytes = AddMemoryBytes(bytes, VectorMemoryBytes(variable_count, per_variable));
+		for (const auto &variable : schema.variables) {
+			// batch_statuses owns a canonical path key; constructing one output-row
+			// variables MAP also owns a key for each column name at peak.
+			bytes = AddMemoryBytes(bytes, StringMemoryBytes(variable.canonical_path));
+			bytes = AddMemoryBytes(bytes, StringMemoryBytes(variable.column_name));
+		}
+	}
+	return bytes;
+}
+
 void ObserveComplexFilter(ClientContext &, LogicalGet &get, FunctionData *bind_data,
                            vector<unique_ptr<Expression>> &filters) {
 	if (bind_data && !filters.empty()) {
@@ -1571,23 +1638,25 @@ void ObserveComplexFilter(ClientContext &, LogicalGet &get, FunctionData *bind_d
 		}
 		*data.axis_predicate = ExtractAxisPredicate(get, filters, output_column_base, data.semantic_axes,
 		                                           metadata_time_axis_ptr);
-		if (data.spatial.grid && data.spatial.layout) {
-			*data.spatial.predicate = ExtractSpatialPredicate(get, filters, data.schema.variables.size());
-			const auto mode = data.spatial.predicate->has_unsupported_condition ? "fallback" : "full";
-			data.metrics->SetSpatialSelection(mode, data.spatial.predicate->residual_filter_retained,
-			                                  data.spatial.predicate->fallback_reasons,
-			                                  CheckedShapeProduct(data.spatial.layout->shape));
-		} else if (data.spatial.definition) {
-			*data.spatial.predicate = ExtractSpatialPredicate(get, filters, data.schema.variables.size());
-			const auto has_safe_spatial_filter = !data.spatial.predicate->necessary_conditions.empty() ||
-			                                     !data.spatial.predicate->longitude_union.empty();
-			const auto mode = has_safe_spatial_filter ? "restricted" :
-			                  data.spatial.predicate->has_unsupported_condition ? "fallback" : "full";
-			data.metrics->SetSpatialSelection(mode, data.spatial.predicate->residual_filter_retained,
-			                                  data.spatial.predicate->fallback_reasons,
-			                                  CheckedShapeProduct(data.spatial.layout->shape));
-		} else {
-			data.metrics->SetSpatialSelection("fallback", true, {"spatial_mapping_unavailable_in_callback"}, 0);
+		if (data.sampling_options.method != RegionMethod::Nearest) {
+			if (data.spatial.grid && data.spatial.layout) {
+				*data.spatial.predicate = ExtractSpatialPredicate(get, filters, data.schema.variables.size());
+				const auto mode = data.spatial.predicate->has_unsupported_condition ? "fallback" : "full";
+				data.metrics->SetSpatialSelection(mode, data.spatial.predicate->residual_filter_retained,
+				                                  data.spatial.predicate->fallback_reasons,
+				                                  CheckedShapeProduct(data.spatial.layout->shape));
+			} else if (data.spatial.definition) {
+				*data.spatial.predicate = ExtractSpatialPredicate(get, filters, data.schema.variables.size());
+				const auto has_safe_spatial_filter = !data.spatial.predicate->necessary_conditions.empty() ||
+				                                     !data.spatial.predicate->longitude_union.empty();
+				const auto mode = has_safe_spatial_filter ? "restricted" :
+				                  data.spatial.predicate->has_unsupported_condition ? "fallback" : "full";
+				data.metrics->SetSpatialSelection(mode, data.spatial.predicate->residual_filter_retained,
+				                                  data.spatial.predicate->fallback_reasons,
+				                                  CheckedShapeProduct(data.spatial.layout->shape));
+			} else {
+				data.metrics->SetSpatialSelection("fallback", true, {"spatial_mapping_unavailable_in_callback"}, 0);
+			}
 		}
 		if (data.memory_account) data.memory_account->Set(EstimateBindMemory(data));
 		if (data.axis_predicate_memory_account) {
@@ -1629,14 +1698,43 @@ BoundSchema MetadataForScan(ClientContext &context, OmV3Reader &reader, const Bo
 	return current_schema;
 }
 
+idx_t NearestSamplingColumnIndex(const ReadOmBindData &bind_data) {
+	idx_t result = bind_data.schema.variables.size();
+	if (bind_data.spatial.HasGrid()) result += 2;
+	if (bind_data.temporal) ++result;
+	for (const auto &axis : bind_data.semantic_axes) {
+		if (axis.kind != SemanticAxisKind::Time) ++result;
+	}
+	if (bind_data.regions_mode) ++result;
+	return result;
+}
+
+bool SupportsNearestSamplingExtract(const FunctionData &bind_data_p, const LogicalIndex &column_index) {
+	const auto &bind_data = bind_data_p.Cast<ReadOmBindData>();
+	return bind_data.regions_mode && bind_data.sampling_options.method == RegionMethod::Nearest &&
+	       column_index.index != DConstants::INVALID_INDEX && column_index.index == NearestSamplingColumnIndex(bind_data);
+}
+
+ProjectionPlan BuildReadOmProjection(const ReadOmBindData &bind_data, const std::vector<column_t> &column_ids,
+                                     const std::vector<ColumnIndex> &column_indexes) {
+	const bool has_sampling = bind_data.regions_mode && bind_data.sampling_options.method == RegionMethod::Nearest;
+	if (has_sampling) {
+		return ProjectionPlan(bind_data.schema, column_indexes, bind_data.spatial.HasGrid(), bind_data.temporal.has_value(),
+		                      bind_data.semantic_axes, bind_data.spatial.include_source, bind_data.regions_mode,
+		                      true, true);
+	}
+	return ProjectionPlan(bind_data.schema, column_ids, bind_data.spatial.HasGrid(), bind_data.temporal.has_value(),
+	                      bind_data.semantic_axes, bind_data.spatial.include_source, bind_data.regions_mode, false);
+}
+
 struct ReadOmGlobalState final : GlobalTableFunctionState {
 	ReadOmGlobalState(ClientContext &context, const ReadOmBindData &bind_data, const std::vector<column_t> &column_ids,
-	                  std::shared_ptr<ScanMetrics> metrics_p)
+	                  const std::vector<ColumnIndex> &column_indexes, std::shared_ptr<ScanMetrics> metrics_p)
 	    : path(bind_data.path), schema(bind_data.schema),
-	      projection(schema, column_ids, bind_data.spatial.HasGrid(), bind_data.temporal.has_value(),
-	                 bind_data.semantic_axes, bind_data.spatial.include_source, bind_data.regions_mode),
+	      projection(BuildReadOmProjection(bind_data, column_ids, column_indexes)),
 	      spatial(bind_data.spatial), temporal(bind_data.temporal), semantic_axes(bind_data.semantic_axes),
 	      axis_predicate(*bind_data.axis_predicate), regions_mode(bind_data.regions_mode), regions(bind_data.regions),
+	      sampling_options(bind_data.sampling_options), nearest_plan(bind_data.nearest_plan),
 	      metrics(std::move(metrics_p)),
 	      memory_control_account(std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::GlobalControl)),
 	      memory_definition_account(std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::Definitions)),
@@ -1673,14 +1771,29 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 			                             selection.candidate_rows);
 		}
 		selection_cursor = make_uniq<AxisSelectionCursor>(schema.shape, semantic_axes, axis_predicate);
+		if (regions_mode && sampling_options.method == RegionMethod::Nearest && projection.RequiresSamplingVariables()) {
+			std::vector<std::string> state_paths;
+			state_paths.reserve(projection.GetRequiredVariableIds().size());
+			for (const auto variable_index : projection.GetRequiredVariableIds())
+				state_paths.push_back(schema.variables.at(variable_index).canonical_path);
+			metrics->SetNearestSamplingStatusDependencies(state_paths);
+		}
 		candidate_count = selection_cursor->CandidateCount();
-		const bool spatial_predicate_empty = spatial.HasGrid() && spatial.layout &&
-	                                    SpatialPredicateProvesEmpty(*spatial.predicate);
+		if (sampling_options.method == RegionMethod::Nearest) {
+			if (!nearest_plan || !spatial.layout) throw InternalException("nearest scan has no immutable region plan or layout");
+			nearest_axis_cursor = make_uniq<NearestAxisCursor>(*spatial.layout, *selection_cursor);
+			nearest_axis_result_count = nearest_axis_cursor->ResultCount();
+			candidate_count = nearest_axis_result_count;
+		}
+		const bool spatial_predicate_empty = sampling_options.method != RegionMethod::Nearest &&
+		                                    spatial.HasGrid() && spatial.layout &&
+		                                    SpatialPredicateProvesEmpty(*spatial.predicate);
 		const bool all_regions_empty = regions_mode && regions &&
 		    std::none_of(regions->GetRegions().begin(), regions->GetRegions().end(),
 		                 [](const Region &region) { return !region.envelope.empty; });
-		if (selection_cursor->IsEmpty() || spatial_predicate_empty ||
-		    (regions_mode && (!regions || regions->GetRegions().empty() || all_regions_empty))) {
+		if ((sampling_options.method != RegionMethod::Nearest && selection_cursor->IsEmpty()) || spatial_predicate_empty ||
+		    (regions_mode && sampling_options.method != RegionMethod::Nearest &&
+		     (!regions || regions->GetRegions().empty() || all_regions_empty))) {
 			no_candidates = true;
 			scan_completed = true;
 			std::uint64_t completed_candidate_rows = 0;
@@ -1711,13 +1824,16 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 			}
 			metrics->SetSpatialSelection("empty", true, std::move(empty_reasons), 0, true);
 			if (regions_mode) {
-				if (completed_candidate_rows != 0) {
+				if (sampling_options.method != RegionMethod::Nearest && completed_candidate_rows != 0) {
 					for (std::size_t index = 0; index < regions->GetRegions().size(); ++index) {
 						metrics->RecordRegionCandidatePairs(selection_cursor->CandidateCount());
 						metrics->RecordRegionEnvelopeRejects(selection_cursor->CandidateCount());
 					}
 				}
-				metrics->SetRegionMatchCount(0, true);
+				metrics->SetRegionMatchCount(sampling_options.method == RegionMethod::Nearest
+				                                 ? std::optional<std::uint64_t>() : std::optional<std::uint64_t>(0),
+				                             sampling_options.method == RegionMethod::Nearest
+				                                 ? std::optional<bool>(false) : std::optional<bool>(true));
 				metrics->MarkValueDecodeNotRequired();
 			}
 			metrics->SetScanComplete(true);
@@ -1730,7 +1846,8 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 		} else if (spatial.HasGrid()) {
 			metrics->RecordCoordinatePreparation(0, true);
 		}
-		candidate_count = selection_cursor->CandidateCount();
+		candidate_count = sampling_options.method == RegionMethod::Nearest
+		                      ? nearest_axis_result_count : selection_cursor->CandidateCount();
 		Value configured_limit;
 		std::uint64_t requested_limit = static_cast<std::uint64_t>(context.db->NumberOfThreads());
 		if (context.TryGetCurrentSetting("duckomo_max_threads", configured_limit)) {
@@ -1744,7 +1861,43 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 		                                        ? std::uint64_t(1)
 		                                        : candidate_count / SCAN_TASK_POSITION_WINDOW +
 		                                              (candidate_count % SCAN_TASK_POSITION_WINDOW != 0));
-		if (regions_mode) {
+		std::uint64_t nearest_worker_budget = UINT64_MAX;
+		if (regions_mode && sampling_options.method == RegionMethod::Nearest) {
+			const bool status_map = projection.RequiresSamplingVariables();
+			const auto per_row = NearestSamplingScratchUpperBound(schema.shape.size(),
+			                                                    spatial.layout->non_spatial_axes.size(),
+			                                                    projection.GetRequiredVariableIds().size(),
+			                                                    status_map, 1, schema);
+			if (per_row > 512 * 1024)
+				throw ReaderError(ReaderErrorCode::Allocation, "nearest minimum worker scratch exceeds 512 KiB");
+			std::uint64_t low = 1;
+			constexpr std::uint64_t MAX_NEAREST_TASK_ROWS = 2048;
+			std::uint64_t high = MAX_NEAREST_TASK_ROWS;
+			while (low < high) {
+				const auto middle = low + (high - low + 1) / 2;
+				if (NearestSamplingScratchUpperBound(schema.shape.size(),
+				                                    spatial.layout->non_spatial_axes.size(),
+				                                    projection.GetRequiredVariableIds().size(),
+				                                    status_map, middle, schema) <= 512 * 1024)
+					low = middle;
+				else
+					high = middle - 1;
+			}
+			nearest_batch_limit = low;
+			constexpr std::uint64_t MAX_NEAREST_SCHEDULER_BYTES = 8 * 1024 * 1024;
+			constexpr std::uint64_t NEAREST_SCHEDULER_CONTROL_RESERVE = 512 * 1024;
+			constexpr std::uint64_t MAX_NEAREST_WORKER_SCRATCH = 512 * 1024;
+			nearest_worker_budget = std::max<std::uint64_t>(
+			    1, (MAX_NEAREST_SCHEDULER_BYTES - NEAREST_SCHEDULER_CONTROL_RESERVE) /
+			           MAX_NEAREST_WORKER_SCRATCH);
+			const auto region_count = static_cast<std::uint64_t>(regions->GetRegions().size());
+			const auto per_region_tasks = candidate_count / nearest_batch_limit +
+			                              (candidate_count % nearest_batch_limit != 0);
+			if (region_count != 0 && per_region_tasks > UINT64_MAX / region_count)
+				throw ReaderError(ReaderErrorCode::ShapeOverflow, "nearest task count exceeds unsigned 64-bit range");
+			available_tasks = std::max<std::uint64_t>(1, per_region_tasks * region_count);
+		}
+		if (regions_mode && sampling_options.method != RegionMethod::Nearest) {
 			const auto per_region_tasks = candidate_count / SCAN_TASK_POSITION_WINDOW +
 			                             (candidate_count % SCAN_TASK_POSITION_WINDOW != 0);
 			const auto non_empty_regions = static_cast<std::uint64_t>(std::count_if(
@@ -1754,7 +1907,8 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 			                      ? UINT64_MAX
 			                      : std::max<std::uint64_t>(1, per_region_tasks * non_empty_regions);
 		}
-		max_threads = static_cast<idx_t>(std::max<std::uint64_t>(1, std::min(requested_limit, available_tasks)));
+		max_threads = static_cast<idx_t>(std::max<std::uint64_t>(
+		    1, std::min({requested_limit, available_tasks, nearest_worker_budget})));
 		auto selection_fallback_reasons = selection.fallback_reasons;
 		for (const auto &reason : axis_predicate.fallback_reasons) {
 			if (std::find(selection_fallback_reasons.begin(), selection_fallback_reasons.end(), reason) ==
@@ -1774,7 +1928,9 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 			const auto region_count = static_cast<std::uint64_t>(regions->GetRegions().size());
 			if (region_count != 0 && candidate_count > UINT64_MAX / region_count) {
 				throw ReaderError(ReaderErrorCode::ShapeOverflow,
-				                  "region-record candidate count exceeds unsigned 64-bit range");
+				                  sampling_options.method == RegionMethod::Nearest
+				                      ? "nearest region-axis result count exceeds unsigned 64-bit range"
+				                      : "region-record candidate count exceeds unsigned 64-bit range");
 			}
 			selection_candidate_rows = candidate_count * region_count;
 		}
@@ -1851,7 +2007,10 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 					                              ? axis == spatial.layout->point_axis
 					                              : axis == spatial.layout->latitude_axis ||
 					                                    axis == spatial.layout->longitude_axis;
-					if (spatial_axis) {
+					if (sampling_options.method == RegionMethod::Nearest) {
+						preflight.whole_window = true;
+						preflight.coordinate_evaluations = 0;
+					} else if (spatial_axis) {
 						preflight = duckdb::duckomo::PreflightNativeWindow(
 						    *spatial.predicate, window, coordinate, interrupt_check, coordinate_evaluations);
 					} else {
@@ -2016,8 +2175,60 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 	}
 	}
 
+	bool GetNextNearestTask(ClientContext &context, std::vector<std::uint64_t> &positions,
+	                        const ScanMemoryAccount &task_positions_account, std::uint64_t &region_ordinal,
+	                        std::vector<std::vector<std::uint64_t>> &non_spatial_indices) {
+		const auto region_count = static_cast<std::uint64_t>(regions->GetRegions().size());
+		while (true) {
+			NearestAxisBatch axis_batch;
+			if (context.IsInterrupted()) throw InterruptException();
+			{
+				std::lock_guard<std::mutex> guard(task_mutex);
+				if (stop_requested.load() || no_candidates) return false;
+				if (current_region_ordinal >= region_count) {
+					selection_exhausted = true;
+					MaybeSetScanCompleteLocked();
+					return false;
+				}
+				axis_batch = nearest_axis_cursor->Next(nearest_batch_limit);
+				if (axis_batch.indices.empty() && axis_batch.exhausted) {
+					++current_region_ordinal;
+					nearest_axis_cursor = make_uniq<NearestAxisCursor>(*spatial.layout, *selection_cursor);
+					continue;
+				}
+				region_ordinal = current_region_ordinal;
+				ClaimTaskLocked();
+			}
+			try {
+				positions.clear();
+				positions.reserve(axis_batch.indices.size());
+				for (std::size_t index = 0; index < axis_batch.indices.size(); ++index) positions.push_back(index);
+				non_spatial_indices = std::move(axis_batch.indices);
+				std::uint64_t bytes = VectorMemoryBytes(positions.capacity(), sizeof(std::uint64_t));
+				bytes = AddMemoryBytes(bytes, VectorMemoryBytes(non_spatial_indices.capacity(), sizeof(std::vector<std::uint64_t>)));
+				for (const auto &indices : non_spatial_indices)
+					bytes = AddMemoryBytes(bytes, VectorMemoryBytes(indices.capacity(), sizeof(std::uint64_t)));
+				if (bytes > 512 * 1024) throw ReaderError(ReaderErrorCode::Allocation, "nearest task axis batch exceeds 512 KiB");
+				metrics->RecordNearestSamplingTaskRows(non_spatial_indices.size());
+				task_positions_account.Set(bytes, bytes);
+				return true;
+			} catch (const InterruptException &) {
+				RecordTaskFailed(true);
+				throw;
+			} catch (...) {
+				RecordTaskFailed(false);
+				throw;
+			}
+		}
+	}
+
 	bool GetNextTask(ClientContext &context, std::vector<std::uint64_t> &positions,
-	                 const ScanMemoryAccount &task_positions_account, std::uint64_t &region_ordinal) {
+	                 const ScanMemoryAccount &task_positions_account, std::uint64_t &region_ordinal,
+	                 std::vector<std::vector<std::uint64_t>> *non_spatial_indices = nullptr) {
+		if (regions_mode && sampling_options.method == RegionMethod::Nearest) {
+			if (!non_spatial_indices) throw InternalException("nearest task has no non-spatial index output");
+			return GetNextNearestTask(context, positions, task_positions_account, region_ordinal, *non_spatial_indices);
+		}
 		if (regions_mode) return GetNextRegionTask(context, positions, task_positions_account, region_ordinal);
 		if (native_window_cursor) return GetNextNativeWindowTask(context, positions, task_positions_account);
 		std::lock_guard<std::mutex> guard(task_mutex);
@@ -2079,6 +2290,7 @@ private:
 		std::uint64_t selector_bytes = EstimateAxisPredicateMemory(axis_predicate);
 		selector_bytes = AddMemoryBytes(selector_bytes, EstimateSpatialSelectionMemory(selection));
 		if (selection_cursor) selector_bytes = AddMemoryBytes(selector_bytes, selection_cursor->EstimatedBytes());
+		if (nearest_axis_cursor) selector_bytes = AddMemoryBytes(selector_bytes, sizeof(NearestAxisCursor));
 		if (native_window_cursor) selector_bytes = AddMemoryBytes(selector_bytes, native_window_cursor->EstimatedBytes());
 		memory_selector_account->Set(selector_bytes);
 	}
@@ -2092,7 +2304,7 @@ private:
 	void MaybeSetScanCompleteLocked() {
 		if (selection_exhausted && outstanding_tasks == 0 && !stop_requested.load() && !scan_completed) {
 			scan_completed = true;
-			if (regions_mode) {
+			if (regions_mode && sampling_options.method != RegionMethod::Nearest) {
 				const auto region_metrics = metrics->Snapshot();
 				metrics->SetCandidateRows(region_metrics.candidate_pairs_observed);
 				metrics->SetCandidateCountEvidence(region_metrics.candidate_pairs_observed,
@@ -2118,6 +2330,24 @@ private:
 					metrics->SetSpatialSelection("empty", true, std::move(reasons), 0, false);
 				}
 			}
+			if (regions_mode && sampling_options.method == RegionMethod::Nearest) {
+				const auto snapshot = metrics->Snapshot();
+				metrics->SetNearestSamplingResultCount(snapshot.sampling_result_rows_observed, true);
+				metrics->SetCandidateCountEvidence(snapshot.sampling_result_rows_observed,
+				                                   snapshot.sampling_result_upper_bound,
+				                                   snapshot.sampling_result_rows_observed, true);
+				metrics->SetCandidateRows(snapshot.sampling_result_rows_observed);
+				metrics->SetRegionMatchCount(std::nullopt, false);
+				const auto completed_snapshot = metrics->Snapshot();
+				bool status_complete = completed_snapshot.sampling_status_rows_observed ==
+				                      completed_snapshot.sampling_result_rows_observed;
+				for (const auto &path : completed_snapshot.sampling_required_state_variables) {
+					const auto found = completed_snapshot.sampling_variable_status.find(path);
+					const auto rows = found == completed_snapshot.sampling_variable_status.end() ? 0 : found->second.rows_observed;
+					if (rows != completed_snapshot.sampling_result_rows_observed) status_complete = false;
+				}
+				metrics->SetNearestSamplingStatusDependencyComplete(status_complete);
+			}
 			metrics->SetScanComplete(true);
 		}
 	}
@@ -2133,9 +2363,13 @@ public:
 	AxisPredicate axis_predicate;
 	SpatialSelection selection;
 	unique_ptr<AxisSelectionCursor> selection_cursor;
+	unique_ptr<NearestAxisCursor> nearest_axis_cursor;
 	unique_ptr<NativeWindowCursor> native_window_cursor;
 	bool regions_mode = false;
 	std::shared_ptr<const RegionCollection> regions;
+	RegionSamplingOptions sampling_options;
+	std::shared_ptr<const NearestSamplingPlan> nearest_plan;
+	std::uint64_t nearest_axis_result_count = 0;
 	std::uint64_t current_region_ordinal = 0; // guarded by task_mutex
     std::shared_ptr<ScanMetrics> metrics;
 	    std::shared_ptr<ScanMemoryAccount> memory_control_account;
@@ -2151,6 +2385,7 @@ public:
 	bool spatial_preflight_active = false;
 	bool no_candidates = false;
 	std::uint64_t candidate_count = 0;
+	std::uint64_t nearest_batch_limit = 256;
 	idx_t max_threads = 1;
     bool scan_completed = false;
 	std::atomic<bool> metrics_status_set{false};
@@ -2193,13 +2428,19 @@ struct ReadOmLocalState final : LocalTableFunctionState {
 		bytes = AddMemoryBytes(bytes, VectorMemoryBytes(decoders.capacity(), sizeof(unique_ptr<OmDecoderState>)));
 		if (reader) bytes = AddMemoryBytes(bytes, sizeof(OmV3Reader));
 		memory_account->Set(bytes);
-		task_positions_account->Set(VectorMemoryBytes(task_positions.capacity(), sizeof(std::uint64_t)));
+		std::uint64_t task_bytes = VectorMemoryBytes(task_positions.capacity(), sizeof(std::uint64_t));
+		task_bytes = AddMemoryBytes(task_bytes,
+		                            VectorMemoryBytes(task_non_spatial_indices.capacity(), sizeof(std::vector<std::uint64_t>)));
+		for (const auto &indices : task_non_spatial_indices)
+			task_bytes = AddMemoryBytes(task_bytes, VectorMemoryBytes(indices.capacity(), sizeof(std::uint64_t)));
+		task_positions_account->Set(task_bytes);
 		region_evaluator_account->Set(region_evaluator_memory_bytes);
 	}
 
 	unique_ptr<OmV3Reader> reader;
 	vector<unique_ptr<OmDecoderState>> decoders;
 	std::vector<std::uint64_t> task_positions;
+	std::vector<std::vector<std::uint64_t>> task_non_spatial_indices;
 	idx_t task_position_offset = 0;
 	std::uint64_t task_region_ordinal = DConstants::INVALID_INDEX;
 	std::uint64_t active_region_ordinal = DConstants::INVALID_INDEX;
@@ -2219,6 +2460,12 @@ unique_ptr<FunctionData> BindReadOmInternal(ClientContext &context, TableFunctio
 	auto metrics = CreateScanMetrics(context);
 	RegisterScanMetricsQueryState(context, metrics);
 	if (regions_mode) metrics->SetOperation("read_om_regions");
+	RegionSamplingOptions sampling_options;
+	if (regions_mode) {
+		sampling_options = ParseRegionSamplingOptions(GetTableFunctionNamedArgument(input, "method"),
+		                                             GetTableFunctionNamedArgument(input, "max_distance_m"),
+		                                             GetTableFunctionNamedArgument(input, "out_of_bounds"));
+	}
 	auto memory_account = std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::Bind);
 	std::shared_ptr<const RegionCollection> regions;
 	std::string region_crs;
@@ -2309,6 +2556,11 @@ unique_ptr<FunctionData> BindReadOmInternal(ClientContext &context, TableFunctio
 	const auto *semantic_axes_value = GetTableFunctionNamedArgument(input, "axes");
 	auto semantic_axes = BindSemanticAxes(semantic_axes_value, schema, axes, spatial_axis_names);
 	auto temporal = BindTemporalConfiguration(input, schema, axes, semantic_axes);
+	if (sampling_options.method == RegionMethod::Nearest && temporal && temporal->axis_index && spatial.layout &&
+	    std::find(spatial.layout->non_spatial_axes.begin(), spatial.layout->non_spatial_axes.end(),
+	              *temporal->axis_index) == spatial.layout->non_spatial_axes.end()) {
+		throw BinderException("[region_sampling] temporal axis must not overlap a spatial axis for method='nearest'");
+	}
 	if (temporal && temporal->axis_index &&
 	    std::none_of(semantic_axes.begin(), semantic_axes.end(),
 	                 [](const SemanticAxis &axis) { return axis.kind == SemanticAxisKind::Time; })) {
@@ -2340,14 +2592,19 @@ unique_ptr<FunctionData> BindReadOmInternal(ClientContext &context, TableFunctio
 	memory_account->Set(staged_bind_bytes);
 	std::vector<Value> region_geometries;
 	std::vector<unique_ptr<Expression>> region_predicates;
+	std::shared_ptr<const NearestSamplingPlan> nearest_plan;
 	if (regions_mode) {
 		if (!spatial.HasGrid() || !spatial.layout) {
 			throw BinderException("[region_reference] read_om_regions requires a bound grid or domain");
 		}
 		const auto geometry_prepare_start = std::chrono::steady_clock::now();
 		RegionGeometryAdapter adapter(context);
+		if (sampling_options.method == RegionMethod::Nearest) adapter.RequireNearestOperations();
 		region_geometries.reserve(regions->GetRegions().size());
 		region_predicates.reserve(regions->GetRegions().size());
+		std::vector<NearestRegionTarget> nearest_targets;
+		std::uint64_t nearest_target_prepare_ns = 0;
+		if (sampling_options.method == RegionMethod::Nearest) nearest_targets.reserve(regions->GetRegions().size());
 		for (idx_t ordinal = 0; ordinal < regions->GetRegions().size(); ++ordinal) {
 			if (context.IsInterrupted()) throw InterruptException();
 			const auto &region = regions->GetRegions()[ordinal];
@@ -2365,7 +2622,27 @@ unique_ptr<FunctionData> BindReadOmInternal(ClientContext &context, TableFunctio
 				throw BinderException("[region_input] region ordinal %llu could not be validated: %s",
 				                     static_cast<unsigned long long>(ordinal + 1), error.what());
 			}
-			region_predicates.emplace_back(adapter.BindCovers(geometry, 0, 1));
+			if (sampling_options.method == RegionMethod::Nearest) {
+				NearestRegionTarget target;
+				target.empty = region.envelope.empty;
+				if (!target.empty) {
+					try {
+						const auto target_started = std::chrono::steady_clock::now();
+						target.representative = adapter.PointOnSurfaceCoordinate(geometry);
+						const auto elapsed = static_cast<std::uint64_t>(std::chrono::duration_cast<std::chrono::nanoseconds>(
+						    std::chrono::steady_clock::now() - target_started).count());
+						if (nearest_target_prepare_ns > UINT64_MAX - elapsed)
+							throw BinderException("[region_sampling] target preparation time exceeds unsigned 64-bit range");
+						nearest_target_prepare_ns += elapsed;
+					} catch (const std::exception &error) {
+						throw BinderException("[region_sampling] region ordinal %llu representative point failed: %s",
+						                     static_cast<unsigned long long>(ordinal + 1), error.what());
+					}
+				}
+				nearest_targets.emplace_back(std::move(target));
+			} else {
+				region_predicates.emplace_back(adapter.BindCovers(geometry, 0, 1));
+			}
 			region_geometries.emplace_back(std::move(geometry));
 		}
 		const auto geometry_prepare_ns = static_cast<std::uint64_t>(std::chrono::duration_cast<std::chrono::nanoseconds>(
@@ -2383,17 +2660,75 @@ unique_ptr<FunctionData> BindReadOmInternal(ClientContext &context, TableFunctio
 		}
 		metrics->SetRegionInputMetrics(regions->GetRegions().size(), empty_region_count, input_wkb_bytes,
 		                               regions->GetTotalVertices(), owned_input_bytes);
+		if (sampling_options.method == RegionMethod::Nearest) {
+			const auto *regular = spatial.identity_definition
+			                         ? std::get_if<RegularGrid>(&spatial.identity_definition->geometry)
+			                         : nullptr;
+			if (regular == nullptr)
+				throw BinderException("[sampling_capability] nearest requires a regular spherical longitude/latitude grid");
+			NearestGridCapability capability;
+			try {
+				capability = QualifyNearestGrid(*spatial.identity_definition, [&context]() {
+					return context.IsInterrupted();
+				});
+			} catch (const ReaderError &error) {
+				if (error.Code() == ReaderErrorCode::Cancelled) throw InterruptException();
+				throw BinderException("[sampling_capability] %s", error.what());
+			}
+			std::string spatial_version;
+			try {
+				spatial_version = adapter.SpatialVersion();
+			} catch (const std::exception &error) {
+				throw BinderException("[spatial_dependency] %s", error.what());
+			}
+			const auto locator_wall_started = std::chrono::steady_clock::now();
+			const auto locator_cpu_started = CurrentThreadCpuNanoseconds();
+			nearest_plan = BuildNearestSamplingPlan(
+			    *regular, capability, nearest_targets, spatial_version, spatial.grid_id, spatial.layout_id,
+			    sampling_options.max_distance_m, sampling_options.out_of_bounds, [&context]() {
+					return context.IsInterrupted();
+			    });
+			const auto locator_wall_ns = static_cast<std::uint64_t>(std::chrono::duration_cast<std::chrono::nanoseconds>(
+			    std::chrono::steady_clock::now() - locator_wall_started).count());
+			const auto locator_cpu_finished = CurrentThreadCpuNanoseconds();
+			std::optional<std::uint64_t> locator_cpu_ns;
+			if (locator_cpu_started && locator_cpu_finished && *locator_cpu_finished >= *locator_cpu_started)
+				locator_cpu_ns = *locator_cpu_finished - *locator_cpu_started;
+			std::uint64_t non_spatial_results = 1;
+			for (const auto axis : spatial.layout->non_spatial_axes) {
+				const auto length = spatial.layout->shape.at(axis);
+				if (length != 0 && non_spatial_results > static_cast<std::uint64_t>(INT64_MAX) / length)
+					throw BinderException("[region_sampling] region-axis result count exceeds signed 64-bit range");
+				non_spatial_results *= length;
+			}
+			if (spatial.layout->non_spatial_axes.empty()) non_spatial_results = 1;
+			const auto region_count = static_cast<std::uint64_t>(regions->GetRegions().size());
+			if (region_count != 0 && non_spatial_results > static_cast<std::uint64_t>(INT64_MAX) / region_count)
+				throw BinderException("[region_sampling] region-axis result count exceeds signed 64-bit range");
+			metrics->SetNearestSamplingIdentity("nearest", "sphere_haversine_f64_v1", "point_on_surface_v1",
+			                                    spatial_version, spatial.grid_id, spatial.layout_id, "grid_sphere",
+			                                    capability.earth_radius_m, region_count,
+			                                    non_spatial_results * region_count, nearest_target_prepare_ns);
+			std::uint64_t coordinate_comparisons = 0;
+			for (const auto &entry : nearest_plan->regions) {
+				if (coordinate_comparisons > UINT64_MAX - entry.location.coordinate_comparisons)
+					throw BinderException("[region_sampling] coordinate comparison count exceeds unsigned 64-bit range");
+				coordinate_comparisons += entry.location.coordinate_comparisons;
+			}
+			metrics->RecordNearestSamplingLocation(coordinate_comparisons, locator_wall_ns, locator_cpu_ns);
+		}
 	}
 
 	const auto semantic_column_count = static_cast<std::size_t>(std::count_if(
 	    semantic_axes.begin(), semantic_axes.end(),
 	    [](const SemanticAxis &axis) { return axis.kind != SemanticAxisKind::Time; }));
+	const bool has_sampling_column = regions_mode && sampling_options.method == RegionMethod::Nearest;
 	return_types.reserve(return_types.size() + schema.variables.size() + (spatial.HasGrid() ? 2 : 0) +
 	                     (temporal ? 1 : 0) + semantic_column_count + (regions_mode ? 1 : 0) +
-	                     (spatial.include_source ? 1 : 0));
+	                     (has_sampling_column ? 1 : 0) + (spatial.include_source ? 1 : 0));
 	names.reserve(names.size() + schema.variables.size() + (spatial.HasGrid() ? 2 : 0) +
 	              (temporal ? 1 : 0) + semantic_column_count + (regions_mode ? 1 : 0) +
-	              (spatial.include_source ? 1 : 0));
+	              (has_sampling_column ? 1 : 0) + (spatial.include_source ? 1 : 0));
 	for (const auto &variable : schema.variables) {
 		return_types.emplace_back(variable.type);
 		names.emplace_back(variable.column_name);
@@ -2432,6 +2767,14 @@ unique_ptr<FunctionData> BindReadOmInternal(ClientContext &context, TableFunctio
 		return_types.emplace_back(LogicalType::VARCHAR);
 		names.emplace_back("region_id");
 	}
+	if (has_sampling_column) {
+		for (const auto &existing_name : names) {
+			if (StringUtil::CIEquals(TableFunctionColumnNameString(existing_name), "sampling"))
+				throw BinderException("[region_sampling] sampling column name conflicts with source array '%s'", existing_name);
+		}
+		return_types.emplace_back(NearestSamplingType(schema));
+		names.emplace_back("sampling");
+	}
 	if (spatial.include_source) {
 		for (const auto &existing_name : names) {
 			if (StringUtil::CIEquals(TableFunctionColumnNameString(existing_name), "om_source")) {
@@ -2445,7 +2788,8 @@ unique_ptr<FunctionData> BindReadOmInternal(ClientContext &context, TableFunctio
 	                                          std::move(temporal), std::move(semantic_axes),
 	                                          std::move(remote_session), metrics, memory_account, regions_mode,
 	                                          std::move(regions), std::move(region_crs),
-	                                          std::move(region_geometries), std::move(region_predicates), selected_variable.has_value());
+	                                          std::move(region_geometries), std::move(region_predicates), selected_variable.has_value(),
+	                                          sampling_options, std::move(nearest_plan));
 	return bind_data;
 }
 
@@ -2599,7 +2943,7 @@ unique_ptr<GlobalTableFunctionState> InitReadOm(ClientContext &context, TableFun
 		throw InternalException("read_om was initialized without bind data");
 	}
 	const auto &bind_data = input.bind_data->Cast<ReadOmBindData>();
-	return make_uniq<ReadOmGlobalState>(context, bind_data, input.column_ids, bind_data.metrics);
+	return make_uniq<ReadOmGlobalState>(context, bind_data, input.column_ids, input.column_indexes, bind_data.metrics);
 }
 
 unique_ptr<LocalTableFunctionState> InitReadOmLocal(ExecutionContext &context, TableFunctionInitInput &input,
@@ -2734,6 +3078,252 @@ void FilterRegionCandidates(ClientContext &context, ReadOmGlobalState &state, Re
 	logical_positions = std::move(matches);
 }
 
+const char *NearestGeometryStatusName(GeometryStatus status) {
+	switch (status) {
+	case GeometryStatus::Ok: return "ok";
+	case GeometryStatus::EmptyGeometry: return "empty_geometry";
+	case GeometryStatus::OutsideDomain: return "outside_domain";
+	case GeometryStatus::BeyondMaxDistance: return "beyond_max_distance";
+	}
+	throw InternalException("unknown nearest geometry status");
+}
+
+std::uint64_t NearestLogicalIndex(const SpatialLayout &layout, const std::vector<std::uint64_t> &non_spatial,
+                                  const NearestSourcePoint &source) {
+	return layout.SourcePosition(non_spatial, source.x, source.y, source.point_index).logical_index;
+}
+
+std::uint64_t NearestAxisIndex(const SpatialLayout &layout, const std::vector<std::uint64_t> &non_spatial,
+                               idx_t axis) {
+	const auto found = std::find(layout.non_spatial_axes.begin(), layout.non_spatial_axes.end(), axis);
+	if (found == layout.non_spatial_axes.end()) throw InternalException("nearest semantic axis is spatial or unbound");
+	return non_spatial.at(static_cast<std::size_t>(found - layout.non_spatial_axes.begin()));
+}
+
+void ScanNearestBatch(ClientContext &context, ReadOmGlobalState &state, ReadOmLocalState &local,
+                      const ReadOmBindData &bind_data, DataChunk &output, idx_t count) {
+	if (!state.nearest_plan || !state.spatial.layout ||
+	    local.task_region_ordinal >= state.nearest_plan->regions.size()) {
+		throw InternalException("nearest output has no bound region target");
+	}
+	const auto &layout = *state.spatial.layout;
+	const auto &entry = state.nearest_plan->regions[local.task_region_ordinal];
+	const auto &required_variables = state.projection.GetRequiredVariableIds();
+	const auto &slots = state.projection.GetOutputSlots();
+	if (output.data.size() != slots.size() || local.decoders.size() != required_variables.size())
+		throw InternalException("nearest output column count does not match its projection plan");
+	const auto task_offset = local.task_position_offset;
+	if (task_offset + count > local.task_non_spatial_indices.size())
+		throw InternalException("nearest non-spatial axis batch is shorter than its task positions");
+
+	ScanMemoryAccount worker_scratch(state.metrics, ScanMemoryComponent::Coalescing);
+	const auto scratch_bound = NearestSamplingScratchUpperBound(
+	    state.schema.shape.size(), layout.non_spatial_axes.size(), required_variables.size(),
+	    state.projection.RequiresSamplingVariables(), count, state.schema);
+	worker_scratch.Set(scratch_bound, scratch_bound);
+	if (scratch_bound > 512 * 1024)
+		throw ReaderError(ReaderErrorCode::Allocation, "nearest worker scratch exceeds 512 KiB after checked allocation planning");
+	const auto no_source = std::numeric_limits<std::uint64_t>::max();
+	std::vector<std::uint64_t> source_logical(count, no_source);
+	std::vector<std::uint64_t> unique_sources;
+	unique_sources.reserve(count);
+	for (idx_t row = 0; row < count; ++row) {
+		if ((row & 255U) == 0 && context.IsInterrupted()) throw InterruptException();
+		if (entry.status == GeometryStatus::Ok && entry.location.source) {
+			source_logical[row] = NearestLogicalIndex(layout, local.task_non_spatial_indices[task_offset + row],
+			                                          *entry.location.source);
+			unique_sources.push_back(source_logical[row]);
+		}
+	}
+	const auto source_rows_requested = static_cast<std::uint64_t>(
+	    std::count_if(source_logical.begin(), source_logical.end(), [no_source](std::uint64_t logical) {
+		    return logical != no_source;
+	    }));
+	std::sort(unique_sources.begin(), unique_sources.end());
+	unique_sources.erase(std::unique(unique_sources.begin(), unique_sources.end()), unique_sources.end());
+	state.metrics->RecordNearestSamplingSources(source_rows_requested, unique_sources.size());
+	const auto segments = required_variables.empty() ? std::vector<BatchSegment>()
+	                                                : BuildSelectedBatchSegments(state.schema.shape, unique_sources);
+	std::vector<std::vector<float>> decoded(required_variables.size());
+	for (idx_t required_index = 0; required_index < required_variables.size(); ++required_index) {
+		decoded[required_index].resize(unique_sources.size());
+		const auto variable_index = required_variables[required_index];
+		const auto &variable = state.schema.variables.at(variable_index);
+		for (const auto &segment : segments) {
+			if (context.IsInterrupted()) throw InterruptException();
+			const auto bytes = segment.count * sizeof(float);
+			std::vector<std::uint64_t> cube_offset(segment.read_count.size(), 0);
+			local.reader->DecodeSelection(*local.decoders[required_index], variable.canonical_path,
+			                              segment.read_offset, segment.read_count,
+			                              cube_offset, segment.read_count,
+			                              decoded[required_index].data() + segment.batch_offset, bytes);
+		}
+	}
+	auto decoded_value = [&](idx_t variable_index, std::uint64_t logical) -> Value {
+		const auto required = std::find(required_variables.begin(), required_variables.end(), variable_index);
+		if (required == required_variables.end()) throw InternalException("nearest variable dependency was not decoded");
+		const auto required_index = static_cast<idx_t>(required - required_variables.begin());
+		const auto found = std::lower_bound(unique_sources.begin(), unique_sources.end(), logical);
+		if (found == unique_sources.end() || *found != logical) throw InternalException("nearest source is missing from decoded mapping");
+		const auto value = decoded[required_index].at(static_cast<std::size_t>(found - unique_sources.begin()));
+		if (std::isnan(value)) return Value();
+		return Value::FLOAT(value);
+	};
+	std::map<std::string, ScanSamplingVariableStatusMetrics> batch_statuses;
+	if (state.projection.RequiresSamplingVariables()) {
+		for (const auto variable_index : required_variables) {
+			auto &status = batch_statuses[state.schema.variables.at(variable_index).canonical_path];
+			status.rows_observed = count;
+			for (idx_t row = 0; row < count; ++row) {
+				if ((row & 255U) == 0 && context.IsInterrupted()) throw InterruptException();
+				if (entry.status != GeometryStatus::Ok || source_logical[row] == no_source) {
+					switch (entry.status) {
+					case GeometryStatus::EmptyGeometry: ++status.empty_geometry; break;
+					case GeometryStatus::OutsideDomain: ++status.outside_domain; break;
+					case GeometryStatus::BeyondMaxDistance: ++status.beyond_max_distance; break;
+					case GeometryStatus::Ok: throw InternalException("valid nearest geometry has no source for status accounting");
+					}
+				} else if (decoded_value(variable_index, source_logical[row]).IsNull()) {
+					++status.source_null;
+				} else {
+					++status.ok;
+				}
+			}
+		}
+	}
+	auto nearest_sampling_fields = [&](idx_t row, bool include_variables) {
+		const bool sampled = entry.status == GeometryStatus::Ok && source_logical[row] != no_source;
+		const auto &source = entry.location.source;
+		std::vector<Value> axis_indices;
+		axis_indices.reserve(layout.non_spatial_axes.size());
+		for (std::size_t axis_position = 0; axis_position < layout.non_spatial_axes.size(); ++axis_position)
+			axis_indices.emplace_back(Value::UBIGINT(local.task_non_spatial_indices[task_offset + row].at(axis_position)));
+		std::vector<Value> variable_keys;
+		std::vector<Value> variable_values;
+		if (include_variables) {
+			variable_keys.reserve(state.schema.variables.size());
+			variable_values.reserve(state.schema.variables.size());
+			for (idx_t variable_index = 0; variable_index < state.schema.variables.size(); ++variable_index) {
+				std::string variable_status = NearestGeometryStatusName(entry.status);
+				std::uint64_t source_count = 0;
+				std::uint64_t valid_source_count = 0;
+				if (sampled) {
+					const auto value = decoded_value(variable_index, source_logical[row]);
+					if (value.IsNull()) variable_status = "source_null";
+					else {
+						variable_status = "ok";
+						valid_source_count = 1;
+					}
+					source_count = 1;
+				}
+				variable_keys.emplace_back(state.schema.variables[variable_index].column_name);
+				variable_values.emplace_back(Value::STRUCT({
+				    {"status", Value(variable_status)},
+				    {"source_count", Value::UBIGINT(source_count)},
+				    {"valid_source_count", Value::UBIGINT(valid_source_count)},
+				}));
+			}
+		}
+		return std::vector<Value>{
+		    Value("nearest"), Value("sphere_haversine_f64_v1"), Value("point_on_surface_v1"),
+		    Value(state.nearest_plan->spatial_version), Value(state.nearest_plan->grid_id),
+		    Value(state.nearest_plan->layout_id), Value("grid_sphere"), Value::DOUBLE(state.nearest_plan->earth_radius_m),
+		    Value(NearestGeometryStatusName(entry.status)),
+		    source ? Value::DOUBLE(source->longitude) : Value(),
+		    source ? Value::DOUBLE(source->latitude) : Value(),
+		    source ? Value::UBIGINT(source->point_index) : Value(),
+		    source ? Value::DOUBLE(source->distance_m) : Value(),
+		    Value::LIST(LogicalType::UBIGINT, std::move(axis_indices)),
+		    Value::MAP(LogicalType::VARCHAR,
+		               LogicalType::STRUCT({{"status", LogicalType::VARCHAR},
+		                                    {"source_count", LogicalType::UBIGINT},
+		                                    {"valid_source_count", LogicalType::UBIGINT}}),
+		               std::move(variable_keys), std::move(variable_values)),
+		};
+	};
+	auto nearest_sampling_value = [&](idx_t row) {
+		const auto fields = nearest_sampling_fields(row, true);
+		return Value::STRUCT({
+		    {"method", fields[0]}, {"algorithm", fields[1]}, {"representative", fields[2]},
+		    {"spatial_version", fields[3]}, {"grid_id", fields[4]}, {"layout_id", fields[5]},
+		    {"distance_model", fields[6]}, {"earth_radius_m", fields[7]}, {"status", fields[8]},
+		    {"source_lon", fields[9]}, {"source_lat", fields[10]}, {"source_point_index", fields[11]},
+		    {"distance_m", fields[12]}, {"axis_indices", fields[13]}, {"variables", fields[14]},
+		});
+	};
+
+	for (idx_t output_column = 0; output_column < slots.size(); ++output_column) {
+		const auto &slot = slots[output_column];
+		for (idx_t row = 0; row < count; ++row) {
+			if ((row & 255U) == 0 && context.IsInterrupted()) throw InterruptException();
+			const auto &indices = local.task_non_spatial_indices[task_offset + row];
+			switch (slot.kind) {
+			case OutputColumnKind::Value: {
+				if (slot.required_variable_index >= required_variables.size())
+					throw InternalException("nearest value output refers to an unknown decoder");
+				const auto value = source_logical[row] == no_source
+				                      ? Value() : decoded_value(required_variables[slot.required_variable_index], source_logical[row]);
+				output.data[output_column].SetValue(row, value);
+				break;
+			}
+			case OutputColumnKind::Latitude:
+				output.data[output_column].SetValue(row, entry.has_representative
+				                                              ? Value::DOUBLE(entry.representative.latitude) : Value());
+				break;
+			case OutputColumnKind::Longitude:
+				output.data[output_column].SetValue(row, entry.has_representative
+				                                              ? Value::DOUBLE(entry.representative.longitude) : Value());
+				break;
+			case OutputColumnKind::ValidTime: {
+				if (!state.temporal) throw InternalException("nearest valid_time has no bound temporal coordinate");
+				const auto time_position = state.temporal->axis_index
+				                               ? NearestAxisIndex(layout, indices, *state.temporal->axis_index) *
+				                                     state.temporal->stride
+				                               : 0;
+				output.data[output_column].SetValue(row, Value::TIMESTAMP(state.temporal->Coordinate(time_position)));
+				break;
+			}
+			case OutputColumnKind::SemanticCoordinate: {
+				if (slot.semantic_axis_index >= state.semantic_axes.size())
+					throw InternalException("nearest semantic coordinate is not bound");
+				const auto &axis = state.semantic_axes[slot.semantic_axis_index];
+				const auto axis_index = NearestAxisIndex(layout, indices, axis.axis_index);
+				const auto logical = axis_index * axis.stride;
+				output.data[output_column].SetValue(row, axis.CoordinateValue(logical));
+				break;
+			}
+			case OutputColumnKind::RegionId:
+				output.data[output_column].SetValue(row, Value(bind_data.regions->GetRegions()[local.task_region_ordinal].id));
+				break;
+			case OutputColumnKind::Sampling:
+				output.data[output_column].SetValue(row, nearest_sampling_value(row));
+				break;
+			case OutputColumnKind::SamplingField: {
+				const auto fields = nearest_sampling_fields(row, slot.sampling_field_index == 14);
+				output.data[output_column].SetValue(row, fields.at(static_cast<std::size_t>(slot.sampling_field_index)));
+				break;
+			}
+			case OutputColumnKind::Source:
+				output.data[output_column].SetValue(row, source_logical[row] == no_source
+				                                              ? Value() : MakeOmSourceValue(state.spatial, source_logical[row]));
+				break;
+			case OutputColumnKind::Cardinality:
+				output.data[output_column].SetValue(row, Value::BOOLEAN(true));
+				break;
+			}
+		}
+	}
+	local.task_position_offset += count;
+	state.metrics->RecordScannedRows(count);
+	output.SetCardinality(count);
+	if (!batch_statuses.empty()) state.metrics->RecordNearestSamplingStatuses(batch_statuses, count);
+	state.metrics->RecordNearestSamplingRows(count);
+	if (!local.registered_as_active) {
+		state.metrics->RecordWorkerActive(local.worker_id);
+		local.registered_as_active = true;
+	}
+}
+
 void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLocalState &local,
 	                const ReadOmBindData &bind_data, DataChunk &output) {
 	output.SetCardinality(0);
@@ -2747,7 +3337,8 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLoca
 			local.task_active = false;
 		}
 		if (!state.GetNextTask(context, local.task_positions, *local.task_positions_account,
-		                       local.task_region_ordinal)) {
+		                       local.task_region_ordinal,
+	                       state.sampling_options.method == RegionMethod::Nearest ? &local.task_non_spatial_indices : nullptr)) {
 			local.RefreshMemoryAccount();
 			return;
 		}
@@ -2762,6 +3353,17 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLoca
 	if (!required_variables.empty()) {
 		count = std::min<idx_t>(count, static_cast<idx_t>(MaxBatchPositionCount(state.schema.shape.size())));
 		candidate_count = count;
+	}
+	if (state.sampling_options.method == RegionMethod::Nearest) {
+		struct WorkerExecution final {
+			ScanMetrics &metrics;
+			std::uint64_t worker_id;
+			WorkerExecution(ScanMetrics &metrics_p, std::uint64_t worker_id_p)
+			    : metrics(metrics_p), worker_id(worker_id_p) { metrics.BeginWorkerExecution(worker_id); }
+			~WorkerExecution() { metrics.EndWorkerExecution(worker_id); }
+		} worker_execution(*state.metrics, local.worker_id);
+		ScanNearestBatch(context, state, local, bind_data, output, candidate_count);
+		return;
 	}
 	struct WorkerExecution final {
 		ScanMetrics &metrics;
@@ -2848,8 +3450,7 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLoca
 			}
 			const auto &semantic_axis = state.semantic_axes[slots[output_column].semantic_axis_index];
 			for (std::uint64_t row = 0; row < count; row++) {
-				const auto logical_index = logical_positions[row];
-				output.data[output_column].SetValue(row, semantic_axis.CoordinateValue(logical_index));
+				output.data[output_column].SetValue(row, semantic_axis.CoordinateValue(logical_positions[row]));
 			}
 			continue;
 		}
@@ -3079,6 +3680,9 @@ TableFunction GetReadOmRegionsFunction() {
 	                       InitReadOm, InitReadOmLocal);
 	AddTableFunctionOption(function, "regions", LogicalType::ANY);
 	AddTableFunctionOption(function, "region_crs", LogicalType::ANY);
+	AddTableFunctionOption(function, "method", LogicalType::ANY);
+	AddTableFunctionOption(function, "max_distance_m", LogicalType::ANY);
+	AddTableFunctionOption(function, "out_of_bounds", LogicalType::ANY);
 	AddTableFunctionOption(function, "dimensions", LogicalType::ANY);
 	AddTableFunctionOption(function, "grid", LogicalType::ANY);
 	AddTableFunctionOption(function, "spatial_axes", LogicalType::LIST(LogicalType::VARCHAR));
@@ -3092,6 +3696,7 @@ TableFunction GetReadOmRegionsFunction() {
 	function.filter_pushdown = false;
 	function.filter_prune = false;
 	function.pushdown_complex_filter = ObserveComplexFilter;
+	function.supports_pushdown_extract = SupportsNearestSamplingExtract;
 	function.order_preservation_type = OrderPreservationType::NO_ORDER;
 	return function;
 }

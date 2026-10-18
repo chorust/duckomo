@@ -1,0 +1,1 @@
+nearest_sampling_test: ok

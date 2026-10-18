@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "scope": "006 N5 Dongcheng input inventory; inventory is not an authorization or a successful real-data validation",
+  "status": "partial_real_input_evidence",
+  "inputs": [
+    {
+      "id": "beijing-districts-local",
+      "kind": "district-boundary-collection",
+      "local_path": "build/manual-region-queries/beijing-districts.geojson",
+      "available_in_current_workspace": true,
+      "size_bytes": 98111,
+      "sha256": "0dc3f3a146b5c12fc5380f0360e287a0d5298e27280415b8729ad97fab3fd6f0",
+      "feature_count": 18,
+      "selected_feature": {
+        "property": "id",
+        "value": "东城区",
+        "feature_ordinal_zero_based": 0,
+        "geometry_type": "Polygon",
+        "exterior_vertex_count_including_closure": 52,
+        "compact_feature_json_bytes": 1273,
+        "compact_feature_json_sha256": "5407f1d6f29ff475400be7da4af220d8f9df7191ec4721ecabcda2a3960febd6"
+      },
+      "crs_or_datum": "not declared in file metadata; caller-declared grid_lonlat only",
+      "administrative_boundary_version": "unknown",
+      "original_source": "unknown; file alone does not establish a publisher or source URL",
+      "redistribution_terms": "unknown",
+      "export_flow": "Select the sole FeatureCollection.features entry with properties.id equal to 东城区; retain its Polygon coordinates; serialize compact UTF-8 JSON without a trailing newline and encode standard 2D little-endian WKB. Verify the selected feature hash against the manifest before use.",
+      "public_reproduction": "blocked until an authorized, versioned boundary archive and redistribution terms are recorded; do not attribute this local file to GADM"
+    },
+    {
+      "id": "dongcheng-geoboundaries-2017",
+      "kind": "district-boundary-feature",
+      "local_path": "test/data/sampling/geometries/dongcheng-geoboundaries-2017.geojson",
+      "available_in_current_workspace": true,
+      "size_bytes": 3498,
+      "sha256": "5a3be71b77a44fcd2d0132e57345fd679155fa07b70de4a13b9df706cf98c508",
+      "source_archive": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/CHN/ADM3/geoBoundaries-CHN-ADM3_simplified.geojson",
+      "source_archive_sha256": "ea64fe24f193e319ce48895f229a5b3f46d2a60f3f3df67e6172ab037e4cc8fd8",
+      "source_commit": "9469f09592ced973a3448cf66b6100b741b64c0d",
+      "source_feature": {
+        "properties": {
+          "shapeName": "Dongcheng District",
+          "shapeID": "62558664B68263371825694",
+          "shapeGroup": "CHN",
+          "shapeType": "ADM3"
+        },
+        "geometry_type": "Polygon",
+        "exterior_vertex_count_including_closure": 83,
+        "compact_feature_json_sha256": "7deee811c16fb51df548b3bc73725e917a1102b2d9902044decae5c5df90690c"
+      },
+      "crs_or_datum": "OGC CRS84 per GeoJSON metadata; longitude, latitude axis order",
+      "administrative_boundary_version": "2017 represented year; geoBoundaries gbOpen CHN ADM3 build 2023-12-12",
+      "original_source": "Lee Beryman, OpenStreetMap; source URL wambachers-osm.website/boundaries/",
+      "redistribution_terms": "Open Data Commons Open Database License 1.0 per pinned geoBoundaries API metadata; attribution and share-alike obligations apply",
+      "license_metadata_url": "https://www.geoboundaries.org/api/current/gbOpen/CHN/ADM3/",
+      "export_flow": "From the pinned simplified archive, select the sole feature with properties.shapeID equal to 62558664B68263371825694; export a compact UTF-8 FeatureCollection containing that feature. The tracked file is this one-feature export and is not the unsimplified boundary.",
+      "public_reproduction": "reproducible from the pinned geoBoundaries commit and feature identity; retained under ODbL 1.0 with source attribution"
+    },
+    {
+      "id": "gfs025-2026-10-14-0000",
+      "kind": "om-v3-source-object",
+      "object_key": "data_spatial/ncep_gfs025/2026/10/14/0000Z/2026-10-14T0000.om",
+      "local_path": "build/manual-region-queries/gfs025-20261014T0000.om",
+      "available_in_current_workspace": true,
+      "size_bytes": 112068504,
+      "sha256": "676742c9fe81dd7af7472c7f41d3651d8bd3ff5bcaf1c47b965d415310472375",
+      "source_url_or_archive": "https://openmeteo.s3.us-west-2.amazonaws.com/data_spatial/ncep_gfs025/2026/10/14/0000Z/2026-10-14T0000.om",
+      "aws_registry_dataset": "https://registry.opendata.aws/open-meteo/",
+      "public_distribution_license": "CC BY 4.0 per AWS Open Data Registry (does not by itself establish upstream NOAA/NCEP raw-source terms)",
+      "version_id": null,
+      "etag": "72ea9265019f751a01d3fbb520d1a0f4-14",
+      "last_modified_utc": "2026-10-14T03:40:30Z",
+      "lifecycle_expiration_utc": "2026-10-22T00:00:00Z",
+      "public_object_verified": {
+        "checked_at_utc": "2026-10-17",
+        "http_status": 200,
+        "content_length_bytes": 112068504,
+        "downloaded_sha256": "676742c9fe81dd7af7472c7f41d3651d8bd3ff5bcaf1c47b965d415310472375",
+        "matches_local_sha256": true
+      },
+      "distribution_license": "AWS Open Data Registry lists the Open-Meteo Weather API Database as CC BY 4.0; this does not by itself establish the upstream NOAA/NCEP source terms for this raw forecast object",
+      "redistribution_terms": "public redistribution is prohibited by owner decision; owner confirms internal validation and private retention are allowed. This is an owner attestation, not independent confirmation of public redistribution rights; do not add the 112 MB object to tracked fixtures",
+      "private_use_authorization": {
+        "authority": "project owner confirmation in interactive acceptance session",
+        "internal_validation": "allowed",
+        "private_retention": "allowed",
+        "authorized_validator_access": "owner confirms available",
+        "public_redistribution": "not allowed",
+        "decision_record": "specs/006-region-nearest-sampling/evidence/N5-private-use-decision.md"
+      },
+      "acquisition_flow": "Authorized validators obtain the exact file from the owner through private access and verify the pinned size/SHA-256. Owner permits internal validation/private retention and confirms future authorized access; do not depend on the expiring public URL. A private durable archive arrangement and verified retrieval still require documentation.",
+      "public_reproduction": "the object was anonymously downloadable and hash-matched on 2026-10-17; access is temporary and the raw source redistribution terms remain unresolved",
+      "raw_object_hash_match": {
+        "path": "build/manual-region-queries/gfs025-20261014T0000.om",
+        "bytes": 112068504,
+        "sha256": "676742c9fe81dd7af7472c7f41d3651d8bd3ff5bcaf1c47b965d415310472375",
+        "verified_against_public_https_download": true
+      },
+      "raw_object_archive_status": "private content-addressed archive outside repository verified; file mode 0600, directory 0700; retrieval copy SHA-256 matches; retain until owner authorizes removal; independent hardware backup not established",
+      "controlled_transport_checks": {
+        "runtimes": [
+          "v1.5.4",
+          "v1.5.5",
+          "v1.5.6"
+        ],
+        "transports": [
+          "HTTP",
+          "HTTPS",
+          "signed S3"
+        ],
+        "semantic_rows_match_local": true,
+        "synthetic_differential": "5x5 local/HTTP/HTTPS/signed-S3 points and nearest passed",
+        "http_denial_recovery": "denied read failed safely and retry passed"
+      },
+      "private_archive": {
+        "scope": "owner-only local archive; no public distribution",
+        "manifest_path": "/home/blizhan/.local/share/duckomo/private-inputs/sha256/676742c9fe81dd7af7472c7f41d3651d8bd3ff5bcaf1c47b965d415310472375/manifest.json",
+        "retrieval_verified": true,
+        "retention": "until owner explicitly authorizes removal",
+        "independent_hardware_backup": false
+      }
+    }
+  ],
+  "expected_case": {
+    "date": "2026-10-14",
+    "cycle_utc": "0000Z",
+    "region": "Dongcheng District",
+    "region_feature_id": "62558664B68263371825694",
+    "region_geometry_sha256": "5a3be71b77a44fcd2d0132e57345fd679155fa07b70de4a13b9df706cf98c508",
+    "expected_nearest_source_lon": 116.5,
+    "expected_nearest_source_lat": 40.0,
+    "expected_point_index": 749986,
+    "expected_variable": "temperature_80m",
+    "expected_value_float32": 13.45,
+    "expected_region_points_rows": 0
+  },
+  "evidence": {
+    "previous_exploration_logs": [
+      {
+        "path": "build/manual-beijing-gfs-s3/result.log",
+        "sha256": "1af09207a0b528f730c2cb5e8a79156d1b5bd580b6e3af5d221727fcb5277584",
+        "relevance": "contains an exploration query result; not a reproducible signed-S3 test or a licensing record"
+      },
+      {
+        "path": "build/manual-region-queries/beijing-gfs-result.log",
+        "relevance": "shows a local regional summary; not a nearest sampling result"
+      }
+    ],
+    "n5_status": "historical real local and controlled HTTP/HTTPS/signed-S3 subchecks passed on three versions. Owner now confirms internal validation/private retention and authorized validator access, with no public redistribution. N5 remains partial pending documented private durable acquisition/retrieval and a registered current-artifact N5 package; public distribution authorization is not required for this private scope. Overall 006 acceptance remains incomplete.",
+    "public_sources": [
+      {
+        "title": "Open-Meteo on AWS Open Data",
+        "url": "https://registry.opendata.aws/open-meteo/",
+        "claim": "s3://openmeteo in us-west-2; dataset registry license CC BY 4.0; no guarantee of availability"
+      },
+      {
+        "title": "Open-Meteo open-data README",
+        "url": "https://github.com/open-meteo/open-data/blob/main/README.md",
+        "claim": "data_spatial objects are retained for 7 days; public run-based data for 3 months; forecast sources include NOAA NCEP; repository states CC-BY-4.0"
+      },
+      {
+        "title": "Open-Meteo data license sources",
+        "url": "https://open-meteo.com/en/licence",
+        "claim": "lists NOAA NCEP forecast data separately with an unspecified upstream license"
+      },
+      {
+        "title": "geoBoundaries CHN ADM3 metadata API",
+        "url": "https://www.geoboundaries.org/api/current/gbOpen/CHN/ADM3/",
+        "claim": "source Lee Beryman/OpenStreetMap; license ODbL 1.0; represented year 2017; API metadata identifies the archive URL pinned to geoBoundaries commit 9469f09"
+      }
+    ]
+  }
+}

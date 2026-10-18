@@ -78,6 +78,55 @@ std::vector<std::uint64_t> SpatialLayout::AxisIndices(std::uint64_t logical_inde
 	return result;
 }
 
+SpatialLayoutPosition SpatialLayout::SourcePosition(const std::vector<std::uint64_t> &non_spatial_indices,
+                                                     std::uint64_t x, std::uint64_t y,
+                                                     std::uint64_t point_index) const {
+	ValidateAxisMetadata(*this);
+	if (non_spatial_indices.size() != non_spatial_axes.size()) {
+		throw ReaderError(ReaderErrorCode::InvalidSelection, "non-spatial position rank does not match the bound layout");
+	}
+	SpatialLayoutPosition result;
+	result.axis_indices.assign(shape.size(), 0);
+	for (std::size_t index = 0; index < non_spatial_axes.size(); ++index) {
+		const auto axis = non_spatial_axes[index];
+		if (axis >= shape.size() || non_spatial_indices[index] >= shape[axis]) {
+			throw ReaderError(ReaderErrorCode::InvalidSelection, "non-spatial axis position exceeds its source shape");
+		}
+		result.axis_indices[axis] = non_spatial_indices[index];
+	}
+	if (flattened) {
+		if (point_axis >= shape.size() || point_index >= shape[point_axis]) {
+			throw ReaderError(ReaderErrorCode::InvalidSelection, "flattened source point exceeds its source axis");
+		}
+		result.axis_indices[point_axis] = point_index;
+	} else {
+		if (latitude_axis >= shape.size() || longitude_axis >= shape.size() ||
+		    y >= shape[latitude_axis] || x >= shape[longitude_axis]) {
+			throw ReaderError(ReaderErrorCode::InvalidSelection, "source x/y position exceeds its spatial axes");
+		}
+		result.axis_indices[latitude_axis] = y;
+		result.axis_indices[longitude_axis] = x;
+	}
+	for (std::size_t axis = 0; axis < shape.size(); ++axis) {
+		const auto index = result.axis_indices[axis];
+		if (index >= shape[axis]) {
+			throw ReaderError(ReaderErrorCode::InvalidSelection, "source axis position exceeds its shape");
+		}
+		if (index != 0 && strides[axis] > static_cast<std::uint64_t>(std::numeric_limits<std::int64_t>::max()) / index) {
+			throw ReaderError(ReaderErrorCode::ShapeOverflow, "source logical index multiply exceeds signed 64-bit limit");
+		}
+		const auto contribution = index * strides[axis];
+		if (contribution > static_cast<std::uint64_t>(std::numeric_limits<std::int64_t>::max()) - result.logical_index) {
+			throw ReaderError(ReaderErrorCode::ShapeOverflow, "source logical index sum exceeds signed 64-bit limit");
+		}
+		result.logical_index += contribution;
+	}
+	if (result.logical_index >= CheckedLayoutProduct(shape)) {
+		throw ReaderError(ReaderErrorCode::InvalidSelection, "source logical index is outside the validated layout");
+	}
+	return result;
+}
+
 std::pair<std::uint64_t, std::uint64_t> SpatialLayout::GridIndices(const RegularGrid &grid,
 	                                                               std::uint64_t logical_index) const {
 	if (grid.Order() != order) {

@@ -1,0 +1,69 @@
+{
+  "commands_path": "commands.jsonl",
+  "commands_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "gates": {
+    "N0": {
+      "commands": [],
+      "reason": "not selected or not reached",
+      "status": "not-run"
+    },
+    "N1": {
+      "commands": [],
+      "reason": "not selected or not reached",
+      "status": "not-run"
+    },
+    "N2": {
+      "commands": [],
+      "reason": "not selected or not reached",
+      "status": "not-run"
+    },
+    "N3": {
+      "commands": [],
+      "reason": "not selected or not reached",
+      "status": "not-run"
+    },
+    "N4": {
+      "commands": [],
+      "reason": "not selected or not reached",
+      "status": "not-run"
+    },
+    "N5": {
+      "commands": [],
+      "reason": "not selected or not reached",
+      "status": "not-run"
+    },
+    "N6": {
+      "commands": [],
+      "package_manifest_sha256": "164652bb32abfa2c3adb2e8fcfd4dd1a75e80c2f67b2dc9bb3f4a38b7150f8ff",
+      "reason": "N0\u2013N5 executed evidence, current three-version source/artifact identities, SQL/output/log hashes and private archive retrieval audited",
+      "runtime_versions": [
+        "v1.5.4",
+        "v1.5.5",
+        "v1.5.6"
+      ],
+      "status": "pass"
+    },
+    "N7": {
+      "commands": [],
+      "reason": "not selected or not reached",
+      "status": "not-run"
+    }
+  },
+  "inputs_path": "inputs.json",
+  "inputs_sha256": "2146f9b60de113100fa52b68095e1b839f3ff9d93eec4eeac7458e2bddc3bd54",
+  "requested_gates": [
+    "N6"
+  ],
+  "runtime": {
+    "duckdb_cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+    "duckdb_source_sha": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+    "duckdb_version": "v1.5.4",
+    "extension_sha256": "c7a57f91eaac4b9f727752bddb143993373b52e256ec24c83e877cbbfa05ce6d",
+    "runtime_matrix_sha256": "159c00b3aff2c90d8ff10d0522e9488e998ee4f71375be3f49fc4ff43d786753",
+    "spatial_extension_version": "28db190",
+    "spatial_sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a",
+    "spatial_source_sha": "28db190f7184bcf61eb01d291e0cba79849bddb6"
+  },
+  "schema_version": 1,
+  "status": "pass"
+}

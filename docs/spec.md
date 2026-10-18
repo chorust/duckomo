@@ -18,8 +18,26 @@
 | 扫描 | DuckDB 调度的并行扫描；连接级最大线程设置；列裁剪及安全轴/空间选择 |
 | 远程 | 匹配引擎版本/平台的官方 httpfs；标准范围读取和可观察长度/版本冲突检查，不承诺新鲜 HEAD 或扫描快照 |
 | 缓存 | 自有范围缓存及缓存 SQL 已删除；HTTPFS 内部缓存由官方依赖维护 |
-| Polygon 区域读取 | 开发版 `read_om_regions` 输出原始区域—逻辑记录；调用者提供 `grid_lonlat` WKB，平面 `covers` 判定，统计由 SQL 等权聚合；spatial 必须与 DuckDB 匹配并显式加载 |
+| Polygon 区域读取 | 开发版 `read_om_regions` 默认/points 输出原始区域—逻辑记录；nearest 为区域代表点按非空间轴组合选择一个最近网格源值，并输出逐变量状态/来源；调用者提供 `grid_lonlat` WKB，points 使用平面 `covers`，统计由 SQL 等权聚合；spatial 必须与 DuckDB 匹配并显式加载 |
 | 尚未实现 | 科学计算算子；新网格已实现，但 004 完整验收和独立复现未完成 |
+
+## 什么时候用哪个入口
+
+- **读取文件或筛选一块经纬度范围：用 `read_om`。** 例如查看有哪些列、读取温度、按 `WHERE lat BETWEEN ... AND ...` 选矩形范围。它返回原始网格记录。
+- **手里已有行政区、流域等 polygon：用 `read_om_regions`。** 它接收一组带 ID 的区域。省略 `method` 或写 `method := 'points'` 时返回面内及边界的原始网格点；小区域可能零样本。`method := 'nearest'` 为每个非空间轴组合选取区域代表点最近的单个网格源值，代表位置的值不是区域面积均值。两种方式都保留原值列，可按 `region_id` 分组。nearest 需要显式加载与 DuckDB 完全匹配的 spatial 扩展；points 保留原有区域依赖。
+
+最小切换示例（已有 `regions` WKB 列表及匹配的 `grid`/`domain` 配置）：
+
+```sql
+-- 兼容的旧行为：返回多边形覆盖的原始点
+SELECT * FROM read_om_regions(path, regions := getvariable('regions'), region_crs := 'grid_lonlat');
+
+-- 每个区域与原非空间轴组合返回一个最近源点
+SELECT region_id, value, sampling.source_lon, sampling.source_lat, sampling.distance_m
+FROM read_om_regions(path, regions := getvariable('regions'), region_crs := 'grid_lonlat', method := 'nearest');
+```
+
+Nearest 是单源代表点抽样；它不计算面积均值，也不启用未实现的 bilinear。
 
 ## 参数
 
@@ -62,7 +80,7 @@ v0.3.1 新增 SEAS5/EC46 的 O320 与 N160 产品 domain，名称及实际轴布
 
 有 grid/domain 时，在值列后追加非 NULL 的 `lat DOUBLE`、`lon DOUBLE`；与原列名称冲突时按 DuckDB 标识符规则（含大小写）拒绝绑定。没有空间配置时只输出值列，`coordinates` 或 `dimensions` 本身不会生成坐标列。这是从 `latitude/longitude` 改名的破坏性开发版变更；不默认附加旧别名，迁移方式及原生轴/JSON 不改名的边界见 [接口迁移](interface-migration.md)。
 
-`read_om_regions(path, regions := STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat', ...)` 使用 spatial 的标准 WKB/geometry 函数，把每个原始点记录匹配到零个或多个区域，并在原列末尾追加 `region_id`；`include_source := true` 时保留 `om_source`。有效空区域不生成占位行。输入坐标系由调用者保证与网格输出经纬度一致；区域边界采用平面 `covers`，外环和洞边界包含，洞内部排除。区域/time/member 等统计由 SQL `GROUP BY` 完成，均值是非 NULL 样本等权平均，不是面积平均。完整参数和约束见 [005 SQL 契约](../specs/005-polygon-region-statistics/contracts/sql-interface.md) 和 [Quickstart](../specs/005-polygon-region-statistics/quickstart.md)。
+`read_om_regions(path, regions := STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat', ...)` 的默认 `points` 模式使用 spatial 的标准 WKB/geometry 函数，把每个原始点记录匹配到零个或多个区域，并在原列末尾追加 `region_id`；边界采用平面 `covers`，外环和洞边界包含，洞内部排除。nearest 模式为每个区域×原非空间轴位置返回一行：顶层 `lat/lon` 是面内代表目标，`sampling.source_lat/source_lon` 是实际最近网格源；EMPTY、域外、超距与所选值缺测用不同状态表达，COUNT(*)计结果行。`include_source := true` 时，仅成功选定源点的nearest结果或points记录带真实 `om_source`。区域/time/member 等统计由 SQL `GROUP BY` 完成，均值是非 NULL 样本等权平均，不是面积平均。nearest 只接受已绑定且通过资格检查的规则球面网格，需显式加载与 DuckDB 匹配的 spatial；支持范围和 gate 状态见 [006 spec](../specs/006-region-nearest-sampling/spec.md)、[quickstart](../specs/006-region-nearest-sampling/quickstart.md) 与 [N0–N7 evidence](../specs/006-region-nearest-sampling/evidence/)。points兼容约束见 [005 SQL 契约](../specs/005-polygon-region-statistics/contracts/sql-interface.md)。
 
 `include_source := true` 时在最后追加单列 `om_source STRUCT`，含脱敏对象身份、版本强度、grid/layout ID、logical/point/parent point index 和原轴 indices；它不会启用值 decoder。`om_grid_info(path, dimensions := ..., grid := ..., spatial_axes := ..., domain := ..., valid_times := ..., axes := ...)` 复用 metadata binder 并输出一行定义/布局/CRS/能力/provenance，不读取值 LUT/data 或解码值。描述结果证明 metadata 绑定，不证明坐标/值或远程收益已验收。
 
@@ -87,6 +105,8 @@ HTTP(S)/S3 需要匹配 DuckDB 版本及平台的官方 `httpfs`；已安装且�
 `read_om_raw(path)` 是早期验证入口，仅支持 OM v3 Float32 / FPX 根数组，输出 `value FLOAT`；日常查询使用 `read_om`。
 
 ## 验证范围
+
+006 nearest sampling 已在 `read_om_regions` 实现，points 默认兼容。N1/N2按合成规则球面网格和NCEP GFS025声明范围通过，三版本命令和当前身份见[scoped acceptance refresh](../specs/006-region-nearest-sampling/evidence/n1-n2-acceptance-refresh-20261019-final-7/)。历史完整运行包记录N0、N3、N4本地gate通过，N1/N2当时blocked；该包中N5–N7当时not-run。N5真实输入与三版本受控传输子检查已有通过证据，但原始数据再分发许可和持久归档仍未确认，N6未完成；N7报告是实现worker子代理的本地5×5复现，不满足未参与实现者要求，因此006完整交付仍未验收。逐任务状态、运行身份与限制见[006最终状态报告](../specs/006-region-nearest-sampling/evidence/final.md)、[006 tasks](../specs/006-region-nearest-sampling/tasks.md)、[N1/N2 scoped manifest](../specs/006-region-nearest-sampling/evidence/n1-n2-acceptance-refresh-20261019-final-7/manifest.json) 和 [quickstart](../specs/006-region-nearest-sampling/quickstart.md)。
 
 验收平台为 Linux AArch64，Linux x86_64 支持与验证暂缓。既有 002 空间门禁通过其原始规则网格范围；004 的合成实现回归与有限真实 metadata/值输入记录见 [004 本地 evidence](../specs/004-multi-grid-selection/evidence/baseline-local/)，不能替代四类真实坐标/值和独立 Gaussian 行序参考。**2026-10-10 修订**：按 [负责人批准的 Gaussian 范围修订](../specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md)，未取得匹配公开对象的 N160/N320/N 区域真实验收本轮跳过，不阻塞当前范围收口，定义及合成回归保留且不记为真实通过。按 [2026-10-10 pinned producer 参考决定](../specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md)，`ecmwf_ifs` O1280 与三个投影定义登记为 coordinate-value-validated（与 Open-Meteo 发布对象一致，非原生 GRIB 网格等价）；O1280 依据 [真实本地查询记录](../specs/004-multi-grid-selection/evidence/baseline-local/o1280-real-local-20261010/final.md)（官方值全量对照、producer 坐标误差 0、空间/时间筛选），详见 [多网格证据表](grid-domains.md)。完整远程 gate 与 H9 仍开放。官方 HTTPFS 迁移已在 v1.5.4、v1.5.5、v1.5.6 通过本地/HTTP/HTTPS/签名 S3 一致性、受控远程回归、访问变化及固定性能样本的局部收益检查，见 [迁移验证记录](../specs/004-multi-grid-selection/evidence/official-httpfs-refactor/status.md)。这些结果不替代 004 每类真实网格的远程收益、完整内存 ledger 和独立复现；完整 H8 仍未通过，2.0 开发版不在本轮范围。缺输入/服务/审计的 gate 保持 not-run。68 个规则 domain 以各自已有 evidence 记录为准，不能因注册而推定所有对象已验证；新网格覆盖见 [多网格证据表](grid-domains.md)。
 

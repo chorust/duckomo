@@ -19,6 +19,7 @@ include $(PROJ_DIR)extension-ci-tools/makefiles/duckdb_extension.Makefile
 DUCKOMO_MATRIX ?= $(PROJ_DIR)test/data/grids/version-matrix.json
 DUCKOMO_MATRIX_PAIR ?= v1.5.6
 DUCKOMO_MATRIX_OUTPUT_ROOT ?= $(PROJ_DIR)build/official-matrix
+DUCKOMO_SAMPLING_DUCKDB ?= $(PROJ_DIR)build/regions-runtime/v1.5.4/official/duckdb
 
 .PHONY: matrix-release matrix-test
 matrix-release:
@@ -43,10 +44,22 @@ test: release
 grid-validation: release
 	"$(PROJ_DIR)build/release/test/tools/duckomo_grid_validation" --self-check
 
-.PHONY: region-validation
+.PHONY: region-validation sampling-validation
 region-validation: release
 	cmake --build "$(PROJ_DIR)build/release" --target duckomo_region_validation_bundle --parallel
 	"$(PROJ_DIR)scripts/validate.sh" "$(PROJ_DIR)build/release" --local-only --regions
+
+sampling-validation: release
+	test -n "$(DUCKOMO_SPATIAL_EXTENSION)" || { echo 'Set DUCKOMO_SPATIAL_EXTENSION to the verified matching runtime package' >&2; exit 2; }
+	spatial="$$(realpath "$(DUCKOMO_SPATIAL_EXTENSION)")"; \
+	spatial_sha="$$(sha256sum "$$spatial" | awk '{print $$1}')"; \
+	cmake -S "$(DUCKDB_SRCDIR)" -B "$(PROJ_DIR)build/release" \
+		-DDUCKOMO_REGION_SANITIZER_SPATIAL_PATH="$$spatial" \
+		-DDUCKOMO_REGION_SANITIZER_SPATIAL_SHA256="$$spatial_sha"
+	cmake --build "$(PROJ_DIR)build/release" --target duckomo_sampling_validation_bundle --parallel
+	python3 "$(PROJ_DIR)scripts/sampling_build.py" --build "$(PROJ_DIR)build/release" --sanitizers
+	DUCKOMO_OFFICIAL_DUCKDB="$(DUCKOMO_SAMPLING_DUCKDB)" \
+		"$(PROJ_DIR)scripts/validate.sh" "$(PROJ_DIR)build/release" --local-only --sampling --spatial "$(DUCKOMO_SPATIAL_EXTENSION)"
 
 # Keep sanitizer builds and timings separate from the regular release tests.
 .PHONY: sanitizer-test

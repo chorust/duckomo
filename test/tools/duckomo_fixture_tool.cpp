@@ -27,6 +27,7 @@ namespace {
 
 constexpr char OM_UPSTREAM_COMMIT[] = "d8855e418e2231ae8439f0c7e840fa3f93b371e3";
 constexpr char GENERATION_COMMAND[] = "./build/release/test/tools/duckomo_fixture_tool --output test/data";
+constexpr char SAMPLING_GENERATION_COMMAND[] = "./build/release/test/tools/duckomo_fixture_tool --sampling-output test/data/sampling";
 constexpr std::uint64_t IO_SIZE_MERGE = 512;
 constexpr std::uint64_t IO_SIZE_MAX = 64 * 1024;
 
@@ -1720,6 +1721,61 @@ std::vector<TreeArray> BuildGridLayoutArrays() {
 	        std::move(humidity)};
 }
 
+std::vector<TreeArray> BuildSamplingSmallArrays(const std::string &id, const std::vector<std::string> &axes,
+                                                       const std::vector<std::uint64_t> &shape,
+                                                       const std::vector<std::uint64_t> &chunks,
+                                                       const std::string &reference_prefix,
+                                                       std::uint64_t nx = 5, std::uint64_t ny = 5,
+                                                       bool reverse_latitude = false, bool reverse_longitude = false,
+                                                       bool flat_lat_fastest = false, bool inject_missing = true) {
+	std::vector<TreeArray> result;
+	for (const auto *name : {"temperature", "humidity"}) {
+		auto array = MakeGridArray(id + "." + name, {id, name}, axes, shape, chunks,
+		                           reference_prefix + "." + name + ".csv");
+		const auto count = CheckedProduct(shape);
+		array.fixture.values.reserve(static_cast<std::size_t>(count));
+		std::vector<std::uint64_t> indices(shape.size());
+		for (std::uint64_t logical = 0; logical < count; logical++) {
+			auto remainder = logical;
+			for (std::size_t axis = shape.size(); axis > 0; axis--) {
+				indices[axis - 1] = remainder % shape[axis - 1];
+				remainder /= shape[axis - 1];
+			}
+			auto find_axis = [&](const std::string &axis_name) -> std::uint64_t {
+				const auto found = std::find(axes.begin(), axes.end(), axis_name);
+				return found == axes.end() ? 0 : indices[static_cast<std::size_t>(found - axes.begin())];
+			};
+			const auto time = find_axis("time");
+			const auto member = find_axis("member");
+			const auto level = find_axis("level");
+			std::uint64_t x = 0, y = 0;
+			if (!axes.empty() && axes.back() == "point") {
+				const auto point = indices.back();
+				if (flat_lat_fastest) {
+					x = point / ny;
+					y = point % ny;
+				} else {
+					x = point % nx;
+					y = point / nx;
+				}
+			} else {
+				x = find_axis("lon");
+				y = find_axis("lat");
+			}
+			if (reverse_latitude) y = ny - 1 - y;
+			if (reverse_longitude) x = nx - 1 - x;
+			const auto raw = static_cast<float>(time * 100000 + member * 10000 + level * 1000 + y * nx + x);
+			const bool missing_temperature = inject_missing && time == 2 && member == 1 && level == 0 && x == 3 && y == 2;
+			const bool missing_humidity = inject_missing && time == 0 && member == 1 && level == 1 && x == 2 && y == ny - 1;
+			array.fixture.values.push_back((std::string(name) == "temperature" ? missing_temperature : missing_humidity)
+			                                   ? std::numeric_limits<float>::quiet_NaN()
+			                                   : raw + (std::string(name) == "humidity" ? 10000.0F : 0.0F));
+		}
+		result.push_back(std::move(array));
+	}
+	return result;
+}
+
 std::vector<TreeArray> BuildGridLongLineArrays() {
 	constexpr std::uint64_t POINTS = 262145;
 	auto line = MakeGridArray("grids.long_line", {"long_line", "value"},
@@ -2041,7 +2097,7 @@ void WriteGridSampleManifest(const std::filesystem::path &output_directory) {
 }
 
 void GenerateGridTreeFixture(const std::filesystem::path &output_directory, const std::string &file_name,
-	                         std::vector<TreeArray> &arrays) {
+	                         std::vector<TreeArray> &arrays, bool write_references = true) {
 	const auto bytes = EncodeTreeFile(arrays);
 	const auto path = output_directory / file_name;
 	WriteFile(path, bytes);
@@ -2053,14 +2109,17 @@ void GenerateGridTreeFixture(const std::filesystem::path &output_directory, cons
 		Require(reference.shape == array.fixture.shape && reference.chunks == array.fixture.chunks,
 		        "official grid fixture oracle returned different metadata for " + variable_path);
 		RequireExactRoundtrip(array.fixture, reference.values);
-		const auto reference_path = output_directory / array.reference_name;
-		WriteReferenceCsv(reference_path, reference.values);
-		const auto reference_bytes = ReadFile(reference_path);
 		std::cout << "generated " << file_name << " variable=" << variable_path
 		          << " shape=" << JsonNumberArray(reference.shape)
 		          << " chunks=" << JsonNumberArray(reference.chunks)
-		          << " rows=" << reference.values.size()
-		          << " oracle=passed csv_sha256=" << Sha256Hex(reference_bytes) << '\n';
+		          << " rows=" << reference.values.size() << " oracle=passed";
+		if (write_references) {
+			const auto reference_path = output_directory / array.reference_name;
+			WriteReferenceCsv(reference_path, reference.values);
+			const auto reference_bytes = ReadFile(reference_path);
+			std::cout << " csv_sha256=" << Sha256Hex(reference_bytes);
+		}
+		std::cout << '\n';
 	}
 	std::cout << "generated " << file_name << " variables=" << arrays.size()
 	          << " oracle=passed sha256=" << Sha256Hex(bytes) << '\n';
@@ -2248,6 +2307,167 @@ void Generate(const std::filesystem::path &output_directory) {
 	              projection_arrays, projection_decoded, negative_assets);
 }
 
+void GenerateSamplingFixtures(const std::filesystem::path &output_directory) {
+	std::filesystem::create_directories(output_directory);
+	std::vector<std::pair<std::string, std::vector<TreeArray>>> generated;
+	const std::vector<std::string> separate_axes{"member", "time", "level", "lat", "lon"};
+	const std::vector<std::uint64_t> separate_shape{2, 3, 2, 5, 5};
+	const std::vector<std::uint64_t> separate_chunks{1, 1, 1, 5, 5};
+	auto arrays = BuildSamplingSmallArrays("small-separate", separate_axes, separate_shape, separate_chunks,
+	                                       "small-separate");
+	auto interleaved = BuildSamplingSmallArrays(
+	    "small-interleaved", {"member", "lat", "time", "level", "lon"},
+	    {2, 5, 3, 2, 5}, {1, 5, 1, 1, 5}, "small-interleaved");
+	auto spatial_first = BuildSamplingSmallArrays(
+	    "small-spatial-first", {"lat", "lon", "member", "time", "level"},
+	    {5, 5, 2, 3, 2}, {5, 5, 1, 1, 1}, "small-spatial-first");
+	auto unmapped = BuildSamplingSmallArrays(
+	    "small-unmapped", {"other", "lat", "member", "lon", "time"},
+	    {2, 5, 2, 5, 3}, {1, 5, 1, 5, 1}, "small-unmapped");
+	auto many_axis = BuildSamplingSmallArrays(
+	    "small-many-axis", {"sample", "lat", "lon"},
+	    {513, 5, 5}, {1, 5, 5}, "small-many-axis", 5, 5, false, false, false, false);
+	auto boundary_axis = BuildSamplingSmallArrays(
+	    "small-boundary-axis", {"sample", "lat", "lon"},
+	    {2049, 5, 5}, {256, 5, 5}, "small-boundary-axis", 5, 5, false, false, false, false);
+	auto reverse_lat = BuildSamplingSmallArrays(
+	    "small-reverse-lat", {"member", "time", "level", "lat", "lon"},
+	    separate_shape, separate_chunks, "small-reverse-lat", 5, 5, true, false);
+	auto reverse_lon = BuildSamplingSmallArrays(
+	    "small-reverse-lon", {"member", "time", "level", "lat", "lon"},
+	    separate_shape, separate_chunks, "small-reverse-lon", 5, 5, false, true);
+	auto reverse_both = BuildSamplingSmallArrays(
+	    "small-reverse-both", {"member", "time", "level", "lat", "lon"},
+	    separate_shape, separate_chunks, "small-reverse-both", 5, 5, true, true);
+	auto flat_lon = BuildSamplingSmallArrays("small-flat-lon", {"member", "time", "level", "point"},
+	                                         {2, 3, 2, 25}, {1, 1, 1, 7}, "small-flat-lon");
+	auto flat_lat = BuildSamplingSmallArrays("small-flat-lat", {"member", "time", "level", "point"},
+	                                         {2, 3, 2, 25}, {1, 1, 1, 7}, "small-flat-lat",
+	                                         5, 5, false, false, true);
+
+	auto write_pair = [&](std::vector<TreeArray> &pair) {
+		Require(pair.size() == 2, "each small sampling fixture requires two value variables");
+		const auto file_name = pair.front().segments.front() + ".om";
+		GenerateGridTreeFixture(output_directory, file_name, pair);
+		generated.emplace_back(file_name, pair);
+	};
+	write_pair(arrays);
+	write_pair(interleaved);
+	write_pair(spatial_first);
+	write_pair(unmapped);
+	write_pair(many_axis);
+	write_pair(boundary_axis);
+	write_pair(reverse_lat);
+	write_pair(reverse_lon);
+	write_pair(reverse_both);
+	write_pair(flat_lon);
+	write_pair(flat_lat);
+
+	TreeArray skippable_values;
+	skippable_values.fixture.id = "skippable-values.temperature";
+	skippable_values.fixture.shape = {1024, 1024};
+	skippable_values.fixture.chunks = {16, 16};
+	skippable_values.segments = {"skippable-values", "temperature"};
+	skippable_values.axes = {"lat", "lon"};
+	skippable_values.reference_name = "skippable-values.temperature.csv";
+	skippable_values.fixture.values.reserve(1024 * 1024);
+	for (std::uint64_t latitude = 0; latitude < 1024; ++latitude) {
+		for (std::uint64_t longitude = 0; longitude < 1024; ++longitude) {
+			skippable_values.fixture.values.push_back(static_cast<float>(latitude * 0.5 + longitude * 0.25));
+		}
+	}
+	std::vector<TreeArray> skippable_values_arrays{std::move(skippable_values)};
+	GenerateGridTreeFixture(output_directory, "skippable-values.om", skippable_values_arrays);
+	generated.emplace_back("skippable-values.om", skippable_values_arrays);
+
+	TreeArray sampling_conflict;
+	sampling_conflict.fixture.id = "sampling-conflict.sampling";
+	sampling_conflict.fixture.shape = {5, 5};
+	sampling_conflict.fixture.chunks = {2, 3};
+	for (std::uint64_t index = 0; index < 25; ++index) {
+		sampling_conflict.fixture.values.push_back(static_cast<float>(index));
+	}
+	sampling_conflict.segments = {"sampling"};
+	sampling_conflict.axes = {"lat", "lon"};
+	sampling_conflict.reference_name = "sampling-conflict.sampling.csv";
+	std::vector<TreeArray> sampling_conflict_arrays{sampling_conflict};
+	GenerateGridTreeFixture(output_directory, "sampling-conflict.om", sampling_conflict_arrays);
+	generated.emplace_back("sampling-conflict.om", sampling_conflict_arrays);
+
+	TreeArray spatial_only;
+	spatial_only.fixture.id = "small-spatial-only.temperature";
+	spatial_only.fixture.shape = {2, 2};
+	spatial_only.fixture.chunks = {2, 2};
+	spatial_only.fixture.values = {1.0F, 2.0F, 3.0F, 4.0F};
+	spatial_only.segments = {"small-spatial-only", "temperature"};
+	spatial_only.axes = {"lat", "lon"};
+	spatial_only.reference_name = "small-spatial-only.temperature.csv";
+	std::vector<TreeArray> spatial_only_arrays{std::move(spatial_only)};
+	GenerateGridTreeFixture(output_directory, "small-spatial-only.om", spatial_only_arrays);
+	generated.emplace_back("small-spatial-only.om", spatial_only_arrays);
+
+	for (const auto dimension : {std::uint64_t(64), std::uint64_t(256)}) {
+		std::vector<TreeArray> memory_arrays;
+		for (const auto *name : {"temperature", "humidity"}) {
+			TreeArray array;
+			array.fixture.id = std::string("memory-") + std::to_string(dimension) + "." + name;
+			array.fixture.shape = {2, 3, 2, dimension, dimension};
+			array.fixture.chunks = {1, 1, 1, 16, 16};
+			array.fixture.values.resize(static_cast<std::size_t>(CheckedProduct(array.fixture.shape)));
+			array.segments = {std::string("memory-") + std::to_string(dimension), name};
+			array.axes = {"member", "time", "level", "lat", "lon"};
+			array.reference_name = array.segments.front() + "." + name + ".csv";
+			array.fixture.values.resize(static_cast<std::size_t>(CheckedProduct(array.fixture.shape)));
+			for (std::uint64_t logical = 0; logical < array.fixture.values.size(); ++logical) {
+				auto remainder = logical;
+				const auto x = remainder % dimension; remainder /= dimension;
+				const auto y = remainder % dimension; remainder /= dimension;
+				const auto level = remainder % 2; remainder /= 2;
+				const auto time = remainder % 3; remainder /= 3;
+				const auto member = remainder;
+				array.fixture.values[static_cast<std::size_t>(logical)] = static_cast<float>(member * 100000 + time * 10000 + level * 1000 + y * dimension + x) +
+				    (std::string(name) == "humidity" ? 1000000.0F : 0.0F);
+			}
+			memory_arrays.push_back(std::move(array));
+		}
+		const auto file_name = memory_arrays.front().segments.front() + ".om";
+		GenerateGridTreeFixture(output_directory, file_name, memory_arrays);
+		generated.emplace_back(file_name, memory_arrays);
+	}
+	std::ostringstream manifest;
+	manifest.imbue(std::locale::classic());
+	manifest << "{\n  \"schema_version\": 1,\n  \"generated_by\": \"duckomo_fixture_tool --sampling-output\",\n"
+	         << "  \"official_reader_commit\": \"" << OM_UPSTREAM_COMMIT << "\",\n  \"fixtures\": [\n";
+	for (std::size_t fixture_index = 0; fixture_index < generated.size(); fixture_index++) {
+		const auto &[file_name, pair] = generated[fixture_index];
+		const auto file_bytes = ReadFile(output_directory / file_name);
+		manifest << "    {\"path\": \"" << JsonEscape(file_name) << "\", \"size_bytes\": "
+		         << file_bytes.size() << ", \"sha256\": \"" << Sha256Hex(file_bytes) << "\", \"variables\": [";
+		for (std::size_t variable_index = 0; variable_index < pair.size(); variable_index++) {
+			const auto &array = pair[variable_index];
+			if (variable_index != 0) manifest << ", ";
+			manifest << "{\"path\": \"" << JsonEscape(CanonicalVariablePath(array.segments))
+			         << "\", \"shape\": " << JsonNumberArray(array.fixture.shape)
+			         << ", \"chunk_shape\": " << JsonNumberArray(array.fixture.chunks)
+			         << ", \"axes\": " << JsonStringArray(array.axes);
+			if (array.reference_name.empty()) {
+				manifest << ", \"reference_path\": null, \"reference_sha256\": null}";
+			} else {
+				const auto reference_bytes = ReadFile(output_directory / array.reference_name);
+				manifest << ", \"reference_path\": \"" << JsonEscape(array.reference_name)
+				         << "\", \"reference_sha256\": \"" << Sha256Hex(reference_bytes) << "\"}";
+			}
+		}
+		manifest << "]}" << (fixture_index + 1 == generated.size() ? "\n" : ",\n");
+	}
+	manifest << "  ]\n}\n";
+	const auto manifest_text = manifest.str();
+	WriteFile(output_directory / "om-fixtures.json",
+	          std::vector<std::uint8_t>(manifest_text.begin(), manifest_text.end()));
+	std::cout << "generated synthetic nearest-sampling OM inputs, official-reader values, and hashes in "
+	          << output_directory << '\n';
+}
+
 void GenerateRegionsFixtures(const std::filesystem::path &output_directory) {
 	std::filesystem::create_directories(output_directory);
 	std::vector<Fixture> fixtures;
@@ -2405,6 +2625,7 @@ void PrintUsage(std::ostream &output) {
 	output << "Usage:\n"
 	       << "  duckomo_fixture_tool --output DIR\n"
 	       << "  duckomo_fixture_tool --regions-output DIR\n"
+	       << "  duckomo_fixture_tool --sampling-output DIR\n"
 	       << "  duckomo_fixture_tool --oracle INPUT.om --csv REFERENCE.csv\n"
 	       << "  duckomo_fixture_tool --oracle-prefix INPUT.om --variable /PATH --count N --csv REFERENCE.csv\n"
 	       << "  duckomo_fixture_tool --oracle-slice INPUT.om --offset A,B,... --shape A,B,... --csv REFERENCE.csv\n"
@@ -2412,6 +2633,7 @@ void PrintUsage(std::ostream &output) {
 	          "negative mutation assets, and manifest.json.\n"
 	       << "--oracle runs the independent fixed official OM reader over a full root array and exports index,value CSV.\n"
 	       << "--regions-output writes only the region-statistics fixtures and official-reader references under DIR.\n"
+	       << "--sampling-output writes synthetic nearest-sampling fixtures, official-reader references, and hash manifest under DIR.\n"
 	       << "--hres-output DIR generates synthetic HRES static/time-series fixtures without changing the frozen manifest.\n"
 	       << "--seasonal-output DIR generates O320/N160 time/member fixtures outside the frozen manifest.\n";
 }
@@ -2422,6 +2644,7 @@ int main(int argc, char **argv) {
 	try {
 		std::filesystem::path output_directory;
 		std::filesystem::path regions_output;
+		std::filesystem::path sampling_output;
 		std::filesystem::path hres_output;
 		std::filesystem::path seasonal_output;
 		std::filesystem::path oracle_input;
@@ -2444,6 +2667,10 @@ int main(int argc, char **argv) {
 			}
 			if (argument == "--regions-output" && index + 1 < argc) {
 				regions_output = argv[++index];
+				continue;
+			}
+			if (argument == "--sampling-output" && index + 1 < argc) {
+				sampling_output = argv[++index];
 				continue;
 			}
 			if (argument == "--seasonal-output" && index + 1 < argc) {
@@ -2490,6 +2717,15 @@ int main(int argc, char **argv) {
 			throw std::runtime_error("unknown or incomplete argument: " + argument);
 		}
 
+		if (!sampling_output.empty()) {
+			Require(output_directory.empty() && regions_output.empty() && hres_output.empty() &&
+			            seasonal_output.empty() && oracle_input.empty() && oracle_prefix_input.empty() &&
+			            oracle_slice_input.empty() && slice_offset.empty() && slice_count.empty() && oracle_csv.empty() &&
+			            variable_path.empty() && prefix_count == 0,
+			        "--sampling-output is exclusive and cannot be combined with another mode");
+			GenerateSamplingFixtures(sampling_output);
+			return 0;
+		}
 		if (!seasonal_output.empty()) {
 			Require(output_directory.empty() && regions_output.empty() && hres_output.empty() &&
 			            oracle_input.empty() && oracle_prefix_input.empty() && oracle_slice_input.empty() &&

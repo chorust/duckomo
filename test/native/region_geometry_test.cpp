@@ -1,5 +1,8 @@
 #include "duckdb.hpp"
 #include "duckdb/common/exception.hpp"
+#include "duckdb/catalog/catalog.hpp"
+#include "duckdb/function/scalar_function.hpp"
+#include "duckdb/parser/parsed_data/create_scalar_function_info.hpp"
 #include "duckdb/common/types/data_chunk.hpp"
 #include "duckdb/common/types/selection_vector.hpp"
 #include "duckdb/main/extension_helper.hpp"
@@ -72,6 +75,13 @@ void CheckQuery(Connection &connection, const std::string &sql) {
 	Require(result && !result->HasError(), "SQL failed: " + sql + (result ? ": " + result->GetError() : ""));
 }
 
+void RegisterStub(ClientContext &context, const std::string &name, std::vector<LogicalType> arguments,
+                  LogicalType return_type) {
+	ScalarFunction function(name, std::move(arguments), std::move(return_type), ScalarFunction::NopFunction);
+	CreateScalarFunctionInfo info(std::move(function));
+	Catalog::GetSystemCatalog(context).AddFunction(context, info);
+}
+
 std::vector<idx_t> Select(RegionPredicateEvaluator &predicate, ClientContext &context,
 	                      const std::vector<Point> &points) {
 	DataChunk coordinates;
@@ -106,6 +116,36 @@ void TestMissingDependency() {
 	Require(diagnosed, "a missing spatial function must produce the actionable dependency category: " + diagnostic);
 }
 
+void TestMissingNearestSignature() {
+	DuckDB database(nullptr);
+	Connection connection(database);
+	CheckQuery(connection, "BEGIN TRANSACTION");
+	const auto geometry = LogicalType::GEOMETRY();
+	const auto boolean = LogicalType(LogicalTypeId::BOOLEAN);
+	const auto double_type = LogicalType(LogicalTypeId::DOUBLE);
+	RegisterStub(*connection.context, "st_geomfromwkb", {LogicalType(LogicalTypeId::BLOB)}, geometry);
+	RegisterStub(*connection.context, "st_isvalid", {geometry}, boolean);
+	RegisterStub(*connection.context, "st_point", {double_type, double_type}, geometry);
+	RegisterStub(*connection.context, "st_covers", {geometry, geometry}, boolean);
+	RegisterStub(*connection.context, "st_pointonsurface", {LogicalType(LogicalTypeId::VARCHAR)},
+	             LogicalType(LogicalTypeId::VARCHAR));
+	RegisterStub(*connection.context, "st_x", {geometry}, double_type);
+	RegisterStub(*connection.context, "st_y", {geometry}, double_type);
+	RegionGeometryAdapter adapter(*connection.context);
+	bool rejected = false;
+	std::string diagnostic = "no error";
+	try {
+		adapter.RequireNearestOperations();
+	} catch (const std::exception &error) {
+		diagnostic = error.what();
+		rejected = diagnostic.find("[spatial_dependency]") != std::string::npos &&
+		           diagnostic.find("exact signature") != std::string::npos;
+	}
+	CheckQuery(connection, "ROLLBACK");
+	Require(rejected, "nearest must reject a loaded extension with the wrong representative-point signature: " +
+	                       diagnostic);
+}
+
 void TestAdapterAndWorkerState(const std::string &extension_path, const std::string &expected_hash) {
 	DuckDB database(nullptr);
 	Connection connection(database);
@@ -137,6 +177,11 @@ void TestAdapterAndWorkerState(const std::string &extension_path, const std::str
 	});
 	const auto polygon = adapter.CreateGeometry(polygon_wkb);
 	Require(adapter.IsValid(polygon), "a polygon with a valid hole must pass ST_IsValid");
+	const auto representative = adapter.PointOnSurfaceCoordinate(polygon);
+	Require(std::isfinite(representative.longitude) && std::isfinite(representative.latitude) &&
+	            representative.longitude >= 0.0 && representative.longitude <= 4.0 &&
+	            representative.latitude >= 0.0 && representative.latitude <= 4.0,
+	        "nearest representative adapter must return a finite point covered by the polygon with a hole");
 	auto polygon_expression = adapter.BindCovers(polygon, 0, 1);
 	RegionPredicateEvaluator polygon_predicate(*connection.context, *polygon_expression);
 	const auto points = Select(polygon_predicate, *connection.context,
@@ -190,6 +235,7 @@ int main(int argc, char **argv) {
 	try {
 		Require(argc == 3, "usage: region_geometry_test <spatial-extension-path> <spatial-package-sha256>");
 		TestMissingDependency();
+		TestMissingNearestSignature();
 		TestAdapterAndWorkerState(argv[1], argv[2]);
 		std::cout << "region_geometry_test: ok\n";
 		return 0;

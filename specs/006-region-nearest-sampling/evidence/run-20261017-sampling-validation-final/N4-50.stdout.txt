@@ -1,0 +1,8 @@
+Internal ctest changing into directory: /home/blizhan/repo/github/duckomo/build/release/extension/duckomo/test
+Test project /home/blizhan/repo/github/duckomo/build/release/extension/duckomo/test
+    Start 16: duckomo_sanitizer_region_sampling_test
+1/1 Test #16: duckomo_sanitizer_region_sampling_test ...   Passed   24.15 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =  24.15 sec

@@ -1,0 +1,3 @@
+LOAD '/home/blizhan/repo/github/duckomo/build/release/extension/duckomo/duckomo.duckdb_extension';
+LOAD '/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/spatial.duckdb_extension';
+SELECT temperature_80m,om_source.logical_index,om_source.point_index FROM read_om('/home/blizhan/repo/github/duckomo/build/manual-region-queries/gfs025-20261014T0000.om',domain:='ncep_gfs025',variable:='temperature_80m',include_source:=true) WHERE lon=116.5 AND lat=40.0;

@@ -17,7 +17,7 @@ duckomo is a DuckDB C++ extension that queries Float32 arrays in [Open-Meteo OM]
 - **Multiple grid mappings**: regular latitude/longitude, [68 regular domains](docs/regular-domains.md), rotated latitude/longitude, Lambert, stereographic, and reduced Gaussian.
 - **Multiple variables and semantic axes**: align variables by ordered axis identity; support `valid_time`, `level`, `lead_time`, `member`, and `run`, without implicit transposition, broadcasting, or joins.
 - **Parallelism and observability**: DuckDB-scheduled scans, thread limits, scan metrics, opt-in `om_source` positions, and `om_grid_info` descriptions.
-- **Polygon-region reads (experimental)**: v0.3.1 GitHub packages provide `read_om_regions` for raw grid records that can be grouped with SQL; full cross-platform acceptance of the current optimization remains open, so this is an experimental feature.
+- **Polygon-region reads (experimental)**: `read_om_regions` keeps covered grid points by default (`method := 'points'`). Set `method := 'nearest'` to select one nearest grid source for each region representative point and non-spatial axis combination. The representative-point value is not an area mean. N0–N4 pass for their declared scopes; N5 local real-data and controlled-transport subchecks passed, while raw-source authorization and a durable archive remain unresolved; N6's full audit is incomplete. A local 5×5 N7 reproduction was run by an implementation worker and does not meet the independent-executor requirement, so overall acceptance remains open. See the [current 006 status](specs/006-region-nearest-sampling/evidence/final.md), [spec](docs/spec.md), and [006 quickstart](specs/006-region-nearest-sampling/quickstart.md).
 
 Each input names **one object**, not a directory, glob, or file list. The 005 region entrypoint requires an explicitly loaded spatial extension that matches DuckDB; ordinary `read_om` does not. Callers are responsible for the WKB `grid_lonlat` reference, containment uses planar `covers`, and SQL aggregates are equally weighted. Region support is still under validation; see the [005 quickstart](specs/005-polygon-region-statistics/quickstart.md). Projected/Gaussian grids are implemented, but per-grid real samples, full memory accounting, and independent reproduction have not all passed acceptance. Implementation is not a production-readiness claim; see [supported scope](docs/spec.md) and [grid evidence](docs/grid-domains.md).
 
@@ -39,7 +39,7 @@ The release matrix targets **DuckDB v1.5.4 / v1.5.5 / v1.5.6** on **Linux glibc 
 GitHub binaries are unsigned; load only trusted code. Start `duckdb -unsigned`, then install. Release asset names carry the version and platform, and passing the URL directly to `INSTALL` makes DuckDB truncate the extension name at the first `.` (it is stored as `duckomo-v0.duckdb_extension`), so a later `LOAD duckomo` cannot find the file. Download the `.duckdb_extension.gz`, decompress it to the canonical name, and install locally instead:
 
 ```bash
-DUCKOMO_VERSION=v0.3.1                                                    # DuckOMO version
+DUCKOMO_VERSION=v0.3.2                                                    # DuckOMO version
 DUCKDB_VERSION=$(duckdb -list -noheader :memory: "SELECT version();")      # detected from local DuckDB
 PLATFORM=$(duckdb -list -noheader :memory: "PRAGMA platform;")            # detected from local DuckDB
 
@@ -132,9 +132,9 @@ Files with time metadata expose UTC `valid_time`, which you can use in time pred
 
 v0.3.1 supports `variable := 'column_name'` on `read_om`, `read_om_regions`, and `om_grid_info`. It binds one value array, which reduces metadata work for remote files with many variables. Names follow encoded SQL column paths, such as `weird%2Fname%25/value`, with an optional leading slash. A dimensions MAP must contain only the selected array. NULL, empty, missing, or non-value names fail during binding. Scans reuse bound metadata by default; `SET duckomo_revalidate_metadata=true` enables full-tree rereads and comparison of the same selected view.
 
-### Polygon aggregation: Qinghai
+### Polygon filtering, aggregation, or nearest representative values
 
-The experimental `read_om_regions` entrypoint returns grid points covered by each WKB polygon. SQL supplies the aggregation; AVG is an equal-weight point average. Prepare eight Qinghai prefectures from [GADM 4.1](https://gadm.org/data.html), following its academic/non-commercial license:
+The experimental `read_om_regions` entrypoint accepts WKB polygons. Omit `method` or set `method := 'points'` to return original grid points covered by each polygon; SQL supplies the aggregation, where AVG is an equal-weight point average rather than an area-weighted mean. Set `method := 'nearest'` to emit one selected source value per region and non-spatial axis tuple at the grid point nearest the polygon representative point. Top-level `lat/lon` are the in-polygon target, while `sampling.source_lat/source_lon` identify the selected source; `COUNT(*)` counts result rows. Nearest requires an eligible regular spherical grid and the matching DuckDB spatial extension. N0–N4 pass for their declared scopes. N5 local real-data and controlled-transport subchecks passed, but raw-source authorization and a durable archive remain unresolved; N6 is incomplete. The recorded local 5×5 N7 reproduction was run by an implementation worker and does not meet the independent-executor requirement. See the [current 006 status](specs/006-region-nearest-sampling/evidence/final.md) and [006 quickstart](specs/006-region-nearest-sampling/quickstart.md). The example below demonstrates points mode over Qinghai. Prepare eight Qinghai prefectures from [GADM 4.1](https://gadm.org/data.html), following its academic/non-commercial license:
 
 ```sh
 mkdir -p build/manual-region-queries
@@ -156,7 +156,7 @@ PY
 The archive explicitly declares CRS84 (x=longitude, y=latitude), used here as `grid_lonlat`. These are GADM 4.1 boundaries, not a promise of current administrative divisions. Use matching DuckDB, DuckOMO, HTTPFS, and spatial builds:
 
 ```sql
--- Install the matching v0.3.1 package above, then start duckdb -unsigned.
+-- Install the matching v0.3.2 package above, then start duckdb -unsigned.
 LOAD duckomo;
 INSTALL httpfs; LOAD httpfs;
 INSTALL spatial; LOAD spatial; -- matching DuckDB version; initial install needs network

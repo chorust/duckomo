@@ -1,0 +1,2568 @@
+mkdir -p build/release
+cmake  -DEXTENSION_STATIC_BUILD=1  -DDUCKDB_EXTENSION_CONFIGS='/home/blizhan/repo/github/duckomo/extension_config.cmake' -DBUILD_UNITTESTS=TRUE -DBUILD_SHELL=TRUE -DNATIVE_ARCH=FALSE -DDUCKOMO_BUILD_DEVELOPER_TOOLS=ON  -DOSX_BUILD_ARCH=   -DDUCKDB_EXPLICIT_PLATFORM='' -DCUSTOM_LINKER= -DOVERRIDE_GIT_DESCRIBE="" -DUNITTEST_ROOT_DIRECTORY="/home/blizhan/repo/github/duckomo/" -DBENCHMARK_ROOT_DIRECTORY="/home/blizhan/repo/github/duckomo/" -DENABLE_UNITTEST_CPP_TESTS=FALSE -DENABLE_EXTENSION_AUTOLOADING=0 -DENABLE_EXTENSION_AUTOINSTALL=0 -DBUILD_EXTENSION_TEST_DEPS=default   -DCMAKE_BUILD_TYPE=Release -S /home/blizhan/repo/github/duckomo/duckdb/ -B build/release
+-- GIT_COMMIT_HASH has length 8 different than the expected 10
+-- git hash 08e34c44, version v1.5.4, extension folder v1.5.4
+-- Build workers: compile= link_release=4 link_non_release=2
+-- Extensions will be deployed to: /home/blizhan/repo/github/duckomo/build/release/repository
+-- Load extension 'json' from '/home/blizhan/repo/github/duckomo/duckdb/extensions' @ v1.5.4
+-- Load extension 'parquet' from '/home/blizhan/repo/github/duckomo/duckdb/extensions' @ v1.5.4
+-- Load extension 'duckomo' from '/home/blizhan/repo/github/duckomo' @ d2a134d
+-- Load extension 'core_functions' from '/home/blizhan/repo/github/duckomo/duckdb/extensions' @ v1.5.4
+-- Extensions linked into DuckDB: [json, parquet, duckomo, core_functions]
+-- Tests loaded for extensions: [duckomo]
+-- Configuring done (1.4s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/blizhan/repo/github/duckomo/build/release
+cmake --build build/release --config Release
+gmake[1]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[2]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[  1%] Updating .cache/clangd (release)
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[  1%] Built target clangd_cache
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[  1%] Built target dummy_static_extension_loader
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[  1%] Built target duckdb_platform_binary
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[  1%] Built target duckdb_platform
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[  5%] Built target duckdb_zstd
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 13%] Built target duckdb_jemalloc
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 13%] Built target duckdb_optimizer
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 13%] Built target duckdb_optimizer_compressed_materialization
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 13%] Built target duckdb_optimizer_join_order
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 13%] Built target duckdb_optimizer_matcher
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 13%] Built target duckdb_optimizer_pullup
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 14%] Built target duckdb_optimizer_pushdown
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 14%] Built target duckdb_optimizer_rules
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 14%] Built target duckdb_optimizer_statistics_expr
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 14%] Built target duckdb_optimizer_statistics_op
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 14%] Built target duckdb_planner
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 14%] Built target duckdb_planner_expression
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 14%] Built target duckdb_bind_expression
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 14%] Built target duckdb_bind_query_node
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 15%] Built target duckdb_bind_statement
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 15%] Built target duckdb_bind_tableref
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 15%] Built target duckdb_expression_binders
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 17%] Built target duckdb_planner_filter
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 17%] Built target duckdb_planner_operator
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 17%] Built target duckdb_planner_subquery
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 17%] Built target duckdb_parser
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 17%] Built target duckdb_constraints
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 17%] Built target duckdb_expression
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 17%] Built target duckdb_parsed_data
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 17%] Built target duckdb_query_node
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 18%] Built target duckdb_statement
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 18%] Built target duckdb_parser_tableref
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_transformer_constraint
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_transformer_expression
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_transformer_helpers
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_transformer_statement
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_transformer_tableref
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_function
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_func_aggr
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_aggr_distr
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_func_cast
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_union_cast
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_variant_cast
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_func_pragma
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_func_scalar
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_func_compressed_materialization
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 20%] Built target duckdb_func_date
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 20%] Built target duckdb_func_generic_main
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 20%] Built target duckdb_func_list_nested
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 20%] Built target duckdb_function_map
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 20%] Built target duckdb_func_ops_main
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 20%] Built target duckdb_func_seq
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 20%] Built target duckdb_func_string_main
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 21%] Built target duckdb_func_string_regexp
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 21%] Built target duckdb_func_struct_main
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 21%] Built target duckdb_func_variant_main
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 21%] Built target duckdb_func_system
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 21%] Built target duckdb_func_geometry
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 21%] Built target duckdb_func_table
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 21%] Built target duckdb_table_func_system
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 21%] Built target duckdb_func_table_version
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 21%] Built target duckdb_arrow_conversion
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 21%] Built target duckdb_func_window
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 22%] Built target duckdb_function_variant
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 22%] Built target duckdb_catalog
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 22%] Built target duckdb_catalog_entries
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 22%] Built target duckdb_catalog_entries_dependency
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 22%] Built target duckdb_catalog_default_entries
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 22%] Built target duckdb_common
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 22%] Built target duckdb_adbc
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 22%] Built target duckdb_adbc_nanoarrow
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 22%] Built target duckdb_common_allocator
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 22%] Built target duckdb_common_arrow
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 23%] Built target duckdb_common_arrow_appender
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 23%] Built target duckdb_common_crypto
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 23%] Built target duckdb_common_enums
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 23%] Built target duckdb_common_exception
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 23%] Built target duckdb_common_multi_file
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 23%] Built target duckdb_common_operators
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 23%] Built target duckdb_progress_bar
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 23%] Built target duckdb_common_tree_renderer
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 23%] Built target duckdb_row_operations
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 23%] Built target duckdb_common_serializer
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 23%] Built target duckdb_sort
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 25%] Built target duckdb_common_types
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 25%] Built target duckdb_common_types_column
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 25%] Built target duckdb_common_types_row
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 25%] Built target duckdb_common_variant
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 26%] Built target duckdb_value_operations
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 27%] Built target duckdb_vector_operations
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 27%] Built target duckdb_logging
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 27%] Built target duckdb_execution
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 27%] Built target duckdb_expression_executor
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 27%] Built target duckdb_nested_loop_join
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 27%] Built target duckdb_operator_aggregate
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 27%] Built target duckdb_csv_buffer_manager
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 27%] Built target duckdb_csv_encode
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 28%] Built target duckdb_csv_scanner
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 28%] Built target duckdb_csv_sniffer
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 28%] Built target duckdb_csv_state_machine
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 28%] Built target duckdb_operator_csv_table_function
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 28%] Built target duckdb_csv_util
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 28%] Built target duckdb_operator_filter
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 28%] Built target duckdb_operator_helper
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 28%] Built target duckdb_operator_join
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 28%] Built target duckdb_operator_order
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 28%] Built target duckdb_operator_persistent
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 29%] Built target duckdb_operator_projection
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 29%] Built target duckdb_operator_scan
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 29%] Built target duckdb_operator_schema
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 29%] Built target duckdb_operator_set
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 29%] Built target duckdb_physical_plan
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 29%] Built target duckdb_execution_index
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 29%] Built target duckdb_execution_index_art
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 29%] Built target duckdb_sample
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 29%] Built target duckdb_main
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 29%] Built target duckdb_main_capi
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 29%] Built target duckdb_main_capi_cast
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 29%] Built target duckdb_main_extension
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 29%] Built target duckdb_common_http
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 30%] Built target duckdb_main_relation
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 30%] Built target duckdb_main_secret
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 30%] Built target duckdb_main_settings
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 31%] Built target duckdb_main_buffered_data
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 31%] Built target duckdb_main_chunk_scan_state
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 31%] Built target duckdb_parallel
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 31%] Built target duckdb_storage
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 31%] Built target duckdb_storage_buffer
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 31%] Built target duckdb_storage_checkpoint
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 31%] Built target duckdb_storage_compression
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 31%] Built target duckdb_storage_compression_chimp
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 31%] Built target duckdb_storage_compression_alp
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 31%] Built target duckdb_storage_compression_roaring
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 32%] Built target duckdb_storage_compression_dictionary
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 32%] Built target duckdb_storage_compression_dict_fsst
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 32%] Built target duckdb_storage_metadata
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 32%] Built target duckdb_storage_serialization
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 32%] Built target duckdb_storage_statistics
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 32%] Built target duckdb_storage_table
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 32%] Built target duckdb_storage_table_variant
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 32%] Built target duckdb_transaction
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 34%] Built target duckdb_verification
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 35%] Built target duckdb_fastpforlib
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 35%] Built target duckdb_fmt
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 35%] Built target duckdb_fsst
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 35%] Built target duckdb_hyperloglog
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 36%] Built target duckdb_pg_query
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 38%] Built target duckdb_mbedtls
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 39%] Built target duckdb_miniz
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 43%] Built target duckdb_re2
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 43%] Built target duckdb_skiplistlib
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 43%] Built target duckdb_utf8proc
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 43%] Built target duckdb_yyjson
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 43%] Built target duckdb_static
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 43%] Built target loadable_extension_optimizer_demo_loadable_extension
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 46%] Built target json_loadable_extension
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 46%] Built target duckdb_parquet_decoders
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 46%] Built target duckdb_parquet_readers
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 46%] Built target duckdb_parquet_reader_variant
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 47%] Built target duckdb_parquet_writers
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 47%] Built target duckdb_parquet_writer_variant
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 54%] Built target parquet_loadable_extension
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 57%] Built target duckomo_om
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 61%] Built target duckomo_loadable_extension
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 61%] Built target duckdb_core_functions_algebraic
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 61%] Built target duckdb_core_functions_distributive
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 61%] Built target duckdb_core_functions_holistic
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 62%] Built target duckdb_core_functions_nested
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 62%] Built target duckdb_core_functions_regression
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 62%] Built target duckdb_core_functions_array
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 62%] Built target duckdb_core_functions_bit
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 62%] Built target duckdb_core_functions_blob
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_core_functions_date
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_core_functions_debug
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_core_functions_enum
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_core_functions_generic
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_core_functions_list
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_core_functions_map
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_core_functions_math
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_core_functions_operators
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_core_functions_random
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_core_functions_string
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_core_functions_struct
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_core_functions_union
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target core_functions_loadable_extension
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target loadable_extension_demo_loadable_extension
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] repository
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_local_extension_repo
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 67%] Built target json_extension
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 67%] Built target duckdb_json_functions
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 75%] Built target parquet_extension
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 78%] Built target duckomo_extension
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 78%] Built target duckomo_fixture_tool
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 78%] Built target duckomo_validation
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 79%] Built target duckomo_spatial_validation
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 79%] Built target duckomo_dimensions_validation
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 79%] Built target duckomo_remote_validation
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 79%] Built target duckomo_grid_validation
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 79%] Built target duckomo_region_validation
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 79%] Built target batch_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 79%] Built target raw_reader_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 79%] Built target reader_capacity_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 80%] Built target lifecycle_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 80%] Built target core_functions_extension
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 81%] Built target schema_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 81%] Built target time_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 81%] Built target projection_evidence_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 82%] Built target regular_grid_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 84%] Built target spatial_layout_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 84%] Built target spatial_metrics_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 84%] Built target spatial_callback_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 85%] Built target spatial_selection_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 86%] Built target grid_selection_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 86%] Built target axis_selection_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 86%] Built target parallel_scan_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 86%] Built target semantic_axes_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 86%] Built target scan_metrics_v3_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 86%] Built target scan_metrics_v4_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 86%] Built target session_metrics_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 87%] Built target spatial_io_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 87%] Built target grid_zero_io_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 87%] Built target spatial_lifecycle_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 88%] Built target domain_reference_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 88%] Built target remote_session_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 88%] Built target official_httpfs_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 89%] Built target projected_grid_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 89%] Built target gaussian_grid_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 90%] Built target grid_identity_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 90%] Built target source_identity_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 92%] Built target grid_version_compat_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 92%] Built target region_input_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 93%] Built target region_geometry_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 93%] Built target region_scan_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 94%] Built target nearest_sampling_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 95%] Built target region_sampling_test
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 95%] Built target duckdb_generated_extension_loader
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 95%] Built target duckdb
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 95%] Built target plan_serializer
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 96%] Built target duckdb_linenoise
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 97%] Built target shell
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 97%] Built target test_sqlite
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 98%] Built target test_helpers
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[100%] Built target unittest
+gmake[2]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[1]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+test -n "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/spatial.duckdb_extension" || { echo 'Set DUCKOMO_SPATIAL_EXTENSION to the verified matching runtime package' >&2; exit 2; }
+spatial="$(realpath "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/spatial.duckdb_extension")"; \
+spatial_sha="$(sha256sum "$spatial" | awk '{print $1}')"; \
+cmake -S "/home/blizhan/repo/github/duckomo/duckdb/" -B "/home/blizhan/repo/github/duckomo/build/release" \
+	-DDUCKOMO_REGION_SANITIZER_SPATIAL_PATH="$spatial" \
+	-DDUCKOMO_REGION_SANITIZER_SPATIAL_SHA256="$spatial_sha"
+-- GIT_COMMIT_HASH has length 8 different than the expected 10
+-- git hash 08e34c44, version v1.5.4, extension folder v1.5.4
+-- Build workers: compile= link_release=4 link_non_release=2
+-- Extensions will be deployed to: /home/blizhan/repo/github/duckomo/build/release/repository
+-- Load extension 'json' from '/home/blizhan/repo/github/duckomo/duckdb/extensions' @ v1.5.4
+-- Load extension 'parquet' from '/home/blizhan/repo/github/duckomo/duckdb/extensions' @ v1.5.4
+-- Load extension 'duckomo' from '/home/blizhan/repo/github/duckomo' @ d2a134d
+-- Load extension 'core_functions' from '/home/blizhan/repo/github/duckomo/duckdb/extensions' @ v1.5.4
+-- Extensions linked into DuckDB: [json, parquet, duckomo, core_functions]
+-- Tests loaded for extensions: [duckomo]
+-- Configuring done (1.5s)
+-- Generating done (0.2s)
+-- Build files have been written to: /home/blizhan/repo/github/duckomo/build/release
+cmake --build "/home/blizhan/repo/github/duckomo/build/release" --target duckomo_sampling_validation_bundle region_sampling_test_sanitizer duckomo_sanitizer_loadable_extension --parallel
+gmake[1]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[2]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[  0%] Built target duckdb_optimizer_pullup
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[  0%] Built target duckdb_optimizer_join_order
+[  0%] Built target duckdb_optimizer_matcher
+[  0%] Built target duckdb_bind_expression
+[  2%] Built target duckdb_optimizer_pushdown
+[  2%] Built target duckdb_optimizer
+[  2%] Built target duckdb_optimizer_compressed_materialization
+[  2%] Built target duckdb_planner
+[  2%] Built target duckdb_optimizer_statistics_op
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[  2%] Built target duckdb_bind_query_node
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[  2%] Built target duckdb_optimizer_rules
+[  2%] Built target duckdb_optimizer_statistics_expr
+[  4%] Built target duckdb_bind_statement
+[  6%] Built target duckdb_planner_expression
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 12%] Built target duckdb_zstd
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 12%] Built target duckdb_planner_operator
+[ 12%] Built target duckdb_bind_tableref
+[ 12%] Built target duckdb_planner_subquery
+[ 12%] Built target duckdb_expression_binders
+[ 14%] Built target duckdb_planner_filter
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 14%] Built target duckdb_constraints
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 14%] Built target duckdb_parsed_data
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 14%] Built target duckdb_aggr_distr
+[ 14%] Built target duckdb_query_node
+[ 14%] Built target duckdb_union_cast
+[ 14%] Built target duckdb_expression
+[ 14%] Built target duckdb_parser
+[ 14%] Built target duckdb_transformer_helpers
+[ 17%] Built target duckdb_transformer_constraint
+[ 19%] Built target duckdb_transformer_expression
+[ 19%] Built target duckdb_statement
+[ 19%] Built target duckdb_parser_tableref
+[ 19%] Built target duckdb_transformer_tableref
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_transformer_statement
+[ 19%] Built target duckdb_func_cast
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_variant_cast
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_func_aggr
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 19%] Built target duckdb_function
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 34%] Built target duckdb_jemalloc
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 34%] Built target duckdb_func_pragma
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 34%] Built target duckdb_func_string_main
+[ 34%] Built target duckdb_func_compressed_materialization
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 36%] Built target duckdb_func_string_regexp
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 38%] Built target duckdb_func_date
+[ 38%] Built target duckdb_function_map
+[ 38%] Built target duckdb_func_ops_main
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 38%] Built target duckdb_func_scalar
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 38%] Built target duckdb_func_generic_main
+[ 38%] Built target duckdb_func_struct_main
+[ 38%] Built target duckdb_func_seq
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 38%] Built target duckdb_func_system
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 38%] Built target duckdb_func_list_nested
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 38%] Built target duckdb_func_geometry
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 38%] Built target duckdb_func_table
+[ 38%] Built target duckdb_func_window
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 38%] Built target duckdb_func_variant_main
+[ 38%] Built target duckdb_func_table_version
+[ 40%] Built target duckdb_function_variant
+[ 40%] Built target duckdb_arrow_conversion
+[ 40%] Built target duckdb_common_allocator
+[ 40%] Built target duckdb_table_func_system
+[ 40%] Built target duckdb_catalog_entries
+[ 40%] Built target duckdb_catalog_default_entries
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 40%] Built target duckdb_catalog_entries_dependency
+[ 40%] Built target duckdb_common_arrow
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 42%] Built target duckdb_adbc_nanoarrow
+[ 42%] Built target duckdb_common_crypto
+[ 42%] Built target duckdb_common_arrow_appender
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 42%] Built target duckdb_adbc
+[ 42%] Built target duckdb_common
+[ 42%] Built target duckdb_catalog
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 42%] Built target duckdb_common_enums
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 42%] Built target duckdb_row_operations
+[ 42%] Built target duckdb_common_multi_file
+[ 42%] Built target duckdb_common_exception
+[ 42%] Built target duckdb_common_operators
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 44%] Built target duckdb_common_types
+[ 42%] Built target duckdb_progress_bar
+[ 44%] Built target duckdb_sort
+[ 46%] Built target duckdb_value_operations
+[ 46%] Built target duckdb_common_types_row
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 46%] Built target duckdb_common_tree_renderer
+[ 46%] Built target duckdb_common_types_column
+[ 46%] Built target duckdb_common_variant
+[ 46%] Built target duckdb_common_serializer
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 46%] Built target duckdb_nested_loop_join
+[ 46%] Built target duckdb_logging
+[ 46%] Built target duckdb_expression_executor
+[ 46%] Built target duckdb_execution
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 46%] Built target duckdb_operator_aggregate
+[ 48%] Built target duckdb_vector_operations
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 48%] Built target duckdb_csv_buffer_manager
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 51%] Built target duckdb_csv_scanner
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 51%] Built target duckdb_csv_util
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 51%] Built target duckdb_operator_filter
+[ 51%] Built target duckdb_operator_helper
+[ 51%] Built target duckdb_csv_state_machine
+[ 51%] Built target duckdb_operator_set
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 51%] Built target duckdb_operator_join
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 51%] Built target duckdb_operator_csv_table_function
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 51%] Built target duckdb_csv_sniffer
+[ 51%] Built target duckdb_operator_scan
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 51%] Built target duckdb_operator_order
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 51%] Built target duckdb_csv_encode
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 51%] Built target duckdb_operator_schema
+[ 51%] Built target duckdb_operator_persistent
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 53%] Built target duckdb_operator_projection
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 53%] Built target duckdb_sample
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 53%] Built target duckdb_execution_index_art
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 53%] Built target duckdb_main_capi
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 53%] Built target duckdb_execution_index
+[ 53%] Built target duckdb_main
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 53%] Built target duckdb_main_capi_cast
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 53%] Built target duckdb_common_http
+[ 53%] Built target duckdb_main_secret
+[ 53%] Built target duckdb_main_settings
+[ 55%] Built target duckdb_main_relation
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 55%] Built target duckdb_physical_plan
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 55%] Built target duckdb_main_chunk_scan_state
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 57%] Built target duckdb_main_buffered_data
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 57%] Built target duckdb_main_extension
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 57%] Built target duckdb_parallel
+[ 57%] Built target duckdb_storage_checkpoint
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 57%] Built target duckdb_storage_buffer
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 57%] Built target duckdb_storage_compression_chimp
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 57%] Built target duckdb_storage
+[ 57%] Built target duckdb_storage_compression_alp
+[ 59%] Built target duckdb_storage_compression_dictionary
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 59%] Built target duckdb_storage_compression_roaring
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 59%] Built target duckdb_storage_compression
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 59%] Built target duckdb_storage_serialization
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 59%] Built target duckdb_storage_table_variant
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 59%] Built target duckdb_storage_compression_dict_fsst
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 59%] Built target duckdb_storage_metadata
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 59%] Built target duckdb_storage_table
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 61%] Built target duckdb_fastpforlib
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 61%] Built target duckdb_transaction
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 61%] Built target duckdb_storage_statistics
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 61%] Built target duckdb_fmt
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 61%] Built target duckdb_fsst
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 61%] Built target duckdb_yyjson
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_miniz
+[ 63%] Built target duckdb_hyperloglog
+[ 63%] Built target duckdb_skiplistlib
+[ 65%] Built target duckdb_pg_query
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 65%] Built target duckdb_core_functions_algebraic
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 72%] Built target duckomo_om
+[ 68%] Built target duckdb_utf8proc
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 72%] Built target duckdb_core_functions_distributive
+[ 76%] Built target duckdb_mbedtls
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 78%] Built target duckdb_verification
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 85%] Built target duckdb_re2
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 87%] Built target duckdb_core_functions_nested
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 87%] Built target duckdb_core_functions_holistic
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 89%] Built target duckdb_core_functions_array
+[ 89%] Built target duckdb_core_functions_date
+[ 89%] Built target duckdb_core_functions_enum
+[ 89%] Built target duckdb_core_functions_bit
+[ 89%] Built target duckdb_core_functions_generic
+[ 89%] Built target duckdb_core_functions_regression
+[ 89%] Built target duckdb_core_functions_operators
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 89%] Built target duckdb_core_functions_debug
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 89%] Built target duckdb_core_functions_random
+[ 89%] Built target duckdb_core_functions_map
+[ 89%] Built target duckomo_sampling_reference_tools
+[ 89%] Built target duckdb_core_functions_math
+[ 89%] Built target duckdb_core_functions_struct
+[ 89%] Built target duckdb_core_functions_blob
+[ 89%] Built target duckdb_core_functions_list
+[ 89%] Built target duckomo_fixture_tool
+[ 89%] Built target duckdb_core_functions_string
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 89%] Built target duckdb_core_functions_union
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 89%] Built target duckdb_static
+[ 91%] Built target nearest_sampling_test
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 91%] Built target core_functions_extension
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 97%] Built target duckomo_extension
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[100%] Built target region_sampling_test
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[100%] Built target duckomo_sampling_validation_bundle
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[2]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[2]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[  0%] Built target duckdb_optimizer_compressed_materialization
+[  0%] Built target duckdb_optimizer_join_order
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[  0%] Built target duckdb_optimizer_pullup
+[  8%] Built target duckdb_zstd
+[  8%] Built target duckdb_optimizer_matcher
+[ 10%] Built target duckdb_bind_statement
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 10%] Built target duckdb_optimizer_statistics_expr
+[ 13%] Built target duckdb_optimizer_pushdown
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 13%] Built target duckdb_expression_binders
+[ 13%] Built target duckdb_bind_query_node
+[ 13%] Built target duckdb_optimizer_statistics_op
+[ 13%] Built target duckdb_bind_tableref
+[ 13%] Built target duckdb_bind_expression
+[ 13%] Built target duckdb_planner
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 13%] Built target duckdb_optimizer
+[ 13%] Built target duckdb_optimizer_rules
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 13%] Built target duckdb_planner_expression
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 15%] Built target duckdb_planner_filter
+[ 15%] Built target duckdb_planner_subquery
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 15%] Built target duckdb_parser
+[ 15%] Built target duckdb_constraints
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 30%] Built target duckdb_jemalloc
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 30%] Built target duckdb_planner_operator
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 30%] Built target duckdb_parsed_data
+[ 30%] Built target duckdb_query_node
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 32%] Built target duckdb_transformer_constraint
+[ 32%] Built target duckdb_parser_tableref
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 34%] Built target duckdb_statement
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 34%] Built target duckdb_expression
+[ 34%] Built target duckdb_transformer_helpers
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 34%] Built target duckdb_transformer_statement
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 34%] Built target duckdb_transformer_tableref
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 34%] Built target duckdb_transformer_expression
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 34%] Built target duckdb_function
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 34%] Built target duckdb_func_aggr
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 34%] Built target duckdb_union_cast
+[ 34%] Built target duckdb_variant_cast
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 34%] Built target duckdb_aggr_distr
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 34%] Built target duckdb_func_pragma
+[ 34%] Built target duckdb_func_compressed_materialization
+[ 34%] Built target duckdb_func_cast
+[ 34%] Built target duckdb_function_map
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 34%] Built target duckdb_func_list_nested
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 36%] Built target duckdb_func_date
+[ 36%] Built target duckdb_func_generic_main
+[ 36%] Built target duckdb_func_seq
+[ 36%] Built target duckdb_func_string_main
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 36%] Built target duckdb_func_scalar
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 39%] Built target duckdb_func_string_regexp
+[ 39%] Built target duckdb_func_ops_main
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 39%] Built target duckdb_func_struct_main
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 39%] Built target duckdb_func_system
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 39%] Built target duckdb_func_variant_main
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 39%] Built target duckdb_table_func_system
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 39%] Built target duckdb_func_geometry
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 39%] Built target duckdb_func_window
+[ 41%] Built target duckdb_function_variant
+[ 41%] Built target duckdb_func_table_version
+[ 41%] Built target duckdb_arrow_conversion
+[ 41%] Built target duckdb_common_allocator
+[ 41%] Built target duckdb_catalog
+[ 41%] Built target duckdb_func_table
+[ 41%] Built target duckdb_catalog_entries
+[ 41%] Built target duckdb_common_crypto
+[ 41%] Built target duckdb_catalog_entries_dependency
+[ 41%] Built target duckdb_catalog_default_entries
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 41%] Built target duckdb_common_arrow
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 41%] Built target duckdb_adbc
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 43%] Built target duckdb_common_exception
+[ 43%] Built target duckdb_adbc_nanoarrow
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 43%] Built target duckdb_common
+[ 43%] Built target duckdb_common_arrow_appender
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 43%] Built target duckdb_common_enums
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 43%] Built target duckdb_common_multi_file
+[ 43%] Built target duckdb_common_tree_renderer
+[ 43%] Built target duckdb_common_types_row
+[ 43%] Built target duckdb_progress_bar
+[ 43%] Built target duckdb_common_operators
+[ 47%] Built target duckdb_common_types
+[ 47%] Built target duckdb_value_operations
+[ 47%] Built target duckdb_row_operations
+[ 47%] Built target duckdb_common_types_column
+[ 47%] Built target duckdb_sort
+[ 47%] Built target duckdb_common_serializer
+[ 47%] Built target duckdb_common_variant
+[ 47%] Built target duckdb_operator_aggregate
+[ 47%] Built target duckdb_expression_executor
+[ 50%] Built target duckdb_logging
+[ 50%] Built target duckdb_vector_operations
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 50%] Built target duckdb_execution
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 50%] Built target duckdb_nested_loop_join
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 52%] Built target duckdb_csv_scanner
+[ 52%] Built target duckdb_csv_buffer_manager
+[ 52%] Built target duckdb_csv_encode
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 52%] Built target duckdb_csv_sniffer
+[ 52%] Built target duckdb_operator_persistent
+[ 52%] Built target duckdb_csv_state_machine
+[ 52%] Built target duckdb_operator_join
+[ 52%] Built target duckdb_operator_csv_table_function
+[ 52%] Built target duckdb_csv_util
+[ 52%] Built target duckdb_operator_schema
+[ 54%] Built target duckdb_operator_projection
+[ 54%] Built target duckdb_operator_filter
+[ 54%] Built target duckdb_operator_set
+[ 54%] Built target duckdb_execution_index
+[ 54%] Built target duckdb_operator_order
+[ 54%] Built target duckdb_main
+[ 54%] Built target duckdb_main_capi_cast
+[ 54%] Built target duckdb_physical_plan
+[ 54%] Built target duckdb_sample
+[ 54%] Built target duckdb_execution_index_art
+[ 54%] Built target duckdb_operator_scan
+[ 54%] Built target duckdb_common_http
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 56%] Built target duckdb_main_relation
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 56%] Built target duckdb_main_extension
+[ 56%] Built target duckdb_operator_helper
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 56%] Built target duckdb_main_capi
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 58%] Built target duckdb_main_buffered_data
+[ 58%] Built target duckdb_main_settings
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 58%] Built target duckdb_storage_checkpoint
+[ 58%] Built target duckdb_storage_compression_chimp
+[ 58%] Built target duckdb_storage_buffer
+[ 58%] Built target duckdb_main_secret
+[ 58%] Built target duckdb_storage
+[ 58%] Built target duckdb_storage_compression
+[ 58%] Built target duckdb_main_chunk_scan_state
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 58%] Built target duckdb_storage_compression_dict_fsst
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 58%] Built target duckdb_storage_compression_roaring
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 58%] Built target duckdb_storage_statistics
+[ 58%] Built target duckdb_storage_compression_alp
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 58%] Built target duckdb_parallel
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 58%] Built target duckdb_storage_table
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 60%] Built target duckdb_storage_compression_dictionary
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 60%] Built target duckdb_storage_serialization
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 60%] Built target duckdb_storage_metadata
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 60%] Built target duckdb_storage_table_variant
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 65%] Built target duckdb_pg_query
+[ 63%] Built target duckdb_fastpforlib
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 65%] Built target duckdb_transaction
+[ 65%] Built target duckdb_fmt
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 67%] Built target duckdb_utf8proc
+[ 67%] Built target duckdb_miniz
+[ 67%] Built target duckdb_fsst
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 67%] Built target duckdb_core_functions_distributive
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 69%] Built target duckdb_verification
+[ 69%] Built target duckdb_skiplistlib
+[ 69%] Built target duckdb_core_functions_algebraic
+[ 76%] Built target duckomo_om
+[ 76%] Built target duckdb_yyjson
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 76%] Built target duckdb_hyperloglog
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 80%] Built target duckdb_core_functions_holistic
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 86%] Built target duckdb_mbedtls
+[ 89%] Built target duckdb_core_functions_nested
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 84%] Built target duckdb_re2
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 89%] Built target duckdb_core_functions_array
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 89%] Built target duckdb_core_functions_regression
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 89%] Built target duckdb_core_functions_blob
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 89%] Built target duckdb_core_functions_debug
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 89%] Built target duckdb_core_functions_bit
+[ 91%] Built target duckdb_core_functions_date
+[ 91%] Built target duckdb_core_functions_math
+[ 91%] Built target duckdb_core_functions_map
+[ 91%] Built target duckdb_core_functions_enum
+[ 91%] Built target duckdb_core_functions_list
+[ 91%] Built target duckdb_static
+[ 91%] Built target duckdb_core_functions_union
+[ 91%] Built target duckdb_core_functions_operators
+[ 91%] Built target duckdb_core_functions_random
+[ 91%] Built target duckdb_core_functions_generic
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 91%] Built target duckdb_core_functions_string
+[ 91%] Built target duckdb_core_functions_struct
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 91%] Built target core_functions_extension
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[100%] Built target duckomo_extension_sanitized
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[100%] Built target region_sampling_test_sanitizer
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[2]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[2]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[3]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[  9%] Built target duckdb_zstd
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[  9%] Built target duckdb_platform_binary
+[  9%] Built target duckdb_optimizer_join_order
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[  9%] Built target dummy_static_extension_loader
+[  9%] Built target duckdb_optimizer_rules
+[ 15%] Built target duckomo_om
+[ 15%] Built target duckdb_planner_expression
+[ 15%] Built target duckdb_optimizer_pullup
+[ 15%] Built target duckdb_optimizer_compressed_materialization
+[ 15%] Built target duckdb_optimizer_statistics_expr
+[ 15%] Built target duckdb_optimizer_matcher
+[ 18%] Built target duckdb_optimizer_pushdown
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 18%] Built target duckdb_bind_expression
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 18%] Built target duckdb_expression_binders
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 20%] Built target duckdb_planner_filter
+[ 20%] Built target duckdb_optimizer_statistics_op
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 22%] Built target duckdb_bind_statement
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 20%] Built target duckdb_optimizer
+[ 22%] Built target duckdb_bind_tableref
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 22%] Built target duckdb_planner
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 22%] Built target duckdb_bind_query_node
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 22%] Built target duckdb_constraints
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 22%] Built target duckdb_planner_operator
+[ 22%] Built target duckdb_parser
+[ 22%] Built target duckdb_expression
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 22%] Built target duckdb_parsed_data
+[ 38%] Built target duckdb_jemalloc
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 38%] Built target duckdb_planner_subquery
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 40%] Built target duckdb_statement
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 40%] Built target duckdb_query_node
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 40%] Built target duckdb_parser_tableref
+[ 40%] Built target duckdb_transformer_statement
+[ 40%] Built target duckdb_transformer_expression
+[ 43%] Built target duckdb_transformer_constraint
+[ 43%] Built target duckdb_transformer_helpers
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 43%] Built target duckdb_func_cast
+[ 43%] Built target duckdb_aggr_distr
+[ 43%] Built target duckdb_transformer_tableref
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 43%] Built target duckdb_func_aggr
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 43%] Built target duckdb_union_cast
+[ 43%] Built target duckdb_function
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 43%] Built target duckdb_func_scalar
+[ 43%] Built target duckdb_variant_cast
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 43%] Built target duckdb_func_pragma
+[ 43%] Built target duckdb_func_generic_main
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 43%] Built target duckdb_function_map
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 45%] Built target duckdb_func_date
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 45%] Built target duckdb_func_compressed_materialization
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 45%] Built target duckdb_func_ops_main
+[ 45%] Built target duckdb_func_list_nested
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 47%] Built target duckdb_func_string_regexp
+[ 47%] Built target duckdb_func_seq
+[ 47%] Built target duckdb_func_string_main
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 47%] Built target duckdb_func_system
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 47%] Built target duckdb_func_struct_main
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 47%] Built target duckdb_func_geometry
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 47%] Built target duckdb_func_table
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 47%] Built target duckdb_func_variant_main
+[ 47%] Built target duckdb_arrow_conversion
+[ 50%] Built target duckdb_function_variant
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 50%] Built target duckdb_catalog
+[ 50%] Built target duckdb_adbc_nanoarrow
+[ 50%] Built target duckdb_common_arrow
+[ 50%] Built target duckdb_catalog_default_entries
+[ 50%] Built target duckdb_catalog_entries_dependency
+[ 50%] Built target duckdb_table_func_system
+[ 50%] Built target duckdb_func_window
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 50%] Built target duckdb_common
+[ 50%] Built target duckdb_func_table_version
+[ 50%] Built target duckdb_adbc
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 52%] Built target duckdb_common_arrow_appender
+[ 52%] Built target duckdb_common_allocator
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 52%] Built target duckdb_common_enums
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 52%] Built target duckdb_common_exception
+[ 52%] Built target duckdb_common_crypto
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 52%] Built target duckdb_catalog_entries
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 52%] Built target duckdb_common_multi_file
+[ 52%] Built target duckdb_progress_bar
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 54%] Built target duckdb_value_operations
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 54%] Built target duckdb_common_tree_renderer
+[ 54%] Built target duckdb_common_variant
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 54%] Built target duckdb_common_operators
+[ 54%] Built target duckdb_row_operations
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 54%] Built target duckdb_sort
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 54%] Built target duckdb_common_serializer
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 56%] Built target duckdb_common_types
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 56%] Built target duckdb_nested_loop_join
+[ 56%] Built target duckdb_execution
+[ 56%] Built target duckdb_csv_encode
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 56%] Built target duckdb_common_types_column
+[ 56%] Built target duckdb_csv_buffer_manager
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 56%] Built target duckdb_expression_executor
+[ 56%] Built target duckdb_operator_aggregate
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 56%] Built target duckdb_common_types_row
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 59%] Built target duckdb_vector_operations
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 59%] Built target duckdb_logging
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 59%] Built target duckdb_operator_helper
+[ 63%] Built target duckdb_operator_projection
+[ 63%] Built target duckdb_csv_scanner
+[ 63%] Built target duckdb_csv_state_machine
+[ 63%] Built target duckdb_operator_filter
+[ 63%] Built target duckdb_operator_join
+[ 63%] Built target duckdb_operator_order
+[ 63%] Built target duckdb_operator_csv_table_function
+[ 63%] Built target duckdb_csv_sniffer
+[ 63%] Built target duckdb_csv_util
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_physical_plan
+[ 63%] Built target duckdb_execution_index
+[ 63%] Built target duckdb_sample
+[ 63%] Built target duckdb_operator_set
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_operator_persistent
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_main
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_operator_scan
+[ 63%] Built target duckdb_operator_schema
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_main_capi
+[ 63%] Built target duckdb_execution_index_art
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 65%] Built target duckdb_main_relation
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 63%] Built target duckdb_main_secret
+[ 65%] Built target duckdb_common_http
+[ 65%] Built target duckdb_main_settings
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 68%] Built target duckdb_main_buffered_data
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 68%] Built target duckdb_main_chunk_scan_state
+[ 68%] Built target duckdb_parallel
+[ 68%] Built target duckdb_main_capi_cast
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 68%] Built target duckdb_main_extension
+[ 68%] Built target duckdb_storage_checkpoint
+[ 68%] Built target duckdb_storage_compression_alp
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 68%] Built target duckdb_storage
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 68%] Built target duckdb_storage_buffer
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 68%] Built target duckdb_storage_compression
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 68%] Built target duckdb_storage_compression_chimp
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 68%] Built target duckdb_storage_compression_dict_fsst
+[ 70%] Built target duckdb_storage_compression_dictionary
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 70%] Built target duckdb_storage_compression_roaring
+[ 70%] Built target duckdb_storage_serialization
+[ 70%] Built target duckdb_storage_table
+[ 72%] Built target duckdb_fastpforlib
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 72%] Built target duckdb_fsst
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 72%] Built target duckdb_storage_table_variant
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 72%] Built target duckdb_storage_statistics
+[ 72%] Built target duckdb_storage_metadata
+[ 72%] Built target duckdb_hyperloglog
+[ 72%] Built target duckdb_fmt
+[ 75%] Built target duckdb_pg_query
+[ 75%] Built target duckdb_transaction
+[ 77%] Built target duckdb_miniz
+[ 77%] Built target duckdb_skiplistlib
+[ 79%] Built target duckdb_verification
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 84%] Built target duckdb_mbedtls
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 90%] Built target duckdb_re2
+[ 90%] Built target duckdb_platform
+[ 90%] Built target duckdb_utf8proc
+[ 90%] Built target duckdb_yyjson
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[ 90%] Built target duckdb_static
+gmake[4]: 进入目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[4]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+[100%] Built target duckomo_sanitizer_loadable_extension
+gmake[3]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[2]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+gmake[1]: 离开目录“/home/blizhan/repo/github/duckomo/build/release”
+DUCKOMO_OFFICIAL_DUCKDB="/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/duckdb" \
+	"/home/blizhan/repo/github/duckomo/scripts/validate.sh" "/home/blizhan/repo/github/duckomo/build/release" --local-only --sampling --spatial "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/spatial.duckdb_extension"
+generated small-separate.om variable=/small-separate/temperature shape=[2,3,2,5,5] chunks=[1,1,1,5,5] rows=300 oracle=passed csv_sha256=07693c926d2365a0d33edf2dc03472fd3aa67b48e5624faf15beda3b67a479d3
+generated small-separate.om variable=/small-separate/humidity shape=[2,3,2,5,5] chunks=[1,1,1,5,5] rows=300 oracle=passed csv_sha256=9b3ca031d4f7e1e63336d724ce276aa2eeecff718dd08f7765572e6449f91aca
+generated small-separate.om variables=2 oracle=passed sha256=33c3ae3c4c71c38be172bed72d3fbdc5f9d8a87ab51bcec533f2e26bbf0c400e
+generated small-interleaved.om variable=/small-interleaved/temperature shape=[2,5,3,2,5] chunks=[1,5,1,1,5] rows=300 oracle=passed csv_sha256=7af9bab47fc6e7cfd9486ffa20bd3bdd751c9bbe1fa799a87e991dfc4da29b70
+generated small-interleaved.om variable=/small-interleaved/humidity shape=[2,5,3,2,5] chunks=[1,5,1,1,5] rows=300 oracle=passed csv_sha256=e210f385efacf2c22cf6cbf15b42a22ea8e8d361e2c9f041e6a85d2a1b4430e5
+generated small-interleaved.om variables=2 oracle=passed sha256=d01aec878f762af2588e068d899063ec27a043cc72823e14b4f1158593f32e3d
+generated small-spatial-first.om variable=/small-spatial-first/temperature shape=[5,5,2,3,2] chunks=[5,5,1,1,1] rows=300 oracle=passed csv_sha256=d7325095d02b3884b85edfdcba7703dc886ae37b49147b1ca079ae688e74017e
+generated small-spatial-first.om variable=/small-spatial-first/humidity shape=[5,5,2,3,2] chunks=[5,5,1,1,1] rows=300 oracle=passed csv_sha256=74e11ab03a05bcf86e1dc1de63e551dc6b3a5b95a62a774b253e4e272b4305d3
+generated small-spatial-first.om variables=2 oracle=passed sha256=78b984a076b7bd42a93c5992b46ca8455fc71c3c69573012cb27ee1f13c5cc45
+generated small-unmapped.om variable=/small-unmapped/temperature shape=[2,5,2,5,3] chunks=[1,5,1,5,1] rows=300 oracle=passed csv_sha256=ac13ecf455820b9cd8ff102f359b15b74d7fb80ec29cc7655535f1315ac777d0
+generated small-unmapped.om variable=/small-unmapped/humidity shape=[2,5,2,5,3] chunks=[1,5,1,5,1] rows=300 oracle=passed csv_sha256=3a23c3d34216998bfd52435655756d9329466857e624a8f7e401365190e94847
+generated small-unmapped.om variables=2 oracle=passed sha256=18b09da64ed814706e5ec8fa532e085815670248ae70924d0edd48f156f6bc05
+generated small-many-axis.om variable=/small-many-axis/temperature shape=[513,5,5] chunks=[1,5,5] rows=12825 oracle=passed csv_sha256=fbe40d7f747408c2f04653a9c0e004aecf5c2638a977a671441be0a2bf44d2b8
+generated small-many-axis.om variable=/small-many-axis/humidity shape=[513,5,5] chunks=[1,5,5] rows=12825 oracle=passed csv_sha256=956789af0e6b977dfe44da4fb2181fce923a77a0be358166f652f4ec4d8018af
+generated small-many-axis.om variables=2 oracle=passed sha256=99b2cc93a753f1b71b0615bf25a84e8f3b1b8516041ac0a105367342246071fa
+generated small-boundary-axis.om variable=/small-boundary-axis/temperature shape=[2049,5,5] chunks=[256,5,5] rows=51225 oracle=passed csv_sha256=e9de0cb227ddbb3b323616ab7bf0b6125da661b8ad6384ec2950ee12e31cea4a
+generated small-boundary-axis.om variable=/small-boundary-axis/humidity shape=[2049,5,5] chunks=[256,5,5] rows=51225 oracle=passed csv_sha256=eab48309388cb71b7c637725b667446b929736ec0ca7cad8d2f1b0e924012781
+generated small-boundary-axis.om variables=2 oracle=passed sha256=9be71e877367dece97434254eec635ec0214817dd8599cfe65ee0675c176eb18
+generated small-reverse-lat.om variable=/small-reverse-lat/temperature shape=[2,3,2,5,5] chunks=[1,1,1,5,5] rows=300 oracle=passed csv_sha256=d03e2124626c4d83909ed1df1c3b52a70d1ebf520e3cda230d4bbc0f38502c55
+generated small-reverse-lat.om variable=/small-reverse-lat/humidity shape=[2,3,2,5,5] chunks=[1,1,1,5,5] rows=300 oracle=passed csv_sha256=0e2a054f87745db7008670cdec1ced1b521f85647e70ab5ce582f7b74c8a696b
+generated small-reverse-lat.om variables=2 oracle=passed sha256=90611a9f7ef0ea73a7631bc73b6aece02038d258e21e8b1a55a4eef1f5a740e8
+generated small-reverse-lon.om variable=/small-reverse-lon/temperature shape=[2,3,2,5,5] chunks=[1,1,1,5,5] rows=300 oracle=passed csv_sha256=dc72dec61e0df4f52d94fb4ed675dc9c9a857e58fa2000364a7e5e1bcc9602b1
+generated small-reverse-lon.om variable=/small-reverse-lon/humidity shape=[2,3,2,5,5] chunks=[1,1,1,5,5] rows=300 oracle=passed csv_sha256=d27d252b9a95d524876b85297cb551ab0ede41af2d2bfec925dfe6c28f5e3196
+generated small-reverse-lon.om variables=2 oracle=passed sha256=30e2fbfe0f2f27474bfb1a0caacdd42b1769c5d738a64852ec3c868a02cc8eda
+generated small-reverse-both.om variable=/small-reverse-both/temperature shape=[2,3,2,5,5] chunks=[1,1,1,5,5] rows=300 oracle=passed csv_sha256=c47aec6376a80abdbb85c68f9904823310cb7235de8701fdaed2a6901c6fedc9
+generated small-reverse-both.om variable=/small-reverse-both/humidity shape=[2,3,2,5,5] chunks=[1,1,1,5,5] rows=300 oracle=passed csv_sha256=43eae09f7141891e1f40ecf73c45093fd6cb1d7338842c345d34056624785de5
+generated small-reverse-both.om variables=2 oracle=passed sha256=3515fe8d2abc384b9a67c675f887fae057e6c41a5062c00d253000c827871ec5
+generated small-flat-lon.om variable=/small-flat-lon/temperature shape=[2,3,2,25] chunks=[1,1,1,7] rows=300 oracle=passed csv_sha256=07693c926d2365a0d33edf2dc03472fd3aa67b48e5624faf15beda3b67a479d3
+generated small-flat-lon.om variable=/small-flat-lon/humidity shape=[2,3,2,25] chunks=[1,1,1,7] rows=300 oracle=passed csv_sha256=9b3ca031d4f7e1e63336d724ce276aa2eeecff718dd08f7765572e6449f91aca
+generated small-flat-lon.om variables=2 oracle=passed sha256=602d3e5c3658c12e77c75c9d11f00659a12cacf4f044313acd74118d1f034312
+generated small-flat-lat.om variable=/small-flat-lat/temperature shape=[2,3,2,25] chunks=[1,1,1,7] rows=300 oracle=passed csv_sha256=6ecbcae9f54ff9af25db7360a36e33d9a0b08e074dad0ebcffe5d29cb585fa1d
+generated small-flat-lat.om variable=/small-flat-lat/humidity shape=[2,3,2,25] chunks=[1,1,1,7] rows=300 oracle=passed csv_sha256=39d03d28c86c2b59496fe0cd088c930282498eaccdfda14d0ba18a809f06abd8
+generated small-flat-lat.om variables=2 oracle=passed sha256=6fac1bbcb38733c4c60f3547f0c5dbd976aea2a7a2b107de335df62d2fafc904
+generated skippable-values.om variable=/skippable-values/temperature shape=[1024,1024] chunks=[16,16] rows=1048576 oracle=passed csv_sha256=dfaada201bb69de25a80888a71394af7f88c4da4a3490a3db4ec31d18f4de7ca
+generated skippable-values.om variables=1 oracle=passed sha256=4b9c2f249da62bb4b77cfeb5e07f3a358b9390a952dba770f487422ba8befb50
+generated sampling-conflict.om variable=/sampling shape=[5,5] chunks=[2,3] rows=25 oracle=passed csv_sha256=60351e664c6730fba507d917f3172e53c38823fad2370868d66dacf45320223d
+generated sampling-conflict.om variables=1 oracle=passed sha256=2f94c18fd30893805e6979e84556af59467f7e0908a6db596be1555e453d33a8
+generated small-spatial-only.om variable=/small-spatial-only/temperature shape=[2,2] chunks=[2,2] rows=4 oracle=passed csv_sha256=bb715ab28a7af047a1f16da28b36d0424ceeea19b5f3ae97b39c5e18ac899eff
+generated small-spatial-only.om variables=1 oracle=passed sha256=be90c8c5f0f50cc5d7064e41ea72ce7191cdeab0b6c4f17cc374162f053fa2b4
+generated memory-64.om variable=/memory-64/temperature shape=[2,3,2,64,64] chunks=[1,1,1,16,16] rows=49152 oracle=passed csv_sha256=2dd2dcd656087c81814564fab0d75c31fc11bae1aa339608ff390b3782d9566a
+generated memory-64.om variable=/memory-64/humidity shape=[2,3,2,64,64] chunks=[1,1,1,16,16] rows=49152 oracle=passed csv_sha256=898b74187aa93de3c31a664bc477f80f226069eb19014117a3374379ac2b40bc
+generated memory-64.om variables=2 oracle=passed sha256=669ac368f8617655566e415a154f990a76cfa472228ca9c69c6585c37545737e
+generated memory-256.om variable=/memory-256/temperature shape=[2,3,2,256,256] chunks=[1,1,1,16,16] rows=786432 oracle=passed csv_sha256=e8aee91cef1c2572e46b01e4e05519a0b2bb4cc081e7df1dc9725bdd033e33bb
+generated memory-256.om variable=/memory-256/humidity shape=[2,3,2,256,256] chunks=[1,1,1,16,16] rows=786432 oracle=passed csv_sha256=e782ce416cc6416cfe9acc8d0d1c3773627cd38ad6f3f44929c85c1bcbe409b1
+generated memory-256.om variables=2 oracle=passed sha256=607646f4210906e93b44045c0d593d2562ecfe76c6f795d44e21986df96b1667
+generated synthetic nearest-sampling OM inputs, official-reader values, and hashes in "/home/blizhan/repo/github/duckomo/test/data/sampling"
+{"manifest": "/home/blizhan/repo/github/duckomo/test/data/sampling/manifest.json", "grids": 10, "geometries": 9, "nearest_references": 62, "self_check": "passed"}
+{"geometries": 9, "nearest_references": 62, "om_fixtures": 16, "om_manifest_sha256": "f7006f72bb33b02690deff4d9900587bae85e8ad7d622e5fea468faa85b2863e", "reference_manifest_sha256": "ddc67d82e1798ab2f608e51ab3883ece7ed195d9ec6077c4f33fb54668ff8547", "status": "pass", "variables": 29}
+Filters: test/sql/axis_filter.test
+
+[0/1] (0%): test/sql/axis_filter.test
+[1/1] (100%): test/sql/axis_filter.test
+===============================================================================
+All tests passed (12 assertions in 1 test case)
+
+Filters: test/sql/cache_metrics.test
+
+[0/1] (0%): test/sql/cache_metrics.test
+[1/1] (100%): test/sql/cache_metrics.test
+===============================================================================
+All tests passed (24 assertions in 1 test case)
+
+Filters: test/sql/grid_info.test
+
+[0/1] (0%): test/sql/grid_info.test
+[1/1] (100%): test/sql/grid_info.test
+===============================================================================
+All tests passed (103 assertions in 1 test case)
+
+Filters: test/sql/grid_selection.test
+
+[0/1] (0%): test/sql/grid_selection.test
+[1/1] (100%): test/sql/grid_selection.test
+===============================================================================
+All tests passed (39 assertions in 1 test case)
+
+Filters: test/sql/grid_version_compat.test
+
+[0/1] (0%): test/sql/grid_version_compat.test
+[1/1] (100%): test/sql/grid_version_compat.test
+===============================================================================
+All tests passed (9 assertions in 1 test case)
+
+Filters: test/sql/grid_zero_io.test
+
+[0/1] (0%): test/sql/grid_zero_io.test
+[1/1] (100%): test/sql/grid_zero_io.test
+===============================================================================
+All tests passed (17 assertions in 1 test case)
+
+Filters: test/sql/interface_usability.test
+
+[0/1] (0%): test/sql/interface_usability.test
+[1/1] (100%): test/sql/interface_usability.test
+===============================================================================
+All tests passed (25 assertions in 1 test case)
+
+Filters: test/sql/multi_grid.test
+
+[0/1] (0%): test/sql/multi_grid.test
+[1/1] (100%): test/sql/multi_grid.test
+===============================================================================
+All tests passed (155 assertions in 1 test case)
+
+Filters: test/sql/parallel_scan.test
+
+[0/1] (0%): test/sql/parallel_scan.test
+[1/1] (100%): test/sql/parallel_scan.test
+===============================================================================
+All tests passed (11 assertions in 1 test case)
+
+Filters: test/sql/projection.test
+
+[0/1] (0%): test/sql/projection.test
+[1/1] (100%): test/sql/projection.test
+===============================================================================
+All tests passed (29 assertions in 1 test case)
+
+Filters: test/sql/raw.test
+
+[0/1] (0%): test/sql/raw.test
+[1/1] (100%): test/sql/raw.test
+===============================================================================
+All tests passed (23 assertions in 1 test case)
+
+Filters: test/sql/read_om.test
+
+[0/1] (0%): test/sql/read_om.test
+[1/1] (100%): test/sql/read_om.test
+===============================================================================
+All tests passed (119 assertions in 1 test case)
+
+Filters: test/sql/regions_spatial_dependency.test
+
+[0/1] (0%): test/sql/regions_spatial_dependency.test
+[1/1] (100%): test/sql/regions_spatial_dependency.test
+===============================================================================
+All tests passed (5 assertions in 1 test case)
+
+Filters: test/sql/semantic_axes.test
+
+[0/1] (0%): test/sql/semantic_axes.test
+[1/1] (100%): test/sql/semantic_axes.test
+===============================================================================
+All tests passed (106 assertions in 1 test case)
+
+Filters: test/sql/source_identity.test
+
+[0/1] (0%): test/sql/source_identity.test
+[1/1] (100%): test/sql/source_identity.test
+===============================================================================
+All tests passed (40 assertions in 1 test case)
+
+Filters: test/sql/spatial_composition.test
+
+[0/1] (0%): test/sql/spatial_composition.test
+[1/1] (100%): test/sql/spatial_composition.test
+===============================================================================
+All tests passed (14 assertions in 1 test case)
+
+Filters: test/sql/spatial_pushdown.test
+
+[0/1] (0%): test/sql/spatial_pushdown.test
+[1/1] (100%): test/sql/spatial_pushdown.test
+===============================================================================
+All tests passed (15 assertions in 1 test case)
+
+Filters: test/sql/spatial.test
+
+[0/1] (0%): test/sql/spatial.test
+[1/1] (100%): test/sql/spatial.test
+===============================================================================
+All tests passed (205 assertions in 1 test case)
+
+Filters: /home/blizhan/repo/github/duckomo/test/sql/region_sampling.test
+
+[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/region_sampling.test
+[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/region_sampling.test
+===============================================================================
+All tests passed (176 assertions in 1 test case)
+
+Filters: /home/blizhan/repo/github/duckomo/test/sql/region_sampling_spatial_dependency.test
+
+[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/region_sampling_spatial_dependency.test
+[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/region_sampling_spatial_dependency.test
+===============================================================================
+All tests passed (5 assertions in 1 test case)
+
+nearest_sampling_test: ok
+projection_io geometry="value_totals":{"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_complete":true} count="value_totals":{"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_complete":true} map="value_totals":{"index_bytes":27,"index_requests":2,"data_bytes":1774,"data_requests":24,"decoded_chunks":24,"decode_complete":true} full="value_totals":{"index_bytes":27,"index_requests":2,"data_bytes":1774,"data_requests":24,"decoded_chunks":24,"decode_complete":true} selected="value_totals":{"index_bytes":13,"index_requests":1,"data_bytes":864,"data_requests":12,"decoded_chunks":12,"decode_complete":true} direct="value_totals":{"index_bytes":13,"index_requests":1,"data_bytes":864,"data_requests":12,"decoded_chunks":12,"decode_complete":true}
+nearest_skippable 224,1,15449547,66432
+nearest_memory 64:61865,17163,1233,12,308512,20392,3185 256:86533,17178,1290,12,4754464,346377,50952
+region_sampling_test: ok
+.............
+----------------------------------------------------------------------
+Ran 13 tests in 0.007s
+
+OK
+....................
+----------------------------------------------------------------------
+Ran 20 tests in 2.207s
+
+OK
+grid registry and canonical vectors verified: /home/blizhan/repo/github/duckomo/src/include/duckomo/generated_grid_registry.hpp
+grid registry and canonical vectors verified: /home/blizhan/repo/github/duckomo/src/include/duckomo/generated_grid_registry.hpp
+sample queries verified: /home/blizhan/repo/github/duckomo/test/data/grids/sample-queries.sql
+grid registry checks passed
+HRES O1280 domain checks passed
+...............
+----------------------------------------------------------------------
+Ran 15 tests in 0.310s
+
+OK
+.
+----------------------------------------------------------------------
+Ran 1 test in 35.507s
+
+OK
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.597s
+
+OK
+..............
+----------------------------------------------------------------------
+Ran 14 tests in 0.394s
+
+OK
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.081s
+
+OK
+...........
+----------------------------------------------------------------------
+Ran 11 tests in 0.031s
+
+OK
+v1.5.6 DuckOMO candidate: fail (/tmp/tmpboiyoa50/report.json)
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 5.398s
+
+OK
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.006s
+
+OK
+SEAS5/EC46 O320 and N160 definitions verified
+generated seasonal Gaussian fixtures in "/tmp/duckomo-seasonal-4oa9ka0i"
+ten SEAS5/EC46 domains, independent coordinates, time/member axes and wrong-grid rejection passed
+............
+----------------------------------------------------------------------
+Ran 12 tests in 0.073s
+
+OK
+{"gates": {"N0": "pass", "N1": "blocked", "N2": "blocked", "N3": "pass", "N4": "pass"}, "output": "/home/blizhan/repo/github/duckomo/build/evidence/sampling/local-v1.5.4-FIWOv3TH", "status": "blocked"}
+make: *** [Makefile:56：sampling-validation] 错误 2

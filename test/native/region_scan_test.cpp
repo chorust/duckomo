@@ -45,6 +45,14 @@ void Require(bool condition, const std::string &message) {
 	if (!condition) throw std::runtime_error(message);
 }
 
+std::filesystem::path SamplingFixture(const std::string &name) {
+#ifdef DUCKOMO_SAMPLING_FIXTURE_PATH
+	return std::filesystem::path(DUCKOMO_SAMPLING_FIXTURE_PATH) / name;
+#else
+	return std::filesystem::path("test/data/sampling") / name;
+#endif
+}
+
 std::string SqlLiteral(const std::string &value) {
 	std::string result = "'";
 	for (const auto character : value) {
@@ -469,6 +477,65 @@ void TestRegionInputsAreIncludedInQueryMemory(Connection &connection, std::uint3
 	        "retained region storage must not inflate scan working memory");
 }
 
+void TestNearestRegionScan(Connection &connection) {
+	const auto small_file = SamplingFixture("small-separate.om").string();
+	const auto spatial_first_file = SamplingFixture("small-spatial-first.om").string();
+	const auto many_axis_file = SamplingFixture("small-many-axis.om").string();
+	const std::string small =
+	    "read_om_regions(" + SqlLiteral(small_file) + ", "
+	    "regions:=[{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText('POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}], "
+	    "region_crs:='grid_lonlat', dimensions:=['member','time','level','lat','lon'], "
+	    "grid:={'nx':5,'ny':5,'lat0':-2.0,'lon0':-2.0,'dlat':1.0,'dlon':1.0,'order':'separate'}, "
+	    "spatial_axes:=['lat','lon'], axes:={"
+	    "'time':{'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},"
+	    "'member':{'axis':'member','values':[0::BIGINT,1::BIGINT]},"
+	    "'level':{'axis':'level','values':[100::BIGINT,200::BIGINT],'kind':'pressure','unit':'hPa'}}, "
+	    "method:='nearest', include_source:=true)";
+	const auto result = Query(connection,
+	                          "SELECT count(*)::UBIGINT, count(DISTINCT sampling.source_point_index)::UBIGINT, "
+	                          "min(\"small-separate/temperature\")::FLOAT, max(\"small-separate/temperature\")::FLOAT, "
+	                          "min(om_source.logical_index)::UBIGINT, max(om_source.logical_index)::UBIGINT FROM " + small);
+	Require(result->RowCount() == 1 && result->GetValue(0, 0).GetValue<std::uint64_t>() == 12 &&
+	            result->GetValue(1, 0).GetValue<std::uint64_t>() == 1 &&
+	            result->GetValue(2, 0).GetValue<float>() == 12.0F &&
+	            result->GetValue(3, 0).GetValue<float>() == 211012.0F &&
+	            result->GetValue(4, 0).GetValue<std::uint64_t>() == 12 &&
+	            result->GetValue(5, 0).GetValue<std::uint64_t>() == 287,
+	        "native nearest scan must preserve each official value and full source logical position");
+
+	const auto interleaved = Query(
+	    connection,
+	    "SELECT sampling.axis_indices, \"small-spatial-first/temperature\", om_source.logical_index FROM "
+	    "read_om_regions(" + SqlLiteral(spatial_first_file) + ", "
+	    "regions:=[{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText('POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}], "
+	    "region_crs:='grid_lonlat', dimensions:=['lat','lon','member','time','level'], "
+	    "grid:={'nx':5,'ny':5,'lat0':-2.0,'lon0':-2.0,'dlat':1.0,'dlon':1.0,'order':'separate'}, "
+	    "spatial_axes:=['lat','lon'], axes:={"
+	    "'time':{'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},"
+	    "'member':{'axis':'member','values':[0::BIGINT,1::BIGINT]},"
+	    "'level':{'axis':'level','values':[100::BIGINT,200::BIGINT],'kind':'pressure','unit':'hPa'}}, "
+	    "method:='nearest', include_source:=true) WHERE sampling.axis_indices=[1,2,1]");
+	Require(interleaved->RowCount() == 1 &&
+	            interleaved->GetValue(0, 0).ToString() == "[1, 2, 1]" &&
+	            interleaved->GetValue(1, 0).GetValue<float>() == 211012.0F &&
+	            interleaved->GetValue(2, 0).GetValue<std::uint64_t>() == 155,
+	        "native nearest scan must restore interleaved original source-axis positions");
+
+	const auto many = Query(
+	    connection,
+	    "SELECT count(*)::UBIGINT, first(sampling.axis_indices), last(sampling.axis_indices), "
+	    "sum(\"small-many-axis/temperature\")::BIGINT FROM "
+	    "read_om_regions(" + SqlLiteral(many_axis_file) + ", "
+	    "regions:=[{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText('POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}], "
+	    "region_crs:='grid_lonlat', dimensions:=['sample','lat','lon'], "
+	    "grid:={'nx':5,'ny':5,'lat0':-2.0,'lon0':-2.0,'dlat':1.0,'dlon':1.0,'order':'separate'}, "
+	    "spatial_axes:=['lat','lon'], method:='nearest')");
+	Require(many->RowCount() == 1 && many->GetValue(0, 0).GetValue<std::uint64_t>() == 513 &&
+	            many->GetValue(1, 0).ToString() == "[0]" && many->GetValue(2, 0).ToString() == "[512]" &&
+	            many->GetValue(3, 0).GetValue<std::int64_t>() == 6156,
+	        "native nearest scan must exhaust all non-spatial positions across bounded task batches");
+}
+
 void TestRegionZeroIoEmptyAndFilterPaths(Connection &connection) {
 	const auto empty_ring = Query(connection, "SELECT count(*) FROM " + SmallRegionScan(
 	    "[{'id':'EmptyRing','wkb':ST_AsWKB(ST_GeomFromText('POLYGON (EMPTY)'))}]"));
@@ -651,26 +718,52 @@ void TestRegionObjectChangeFailureAndRecovery(Connection &connection) {
 	auto run_failure = [&](const std::string &name, auto mutate) {
 		const auto path = fs::temp_directory_path() /
 		                  ("duckomo-region-" + name + "-" + std::to_string(stamp) + ".om");
-		fs::copy_file("test/data/regions/regions.om", path, fs::copy_options::overwrite_existing);
-		const std::string aggregate = name == "decoder_failure" ? "sum(value)" : "count(*)";
-		const auto scan = "SELECT " + aggregate + " FROM read_om_regions(" + SqlLiteral(path.string()) +
-		                  ", regions:=[{'id':'A','wkb':from_hex(" + SqlLiteral(wkb) + ")}], "
-		                  "region_crs:='grid_lonlat', dimensions:=['member','time','lat','lon'], "
-		                  "grid:={'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'}, "
-		                  "spatial_axes:=['lat','lon'], axes:={"
-		                  "'time':{'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},"
-		                  "'member':{'axis':'member','values':[0::BIGINT,1::BIGINT]}})";
+		const bool nearest = name.rfind("nearest_", 0) == 0;
+		const auto fixture_path = nearest ? SamplingFixture("small-separate.om") : fs::path("test/data/regions/regions.om");
+		fs::copy_file(fixture_path, path, fs::copy_options::overwrite_existing);
+		const bool decoder_failure = name.find("decoder_failure") != std::string::npos;
+		const std::string aggregate = decoder_failure ?
+		    (nearest ? "sum(\"small-separate/temperature\")" : "sum(value)") : "count(*)";
+		const auto scan = nearest
+		    ? "SELECT " + aggregate + " FROM read_om_regions(" + SqlLiteral(path.string()) +
+		          ", regions:=[{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText("
+		          "'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}], "
+		          "region_crs:='grid_lonlat', dimensions:=['member','time','level','lat','lon'], "
+		          "grid:={'nx':5,'ny':5,'lat0':-2.0,'lon0':-2.0,'dlat':1.0,'dlon':1.0,'order':'separate'}, "
+		          "spatial_axes:=['lat','lon'], axes:={"
+		          "'time':{'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},"
+		          "'member':{'axis':'member','values':[0::BIGINT,1::BIGINT]},"
+		          "'level':{'axis':'level','values':[100::BIGINT,200::BIGINT],'kind':'pressure','unit':'hPa'}}, "
+		          "method:='nearest')"
+		    : "SELECT " + aggregate + " FROM read_om_regions(" + SqlLiteral(path.string()) +
+		          ", regions:=[{'id':'A','wkb':from_hex(" + SqlLiteral(wkb) + ")}], "
+		          "region_crs:='grid_lonlat', dimensions:=['member','time','lat','lon'], "
+		          "grid:={'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'}, "
+		          "spatial_axes:=['lat','lon'], axes:={"
+		          "'time':{'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},"
+		          "'member':{'axis':'member','values':[0::BIGINT,1::BIGINT]}})";
 		Query(connection, "PREPARE region_" + name + " AS " + scan);
 		mutate(path);
 		auto failed = connection.Query("EXECUTE region_" + name);
 		Require(failed && failed->HasError(), "a prepared region scan must fail after " + name);
 		const auto failure_metrics = LastScanMetrics(connection);
 		Require(failure_metrics.find("\"status\":\"failure\"") != std::string::npos &&
-		            failure_metrics.find("\"matched_pairs_exact\":null") != std::string::npos &&
-		            failure_metrics.find("\"match_count_complete\":false") != std::string::npos &&
+		            failure_metrics.find("\"scan_complete\":false") != std::string::npos &&
+		            failure_metrics.find("\"exact_candidate_records\":null") != std::string::npos &&
 		            failure_metrics.find("\"terminal_published\":true") != std::string::npos &&
 		            failure_metrics.find("\"query_owned_released_at_terminal\":true") != std::string::npos,
-		        name + " failures must publish incomplete metrics and release scan-owned work at QueryEnd");
+		        name + " failures must publish incomplete terminal metrics and release scan-owned work at QueryEnd");
+		if (nearest && name == "nearest_decoder_failure") {
+			Require(failure_metrics.find("\"matched_pairs_exact\":null") != std::string::npos &&
+				            failure_metrics.find("\"match_count_complete\":null") != std::string::npos &&
+				            failure_metrics.find("\"result_rows_exact\":null") != std::string::npos &&
+				            failure_metrics.find("\"result_count_complete\":false") != std::string::npos,
+				        name + " failures after nearest plan publication must leave point matches inapplicable and result counts incomplete");
+		} else if (!nearest) {
+			Require(failure_metrics.find("\"matched_pairs_exact\":null") != std::string::npos &&
+				            failure_metrics.find("\"match_count_complete\":false") != std::string::npos,
+				        name + " failures must publish incomplete points-region pair counts");
+		}
 		if (name == "decoder_failure") {
 			const auto totals = ValueTotals(failure_metrics);
 			const auto marker = totals.find("\"index_requests\":");
@@ -699,6 +792,25 @@ void TestRegionObjectChangeFailureAndRecovery(Connection &connection) {
 		changed.seekp(static_cast<std::streamoff>(offset));
 		for (std::uint64_t index = 0; index < count; ++index) changed.put(static_cast<char>(0xff));
 		Require(changed.good(), "could not corrupt copied OM lookup table");
+	});
+	run_failure("nearest_object_change", [](const fs::path &path) {
+		std::ofstream changed(path, std::ios::binary | std::ios::app);
+		Require(changed.good(), "could not open copied nearest OM object for mutation");
+		changed.put('\0');
+		Require(changed.good(), "could not mutate copied nearest OM object");
+	});
+	run_failure("nearest_short_read", [](const fs::path &path) {
+		const auto file_size = fs::file_size(path);
+		Require(file_size > 0, "copied nearest OM object is empty");
+		fs::resize_file(path, file_size - 1);
+	});
+	run_failure("nearest_decoder_failure", [&](const fs::path &path) {
+		const auto [offset, count] = FirstValueLookupRange(connection, path);
+		std::fstream changed(path, std::ios::binary | std::ios::in | std::ios::out);
+		Require(changed.good(), "could not open copied nearest OM object for index corruption");
+		changed.seekp(static_cast<std::streamoff>(offset));
+		for (std::uint64_t index = 0; index < count; ++index) changed.put(static_cast<char>(0xff));
+		Require(changed.good(), "could not corrupt copied nearest OM lookup table");
 	});
 	const auto recovered = Query(connection, "SELECT count(*) FROM " + SmallRegionScan("getvariable('lifecycle_regions')"));
 	Require(recovered->GetValue(0, 0).GetValue<std::uint64_t>() == 54 &&
@@ -730,6 +842,7 @@ int main(int argc, char **argv) {
 		TestTenRegionMixedShapes(connection);
 		TestRegionOrdinalAcrossTasks(connection);
 		TestAxisOrderAndMultipleValues(connection);
+		TestNearestRegionScan(connection);
 		TestZeroValueIoAndRegionMetrics(connection);
 		TestRegionInputsAreIncludedInQueryMemory(connection);
 		TestRegionInputsAreIncludedInQueryMemory(connection, 31, 32768);

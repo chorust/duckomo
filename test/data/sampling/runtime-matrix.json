@@ -1,0 +1,193 @@
+{
+  "expected_point_wkt": "POINT (100.15 20.15)",
+  "platform": {
+    "extension_platform": "linux_arm64",
+    "target": "Linux AArch64"
+  },
+  "probe_geometry": "POLYGON((100.1 20.1,100.2 20.1,100.2 20.2,100.1 20.2,100.1 20.1))",
+  "runtimes": [
+    {
+      "duckdb_cli": {
+        "path": "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/duckdb",
+        "sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a"
+      },
+      "duckdb_probe_version": "v1.5.4",
+      "duckdb_source_sha": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+      "exact_function_signatures": {
+        "ST_Covers": {
+          "parameters": [
+            "GEOMETRY",
+            "GEOMETRY"
+          ],
+          "return_type": "BOOLEAN"
+        },
+        "ST_PointOnSurface": {
+          "parameters": [
+            "GEOMETRY"
+          ],
+          "return_type": "GEOMETRY"
+        },
+        "ST_X": {
+          "parameters": [
+            "GEOMETRY"
+          ],
+          "return_type": "DOUBLE"
+        },
+        "ST_Y": {
+          "parameters": [
+            "GEOMETRY"
+          ],
+          "return_type": "DOUBLE"
+        }
+      },
+      "extension_version": "28db190",
+      "geometry_probe": {
+        "covered": true,
+        "point": "POINT (100.15 20.15)",
+        "x": 100.15,
+        "y": 20.15
+      },
+      "platform": "linux_arm64",
+      "spatial_install_path": "",
+      "spatial_package": {
+        "path": "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.4/official/spatial.duckdb_extension",
+        "sha256": "af2547875834496f3112261631cc8d8c96ae67912edab6b4e3d5f4f7545e547a"
+      },
+      "spatial_source_sha": "28db190f7184bcf61eb01d291e0cba79849bddb6",
+      "status": "probe_pass",
+      "version": "v1.5.4"
+    },
+    {
+      "duckdb_cli": {
+        "path": "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.5/official/duckdb",
+        "sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1"
+      },
+      "duckdb_probe_version": "v1.5.5",
+      "duckdb_source_sha": "d8cdaa33fda8df955cc76ef58a280f68f4cd43fa",
+      "exact_function_signatures": {
+        "ST_Covers": {
+          "parameters": [
+            "GEOMETRY",
+            "GEOMETRY"
+          ],
+          "return_type": "BOOLEAN"
+        },
+        "ST_PointOnSurface": {
+          "parameters": [
+            "GEOMETRY"
+          ],
+          "return_type": "GEOMETRY"
+        },
+        "ST_X": {
+          "parameters": [
+            "GEOMETRY"
+          ],
+          "return_type": "DOUBLE"
+        },
+        "ST_Y": {
+          "parameters": [
+            "GEOMETRY"
+          ],
+          "return_type": "DOUBLE"
+        }
+      },
+      "extension_version": "eb1e57c",
+      "geometry_probe": {
+        "covered": true,
+        "point": "POINT (100.15 20.15)",
+        "x": 100.15,
+        "y": 20.15
+      },
+      "platform": "linux_arm64",
+      "spatial_install_path": "/home/blizhan/.duckdb/extensions/v1.5.5/linux_arm64/spatial.duckdb_extension",
+      "spatial_package": {
+        "path": "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.5/official/spatial.duckdb_extension",
+        "sha256": "b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d"
+      },
+      "spatial_source_sha": "eb1e57c9d92c0f3f76eb03eaa52c315090f328cc",
+      "status": "probe_pass",
+      "version": "v1.5.5"
+    },
+    {
+      "duckdb_cli": {
+        "path": "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.6/official/duckdb",
+        "sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48"
+      },
+      "duckdb_probe_version": "v1.5.6",
+      "duckdb_source_sha": "069cc9f9b5be802405797faecc284961b07c70ef",
+      "exact_function_signatures": {
+        "ST_Covers": {
+          "parameters": [
+            "GEOMETRY",
+            "GEOMETRY"
+          ],
+          "return_type": "BOOLEAN"
+        },
+        "ST_PointOnSurface": {
+          "parameters": [
+            "GEOMETRY"
+          ],
+          "return_type": "GEOMETRY"
+        },
+        "ST_X": {
+          "parameters": [
+            "GEOMETRY"
+          ],
+          "return_type": "DOUBLE"
+        },
+        "ST_Y": {
+          "parameters": [
+            "GEOMETRY"
+          ],
+          "return_type": "DOUBLE"
+        }
+      },
+      "extension_version": "04270fe",
+      "geometry_probe": {
+        "covered": true,
+        "point": "POINT (100.15 20.15)",
+        "x": 100.15,
+        "y": 20.15
+      },
+      "platform": "linux_arm64",
+      "spatial_install_path": "",
+      "spatial_package": {
+        "path": "/home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.6/official/spatial.duckdb_extension",
+        "sha256": "96b8d4b5d735e9ebe91da7badee4328dfbd07068ce4885d1d9b6de8c22370b14"
+      },
+      "spatial_source_sha": "04270fe7bb4eb412765cce8afde0276a9d81d3ba",
+      "status": "probe_pass",
+      "version": "v1.5.6"
+    }
+  ],
+  "schema_version": 1,
+  "scope": "006 nearest-only representative geometry adapter probe; separate from the historical 005 regions runtime matrix",
+  "signatures": {
+    "ST_Covers": {
+      "parameters": [
+        "GEOMETRY",
+        "GEOMETRY"
+      ],
+      "return_type": "BOOLEAN"
+    },
+    "ST_PointOnSurface": {
+      "parameters": [
+        "GEOMETRY"
+      ],
+      "return_type": "GEOMETRY"
+    },
+    "ST_X": {
+      "parameters": [
+        "GEOMETRY"
+      ],
+      "return_type": "DOUBLE"
+    },
+    "ST_Y": {
+      "parameters": [
+        "GEOMETRY"
+      ],
+      "return_type": "DOUBLE"
+    }
+  },
+  "status": "probe_pass"
+}

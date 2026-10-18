@@ -1,0 +1,1374 @@
+# name: test/sql/region_sampling.test
+# description: Validate nearest region sampling results, statuses, options, and layouts
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+require-env DUCKOMO_SPATIAL_EXTENSION
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+statement ok
+LOAD '${DUCKOMO_SPATIAL_EXTENSION}';
+
+# Leaf projections preserve nested field types; native and full suite checks
+# verify value read dependencies from exact scan metrics.
+query TTT
+SELECT count(*)::VARCHAR, first(typeof(sampling.status)), first(sampling.status)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':-2.0,'lon0':-2.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'nearest');
+----
+12	VARCHAR	ok
+
+query TTT
+SELECT count(*)::VARCHAR, first(typeof(sampling.source_point_index)), first(sampling.source_point_index)::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':-2.0,'lon0':-2.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'nearest');
+----
+12	UBIGINT	12
+
+statement ok
+SET VARIABLE nearest_grid = {'nx':5,'ny':5,'lat0':-2.0,'lon0':-2.0,
+                             'dlat':1.0,'dlon':1.0,'order':'separate'};
+
+statement ok
+SET VARIABLE nearest_axes = {
+    'time':{'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},
+    'member':{'axis':'member','values':[0::BIGINT,1::BIGINT]},
+    'level':{'axis':'level','values':[100::BIGINT,200::BIGINT],'kind':'pressure','unit':'hPa'}
+};
+
+statement ok
+SET VARIABLE nearest_unmapped_axes = {
+    'member':{'axis':'member','values':[10::BIGINT,20::BIGINT]}
+};
+
+statement ok
+SET VARIABLE nearest_regions = [
+    {'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText('POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))},
+    {'id':'Outside','wkb':ST_AsWKB(ST_GeomFromText('POLYGON((10 10,11 10,11 11,10 11,10 10))'))},
+    {'id':'Empty','wkb':ST_AsWKB(ST_GeomFromText('POLYGON EMPTY'))}
+];
+
+# Geometry-only leaves and COUNT preserve all rows while reading no value bytes.
+query I
+SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'), method := 'nearest');
+----
+36
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE scan_id = (SELECT max(scan_id) FROM duckomo_last_scan_metrics())
+  AND metrics LIKE '%"/small-separate/temperature":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_complete":true}%'
+  AND metrics LIKE '%"/small-separate/humidity":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_complete":true}%';
+----
+1
+
+query I
+SELECT count(sampling.status) FROM read_om_regions(
+        '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+        regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+        dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+        spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'), method := 'nearest');
+----
+36
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE scan_id = (SELECT max(scan_id) FROM duckomo_last_scan_metrics())
+  AND metrics LIKE '%"/small-separate/temperature":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_complete":true}%'
+  AND metrics LIKE '%"/small-separate/humidity":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_complete":true}%';
+----
+1
+
+# Full STRUCT/MAP status projections depend on every variable; a variable-qualified
+# MAP and a direct value projection depend only on their selected value array.
+query I
+SELECT count(sampling::VARCHAR) FROM read_om_regions(
+        '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+        regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+        dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+        spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'), method := 'nearest');
+----
+36
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE scan_id = (SELECT max(scan_id) FROM duckomo_last_scan_metrics())
+  AND metrics LIKE '%"/small-separate/temperature":{"logical_index_bytes":%'
+  AND metrics LIKE '%"/small-separate/humidity":{"logical_index_bytes":%'
+  AND metrics NOT LIKE '%"/small-separate/temperature":{"logical_index_bytes":0,"logical_index_requests":0%'
+  AND metrics NOT LIKE '%"/small-separate/humidity":{"logical_index_bytes":0,"logical_index_requests":0%';
+----
+1
+
+query I
+SELECT count(sampling.variables['small-separate/temperature'].status) FROM read_om_regions(
+        '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+        regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+        dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+        spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'), method := 'nearest',
+        variable := 'small-separate/temperature');
+----
+36
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE scan_id = (SELECT max(scan_id) FROM duckomo_last_scan_metrics())
+  AND metrics LIKE '%"/small-separate/temperature":{"logical_index_bytes":%'
+  AND metrics NOT LIKE '%"/small-separate/temperature":{"logical_index_bytes":0,"logical_index_requests":0%'
+  AND metrics NOT LIKE '%"/small-separate/humidity":%';
+----
+1
+
+query II
+SELECT count(*)::VARCHAR, count(duplicate_status)::VARCHAR FROM (
+    SELECT sampling.status, sampling.status AS duplicate_status FROM read_om_regions(
+        '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+        regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+        dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+        spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'), method := 'nearest')) q;
+----
+36	36
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE scan_id = (SELECT max(scan_id) FROM duckomo_last_scan_metrics())
+  AND metrics LIKE '%"/small-separate/temperature":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_complete":true}%'
+  AND metrics LIKE '%"/small-separate/humidity":{"logical_index_bytes":0,"logical_index_requests":0,"logical_data_bytes":0,"logical_data_requests":0,"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0,"decode_complete":true}%';
+----
+1
+
+# A valid interior Gap produces one row per non-spatial position and uses the
+# selected nearest source point. Explicit legacy grids share the bound identity
+# definition used by the locator.
+query IIIIIIIII
+SELECT count(*), count(DISTINCT sampling.source_point_index),
+       min(sampling.source_point_index), min(sampling.status), max(sampling.status),
+       min(sampling.source_lon), max(sampling.source_lon),
+       min(sampling.source_lat), max(sampling.source_lat)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest');
+----
+12	1	12	ok	ok	0.0	0.0	0.0	0.0
+
+# The independent fixture values at source point 12 and the per-variable
+# sampling map agree for the first non-spatial axis tuple.
+query TTTTTT
+SELECT region_id, "small-separate/temperature", sampling.axis_indices,
+       sampling.variables['small-separate/temperature'].status,
+       sampling.variables['small-separate/temperature'].source_count,
+       sampling.variables['small-separate/temperature'].valid_source_count
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+WHERE sampling.axis_indices = [0,0,0];
+----
+Gap	12.0	[0, 0, 0]	ok	1	1
+
+# Duplicate semantic labels remain distinct by original axis position.
+query T
+SELECT count(*)::VARCHAR || '/' || count(DISTINCT sampling.axis_indices)::VARCHAR || '/' ||
+       count(DISTINCT member)::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := {'member':{'axis':'member','values':[0::BIGINT,0::BIGINT]},
+             'time':{'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},
+             'level':{'axis':'level','values':[100::BIGINT,200::BIGINT],'kind':'pressure','unit':'hPa'}},
+    method := 'nearest');
+----
+12/12/1
+
+# A source null in one variable does not replace the nearest point or null another
+# variable whose value at the same source is valid.
+query T
+SELECT sampling.source_point_index::VARCHAR || '/' ||
+       sampling.variables['small-separate/temperature'].status || '/' ||
+       sampling.variables['small-separate/humidity'].status || '/' ||
+       sampling.variables['small-separate/temperature'].source_count::VARCHAR || '/' ||
+       sampling.variables['small-separate/humidity'].valid_source_count::VARCHAR || '/' ||
+       "small-separate/humidity"::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((1.05 0.05,1.15 0.05,1.15 0.15,1.05 0.15,1.05 0.05))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+WHERE member = 1 AND valid_time = TIMESTAMP '2026-01-01 02:00:00' AND level = 100;
+----
+13/source_null/ok/1/1/220013.0
+
+# The official-reader nonfinite fixture keeps the chosen source fixed: NaN
+# becomes source_null, while positive and negative infinity remain valid values.
+query T
+SELECT sampling.status || '/' ||
+       sampling.variables['value'].status || '/' ||
+       coalesce(sampling.source_point_index::VARCHAR, 'NULL')
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions_nonfinite.om',
+    regions := [{'id':'All','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((-0.5 -0.5,1.5 -0.5,1.5 1.5,-0.5 1.5,-0.5 -0.5))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['lat','lon'],
+    grid := {'nx':2,'ny':2,'lat0':0.0,'lon0':0.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'nearest')
+WHERE sampling.axis_indices = [];
+----
+ok/ok/2
+
+query T
+SELECT (isinf(value) AND value > 0)::VARCHAR || '/' ||
+       sampling.variables['value'].status || '/' || sampling.variables['value'].valid_source_count::VARCHAR || '/' ||
+       sampling.source_point_index::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions_nonfinite.om',
+    regions := [{'id':'PositiveInf','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.9 -0.1,1.1 -0.1,1.1 0.1,0.9 0.1,0.9 -0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['lat','lon'],
+    grid := {'nx':2,'ny':2,'lat0':0.0,'lon0':0.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'nearest');
+----
+true/ok/1/1
+
+query T
+SELECT (isinf(value) AND value < 0)::VARCHAR || '/' ||
+       sampling.variables['value'].status || '/' || sampling.variables['value'].valid_source_count::VARCHAR || '/' ||
+       sampling.source_point_index::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions_nonfinite.om',
+    regions := [{'id':'NegativeInf','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((-0.1 0.9,0.1 0.9,0.1 1.1,-0.1 1.1,-0.1 0.9))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['lat','lon'],
+    grid := {'nx':2,'ny':2,'lat0':0.0,'lon0':0.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'nearest');
+----
+true/ok/1/2
+
+# Every multi-variable value and axis position agrees with the official OM
+# reader CSV at the independently generated nearest source logical positions.
+query I
+WITH actual AS MATERIALIZED (
+    SELECT sampling.axis_indices AS axis_indices,
+           "small-separate/temperature" AS temperature,
+           "small-separate/humidity" AS humidity,
+           sampling.source_point_index AS point_index
+    FROM read_om_regions(
+        '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+        regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+            'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+        region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+        grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+        axes := getvariable('nearest_axes'), method := 'nearest')
+), expected(axis_indices, temperature, humidity, point_index) AS (
+    VALUES ([0,0,0]::UBIGINT[],12.0::FLOAT,10012.0::FLOAT,12::UBIGINT),
+           ([0,0,1]::UBIGINT[],1012.0::FLOAT,11012.0::FLOAT,12::UBIGINT),
+           ([0,1,0]::UBIGINT[],100012.0::FLOAT,110012.0::FLOAT,12::UBIGINT),
+           ([0,1,1]::UBIGINT[],101012.0::FLOAT,111012.0::FLOAT,12::UBIGINT),
+           ([0,2,0]::UBIGINT[],200012.0::FLOAT,210012.0::FLOAT,12::UBIGINT),
+           ([0,2,1]::UBIGINT[],201012.0::FLOAT,211012.0::FLOAT,12::UBIGINT),
+           ([1,0,0]::UBIGINT[],10012.0::FLOAT,20012.0::FLOAT,12::UBIGINT),
+           ([1,0,1]::UBIGINT[],11012.0::FLOAT,21012.0::FLOAT,12::UBIGINT),
+           ([1,1,0]::UBIGINT[],110012.0::FLOAT,120012.0::FLOAT,12::UBIGINT),
+           ([1,1,1]::UBIGINT[],111012.0::FLOAT,121012.0::FLOAT,12::UBIGINT),
+           ([1,2,0]::UBIGINT[],210012.0::FLOAT,220012.0::FLOAT,12::UBIGINT),
+           ([1,2,1]::UBIGINT[],211012.0::FLOAT,221012.0::FLOAT,12::UBIGINT)
+), differences AS (
+    (SELECT * FROM actual EXCEPT ALL SELECT * FROM expected)
+    UNION ALL
+    (SELECT * FROM expected EXCEPT ALL SELECT * FROM actual)
+)
+SELECT count(*) FROM differences;
+----
+0
+
+# Target coordinate and value filters stay residual after nearest selection.
+# The nearest source for this polygon lies outside the target coordinate filter.
+query I
+SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+WHERE lat BETWEEN 0.14 AND 0.16 AND lon BETWEEN 0.14 AND 0.16
+  AND "small-separate/temperature" >= 100000;
+----
+8
+
+# A target/value-filtered result equals an independent full sampling then filter.
+query I
+WITH full_sampling AS MATERIALIZED (
+    SELECT * FROM read_om_regions(
+        '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+        regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+            'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+        region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+        grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+        axes := getvariable('nearest_axes'), method := 'nearest')
+),
+expected AS (
+    SELECT * FROM full_sampling
+    WHERE lat BETWEEN 0.14 AND 0.16 AND lon BETWEEN 0.14 AND 0.16
+      AND "small-separate/temperature" >= 100000
+),
+actual AS (
+    SELECT * FROM read_om_regions(
+        '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+        regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+            'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+        region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+        grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+        axes := getvariable('nearest_axes'), method := 'nearest')
+    WHERE lat BETWEEN 0.14 AND 0.16 AND lon BETWEEN 0.14 AND 0.16
+      AND "small-separate/temperature" >= 100000
+),
+differences AS (
+    (SELECT region_id, sampling.axis_indices, "small-separate/temperature" FROM actual
+     EXCEPT ALL SELECT region_id, sampling.axis_indices, "small-separate/temperature" FROM expected)
+    UNION ALL
+    (SELECT region_id, sampling.axis_indices, "small-separate/temperature" FROM expected
+     EXCEPT ALL SELECT region_id, sampling.axis_indices, "small-separate/temperature" FROM actual)
+)
+SELECT count(*) FROM differences;
+----
+0
+
+# Two region IDs that resolve to the same source remain separate result groups.
+query TII
+SELECT region_id, count(*), count(DISTINCT sampling.source_point_index)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [
+        {'id':'SharedA','wkb':ST_AsWKB(ST_GeomFromText(
+            'POLYGON((0.9 -0.1,1.1 -0.1,1.1 0.1,0.9 0.1,0.9 -0.1))'))},
+        {'id':'SharedB','wkb':ST_AsWKB(ST_GeomFromText(
+            'POLYGON((0.9 -0.1,1.1 -0.1,1.1 0.1,0.9 0.1,0.9 -0.1))'))}
+    ], region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+GROUP BY region_id ORDER BY region_id;
+----
+SharedA	12	1
+SharedB	12	1
+
+# Target coordinates, candidate coordinates and real source positions remain
+# distinct, including when a selected source contains a NaN value.
+query TTTTTTTTTT
+SELECT "small-separate/temperature", lat, lon,
+       sampling.source_point_index, sampling.source_lon, sampling.source_lat,
+       sampling.variables['small-separate/temperature'].status,
+       sampling.variables['small-separate/temperature'].source_count,
+       sampling.variables['small-separate/temperature'].valid_source_count,
+       om_source.logical_index
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'NaN','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.9 -0.1,1.1 -0.1,1.1 0.1,0.9 0.1,0.9 -0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest', include_source := true)
+WHERE member = 1 AND valid_time = TIMESTAMP '2026-01-01 02:00:00' AND level = 100;
+----
+NULL	0.0	1.0	13	1.0	0.0	source_null	1	0	263
+
+# Sampling output names conflict with source variables; points reserves no such column.
+statement error
+SELECT region_id FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/sampling-conflict.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((99 19,105 19,105 25,99 25,99 19))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*sampling column name conflicts.*
+
+# Selecting the source variable named sampling conflicts with the appended STRUCT column.
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/sampling-conflict.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], variable := 'sampling', method := 'nearest');
+----
+<REGEX>:(?i).*sampling column name conflicts.*
+
+
+# Inherited region_id and om_source names remain reserved when nearest appends them.
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions_region_id_conflict.om',
+    regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*region_id column name conflicts.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/source-conflict.om',
+    regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+    dimensions := map(['om_source'], [['row','column']]),
+    grid := {'nx':3,'ny':2,'lat0':0.0,'lon0':0.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['row','column'], method := 'nearest', include_source := true);
+----
+<REGEX>:(?i).*om_source column name conflicts.*
+
+query I
+SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/sampling-conflict.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((99 19,105 19,105 25,99 25,99 19))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'points');
+----
+25
+
+# No new singular or general computation table function is registered, and the only
+# factory signatures keep the existing read_om/raw/grid-info parameters unchanged.
+query I
+WITH expected(function_name, parameters, parameter_types) AS (
+    VALUES
+        ('read_om_raw', ['col0']::VARCHAR[], ['VARCHAR']::VARCHAR[]),
+        ('read_om', ['col0','variable','axes','valid_times','include_source','domain','grid','spatial_axes','dimensions'],
+                    ['VARCHAR','VARCHAR','ANY','TIMESTAMP[]','BOOLEAN','VARCHAR','ANY','VARCHAR[]','ANY']),
+        ('om_grid_info', ['col0','variable','axes','valid_times','domain','grid','spatial_axes','dimensions'],
+                        ['VARCHAR','VARCHAR','ANY','TIMESTAMP[]','VARCHAR','ANY','VARCHAR[]','ANY']),
+        ('read_om_regions', ['col0','variable','axes','include_source','domain','grid','spatial_axes','dimensions',
+                             'valid_times','out_of_bounds','max_distance_m','method','region_crs','regions'],
+                            ['VARCHAR','VARCHAR','ANY','BOOLEAN','VARCHAR','ANY','VARCHAR[]','ANY',
+                             'TIMESTAMP[]','ANY','ANY','ANY','ANY','ANY'])
+), actual AS (
+    SELECT function_name, parameters, parameter_types
+    FROM duckdb_functions()
+    WHERE function_name IN ('read_om_raw','read_om','read_om_regions','om_grid_info')
+)
+SELECT count(*) FROM expected e LEFT JOIN actual a USING (function_name)
+WHERE a.function_name IS NULL OR a.parameters <> e.parameters OR a.parameter_types <> e.parameter_types;
+----
+0
+
+query I
+SELECT count(*) FROM duckdb_functions()
+WHERE function_name IN ('read_om_region','sample_om_regions','read_om_samples');
+----
+0
+
+# Nearest adds only its own STRUCT column; original variable names and FLOAT types persist.
+query T
+SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest'))
+WHERE column_name IN ('small-separate/temperature','small-separate/humidity','sampling')
+ORDER BY CASE column_name WHEN 'small-separate/humidity' THEN 1 WHEN 'small-separate/temperature' THEN 2 ELSE 3 END;
+----
+small-separate/humidity FLOAT
+small-separate/temperature FLOAT
+sampling STRUCT("method" VARCHAR, algorithm VARCHAR, representative VARCHAR, spatial_version VARCHAR, grid_id VARCHAR, layout_id VARCHAR, distance_model VARCHAR, earth_radius_m DOUBLE, status VARCHAR, source_lon DOUBLE, source_lat DOUBLE, source_point_index UBIGINT, distance_m DOUBLE, axis_indices UBIGINT[], variables MAP(VARCHAR, STRUCT(status VARCHAR, source_count UBIGINT, valid_source_count UBIGINT)))
+
+query T
+SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'points'))
+WHERE column_name IN ('small-separate/temperature','small-separate/humidity','sampling')
+ORDER BY column_name;
+----
+small-separate/humidity FLOAT
+small-separate/temperature FLOAT
+
+# Nearest schema appends sampling between region_id and optional om_source.
+query T
+SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest', include_source := true))
+WHERE column_name IN ('region_id','sampling','om_source')
+ORDER BY CASE column_name WHEN 'region_id' THEN 1 WHEN 'sampling' THEN 2 ELSE 3 END;
+----
+region_id VARCHAR
+sampling STRUCT("method" VARCHAR, algorithm VARCHAR, representative VARCHAR, spatial_version VARCHAR, grid_id VARCHAR, layout_id VARCHAR, distance_model VARCHAR, earth_radius_m DOUBLE, status VARCHAR, source_lon DOUBLE, source_lat DOUBLE, source_point_index UBIGINT, distance_m DOUBLE, axis_indices UBIGINT[], variables MAP(VARCHAR, STRUCT(status VARCHAR, source_count UBIGINT, valid_source_count UBIGINT)))
+om_source STRUCT(object_id VARCHAR, object_version VARCHAR, version_strength VARCHAR, content_verified BOOLEAN, grid_id VARCHAR, layout_id VARCHAR, logical_index UBIGINT, point_index UBIGINT, parent_point_index UBIGINT, axis_indices UBIGINT[])
+
+# EMPTY and out-of-domain polygons retain rows with geometry-specific statuses.
+query TIIIII
+SELECT region_id, count(*), min(sampling.status), max(sampling.status),
+       count(sampling.source_point_index), count("small-separate/temperature")
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+GROUP BY region_id ORDER BY region_id;
+----
+Empty	12	empty_geometry	empty_geometry	0	0
+Gap	12	ok	ok	12	12
+Outside	12	outside_domain	outside_domain	0	0
+
+# Full per-variable map and candidate/source/target NULL semantics are distinct:
+# outside_domain has a target but no candidate; EMPTY has neither.
+query T
+SELECT region_id || ':' || sampling.status || ':' ||
+       sampling.variables['small-separate/temperature'].status || ':' ||
+       sampling.variables['small-separate/temperature'].source_count::VARCHAR || ':' ||
+       sampling.variables['small-separate/temperature'].valid_source_count::VARCHAR || ':' ||
+       sampling.variables['small-separate/humidity'].status || ':' ||
+       sampling.variables['small-separate/humidity'].source_count::VARCHAR || ':' ||
+       sampling.variables['small-separate/humidity'].valid_source_count::VARCHAR || ':' ||
+       (lat IS NULL)::VARCHAR || ':' || (lon IS NULL)::VARCHAR || ':' ||
+       (sampling.source_point_index IS NULL)::VARCHAR || ':' ||
+       (sampling.source_lon IS NULL)::VARCHAR || ':' ||
+       (sampling.source_lat IS NULL)::VARCHAR || ':' ||
+       (sampling.distance_m IS NULL)::VARCHAR || ':' || (om_source IS NULL)::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'),
+    method := 'nearest', include_source := true)
+WHERE sampling.axis_indices = [1,2,1] AND region_id IN ('Empty','Outside')
+ORDER BY region_id;
+----
+Empty:empty_geometry:empty_geometry:0:0:empty_geometry:0:0:true:true:true:true:true:true:true
+Outside:outside_domain:outside_domain:0:0:outside_domain:0:0:false:false:true:true:true:true:true
+
+# Explicit null policy matches the omitted default for an outside target.
+query T
+SELECT sampling.status || ':' || ("small-separate/temperature" IS NULL)::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Outside','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((10 10,11 10,11 11,10 11,10 10))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    method := 'nearest', out_of_bounds := 'null')
+WHERE sampling.axis_indices = [0,0,0];
+----
+outside_domain:true
+
+# The computed distance is inclusive at the exact threshold and adjacent
+# lower binary64 value is rejected while preserving the locator candidate.
+query TIIII
+SELECT sampling.status, count(sampling.source_point_index),
+       count("small-separate/temperature"), min(sampling.distance_m), max(sampling.distance_m)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest',
+    max_distance_m := 23588.840376362383)
+GROUP BY sampling.status;
+----
+ok	12	12	23588.840376362383	23588.840376362383
+
+query TIIII
+SELECT sampling.status, count(sampling.source_point_index),
+       count("small-separate/temperature"), min(sampling.distance_m), max(sampling.distance_m)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest',
+    max_distance_m := nextafter(23588.840376362383, 'Infinity'::DOUBLE))
+GROUP BY sampling.status;
+----
+ok	12	12	23588.840376362383	23588.840376362383
+
+query TIIII
+SELECT sampling.status, count(sampling.source_point_index),
+       count("small-separate/temperature"), min(sampling.distance_m), max(sampling.distance_m)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest',
+    max_distance_m := nextafter(23588.840376362383, 0.0))
+GROUP BY sampling.status;
+----
+beyond_max_distance	12	0	23588.840376362383	23588.840376362383
+
+# On this DuckDB/spatial build ST_PointOnSurface selects the exact grid point;
+# the 0 m boundary confirms an inclusive distance comparison.
+query TIIII
+SELECT sampling.status, count(sampling.source_point_index),
+       count("small-separate/temperature"), min(sampling.distance_m), max(sampling.distance_m)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Exact','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((-0.1 -0.1,0.1 -0.1,0.1 0.1,-0.1 0.1,-0.1 -0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest', max_distance_m := 0.0)
+GROUP BY sampling.status;
+----
+ok	12	12	0.0	0.0
+
+# A zero maximum distance preserves the candidate location but nulls sampled
+# values when the representative point does not coincide with a source point.
+query IIIIII
+SELECT count(*), min(sampling.status), max(sampling.status),
+       count(sampling.source_point_index), count("small-separate/temperature"),
+       min(sampling.variables['small-separate/temperature'].status)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest', max_distance_m := 0.0);
+----
+12	beyond_max_distance	beyond_max_distance	12	0	beyond_max_distance
+
+# Distance-limit failure keeps the candidate coordinates/distance but has no
+# successful source, sampled values, or om_source.
+query T
+SELECT region_id || ':' || sampling.status || ':' ||
+       sampling.variables['small-separate/temperature'].status || ':' ||
+       sampling.variables['small-separate/temperature'].source_count::VARCHAR || ':' ||
+       sampling.variables['small-separate/temperature'].valid_source_count::VARCHAR || ':' ||
+       (lat IS NULL)::VARCHAR || ':' || (sampling.source_point_index IS NULL)::VARCHAR || ':' ||
+       (sampling.source_lon IS NULL)::VARCHAR || ':' || (sampling.source_lat IS NULL)::VARCHAR || ':' ||
+       (sampling.distance_m IS NULL)::VARCHAR || ':' || (om_source IS NULL)::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest', max_distance_m := 0.0,
+    include_source := true)
+WHERE sampling.axis_indices = [1,2,1];
+----
+Gap:beyond_max_distance:beyond_max_distance:0:0:false:false:false:false:false:true
+
+# The independent fixture value and OM source logical index remain correct
+# when a spatial axis appears between non-spatial axes.
+query TTTTTT
+SELECT sampling.axis_indices, "small-interleaved/temperature", sampling.source_point_index,
+       sampling.source_lon, sampling.source_lat, om_source.logical_index
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-interleaved.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','lat','time','level','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest', include_source := true)
+WHERE sampling.axis_indices = [1,2,1];
+----
+[1, 2, 1]	211012.0	12	0.0	0.0	237
+
+# Spatial axes before all non-spatial axes still reconstruct original source
+# logical positions and retain non-spatial indices in source-axis order.
+query TTTT
+SELECT sampling.axis_indices, "small-spatial-first/temperature",
+       sampling.source_point_index, om_source.logical_index
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-spatial-first.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['lat','lon','member','time','level'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest', include_source := true)
+WHERE sampling.axis_indices = [1,2,1];
+----
+[1, 2, 1]	211012.0	12	155
+
+# An unrecognized source axis remains in the result index vector even though it
+# has no semantic output column.
+query TTTT
+SELECT sampling.axis_indices, "small-unmapped/temperature", sampling.source_point_index,
+       om_source.logical_index
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-unmapped.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['other','lat','member','lon','time'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_unmapped_axes'), method := 'nearest', include_source := true)
+WHERE sampling.axis_indices = [1,1,2];
+----
+[1, 1, 2]	210012.0	12	233
+
+# No non-spatial axes still produce exactly one output row per region.
+query ITTI
+SELECT count(*), first(sampling.axis_indices), min("small-spatial-only/temperature"),
+       min(sampling.source_point_index)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-spatial-only.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((-0.9 -0.9,-0.8 -0.9,-0.8 -0.8,-0.9 -0.8,-0.9 -0.9))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['lat','lon'],
+    grid := {'nx':2,'ny':2,'lat0':-1.0,'lon0':-1.0,'dlat':2.0,'dlon':2.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'nearest');
+----
+1	[]	1.0	0
+
+# More than two batches verify that a non-spatial cursor continues across task
+# boundaries rather than treating a partial batch as end-of-scan.
+query I
+SELECT count(*)::VARCHAR || '/' || min(list_extract(sampling.axis_indices, 1))::VARCHAR || '/' ||
+       max(list_extract(sampling.axis_indices, 1))::VARCHAR || '/' || sum("small-many-axis/temperature")::BIGINT::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-many-axis.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['sample','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'], method := 'nearest');
+----
+513/0/512/6156
+
+# A selected semantic axis in an interleaved layout reduces rows while
+# preserving original positions for that and every other non-spatial axis.
+query III
+SELECT count(*), min(sampling.axis_indices[2]), max(sampling.axis_indices[2])
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+WHERE valid_time = TIMESTAMP '2026-01-01 01:00:00';
+----
+4	1	1
+
+# Flattened longitude-fastest storage maps the same source point index and
+# value while retaining the original non-spatial axis positions.
+query IIIII
+SELECT count(*), count(DISTINCT sampling.source_point_index),
+       min(sampling.source_point_index), min("small-flat-lon/temperature"),
+       max("small-flat-lon/temperature")
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-flat-lon.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','point'],
+    grid := {'nx':5,'ny':5,'lat0':-2.0,'lon0':-2.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], axes := getvariable('nearest_axes'), method := 'nearest');
+----
+12	1	12	12.0	211012.0
+
+# Method-specific options are rejected when points is selected and for
+# unknown method names.
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'points', max_distance_m := 0.0);
+----
+<REGEX>:(?i).*\[region_method\].*only valid.*nearest.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'bilinear');
+----
+<REGEX>:(?i).*\[region_method\].*points.*nearest.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', out_of_bounds := 'error');
+----
+<REGEX>:(?i).*\[region_sampling\].*outside.*domain.*
+
+# Strict domain validation covers the complete bound input before residual filters
+# or LIMIT can discard the outside target.
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'),
+    method := 'nearest', out_of_bounds := 'error') WHERE region_id = 'Gap';
+----
+<REGEX>:(?i).*\[region_sampling\].*outside.*domain.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'),
+    method := 'nearest', out_of_bounds := 'error') LIMIT 0;
+----
+<REGEX>:(?i).*\[region_sampling\].*outside.*domain.*
+
+# Nearest validates required arguments and exact CRS type before building its plan.
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*\[region_input\].*regions is required.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 1,
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*\[region_reference\].*grid_lonlat.*
+
+# Nearest uses the same strict region STRUCT field casing, ID uniqueness and
+# collection-count limit as points before spatial evaluation.
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'ID':'Bad','wkb':ST_AsWKB(ST_GeomFromText('POLYGON EMPTY'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*\[region_input\].*(field|STRUCT|id).*\b(ID|id)\b.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Bad','wkb':'not a blob'}], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*\[region_input\].*exact types id VARCHAR and wkb BLOB.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := NULL::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*\[region_input\].*regions must be a non-NULL LIST.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := ['not a struct'], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*\[region_input\].*STRUCT\(id VARCHAR, wkb BLOB\).*\n+
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [
+        {'id':'Duplicate','wkb':ST_AsWKB(ST_GeomFromText('POLYGON EMPTY'))},
+        {'id':'Duplicate','wkb':ST_AsWKB(ST_GeomFromText('POLYGON EMPTY'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*\[region_input\].*id must be unique.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := list_transform(range(4097), i -> {'id':i::VARCHAR,'wkb':ST_AsWKB(ST_GeomFromText('POLYGON EMPTY'))}),
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*\[region_input_limit\].*4096 item limit.*
+
+# Invalid geometry is rejected before residual predicates and LIMIT can discard it.
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [
+        {'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+            'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))},
+        {'id':'Bad','wkb':from_hex('010300000001000000')}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+WHERE region_id = 'Gap' LIMIT 1;
+----
+<REGEX>:(?i).*\[region_input\].*region ordinal 2.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [
+        {'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+            'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))},
+        {'id':'Bad','wkb':ST_AsWKB(ST_GeomFromText(
+            'MULTIPOLYGON(((0 0,2 0,2 2,0 2,0 0)),((1 1,3 1,3 3,1 3,1 1)))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+WHERE region_id = 'Gap' LIMIT 0;
+----
+<REGEX>:(?i).*\[region_input\].*region ordinal 2.*
+
+# Invalid sampling options and the inherited grid/domain exclusivity rule are
+# checked at bind time even when the region collection is empty.
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    domain := 'ncep_gfs025', spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*grid and domain are mutually exclusive.*
+
+# Selected combined-invalid cases lock binder precedence. Method options are
+# parsed before required region arguments; region presence precedes CRS value
+# validation; CRS validation precedes collection construction; collection
+# construction precedes later grid/domain binding checks.
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    method := 'unsupported');
+----
+<REGEX>:(?i).*\[region_method\].*exactly.*points.*nearest.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    region_crs := 'wrong', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*\[region_input\].*regions is required.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := NULL::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'wrong',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*\[region_reference\].*grid_lonlat.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := NULL::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    domain := 'ncep_gfs025', spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*\[region_input\].*non-NULL LIST.*
+
+# nearest keeps the inherited CRS requirement and exact declared reference.
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[],
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*\[region_reference\].*region_crs is required.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'GRID_LONLAT',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*\[region_reference\].*grid_lonlat.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := NULL::VARCHAR,
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*\[region_reference\].*grid_lonlat.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'unknown');
+----
+<REGEX>:(?i).*\[region_method\].*points.*nearest.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'NEAREST');
+----
+<REGEX>:(?i).*\[region_method\].*exactly.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := NULL::VARCHAR);
+----
+<REGEX>:(?i).*\[region_method\].*non-NULL VARCHAR.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 1);
+----
+<REGEX>:(?i).*\[region_method\].*non-NULL VARCHAR.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := true);
+----
+<REGEX>:(?i).*\[region_method\].*non-NULL VARCHAR.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', max_distance_m := NULL::DOUBLE);
+----
+<REGEX>:(?i).*\[region_sampling\].*max_distance_m.*NULL.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', max_distance_m := '10');
+----
+<REGEX>:(?i).*\[region_sampling\].*max_distance_m.*numeric.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', max_distance_m := true);
+----
+<REGEX>:(?i).*\[region_sampling\].*max_distance_m.*numeric.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', max_distance_m := 'NaN'::DOUBLE);
+----
+<REGEX>:(?i).*\[region_sampling\].*finite.*non-negative.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', max_distance_m := 'Infinity'::DOUBLE);
+----
+<REGEX>:(?i).*\[region_sampling\].*finite.*non-negative.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', out_of_bounds := 'ERROR');
+----
+<REGEX>:(?i).*\[region_sampling\].*null.*error.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', out_of_bounds := NULL::VARCHAR);
+----
+<REGEX>:(?i).*\[region_sampling\].*non-NULL VARCHAR.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', include_source := NULL::BOOLEAN);
+----
+<REGEX>:(?i).*include_source.*non-NULL BOOLEAN.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', variable := NULL::VARCHAR);
+----
+<REGEX>:(?i).*variable must be a nonempty VARCHAR.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := NULL::VARCHAR[], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*dimensions parameter is required.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := 42, grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');
+----
+<REGEX>:(?i).*dimensions parameter.*(VARCHAR|MAP).*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := NULL::VARCHAR[], method := 'nearest');
+----
+<REGEX>:(?i).*requires spatial_axes VARCHAR\[\].*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := 42, method := 'nearest');
+----
+<REGEX>:(?i).*read_om axes must be a STRUCT.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', valid_times := []::TIMESTAMP[]);
+----
+<REGEX>:(?i).*valid_times must not be empty.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'),
+    valid_times := [TIMESTAMP '2026-01-01 00:00:00'], method := 'nearest');
+----
+<REGEX>:(?i).*axes\.time cannot be combined with valid_times.*
+
+# NULL valid_times follows the inherited omitted-option behavior with axes.time.
+query I
+SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), valid_times := NULL::TIMESTAMP[], method := 'nearest');
+----
+12
+
+# A semantic-axis predicate with no matching source positions produces an exact
+# empty result without losing the valid query's bound nearest schema.
+query I
+SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+WHERE member = 999;
+----
+0
+
+# The geometry adapter accepts a valid disconnected MultiPolygon as one whole-region
+# representative target and keeps exactly one row per non-spatial axis tuple.
+query T
+SELECT count(*)::VARCHAR || '/' || first(sampling.status) || '/' ||
+       count(DISTINCT sampling.source_point_index)::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Multi','wkb':ST_AsWKB(ST_GeomFromText(
+        'MULTIPOLYGON(((-2 -2,-1 -2,-1 -1,-2 -1,-2 -2)),((1 1,2 1,2 2,1 2,1 1)))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest');
+----
+12/ok/1
+
+# Nearest rejects every projected-grid family, even for an empty region collection.
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-spatial-only.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := map(['small-spatial-only/temperature'], [['row','column']]),
+    grid := {'version':1,'type':'rotated_latlon','numeric_policy':'float64_v1',
+             'earth':{'model':'sphere','radius_m':6371229.0},
+             'layout':{'nx':2,'ny':2,'order':'separate'},
+             'parameters':{'x0':0.0,'y0':0.0,'dx':1.0,'dy':1.0,
+                           'north_pole_latitude':90.0,'north_pole_longitude':0.0,'rotation':0.0}},
+    spatial_axes := ['row','column'], method := 'nearest');
+----
+<REGEX>:(?i).*\[sampling_capability\].*regular spherical longitude/latitude grid.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-spatial-only.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := map(['small-spatial-only/temperature'], [['row','column']]),
+    grid := {'version':1,'type':'lambert_conformal_conic','numeric_policy':'float64_v1',
+             'earth':{'model':'sphere','radius_m':6371229.0},
+             'layout':{'nx':2,'ny':2,'order':'separate'},
+             'parameters':{'x0':0.0,'y0':0.0,'dx':1.0,'dy':1.0,'central_meridian':0.0,
+                           'latitude_of_origin':0.0,'standard_parallel_1':30.0,'standard_parallel_2':60.0}},
+    spatial_axes := ['row','column'], method := 'nearest');
+----
+<REGEX>:(?i).*\[sampling_capability\].*regular spherical longitude/latitude grid.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-spatial-only.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := map(['small-spatial-only/temperature'], [['row','column']]),
+    grid := {'version':1,'type':'stereographic','numeric_policy':'float64_v1',
+             'earth':{'model':'sphere','radius_m':6371229.0},
+             'layout':{'nx':2,'ny':2,'order':'separate'},
+             'parameters':{'x0':0.0,'y0':0.0,'dx':1.0,'dy':1.0,'central_meridian':0.0,
+                           'latitude_of_origin':0.0,'scale_factor':1.0}},
+    spatial_axes := ['row','column'], method := 'nearest');
+----
+<REGEX>:(?i).*\[sampling_capability\].*regular spherical longitude/latitude grid.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/grids/gaussian-n160-identity.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := map(['n160_identity/value'], [['point']]), domain := 'n160', method := 'nearest');
+----
+<REGEX>:(?i).*\[sampling_capability\].*regular spherical longitude/latitude grid.*
+
+statement error
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':-2.0,'lon0':-2.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'nearest', max_distance_m := -1.0);
+----
+<REGEX>:(?i).*\[region_sampling\].*finite.*non-negative.*
+
+# Rebinding a prepared nearest scan reads the updated variable-backed region snapshot.
+statement ok
+SET VARIABLE nearest_rebind_regions = [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+    'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}];
+
+statement ok
+PREPARE nearest_rebind AS SELECT region_id || ':' || min(sampling.status) || ':' ||
+       coalesce(min(sampling.source_point_index)::VARCHAR, 'NULL')
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_rebind_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'), method := 'nearest')
+GROUP BY region_id;
+
+query T
+EXECUTE nearest_rebind;
+----
+Gap:ok:12
+
+statement ok
+SET VARIABLE nearest_rebind_regions = [{'id':'Outside','wkb':ST_AsWKB(ST_GeomFromText(
+    'POLYGON((10 10,11 10,11 11,10 11,10 10))'))}];
+
+query T
+EXECUTE nearest_rebind;
+----
+Outside:outside_domain:NULL
+
+statement ok
+DEALLOCATE nearest_rebind;
+
+# Switching methods changes the schema; the descriptor is freshly bound for each method.
+query T
+SELECT column_name || ':' || column_type
+FROM (DESCRIBE SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_rebind_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'), method := 'nearest'))
+WHERE column_name IN ('region_id','sampling');
+----
+region_id:VARCHAR
+sampling:STRUCT("method" VARCHAR, algorithm VARCHAR, representative VARCHAR, spatial_version VARCHAR, grid_id VARCHAR, layout_id VARCHAR, distance_model VARCHAR, earth_radius_m DOUBLE, status VARCHAR, source_lon DOUBLE, source_lat DOUBLE, source_point_index UBIGINT, distance_m DOUBLE, axis_indices UBIGINT[], variables MAP(VARCHAR, STRUCT(status VARCHAR, source_count UBIGINT, valid_source_count UBIGINT)))
+
+query T
+SELECT column_name || ':' || column_type
+FROM (DESCRIBE SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_rebind_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'), method := 'points'))
+WHERE column_name IN ('region_id','sampling');
+----
+region_id:VARCHAR

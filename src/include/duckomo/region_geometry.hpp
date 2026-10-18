@@ -7,6 +7,7 @@
 #include "duckdb/common/types/selection_vector.hpp"
 #include "duckdb/common/types/value.hpp"
 #include "duckdb/planner/expression.hpp"
+#include "duckomo/regular_grid.hpp"
 
 namespace duckdb {
 class ClientContext;
@@ -21,7 +22,11 @@ class RegionGeometryAdapter final {
 public:
 	explicit RegionGeometryAdapter(ClientContext &context);
 
+	std::string SpatialVersion() const;
+	void RequireNearestOperations() const;
 	Value CreateGeometry(const std::string &wkb) const;
+	Value PointOnSurface(const Value &geometry) const;
+	GridCoordinate PointOnSurfaceCoordinate(const Value &geometry) const;
 	bool IsValid(const Value &geometry) const;
 	unique_ptr<Expression> BindCovers(const Value &geometry, idx_t longitude_index, idx_t latitude_index) const;
 

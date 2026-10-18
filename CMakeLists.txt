@@ -96,6 +96,16 @@ set(EXTENSION_SOURCES
     src/grid/spatial_layout.cpp
     src/grid/domain_registry.cpp
 )
+set(DUCKOMO_SAMPLING_EXTENSION_SOURCES
+    src/grid/nearest_sampling.cpp
+    src/scan/region_sampling.cpp
+)
+foreach(source IN LISTS DUCKOMO_SAMPLING_EXTENSION_SOURCES)
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${source}")
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${source}")
+        list(APPEND EXTENSION_SOURCES "${source}")
+    endif()
+endforeach()
 build_static_extension(${TARGET_NAME} ${EXTENSION_SOURCES})
 build_loadable_extension(${TARGET_NAME} " " ${EXTENSION_SOURCES})
 set_target_properties(${TARGET_NAME}_extension ${TARGET_NAME}_loadable_extension PROPERTIES
@@ -115,6 +125,9 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         src/grid/gaussian_grid.cpp
         PROPERTIES COMPILE_OPTIONS "-ffp-contract=off"
     )
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/grid/nearest_sampling.cpp")
+        set_source_files_properties(src/grid/nearest_sampling.cpp PROPERTIES COMPILE_OPTIONS "-ffp-contract=off")
+    endif()
 endif()
 target_link_libraries(${TARGET_NAME}_extension duckomo_om)
 target_link_libraries(${TARGET_NAME}_loadable_extension duckomo_om)
@@ -124,6 +137,8 @@ set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate-grid-reference.py"
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate-grid-coordinate-reference.py"
     "${CMAKE_CURRENT_SOURCE_DIR}/scripts/compare-grid-sample-references.py"
+    "${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate-sampling-reference.py"
+    "${CMAKE_CURRENT_SOURCE_DIR}/scripts/check-sampling-fixtures.py"
     "${CMAKE_CURRENT_SOURCE_DIR}/test/tools/grid_spatial_reference.py"
 )
 

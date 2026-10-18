@@ -45,6 +45,10 @@ void TestSeparateAxesAtArbitraryPositions() {
 	Require(layout.latitude_axis == 1 && layout.longitude_axis == 2, "spatial axes map by identity, not shape position");
 	Require(layout.strides == std::vector<std::uint64_t>({6, 3, 1}), "row-major strides preserve fastest final axis");
 	Require(layout.non_spatial_axes == std::vector<std::uint64_t>({0}), "member axis remains non-spatial");
+	const auto source = layout.SourcePosition({3}, 2, 1, 5);
+	Require(source.axis_indices == std::vector<std::uint64_t>({3, 1, 2}) && source.logical_index == 23,
+	        "separate spatial axes and a real member index reconstruct the original logical index");
+	RequireInvalid([&] { (void)layout.SourcePosition({4}, 0, 0, 0); }, "non-spatial index past shape is rejected");
 
 	auto swapped = MakeSchema({3, 4, 2}, {"lon", "member", "lat"});
 	auto swapped_layout = BindSpatialLayout(swapped, {{"lon", "member", "lat"}}, grid, {"lat", "lon"});
@@ -79,6 +83,9 @@ void TestFlattenedLayouts() {
 	        "lat_fastest uses s=x*ny+y");
 	Require(lat_flat.GridIndices(lat_fast, 2) == std::make_pair<std::uint64_t, std::uint64_t>(0, 1),
 	        "lat_fastest advances longitude after the latitude run");
+	const auto flat_source = lat_flat.SourcePosition({1}, 1, 0, 2);
+	Require(flat_source.axis_indices == std::vector<std::uint64_t>({1, 2}) && flat_source.logical_index == 8,
+	        "flattened latitude-fastest point identity is distinct from its logical row position");
 	const auto coordinate = lat_flat.Coordinate(lat_fast, 2);
 	Require(coordinate.latitude == 10 && coordinate.longitude == 102,
 	        "logical positions reuse the regular-grid coordinate formula");

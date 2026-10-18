@@ -62,6 +62,7 @@ def extension_source_digest(root: pathlib.Path) -> str:
     mutable_results = {
         "test/data/grids/version-matrix.json",
         "test/data/regions/runtime-matrix.json",
+        "test/data/sampling/runtime-matrix.json",
     }
     paths: list[pathlib.Path] = []
     for relative in roots:
@@ -287,8 +288,15 @@ def build_pair(args):
         'json_loadable_extension', 'unittest', 'duckomo_developer_tools',
         'duckomo_sanitizer_checks',
     ]
+    if not args.extension_only:
+        from sampling_build import ARTIFACTS
+        targets.extend(ARTIFACTS)
     build = ['cmake','--build',str(release),'--target',*targets,'--parallel',str(args.jobs)]
     subprocess.run(build,cwd=root,check=True)
+    if not args.extension_only:
+        from sampling_build import record_build, SANITIZERS
+        record_build(root, release, resolved['input_payload']['extension_source_sha256'],
+                     {**ARTIFACTS, **(SANITIZERS if args.region_sanitizers else {})})
     extension=release/'extension/duckomo/duckomo.duckdb_extension'
     hashes={'duckomo':digest_file(extension)}
     for name,path in [('duckdb',release/'duckdb'),('unittest',release/'test/unittest')]:

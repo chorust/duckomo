@@ -17,9 +17,9 @@ duckomo 是一个 DuckDB C++ 扩展，将 [Open-Meteo OM](https://github.com/ope
 - **多种网格 mapping**：规则经纬度、[68 个规则 domain](docs/regular-domains.md)、旋转经纬度、Lambert、stereographic 和 reduced Gaussian。
 - **多变量与语义轴**：按有序轴身份对齐变量，支持 `valid_time`、`level`、`lead_time`、`member`、`run`，不自动转置、广播或连接。
 - **并行与可观测性**：DuckDB 调度并行扫描；提供线程上限、扫描指标、可选 `om_source` 源位置及 `om_grid_info` 网格描述。
-- **Polygon 区域读取（实验性）**：v0.3.1 GitHub 包提供 `read_om_regions`，返回区域内原始网格记录供 SQL 分组统计；当前优化的完整跨平台验收仍未收口，作为实验功能供试用。
+- **Polygon 区域读取（实验性）**：`read_om_regions` 默认保留原始面内点（`method := 'points'`）；`method := 'nearest'` 可按区域代表点为每个非空间轴组合选取一个最近网格源值。nearest 返回代表点采样值，不是面积均值；当前 N0–N4 在各自声明范围内通过，N5真实数据与受控传输子检查通过但原始数据授权/持久归档未解决，N6完整审计未完成；已有N7本地5×5复现由参与实现的worker执行，不满足独立执行者要求，完整验收仍未通过，详见[006最终状态](specs/006-region-nearest-sampling/evidence/final.md)、[spec](docs/spec.md)和[quickstart](specs/006-region-nearest-sampling/quickstart.md)。
 
-当前每次读取**单个对象**，不接受目录、glob 或文件列表。005 区域入口需要显式加载匹配版本的 DuckDB spatial；普通 `read_om` 不需要。区域 WKB 的 `grid_lonlat` 参考由调用者负责，边界按平面 `covers` 处理，统计为 SQL 等权聚合。区域能力仍在验收，详见 [005 Quickstart](specs/005-polygon-region-statistics/quickstart.md)。新投影/Gaussian 网格的代码已实现，但逐网格真实样本、完整内存审计和独立复现尚未全部验收；实现不等于生产就绪，详见 [支持范围](docs/spec.md) 与 [网格证据](docs/grid-domains.md)。
+当前每次读取**单个对象**，不接受目录、glob 或文件列表。`read_om_regions` 的 points/nearest 都需要显式加载匹配版本的 DuckDB spatial；普通 `read_om` 不需要。区域 WKB 的 `grid_lonlat` 参考由调用者负责，points 边界按平面 `covers` 处理，统计为 SQL 等权聚合。nearest 的顶层 `lat/lon` 是面内目标，实际源坐标、距离、逐变量状态位于 `sampling`，COUNT(*)计结果行。006 当前 N0–N4 在各自声明范围内通过；N5真实数据/受控传输子检查已通过但原始数据授权和持久归档未解决，N6完整审计未完成；已有N7本地5×5复现由参与实现的worker执行，不满足独立执行者要求，完整验收仍未通过，详见[006最终状态](specs/006-region-nearest-sampling/evidence/final.md)和[006 Quickstart](specs/006-region-nearest-sampling/quickstart.md)。新投影/Gaussian网格功能已实现，其逐网格真实样本、完整内存审计和独立复现仍未全部验收；详见 [支持范围](docs/spec.md) 与 [网格证据](docs/grid-domains.md)。
 
 2026-10-10 [范围修订](specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md)：因已调查 Open-Meteo 公开来源未找到匹配对象，负责人批准本轮跳过 N160/N320/N 区域真实验收，保留定义和合成回归，不记为通过也不阻塞当前范围收口。按 [2026-10-10 pinned producer 参考决定](specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md)，`ecmwf_ifs` O1280 与三个投影定义登记为 `coordinate-value-validated`（与 Open-Meteo 发布对象一致，非原生 GRIB 网格等价）；O1280 依据 [真实本地查询验证](specs/004-multi-grid-selection/evidence/baseline-local/o1280-real-local-20261010/final.md)（全量 HSURF 值/坐标、显式/domain、空间与抽样时间序列）。远程收益、完整 gate 与 H9 独立复现仍开放。Phase 8 跨 chunk 入口仍是待评审提案。
 
@@ -39,7 +39,7 @@ PRAGMA platform;
 GitHub 包未签名，只加载可信来源。用 `duckdb -unsigned` 启动后安装。Release 资产文件名带有版本和平台，直接把 URL 传给 `INSTALL` 时 DuckDB 会按第一个 `.` 截断扩展名（存成 `duckomo-v0.duckdb_extension`），导致后续 `LOAD duckomo` 找不到文件。因此先下载 `.duckdb_extension.gz` 并解压为标准文件名，再本地安装：
 
 ```bash
-DUCKOMO_VERSION=v0.3.1                                                    # DuckOMO 版本
+DUCKOMO_VERSION=v0.3.2                                                    # DuckOMO 版本
 DUCKDB_VERSION=$(duckdb -list -noheader :memory: "SELECT version();")      # 从本机 DuckDB 获取
 PLATFORM=$(duckdb -list -noheader :memory: "PRAGMA platform;")            # 从本机 DuckDB 获取
 
@@ -131,9 +131,9 @@ LIMIT 10;
 
 `dimensions` 支持共享轴列表或逐变量 MAP；目录布局与更多示例见 [规则网格指南](docs/regular-domains.md)。v0.3.1 的 `read_om`、`read_om_regions`、`om_grid_info` 均支持 `variable := '列名'`，在绑定时仅保留该值数组，适合变量很多的远程文件。嵌套列按编码路径选择，如 `weird%2Fname%25/value`；维度 MAP 只声明所选数组。默认扫描复用绑定元数据；如需全树重读检查，设置 `duckomo_revalidate_metadata=true`，会增加读取成本。
 
-### 按多边形筛选并聚合
+### 按多边形筛选、聚合或取最近代表值
 
-开发版的 `read_om_regions` 接收标准 WKB 区域，返回落在多边形内的原始网格点；统计由 SQL 完成，均值是点的等权平均，不是面积加权。以青海各市州边界查询 GFS 空间快照为例。先在仓库根目录准备 [GADM 4.1](https://gadm.org/data.html) 中国二级行政区数据（使用须遵守其非商业/学术许可）：
+开发版的 `read_om_regions` 接收标准 WKB 区域。默认或 `method := 'points'` 返回落在多边形内的原始网格点；统计由 SQL 完成，均值是点的等权平均，不是面积加权。`method := 'nearest'` 为每个区域×非空间轴组合输出代表位置最近的一个网格源值，顶层 `lat/lon` 是面内目标，`sampling.source_lat/source_lon` 是实际源坐标；COUNT(*)计结果行。nearest 仅支持通过资格检查的规则球面网格，并须加载与 DuckDB 匹配的 spatial。当前N0–N4在各自声明范围内通过；N5真实输入/远程场景部分完成但仍有来源授权和持久归档缺口，N6完整审计与N7独立复现未完成，详见[006 Quickstart](specs/006-region-nearest-sampling/quickstart.md)。下面的青海示例演示points模式。先在仓库根目录准备 [GADM 4.1](https://gadm.org/data.html) 中国二级行政区数据（使用须遵守其非商业/学术许可）：
 
 ```sh
 mkdir -p build/manual-region-queries
@@ -155,7 +155,7 @@ PY
 该文件声明 CRS84（x=经度、y=纬度），下例据此传入 `grid_lonlat`。边界版本为 GADM 4.1，不代表实时行政区划；不再使用未核实坐标参考的 DataV 绘图边界。
 
 ```sql
--- 先按 Install 章节安装 v0.3.1 的匹配包，并以 duckdb -unsigned 启动。
+-- 先按 Install 章节安装 v0.3.2 的匹配包，并以 duckdb -unsigned 启动。
 LOAD duckomo;
 INSTALL httpfs; LOAD httpfs;
 INSTALL spatial; LOAD spatial; -- 与当前 DuckDB 匹配；首次安装需要联网

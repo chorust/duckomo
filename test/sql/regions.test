@@ -57,6 +57,40 @@ SELECT * FROM read_om_regions(
     dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
     spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'), include_source := true);
 
+statement ok
+CREATE TEMP VIEW region_samples_explicit_points AS
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'),
+    method := 'points', include_source := true);
+
+# Omitted method and explicit points preserve every value, NULL, and source field.
+query I
+WITH differences AS (
+    (SELECT * FROM region_samples EXCEPT ALL SELECT * FROM region_samples_explicit_points)
+    UNION ALL
+    (SELECT * FROM region_samples_explicit_points EXCEPT ALL SELECT * FROM region_samples)
+)
+SELECT count(*) FROM differences;
+----
+0
+
+query I
+WITH omitted AS (
+    SELECT column_name, column_type FROM (DESCRIBE SELECT * FROM region_samples)
+), explicit_points AS (
+    SELECT column_name, column_type FROM (DESCRIBE SELECT * FROM region_samples_explicit_points)
+), differences AS (
+    (SELECT * FROM omitted EXCEPT ALL SELECT * FROM explicit_points)
+    UNION ALL
+    (SELECT * FROM explicit_points EXCEPT ALL SELECT * FROM omitted)
+)
+SELECT count(*) FROM differences;
+----
+0
+
 # The stable row shape appends region_id and leaves om_source last.
 query T
 SELECT column_name || ' ' || column_type

@@ -1,0 +1,6 @@
+duckdb_version=v1.5.5
+duckdb_source_id=d8cdaa33
+spatial_extension_version=eb1e57c
+spatial_install_path=/home/blizhan/.duckdb/extensions/v1.5.5/linux_arm64/spatial.duckdb_extension
+spatial_package_sha256=b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d
+region_geometry_test: ok
