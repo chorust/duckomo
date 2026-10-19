@@ -1,6 +1,6 @@
 # DuckOMO Roadmap
 
-本地扫描、列裁剪和规则网格空间查询（Phase 0–3）已实现。Phase 4 的维度语义已实现；Phase 5 的官方 HTTPFS 远程与并行路径已通过 v1.5.4/v1.5.5/v1.5.6 的受控验证，独立复现仍待完成。Phase 6 的 [004 多网格](../specs/004-multi-grid-selection/spec.md) 功能已实现，逐网格真实样本和完整验收仍在进行。[005 Polygon 区域读取](../specs/005-polygon-region-statistics/spec.md) 已实现，版本矩阵和独立复现状态见该 spec 的 evidence。[006 nearest polygon sampling](../specs/006-region-nearest-sampling/spec.md) 已在既有 `read_om_regions` 中实现，points 默认兼容；N0–N4在各自声明范围内通过；N5真实数据与受控传输子检查通过，但原始数据授权和持久归档未解决；N6未完成；N7已有本地5×5复现，但执行者参与实现，不满足独立执行者要求。当前gate状态见[006最终状态报告](../specs/006-region-nearest-sampling/evidence/final.md)。只有实际完成的 gate 才计为通过。当前行为见 [接口说明](spec.md)，模块边界见 [技术架构](architecture.md)。
+本地扫描、列裁剪和规则网格空间查询（Phase 0–3）已实现。Phase 4 的维度语义已实现；Phase 5 的官方 HTTPFS 远程与并行路径已通过 v1.5.4/v1.5.5/v1.5.6 的受控验证，独立复现仍待完成。Phase 6 的 [004 多网格](../specs/004-multi-grid-selection/spec.md) 功能已实现，逐网格真实样本和完整验收仍在进行。[005 Polygon 区域读取](../specs/005-polygon-region-statistics/spec.md) 已实现，版本矩阵和独立复现状态见该 spec 的 evidence。[006 nearest polygon sampling](../specs/006-region-nearest-sampling/spec.md) 已在既有 `read_om_regions` 中实现，points 默认兼容；006 已完成声明范围内的 N0–N7 验收：Linux AArch64、DuckDB v1.5.4/v1.5.5/v1.5.6、合成规则球面网格与固定 NCEP GFS025；真实输入仅私有留存、不公开分发，N7由独立用户执行。 [验收报告](../specs/006-region-nearest-sampling/evidence/final.md)。
 
 ## 阶段
 
@@ -14,7 +14,7 @@
 | **5 — 远程与并行** | 官方 HTTPFS 实现及三版本受控验证通过；独立复现待完成 | HTTP(S)/S3 标准文件系统、任务切分和 profiling；自有缓存已移除，不承诺热缓存收益 |
 | **6 — 更多网格** | 功能已实现；完整验收未通过 | 旋转、Lambert、stereographic 与 Gaussian 定义、局部空间选择、source/grid-info；每类真实坐标/值、远程收益和独立复现门禁按 [004 spec](../specs/004-multi-grid-selection/spec.md) 完成 |
 | **005 — Polygon 区域读取** | 功能已实现；独立复现待完成 | 匹配版 spatial 依赖、原始区域点值、SQL 分时统计、owned memory/lifecycle、HTTP/S3 收益和三版本矩阵按 [005 gates](../specs/005-polygon-region-statistics/contracts/validation-evidence.md) 留证；P7 由未参与实现者执行 |
-| **006 — 区域最近邻采样** | 功能已实现；N0–N4 在各自声明范围内通过，整体验收进行中 | 既有 `read_om_regions` 的 points/nearest，规则球面最近源值及状态/来源解释；N5真实数据/受控传输子检查通过但完整gate未完成，N6版本审计未完成；N7本地5×5复现未满足独立执行者要求，详见[006最终状态](../specs/006-region-nearest-sampling/evidence/final.md)与[006 evidence](../specs/006-region-nearest-sampling/evidence/) |
+| **006 — 区域最近邻采样** | 声明范围内验收完成，N0–N7通过 | points/nearest、状态/来源与三版本验证通过；私有真实输入和独立用户复现见[最终报告](../specs/006-region-nearest-sampling/evidence/final.md) |
 | **7 — 科学计算** | 计划中 | 独立设计 `om_slice`、`om_reduce`、`om_interp`、`om_regrid` |
 | **8 — 跨 chunk 时间序列入口** | 待评审提案；未立项、未实现 | `read_om_series` 按 model 登记的 chunk 时间参数把任意时间窗展开为多个 `data/` 布局 `chunk_*.om` 对象并按 `valid_time` 对齐拼接，用户无需知道目标时间落在哪个 chunk；设计细节见下节 |
 
@@ -22,7 +22,7 @@ Phase 4 的语义维度和本地筛选已实现。Phase 5 已切换为官方 HTT
 
 ## 空间采样与计算
 
-针对小行政区在粗网格上没有内部采样点的情况，nearest 已按[空间采样与区域计算设计提案](plans/2026-10-14-spatial-sampling-and-computation.md)和[生态调研](research/2026-10-14-spatial-computation-ecosystem.md)实现在现有 `read_om_regions` 内，以 `method` 选择处理方式：省略或 points 保持原始区内点；nearest 对每个区域和非空间轴组合选取代表点最近的规则球面网格源值。`read_om` 继续用于普通网格读取或坐标范围筛选；已有 polygon 的查询使用 `read_om_regions`。功能与验收范围见 [006 spec](../specs/006-region-nearest-sampling/spec.md)、[实施计划及契约](../specs/006-region-nearest-sampling/plan.md)、[65项任务](../specs/006-region-nearest-sampling/tasks.md) 和 [evidence](../specs/006-region-nearest-sampling/evidence/)；当前56/65项任务完成，N0–N4在各自声明范围内通过；N5真实数据和受控传输子检查通过，但原始数据授权与持久归档未解决；N6完整审计未完成；N7已有本地复现由实现worker执行，不满足独立执行者要求，因此006整体验收仍在进行，详见[006最终状态报告](../specs/006-region-nearest-sampling/evidence/final.md)。bilinear、Line、面积/权重及缓存不纳入006；005的当前实现或历史验收状态不变。
+针对小行政区在粗网格上没有内部采样点的情况，nearest 已按[空间采样与区域计算设计提案](plans/2026-10-14-spatial-sampling-and-computation.md)和[生态调研](research/2026-10-14-spatial-computation-ecosystem.md)实现在现有 `read_om_regions` 内，以 `method` 选择处理方式：省略或 points 保持原始区内点；nearest 对每个区域和非空间轴组合选取代表点最近的规则球面网格源值。`read_om` 继续用于普通网格读取或坐标范围筛选；已有 polygon 的查询使用 `read_om_regions`。功能与验收范围见 [006 spec](../specs/006-region-nearest-sampling/spec.md)、[实施计划及契约](../specs/006-region-nearest-sampling/plan.md)、[65项任务](../specs/006-region-nearest-sampling/tasks.md) 和 [evidence](../specs/006-region-nearest-sampling/evidence/)；006 已完成声明范围内的 N0–N7 验收：Linux AArch64、DuckDB v1.5.4/v1.5.5/v1.5.6、合成规则球面网格与固定 NCEP GFS025；真实输入仅私有留存、不公开分发，N7由独立用户执行。 [验收报告](../specs/006-region-nearest-sampling/evidence/final.md)。
 
 ## Phase 8 — 跨 chunk 时间序列入口（待评审提案）
 

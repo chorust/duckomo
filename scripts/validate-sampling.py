@@ -319,6 +319,23 @@ def main() -> int:
         print(json.dumps({"status": "self-check-only", "output": str(output)}, sort_keys=True))
         return 0
 
+    if gates == ["N7"]:
+        # N7 audits a retained human execution snapshot; later documentation
+        # and validator changes must not require the human to rerun SQL.
+        from sampling_independent import audit_n7
+        try:
+            if args.evidence_root is None:
+                raise ValueError("N7 requires --evidence-root")
+            result = audit_n7(args.evidence_root, root / "specs/006-region-nearest-sampling/evidence/user-manual-v1.5.5/full-acceptance.sql")
+        except (OSError, ValueError, KeyError) as error:
+            result = {"status": "blocked", "reason": str(error), "commands": []}
+        results["N7"] = result
+        command_stream.close()
+        write_json(output / "manifest.json", {"schema_version": 1, "status": result["status"], "gates": results})
+        (output / "final.md").write_text(f"# N7 independent execution audit\n\nStatus: **{result['status']}**\n\n{result['reason']}\n")
+        print(json.dumps({"status": result["status"], "gates": {"N7": result["status"]}, "output": str(output)}))
+        return 0 if result["status"] == "pass" else 2
+
     # Resolve every version from its published build manifest, then verify
     # source and artifact identities before running any acceptance command.
     matrix_data = json.loads(args.runtime_matrix.read_text(encoding="utf-8"))
@@ -691,6 +708,14 @@ def main() -> int:
             results["N6"] = audit_n6(args.evidence_root, next(iter(identities.values()))["extension_source_sha256"], identities, runtime_records)
         except (OSError, ValueError, KeyError, json.JSONDecodeError) as error:
             results["N6"] = {"status": "blocked", "reason": str(error), "commands": []}
+    if "N7" in requested:
+        from sampling_independent import audit_n7
+        try:
+            if args.evidence_root is None:
+                raise ValueError("N7 requires --evidence-root pointing to independent human evidence")
+            results["N7"] = audit_n7(args.evidence_root, root / "specs/006-region-nearest-sampling/evidence/user-manual-v1.5.5/full-acceptance.sql")
+        except (OSError, ValueError, KeyError, json.JSONDecodeError) as error:
+            results["N7"] = {"status": "blocked", "reason": str(error), "commands": []}
     blocker_reasons = {
         "N3": "blocked pending SQL projection, metrics matrix, and complete cross-version audit",
         "N4": "blocked pending lifecycle completeness, overflow boundary, and independent gate audit",

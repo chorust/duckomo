@@ -1,8 +1,12 @@
 # N7 Independent Reproduction
 
-**Result: local 5×5 workflow checks passed; N7 gate not passed.** The recorded executor is an implementation worker subagent, which does not satisfy the validation contract's requirement for an executor who did not participate in implementation. This report supports only the stated local workflow and is not independent acceptance evidence for Feature 006.
+**Current result: N7 independent manual reproduction passed.** The human project user ran `bash scripts/run-n7-manual.sh` in a new DuckDB v1.5.5 process and supplied the complete output. Retained [human execution package](n7-human-verified/manifest.json) includes pre-run CLI/duckomo/spatial/SQL/fixture hashes, exact SQL, complete output, exit code 0 and checked SHA256SUMS. Every functional marker passed, ending in `N7_FUNCTIONAL_PASS`. Fresh-process verification excludes the earlier mixed-spatial session. The assistant authored the script and verified the evidence; execution was performed by the user, not an implementation worker. Historical worker and earlier partial human records below are preserved.
 
-## Subsequent human execution
+## Completed independent execution
+
+The complete owner-invoked run started at `2026-10-19T00:45:46Z` (captured runtime clock). It verifies ordinary grid entry, points/nearest switching, 18-row cardinality, EMPTY/outside states, source-null propagation, exact source value/index parity and distance thresholds. CLI SHA-256 `9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1`, duckomo `f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197`, spatial `b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d`. The SQL explicitly loads the matching v1.5.5 artifacts; catalog install_path is host installation metadata and is not substituted for the hashed LOAD targets. Strict out-of-bounds rejection despite LIMIT 0 was additionally supplied in the preceding user transcript. All retained file checksums and exit code were checked after execution. This closes the manual independent guide requirement; it does not assert that unfinished validator N7 interfaces or final delivery tasks are complete.
+
+## Earlier partial human execution
 
 The project user subsequently executed the quickstart and final source-parity SQL on DuckDB v1.5.5 and supplied passing outputs. See [user-manual-v1.5.5/results.md](user-manual-v1.5.5/results.md) and the retained [source-parity.sql](user-manual-v1.5.5/source-parity.sql). This is independent human execution evidence for the documented checks. The final source comparison launched a new process using only v1.5.5 paths and returned `differences=0`, six rows per input and `PASS`.
 

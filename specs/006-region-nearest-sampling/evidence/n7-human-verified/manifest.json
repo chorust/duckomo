@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "executor_type": "human",
+  "execution_attested_by": "user message supplying command and full output",
+  "duckdb_version": "v1.5.5",
+  "fresh_process_verified": true,
+  "exit_code": 0,
+  "files": {
+    "identity.txt": "c7004314c1c90a1ce2d17b6a86aa70638e835b6a6ad2d6ca571f008c924d52aa",
+    "SHA256SUMS": "08f712b061ec188b9ae5e56c32895ce47ccb827048acc86d9777b95738b4aba6",
+    "output.txt": "9e6c7359be00944286261f24c976bc05fc6b1051d2ccf3e8eeb981ce3a8be497",
+    "exit-code.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "executed.sql": "12a923a6bdeaefce60a3ed78caa3f5b6e47ead1ce76e92a50b883bded6679682"
+  },
+  "scope": "independent synthetic quickstart and source parity; strict LIMIT 0 rejection additionally recorded in prior user transcript"
+}

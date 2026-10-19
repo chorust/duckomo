@@ -1,0 +1,9 @@
+executor_type=human
+execution_mode=owner_invoked_local_script
+started_at=2026-10-19T00:45:46Z
+v1.5.5 (Variegata) d8cdaa33fd
+9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1  /home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.5/official/duckdb
+f85932227aee26317dbbb64b9a4097cfdcbbf4be2bbd72c144251925f3bd0197  /home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/8c86d97a161b1f2f5b88c7714fe5f36fd896d12c8b53acdc9b679a4fd88de8c9/release/extension/duckomo/duckomo.duckdb_extension
+b9129a7da7fde8eb7fb951d99a115cbf2e6fa34c8d41671086169174a1f5725d  /home/blizhan/repo/github/duckomo/build/regions-runtime/v1.5.5/official/spatial.duckdb_extension
+12a923a6bdeaefce60a3ed78caa3f5b6e47ead1ce76e92a50b883bded6679682  /home/blizhan/repo/github/duckomo/specs/006-region-nearest-sampling/evidence/user-manual-v1.5.5/full-acceptance.sql
+264fe0905d0681d0fedd08d60a43bf7974cbd161319df77e919f08b4cb582e36  /home/blizhan/repo/github/duckomo/test/data/regions/regions.om

@@ -106,6 +106,7 @@ if [[ "$SAMPLING" == true ]]; then
     python3 "$ROOT/scripts/check-sampling-fixtures.py" --root "$ROOT/test/data/sampling"
     python3 -B "$ROOT/test/tools/sampling_evidence_test.py"
     python3 -B "$ROOT/test/tools/sampling_audit_test.py"
+    python3 -B "$ROOT/test/tools/sampling_independent_test.py"
     # Fixture generation can change source inputs; build and record identities
     # only after it completes, before any acceptance commands run.
     python3 "$ROOT/scripts/sampling_build.py" --build "$BUILD" --sanitizers

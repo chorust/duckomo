@@ -308,6 +308,7 @@ set(DUCKOMO_SAMPLING_BUNDLE_SOURCES
     "${PROJECT_SOURCE_DIR}/scripts/validate-sampling.py"
     "${CMAKE_CURRENT_SOURCE_DIR}/tools/sampling_evidence_test.py"
     "${CMAKE_CURRENT_SOURCE_DIR}/tools/sampling_audit_test.py"
+    "${CMAKE_CURRENT_SOURCE_DIR}/tools/sampling_independent_test.py"
     "${PROJECT_SOURCE_DIR}/scripts/sampling_remote.py"
     "${PROJECT_SOURCE_DIR}/test/data/sampling/manifest.json"
     "${PROJECT_SOURCE_DIR}/test/data/sampling/om-fixtures.json"

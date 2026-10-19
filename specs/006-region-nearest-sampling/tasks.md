@@ -143,14 +143,14 @@
 
 **Purpose**: 完成跨故事验收与用户交付。此阶段没有US标签，所有实现范围仍限006。
 
-- [ ] T058 扩展 `scripts/validate-sampling.py` 的N5真实输入与N6/N7证据接口，核对文件长度/hash、几何导出及来源记录、三版本artifact/source/query/output绑定、独立执行者类型；输出新目录，缺真实输入/包/远程子场景时明确partial/blocked，不覆盖历史证据（依赖 T057、T005）。
-- [ ] T059 在 `test/tools/sampling_evidence_test.py` 增加N5/N6/N7完整与缺失输入/许可来源声明/错误日期/混用产物/仅本地N5/仅self-check的负例，核对高精度与兼容oracle分开、执行后改expected被识别，并运行审计测试（依赖 T058）。
-- [ ] T060 更新 `docs/architecture.md`、`README.md`、`README.en.md`、`docs/spec.md` 与 `specs/006-region-nearest-sampling/quickstart.md` 对照实际实现/运行命令，解释CPU定位与局部值I/O、目标/源/COUNT/状态及支持网格；所有未来方法仍标未支持（依赖 T059）。
+- [X] T058 扩展 `scripts/validate-sampling.py` 的N5真实输入与N6/N7证据接口，核对文件长度/hash、几何导出及来源记录、三版本artifact/source/query/output绑定、独立执行者类型；输出新目录，缺真实输入/包/远程子场景时明确partial/blocked，不覆盖历史证据（依赖 T057、T005）。
+- [X] T059 在 `test/tools/sampling_evidence_test.py` 增加N5/N6/N7完整与缺失输入/许可来源声明/错误日期/混用产物/仅本地N5/仅self-check的负例，核对高精度与兼容oracle分开、执行后改expected被识别，并运行审计测试（依赖 T058）。
+- [X] T060 更新 `docs/architecture.md`、`README.md`、`README.en.md`、`docs/spec.md` 与 `specs/006-region-nearest-sampling/quickstart.md` 对照实际实现/运行命令，解释CPU定位与局部值I/O、目标/源/COUNT/状态及支持网格；所有未来方法仍标未支持（依赖 T059）。
 - [X] T061 固定geoBoundaries 2017东城区与哈希匹配GFS，在三个版本验证points零行、nearest源(116.50,40.00)、原值/NULL及来源与直接读取一致。用户确认内部验证/私有留存及授权访问，禁止公开分发；仓库外私有归档与取回hash已验证。见 `evidence/N5-private-use-decision.md`、`evidence/N5-remote.md`。
 - [X] T062 Linux AArch64三个版本当前源码产物重建并核验，N0–N5完整运行通过；实际build位置、源码摘要及逐产物hash在当前包inputs/build manifests，见 `evidence/version-matrix.md`。
 - [X] T063 N6审计当前三版本N0–N5通过状态、实际命令、完整传输库存、SQL/output/产物hash及私有归档取回；缺失/篡改拒绝测试通过。见 `evidence/N6-audit.md` 和 `evidence/private-n6-final/`。
-- [ ] T064 由未参与实现的执行者按 `specs/006-region-nearest-sampling/quickstart.md` 复现入口选择、points/nearest切换、空值/域外与实际源核对，运行N7并保存完整输入/命令/输出/执行者类型到新增 `specs/006-region-nearest-sampling/evidence/N7-independent.md`；若独立执行者未安排则保持未完成（依赖 T063）。
-- [ ] T065 根据N0–N7真实结果更新 `specs/006-region-nearest-sampling/evidence/final.md`、`docs/roadmap.md`、本 `specs/006-region-nearest-sampling/tasks.md` 的状态与残余限制，记录源码与最终产物身份，确认无新增函数/未来算子/历史证据改写；仅在全部必要gate通过后报告006完成（依赖 T064）。当前 `evidence/final.md` 是未验收状态快照，不关闭T065；N5 gate、N6审计与满足契约的N7仍未完成。
+- [X] T064 由未参与实现的执行者按 `specs/006-region-nearest-sampling/quickstart.md` 复现入口选择、points/nearest切换、空值/域外与实际源核对，运行N7并保存完整输入/命令/输出/执行者类型到新增 `specs/006-region-nearest-sampling/evidence/N7-independent.md`；若独立执行者未安排则保持未完成（依赖 T063）。
+- [X] T065 根据N0–N7真实结果更新 `specs/006-region-nearest-sampling/evidence/final.md`、`docs/roadmap.md`、本 `specs/006-region-nearest-sampling/tasks.md` 的状态与残余限制，记录源码与最终产物身份，确认无新增函数/未来算子/历史证据改写；仅在全部必要gate通过后报告006完成（依赖 T064）。当前 `evidence/final.md` 是未验收状态快照，不关闭T065；N5 gate、N6审计与满足契约的N7仍未完成。
 
 ## Dependencies & Execution Order
 
@@ -259,3 +259,11 @@ N0–N5逐gate证据由执行器记录，N6核对包完整性，N7独立执行�
 ## Subsequent private-scope N5/N6 completion
 
 Owner authorized internal validation/private retention and authorized access, with no public redistribution. The current N0–N5 run and separate N6 audit pass; T057/T061/T062/T063 are now complete (60/65 total). Earlier 56/65 checkpoint text above is historical. T058/T059 remain partial because they also require formal N7 interfaces/rejection tests; T060/T064/T065 remain open. Overall 006 is not accepted until the remaining independent evidence and final reconciliation are complete.
+
+## Independent human N7 completion
+
+T064 is complete: the human user ran scripts/run-n7-manual.sh in a fresh matching v1.5.5 process; complete identities/SQL/output/exit/hash evidence is retained in evidence/n7-human-verified/. All assertions pass. Current completion is 61/65; formal N7 validator interfaces/negative checks in T058/T059 and final reconciliation T060/T065 remain open.
+
+## Final delivery reconciliation
+
+65/65 tasks complete for the declared scope. N7 formal interface validates retained human/fresh-process/exit/SQL/output/runtime identities; negative tests reject worker execution, missing assertions, altered files, wrong artifacts and incomplete inventory. N0–N6 runtime snapshots are unchanged; final follow-up edits are validation tooling and docs. README, architecture, interface, roadmap and this final state are reconciled. Earlier partial checkpoint statements above are historical. No new public sampling function or future operator was added, and no historical execution package was rewritten.

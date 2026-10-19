@@ -1,3 +1,5 @@
+> 当前结论：006 声明范围内 N0–N7 已通过，见 [最终验收报告](evidence/final.md)。以下历史运行包的 partial/blocked 描述不代表当前最终状态。
+
 # Quickstart: 同一个区域入口的 points 与 nearest
 
 状态：实现后的验证指南。`read_om_regions` 的 points/nearest 参数、合成fixture、独立locator参考与N0–N7 validator 已实现；本页示例可用匹配的 pinned runtime 执行。未完成的验收门仍须按 evidence 报告为 blocked/partial，不以示例查询替代。
@@ -172,3 +174,7 @@ scripts/build-version.sh v1.5.6
 脚本默认隔离build root与实际build_id路径按它生成的manifest解析，勿猜测另一个矩阵目录的旧产物。矩阵完整构建会记录 `sampling-build-manifest.json`，包含当前源码摘要、DuckDB commit和原生测试/扩展哈希；validator 会拒绝缺失、过期或被替换的产物。默认 `build/release` 在修改源码、测试或fixture后，先运行 `python3 scripts/sampling_build.py --build build/release --sanitizers` 重建并记录身份；N4需要已配置的匹配spatial sanitizer。自定义矩阵根目录使用 `--matrix-output-root`。每个版本各跑N0–N5，用N6审计全部证据；新执行不得覆盖旧005记录。未参与实现者再按本页执行选择入口、切换method、状态辨别和来源对照，作为N7独立报告；执行者为人工或AI必须如实记录。
 
 完成判断以N0–N7契约和实际证据为准，不以文档生成或一个查询返回值作为全部功能验收。
+
+## 独立 N7 留档
+
+由未参与实现的用户运行 `bash scripts/run-n7-manual.sh --attested-by "你的姓名"`；署名表示确认本人为未参与实现的独立人工执行者。运行器保存身份、完整SQL/输出和退出码，成功后生成包含署名和文件哈希的 `manifest.json` 并自动审计；失败运行不会生成通过的 manifest。运行器需要 Python 3。正式接口使用 `--gates N7 --evidence-root <用户证据目录>` 校验留档。N7单独审计的是已接受的执行快照；后续文档/验证工具修改不要求用户重跑扫描器。

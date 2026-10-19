@@ -1,0 +1,105 @@
+┌───────────────┐
+│ runtime_check │
+│    varchar    │
+├───────────────┤
+│ VERSION_PASS  │
+└───────────────┘
+┌────────────────────┐
+│    fresh_check     │
+│      varchar       │
+├────────────────────┤
+│ FRESH_PROCESS_PASS │
+└────────────────────┘
+┌────────────────┐
+│ duckdb_version │
+│    varchar     │
+├────────────────┤
+│ v1.5.5         │
+└────────────────┘
+┌────────────────┬───────────────────┬──────────────────────────────────────────────────────────────────────────────┬─────────┐
+│ extension_name │ extension_version │                                 install_path                                 │ loaded  │
+│    varchar     │      varchar      │                                   varchar                                    │ boolean │
+├────────────────┼───────────────────┼──────────────────────────────────────────────────────────────────────────────┼─────────┤
+│ duckomo        │ d2a134d           │ /home/blizhan/.duckdb/extensions/v1.5.5/linux_arm64/duckomo.duckdb_extension │ true    │
+│ spatial        │ eb1e57c           │ /home/blizhan/.duckdb/extensions/v1.5.5/linux_arm64/spatial.duckdb_extension │ true    │
+└────────────────┴───────────────────┴──────────────────────────────────────────────────────────────────────────────┴─────────┘
+┌────────────────────┐
+│    check_result    │
+│      varchar       │
+├────────────────────┤
+│ RAW_RECTANGLE_PASS │
+└────────────────────┘
+┌──────────────┐
+│ check_result │
+│   varchar    │
+├──────────────┤
+│ POINTS_PASS  │
+└──────────────┘
+┌───────────┬───────┬────────────────┐
+│ region_id │ rows  │     status     │
+│  varchar  │ int64 │    varchar     │
+├───────────┼───────┼────────────────┤
+│ Empty     │     6 │ empty_geometry │
+│ Gap       │     6 │ ok             │
+│ Outside   │     6 │ outside_domain │
+└───────────┴───────┴────────────────┘
+┌─────────────────────────┐
+│      check_result       │
+│         varchar         │
+├─────────────────────────┤
+│ CARDINALITY_STATES_PASS │
+└─────────────────────────┘
+┌──────────────────────┐
+│     check_result     │
+│       varchar        │
+├──────────────────────┤
+│ SOURCE_AND_NULL_PASS │
+└──────────────────────┘
+┌──────────────────────────┐
+│       check_result       │
+│         varchar          │
+├──────────────────────────┤
+│ EXACT_SOURCE_PARITY_PASS │
+└──────────────────────────┘
+┌──────────────────────┐
+│     check_result     │
+│       varchar        │
+├──────────────────────┤
+│ DISTANCE_REJECT_PASS │
+└──────────────────────┘
+┌──────────────────────┐
+│     check_result     │
+│       varchar        │
+├──────────────────────┤
+│ DISTANCE_ACCEPT_PASS │
+└──────────────────────┘
+┌───────────┬────────┬─────────────────────┬────────┬────────┬────────────┬────────────┬────────────────────┬────────┬────────────────┬───────────────┐
+│ region_id │ member │     valid_time      │  lat   │  lon   │ source_lat │ source_lon │     distance_m     │ value  │  value_status  │ logical_index │
+│  varchar  │ int64  │      timestamp      │ double │ double │   double   │   double   │       double       │ float  │    varchar     │    uint64     │
+├───────────┼────────┼─────────────────────┼────────┼────────┼────────────┼────────────┼────────────────────┼────────┼────────────────┼───────────────┤
+│ Empty     │      0 │ 2026-01-01 00:00:00 │   NULL │   NULL │       NULL │       NULL │               NULL │   NULL │ empty_geometry │          NULL │
+│ Empty     │      0 │ 2026-01-01 01:00:00 │   NULL │   NULL │       NULL │       NULL │               NULL │   NULL │ empty_geometry │          NULL │
+│ Empty     │      0 │ 2026-01-01 02:00:00 │   NULL │   NULL │       NULL │       NULL │               NULL │   NULL │ empty_geometry │          NULL │
+│ Empty     │      1 │ 2026-01-01 00:00:00 │   NULL │   NULL │       NULL │       NULL │               NULL │   NULL │ empty_geometry │          NULL │
+│ Empty     │      1 │ 2026-01-01 01:00:00 │   NULL │   NULL │       NULL │       NULL │               NULL │   NULL │ empty_geometry │          NULL │
+│ Empty     │      1 │ 2026-01-01 02:00:00 │   NULL │   NULL │       NULL │       NULL │               NULL │   NULL │ empty_geometry │          NULL │
+│ Gap       │      0 │ 2026-01-01 00:00:00 │  20.15 │ 100.15 │       20.0 │      100.0 │ 22883.490692907973 │    0.0 │ ok             │             0 │
+│ Gap       │      0 │ 2026-01-01 01:00:00 │  20.15 │ 100.15 │       20.0 │      100.0 │ 22883.490692907973 │  100.0 │ ok             │            25 │
+│ Gap       │      0 │ 2026-01-01 02:00:00 │  20.15 │ 100.15 │       20.0 │      100.0 │ 22883.490692907973 │   NULL │ source_null    │            50 │
+│ Gap       │      1 │ 2026-01-01 00:00:00 │  20.15 │ 100.15 │       20.0 │      100.0 │ 22883.490692907973 │ 1000.0 │ ok             │            75 │
+│ Gap       │      1 │ 2026-01-01 01:00:00 │  20.15 │ 100.15 │       20.0 │      100.0 │ 22883.490692907973 │ 1100.0 │ ok             │           100 │
+│ Gap       │      1 │ 2026-01-01 02:00:00 │  20.15 │ 100.15 │       20.0 │      100.0 │ 22883.490692907973 │   NULL │ source_null    │           125 │
+│ Outside   │      0 │ 2026-01-01 00:00:00 │   30.5 │  110.5 │       NULL │       NULL │               NULL │   NULL │ outside_domain │          NULL │
+│ Outside   │      0 │ 2026-01-01 01:00:00 │   30.5 │  110.5 │       NULL │       NULL │               NULL │   NULL │ outside_domain │          NULL │
+│ Outside   │      0 │ 2026-01-01 02:00:00 │   30.5 │  110.5 │       NULL │       NULL │               NULL │   NULL │ outside_domain │          NULL │
+│ Outside   │      1 │ 2026-01-01 00:00:00 │   30.5 │  110.5 │       NULL │       NULL │               NULL │   NULL │ outside_domain │          NULL │
+│ Outside   │      1 │ 2026-01-01 01:00:00 │   30.5 │  110.5 │       NULL │       NULL │               NULL │   NULL │ outside_domain │          NULL │
+│ Outside   │      1 │ 2026-01-01 02:00:00 │   30.5 │  110.5 │       NULL │       NULL │               NULL │   NULL │ outside_domain │          NULL │
+└───────────┴────────┴─────────────────────┴────────┴────────┴────────────┴────────────┴────────────────────┴────────┴────────────────┴───────────────┘
+  18 rows                                                                                                                                  11 columns
+┌────────────────────┐
+│     acceptance     │
+│      varchar       │
+├────────────────────┤
+│ N7_FUNCTIONAL_PASS │
+└────────────────────┘

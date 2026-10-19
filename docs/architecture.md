@@ -1,6 +1,6 @@
 # DuckOMO 技术架构
 
-当前工作树实现本地 OM 扫描、语义维度选择、列裁剪、规则/投影/Gaussian 网格、多区域 polygon 扫描、nearest 区域代表值采样、native-window 空间选择、opt-in source 身份、grid-info 描述、DuckDB 并行任务及 v4 指标。005 的 points 区域功能使用匹配版 spatial adapter、受检 WKB、惰性区域任务和逐 query owned-memory accounting；版本矩阵和 P6 审计状态见 [005 版本矩阵](../specs/005-polygon-region-statistics/evidence/version-matrix.md) 与 [P6 摘要](../specs/005-polygon-region-statistics/evidence/p6-summary.md)；P7 独立复现由未参与实现者执行。006 nearest 在既有 `read_om_regions` 内以 `method` 选择，points 默认兼容；N0–N4在各自声明范围内通过，N5真实和受控传输子检查通过但原始数据授权/持久归档未解决，N6未完成；已有N7本地5×5复现由实现worker执行，不满足独立执行者要求，见[006最终状态](../specs/006-region-nearest-sampling/evidence/final.md)、[006证据](../specs/006-region-nearest-sampling/evidence/)与[支持说明](spec.md)。004 的验收仍按自身网格/远程/内存和独立复现门禁判断。官方 HTTPFS 路径已通过 v1.5.4/v1.5.5/v1.5.6 的受控验证；2.0 开发版不在本轮范围。用户接口见 [接口说明](spec.md)，定义与证据等级见 [多网格证据表](grid-domains.md)。
+当前工作树实现本地 OM 扫描、语义维度选择、列裁剪、规则/投影/Gaussian 网格、多区域 polygon 扫描、nearest 区域代表值采样、native-window 空间选择、opt-in source 身份、grid-info 描述、DuckDB 并行任务及 v4 指标。005 的 points 区域功能使用匹配版 spatial adapter、受检 WKB、惰性区域任务和逐 query owned-memory accounting；版本矩阵和 P6 审计状态见 [005 版本矩阵](../specs/005-polygon-region-statistics/evidence/version-matrix.md) 与 [P6 摘要](../specs/005-polygon-region-statistics/evidence/p6-summary.md)；P7 独立复现由未参与实现者执行。006 nearest 在既有 `read_om_regions` 内以 `method` 选择，points 默认兼容；006 已完成声明范围内的 N0–N7 验收：Linux AArch64、DuckDB v1.5.4/v1.5.5/v1.5.6、合成规则球面网格与固定 NCEP GFS025；真实输入仅私有留存、不公开分发，N7由独立用户执行。 [验收报告](../specs/006-region-nearest-sampling/evidence/final.md)。
 
 ## 模块职责
 

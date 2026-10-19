@@ -1,3 +1,5 @@
+> Final acceptance: N0–N7 passed for the declared Linux AArch64/three-version synthetic and fixed GFS025 scope. See [final evidence](evidence/final.md). Earlier progress descriptions below are historical. Raw GFS is privately retained with owner authorization; no public redistribution.
+
 # Implementation Plan: 统一区域入口的最近邻采样
 
 **Branch**: `main`（实际Git分支，未切换） | **Date**: 2026-10-15 | **Spec**: [spec.md](spec.md)
