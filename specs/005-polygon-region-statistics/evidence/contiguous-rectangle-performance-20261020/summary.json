@@ -1,0 +1,512 @@
+{
+  "status": "pass",
+  "scope": "Same current-source development artifact with only logical segmentation changed; alternating 5 repeats, fresh CLI with client caches disabled; OS cache not cleared.",
+  "bulk_path": "build/evidence/regions/current-20261020/performance-ab",
+  "bulk_summary_sha256": "ddf5747e3b10e72f1c574fb55de0806358b1dcc548f3593a6f5afc792b244f5f",
+  "comparisons": [
+    {
+      "query": "aladin_central_europe_2km",
+      "source": "local",
+      "identical_results": true,
+      "result_sha256": "43d733a29fbc1fec3be838ebe2ab3b5ebc89942a58194a3debc7d6c2df287847",
+      "result_rows": 720,
+      "baseline": {
+        "extension_sha256": "b428e6dfc9f3567a47acfa590a691a3f937da8adef0a0fc16f1870e49e7f5a8d",
+        "elapsed_seconds_median": 0.6784223918803036,
+        "elapsed_seconds_all": [
+          0.6392154893837869,
+          0.7451525093056262,
+          0.6784223918803036,
+          0.6364348046481609,
+          0.7842172179371119
+        ],
+        "value_reads": {
+          "index_bytes": 900,
+          "index_requests": 9,
+          "data_bytes": 32394,
+          "data_requests": 14,
+          "decoded_chunks": 180,
+          "decode_complete": true
+        },
+        "service_sent_bytes_all": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "query_owned_complete_all": true,
+        "released_at_terminal_all": true
+      },
+      "optimized": {
+        "extension_sha256": "1d8da31e30ec2525925dd65b64bfc307043a434f2e6cfc594586a287aa189561",
+        "elapsed_seconds_median": 0.6504599088802934,
+        "elapsed_seconds_all": [
+          0.6690328177064657,
+          0.6372968461364508,
+          0.6703380290418863,
+          0.6336513231508434,
+          0.6504599088802934
+        ],
+        "value_reads": {
+          "index_bytes": 900,
+          "index_requests": 9,
+          "data_bytes": 32394,
+          "data_requests": 14,
+          "decoded_chunks": 180,
+          "decode_complete": true
+        },
+        "service_sent_bytes_all": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "query_owned_complete_all": true,
+        "released_at_terminal_all": true
+      }
+    },
+    {
+      "query": "aladin_central_europe_2km",
+      "source": "http",
+      "identical_results": true,
+      "result_sha256": "43d733a29fbc1fec3be838ebe2ab3b5ebc89942a58194a3debc7d6c2df287847",
+      "result_rows": 720,
+      "baseline": {
+        "extension_sha256": "b428e6dfc9f3567a47acfa590a691a3f937da8adef0a0fc16f1870e49e7f5a8d",
+        "elapsed_seconds_median": 0.7771948343142867,
+        "elapsed_seconds_all": [
+          0.7771948343142867,
+          0.9377180500887334,
+          0.7589009357616305,
+          0.6842123619280756,
+          0.9464324652217329
+        ],
+        "value_reads": {
+          "index_bytes": 900,
+          "index_requests": 9,
+          "data_bytes": 32394,
+          "data_requests": 14,
+          "decoded_chunks": 180,
+          "decode_complete": true
+        },
+        "service_sent_bytes_all": [
+          33639,
+          33639,
+          33639,
+          33639,
+          33639
+        ],
+        "query_owned_complete_all": true,
+        "released_at_terminal_all": true
+      },
+      "optimized": {
+        "extension_sha256": "1d8da31e30ec2525925dd65b64bfc307043a434f2e6cfc594586a287aa189561",
+        "elapsed_seconds_median": 0.7398845530115068,
+        "elapsed_seconds_all": [
+          0.7404085751622915,
+          0.7188522010110319,
+          0.7398845530115068,
+          0.6707053249701858,
+          0.7597492458298802
+        ],
+        "value_reads": {
+          "index_bytes": 900,
+          "index_requests": 9,
+          "data_bytes": 32394,
+          "data_requests": 14,
+          "decoded_chunks": 180,
+          "decode_complete": true
+        },
+        "service_sent_bytes_all": [
+          33639,
+          33639,
+          33639,
+          33639,
+          33639
+        ],
+        "query_owned_complete_all": true,
+        "released_at_terminal_all": true
+      }
+    },
+    {
+      "query": "gem_rdps_10km",
+      "source": "local",
+      "identical_results": true,
+      "result_sha256": "896a857377a6964993e0435975ae38e457aca8e664b264e277dae926bde73e86",
+      "result_rows": 456,
+      "baseline": {
+        "extension_sha256": "b428e6dfc9f3567a47acfa590a691a3f937da8adef0a0fc16f1870e49e7f5a8d",
+        "elapsed_seconds_median": 0.6986043457873166,
+        "elapsed_seconds_all": [
+          0.6986043457873166,
+          0.6542662582360208,
+          0.7293276526033878,
+          0.6839000969193876,
+          0.7233071001246572
+        ],
+        "value_reads": {
+          "index_bytes": 400,
+          "index_requests": 4,
+          "data_bytes": 10878,
+          "data_requests": 6,
+          "decoded_chunks": 32,
+          "decode_complete": true
+        },
+        "service_sent_bytes_all": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "query_owned_complete_all": true,
+        "released_at_terminal_all": true
+      },
+      "optimized": {
+        "extension_sha256": "1d8da31e30ec2525925dd65b64bfc307043a434f2e6cfc594586a287aa189561",
+        "elapsed_seconds_median": 0.7386983768083155,
+        "elapsed_seconds_all": [
+          0.803683441132307,
+          0.660894847009331,
+          0.7035913346335292,
+          0.7951459377072752,
+          0.7386983768083155
+        ],
+        "value_reads": {
+          "index_bytes": 400,
+          "index_requests": 4,
+          "data_bytes": 10878,
+          "data_requests": 6,
+          "decoded_chunks": 32,
+          "decode_complete": true
+        },
+        "service_sent_bytes_all": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "query_owned_complete_all": true,
+        "released_at_terminal_all": true
+      }
+    },
+    {
+      "query": "gem_rdps_10km",
+      "source": "http",
+      "identical_results": true,
+      "result_sha256": "896a857377a6964993e0435975ae38e457aca8e664b264e277dae926bde73e86",
+      "result_rows": 456,
+      "baseline": {
+        "extension_sha256": "b428e6dfc9f3567a47acfa590a691a3f937da8adef0a0fc16f1870e49e7f5a8d",
+        "elapsed_seconds_median": 0.7681480851024389,
+        "elapsed_seconds_all": [
+          0.8747328920289874,
+          0.7338887960650027,
+          0.8639157987199724,
+          0.7681480851024389,
+          0.6738552176393569
+        ],
+        "value_reads": {
+          "index_bytes": 400,
+          "index_requests": 4,
+          "data_bytes": 10878,
+          "data_requests": 6,
+          "decoded_chunks": 32,
+          "decode_complete": true
+        },
+        "service_sent_bytes_all": [
+          11623,
+          11623,
+          11623,
+          11623,
+          11623
+        ],
+        "query_owned_complete_all": true,
+        "released_at_terminal_all": true
+      },
+      "optimized": {
+        "extension_sha256": "1d8da31e30ec2525925dd65b64bfc307043a434f2e6cfc594586a287aa189561",
+        "elapsed_seconds_median": 0.8067852891981602,
+        "elapsed_seconds_all": [
+          0.8467713859863579,
+          0.7427238062955439,
+          0.8126426069065928,
+          0.8067852891981602,
+          0.7181049371138215
+        ],
+        "value_reads": {
+          "index_bytes": 400,
+          "index_requests": 4,
+          "data_bytes": 10878,
+          "data_requests": 6,
+          "decoded_chunks": 32,
+          "decode_complete": true
+        },
+        "service_sent_bytes_all": [
+          11623,
+          11623,
+          11623,
+          11623,
+          11623
+        ],
+        "query_owned_complete_all": true,
+        "released_at_terminal_all": true
+      }
+    },
+    {
+      "query": "gem_regional",
+      "source": "local",
+      "identical_results": true,
+      "result_sha256": "8da1e5e36bae61633abca1e608453f6c3c3f0f3de6a34fe96bf0eee436244835",
+      "result_rows": 1254,
+      "baseline": {
+        "extension_sha256": "b428e6dfc9f3567a47acfa590a691a3f937da8adef0a0fc16f1870e49e7f5a8d",
+        "elapsed_seconds_median": 0.5175878941081464,
+        "elapsed_seconds_all": [
+          0.5175878941081464,
+          0.5185078862123191,
+          0.46616605995222926,
+          0.4636775101535022,
+          0.5222454709000885
+        ],
+        "value_reads": {
+          "index_bytes": 500,
+          "index_requests": 5,
+          "data_bytes": 6044,
+          "data_requests": 9,
+          "decoded_chunks": 54,
+          "decode_complete": true
+        },
+        "service_sent_bytes_all": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "query_owned_complete_all": true,
+        "released_at_terminal_all": true
+      },
+      "optimized": {
+        "extension_sha256": "1d8da31e30ec2525925dd65b64bfc307043a434f2e6cfc594586a287aa189561",
+        "elapsed_seconds_median": 0.48842682503163815,
+        "elapsed_seconds_all": [
+          0.4613866088911891,
+          0.49656963627785444,
+          0.5225524818524718,
+          0.4680039011873305,
+          0.48842682503163815
+        ],
+        "value_reads": {
+          "index_bytes": 500,
+          "index_requests": 5,
+          "data_bytes": 6044,
+          "data_requests": 9,
+          "decoded_chunks": 54,
+          "decode_complete": true
+        },
+        "service_sent_bytes_all": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "query_owned_complete_all": true,
+        "released_at_terminal_all": true
+      }
+    },
+    {
+      "query": "gem_regional",
+      "source": "http",
+      "identical_results": true,
+      "result_sha256": "8da1e5e36bae61633abca1e608453f6c3c3f0f3de6a34fe96bf0eee436244835",
+      "result_rows": 1254,
+      "baseline": {
+        "extension_sha256": "b428e6dfc9f3567a47acfa590a691a3f937da8adef0a0fc16f1870e49e7f5a8d",
+        "elapsed_seconds_median": 0.5784506751224399,
+        "elapsed_seconds_all": [
+          0.6295858179219067,
+          0.5924329478293657,
+          0.5784506751224399,
+          0.5010373550467193,
+          0.5068627209402621
+        ],
+        "value_reads": {
+          "index_bytes": 500,
+          "index_requests": 5,
+          "data_bytes": 6044,
+          "data_requests": 9,
+          "decoded_chunks": 54,
+          "decode_complete": true
+        },
+        "service_sent_bytes_all": [
+          6889,
+          6889,
+          6889,
+          6889,
+          6889
+        ],
+        "query_owned_complete_all": true,
+        "released_at_terminal_all": true
+      },
+      "optimized": {
+        "extension_sha256": "1d8da31e30ec2525925dd65b64bfc307043a434f2e6cfc594586a287aa189561",
+        "elapsed_seconds_median": 0.5376481399871409,
+        "elapsed_seconds_all": [
+          0.5310652642510831,
+          0.5623312322422862,
+          0.5376481399871409,
+          0.5115812122821808,
+          0.6117970761843026
+        ],
+        "value_reads": {
+          "index_bytes": 500,
+          "index_requests": 5,
+          "data_bytes": 6044,
+          "data_requests": 9,
+          "decoded_chunks": 54,
+          "decode_complete": true
+        },
+        "service_sent_bytes_all": [
+          6889,
+          6889,
+          6889,
+          6889,
+          6889
+        ],
+        "query_owned_complete_all": true,
+        "released_at_terminal_all": true
+      }
+    },
+    {
+      "query": "synthetic-seven-rows",
+      "source": "local",
+      "identical_results": true,
+      "result_sha256": "23869d26125d64d6776c79b69978d9b604484612dcbab2c8c296fd4d6d8791d9",
+      "result_rows": 4453,
+      "baseline": {
+        "extension_sha256": "b428e6dfc9f3567a47acfa590a691a3f937da8adef0a0fc16f1870e49e7f5a8d",
+        "elapsed_seconds_median": 0.008380253799259663,
+        "elapsed_seconds_all": [
+          0.037150342017412186,
+          0.04442972084507346,
+          0.008380253799259663,
+          0.005492481868714094,
+          0.004192470107227564
+        ],
+        "value_reads": {
+          "index_bytes": 57,
+          "index_requests": 1,
+          "data_bytes": 11412,
+          "data_requests": 13,
+          "decoded_chunks": 372,
+          "decode_complete": true
+        },
+        "service_sent_bytes_all": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "query_owned_complete_all": true,
+        "released_at_terminal_all": true
+      },
+      "optimized": {
+        "extension_sha256": "1d8da31e30ec2525925dd65b64bfc307043a434f2e6cfc594586a287aa189561",
+        "elapsed_seconds_median": 0.005063103046268225,
+        "elapsed_seconds_all": [
+          0.0060482625849545,
+          0.00779562396928668,
+          0.004861325025558472,
+          0.00397837208583951,
+          0.005063103046268225
+        ],
+        "value_reads": {
+          "index_bytes": 57,
+          "index_requests": 1,
+          "data_bytes": 17306,
+          "data_requests": 10,
+          "decoded_chunks": 127,
+          "decode_complete": true
+        },
+        "service_sent_bytes_all": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "query_owned_complete_all": true,
+        "released_at_terminal_all": true
+      }
+    },
+    {
+      "query": "synthetic-seven-rows",
+      "source": "http",
+      "identical_results": true,
+      "result_sha256": "23869d26125d64d6776c79b69978d9b604484612dcbab2c8c296fd4d6d8791d9",
+      "result_rows": 4453,
+      "baseline": {
+        "extension_sha256": "b428e6dfc9f3567a47acfa590a691a3f937da8adef0a0fc16f1870e49e7f5a8d",
+        "elapsed_seconds_median": 0.026634613052010536,
+        "elapsed_seconds_all": [
+          0.03863917198032141,
+          0.026634613052010536,
+          0.055674416013062,
+          0.018857053946703672,
+          0.026470035314559937
+        ],
+        "value_reads": {
+          "index_bytes": 57,
+          "index_requests": 1,
+          "data_bytes": 11412,
+          "data_requests": 13,
+          "decoded_chunks": 372,
+          "decode_complete": true
+        },
+        "service_sent_bytes_all": [
+          11766,
+          11766,
+          11766,
+          11766,
+          11766
+        ],
+        "query_owned_complete_all": true,
+        "released_at_terminal_all": true
+      },
+      "optimized": {
+        "extension_sha256": "1d8da31e30ec2525925dd65b64bfc307043a434f2e6cfc594586a287aa189561",
+        "elapsed_seconds_median": 0.025543194729834795,
+        "elapsed_seconds_all": [
+          0.025543194729834795,
+          0.023776826914399862,
+          0.03395842434838414,
+          0.031018637120723724,
+          0.01734147220849991
+        ],
+        "value_reads": {
+          "index_bytes": 57,
+          "index_requests": 1,
+          "data_bytes": 17306,
+          "data_requests": 10,
+          "decoded_chunks": 127,
+          "decode_complete": true
+        },
+        "service_sent_bytes_all": [
+          17660,
+          17660,
+          17660,
+          17660,
+          17660
+        ],
+        "query_owned_complete_all": true,
+        "released_at_terminal_all": true
+      }
+    }
+  ]
+}

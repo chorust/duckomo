@@ -2,6 +2,12 @@
 
 **历史验收：2026-10-14，源码快照 `77b79d279b73…` 的三版本回归/domain参考、每版16项sanitizer、P0–P6及 v1.5.4 的独立 AI P7通过，见 [历史验证记录](evidence/artifact-binding-77b79d279b73.md)。变量选择与元数据修复的三个新构建、v1.5.5 回归/16项 sanitizer/P0–P4及真实 S3 同查询对照见 [元数据修复验证](evidence/metadata-selection-fixes.md)；历史结果不证明当前源码通过。P5/P7限冻结局部窗口，P7不是人工验收。**
 
+## 当前工具链补记（2026-10-20）
+
+负责人已批准[成本判定修订](contracts/non-increasing-cost-20261020.md)：固定窗口/SQL不变，每个HTTP/S3对照三项成本均不增加且至少一项严格下降；此规则优先于下文历史“三项均严格下降”。独立P7仍需实际执行及服务审计。
+
+006已加入sampling sanitizer；当前回归审计要求17项（历史16项加 `region_sampling_test`），三版本重建时提供匹配spatial。历史报告的16项计数保持原样，不回填。当前连续矩形优化/三版本验收结果见[evidence/final.md](evidence/final.md)及[性能记录](evidence/contiguous-rectangle-performance-20261020.md)，不以本指南中的历史快照代签当前产物。
+
 ## 1. 准备匹配构建与输入
 
 从仓库根运行。环境固定为 Linux AArch64 / v1.5.4；另外两个版本使用各自独立产物重复验证，不跨版本加载。

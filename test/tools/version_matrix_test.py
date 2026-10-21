@@ -6,10 +6,13 @@ import json
 from pathlib import Path
 import subprocess
 import tempfile
+import sys
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT/'scripts'))
+import sampling_build
 spec=importlib.util.spec_from_file_location('matrix',ROOT/'scripts/version_matrix.py')
 m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
 class MatrixTests(unittest.TestCase):
@@ -101,8 +104,10 @@ class MatrixTests(unittest.TestCase):
                      patch.object(m,'verified_spatial_runtime',return_value=(spatial,'a'*64)) as verify_spatial, \
                      patch.object(m,'ensure_checkout'), \
                      patch.object(m,'git',side_effect=pinned_git), patch.object(m,'digest_file',return_value='a'*64), \
-                     patch.object(m.subprocess,'run') as run:
+                     patch.object(m.subprocess,'run') as run, \
+                     patch.object(sampling_build,'record_build') as record_sampling:
                     manifest=m.build_pair(args)
+                    self.assertEqual(record_sampling.call_count,0 if extension_only else 1)
                 targets=run.call_args.args[0]
                 self.assertEqual(len(manifest['commands']),2)
                 configure=manifest['commands'][0]['argv']

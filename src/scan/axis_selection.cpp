@@ -411,17 +411,8 @@ std::vector<BatchSegment> BuildSelectedBatchSegments(const std::vector<std::uint
 		std::uint64_t remaining = end - position;
 		std::uint64_t batch_offset = position;
 		while (remaining > 0) {
-			auto coordinates = LinearIndexToCoordinates(shape, current_index);
-			const auto axis_remaining = shape.back() - coordinates.back();
-			const auto segment_count = std::min(remaining, axis_remaining);
-
-			BatchSegment segment;
-			segment.batch_offset = batch_offset;
-			segment.linear_index = current_index;
-			segment.count = segment_count;
-			segment.read_offset = std::move(coordinates);
-			segment.read_count.assign(shape.size(), 1);
-			segment.read_count.back() = segment_count;
+			auto segment = BuildContiguousBatchSegment(shape, current_index, remaining, batch_offset);
+			const auto segment_count = segment.count;
 			result.emplace_back(std::move(segment));
 
 			current_index += segment_count;

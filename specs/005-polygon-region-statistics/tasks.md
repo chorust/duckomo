@@ -4,6 +4,10 @@ description: "005 多区域 Polygon 读取与等权统计实施任务"
 
 # Tasks: 多区域 Polygon 读取与等权统计
 
+## 2026-10-20 当前产物收口
+
+原50项实施任务保持历史完成记录。本轮按负责人批准的[成本修订](contracts/non-increasing-cost-20261020.md)，三版本当前源码P0–P5、每版34 native/16 Python suites/21 SQL/17 sanitizer全部通过，P6完整审计通过，最终产物独立AI P7复验通过（非人工）。源码、产物、命令和证据hash见[evidence/current-20261020.md](evidence/current-20261020.md)。连续矩形优化不改变原区域/值/NULL/source语义；旧P5失败、证书过期和构建测试失败均保留。新结论优先于下文旧产物待验收描述，不追溯改写旧包。
+
 **Input**: `specs/005-polygon-region-statistics/` 下的 spec.md、plan.md、research.md、data-model.md、contracts/ 和 quickstart.md。
 
 **Prerequisites**: 按上述设计实现；治理依据为 spec 与现行项目契约，`.specify/memory/constitution.md` 仍为占位模板。使用现有 `main`，不创建分支或工作树。完成标记只反映对应任务已有实现/证据，不代表相关完整 gate 已通过。

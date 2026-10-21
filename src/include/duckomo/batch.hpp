@@ -14,9 +14,9 @@ namespace duckomo {
 // high-rank selections.
 constexpr std::uint64_t MAX_BATCH_MAPPING_BYTES = 64 * 1024;
 
-// One contiguous OM read along the final (fastest-varying) axis. `batch_offset`
-// is the position to place the returned values at in the DuckDB output batch;
-// `linear_index` is the corresponding row-major position in the full array.
+// One rectangular OM read whose values are contiguous in row-major order.
+// `batch_offset` is the position to place the returned values at in the DuckDB
+// output batch; `linear_index` is the corresponding position in the full array.
 struct BatchSegment final {
 	std::uint64_t batch_offset = 0;
 	std::uint64_t linear_index = 0;
@@ -31,7 +31,13 @@ struct BatchSegment final {
 std::vector<std::uint64_t> LinearIndexToCoordinates(const std::vector<std::uint64_t> &shape,
                                                    std::uint64_t linear_index);
 
-// Splits a logical row range into final-axis-contiguous OM reads. The requested
+// Builds the largest rectangular prefix of a non-empty contiguous range.
+// Only complete trailing axes may be joined, so no unselected values are read.
+BatchSegment BuildContiguousBatchSegment(const std::vector<std::uint64_t> &shape,
+                                         std::uint64_t linear_start, std::uint64_t count,
+                                         std::uint64_t batch_offset);
+
+// Splits a logical row range into contiguous rectangular OM reads. The requested
 // range must fit within one DuckDB vector batch and within the array. A range
 // ending exactly at row_count is valid; an empty range is valid when its start
 // is at or before row_count.

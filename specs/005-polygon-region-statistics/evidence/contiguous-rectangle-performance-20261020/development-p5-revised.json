@@ -1,0 +1,29 @@
+{
+  "status": "pass",
+  "scope": "development preflight only; not final three-version acceptance",
+  "policy": "non_increasing_all_strict_one_20261020",
+  "bulk_summary": "build/evidence/regions/current-20261020/dev-P5-revised-policy/summary.json",
+  "bulk_sha256": "5f92b156d04e2b7132d9ab1ae5f45cc2af52ac8e8f19c264978c450b1eb196ca",
+  "targets": [
+    {
+      "grid_id": "ncep_gfswave025",
+      "status": "pass"
+    },
+    {
+      "grid_id": "gem_rdps_10km",
+      "status": "pass"
+    },
+    {
+      "grid_id": "gem_regional",
+      "status": "pass"
+    },
+    {
+      "grid_id": "aladin_central_europe_2km",
+      "status": "pass"
+    },
+    {
+      "grid_id": "ecmwf_ifs",
+      "status": "pass"
+    }
+  ]
+}

@@ -80,6 +80,41 @@ void TestLastAxisSegments() {
 	        "STANDARD_VECTOR_SIZE batch is accepted");
 }
 
+void TestRectangularSegmentsCoverExactlyTheRequestedRange() {
+	for (const auto &shape : std::vector<std::vector<std::uint64_t>>{
+	         {5}, {4, 3}, {2, 3, 4}, {2, 1, 3, 1}, {1, 1, 2, 1, 2, 1, 2, 3}}) {
+		const auto total = CheckedShapeProduct(shape);
+		for (std::uint64_t start = 0; start < total; ++start) {
+			for (std::uint64_t count = 1; count <= total - start; ++count) {
+				auto segments = BuildBatchSegments(shape, start, count);
+				std::uint64_t covered = 0;
+				for (const auto &segment : segments) {
+					Require(segment.batch_offset == covered && segment.linear_index == start + covered,
+					        "rectangular segments preserve source and output ordering");
+					Require(CheckedShapeProduct(segment.read_count) == segment.count,
+					        "rectangle shape must match the output element count");
+					for (std::uint64_t offset = 0; offset < segment.count; ++offset) {
+						auto coordinate = LinearIndexToCoordinates(segment.read_count, offset);
+						std::uint64_t source_index = 0;
+						for (std::size_t axis = 0; axis < shape.size(); ++axis) {
+							coordinate[axis] += segment.read_offset[axis];
+							Require(coordinate[axis] < shape[axis], "rectangle stays within source axes");
+							source_index = source_index * shape[axis] + coordinate[axis];
+						}
+						Require(source_index == start + covered + offset,
+						        "rectangle must not include gaps, duplicates, or unselected source positions");
+					}
+					covered += segment.count;
+				}
+				Require(covered == count, "rectangles cover the whole requested range exactly once");
+			}
+		}
+	}
+	const auto merged = BuildBatchSegments({2, 26, 7}, 0, 182);
+	Require(merged.size() == 1 && merged[0].read_count == std::vector<std::uint64_t>({1, 26, 7}),
+	        "complete adjacent point/time rows use one decoder selection");
+}
+
 void TestInvalidRangesAndShapes() {
 	RequireThrows(ReaderErrorCode::InvalidShape, [] { CheckedShapeProduct({2, 0, 3}); }, "zero axis");
 	RequireThrows(ReaderErrorCode::ShapeOverflow,
@@ -98,6 +133,7 @@ int main() {
 	try {
 		TestRowMajorCoordinates();
 		TestLastAxisSegments();
+		TestRectangularSegmentsCoverExactlyTheRequestedRange();
 		TestInvalidRangesAndShapes();
 		std::cout << "batch checks passed\n";
 		return 0;

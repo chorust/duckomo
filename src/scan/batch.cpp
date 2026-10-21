@@ -23,6 +23,34 @@ std::vector<std::uint64_t> LinearIndexToCoordinates(const std::vector<std::uint6
 	return coordinates;
 }
 
+BatchSegment BuildContiguousBatchSegment(const std::vector<std::uint64_t> &shape,
+                                         std::uint64_t linear_start, std::uint64_t count,
+                                         std::uint64_t batch_offset) {
+	BatchSegment segment;
+	segment.batch_offset = batch_offset;
+	segment.linear_index = linear_start;
+	segment.read_offset = LinearIndexToCoordinates(shape, linear_start);
+	const auto row_count = CheckedShapeProduct(shape);
+	if (count == 0 || count > row_count - linear_start) {
+		throw ReaderError(ReaderErrorCode::InvalidSelection, "invalid contiguous OM segment range");
+	}
+	segment.read_count.assign(shape.size(), 1);
+	std::uint64_t trailing_size = 1;
+	for (std::size_t axis = shape.size(); axis > 0; --axis) {
+		const auto current = axis - 1;
+		const auto available = shape[current] - segment.read_offset[current];
+		const auto selected = std::min(available, count / trailing_size);
+		if (selected == 0) break;
+		segment.read_count[current] = selected;
+		segment.count = selected * trailing_size;
+		// Growing an earlier axis is contiguous only when this axis and all
+		// trailing axes are selected completely, starting at coordinate zero.
+		if (segment.read_offset[current] != 0 || selected != shape[current]) break;
+		trailing_size = segment.count;
+	}
+	return segment;
+}
+
 std::vector<BatchSegment> BuildBatchSegments(const std::vector<std::uint64_t> &shape,
                                              std::uint64_t linear_start, std::uint64_t count) {
 	const auto row_count = CheckedShapeProduct(shape);
@@ -43,17 +71,8 @@ std::vector<BatchSegment> BuildBatchSegments(const std::vector<std::uint64_t> &s
 	std::uint64_t current_index = linear_start;
 	std::uint64_t batch_offset = 0;
 	while (remaining > 0) {
-		auto coordinates = LinearIndexToCoordinates(shape, current_index);
-		const auto axis_remaining = shape.back() - coordinates.back();
-		const auto segment_count = std::min(remaining, axis_remaining);
-
-		BatchSegment segment;
-		segment.batch_offset = batch_offset;
-		segment.linear_index = current_index;
-		segment.count = segment_count;
-		segment.read_offset = std::move(coordinates);
-		segment.read_count.assign(shape.size(), 1);
-		segment.read_count.back() = segment_count;
+		auto segment = BuildContiguousBatchSegment(shape, current_index, remaining, batch_offset);
+		const auto segment_count = segment.count;
 		segments.emplace_back(std::move(segment));
 
 		current_index += segment_count;

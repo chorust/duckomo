@@ -1,5 +1,16 @@
 <!--
-LATEST SYNC IMPACT REPORT — 2026-10-13
+LATEST SYNC IMPACT REPORT — 2026-10-20
+======================================
+Version change: 1.3.0 → 1.4.0
+Bump rationale: MINOR — 新增006及尚未立项方向，并归纳003/004修订后有效待办。
+Changes this revision:
+  - 新增006 verified：仅Linux AArch64、v1.5.4–v1.5.6、合成规则球面及固定GFS025，N0–N7留证，N7独立用户执行。
+  - 003旧自有缓存/专用ABI要求明确为历史；保留官方HTTPFS R21独立复现与最终映射待办。
+  - 004按批准范围保留三个投影/O1280门禁，N-grid真实样本跳过、2.0退出；新增当前任务索引。
+  - 005当前源码三版本P0–P6及独立AI P7全部通过，声明范围升为verified；负责人批准固定输入下各项成本不增加且至少一项下降，旧三项严格下降失败保留，AI不冒充人工。历史结果不追溯改写。
+  - bilinear/Line/面积计算及series只登记提案，不据本次台账同步自动立项。
+
+HISTORICAL SYNC IMPACT REPORT — 2026-10-13
 ======================================
 Version change: 1.2.0 → 1.3.0
 Bump rationale: MINOR — 新增 005 台账条目并完成生命周期归纳（implemented，仅限固定局部窗口修订范围），属新 spec 收口而非单纯措辞调整。
@@ -140,7 +151,8 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 | 002 | Phase 3 | `verified` | 46/46 勾选 | 原始 Phase 3 / ncep_gfswave025 在 AArch64 独立验收；T042 为延期决定，未执行 |
 | 003 | Phase 4–5 | `in-progress` | 本地 G0–G2 通过，G4 只有本地部分结果；G3、G5–G7 未完成，完整交付门禁未闭环 |
 | 004 | Phase 6 | `in-progress` | 任务仍在实施；四个 Open-Meteo 定义 2026-10-10 已登记 coordinate-value-validated（C-14）；N-grid 本轮跳过，远程/内存/版本 gate、完整 H1/H2 和独立复现未闭环 |
-| 005 | Phase 7 前置：多边形区域统计 | `implemented` | 50/50 任务勾选；三版本 P0–P6 全过（固定局部窗口范围）；P7 为 fresh-context AI 独立复现通过（非人工）；全域远程收益未验证；是否据此升级 verified 待治理确认 |
+| 005 | Phase 7 前置：多边形区域统计 | `verified` | 2026-10-20当前源码三版本P0–P6及独立AI P7通过；固定局部窗口、各项成本不增加且至少一项下降；全域收益不在范围 |
+| 006 | 区域最近邻采样 | `verified` | 声明范围N0–N7通过，独立用户N7；仅Linux AArch64、v1.5.4–v1.5.6、合成规则球面及固定GFS025，详见final |
 
 生命周期根据实施和验收 artifacts 归纳；任务勾选不代表运行 gate 通过。001 与 003 的 spec 头部仍写 `Draft`；原文件状态保留。
 
@@ -173,6 +185,8 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 
 ### 003 — Phase 4–5 维度语义、远程与并行读取  [status: in-progress]
 
+**当前解释（2026-10-20，优先于下列历史Outcome/Scope/Key decisions中的缓存/ABI要求）：** 官方HTTPFS迁移的三版本各48项runtime与固定真实输入跨来源/恢复/并行记录已通过；自有LRU、专用provider ABI与旧G5已superseded，不恢复“热缓存收益”承诺。R21独立复现及当前最终交付映射仍开放，见[当前任务索引R21/R22](../../specs/003-dimensions-remote-parallel/tasks.md#当前有效待办2026-10-20)和[迁移状态](../../specs/004-multi-grid-selection/evidence/official-httpfs-refactor/status.md)。历史G0–G7结果原样保留，不冒称旧失败通过。
+
 - **Description:** 一个 feature 统一承接其他维度、混合筛选、远程单对象、并行扫描、会话缓存和逐查询 profiling；Phase 4 与 Phase 5 未拆成两个 spec。
 - **Outcome:** 五类坐标与值逐位置一致，混合查询精确且能证明局部读取收益；本地/HTTP(S)/S3 同内容结果一致，两远端冷局部响应 body 均减少；1/2/4 worker 上限无遗漏重复且固定样本五次并行耗时中位数下降；稳定对象热缓存减少网络字节或请求，权限/版本异常正确失效；G0–G7 和 SC-001–008 有完整记录及独立复现。
 - **Scope (in):** 五类一维语义映射及 regular/explicit 坐标，UTC/单位/类型与轴冲突校验、既有 valid_time 兼容；与空间/值过滤/投影联合的安全 typed 条件与有界游标；HTTP(S)/S3 单对象及配套 httpfs 的严格范围、授权和版本会话；DuckDB global/local 并行任务与失败恢复；连接缓存控制和最近扫描指标函数、v3 计量、服务端对账、真实 OM 三来源验证与交付文档。
@@ -187,6 +201,8 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 
 ### 004 — Phase 6 多类型网格与远程空间选择  [status: in-progress]
 
+**当前执行索引（2026-10-20）：** 见[tasks C004-01–04](../../specs/004-multi-grid-selection/tasks.md#当前有效待办2026-10-20)，归纳三个投影/O1280的完整本地与公开source门禁、逐网格远程成本/恢复、三版本H8和独立H9。已批准跳过的N-grid真实样本和已退出的2.0不作为本轮前置，旧checkbox保留历史。
+
 - **Description:** 在既有单对象扫描器上增加封闭的 rotated/Lambert/stereographic/reduced-Gaussian 定义、保守 native-window 空间选择、可选 source 位置和 `om_grid_info` 描述。
 - **Outcome:** 对固定真实来源完整核对坐标、值、布局及源位置；空间条件结果与完整物化后过滤一致，并在真实可跳块输入上证明局部读取收益；内存/取消/并行/终态可审计；逐 definition/domain 标注实际 evidence 等级。
 - **Historical scope (in, superseded for Gaussian real samples on 2026-10-10):** 固定 Open-Meteo 规则和数值来源；明示 N160/N320/N320 区域 Gaussian；有界选择与预算回退；source/grid-info；metrics v4；本地及远程、版本配套和独立复现门禁。公开 HRES O1280 对象为补充 Gaussian-family 证据，不替代 N-grid 样本。Evidence levels 按 definition 隔离。
@@ -200,7 +216,13 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 - **Current scope note (2026-10-10):** 下条历史 Notes 的 N-grid 阻塞及 O1280 supplemental 限制已由本轮修订替代；旧执行结果/hash 不变，T004 等其余工作和完整门禁仍开放，不提升 lifecycle。同日补记的 O1280 本地真实查询验证（含 HSURF 轴绑定修复）与 pinned producer 参考决定已使四个 Open-Meteo 定义登记 coordinate-value-validated（C-14）；远程/完整 gate/H9 仍开放。Phase 8 series 只是产品文档中的待评审提案，不新增已立项 spec。
 - **Historical notes (retained):** requirements checklist 全部通过。三类真实 Open-Meteo OM v3 投影样本已有独立坐标和官方 OM C 全量值参考；2026-10-08 匹配 baseline H1 子比较对全部可用投影坐标和值逐位置通过，但其 `[ny,nx,ntime]` 轴顺序仍来自 producer profile，OM 对象源轴映射尚无独立证明。HRES O1280 `HSURF.om` 全值参考仍是补充证据，行长/坐标 point order 未映射，不能提升 N160/N320/区域状态。T003/T004 对 N-grid真实对象、区域局部点序和完整验收参考仍未完成；本地合成选择回归不替代 H0/H1/H6。G3 的远程依赖、2.0 matrix 与 H9 独立复现仍待完成。因此保持 `in-progress`，不能只因实现代码或生成 registry 存在而标 `implemented` / `verified`。
 
-### 005 — 多边形区域统计  [status: implemented]
+### 005 — 多边形区域统计  [status: verified]
+
+**当前验收（2026-10-20，优先于历史Notes）：** [最终报告](../../specs/005-polygon-region-statistics/evidence/current-20261020.md)绑定源码 `886e5f8e27e6ecdf66f217bab28e8726ecd7ce9aab0519815387f6c2cc34677e`；三版本P0–P5、每版72命令/17 sanitizer通过，P6 errors/not_run为空，最终产物独立fresh AI P7通过。按现行P7允许明确标识的独立AI，本条升为verified，仅限批准的固定局部窗口/AArch64/三版本范围，非人工验收。003/004原有缺口不被代签。
+
+**成本判定修订（2026-10-20负责人批准）：** [新契约](../../specs/005-polygon-region-statistics/contracts/non-increasing-cost-20261020.md)保持五对象/窗口/SQL不变，各HTTP/S3对照三项成本均不得增加、至少一项严格下降。下文历史三项均严格下降由此替代；旧失败和测量保留。
+
+**后续证据与当前工作（2026-10-20）：** [77b79d历史产物验收](../../specs/005-polygon-region-statistics/evidence/artifact-binding-77b79d279b73.md)已完成过绑定产物的三版本P0–P6和独立AI P7；之后[元数据选择修复](../../specs/005-polygon-region-statistics/evidence/metadata-selection-fixes.md)、[decoder范围复用](../../specs/005-polygon-region-statistics/evidence/decoder-range-reuse.md)及006改变共享路径，旧结果不覆盖当前源码。本轮已按固定窗口完成最终产物验收。下列“重复小读取未修复”是历史快照：同decoder最近成功压缩范围现在可复用，季节样本请求显著下降，但重复解码仍存在，也不能据单样本升级五目标P5。
 
 - **Description:** 在单对象扫描器上增加 `read_om_regions` 多区域读取入口：调用者显式提供标准 2D Polygon/MultiPolygon（WKB），平面 `covers` 精确筛选在值解码前执行，原生 SQL 分组统计区分空组与全 NULL，且无值依赖维持零值成本。
 - **Outcome:** 区域—原始记录多重集合匹配独立 oracle；五目标×三版本×四来源在冻结固定局部窗口内完整对照，HTTP/S3 的三项成本严格下降；预算、取消和生命周期可审计。
@@ -209,19 +231,33 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 - **Evidence:** [final](../../specs/005-polygon-region-statistics/evidence/final.md)：三版本 16/16 sanitizer、942 断言 SQL 回归、P0–P4、固定窗口 P5（每版本 40/40 扫描）、P6 审计通过；P7 三次尝试完整留档，第三次 fresh-context AI 验证通过本地 108 行/12 组/18 组对照及 ncep 固定窗口 HTTPS 基准/区域对照（9 行相同、77,580→25,860 数据字节、135→45 解码块、150,469→79,671 服务字节）。独立报告一处 CSV hash 转录错误已由 final 记录父审计重算值。重复小远程读取限制未修复；2026-10-14 review修复后三版本P0–P4、16/16 sanitizer、19个SQL文件/1,028断言和93项Python回归通过，见[修复验证](../../specs/005-polygon-region-statistics/evidence/review-fixes-20261014.md)；新产物P5/P6/P7未重跑，旧记录保留历史范围。
 - **Notes:** lifecycle 保持 `implemented`：修复前产物P0–P6 在负责人批准的固定局部窗口修订范围完整通过，P7 有独立 fresh-context AI 复现记录；P7 明确为 AI 验证、非人工验收。roadmap debrief 建议确认该 AI 复现是否足以将本条升级为 `verified`，该建议尚未应用。全域远程收益/吞吐仍未验证，重复小远程读取限制保持开放。网格 registry 的既有支持声明 hash 未变。
 
+### 006 — 区域最近邻采样 [status: verified]
+
+- **Description:** 在现有 `read_om_regions` 增加 `method='nearest'`，默认points保持原行为；按区域代表位置选择最近的规则球面网格源值。
+- **Outcome:** 小区域无内部网格点时仍获得可解释的目标结果、原值/NULL、源身份与状态；投影/COUNT零值路径、局部读取、资源/恢复及远程一致性有证据。
+- **Scope (in):** Linux AArch64、DuckDB v1.5.4/v1.5.5/v1.5.6；合成规则球面网格与冻结NCEP GFS025；points兼容、nearest状态/距离/来源、轴组合、N0–N7。真实输入负责人授权私有留存，不公开分发。
+- **Scope (out):** 任意domain/平台普遍验收、projected/Gaussian nearest、bilinear、Line、面积加权、series；不承诺固定定位CPU。
+- **Depends on:** 复用001–005的reader、grid/layout、regions与官方HTTPFS；本条范围内验收不自动升级前置spec生命周期。
+- **Governed by:** C-01–C-14与006四份契约。
+- **Spec dir:** [specs/006-region-nearest-sampling/](../../specs/006-region-nearest-sampling/)；[spec](../../specs/006-region-nearest-sampling/spec.md)、[plan](../../specs/006-region-nearest-sampling/plan.md)、[tasks](../../specs/006-region-nearest-sampling/tasks.md)。
+- **Evidence:** [final](../../specs/006-region-nearest-sampling/evidence/final.md)：65/65任务、N0–N7声明范围通过；N7独立用户在fresh v1.5.5进程执行。N0–N6绑定各自源码/产物快照，后续证据工具/文档不冒称重跑scanner。
+
 ### 尚未形成 spec 的其他方向
 
 | 产品方向 | 已有目标与范围依据 | 原产品阶段状态 | 尚待确认 |
 | --- | --- | --- | --- |
 | Phase 7 — 科学计算 | 独立设计 `om_slice`、`om_reduce`、`om_interp`、`om_regrid`；算子与扫描入口的职责分开。[来源](../../docs/roadmap.md#阶段) | 计划中 | 单一或多个 specs、编号、各算子的语义与约束、技术选型、验收及 spec 级依赖 |
+| 空间采样后续 | [空间计算提案](../../docs/plans/2026-10-14-spatial-sampling-and-computation.md)中的bilinear、Line、单元覆盖/面积统计；nearest已由006交付 | 提案，未形成新spec | 逐方法数值/缺测/来源/边界与验收；只在第二个真实消费者出现时提取通用设施 |
+| Phase 8 — 跨chunk时间序列 | [series提案](../../docs/roadmap.md#phase-8--跨-chunk-时间序列入口待评审提案)以单对象read_om组合时间窗 | 待评审，未立项 | model参数证据、时间/缺失chunk政策、身份/指标、接口和独立spec；本次不批准草案默认跳过404 |
 
-以上只保留尚未形成 spec 的 Phase 7 意图；Phase 6 已由 004 承接。产品阶段顺序本身不足以确定未来科学算子的硬依赖边。
+以上保留现有产品文档和设计提案中的后续意图，不自动立项；Phase 6 已由004承接，nearest已由006交付。产品阶段顺序本身不足以确定未来科学算子的硬依赖边。
 
 ## Open Questions
 
 - **Q-01 — Constitution 治理待确认：** [constitution](constitution.md) 仍含项目名、原则、版本与日期占位符。正式原则、版本与批准日期尚未定义；本 roadmap 不代填，也不把模板示例当成约束。后续以实际批准的 constitution 解决。
 - **Q-02 — 001 的独立复现待确认：** [001 final](../../specs/001-local-om-scanner/evidence/final.md#sc-001sc-006-outcomes)仍将 SC-006 标为 Partial，虽然 T044 已勾选。需补充未参与实现者的加载、列描述、完整/单列扫描记录，或明确接受标准的范围修订依据，才可判断是否升级 `verified`。x86_64 延期已有依据，不重新假定其必须通过。
-- **Q-03 — 003 各门禁的实际完成状态（已记录，完整验收仍待完成）：** [最终证据](../../evidence/003-dimensions-remote-parallel/final.md)记录了构建身份、命令/退出码、原始本地指标及各门禁状态。G0–G2 本地通过；G4 只有本地部分结果；G3 未通过完整门禁，G5/G6/G7 未执行。后续状态以该记录和新增运行证据为准，不将未执行推定为通过。
+- **Q-03 当前补记（2026-10-20）：** 下条为旧ABI/旧缓存路径历史快照；官方HTTPFS R20三版本受控验证已通过，R21独立复现与R22最终映射仍开放。旧G5 superseded，不恢复自有缓存要求。
+- **Q-03 — 003 各门禁的实际完成状态（历史已记录，完整验收仍待完成）：** [最终证据](../../evidence/003-dimensions-remote-parallel/final.md)记录了构建身份、命令/退出码、原始本地指标及各门禁状态。G0–G2 本地通过；G4 只有本地部分结果；G3 未通过完整门禁，G5/G6/G7 未执行。后续状态以该记录和新增运行证据为准，不将未执行推定为通过。
 - **Q-04 — 产品文档与已记录基线的差异（已同步）：** README、[接口说明](../../docs/spec.md)、[技术架构](../../docs/architecture.md)及[产品路线图](../../docs/roadmap.md)现描述语义轴、并行和远程功能及其验收边界；功能已有实现不代表 Phase 4–5 完整交付。
 - **Q-05 — 002 后续 domain 扩展的验收边界待确认：** 68 项 registry 的来源及元数据审计已记录，但[原始 final](../../specs/002-spatial-pushdown/evidence/final.md)明确不覆盖全部新增 domain。后续扩展需要何种完整值、坐标、异常及独立复现证据才能作更广的 `verified` 声明，需补充对应范围与记录；缺样本项保留未知，不推定可读或不可读。
 - **Q-06 — Phase 7 的 spec 结构与依赖待确认：** 科学计算方向仍未形成项目 spec 目录。待确定算子拆分、编号、语义、技术约束和明确前置依据；不只凭阶段顺序推定其依赖边。Phase 6 已由 004 定义，生命周期见上文。
@@ -246,4 +282,4 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 
 ---
 
-**Version**: 1.3.0 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-13
+**Version**: 1.4.0 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-20

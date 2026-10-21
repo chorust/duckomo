@@ -5,6 +5,15 @@ description: "Task list for Phase 4–5 dimension semantics, remote and parallel
 
 # Tasks: Phase 4–5 维度语义、远程与并行读取
 
+## 当前有效待办（2026-10-20）
+
+下文 T001–T073 保留历史实施及旧 gate 状态，不作为逐项恢复旧架构的执行清单。当前远程契约以 [官方 HTTPFS 修订](../004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md) 为准：专用 ABI、observer、自有 LRU、缓存 SQL 与旧 G5 已 superseded；不重新实现，也不将删除记为旧 gate 通过。
+
+- [ ] R21 按 [官方 HTTPFS 指南](../../docs/official-httpfs.md) 由未参与实现者独立复现并绑定实际源码/产物、输入、命令与退出码；历史 R20 三版本各48项受控 runtime 已通过，但不替代此项。
+- [ ] R22 以 R20/R21 和保留的 G0–G2/并行证据形成当前契约的最终交付映射，明确哪些旧 G3/G4/G6 要求已由新证据覆盖、哪些仍缺；更新 [最终汇总](../../evidence/003-dimensions-remote-parallel/final.md) 与产品状态。不得按任务勾选自动升级 verified。
+
+旧 T070/T073 的独立复现/路线图收尾意图由上述当前待办承接；历史 checkbox 不改写。004 逐真实网格的完整门禁与 H9 独立复现仍由004负责，005/006通过不代签003。
+
 **Input**: `specs/003-dimensions-remote-parallel/{spec.md,plan.md,research.md,data-model.md,quickstart.md,contracts/}`
 
 **Prerequisites**: 现有 Phase 0–3、DuckDB v1.5.4、固定 OM C 依赖；Linux AArch64 为完整验收平台。

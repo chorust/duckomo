@@ -1,5 +1,16 @@
 # Tasks: Phase 6 多类型网格与远程空间选择
 
+## 当前有效待办（2026-10-20）
+
+以下按已批准修订汇总当前工作；下文旧任务与 checkbox 保留历史，不据此恢复撤销范围。N160/N320/N 区域真实样本本轮跳过，定义/native/synthetic 保留；DuckDB 2.0 已退出本轮，T081不再是当前交付前置。官方 HTTPFS 替代专用 ABI、自有 LRU 与旧 G5。
+
+- [ ] C004-01 按 pinned producer 参考与 O1280 修订，将 T004/T028/T070 的有效部分对应到完整 H1/H2/H3/H7：三个投影定义和 O1280 的完整结果、空间选择、source/info身份及零值读取；已通过子检查引用其原始身份，缺项另运行，不把坐标登记等同完整gate。
+- [ ] C004-02 完成 T039/T051–T055 当前范围的本地/HTTP/HTTPS/签名S3差分、真实输入读取成本、错误/取消/版本/权限恢复与服务端审计；003 R20记录可作通用transport参考，不能代替逐网格完整H5/H6。
+- [ ] C004-03 对三份固定版本 v1.5.4/v1.5.5/v1.5.6 的实际源码/产物执行完整当前范围审计H8（T080有效部分）；不要求已退出的2.0组合，不混用历史ABI证据。
+- [ ] C004-04 由未参与实现者完成H9（T089），再归纳最终状态/支持范围与roadmap。缺独立记录保持未完成。
+
+C004-01–04 为旧任务有效范围的索引，不重复计入原96项任务统计，不因新索引变更历史gate。005固定窗口验收及006规则网格nearest不自动补齐004上述门禁。
+
 **Input**: `specs/004-multi-grid-selection/` 中的 spec.md、plan.md、research.md、data-model.md、quickstart.md 和 contracts/ 三份契约。
 
 **Prerequisites**: 复用 001–003 的单对象 OM v3 扫描器、官方 OM C reader、语义轴、Range、缓存和并行框架；constitution 仍为占位模板，治理依据为既有契约及 `.specify/memory/roadmap.md` 的 C-01–C-13。任务清单由规划生成；当前 checkbox 记录已完成的实现工作，不能单独视为 gate 验收或支持声明。

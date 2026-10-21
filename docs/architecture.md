@@ -51,6 +51,8 @@ DuckDB SQL
 
 网格/轴选择只提供逻辑切片。OM chunk 交集、LUT、字节范围和解码策略由官方 reader 负责。`ReadAtFile` 通过 DuckDB 标准文件系统读取。本地/远程 Adapter 携带 ClientContext；每 worker 独立句柄。远程使用 opener 局部配置禁止完整下载回退并保留 ETag 检查，使用标准 DIRECT_IO 让 OM reader 控制范围；比较打开时可观察长度/版本。HTTPFS 内部缓存和网络字节不由 DuckOMO 观测，远程 transport 为 NULL/false；服务端日志仅用于验收。
 
+批内连续逻辑位置使用完整尾轴组成矩形读取；不完整尾轴、缺口和未对齐起点仍拆段，输出源顺序和选取集合保持不变。此优化减少可合并扫描的decoder调用及重复解码，既有64KiB映射预算与reader容量界限保留。decoder仅复用最近成功的index/data缓冲范围，不缓存解码值。请求合并可能增加读取字节，局部窗口也可能不受益，实测边界见[连续矩形性能记录](../specs/005-polygon-region-statistics/evidence/contiguous-rectangle-performance-20261020.md)。
+
 远程打开和范围读取复用脱敏失败分类器；只从 DuckDB 公开异常类型及严格校验的 HTTP status 选择固定类别/建议，不转发异常正文、response body、reason 或 headers。不通过字符串猜测未知 HTTP 状态，不影响取消和成功读取计数。
 
 自有 RangeCache、provider/observer、授权 HMAC、专用 ABI handshake 和缓存 SQL 已删除。HTTPFS 的凭据、签名、重试及内部缓存由官方依赖维护；DuckOMO 不承诺固定 HEAD/探测顺序、扫描快照、每次查询强制刷新或任意缓存即时撤权。固定版本/配置的同 URI 允许→拒绝→恢复、取消及隔离有受控验证，见 [官方 HTTPFS 记录](../specs/004-multi-grid-selection/evidence/official-httpfs-refactor/status.md)。

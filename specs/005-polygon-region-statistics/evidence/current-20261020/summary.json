@@ -1,0 +1,533 @@
+{
+  "status": "pass",
+  "source_sha256": "886e5f8e27e6ecdf66f217bab28e8726ecd7ce9aab0519815387f6c2cc34677e",
+  "platform": "Linux AArch64",
+  "policy": "non_increasing_all_strict_one_20261020",
+  "bulk_root": "build/evidence/regions/current-20261020/matrix-testfixed",
+  "p6_sha256": "17f8bbedeaff9b43a08fe904f85f94c27bf525665776b92e8d5eb9b1ca144573",
+  "versions": {
+    "v1.5.4": {
+      "build_id": "5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9",
+      "duckomo_sha256": "81a41da6aa5cdcef171ad27c470fd13e97c52e5bfc5fd22bc3f31b874f9e12fb",
+      "release_dir": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release",
+      "regression_commands": 72,
+      "regression_categories": {
+        "sanitizers": 1,
+        "native": 34,
+        "python": 16,
+        "sql": 21
+      },
+      "sanitizer_tests": 17,
+      "gates": {
+        "P0-P4": {
+          "status": "pass",
+          "manifest_path": "build/evidence/regions/current-20261020/matrix-testfixed/v1.5.4/P0-P4/manifest.json",
+          "manifest_sha256": "c03504dd6de67f99a77aa2be62b7788ec098537e9c0851e1a5a05e2682dfdf21"
+        },
+        "regressions": {
+          "status": "pass",
+          "manifest_path": "build/evidence/regions/current-20261020/matrix-testfixed/v1.5.4/regressions/manifest.json",
+          "manifest_sha256": "4b553dbb9f2b6658b0488c2086d2a31502335f502d5e4d88e8b2934a1229d28d"
+        },
+        "P5": {
+          "status": "pass",
+          "manifest_path": "build/evidence/regions/current-20261020/matrix-testfixed/v1.5.4/P5/manifest.json",
+          "manifest_sha256": "0729ee4ed88f57dabb6619669c8f0e8828e84d1bafa7da793c6683ee939647de"
+        }
+      },
+      "costs": [
+        {
+          "grid": "ncep_gfswave025",
+          "source": "http",
+          "full": {
+            "data_bytes": 8620,
+            "decoded_blocks": 135,
+            "service_sent_bytes": 13432
+          },
+          "region": {
+            "data_bytes": 8620,
+            "decoded_blocks": 45,
+            "service_sent_bytes": 13432
+          }
+        },
+        {
+          "grid": "ncep_gfswave025",
+          "source": "s3",
+          "full": {
+            "data_bytes": 8620,
+            "decoded_blocks": 135,
+            "service_sent_bytes": 13432
+          },
+          "region": {
+            "data_bytes": 8620,
+            "decoded_blocks": 45,
+            "service_sent_bytes": 13432
+          }
+        },
+        {
+          "grid": "gem_rdps_10km",
+          "source": "http",
+          "full": {
+            "data_bytes": 10878,
+            "decoded_blocks": 32,
+            "service_sent_bytes": 11623
+          },
+          "region": {
+            "data_bytes": 3555,
+            "decoded_blocks": 2,
+            "service_sent_bytes": 4000
+          }
+        },
+        {
+          "grid": "gem_rdps_10km",
+          "source": "s3",
+          "full": {
+            "data_bytes": 10878,
+            "decoded_blocks": 32,
+            "service_sent_bytes": 11623
+          },
+          "region": {
+            "data_bytes": 3555,
+            "decoded_blocks": 2,
+            "service_sent_bytes": 4000
+          }
+        },
+        {
+          "grid": "gem_regional",
+          "source": "http",
+          "full": {
+            "data_bytes": 6044,
+            "decoded_blocks": 54,
+            "service_sent_bytes": 6889
+          },
+          "region": {
+            "data_bytes": 2740,
+            "decoded_blocks": 10,
+            "service_sent_bytes": 3285
+          }
+        },
+        {
+          "grid": "gem_regional",
+          "source": "s3",
+          "full": {
+            "data_bytes": 6044,
+            "decoded_blocks": 54,
+            "service_sent_bytes": 6889
+          },
+          "region": {
+            "data_bytes": 2740,
+            "decoded_blocks": 10,
+            "service_sent_bytes": 3285
+          }
+        },
+        {
+          "grid": "aladin_central_europe_2km",
+          "source": "http",
+          "full": {
+            "data_bytes": 32394,
+            "decoded_blocks": 180,
+            "service_sent_bytes": 33639
+          },
+          "region": {
+            "data_bytes": 3853,
+            "decoded_blocks": 2,
+            "service_sent_bytes": 4298
+          }
+        },
+        {
+          "grid": "aladin_central_europe_2km",
+          "source": "s3",
+          "full": {
+            "data_bytes": 32394,
+            "decoded_blocks": 180,
+            "service_sent_bytes": 33639
+          },
+          "region": {
+            "data_bytes": 3853,
+            "decoded_blocks": 2,
+            "service_sent_bytes": 4298
+          }
+        },
+        {
+          "grid": "ecmwf_ifs",
+          "source": "http",
+          "full": {
+            "data_bytes": 21,
+            "decoded_blocks": 17,
+            "service_sent_bytes": 556
+          },
+          "region": {
+            "data_bytes": 7,
+            "decoded_blocks": 3,
+            "service_sent_bytes": 542
+          }
+        },
+        {
+          "grid": "ecmwf_ifs",
+          "source": "s3",
+          "full": {
+            "data_bytes": 21,
+            "decoded_blocks": 17,
+            "service_sent_bytes": 556
+          },
+          "region": {
+            "data_bytes": 7,
+            "decoded_blocks": 3,
+            "service_sent_bytes": 542
+          }
+        }
+      ]
+    },
+    "v1.5.5": {
+      "build_id": "10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52",
+      "duckomo_sha256": "ffea2307cad01d81809f0d951f2a9c73781b87dea78b5ac0afe92e91e8e8d16c",
+      "release_dir": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release",
+      "regression_commands": 72,
+      "regression_categories": {
+        "sanitizers": 1,
+        "native": 34,
+        "python": 16,
+        "sql": 21
+      },
+      "sanitizer_tests": 17,
+      "gates": {
+        "P0-P4": {
+          "status": "pass",
+          "manifest_path": "build/evidence/regions/current-20261020/matrix-testfixed/v1.5.5/P0-P4/manifest.json",
+          "manifest_sha256": "8699bd9519458f249e2e8c0b7455e8aa7d5bcf3800713b80317e368284a0b0d3"
+        },
+        "regressions": {
+          "status": "pass",
+          "manifest_path": "build/evidence/regions/current-20261020/matrix-testfixed/v1.5.5/regressions/manifest.json",
+          "manifest_sha256": "99627799c8ec6fdd57d683bdf74b2d34f48b2dae696769378b65a7cd74a7aec0"
+        },
+        "P5": {
+          "status": "pass",
+          "manifest_path": "build/evidence/regions/current-20261020/matrix-testfixed/v1.5.5/P5/manifest.json",
+          "manifest_sha256": "60e7f29f01d0f94b0300ddbc607d36152d7feea5267fa74c23645cdca5c99113"
+        }
+      },
+      "costs": [
+        {
+          "grid": "ncep_gfswave025",
+          "source": "http",
+          "full": {
+            "data_bytes": 8620,
+            "decoded_blocks": 135,
+            "service_sent_bytes": 13432
+          },
+          "region": {
+            "data_bytes": 8620,
+            "decoded_blocks": 45,
+            "service_sent_bytes": 13432
+          }
+        },
+        {
+          "grid": "ncep_gfswave025",
+          "source": "s3",
+          "full": {
+            "data_bytes": 8620,
+            "decoded_blocks": 135,
+            "service_sent_bytes": 13432
+          },
+          "region": {
+            "data_bytes": 8620,
+            "decoded_blocks": 45,
+            "service_sent_bytes": 13432
+          }
+        },
+        {
+          "grid": "gem_rdps_10km",
+          "source": "http",
+          "full": {
+            "data_bytes": 10878,
+            "decoded_blocks": 32,
+            "service_sent_bytes": 11623
+          },
+          "region": {
+            "data_bytes": 3555,
+            "decoded_blocks": 2,
+            "service_sent_bytes": 4000
+          }
+        },
+        {
+          "grid": "gem_rdps_10km",
+          "source": "s3",
+          "full": {
+            "data_bytes": 10878,
+            "decoded_blocks": 32,
+            "service_sent_bytes": 11623
+          },
+          "region": {
+            "data_bytes": 3555,
+            "decoded_blocks": 2,
+            "service_sent_bytes": 4000
+          }
+        },
+        {
+          "grid": "gem_regional",
+          "source": "http",
+          "full": {
+            "data_bytes": 6044,
+            "decoded_blocks": 54,
+            "service_sent_bytes": 6889
+          },
+          "region": {
+            "data_bytes": 2740,
+            "decoded_blocks": 10,
+            "service_sent_bytes": 3285
+          }
+        },
+        {
+          "grid": "gem_regional",
+          "source": "s3",
+          "full": {
+            "data_bytes": 6044,
+            "decoded_blocks": 54,
+            "service_sent_bytes": 6889
+          },
+          "region": {
+            "data_bytes": 2740,
+            "decoded_blocks": 10,
+            "service_sent_bytes": 3285
+          }
+        },
+        {
+          "grid": "aladin_central_europe_2km",
+          "source": "http",
+          "full": {
+            "data_bytes": 32394,
+            "decoded_blocks": 180,
+            "service_sent_bytes": 33639
+          },
+          "region": {
+            "data_bytes": 3853,
+            "decoded_blocks": 2,
+            "service_sent_bytes": 4298
+          }
+        },
+        {
+          "grid": "aladin_central_europe_2km",
+          "source": "s3",
+          "full": {
+            "data_bytes": 32394,
+            "decoded_blocks": 180,
+            "service_sent_bytes": 33639
+          },
+          "region": {
+            "data_bytes": 3853,
+            "decoded_blocks": 2,
+            "service_sent_bytes": 4298
+          }
+        },
+        {
+          "grid": "ecmwf_ifs",
+          "source": "http",
+          "full": {
+            "data_bytes": 21,
+            "decoded_blocks": 17,
+            "service_sent_bytes": 556
+          },
+          "region": {
+            "data_bytes": 7,
+            "decoded_blocks": 3,
+            "service_sent_bytes": 542
+          }
+        },
+        {
+          "grid": "ecmwf_ifs",
+          "source": "s3",
+          "full": {
+            "data_bytes": 21,
+            "decoded_blocks": 17,
+            "service_sent_bytes": 556
+          },
+          "region": {
+            "data_bytes": 7,
+            "decoded_blocks": 3,
+            "service_sent_bytes": 542
+          }
+        }
+      ]
+    },
+    "v1.5.6": {
+      "build_id": "ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e",
+      "duckomo_sha256": "79a47efbe63b6fdb4299f828e06d169d9e39c49b7f40ca517ea454bf49316df3",
+      "release_dir": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release",
+      "regression_commands": 72,
+      "regression_categories": {
+        "sanitizers": 1,
+        "native": 34,
+        "python": 16,
+        "sql": 21
+      },
+      "sanitizer_tests": 17,
+      "gates": {
+        "P0-P4": {
+          "status": "pass",
+          "manifest_path": "build/evidence/regions/current-20261020/matrix-testfixed/v1.5.6/P0-P4/manifest.json",
+          "manifest_sha256": "ef06674562ea70d200d5542e56ddb9498c9aa0c39ad7cbfd8488cb9c90cd1d76"
+        },
+        "regressions": {
+          "status": "pass",
+          "manifest_path": "build/evidence/regions/current-20261020/matrix-testfixed/v1.5.6/regressions/manifest.json",
+          "manifest_sha256": "37ff762268a804fd3ad50bf7c9ea72a2a0ef78b63c894171fc726045af2e5d67"
+        },
+        "P5": {
+          "status": "pass",
+          "manifest_path": "build/evidence/regions/current-20261020/matrix-testfixed/v1.5.6/P5/manifest.json",
+          "manifest_sha256": "730992c5b635efbcc336d7e3def9676ccfe7a141ba83547f9b194420359c0f21"
+        }
+      },
+      "costs": [
+        {
+          "grid": "ncep_gfswave025",
+          "source": "http",
+          "full": {
+            "data_bytes": 8620,
+            "decoded_blocks": 135,
+            "service_sent_bytes": 13432
+          },
+          "region": {
+            "data_bytes": 8620,
+            "decoded_blocks": 45,
+            "service_sent_bytes": 13432
+          }
+        },
+        {
+          "grid": "ncep_gfswave025",
+          "source": "s3",
+          "full": {
+            "data_bytes": 8620,
+            "decoded_blocks": 135,
+            "service_sent_bytes": 13432
+          },
+          "region": {
+            "data_bytes": 8620,
+            "decoded_blocks": 45,
+            "service_sent_bytes": 13432
+          }
+        },
+        {
+          "grid": "gem_rdps_10km",
+          "source": "http",
+          "full": {
+            "data_bytes": 10878,
+            "decoded_blocks": 32,
+            "service_sent_bytes": 11623
+          },
+          "region": {
+            "data_bytes": 3555,
+            "decoded_blocks": 2,
+            "service_sent_bytes": 4000
+          }
+        },
+        {
+          "grid": "gem_rdps_10km",
+          "source": "s3",
+          "full": {
+            "data_bytes": 10878,
+            "decoded_blocks": 32,
+            "service_sent_bytes": 11623
+          },
+          "region": {
+            "data_bytes": 3555,
+            "decoded_blocks": 2,
+            "service_sent_bytes": 4000
+          }
+        },
+        {
+          "grid": "gem_regional",
+          "source": "http",
+          "full": {
+            "data_bytes": 6044,
+            "decoded_blocks": 54,
+            "service_sent_bytes": 6889
+          },
+          "region": {
+            "data_bytes": 2740,
+            "decoded_blocks": 10,
+            "service_sent_bytes": 3285
+          }
+        },
+        {
+          "grid": "gem_regional",
+          "source": "s3",
+          "full": {
+            "data_bytes": 6044,
+            "decoded_blocks": 54,
+            "service_sent_bytes": 6889
+          },
+          "region": {
+            "data_bytes": 2740,
+            "decoded_blocks": 10,
+            "service_sent_bytes": 3285
+          }
+        },
+        {
+          "grid": "aladin_central_europe_2km",
+          "source": "http",
+          "full": {
+            "data_bytes": 32394,
+            "decoded_blocks": 180,
+            "service_sent_bytes": 33639
+          },
+          "region": {
+            "data_bytes": 3853,
+            "decoded_blocks": 2,
+            "service_sent_bytes": 4298
+          }
+        },
+        {
+          "grid": "aladin_central_europe_2km",
+          "source": "s3",
+          "full": {
+            "data_bytes": 32394,
+            "decoded_blocks": 180,
+            "service_sent_bytes": 33639
+          },
+          "region": {
+            "data_bytes": 3853,
+            "decoded_blocks": 2,
+            "service_sent_bytes": 4298
+          }
+        },
+        {
+          "grid": "ecmwf_ifs",
+          "source": "http",
+          "full": {
+            "data_bytes": 21,
+            "decoded_blocks": 17,
+            "service_sent_bytes": 556
+          },
+          "region": {
+            "data_bytes": 7,
+            "decoded_blocks": 3,
+            "service_sent_bytes": 542
+          }
+        },
+        {
+          "grid": "ecmwf_ifs",
+          "source": "s3",
+          "full": {
+            "data_bytes": 21,
+            "decoded_blocks": 17,
+            "service_sent_bytes": 556
+          },
+          "region": {
+            "data_bytes": 7,
+            "decoded_blocks": 3,
+            "service_sent_bytes": 542
+          }
+        }
+      ]
+    }
+  },
+  "p7": {
+    "status": "pass",
+    "executor": "independent AI, fresh context, GPT-6 Luna max",
+    "report": "../P7-testfixed-20261020.md",
+    "manifest_path": "build/evidence/regions/current-20261020/P7-independent-testfixed/manifest.json",
+    "manifest_sha256": "353398cd3c5d99a01d8a986170fdb6b40596abe8807f2035279ee4e38932da8f"
+  }
+}

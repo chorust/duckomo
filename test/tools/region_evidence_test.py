@@ -25,7 +25,7 @@ SANITIZER_TESTS = tuple("duckomo_sanitizer_" + name for name in (
     "batch_test", "raw_reader_test", "schema_test", "axis_selection_test", "parallel_scan_test",
     "scan_metrics_v3_test", "session_metrics_test", "grid_validation", "lifecycle", "spatial_selection",
     "spatial_io_test", "spatial_lifecycle_test", "region_input_test", "region_geometry_test",
-    "region_scan_test", "projection_evidence"))
+    "region_scan_test", "region_sampling_test", "projection_evidence"))
 
 
 def required_regression_tests(root: Path) -> set[str]:
@@ -91,7 +91,7 @@ def read_sanitizer_results(path: Path, extension: Path) -> list[dict[str, str]]:
     except ET.ParseError as error:
         raise EvidenceError(f"cannot parse sanitizer execution report: {error}") from error
     if len(cases) != len(SANITIZER_TESTS) or {case.get("name") for case in cases} != set(SANITIZER_TESTS):
-        raise EvidenceError("sanitizer execution report does not cover all 16 tests")
+        raise EvidenceError(f"sanitizer execution report does not cover all {len(SANITIZER_TESTS)} tests")
     if any(case.get("status") != "run" or any(case.find(tag) is not None
            for tag in ("failure", "error", "skipped")) for case in cases):
         raise EvidenceError("sanitizer execution report contains failed/skipped tests")
@@ -498,12 +498,18 @@ def p5_summary_errors(report: Any, report_path: Path, targets: list[dict[str, An
                     if item.get("incomplete_requests") != 0 or item.get("failed_requests") != 0:
                         errors.append(f"{version} {grid_id}/{source} service audit has failed or incomplete requests")
                 if source in ("http", "s3"):
-                    for label, full_value, region_value in (
-                            ("value bytes", full_values.get("data_bytes"), region_values.get("data_bytes")),
-                            ("decoded blocks", full_values.get("decoded_blocks"), region_values.get("decoded_blocks")),
-                            ("service sent bytes", full_audit.get("sent_body_bytes"), audit.get("sent_body_bytes"))):
-                        if not isinstance(full_value, int) or not isinstance(region_value, int) or full_value <= region_value:
-                            errors.append(f"{version} {grid_id}/{source} savings do not strictly reduce {label}")
+                    comparisons = (
+                        ("value bytes", full_values.get("data_bytes"), region_values.get("data_bytes")),
+                        ("decoded blocks", full_values.get("decoded_blocks"), region_values.get("decoded_blocks")),
+                        ("service sent bytes", full_audit.get("sent_body_bytes"), audit.get("sent_body_bytes")))
+                    for label, full_value, region_value in comparisons:
+                        if (not isinstance(full_value, int) or isinstance(full_value, bool) or
+                                not isinstance(region_value, int) or isinstance(region_value, bool) or
+                                region_value > full_value):
+                            errors.append(f"{version} {grid_id}/{source} has unknown or increased {label}")
+                    if not any(isinstance(a, int) and not isinstance(a, bool) and isinstance(b, int) and
+                               not isinstance(b, bool) and b < a for _, a, b in comparisons):
+                        errors.append(f"{version} {grid_id}/{source} no cost measure strictly decreases")
     service_logs = report.get("service_logs", {})
     if set(service_logs) != {"http", "s3"}:
         errors.append(f"{version} P5 service log coverage is incomplete")

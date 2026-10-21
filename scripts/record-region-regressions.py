@@ -82,6 +82,8 @@ def record(root: Path, build_manifest: Path, output: Path, spatial: Path,
                 argv = [str(binary)]
                 if name == "region_geometry_test":
                     argv += [str(spatial), spatial_sha]
+                elif name == "region_sampling_test":
+                    argv += [str(spatial)]
                 elif name == "region_scan_test":
                     argv += [str(spatial), env["DUCKOMO_CORE_FUNCTIONS_EXTENSION"]]
                 elif name == "domain_reference_test":

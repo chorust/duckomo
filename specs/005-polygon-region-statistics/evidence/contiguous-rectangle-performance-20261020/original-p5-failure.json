@@ -1,0 +1,157 @@
+{
+  "status": "historical-fail-original-policy",
+  "summary_sha256": "69d4f12e22558cee6e4de458541cdc38aeacfbc9627dc295ec06960863e254e5",
+  "source": "development artifact",
+  "targets": [
+    {
+      "grid_id": "ncep_gfswave025",
+      "original_status": "fail",
+      "sources": {
+        "http": {
+          "full": {
+            "value_bytes": 8620,
+            "decoded_chunks": 135,
+            "service_sent_bytes": 13432
+          },
+          "region": {
+            "value_bytes": 8620,
+            "decoded_chunks": 45,
+            "service_sent_bytes": 13432
+          }
+        },
+        "s3": {
+          "full": {
+            "value_bytes": 8620,
+            "decoded_chunks": 135,
+            "service_sent_bytes": 13432
+          },
+          "region": {
+            "value_bytes": 8620,
+            "decoded_chunks": 45,
+            "service_sent_bytes": 13432
+          }
+        }
+      }
+    },
+    {
+      "grid_id": "gem_rdps_10km",
+      "original_status": "pass",
+      "sources": {
+        "http": {
+          "full": {
+            "value_bytes": 10878,
+            "decoded_chunks": 32,
+            "service_sent_bytes": 11623
+          },
+          "region": {
+            "value_bytes": 3555,
+            "decoded_chunks": 2,
+            "service_sent_bytes": 4000
+          }
+        },
+        "s3": {
+          "full": {
+            "value_bytes": 10878,
+            "decoded_chunks": 32,
+            "service_sent_bytes": 11623
+          },
+          "region": {
+            "value_bytes": 3555,
+            "decoded_chunks": 2,
+            "service_sent_bytes": 4000
+          }
+        }
+      }
+    },
+    {
+      "grid_id": "gem_regional",
+      "original_status": "pass",
+      "sources": {
+        "http": {
+          "full": {
+            "value_bytes": 6044,
+            "decoded_chunks": 54,
+            "service_sent_bytes": 6889
+          },
+          "region": {
+            "value_bytes": 2740,
+            "decoded_chunks": 10,
+            "service_sent_bytes": 3285
+          }
+        },
+        "s3": {
+          "full": {
+            "value_bytes": 6044,
+            "decoded_chunks": 54,
+            "service_sent_bytes": 6889
+          },
+          "region": {
+            "value_bytes": 2740,
+            "decoded_chunks": 10,
+            "service_sent_bytes": 3285
+          }
+        }
+      }
+    },
+    {
+      "grid_id": "aladin_central_europe_2km",
+      "original_status": "pass",
+      "sources": {
+        "http": {
+          "full": {
+            "value_bytes": 32394,
+            "decoded_chunks": 180,
+            "service_sent_bytes": 33639
+          },
+          "region": {
+            "value_bytes": 3853,
+            "decoded_chunks": 2,
+            "service_sent_bytes": 4298
+          }
+        },
+        "s3": {
+          "full": {
+            "value_bytes": 32394,
+            "decoded_chunks": 180,
+            "service_sent_bytes": 33639
+          },
+          "region": {
+            "value_bytes": 3853,
+            "decoded_chunks": 2,
+            "service_sent_bytes": 4298
+          }
+        }
+      }
+    },
+    {
+      "grid_id": "ecmwf_ifs",
+      "original_status": "pass",
+      "sources": {
+        "http": {
+          "full": {
+            "value_bytes": 21,
+            "decoded_chunks": 17,
+            "service_sent_bytes": 556
+          },
+          "region": {
+            "value_bytes": 7,
+            "decoded_chunks": 3,
+            "service_sent_bytes": 542
+          }
+        },
+        "s3": {
+          "full": {
+            "value_bytes": 21,
+            "decoded_chunks": 17,
+            "service_sent_bytes": 556
+          },
+          "region": {
+            "value_bytes": 7,
+            "decoded_chunks": 3,
+            "service_sent_bytes": 542
+          }
+        }
+      }
+    }
+  ]
+}

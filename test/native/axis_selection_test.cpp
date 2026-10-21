@@ -74,6 +74,16 @@ void VerifyCombinedPredicateAndSegments() {
 	        "second selected read segment should preserve output offsets");
 }
 
+void VerifySelectedRectanglesPreserveGaps() {
+	const auto segments = BuildSelectedBatchSegments({2, 4, 3}, {0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14});
+	Require(segments.size() == 3 && segments[0].count == 6 && segments[1].count == 3 && segments[2].count == 3,
+	        "complete trailing rows coalesce, while missing positions and outer-axis boundaries stay separate");
+	Require(segments[0].read_count == std::vector<std::uint64_t>({1, 2, 3}) &&
+	            segments[1].linear_index == 9 && segments[1].batch_offset == 6 &&
+	            segments[2].linear_index == 12 && segments[2].batch_offset == 9,
+	        "coalescing keeps sparse source positions and packed output offsets exact");
+}
+
 void VerifyContradictionBecomesEmpty() {
 	AxisPredicate predicate;
 	predicate.necessary_conditions.push_back({1, AxisComparison::Equal, Value::BIGINT(99)});
@@ -288,6 +298,7 @@ void VerifySinglePointCreatesOneWindowPerTimeIndex() {
 int main() {
 	try {
 		VerifyCombinedPredicateAndSegments();
+		VerifySelectedRectanglesPreserveGaps();
 		VerifyContradictionBecomesEmpty();
 		VerifyUnconstrainedAxesCoverEachPositionOnce();
 		VerifyGlobalIntervalBudgetWidensWithoutDroppingRows();

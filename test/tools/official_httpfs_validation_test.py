@@ -163,15 +163,21 @@ class OfficialHttpfsValidationTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "unknown or duplicate"):
                 official_httpfs.read_generated_env(path)
 
-    def test_p5_requires_all_three_savings_measures_to_drop(self):
+    def test_p5_requires_no_cost_increase_and_at_least_one_drop(self):
         full = {"metrics": {"data_bytes": 900, "decoded_blocks": 8},
                 "audit": {"sent_body_bytes": 1200}}
         region = {"metrics": {"data_bytes": 200, "decoded_blocks": 2},
                   "audit": {"sent_body_bytes": 300}}
         self.assertEqual(official_httpfs.p5_savings_failures(full, region, "http"), [])
         region["audit"]["sent_body_bytes"] = 1200
+        self.assertEqual(official_httpfs.p5_savings_failures(full, region, "http"), [])
+        region["metrics"] = dict(full["metrics"])
         self.assertEqual(official_httpfs.p5_savings_failures(full, region, "http"),
-                         ["http service sent bytes did not strictly decrease"])
+                         ["http no cost measure strictly decreased"])
+        region["metrics"]["decoded_blocks"] = 2
+        region["audit"]["sent_body_bytes"] = 1201
+        self.assertEqual(official_httpfs.p5_savings_failures(full, region, "http"),
+                         ["http service sent bytes increased"])
 
     def test_service_audit_is_compact_and_keeps_request_counts(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -362,12 +362,13 @@ def p5_metrics(record,operation,region=False):
 
 def p5_savings_failures(full,region,source):
     failures=[]
-    if full['metrics']['data_bytes']<=region['metrics']['data_bytes']:
-        failures.append(f'{source} value data bytes did not strictly decrease')
-    if full['metrics']['decoded_blocks']<=region['metrics']['decoded_blocks']:
-        failures.append(f'{source} decoded blocks did not strictly decrease')
-    if full['audit']['sent_body_bytes']<=region['audit']['sent_body_bytes']:
-        failures.append(f'{source} service sent bytes did not strictly decrease')
+    comparisons=(('value data bytes',full['metrics']['data_bytes'],region['metrics']['data_bytes']),
+                 ('decoded blocks',full['metrics']['decoded_blocks'],region['metrics']['decoded_blocks']),
+                 ('service sent bytes',full['audit']['sent_body_bytes'],region['audit']['sent_body_bytes']))
+    for label,baseline,selected in comparisons:
+        if selected>baseline:failures.append(f'{source} {label} increased')
+    if not any(selected<baseline for _,baseline,selected in comparisons):
+        failures.append(f'{source} no cost measure strictly decreased')
     return failures
 
 def p5_unrun_targets(path):
@@ -389,6 +390,7 @@ def run_region_p5(args):
                             'duckomo_cache':'removed',
                             'server_page_cache':'not used to infer bytes; service response bytes are audited'},
              'comparison_scope':'bounded_window',
+             'savings_policy':'non_increasing_all_strict_one_20261020',
              'full_domain_scanned':False,
              'baseline_kind':'materialized read_om window then ST_Covers',
              'full_domain_savings_claimed':False,

@@ -2,6 +2,7 @@
 #include "duckdb/main/extension_helper.hpp"
 #include "duckomo_extension.hpp"
 #include "duckomo/reader.hpp"
+#include "duckomo/batch.hpp"
 
 #include <algorithm>
 #include <cstring>
@@ -60,7 +61,9 @@ std::vector<std::uint8_t> ReadBinaryFile(const fs::path &path) {
 
 class MemoryReadAtFile final : public ReadAtFile {
 public:
-	explicit MemoryReadAtFile(std::vector<std::uint8_t> bytes) : bytes_(std::move(bytes)) {
+	explicit MemoryReadAtFile(std::vector<std::uint8_t> bytes,
+	                          std::shared_ptr<ScanMetrics> metrics = nullptr)
+	    : bytes_(std::move(bytes)), metrics_(std::move(metrics)) {
 	}
 
 	std::uint64_t Size() const noexcept override {
@@ -303,6 +306,35 @@ void CheckAdjacentSelectionsReuseRanges() {
 	        "retry after data read failure must not reuse incomplete bytes");
 }
 
+void CheckRectangularBatchAvoidsRepeatedChunkDecoding() {
+	const auto object = ReadBinaryFile("test/data/raw_large.om");
+	auto metrics = std::make_shared<ScanMetrics>();
+	OmV3Reader reader(std::make_unique<MemoryReadAtFile>(object, metrics));
+	OmDecoderState merged(reader.ReadRootVariable()), rows(reader.ReadRootVariable());
+	const std::vector<std::uint64_t> shape{73, 61};
+	const auto segments = duckdb::duckomo::BuildBatchSegments(shape, 0, 7 * 61);
+	Require(segments.size() == 1, "seven complete rows should use one rectangular selection");
+	std::vector<float> merged_output(7 * 61), row_output(7 * 61);
+	const auto &segment = segments.front();
+	reader.DecodeSelection(merged, "merged", segment.read_offset, segment.read_count, {0, 0},
+	                       segment.read_count, merged_output.data(), merged_output.size() * sizeof(float));
+	for (std::uint64_t row = 0; row < 7; ++row) {
+		reader.DecodeSelection(rows, "rows", {row, 0}, {1, 61}, {0, 0}, {1, 61},
+		                       row_output.data() + row * 61, 61 * sizeof(float));
+	}
+	Require(std::memcmp(merged_output.data(), row_output.data(), merged_output.size() * sizeof(float)) == 0,
+	        "rectangular selections must match row-at-a-time official decode bit for bit");
+	const auto snapshot = metrics->Snapshot();
+	const auto merged_chunks = snapshot.variables.at("merged").decoded_chunks;
+	const auto row_chunks = snapshot.variables.at("rows").decoded_chunks;
+	Require(merged_chunks == 5 && row_chunks == 35,
+	        "joining seven rows must decode each of the five physical chunks once rather than seven times");
+	Require(merged.capacity_bounds.chunk_scratch_bytes == rows.capacity_bounds.chunk_scratch_bytes &&
+	            merged.capacity_bounds.output_bytes == merged_output.size() * sizeof(float),
+	        "joining selected rows must preserve the reader scratch bound and exact output capacity");
+	std::cout << "rectangular batch decoded chunks: " << row_chunks << " -> " << merged_chunks << '\n';
+}
+
 void CheckBufferReplacementReleasesBeforeAllocation() {
 	using duckdb::duckomo::OmByteBuffer;
 
@@ -329,6 +361,7 @@ int main() {
 		CheckRawLargeBounds();
 		CheckIncompressibleFpxChunk();
 		CheckAdjacentSelectionsReuseRanges();
+		CheckRectangularBatchAvoidsRepeatedChunkDecoding();
 		CheckBufferReplacementReleasesBeforeAllocation();
 		std::cout << "reader capacity bounds passed\n";
 		return 0;

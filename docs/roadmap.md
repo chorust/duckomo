@@ -1,6 +1,6 @@
 # DuckOMO Roadmap
 
-本地扫描、列裁剪和规则网格空间查询（Phase 0–3）已实现。Phase 4 的维度语义已实现；Phase 5 的官方 HTTPFS 远程与并行路径已通过 v1.5.4/v1.5.5/v1.5.6 的受控验证，独立复现仍待完成。Phase 6 的 [004 多网格](../specs/004-multi-grid-selection/spec.md) 功能已实现，逐网格真实样本和完整验收仍在进行。[005 Polygon 区域读取](../specs/005-polygon-region-statistics/spec.md) 已实现，版本矩阵和独立复现状态见该 spec 的 evidence。[006 nearest polygon sampling](../specs/006-region-nearest-sampling/spec.md) 已在既有 `read_om_regions` 中实现，points 默认兼容；006 已完成声明范围内的 N0–N7 验收：Linux AArch64、DuckDB v1.5.4/v1.5.5/v1.5.6、合成规则球面网格与固定 NCEP GFS025；真实输入仅私有留存、不公开分发，N7由独立用户执行。 [验收报告](../specs/006-region-nearest-sampling/evidence/final.md)。
+本地扫描、列裁剪和规则网格空间查询（Phase 0–3）已实现。Phase 4 的维度语义已实现；Phase 5 的官方 HTTPFS 远程与并行路径已通过 v1.5.4/v1.5.5/v1.5.6 的受控验证，独立复现仍待完成。Phase 6 的 [004 多网格](../specs/004-multi-grid-selection/spec.md) 功能已实现，逐网格真实样本和完整验收仍在进行。[005 Polygon 区域读取](../specs/005-polygon-region-statistics/spec.md) 当前源码已通过三版本P0–P7声明范围验收，含独立AI复现；固定窗口成本按负责人批准的非递增规则，见[最终记录](../specs/005-polygon-region-statistics/evidence/current-20261020.md)。[006 nearest polygon sampling](../specs/006-region-nearest-sampling/spec.md) 已在既有 `read_om_regions` 中实现，points 默认兼容；006 已完成声明范围内的 N0–N7 验收：Linux AArch64、DuckDB v1.5.4/v1.5.5/v1.5.6、合成规则球面网格与固定 NCEP GFS025；真实输入仅私有留存、不公开分发，N7由独立用户执行。 [验收报告](../specs/006-region-nearest-sampling/evidence/final.md)。
 
 ## 阶段
 
@@ -13,7 +13,7 @@
 | **4 — 其他维度** | 功能已实现；G0–G2 本地验收通过 | time、level、lead_time、member、run 映射；验证混合谓词、维度顺序和空结果 |
 | **5 — 远程与并行** | 官方 HTTPFS 实现及三版本受控验证通过；独立复现待完成 | HTTP(S)/S3 标准文件系统、任务切分和 profiling；自有缓存已移除，不承诺热缓存收益 |
 | **6 — 更多网格** | 功能已实现；完整验收未通过 | 旋转、Lambert、stereographic 与 Gaussian 定义、局部空间选择、source/grid-info；每类真实坐标/值、远程收益和独立复现门禁按 [004 spec](../specs/004-multi-grid-selection/spec.md) 完成 |
-| **005 — Polygon 区域读取** | 功能已实现；独立复现待完成 | 匹配版 spatial 依赖、原始区域点值、SQL 分时统计、owned memory/lifecycle、HTTP/S3 收益和三版本矩阵按 [005 gates](../specs/005-polygon-region-statistics/contracts/validation-evidence.md) 留证；P7 由未参与实现者执行 |
+| **005 — Polygon 区域读取** | 当前声明范围验收完成，P0–P7通过 | 三版本/AArch64固定窗口、17项sanitizer、独立AI P7；每目标三项成本均不增加且至少一项下降，见[最终报告](../specs/005-polygon-region-statistics/evidence/current-20261020.md)；非人工、无全域收益声明 |
 | **006 — 区域最近邻采样** | 声明范围内验收完成，N0–N7通过 | points/nearest、状态/来源与三版本验证通过；私有真实输入和独立用户复现见[最终报告](../specs/006-region-nearest-sampling/evidence/final.md) |
 | **7 — 科学计算** | 计划中 | 独立设计 `om_slice`、`om_reduce`、`om_interp`、`om_regrid` |
 | **8 — 跨 chunk 时间序列入口** | 待评审提案；未立项、未实现 | `read_om_series` 按 model 登记的 chunk 时间参数把任意时间窗展开为多个 `data/` 布局 `chunk_*.om` 对象并按 `valid_time` 对齐拼接，用户无需知道目标时间落在哪个 chunk；设计细节见下节 |
@@ -102,6 +102,14 @@ FROM read_om_series(
 - Phase 4–5：[003 历史验收记录](../evidence/003-dimensions-remote-parallel/final.md) 保留原 G0–G7 状态；当前官方 HTTPFS 路径的构建/本地回归、每版本 48 项远程 runtime、固定真实样本跨来源一致性、访问变化及性能结果见 [迁移验证记录](../specs/004-multi-grid-selection/evidence/official-httpfs-refactor/status.md)。Linux AArch64 的 v1.5.4/v1.5.5/v1.5.6 受控验证已通过，R21 独立验证者复现未执行，roadmap 不提升为 verified。
 - Phase 6 / spec 004：本地 synthetic native/SQL 与有限 source-object metadata/value 记录已有；真实投影/Gaussian 完整坐标值、H2/H4/H5 完整 gate、逐网格签名 S3/HTTP 服务端审计、完整 H8 和未参与实现者复现未闭环；HTTPFS 三版本 runtime 通过不替代这些门禁。**2026-10-10 修订**：N160/N320/N 区域真实样本经负责人批准本轮跳过；O1280 与三个投影定义已按 pinned producer 参考决定登记 coordinate-value-validated；完整时间值覆盖、远程/复现 gate 和完整 H1/H2 未闭环，不能由此宣布完整 gate 通过。逐定义状态见 [网格证据表](grid-domains.md)，任务状态见 [004 tasks](../specs/004-multi-grid-selection/tasks.md)。
 - Domain 扩展：68 项定义的来源和三个 AWS 目录的样本覆盖见 [规则网格 domain](regular-domains.md)。元数据绑定成功不代表同目录所有对象或全量值均已验证。
+
+## 2026-10-20 当前执行顺序
+
+本轮已将005固定窗口P0–P7证据重新绑定到最终源码/产物，并完成连续矩形读取优化；负责人批准[成本修订](../specs/005-polygon-region-statistics/contracts/non-increasing-cost-20261020.md)：冻结输入与SQL不变，每目标三项成本均不增加且至少一项严格下降。验收结果以005最新final为准。已完成的006按声明范围纳入[总台账](../.specify/memory/roadmap.md)，不重复立项。
+
+003的有效剩余工作是官方HTTPFS独立复现R21及最终证据映射R22，见[任务索引](../specs/003-dimensions-remote-parallel/tasks.md#当前有效待办2026-10-20)。004的有效工作见[C004-01–04](../specs/004-multi-grid-selection/tasks.md#当前有效待办2026-10-20)：当前网格完整门禁、逐网格远程成本、三版本H8及独立H9。旧专用ABI/自有LRU、已跳过N-grid真实样本和退出的2.0组合不恢复为本轮前置。
+
+[连续矩形优化记录](../specs/005-polygon-region-statistics/evidence/contiguous-rectangle-performance-20261020.md)区分实际解码/请求收益、物理字节增加及小窗口未改善的情况，不作普遍吞吐承诺。bilinear、Line、面积计算和series仍需各自规格与验收，不由台账更新自动立项。
 
 ## 后续实现约束
 
