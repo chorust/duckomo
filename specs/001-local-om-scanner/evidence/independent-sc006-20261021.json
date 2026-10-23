@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "criterion": "specs/001-local-om-scanner/spec.md SC-006",
+  "decision": "can close within the owner-approved independent AI verification scope",
+  "human_verification": false,
+  "verifier_identity": {
+    "verifier": "OpenAI Codex AI agent; system/developer identity: based on GPT-6",
+    "human_verification": false,
+    "independent_of_implementation": true,
+    "independence_basis": "Fresh CLI session per owner; this agent did not implement DuckOMO or its budget repair; no delegation.",
+    "owner_accepts_ai_verification": true,
+    "model_runtime_identifier": null,
+    "model_identifier_limitation": "Exact serving model revision is not exposed; GPT-6 is the declared agent identity, not an independently measured model ID.",
+    "session_identity": {
+      "CODEX_SESSION_ID": "01a15d61-e13b-7d10-91d4-c575806a80d9",
+      "CODEX_THREAD_ID": "01a15d61-e13b-7d10-91d4-c575806a80d9"
+    },
+    "started_utc": "2026-10-21T07:37:14.444089+00:00",
+    "uname": [
+      "Linux",
+      "lizhan-spark",
+      "6.17.0-1029-nvidia",
+      "#29-Ubuntu SMP PREEMPT_DYNAMIC Wed Jul  1 00:13:52 UTC 2026",
+      "aarch64",
+      "aarch64"
+    ],
+    "platform": "Linux-6.17.0-1029-nvidia-aarch64-with-glibc2.39",
+    "libc": [
+      "glibc",
+      "2.39"
+    ],
+    "orchestrator_python": "3.13.13 | packaged by Anaconda, Inc. | (main, Apr 14 2026, 06:21:46) [GCC 14.3.0]",
+    "query_environment_exact": {
+      "PATH": "/nonexistent",
+      "HOME": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-001/runtime-home",
+      "TMPDIR": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-001/runtime-tmp",
+      "LC_ALL": "C",
+      "LANG": "C",
+      "TZ": "UTC"
+    },
+    "query_environment_inherited": false,
+    "python_role": "Orchestration, reference comparison and evidence serialization only; no Python DuckDB API.",
+    "build_scope": "Changed translation units rebuilt and relinked with unchanged pinned base objects; isolated regression build, not a full matrix gate.",
+    "base_build_id": "5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9",
+    "build_id": "fb49547ec3531e42eeb415ba7cf985989b57a4e1853f48425fc3ec187ca5f245",
+    "dependency_commits": {
+      "duckdb": {
+        "repository": "https://github.com/duckdb/duckdb.git",
+        "commit": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+        "version": "v1.5.4"
+      },
+      "om_c": {
+        "repository": "https://github.com/open-meteo/om-file-format.git",
+        "commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+      },
+      "extension_ci_tools": {
+        "repository": "https://github.com/duckdb/extension-ci-tools.git",
+        "commit": "b777c70d30942cca5bef62d6d4fa23a13362f398"
+      }
+    },
+    "os_release": "PRETTY_NAME=\"Ubuntu 24.04.4 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.4 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+    "scope": "Spec 001 SC-006 only; no full validation/performance/lifecycle gate claimed."
+  },
+  "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+  "closure": {
+    "criterion": "specs/001-local-om-scanner/spec.md SC-006",
+    "decision": "can close within the owner-approved independent AI verification scope",
+    "human_verification": false,
+    "platform": "Linux AArch64",
+    "duckdb_version": "v1.5.4",
+    "required_checks": [
+      "load-and-version",
+      "raw-describe",
+      "raw-read-om-describe",
+      "multi-describe",
+      "projection-describe",
+      "raw-full",
+      "raw-narrow",
+      "raw-read-om-full",
+      "raw-count",
+      "multi-full",
+      "multi-narrow",
+      "multi-filter",
+      "projection-full",
+      "projection-narrow",
+      "projection-count",
+      "projection-filter-nonempty",
+      "special-read_om_raw-unsorted-exact",
+      "special-read_om-unsorted-exact",
+      "special-read_om_raw-signbit-resolved",
+      "special-read_om-signbit-resolved",
+      "official-cli-zeros-unsorted",
+      "official-cli-zeros-sorted",
+      "load-and-version-exec-trace",
+      "raw-describe-exec-trace",
+      "multi-full-exec-trace",
+      "multi-narrow-exec-trace",
+      "projection-full-exec-trace",
+      "projection-narrow-exec-trace"
+    ],
+    "required_checks_passed": true,
+    "cli_runs": 36,
+    "cli_exit_zero": 36,
+    "empty_stderr": 36,
+    "initial_or_supplemental_assertion_passes": 33,
+    "retained_assertion_failures": [
+      "official-cli-negative-zero-control",
+      "special-read_om-full",
+      "special-read_om_raw-full"
+    ],
+    "unresolved_required_failures": [],
+    "failure_resolution": "Two sorted-output signed-zero comparisons and one incorrect single-constant control expectation; resolved by exact unsorted complete scans and a matching official-engine sorted-values control. No product changes.",
+    "input_hashes_unchanged": true,
+    "sanitized_environment_runs": 36,
+    "exec_traced_runs": 14,
+    "trace_assertion": "Exactly one exec per traced run: the official CLI. No Python or Swift subprocess was launched.",
+    "build_limit": "Isolated changed-TU relink, not a clean full rebuild or full feature matrix.",
+    "sealed_utc": "2026-10-21T07:41:54.454585+00:00"
+  },
+  "parent_audit": {
+    "sealed_files_verified": 190,
+    "inputs_verified": 23,
+    "raw_package_dir": "build/acceptance-closure-20261021/independent-001",
+    "manifest_sha256": "ede72ca5818c6478aa5c940967d2cad9b970dcc47944894e3aed157e07009409",
+    "report_sha256": "6ba3639b6a08b9f8294eb00da549708c43125ac921133e8a8648d8a0c0b5e7e7",
+    "closure_sha256": "774115be581d716f75a54f91a870f2bc5ebe6d36c2ff86b0b309867e1f3327d9"
+  }
+}

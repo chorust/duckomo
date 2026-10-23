@@ -1,0 +1,2944 @@
+{
+  "schema_version": 1,
+  "root": "/home/blizhan/repo/github/duckomo",
+  "output_root": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004",
+  "hash_algorithm": "sha256",
+  "created_utc": "2026-10-22T04:21:09.065027+00:00",
+  "status": "pass",
+  "artifacts": [
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/003-manifest-qualification.json",
+      "bytes": 234,
+      "sha256": "9486738ed4ac8c436637834d225aa920578395550fe8e3ccd021ce44dbb430b8"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/audit_final_gates.py",
+      "bytes": 8299,
+      "sha256": "8ac85f47e1cdf3c18d84229f6d49d257bbda6ceeb710b3dab215f52425cb3dd8"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/audit_final_privacy.py",
+      "bytes": 1282,
+      "sha256": "eb4d5f80a856eefab7fed450289d268421d78941455a8d086df63b24f7cca4b9"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/audit_inherited_gates.py",
+      "bytes": 2898,
+      "sha256": "568dfc8908174e7b288f9795bfb22ff2043aac7261ca059684ae1f40853541ac"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/audit_local_results.py",
+      "bytes": 2115,
+      "sha256": "206ed806b544ab03a8c773f1fe2df4d370d116bc10afe24add5034d7d82b1d6d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/audit_matrix_h9.py",
+      "bytes": 4132,
+      "sha256": "3a9d718c21eace766c5474177e80fb99e1a52fc8a8845f7264a3793b8ac8e39f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/audit_own_remote.py",
+      "bytes": 1852,
+      "sha256": "335c4062363b5ee217b3a6ec3c5713e1603bbbd05ac430cc535ce01905244475"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/audit_pair_policy.py",
+      "bytes": 4760,
+      "sha256": "32f53fcfb316aa61101863680131a9cea0ebbbb8ff9aa246c5571da98fadb5e4"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/audit_s3_lifecycle.py",
+      "bytes": 2202,
+      "sha256": "3d8660df7d06dd784e23bada0020dfc64bd6bcafd5a5df175dbb8513cd32cdf5"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/audit_supplements.py",
+      "bytes": 5681,
+      "sha256": "92fd6e8e07512287a9ac962658ca0f8ee6257e5dbf93f9e8e6295e08207f2bac"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/build/coordinates-compile.command.json",
+      "bytes": 1134,
+      "sha256": "9f2b92f33494fdb2158e1498073cf5cf7fac5fdca272bcc46954485d65126a39"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/build/coordinates-compile.log",
+      "bytes": 4679,
+      "sha256": "168287d04ce14df094ceeec7e87e687d08aa7e6ee395be794b904be53e348b8d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/build/coordinates-link.command.json",
+      "bytes": 1266,
+      "sha256": "8e64827bd41bddf7c1abc1557608e418bf07846d7f75b8c0f7b704361de734da"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/build/coordinates-link.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/build/full_values_fast_remote-compile.command.json",
+      "bytes": 1170,
+      "sha256": "56a9d1753c162480ddee8fc189fe5cb7b51c17522f17eb3824c5f25063fa0bf2"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/build/full_values_fast_remote-compile.log",
+      "bytes": 6517,
+      "sha256": "1a8541712129cd505989b75a88c0830fa483e15488a255d7432989f2006690ff"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/build/full_values_fast_remote-link.command.json",
+      "bytes": 1301,
+      "sha256": "05eb7f08bae1358dbe26a260b1293c4e345173787883a9a1bd26090f58017905"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/build/full_values_fast_remote-link.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-cli-pair/closure.json",
+      "bytes": 7532,
+      "sha256": "55ac66ab174585f110737a9018591ae69e9e3f9c220f1992c97824992e7a8a85"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-cli-pair/manifest.json",
+      "bytes": 118410,
+      "sha256": "134eff2fe567465e29a68ac3209ac6248ca7605b4651baa0359287723ba90504"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-cli-pair/report.md",
+      "bytes": 8346,
+      "sha256": "3aa7199ffc6851f5b1372718720d4681543ae4b38b8813d026ea4f5759a6d0fa"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-final-matrix/closure.json",
+      "bytes": 7827,
+      "sha256": "ec8e71f4aefbf0aecdcd8ef8db17781d49112a08423768eeec444516c59a9b36"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-final-matrix/finalize_h9.py",
+      "bytes": 16248,
+      "sha256": "cb842645a6d35672288906492a9009ff3b9915578b6ce4d93b931da5ff5a7c38"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-final-matrix/manifest.json",
+      "bytes": 127335,
+      "sha256": "2f0a46f134dc198094d201f91db36aec98b9bb09e37c9df183010d74e995ee5c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-final-matrix/prior-finalize-launch.command.json",
+      "bytes": 722,
+      "sha256": "245d019df781e4533f4c540af0c0cc5ab036332ec35fe1a3cd73542fc0285cb2"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-final-matrix/prior-finalize-launch.log",
+      "bytes": 172,
+      "sha256": "39054e7e21b77489be6831b162ae9fd67a3aed540f1e4f849833a4c2d189befa"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-final-matrix/progress.md",
+      "bytes": 3718,
+      "sha256": "5d55d4b0a36a65f947a99a22dcbdbac81c6b095fb9775dde65c8275a91cfdc1a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-final-matrix/report.md",
+      "bytes": 8808,
+      "sha256": "491bc1884560aa4f24ec39d3633e64d17a7f3aae2f2ab517bc8708cfb40980c4"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-final-matrix/s3-lifecycle-audit.json",
+      "bytes": 558,
+      "sha256": "bc3d922e20d45daa165e14f4ce4f83d8c348b6130f8a36977a22621e4fd9ed90"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/audit_final_gates.py",
+      "bytes": 5682,
+      "sha256": "3c5545427cb0799ea63f2bffb2d22e1606ebf6e44d5d459275db595fa9c57e99"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/audit_matrix_h9.py",
+      "bytes": 3795,
+      "sha256": "add77a010c67ed5c6d80f8e7b250708f0dd7ef135dc3558707f1367237201fe7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/audit_pair_policy.py",
+      "bytes": 4745,
+      "sha256": "0f2e449e4096e9a9a0bdd7e4837087383ef5bdfd715929c9e42d23c6b2c7c54f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/closure.json",
+      "bytes": 30529,
+      "sha256": "8ade140db68fe5b3d9ece423b68d97accfc1689b9a1489638db3d164a5272609"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/final-gates-audit.json",
+      "bytes": 4828,
+      "sha256": "c2398dade8bfac194a846ae85dfb86408b290c04e8bd1ec73fffcb9161f5479f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/final-private-value-scan.json",
+      "bytes": 409,
+      "sha256": "1b190ef0f2c1c233d5d5565784edbf18c0e3b1a85afde9566118b7fcb99c1bc9"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/finalize_h9.py",
+      "bytes": 20158,
+      "sha256": "30250b2d6a034ba1bbec383da59493626f127d4e2605ee03c19e0912dd0cdb1e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/manifest.json",
+      "bytes": 141936,
+      "sha256": "99e2991bff022cff20a9b20c74c783fa74cc010ac4a7a6e9d6908fda69d6a6c7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/pair-policy-audit.json",
+      "bytes": 31445,
+      "sha256": "53e79b827c822872466e4743caddb6c4b7c7082409288c400c97224c2eb825ab"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/parent-matrix-audit.json",
+      "bytes": 24444,
+      "sha256": "68d07a4b5c3c57501dca56d4e18e85e63d73e90d8afa8ed1135b9f7c007fe386"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/prior-finalize-launch.command.json",
+      "bytes": 722,
+      "sha256": "004e9a7a1fabec6911ebc25b191d9b492ccfe6a48c5056828d5d3ebe805659fd"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/prior-finalize-launch.log",
+      "bytes": 172,
+      "sha256": "582f0976e9cc704ea41124998cef102099197eea6c90b1504fcc02ebec96d47d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/progress.md",
+      "bytes": 4495,
+      "sha256": "ef2896c7247e24c4e95edfca511d57196e8d4788575856b5f05989ce983322dc"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/report.md",
+      "bytes": 11766,
+      "sha256": "e0ef048402f336674e79cc68b8fcc912f7cc0a032e9be8ac9c17b729cae905b3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/s3-lifecycle-audit.json",
+      "bytes": 558,
+      "sha256": "bc3d922e20d45daa165e14f4ce4f83d8c348b6130f8a36977a22621e4fd9ed90"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/supplement-audit.json",
+      "bytes": 2895,
+      "sha256": "0fba5b4d561c41c8630ec9619dd13ed118d5298bb16fc44097f3a268a8997e36"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/verify_final_seal.py",
+      "bytes": 1242,
+      "sha256": "edfc2c42a62cfbb9af8a89a1362c755322d2959e97d3abba566afd46755783c0"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/closure.json",
+      "bytes": 10497,
+      "sha256": "fbfa54dd1b091e749f1f4a1f237c7b81526c55fa6edead391b77b41b434bf7d7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/common.py",
+      "bytes": 1538,
+      "sha256": "6249c07fb733546fe542dbffa223d1a61019a3d1c8510dcdca67d902ec6fd820"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/common_h9.py",
+      "bytes": 2952,
+      "sha256": "a6c3261857911d2f67e56bdb7410f15c69f3123deabc3961feb08d50bb6b69ef"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/contract-inputs.json",
+      "bytes": 4423,
+      "sha256": "4ed391f6d7496153e8994bf1098b7eac6ab695b5a24c651a9eb34625c4af324c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/coordinate-selfcheck/good.command.json",
+      "bytes": 1404,
+      "sha256": "84fb144d6a1f84906571c05e92d690721c16adfa952bf3883c05371eca1802a3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/coordinate-selfcheck/good.log",
+      "bytes": 172,
+      "sha256": "6b706f97c280c9302af0e5aa08bc8e8ce62b7a8c545297759b752fbf59aa1fc6"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/coordinate-selfcheck/good.metrics.json",
+      "bytes": 9629,
+      "sha256": "e1c06055b840f2caf07700d26a3ce318b061f0ebaed735c978d7bfcfa66fc3b2"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/coordinate-selfcheck/good.sql",
+      "bytes": 552,
+      "sha256": "fc17f6fdddaf2f7866957f40cf5a6791d9a5865b12989809da33466de8f050e7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/coordinate-selfcheck/one.f64",
+      "bytes": 16,
+      "sha256": "2b0d7b4eb6428ba32f0bd0ce97267730ff6c15572e6b8daf412d8b0afd0b8a9e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/coordinate-selfcheck/wrong-axis.command.json",
+      "bytes": 1426,
+      "sha256": "7cd5385770aa73e6c76e8d3e4be1d7505341e6e1b105e082517200d015666698"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/coordinate-selfcheck/wrong-axis.log",
+      "bytes": 26,
+      "sha256": "47776ccb2963d8e6bd100eec1903b8fa570334482e67afcc90a1e4d3cb62ee71"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/coordinate-selfcheck/wrong-axis.sql",
+      "bytes": 565,
+      "sha256": "1aa67b3e62deb3d8265530642afa20377679173b2f6a41cc1aeb5ed7bfac5070"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/coordinate-selfcheck/wrong-coordinate.command.json",
+      "bytes": 1452,
+      "sha256": "a2cef3b88dc726fb6abddbea3b05494e443f1f406cc15cbbaad82f391cce2862"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/coordinate-selfcheck/wrong-coordinate.log",
+      "bytes": 25,
+      "sha256": "94d72cff19178a8f00c49b7975908508a7a1a09db1319a0acaf204339474a6f7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/coordinate-selfcheck/wrong-coordinate.sql",
+      "bytes": 552,
+      "sha256": "fc17f6fdddaf2f7866957f40cf5a6791d9a5865b12989809da33466de8f050e7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/coordinate-selfcheck/wrong.f64",
+      "bytes": 16,
+      "sha256": "d72692f07028a1d5fb170c3aed8e0b99c07e7a8301995be0f79e87bd508763d3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/coordinate_selfcheck_h9.py",
+      "bytes": 1058,
+      "sha256": "a6db9251d0cf809801f20a37c71541e518095f36a8589cd8857d9d4258990314"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/coordinates.cpp",
+      "bytes": 3301,
+      "sha256": "5c7ced38c8921b301bea4cbea48557a3e095caa0a503e2f013068cf60e9b0b79"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/derivative-input-hashes.json",
+      "bytes": 4530,
+      "sha256": "f6a1e1bccd5bcfee3a865aecb36166c7b0a51cffcdff603a25a253ad7902e378"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/derivative-provenance.json",
+      "bytes": 462,
+      "sha256": "45c8faf481c1be04f532f3ffccb9c0e221271ad37ab3b6d206a69ebede591d01"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/env/compiler.command.json",
+      "bytes": 619,
+      "sha256": "35bb20b341dcdc46c03faa2e5e59aecda22dfa0f2cfc7b0aa66b28cc6633c5f1"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/env/compiler.log",
+      "bytes": 246,
+      "sha256": "88b7c4b67564a146863224148116065fee418539f0a408f3636a68f3bde51805"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/env/git-head.command.json",
+      "bytes": 630,
+      "sha256": "0b2389cda2a761a619f5ad1b4337a8979dedd7047a0a77adaed3ddda18f1d984"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/env/git-head.log",
+      "bytes": 41,
+      "sha256": "504a916bef0d336a1212d0756441fd1ef99b331febf85fec4b2112ba9404c113"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/env/uname.command.json",
+      "bytes": 611,
+      "sha256": "137769ea76b862f91c177aabf2814934b1df89d771cfcff91c3ce063bfcae9dd"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/env/uname.log",
+      "bytes": 132,
+      "sha256": "869b57a1796576aec1b40df8be3fca6ad2001b2c95c6936d7728ede533409773"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/environment-compiler.command.json",
+      "bytes": 590,
+      "sha256": "172a1274993a187d97bbcfcf6f8b5942992ddbcc4868a52728c1acb5b85ba133"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/environment-compiler.log",
+      "bytes": 246,
+      "sha256": "88b7c4b67564a146863224148116065fee418539f0a408f3636a68f3bde51805"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/environment-uname.command.json",
+      "bytes": 581,
+      "sha256": "062df74c4c6eae04c438d569ab4703e0707360dfb4f26876c635efe23697b4d0"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/environment-uname.log",
+      "bytes": 132,
+      "sha256": "869b57a1796576aec1b40df8be3fca6ad2001b2c95c6936d7728ede533409773"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-gates-audit.json",
+      "bytes": 5851,
+      "sha256": "592f75e5e7293484832e0d617ee194e8cd99b887c289052c604e272cad900177"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-private-value-scan.json",
+      "bytes": 409,
+      "sha256": "fa23fce01bd5734161101926224c2ea187661abec53f72e1c008871f11e8cf29"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-resumption.json",
+      "bytes": 409,
+      "sha256": "5eba60ee4ad9bafa88e48d90f6352418a3444ca4f7a7ec7e203f63f87cf5d93e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/audit_matrix_h9-attempt1.command.json",
+      "bytes": 747,
+      "sha256": "36a29b74820679c6dd7030ad0532392e0f0eba8957c99b85fecde68528bfd801"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/audit_matrix_h9-attempt1.log",
+      "bytes": 52,
+      "sha256": "c8c5db2e0c71e0f5176ebad48a22830d91e5d89ff8bda1303490c227b40b4b2c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/audit_s3_lifecycle-attempt1.command.json",
+      "bytes": 753,
+      "sha256": "7c226b43af571b580848f8b02309f020864ac5b99c8986c461f03cf31fdcec44"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/audit_s3_lifecycle-attempt1.log",
+      "bytes": 32,
+      "sha256": "3df7c4580af93c34217264a4b7de5a061dcd59f87732f29e74534ff02886618a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/current-gates-attempt1.command.json",
+      "bytes": 749,
+      "sha256": "b2706b1c5967fd57ee451b2018559714e63bd27ec95145af79d58a38f4a4dabe"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/current-gates-attempt1.log",
+      "bytes": 1697,
+      "sha256": "5593328dd9bc7322e8be71d9229227365e8b5f2b0d7101df11636b170652988b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/current-gates-attempt1.result.json",
+      "bytes": 216,
+      "sha256": "80f3d376e579db5b87e461317165de6bc08db394c95224841ba7a70e01906b6f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/current-gates-attempt2.command.json",
+      "bytes": 748,
+      "sha256": "1f20fccd6ac9f3521269b740f77e7a26d317b368728d421c216f9157219366da"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/current-gates-attempt2.log",
+      "bytes": 269,
+      "sha256": "ecc616d277fc1f7b49817ba67e79fe725b6e009912fb40f8a188dc2ce150bbd1"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/pair-policy-attempt1.command.json",
+      "bytes": 746,
+      "sha256": "493eff3db04ce93de5ebd4fc959ff2b3003c47583094143d50843cc19189acd4"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/pair-policy-attempt1.log",
+      "bytes": 378,
+      "sha256": "46fc57e1ac5da17e67afca4516c2c1062e51709f3ff8a6bf9714d22689f4c97f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/pair-policy-attempt1.py",
+      "bytes": 3379,
+      "sha256": "fdf48701c15089abae570c55af23c35bfe6f9039d4d3167020c944dc0d9122ca"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/pair-policy-attempt2.command.json",
+      "bytes": 746,
+      "sha256": "3af985c7d0fad75d57dc350baed4a4de851c12ab7c7ec770eeb4213f3210b144"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/pair-policy-attempt2.log",
+      "bytes": 362,
+      "sha256": "f6d46b25f99d888d885485ef33123ef2fd3580ce4b5d2c3a7502df029b2d0355"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/pair-policy-attempt2.py",
+      "bytes": 3708,
+      "sha256": "4d8b6c2cf6c6a81eb31d094bfe54a3e855b25a60bd40e6eedf65be8db1386542"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/pair-policy-attempt3.command.json",
+      "bytes": 745,
+      "sha256": "b5b7ed434d685e3bd1b73277dfef961db9b2a002ea857619a8d374c01b567660"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/pair-policy-attempt3.log",
+      "bytes": 134,
+      "sha256": "8561ea23617edd7455c52d767a972d04b69b0195edb357147285498255659be6"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/privacy-attempt1.command.json",
+      "bytes": 744,
+      "sha256": "582bad6255c06b8aafd1ac3cc1895646051cb793a98033c005a7be4e6f210024"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/final-review/privacy-attempt1.log",
+      "bytes": 42,
+      "sha256": "53fc065063756eae43076cabd84621e5ba4b1611b345e71f49182e4a732b418e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/finalize_h9.py",
+      "bytes": 21379,
+      "sha256": "c28002fd9ea7bc38a6ec2f7e7768f96d057df9e2670125a68770680eb502208f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/four-grid-results.json",
+      "bytes": 36129,
+      "sha256": "ba4c470a8e1288a9623501655bf662d5bce68fe11aef63fdf588af020f78f442"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/full_values_fast_remote.cpp",
+      "bytes": 5197,
+      "sha256": "22b390fa22629d969264740486b963332ee6f59312fc7e8e90efcf5240c90f29"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/h0-regeneration/grid-registry-test.command.json",
+      "bytes": 698,
+      "sha256": "2a616be67092ab1da29e612a64c89aa8101909cffe1996552c3cc948e2cb4468"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/h0-regeneration/grid-registry-test.log",
+      "bytes": 378,
+      "sha256": "5ab327f4d600881262edd10745b3523e2fcc12bce8277ccf081578b6d23b7135"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/h0-regeneration/regenerate-1.command.json",
+      "bytes": 1286,
+      "sha256": "1c0bd680a2ff411927ec8372097229037b0dc0d376f1cedbbd2d0feaa9f9b838"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/h0-regeneration/regenerate-1.log",
+      "bytes": 681,
+      "sha256": "15809302d9379f84b9255d42f2dae5d1f6993a89d153bd4e57b002725553008e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/h0-regeneration/regenerate-run-1.command.json",
+      "bytes": 995,
+      "sha256": "8bd56e12a9f40f830410e0f376093364cf73b20719ab5c514bd3d1ce755018b4"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/h0-regeneration/regenerate-run-1.log",
+      "bytes": 256,
+      "sha256": "ec4794e717e9ded2575501f36de14e36332f0b281ca9219784c169a4800b888e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/h0-regeneration/regenerate-run-2.command.json",
+      "bytes": 996,
+      "sha256": "6bc5e211385e1572bd9896b35e089fe2df7bc379e7d9705eb4f2a0700a501651"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/h0-regeneration/regenerate-run-2.log",
+      "bytes": 256,
+      "sha256": "fe33ae3cc716483deb9fbe10db1570cfb08ff1310e558741c37a1cdf8aea927e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/h0-regeneration/regenerated-1.hpp",
+      "bytes": 848283,
+      "sha256": "b444e16f553675f38cc0f03192f6065160aa75292910f469929f2a1a6bb53e69"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/h0-regeneration/regenerated-1.sql",
+      "bytes": 92895,
+      "sha256": "8a9ae9cd70fc0ebbef56a47a70a1aa7799c3f08af2f8429ce0fc004cdf62e788"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/h0-regeneration/regenerated-2.hpp",
+      "bytes": 848283,
+      "sha256": "b444e16f553675f38cc0f03192f6065160aa75292910f469929f2a1a6bb53e69"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/h0-regeneration/regenerated-2.sql",
+      "bytes": 92895,
+      "sha256": "8a9ae9cd70fc0ebbef56a47a70a1aa7799c3f08af2f8429ce0fc004cdf62e788"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/h0-regeneration/registry-check.command.json",
+      "bytes": 712,
+      "sha256": "5cebff6d9805b13b2538f686fde3213a135e79331f0e24187253aac68bc0be3a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/h0-regeneration/registry-check.log",
+      "bytes": 128,
+      "sha256": "f21370b40177213786b20168029e43de339913aa06f3c2b378af10f53887ea99"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/identity-resumption.json",
+      "bytes": 428,
+      "sha256": "a8d8a25e99f3e0132fea4d20804500151459400f9bbe0f72522cea631f9dacff"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/independent-oracles/aladin_central_europe_2km-official-decode.command.json",
+      "bytes": 1019,
+      "sha256": "531f3d3b95fcd092cb61b85e4c3c1585d9286ce22159e03867448ca6bc74e212"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/independent-oracles/aladin_central_europe_2km-official-decode.log",
+      "bytes": 196,
+      "sha256": "e9b222823435e38bf80c3b3cc945747e58ca310031ae71d7bf5f31c5d255b9ea"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/independent-oracles/aladin_central_europe_2km.coordinates.f64",
+      "bytes": 14101776,
+      "sha256": "53e37b87f7678f80a7b6a47b1e350486647ace1154b38cb61345f855767bc26f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/independent-oracles/aladin_central_europe_2km.f32",
+      "bytes": 423053280,
+      "sha256": "1b991fdc0f009a166bcdf1215971e2af4ba78a5c7383a5d8dbf0ca007031289f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/independent-oracles/ecmwf_ifs.coordinates.f64",
+      "bytes": 105594880,
+      "sha256": "a2540c4ecf9045e0544834f0acf2f0d1a04b20423e666cef4773e2d935c03f11"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/independent-oracles/ecmwf_ifs_hsurf-official-decode.command.json",
+      "bytes": 991,
+      "sha256": "8afd9ebd2bbc37af323adced48990a9eaa7d557e29c16482b3f9df282f92d018"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/independent-oracles/ecmwf_ifs_hsurf-official-decode.log",
+      "bytes": 194,
+      "sha256": "1d8934f11ca9956a00e809e8f79ec0f5de63f2223962b0dd526824b3a5c50138"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/independent-oracles/ecmwf_ifs_hsurf.f32",
+      "bytes": 26398720,
+      "sha256": "5a7179879c38e9e206eb0ef08bd76065540a55eaa50b6eafa9e38454d84ce174"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/independent-oracles/gem_rdps_10km-official-decode.command.json",
+      "bytes": 998,
+      "sha256": "e382a139d7530595669816bf147d31860a2a4a85032c78375be0bddb28cc0470"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/independent-oracles/gem_rdps_10km-official-decode.log",
+      "bytes": 203,
+      "sha256": "e3922005753f7347dc176bff2a3eb65e902c01f9d72f4138900dca139611068e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/independent-oracles/gem_rdps_10km.coordinates.f64",
+      "bytes": 19060800,
+      "sha256": "cba5c0eaedc54f970b63f3edafe9651ee1ca3a62b6e94cf01852eba4d49e146b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/independent-oracles/gem_rdps_10km.f32",
+      "bytes": 543232800,
+      "sha256": "2cdc96850930b8320e1a098101c2f73af686c03c0aad0e94f442dc95b2d068a3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/independent-oracles/gem_regional-official-decode.command.json",
+      "bytes": 991,
+      "sha256": "58ec23ab18d883cdc5983671366497cfa4272877ccb20a74fdac230fd1f5ef77"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/independent-oracles/gem_regional-official-decode.log",
+      "bytes": 202,
+      "sha256": "841aa5fb3502a9002957c0b7bc1ae2af996cb1b6c8eb6b14bc8ab2a55d3b9567"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/independent-oracles/gem_regional.coordinates.f64",
+      "bytes": 12327040,
+      "sha256": "6736b6e0264b35ed53d1f75ec514b4e0b763fb5a0dbf3b21600e5fb1e65bcb14"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/independent-oracles/gem_regional.f32",
+      "bytes": 351320640,
+      "sha256": "25aa3a102d43cf55f998a625533ff65e8a521440a408052e01bd3e282e192219"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/inherited-gate-audit.json",
+      "bytes": 601,
+      "sha256": "8fa5ca2b7d4e8d797bc0a9762543bc37ee9fa2e5eb67891bacd6142872dc534c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/input-snapshots/parent-notes/parent-current-matrix-path.txt",
+      "bytes": 749,
+      "sha256": "d6b7ca8b13a19b58f4eaa36de134d2fe30135489779e6c2aeb2103de8976c416"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/input-snapshots/parent-notes/parent-matrix-progress.txt",
+      "bytes": 1084,
+      "sha256": "59862c0a67a583eb751695708e21d9d4119b1a28fe05795e19b611ce695b096e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/input-snapshots/parent-notes/parent-note.txt",
+      "bytes": 1191,
+      "sha256": "66199bebaf940e35d105602063657a966b68ddefba643cc1d6938c2d4de9e677"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/input-snapshots/parent-notes/parent-remote-release.txt",
+      "bytes": 1321,
+      "sha256": "8e1f3a5da6f4b65f88360713326fe3bb2084fcaedc58192dfd9578ce7be7511a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/input-snapshots/parent-notes/parent-repair-in-progress.txt",
+      "bytes": 772,
+      "sha256": "834185a9b6141376bcab46ae9a9ad51ade2023d43a51358f8d54b031a8216ab2"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/input-snapshots/parent-notes/parent-s3-lifecycle-complete.txt",
+      "bytes": 854,
+      "sha256": "0d2c922ef5f1e043757337dfc923a70feff6ba91cf34ffcc6d19d067296d0aa9"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/input-snapshots/parent-notes/parent-s3-lifecycle-extra.txt",
+      "bytes": 643,
+      "sha256": "e7286dc99abd0efd272049193008ee3a6388a69bbbd7c747916e80689b684ecf"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/input-snapshots/specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md",
+      "bytes": 5223,
+      "sha256": "8ab84d26eb91321004740aceebeb4bb409ab36c115e5cabdb63622e264fa3257"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/input-snapshots/specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md",
+      "bytes": 3437,
+      "sha256": "c4059cec79e179096b1a28b431628018e02191449dbe9e5c9fe6b689d14eecb0"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/input-snapshots/specs/004-multi-grid-selection/contracts/validation-evidence.md",
+      "bytes": 13277,
+      "sha256": "f7f3b6280116856d4e9f38097e16f11a38aa20dfcfe3a1d8d7917101c2a5d1f3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/input-snapshots/specs/004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md",
+      "bytes": 2910,
+      "sha256": "d9d143a613fe995f0c007b5da7217966258818b8972e07ab19225fe11f1d7b28"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/input-snapshots/specs/004-multi-grid-selection/quickstart-current.md",
+      "bytes": 7577,
+      "sha256": "c2569e713d7b6072cdea688d79360cc0d5f345d65cad278123aff3c067bf6d29"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/input-snapshots/specs/004-multi-grid-selection/quickstart.md",
+      "bytes": 29912,
+      "sha256": "938492d3bbc8740a733fe06b38a2549d865d9971fda3650eeaeb000a78cb88cd"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/input-snapshots/specs/004-multi-grid-selection/spec.md",
+      "bytes": 33007,
+      "sha256": "5277232e2e333998302d37244210470f1b71e54eb8e8b10379cd64c4a26fb355"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/input-snapshots/specs/004-multi-grid-selection/tasks.md",
+      "bytes": 72709,
+      "sha256": "ce244751cd06eab8390503d28f564085424d5a533d8a688278d9628c2d45547c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/local-h9-complete.json",
+      "bytes": 319,
+      "sha256": "0990d606ab5a2cb2449f3199c64ec6eb082734d4b243a4f515a6581507df9fda"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/local-package-audit.before-resumption.json",
+      "bytes": 16159,
+      "sha256": "5cd862768b0dbb020838f6c0bcf87e2ee3300e26403dd2576bd0010ddc41574e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/local-package-audit.json",
+      "bytes": 16159,
+      "sha256": "5cd862768b0dbb020838f6c0bcf87e2ee3300e26403dd2576bd0010ddc41574e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/local-results-audit.json",
+      "bytes": 3222,
+      "sha256": "d71529f64e369b27e8e5fc6e74fbb37b60d7868437ba010c5a4a314e052ea3a9"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/local-spatial.command.json",
+      "bytes": 719,
+      "sha256": "a803de78fae35efc1f163865ae9b6a1d2f823720433821877f10c29677ce4427"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/local-spatial.log",
+      "bytes": 186,
+      "sha256": "f5b360277241c1fe62d4e205f7d02f391f63944918537463b0de847ee514bdb1"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/local_audit.py",
+      "bytes": 16618,
+      "sha256": "f48ca2cb2c9af651bd3f7af52544df096c0eb25cd08f9436d5709a549cc00f33"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/matrix-final-last-message.md",
+      "bytes": 782,
+      "sha256": "2cff72e981b9d22fc56590e10f9ec1b4c76a33fea0dc446ed631332727caac3f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/matrix-summary.json",
+      "bytes": 5391,
+      "sha256": "06bc6620bfd10c7e4ea51b563afd86dfba73a5cec78e37af4b407a17d46029e7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/matrix_h9.attempt1.py",
+      "bytes": 1747,
+      "sha256": "c8676755d2af3775837306fe6a9c2948f5904a074379810e5f08a293b82a0a0c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/matrix_h9.py",
+      "bytes": 1796,
+      "sha256": "cd5f4b06357e96d041fb2f2d9da42b1fbc4592ae731a56aa77217e58fc7970e8"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/oracle-reproduction.json",
+      "bytes": 5124,
+      "sha256": "24777259a9c882145592e699fb68ede6d8f6c3e40ed28025e2b1475664b87538"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/oracle_h9.py",
+      "bytes": 2125,
+      "sha256": "b2b0780e9f119fb711c732083152ff6b8f5038675eecab734faef6e34b2f070d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/own-remote-audit.json",
+      "bytes": 1872,
+      "sha256": "03d79cbdf5a78f58ae31c2f8a5b7f2d253c239f43d086376989903f20c4a6215"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/pair-policy-audit.json",
+      "bytes": 20936,
+      "sha256": "9ab9a2cc2649749cb65054269d66a08046061850e5b47f53f2fe641a32f939ca"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/parent-matrix-audit.json",
+      "bytes": 31857,
+      "sha256": "03c55935ec6c1eb1ad3bce7502d6db23be5a5403f8c63a096239ed2c8d765b21"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/parent-matrix-checkpoint.json",
+      "bytes": 355,
+      "sha256": "a56a20c598b5c5bf967081cb26bf8939497fc8f752e7cd34113fff0f61ce7b1e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/pending-parent-matrix.json",
+      "bytes": 1654,
+      "sha256": "f16379412199ba5952f82c8b611f6f87795a753900bb8fb11f221c7724e5efc8"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/prior-failure-command-events.json",
+      "bytes": 70871,
+      "sha256": "2a5507bccf5b15378ea3577946cd44d2821b04ff6f1b1c3b8bf9429ebf58dfa3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/private-value-scan.json",
+      "bytes": 296,
+      "sha256": "3000eb2ba5a9ec9298d9ea9d4ca35f271e0f6889db1a570ffcb3bf2541f72b1c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/progress.md",
+      "bytes": 5135,
+      "sha256": "62ed2c6c79b44d2c5715ecbaf241941e885fd4211044c7627af13af8e3978e29"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/real_inputs.py",
+      "bytes": 1571,
+      "sha256": "1a99bf5e40e154545f005ca0bbcb6658ad93663741dd4ff228c967bf7c481cbd"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-cli-pair/full.audit.json",
+      "bytes": 555,
+      "sha256": "6a9d87123b6e0889191bf3663e14aa91921b44597562b3007505a43eb2a03da0"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-cli-pair/full.command.json",
+      "bytes": 997,
+      "sha256": "0f9a02eee80592c435e7722b57cc2f339ed8c0e32549a201c5dabc53cfc54abb"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-cli-pair/full.csv",
+      "bytes": 44517821,
+      "sha256": "184fd84479fae667f1c1cfe5f9b77f6c408e067bca60324279cbb37f246d8d19"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-cli-pair/full.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-cli-pair/full.metrics.json",
+      "bytes": 9669,
+      "sha256": "93a6256c3640dbe97fca47a419b2d7aef75949f08d84d1fdf06a646dcd8a878d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-cli-pair/full.server.jsonl",
+      "bytes": 5665284,
+      "sha256": "0fafc38e1a7c36a8b224a48703d0e0ed99d92739e4552864b9e2952f669fdf21"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-cli-pair/full.sql",
+      "bytes": 930,
+      "sha256": "07f697948aa80dd8f0ee2751fa63ddaa8bf45e653e7305baa0a490a5d0ff5927"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-cli-pair/policy.json",
+      "bytes": 2137,
+      "sha256": "4840e33adeae9bf5aa3041ffa9372d4ad4de016be8dc40e489c0519f325a94e0"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-cli-pair/result.json",
+      "bytes": 1249,
+      "sha256": "1c107e1063fb579846c3b0ade8adeb1150d85cff6731b3bd8cbec8811e8b5b2f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-cli-pair/selected.audit.json",
+      "bytes": 547,
+      "sha256": "8f5f7b76d23e172e51f666982d84b4b2016152a949b07cf637864fa4994bb667"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-cli-pair/selected.command.json",
+      "bytes": 1006,
+      "sha256": "c2c4a318b3ccb770e5056a437a395892c9971348e038490ffb00d918133f6463"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-cli-pair/selected.csv",
+      "bytes": 132,
+      "sha256": "9c3019d7a1644df457d2d38b8a4be6e8703810533cc141abd8fa8c9b91fa7ed7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-cli-pair/selected.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-cli-pair/selected.metrics.json",
+      "bytes": 9523,
+      "sha256": "8f1c1ae64cce521c7005b222e31ec46cb41013d8f7f6288589967db4af2e9053"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-cli-pair/selected.server.jsonl",
+      "bytes": 8208,
+      "sha256": "d9cddb0e1543cb56e3b5b8f9f5244f4c803bcc38209b7e0c4fc30427aefa995e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-cli-pair/selected.sql",
+      "bytes": 992,
+      "sha256": "9850805a8ceaba197bdbaeb4b4880dd26d4e7672b3c51be98d7652bfc4eaa2d7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-pair/full.audit.json",
+      "bytes": 640,
+      "sha256": "dfc2b4d6d9fab5c5770519bf92683584cdf57993b5d28c36ea4e96727c05c420"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-pair/full.command.json",
+      "bytes": 1658,
+      "sha256": "1c4232900102c2ac51b0cfd11d2af05da41f204d2e227cdaedcdb779aa5c3ba3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-pair/full.log",
+      "bytes": 132,
+      "sha256": "e36ff02b894f690645d8ce81b512c01c60e195bfab50eba06b498cdeb1e76045"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-pair/full.metrics.json",
+      "bytes": 9718,
+      "sha256": "b60817b84d8d85b64dabee40a55f530289bba6649ef40d4ceb8394fc09b3357b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-pair/full.server.jsonl",
+      "bytes": 5665284,
+      "sha256": "010232f6e06903cc6ce2ea21be080f0ecd753062cd39cee438eb281573bfa51b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-pair/full.sql",
+      "bytes": 175,
+      "sha256": "9a0319b6ae61486f32506be0f8ccebca228bf9cda74a20e77959791c1b4ad065"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-pair/policy.json",
+      "bytes": 2344,
+      "sha256": "2397abb3fc01753529b5acc29332530ad5c85f6d03796572de92c70b8c186185"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-pair/result.json",
+      "bytes": 756,
+      "sha256": "396bf340938bea65bf8db301f78e3a808f8ae8fe213188154db09ea726c16a72"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-pair/selected.audit.json",
+      "bytes": 632,
+      "sha256": "c1cd50c9314778bdea20ce8cf1fb682ad15fe8a01f1235b7c055d1105684dbf4"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-pair/selected.command.json",
+      "bytes": 1664,
+      "sha256": "0b014bbe3ce7805494e191e120b2504207d781b153a42eb5e36d14ce36e0e8e9"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-pair/selected.f32",
+      "bytes": 72,
+      "sha256": "b55479b665c46c761f2ea991676a61d3eec40ee96cc318988807fc114a2653fd"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-pair/selected.log",
+      "bytes": 131,
+      "sha256": "b86d43213730e63a316b8173b3ef263cf7a31345cac5f1c63c593a55017e99cd"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-pair/selected.metrics.json",
+      "bytes": 9571,
+      "sha256": "6ca9629787f01f05916736d9d122f93a296ed9af0049159854527133e86160fb"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-pair/selected.server.jsonl",
+      "bytes": 8208,
+      "sha256": "9c9f20e3801e6bba6172d044ec04162fdb39e95d05a58c023407fbbb683b7a02"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote-pair/selected.sql",
+      "bytes": 229,
+      "sha256": "4088d4ac74d6ed05436252741f25a9e7be7b3cbab72646cead6fceb8f4d85387"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote_cli_h9.py",
+      "bytes": 4139,
+      "sha256": "c8a81ada8f16629bb56c62feadd8fc7afa01760edf9985372bbee23a1f21ee83"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/remote_h9.py",
+      "bytes": 5077,
+      "sha256": "9abe01fe1039c2b082b92fcabdfd61d9e0ed163014dbb586395bd3370d5f2b93"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/repair-resumption.json",
+      "bytes": 558,
+      "sha256": "be0d678deb0650251f88418157b3c16401ae43ee1eadc52e662286e9022c94e3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/repair-review/audit_matrix_h9-attempt1.command.json",
+      "bytes": 747,
+      "sha256": "716b82770137b2e9e6d93e4b95dbfb592942134352689937e856a7b479bb1d01"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/repair-review/audit_matrix_h9-attempt1.log",
+      "bytes": 52,
+      "sha256": "c8c5db2e0c71e0f5176ebad48a22830d91e5d89ff8bda1303490c227b40b4b2c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/repair-review/audit_pair_policy-attempt1.command.json",
+      "bytes": 752,
+      "sha256": "79cdba1f242d564fa739d4bf987331fbabaf01ca3d622d76237a866428fd9354"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/repair-review/audit_pair_policy-attempt1.log",
+      "bytes": 134,
+      "sha256": "4818fdb564976fe6a86a16e57c2eb84a5ce61fe5b7868748c9c6f00ab9935cc4"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/repair-review/audit_s3_lifecycle-attempt1.command.json",
+      "bytes": 754,
+      "sha256": "3a20b8ec9d91d256cc650cf398faa12d11cda268a173edf1d9909c71b8eb043d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/repair-review/audit_s3_lifecycle-attempt1.log",
+      "bytes": 32,
+      "sha256": "3df7c4580af93c34217264a4b7de5a061dcd59f87732f29e74534ff02886618a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/repair-review/audit_supplements-attempt1.command.json",
+      "bytes": 753,
+      "sha256": "2bf3d671bcf8946aec7be7ca36d7242a942448518b3123d8023ed3b5f9252937"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/repair-review/audit_supplements-attempt1.log",
+      "bytes": 541,
+      "sha256": "e41d955f17d7087429133751d41f27dff2d4145da9462449dcb65815b287a1b4"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/repair-review/current-gates-attempt1.command.json",
+      "bytes": 748,
+      "sha256": "370fb6037fc224352c6261729fb6f15bd4f418237d4ac8f9a40d1643495a8df7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/repair-review/current-gates-attempt1.log",
+      "bytes": 326,
+      "sha256": "e6ee0d93b83cef38d39463b3516f6ed1160c4ef8ac172d0ed9b13a8688173388"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/repair-review/privacy-attempt1.command.json",
+      "bytes": 744,
+      "sha256": "2ab1129dea5247ab283df71c84ae5bbe06c3cb6e3c0bd1f9b96a15b0e9d2ae12"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/repair-review/privacy-attempt1.log",
+      "bytes": 42,
+      "sha256": "9b100b3ae39d4c51201f9f53e4c3ea77cb7f1f0b7745574c772afd1319a1e771"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/report.md",
+      "bytes": 12253,
+      "sha256": "0e461ed862bf9b55aea790e5fea1edc617cf871e29b7129f76dfe226bdeb2fc0"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumed-last-message.md",
+      "bytes": 769,
+      "sha256": "1ac1bb66736e231a7bb165c7e65ab657d2464479cc26627ee88015924d6a13f9"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/audit_local_results-attempt1.command.json",
+      "bytes": 754,
+      "sha256": "e3861d4199a6354d5e6b6c5d401e373a6ff605a554f93b1eef0df03b2fa1cfd9"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/audit_local_results-attempt1.log",
+      "bytes": 87,
+      "sha256": "92175e0e747565c2f51c12d0865b6e2041b5185b501de88e1f84760279e43367"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/coordinate_selfcheck_h9.command.json",
+      "bytes": 753,
+      "sha256": "2cb62230f1b9260bd44e81bf96219a11b8e71623407852cbc22e5e887c82e5df"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/coordinate_selfcheck_h9.log",
+      "bytes": 192,
+      "sha256": "f0fd45431c76a0c87476106f02d7101ce34781c4673663ccd95269adb6f789bc"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/inherited-gates-attempt1.command.json",
+      "bytes": 752,
+      "sha256": "50e3112c4c4ff113fb61e4f662e3ad813b2c0089a18a5dec78ac8a9b044c13d3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/inherited-gates-attempt1.log",
+      "bytes": 551,
+      "sha256": "91e3fb0dffe4e357782ccdd5578a76bc0e9329e5d74081248f9c27d5ff55637a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/local-audit.command.json",
+      "bytes": 728,
+      "sha256": "cc60cc31124e0f63ed40d4c5149cf82dd3196de2f1688da87f0f0019fd01d214"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/local-audit.log",
+      "bytes": 251,
+      "sha256": "551e01987912fa5c67aced4e1b4814912d168d7d49f564d25d4e725e9c868174"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/local-h9-launch.command.json",
+      "bytes": 732,
+      "sha256": "ed1d787e2bd14b71137b169f23c718e928a4bce07c272cf5418f26b244c4bcad"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/local-h9-launch.log",
+      "bytes": 1473,
+      "sha256": "c23dbb379f88538044a390eff6885b5d02fbba780f00846ca4ef1e28a1ba6659"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/matrix_h9-attempt2.command.json",
+      "bytes": 732,
+      "sha256": "a678826243861db5a3c141b7a5148eb1f3dafbb21766cdb86ac8ad92ecc00eed"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/matrix_h9-attempt2.log",
+      "bytes": 582,
+      "sha256": "852ffc50d7085a3af62a7d24c42ca2cf00fa70e11c8cab35eb4950342616d2cf"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/matrix_h9.command.json",
+      "bytes": 725,
+      "sha256": "1ca66c92695707c2b6d8180b0b02cc9624bc0c30e5c4326a3fafeeb5cafde4bf"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/matrix_h9.log",
+      "bytes": 970,
+      "sha256": "88e1ba8bb6a7b22a6e3f471e0b875403bd465f67b202274f29a4f1359591c4ff"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/oracle-reproduction.command.json",
+      "bytes": 734,
+      "sha256": "b7ef20ecdb1337cb0b849b80bfd4999487c2f0db58ddda2c3b75a9de92b5c135"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/oracle-reproduction.log",
+      "bytes": 321,
+      "sha256": "fd46dee594561f15badde7e0024dcc9aec2c372140b4c5b5fb745fcd57a3788a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/own-remote-audit.command.json",
+      "bytes": 738,
+      "sha256": "0388d3173083be04f1d9a3f02badeb7fc1d4065d8efd45fd1a6d90c3b31e826c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/own-remote-audit.log",
+      "bytes": 98,
+      "sha256": "b972f51631ed55dd74dbc2c253381b986ccb5fcfb7096257041bfdf607ce9874"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/remote-cli-launch.command.json",
+      "bytes": 736,
+      "sha256": "6ff605e1b5ce36a1ac8a59c228ee35ef7625c0e8058a43ba1eff80d5d4618e2b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/remote-cli-launch.log",
+      "bytes": 295,
+      "sha256": "d7b3d02872c735c0716e75c45527704c484d3b264896e050f2e8500414605995"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/remote-h9-launch.command.json",
+      "bytes": 731,
+      "sha256": "d3863f95fb6658ac0d565f547d458f33b55f8767e7422b30659bcd936e6f55ad"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/remote-h9-launch.log",
+      "bytes": 287,
+      "sha256": "a78a46ae2191b0370a9df9195c8e8c867c9f91c17055adac28e1805a55bd2c8c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/s3-lifecycle-audit.command.json",
+      "bytes": 743,
+      "sha256": "52e7d72517bf67e67620a92a05bb35fe85e4bda93ae9c75f5a484f8cfb78020e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/s3-lifecycle-audit.log",
+      "bytes": 32,
+      "sha256": "3df7c4580af93c34217264a4b7de5a061dcd59f87732f29e74534ff02886618a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/supplement-audit-attempt1.command.json",
+      "bytes": 749,
+      "sha256": "31b450462b8766c4428a1d69a679eb0eed7cb98694d579ba3e95a462eab3701d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/supplement-audit-attempt1.log",
+      "bytes": 541,
+      "sha256": "e41d955f17d7087429133751d41f27dff2d4145da9462449dcb65815b287a1b4"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/value_selfcheck_h9.command.json",
+      "bytes": 743,
+      "sha256": "90fd0fd98304297f09fef4bfabee342137b63d99bae7cc3b3d17280cb9336147"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/value_selfcheck_h9.log",
+      "bytes": 397,
+      "sha256": "7c30ea7c88a28ac8187e1e5c463e55763497bee9e192e7368810e77a28aa6f81"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/verify_materialized_h9-attempt1.command.json",
+      "bytes": 758,
+      "sha256": "2f3954bafecddd99c102312e07594deb9913322ee8b865a9458762f2c873b3b6"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/resumption/verify_materialized_h9-attempt1.log",
+      "bytes": 207,
+      "sha256": "fd8c78b804de6696b959088abab1c86ffbf9c169488dd82ced2f3af8c4c06f0a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/run_local_h9.py",
+      "bytes": 2207,
+      "sha256": "06e8c2beac5243a92d27f1c784f98e74ac6b66c00f4cdb77e6d87b36d8ac06ac"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/runner-thread-events.json",
+      "bytes": 307,
+      "sha256": "dc77cedfd97db3f4e1222e813b0290a219f4eeb92f5e1242b425ef2b8d28e073"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/s3-lifecycle-audit.json",
+      "bytes": 558,
+      "sha256": "bc3d922e20d45daa165e14f4ce4f83d8c348b6130f8a36977a22621e4fd9ed90"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selection_h9.py",
+      "bytes": 5457,
+      "sha256": "bba0fb64427ececc3b0cbce9fc6ab2e91ca6a0df52bf8a1c348a5c5d36af3fdf"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/raw-corrupt.command.json",
+      "bytes": 1373,
+      "sha256": "fe0d9b13bc11543c6318beabbd0f4d82ac5efd58458d7b81e4a55e9436e60c55"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/raw-corrupt.f32",
+      "bytes": 24,
+      "sha256": "e9dd581fefe37d8de9c8de9516378d518f515a68a189d9dbd727f909cfdc0721"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/raw-corrupt.log",
+      "bytes": 27,
+      "sha256": "6296c940e292d4b25c677f364abd558c4be2daae3723b8e09d7c77d097cad43c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/raw-good.command.json",
+      "bytes": 1356,
+      "sha256": "4e519d2da668fbfab9ef8914872aef6215286b0dddcc46aa4b4244d2547e6545"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/raw-good.log",
+      "bytes": 126,
+      "sha256": "fbc1d930c8ff60b45bfcf9518694657bdbc08f70c6fb5ccbf66e8a544f922688"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/raw-good.metrics.json",
+      "bytes": 8126,
+      "sha256": "f4f4f21e5d24ef185ae17f87e3b1783575051da8214389baf6a83accbec9ee77"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/raw-oracle.command.json",
+      "bytes": 865,
+      "sha256": "393179a04918b9a24a5b516cb151fbd6da1cfb1edf810c1dd432bd816d1bddf7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/raw-oracle.log",
+      "bytes": 188,
+      "sha256": "bdcf629d702eb8db1105b70069c2ade32931543fd3eeec017840b700cd6ae45c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/raw-short.command.json",
+      "bytes": 1364,
+      "sha256": "7c0cc1662917f2be13ec404fcf7c49fc8280c3dc5add7e6fc7b8a03c756df177"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/raw-short.f32",
+      "bytes": 20,
+      "sha256": "8deb90668ea3a6845d5c04454798ccb63829a88ff827892f2dc11c808baac7af"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/raw-short.log",
+      "bytes": 18,
+      "sha256": "15c0d2f4be8b582259c779c1ebf1134dc78906698f656e315b5c67b6fdc0392c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/raw-wrong-count.command.json",
+      "bytes": 1376,
+      "sha256": "0a366c05a08212cff8af462ea7bbd42887a7bbe3d3dd70f7a2b30cabb2ed595d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/raw-wrong-count.log",
+      "bytes": 10,
+      "sha256": "b8b64416d43fdc525f97ce4b59a741ea1e7afc454b83ea1bbf5802151c72a494"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/raw.f32",
+      "bytes": 24,
+      "sha256": "e2c0a71510b5394df7773b63fb5f54372b84c3564e67811bde7d665be227976d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/raw.sql",
+      "bytes": 81,
+      "sha256": "5ff46ba39c391afd7ba62af1c5d2127c61cc88a1b3617dd8c261353f5e213a42"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/special-corrupt.command.json",
+      "bytes": 1387,
+      "sha256": "04e5d232571faf7cc8b656e559179b1b9fb2852cc7d0af65ea34625154c658ed"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/special-corrupt.f32",
+      "bytes": 32,
+      "sha256": "47c773108d76c8df60d56e980f5342e37ef310328519e5fa5e65860e2975f097"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/special-corrupt.log",
+      "bytes": 19,
+      "sha256": "cc61ea73e4358b06d433be3fadd1fec10d466783d45ff917bcb259c11d0042b7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/special-good.command.json",
+      "bytes": 1373,
+      "sha256": "6c9de69a47db4b32c8025a621b1bad3012cfac7ed889c2f3ce9e8d22f1523303"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/special-good.log",
+      "bytes": 126,
+      "sha256": "fdeaed4ca6bed0b6a45c64c311a79f630b2f9921ed8f774e2311958c45754e6b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/special-good.metrics.json",
+      "bytes": 8159,
+      "sha256": "2041c4e767d9da83645db35bc1ea706da1d46351e88a938fb76116963d2e29aa"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/special-oracle.command.json",
+      "bytes": 877,
+      "sha256": "889ab1a5bbb5b5c28e721f58f80ecb8c708b2ea5f40e7247e42cc8545cd3f459"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/special-oracle.log",
+      "bytes": 188,
+      "sha256": "5848c0af6fff30a90f3ce34e5fb0041b9a31a40983fa7edc1b9693f45560d091"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/special-short.command.json",
+      "bytes": 1378,
+      "sha256": "8216ea5fe2443041dea8bed396592fc9ced286536e29f1c601a2640d86e73083"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/special-short.f32",
+      "bytes": 28,
+      "sha256": "2323d7921be81bea9bee524e526217b9e9d9ad09f1f3d683ca5326bcd2ec4bd5"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/special-short.log",
+      "bytes": 18,
+      "sha256": "15c0d2f4be8b582259c779c1ebf1134dc78906698f656e315b5c67b6fdc0392c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/special-wrong-count.command.json",
+      "bytes": 1393,
+      "sha256": "d21e28b5f3019bdc1090c6dbc502d2e49956d1f771aeda34a026bef4e3e748b6"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/special-wrong-count.log",
+      "bytes": 10,
+      "sha256": "b8b64416d43fdc525f97ce4b59a741ea1e7afc454b83ea1bbf5802151c72a494"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/special.f32",
+      "bytes": 32,
+      "sha256": "b573a94062d7ae1e4bb5a46a06cdb71c065a53cf31e5b11fcb51058848ead72e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/selfcheck/special.sql",
+      "bytes": 85,
+      "sha256": "fd3de3c77ad9fd98a8e26eeafac0040337935057abd7aef6977d719d5d822579"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/supplement-audit.json",
+      "bytes": 2895,
+      "sha256": "0fba5b4d561c41c8630ec9619dd13ed118d5298bb16fc44097f3a268a8997e36"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/aladin_central_europe_2km-domain.command.json",
+      "bytes": 1596,
+      "sha256": "6088c13a0403e482dce7255fd86d40c0ace59044a1bdf999dc72365c60b04f07"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/aladin_central_europe_2km-domain.log",
+      "bytes": 205,
+      "sha256": "08318b55fe674b9262eb877e4af5c27f37b62981c1ca8b20bbcfd3d86c44cba6"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/aladin_central_europe_2km-domain.metrics.json",
+      "bytes": 9628,
+      "sha256": "67296e44f94be8fa14ab7bf61d80009f2f510da0415c246de04eb48cc6125baa"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/aladin_central_europe_2km-domain.sql",
+      "bytes": 553,
+      "sha256": "f0bda1463d782897999aef94a406322c9d42d52a3b52a8f02b5244d79b71c7ef"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/aladin_central_europe_2km-explicit.command.json",
+      "bytes": 1603,
+      "sha256": "f8a5d5ffbd446bbcfc3e851f981a751defb603a4c550210f5cb4393e76f275ce"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/aladin_central_europe_2km-explicit.log",
+      "bytes": 207,
+      "sha256": "7fe19605cd36c69f16dadcf4addeb75fb36b8822d8845adf923d633b51fa8009"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/aladin_central_europe_2km-explicit.metrics.json",
+      "bytes": 8833,
+      "sha256": "4e3e8b03fc99912074ddaa39a41715e6052e895a3aa55dcdd5b9959a8636f269"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/aladin_central_europe_2km-explicit.sql",
+      "bytes": 1281,
+      "sha256": "edc61ac37ac0fab41b46c7da103f4ccb1db2b7f99d3d263dd7bc8e843804f050"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/ecmwf_ifs_hsurf-domain.command.json",
+      "bytes": 1542,
+      "sha256": "9159767917a4114d5362aebde1d828aa0b2fe8833374b220432bcdfd79e0ca7d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/ecmwf_ifs_hsurf-domain.log",
+      "bytes": 180,
+      "sha256": "417b82890580218b984c265f917001e9a099f3c0ce699657f8102d84c1079510"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/ecmwf_ifs_hsurf-domain.metrics.json",
+      "bytes": 9488,
+      "sha256": "8cf795168b318d88ae2747aff1cbe3f3b7a4592c65606dddc097b1e9a492161c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/ecmwf_ifs_hsurf-domain.sql",
+      "bytes": 371,
+      "sha256": "10d4c47a76b0f777f66f1706645d26a2ed162ef314c39acb26f6bfabd6d30078"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/ecmwf_ifs_hsurf-explicit.command.json",
+      "bytes": 1550,
+      "sha256": "c6ce4797b27db1d16e5e7f466aa05143b9606a8de82e07382f733261573c5955"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/ecmwf_ifs_hsurf-explicit.log",
+      "bytes": 182,
+      "sha256": "acfe3abeeed40b3956b01e8d8d82411c085758060a56b72eacd6ee9e1170524f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/ecmwf_ifs_hsurf-explicit.metrics.json",
+      "bytes": 8675,
+      "sha256": "5a8dc5af944f975902682d63e4005898abed6443922ed3d8e25e239265983012"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/ecmwf_ifs_hsurf-explicit.sql",
+      "bytes": 532240,
+      "sha256": "14672fed576985b108cce14bcd247225f838ef7f73b1b04e2af6b3180b382945"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/gem_rdps_10km-domain.command.json",
+      "bytes": 1537,
+      "sha256": "fadb5a5bdb7d0dab2a7b2e028f7cf8986a5f6f5e1b80f6d3937727afc6c9d21b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/gem_rdps_10km-domain.log",
+      "bytes": 194,
+      "sha256": "6ea354f09932c55cb4290f7a8127ec736ccf741ddc2596fb1f49fcb9456679c0"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/gem_rdps_10km-domain.metrics.json",
+      "bytes": 9637,
+      "sha256": "8afe7c1c912e2e66374e8ce31dacbf78ef9597d248e71186a4f60126cc90586b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/gem_rdps_10km-domain.sql",
+      "bytes": 544,
+      "sha256": "271ee6e31e4826074672e85c0a2c8aff869f777a626507be59df5bf9ca1e5774"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/gem_rdps_10km-explicit.command.json",
+      "bytes": 1545,
+      "sha256": "f7a45218d9c2b975bfb7ac844f31a95ffc6b6b28421a09f1dff454800df451f0"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/gem_rdps_10km-explicit.log",
+      "bytes": 196,
+      "sha256": "f9c15f26b2556205006dc6cfd2190e7e7cd1ee5076ad6c1870d1a8d7a35b4811"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/gem_rdps_10km-explicit.metrics.json",
+      "bytes": 8821,
+      "sha256": "c8e870fed1a52b2d1c390f6c49bf001e457f73d6d2c06a768e5fc33537c8713b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/gem_rdps_10km-explicit.sql",
+      "bytes": 1222,
+      "sha256": "a0e73a5bff4b0ad8b99f79dc6cdd790bd6857e953e7b79997dc97ee96b519277"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/gem_regional-domain.command.json",
+      "bytes": 1528,
+      "sha256": "cc80fefdda27ec631485990693f3514a15afa0860eff9a84bcee56b7210b12a3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/gem_regional-domain.log",
+      "bytes": 191,
+      "sha256": "b4222671821a384c51bace76f479b79c95b10e2107a08b434bd05234159b22b8"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/gem_regional-domain.metrics.json",
+      "bytes": 9625,
+      "sha256": "e6c6b88048dc5014e05837d441aeb15d6245c7ae4d45d37c3ac4684306b79c7c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/gem_regional-domain.sql",
+      "bytes": 538,
+      "sha256": "a943e23a574e0f77c4da0c0d83d74d2958bbdeda09558e1a504884c07eb124b0"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/gem_regional-explicit.command.json",
+      "bytes": 1537,
+      "sha256": "0ba91100d3c8c0c4042a3e2ed88d40ed96f6f34daa361b4c4183671ac9259ded"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/gem_regional-explicit.log",
+      "bytes": 193,
+      "sha256": "399381784546ea84c5018e8480df3c696ae9bca8c6a47d27a8fdc0b8326b10e6"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/gem_regional-explicit.metrics.json",
+      "bytes": 8833,
+      "sha256": "a7094e48880a7634dc6bd13016e51df88e4598b0d02103bc6817c953ea4b012f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinate-results/gem_regional-explicit.sql",
+      "bytes": 1231,
+      "sha256": "c34ce5e9cee96a1faa84d3f87ac7c1de7f8228a1cf9978ef814a10d2f16599c7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinates",
+      "bytes": 44475664,
+      "sha256": "1e0909a3ff27ad31b4a94169619634810787cd1997188ce74795056484f423a6"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/coordinates.o",
+      "bytes": 629336,
+      "sha256": "617944d48c45ddab67ade204f7cd3891fd41eb812071213f2d1f659a91acee81"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/full_values_fast_remote",
+      "bytes": 44408736,
+      "sha256": "30b76e6326292e1206ab2903ab39743bfb80c10e194b4289a06d5a0a9065393c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/full_values_fast_remote.o",
+      "bytes": 636096,
+      "sha256": "b388c1c39fd9c4c75182f1a52904ac363cab5b8b869a5225508743f8e31980cf"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix/extension-mismatch.command.json",
+      "bytes": 858,
+      "sha256": "1b4525fe85f26279a10685f6aac6bc2a74431ab542b5848f403ff33ec8ea0e8b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix/extension-mismatch.log",
+      "bytes": 287,
+      "sha256": "4a5c875afa14ef52033b9170d5463147d5f3d641a0e348e51b338c4e6530cca7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix/extension-mismatch.sql",
+      "bytes": 116,
+      "sha256": "be9fe975685152698a9af3fd382406011d748bba7e2cf0dfd9f8c8a5fe335a50"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix/httpfs-mismatch.command.json",
+      "bytes": 852,
+      "sha256": "d849cd7e697966367a9c0a318765c4e6ebb4a6927cb27688c9eda25ed20b9d77"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix/httpfs-mismatch.log",
+      "bytes": 284,
+      "sha256": "1db04955cafe4eb811838da7256f21aef8e114e1092a30f110cc060b81cb5b6f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix/httpfs-mismatch.sql",
+      "bytes": 113,
+      "sha256": "d6d12d3d45768f7758928c8e3f2a1e038cedf12a1ae79da0637a19778bb1195a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix/load.sql",
+      "bytes": 327,
+      "sha256": "6e1d2bc8b10f69fd5093592a789c0312b82cd017f00058c92732d2cbc71af45d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix/matching-load.command.json",
+      "bytes": 851,
+      "sha256": "832c2127a8fa009947f01964c602e9ceeec1f9ab7614a418c8caea99263ba820"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix/matching-load.log",
+      "bytes": 8945,
+      "sha256": "d2699771dad8a2b4a6f2b4012473b4ddfe18c9fadfc0bf36a86fa56f07a19f56"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix/version.command.json",
+      "bytes": 664,
+      "sha256": "059de94f17079581162393dac8397b4d119d2ed30765d68da3f902e638202ad8"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix/version.log",
+      "bytes": 30,
+      "sha256": "c3448572fe7157b56bd4e68c4309c992433a899c2b543869ea774041c31a8ab5"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix-attempt2/extension-mismatch.command.json",
+      "bytes": 875,
+      "sha256": "0cb83e622171c67432c3ddb66d15a4e6e521cc6e53649dead78bd4eb2c3c7b2b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix-attempt2/extension-mismatch.log",
+      "bytes": 287,
+      "sha256": "4a5c875afa14ef52033b9170d5463147d5f3d641a0e348e51b338c4e6530cca7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix-attempt2/extension-mismatch.sql",
+      "bytes": 116,
+      "sha256": "be9fe975685152698a9af3fd382406011d748bba7e2cf0dfd9f8c8a5fe335a50"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix-attempt2/httpfs-mismatch.command.json",
+      "bytes": 870,
+      "sha256": "c68d0960a7c5b30102f755710b5faa0511fa38b6b2467943af4e8355d81f0d18"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix-attempt2/httpfs-mismatch.log",
+      "bytes": 284,
+      "sha256": "1db04955cafe4eb811838da7256f21aef8e114e1092a30f110cc060b81cb5b6f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix-attempt2/httpfs-mismatch.sql",
+      "bytes": 113,
+      "sha256": "d6d12d3d45768f7758928c8e3f2a1e038cedf12a1ae79da0637a19778bb1195a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix-attempt2/load.sql",
+      "bytes": 327,
+      "sha256": "6e1d2bc8b10f69fd5093592a789c0312b82cd017f00058c92732d2cbc71af45d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix-attempt2/matching-load.command.json",
+      "bytes": 868,
+      "sha256": "986291f2092b5cefff9bff09fe150935d7311a597576abe44bf7a3fd6f52c1a5"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix-attempt2/matching-load.log",
+      "bytes": 8948,
+      "sha256": "5509ac558838eacc073cb6a7d7c04d18be5e3607cd56ae69dc933d52813158ec"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix-attempt2/version.command.json",
+      "bytes": 673,
+      "sha256": "00f1e0e46dbc68195ba9a039d49a6ed16bdf30933ddc2218bb102052cef4a34f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/matrix-attempt2/version.log",
+      "bytes": 30,
+      "sha256": "c3448572fe7157b56bd4e68c4309c992433a899c2b543869ea774041c31a8ab5"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/cases.json",
+      "bytes": 1134,
+      "sha256": "33ced44170046fa9eae77a8960d3bd39ea592ec9c1cc62af25035c34dffee60c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/closed.metrics.json",
+      "bytes": 9719,
+      "sha256": "3c75cbe184aee496e2b5afa8dfe8d60392ad0d9b1062b594983c7756d2b3f342"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/coordinate-count.metrics.json",
+      "bytes": 9609,
+      "sha256": "456ae1b709b487444e73c9168eea54322d46ccf29745cf1d55bdf45ffa62bac1"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/empty.metrics.json",
+      "bytes": 9434,
+      "sha256": "9198c46a5491e2457d597fd81168f53577ec99bc347f90d75b5969aa1b0d6f95"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/independent-polygon.json",
+      "bytes": 669,
+      "sha256": "30765cb3d2a287be0e62cb10c72fbd122cef61de4db87fc77c646d025570888f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/info-identity.metrics.json",
+      "bytes": 17984,
+      "sha256": "4931aa7f5c8a6843c485380abdbf7c08232bca3f228971058edeef50fd85a7a1"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/info.json",
+      "bytes": 3241,
+      "sha256": "5e524fb36671d27e0b7239cb791fb77408478131842e0d53f5e84746cfc2eb99"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/info.metrics.json",
+      "bytes": 18798,
+      "sha256": "64af44b34c2c7b4147c43eee1ceb38a5edb3ebf52e545733ffa56683e3d39b03"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/materialized.metrics.json",
+      "bytes": 9838,
+      "sha256": "9d0cb15e62807ad382501c8be113190c58bfa52ad058a1d100287f843f426ccd"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/official-value-crosscheck.json",
+      "bytes": 566,
+      "sha256": "b90ac1dde6a95a29fa1664ea9f78302b75f54239b44b46f01a7e924b394db528"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/open.metrics.json",
+      "bytes": 9719,
+      "sha256": "4d63b438036663f5869b8b23ebe5ac192c2db7618afc67c1870a69ed68c7bdc5"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/outside.metrics.json",
+      "bytes": 9930,
+      "sha256": "893fee9daa6a884c8db86fb501325b7a19169b96024fa4f391fa4d4d430f8bbe"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/point_polygon.metrics.json",
+      "bytes": 9841,
+      "sha256": "fa8e3533410ab7da7098589c6dfd0599733401e4da47ef269c6ab92572dd10c5"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/polygon.csv",
+      "bytes": 1937,
+      "sha256": "de29eef808d14cca0b0044a50b968d7ab1068a413578351d493bfd037b6b8050"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/reversed.metrics.json",
+      "bytes": 9389,
+      "sha256": "3082d5b8878dc3f4488fbbf6783197f454c3545bbe3f570ba4673076fa3649d3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/run.command.json",
+      "bytes": 902,
+      "sha256": "6f9abf8e567dc15acafb0e2033cdddf122be4ab9ae626ded8e6df5010de6503a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/run.log",
+      "bytes": 2014,
+      "sha256": "9d985bb82e6b68896509543a29df5b5beeb1174387a8f31ecc7511925dcd1cc2"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/seam_or.metrics.json",
+      "bytes": 9550,
+      "sha256": "bf433fb310e28468fc2e4aa34f50dba7268add16c5021927f915aaa923624a26"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/selection.sql",
+      "bytes": 14359,
+      "sha256": "235f4ecf5a0bda109c571b8fe4d3a9d4f4128b5569c7df4932d57c75ed87bf01"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/time-zero-values.csv",
+      "bytes": 12446586,
+      "sha256": "281b01e69c4cbe2cccc2c77a1eeb35dfb93434ca3e18a7063c6f8e0940c8cefc"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/unsupported_or.metrics.json",
+      "bytes": 9838,
+      "sha256": "e6a333238c5a87373d904153604ed9e7628f95853af8e32114150247e14b0bdf"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/aladin_central_europe_2km/value_dependency.metrics.json",
+      "bytes": 9879,
+      "sha256": "89edf5aa90852a707bb42044ea9f9ec0e2505250183aff6d5069b0023a908b38"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/cases.json",
+      "bytes": 1155,
+      "sha256": "c6509c502c91b124a70f8484d1823cf9a20c07bfb735274b249f888ca5379940"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/closed.metrics.json",
+      "bytes": 9497,
+      "sha256": "ee5769c77c247f08d2e7fbf97efafddc006e4c09499fd0994fca1d13273905e9"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/coordinate-count.metrics.json",
+      "bytes": 9470,
+      "sha256": "1eecdc24b93c6eb8e4dbe760100594838757c11af37c6dcccc8e7ba4c00da605"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/empty.metrics.json",
+      "bytes": 9426,
+      "sha256": "4f9a3bb7db035cd044fb7ff4fdd3765b420e66f4157eb8468831d44444ab3885"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/independent-polygon.json",
+      "bytes": 642,
+      "sha256": "909687c96c1c72286758512a6c887cd2cc79443a1fa4d0c8360c4b1bb5eb92df"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/info-identity.metrics.json",
+      "bytes": 18021,
+      "sha256": "f53c8631c9d7f782a9bac0f43bf5c85b2f7033feb84babbdaba811ef2881cae3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/info.json",
+      "bytes": 278993,
+      "sha256": "783fb12326df174adcbfd27af85d90fb592fb653842b232e82a4acfbc878075d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/info.metrics.json",
+      "bytes": 18823,
+      "sha256": "760ffd42db21c6944c10cbf8ca57c37d55c873cdf3ede29051078de62439d70b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/materialized.metrics.json",
+      "bytes": 9653,
+      "sha256": "99f5d5936200fe1e0d5499584ec01980ed200e8f75213df5bd4d1dec3f22b852"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/official-value-crosscheck.json",
+      "bytes": 547,
+      "sha256": "d7a9d28d38cf8acd18da26af55b6bc3eb494ac9ed5fc1259b0fd52432b1fdc2d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/open.metrics.json",
+      "bytes": 9497,
+      "sha256": "dae222f698fca31428c65079ab33111130f1b9b9ca674e3e5e9bcd0394efb415"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/outside.metrics.json",
+      "bytes": 9755,
+      "sha256": "f6a29b6fcb27fa03e7d2022282d75d713ea247a7a51ed1a263109cea3b6df1f7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/point_polygon.metrics.json",
+      "bytes": 9668,
+      "sha256": "ad67df5a698bcfe02b767bb10dbe7b61c460030dea4f702ce67487fa58aa15ae"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/polygon.csv",
+      "bytes": 268,
+      "sha256": "7aad81039ef328a6a4309c2484e7a6cc7f3f050872aaaef193faf653d8e2dabe"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/reversed.metrics.json",
+      "bytes": 9393,
+      "sha256": "c402b5a604f372a9c64b586d24d1f6dbe1d832dd87baee2b793ddc79f2d01698"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/run.command.json",
+      "bytes": 884,
+      "sha256": "9e7cd7160ffc8a695a6637897e744c1dba3e88e7bda80942c9e046b18a62667c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/run.log",
+      "bytes": 343551,
+      "sha256": "a4aac1b22a292d0905374c441e58f76c9529c8ba20c6aef513ba7e78be689f7c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/seam_or.metrics.json",
+      "bytes": 9632,
+      "sha256": "2473f4b3389328650fc298a96b07946ffee45a45c04b76d2551268fc7631363b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/selection.sql",
+      "bytes": 1075394,
+      "sha256": "e8b51189f586ef39133fd48af732fc40e8f67922f064289a3b8c357d117fa51c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/time-zero-values.csv",
+      "bytes": 96204165,
+      "sha256": "989524df5fb8a203857392589fecd84e1fd0ccf51df1d0d311e788b07b74ff4e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/unsupported_or.metrics.json",
+      "bytes": 9653,
+      "sha256": "dc456594284d39182dafc098a9766aa1f0b9229fa8e6caf017c1f55ca1e9cdb3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/ecmwf_ifs_hsurf/value_dependency.metrics.json",
+      "bytes": 9650,
+      "sha256": "10baab5fb790d613939804a9c278f45711b95ad44bc8e4d6f55f70884f9eee84"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/cases.json",
+      "bytes": 1142,
+      "sha256": "c849cd75ec3061c82303941b682371a63ffa6c74a338bcbda929a5d85f73fc41"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/closed.metrics.json",
+      "bytes": 9658,
+      "sha256": "9812d8cd3ce1beb5bc937c517987c33c7879e8721cd7dec67be0833527dd29fb"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/coordinate-count.metrics.json",
+      "bytes": 9597,
+      "sha256": "3204a15144668ff1bb4895f04283af41d97537bbbb41374a84d2bae0c0968420"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/empty.metrics.json",
+      "bytes": 9410,
+      "sha256": "c106d841eb442bec997bea6e94045ff52f455fb5da3c2d181a2bc8bf6b8262e9"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/independent-polygon.json",
+      "bytes": 642,
+      "sha256": "e43b4eab7d13b96889bf9f371058393d13584a13efbd48e740041a2e53853383"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/info-identity.metrics.json",
+      "bytes": 17969,
+      "sha256": "231854b77af7a2dfa8b777d8da1b7c7570ea6037cdf5360087ee279361db2f58"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/info.json",
+      "bytes": 3095,
+      "sha256": "59aae99425ed12b4e90c6b7a72f8abff360b05e176f42c3ccc6e11632e622547"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/info.metrics.json",
+      "bytes": 18762,
+      "sha256": "941daed4f95aee3e79e4938cf2b773b016aaf86d76b1eb30c67fc6bc93858f01"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/materialized.metrics.json",
+      "bytes": 9838,
+      "sha256": "419f3175ec147ae4723b9e7b0b5685593dba925b036595479d154fe4208ef031"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/official-value-crosscheck.json",
+      "bytes": 549,
+      "sha256": "418aefc5acf2f72ac6121718f8f5eea1739f268daa8a16b43bda475d203e4539"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/open.metrics.json",
+      "bytes": 9658,
+      "sha256": "a51ada9fc96915c4abbd2c5fee9de035ccb6b3cdb3ddb257adb421055bda16c9"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/outside.metrics.json",
+      "bytes": 9930,
+      "sha256": "97b92d92169b6d71945e8b60aca785955e8e677bc74635b56390fb5850f47c38"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/point_polygon.metrics.json",
+      "bytes": 9845,
+      "sha256": "5cb5e6d646dc185821e7ae9d4e9ebbe12e37a421d8d6393fd7c3ef37944ef3b7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/polygon.csv",
+      "bytes": 96,
+      "sha256": "8f5641db4de07d38b92ff5b6d8752eb16f8daa169133f9191263ac7db35f68c3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/reversed.metrics.json",
+      "bytes": 9368,
+      "sha256": "d6a954c4cde4d272b0c14cc053569fc3b43bb914645b0dd005fb7c31a6dc8a28"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/run.command.json",
+      "bytes": 879,
+      "sha256": "b711b0167d6f6107c0f18fd928a8fd56d1716b08ead7bb68d6619c60f5ce00e2"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/run.log",
+      "bytes": 1962,
+      "sha256": "524a03cff664a0eab90b7b2e0747a8a89032c0c0fd7857c916826707670cf442"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/seam_or.metrics.json",
+      "bytes": 9757,
+      "sha256": "a31249d11befce595a35d3e2b7f3e44fc49cd723a66e3909a3b2d57b958914e3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/selection.sql",
+      "bytes": 14009,
+      "sha256": "524ded2a003eac47313118b7d5338ee4a0e1bad500abdb320d4d1e2a9f6f1bdb"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/time-zero-values.csv",
+      "bytes": 16894858,
+      "sha256": "74d7c0386205b6ddccdb53e78be5c48197700aad89c6334db566dd072f20574b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/unsupported_or.metrics.json",
+      "bytes": 9838,
+      "sha256": "678928cc822092725b725d911da3ac01ff34421523f22bbb86a5305e8625837e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_rdps_10km/value_dependency.metrics.json",
+      "bytes": 9867,
+      "sha256": "8efb08bba33e64c367d41c795d7ed1efb5c49fbde5595a29216cad1e90e5ade0"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/cases.json",
+      "bytes": 1144,
+      "sha256": "1116088b85a2a9ff3fa25d5bbe4eacdb10ec5a5d9b0f617c57b0df7ec4f3a00e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/closed.metrics.json",
+      "bytes": 9646,
+      "sha256": "4c2f778b69d60c6960d9b60947cc0c8a0cae34c041ae18258c58a5aa34d19aa4"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/coordinate-count.metrics.json",
+      "bytes": 9585,
+      "sha256": "0b79e2bf078f1d7dfbfd7cf86fde3cfad3ec7d15fd7206a078eab40e571d722a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/empty.metrics.json",
+      "bytes": 9397,
+      "sha256": "ddf23b0747052f101041c7b84d01430c9854989bda5d56f6decbc1493c08ddac"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/independent-polygon.json",
+      "bytes": 641,
+      "sha256": "0f7d1553d5aa43b9547efc24ca04e26166b5f89995c6a90b15caf87b6a3b574c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/info-identity.metrics.json",
+      "bytes": 17948,
+      "sha256": "012bdc5f076509ab3a283541dbfd05845e0b18cd70e71b036b54b6fc5d8ea659"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/info.json",
+      "bytes": 3152,
+      "sha256": "66f91c4d1e86714235b8cd921517309c70504b62db5c8d6d04983c11c45d401f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/info.metrics.json",
+      "bytes": 18738,
+      "sha256": "b744b101854fd872daca1a26421297bb3c6231d4710ce89a6d91726daa24f0ec"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/materialized.metrics.json",
+      "bytes": 9806,
+      "sha256": "e47d588249c4b3c38fa42cc02508f6d36d64ae0e6b46eec357180c1c72acd172"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/official-value-crosscheck.json",
+      "bytes": 545,
+      "sha256": "d3b4efa51b6a3084648139bd87a97fa7b04da587d4b43b1bd9723e75c33b4e25"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/open.metrics.json",
+      "bytes": 9646,
+      "sha256": "b2cb99f58f7520991e8251b1dfc0912ba1bbcf1ea5849c891db3766eae12d05d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/outside.metrics.json",
+      "bytes": 9898,
+      "sha256": "4b84e5fa5985def34bc23be31c6385f74e48ac14253a2fb49b2b74049f44efbb"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/point_polygon.metrics.json",
+      "bytes": 9835,
+      "sha256": "96412b9a4c106f1de0eb3e8eee2328c1af8e72eff4cf2c036631558a241555cb"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/polygon.csv",
+      "bytes": 145,
+      "sha256": "e150cc7442155a98d98d9441d8332f1ae858c077b6a865026d2369a6563de20a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/reversed.metrics.json",
+      "bytes": 9362,
+      "sha256": "e6a3ae1041c661935b5c739dd5e401964c389e05cd7d788a1bb065eacf5043a9"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/run.command.json",
+      "bytes": 876,
+      "sha256": "dda7ae471b81b1c5f7164752448a02f50f786d1264951133c9ba8be180a05b77"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/run.log",
+      "bytes": 1964,
+      "sha256": "b9bd2370d6dc5d22cb5d98c1bb5495dc9a5d21cd532a3b697f8f27209a8deb9b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/seam_or.metrics.json",
+      "bytes": 9736,
+      "sha256": "871065835f2b373f3fca29712eb854fc15e2e238739f8553953eedee3ea57739"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/selection.sql",
+      "bytes": 13984,
+      "sha256": "22e57e0157da28b578acfe2d048b1723910501ddddf0bd596abde01c56b5141a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/time-zero-values.csv",
+      "bytes": 10692762,
+      "sha256": "4cec54f478d807ef196aee0e2c74db43401c0d52daae2dc36bc9e0db3feb7a60"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/unsupported_or.metrics.json",
+      "bytes": 9806,
+      "sha256": "c61232aa752700d65a50572a37b3f7303e1e0ebdd3b26307a47e2c50a044ed9f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/selection/gem_regional/value_dependency.metrics.json",
+      "bytes": 9848,
+      "sha256": "f1cadc8587db98f1b924bb9faae963b3bfee82ea77d489db9303eaaeaec3da34"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/aladin_central_europe_2km-domain.command.json",
+      "bytes": 1528,
+      "sha256": "bbb5b0c9626bb34297b67de99490a0d6087202bcd118fc5a82d7f55ad59fe54f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/aladin_central_europe_2km-domain.log",
+      "bytes": 136,
+      "sha256": "9a48f0197115a5d7ff75f1ff07fda56ad91994fe0f50382a4259f6292cf334d5"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/aladin_central_europe_2km-domain.metrics.json",
+      "bytes": 9736,
+      "sha256": "a67fe38d7c6d426bcdafd25a8864333459830b54d60b02f98055232eeb3c80f2"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/aladin_central_europe_2km-domain.sql",
+      "bytes": 337,
+      "sha256": "313ba07cc39d7326ff694abaa5a3b0d2bd33b70884f11941047faf97654d459f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/aladin_central_europe_2km-explicit.command.json",
+      "bytes": 1536,
+      "sha256": "a2c6c3b4fe969c41944303e4f5e827aba47beb3ccaf592d6c2a70cd6a8b6b2ff"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/aladin_central_europe_2km-explicit.log",
+      "bytes": 138,
+      "sha256": "9b5c92bd5d6f7837d552ab9cff115d88fa54f06c1233dec84fc7b680fe185545"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/aladin_central_europe_2km-explicit.metrics.json",
+      "bytes": 8920,
+      "sha256": "52e1ef52d31e5433816b8376890d50b7e9bd73bb209d8dfc6f809f4a5336c596"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/aladin_central_europe_2km-explicit.sql",
+      "bytes": 1065,
+      "sha256": "6b63e8f25a099fbf915ddb282219fe308b3e8bec8386b72927651f4635bd66a7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/ecmwf_ifs_hsurf-domain.command.json",
+      "bytes": 1488,
+      "sha256": "522d2f5b888bed456970852e5c760c82f6bfd5c8e2c95e47ffbf3591ec98e69c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/ecmwf_ifs_hsurf-domain.log",
+      "bytes": 134,
+      "sha256": "69c21a9b9ec95e017c7804414d1516fc209141aa289bbd49f289a768bf8fab12"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/ecmwf_ifs_hsurf-domain.metrics.json",
+      "bytes": 9690,
+      "sha256": "3701287d81d44089cfe49bfa9d25eb2e325f2a0bcd4b8f2a49da0e25d36acde6"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/ecmwf_ifs_hsurf-domain.sql",
+      "bytes": 195,
+      "sha256": "6e133fb89aa18f351aa5557da9867f89ebca1a4188e62d613c781d8c6e89577b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/ecmwf_ifs_hsurf-explicit.command.json",
+      "bytes": 1495,
+      "sha256": "677d97dd8270e2584d10fda5fbea8257423b5244d0c8e1c901ced6258d4d90ad"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/ecmwf_ifs_hsurf-explicit.log",
+      "bytes": 136,
+      "sha256": "a96f94a1aaf14894a67b3550becdce9d931cc0b8ec9f2f4be35ea2d627a4a3f1"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/ecmwf_ifs_hsurf-explicit.metrics.json",
+      "bytes": 8877,
+      "sha256": "9fbb4214e66936eae7463b1c2215e305d29886791d9758722c6e857025f587b8"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/ecmwf_ifs_hsurf-explicit.sql",
+      "bytes": 532064,
+      "sha256": "971d5f6061498bb4ea2ea6a98a65e270e04e063621875499319fa5571b004030"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/gem_rdps_10km-domain.command.json",
+      "bytes": 1479,
+      "sha256": "96e74fba59ee6fe171d0a43a204b627a5ceb6407d4ad57e8efecff552e97a3cf"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/gem_rdps_10km-domain.log",
+      "bytes": 143,
+      "sha256": "f7b8a53f9b5751ab36288be9c7a1ab6dbfc7ce2d0b0265ef86461470ae4c7b71"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/gem_rdps_10km-domain.metrics.json",
+      "bytes": 9721,
+      "sha256": "b63e3ee85255347cbe5e89b3c7355b22dcddc68e700ca582fa002bcc8ecf828e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/gem_rdps_10km-domain.sql",
+      "bytes": 328,
+      "sha256": "b8664066e21ee0ef3cc3827bce67137a4fbaa8b5280b5d7956d051ca947e0a9a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/gem_rdps_10km-explicit.command.json",
+      "bytes": 1488,
+      "sha256": "e74cf9bc44f12002c7fa3e7336b583e90d13b9881dc25c1601a7ea5207f62ef9"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/gem_rdps_10km-explicit.log",
+      "bytes": 145,
+      "sha256": "7e5daa643c1eebdbb9defaa318668aead7e3392dcdf826ab5449bdbd6b548af0"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/gem_rdps_10km-explicit.metrics.json",
+      "bytes": 8926,
+      "sha256": "63a939f152c2d056871cbaea0226dd4f4d28f52fc0b5eb4813413c6d617725d1"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/gem_rdps_10km-explicit.sql",
+      "bytes": 1006,
+      "sha256": "de2b3c9f58731f9412d06d9ed28d32cd302b53b5a57653b955699cf7c2e8048e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/gem_regional-domain.command.json",
+      "bytes": 1476,
+      "sha256": "c176b8159b219f6adfedb89fece56b2ba117648f93882ec2b5c324922cfc761e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/gem_regional-domain.log",
+      "bytes": 142,
+      "sha256": "547b902d4452ce7ba12180d8bfe8cacd0e603224d78097c181266a6d2ffe6339"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/gem_regional-domain.metrics.json",
+      "bytes": 9700,
+      "sha256": "afa571611b4a7064db9f60d6c5da23b1addc748e79e75ae697018527ac40f159"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/gem_regional-domain.sql",
+      "bytes": 322,
+      "sha256": "0ee23c96ef4667cb387ebfe21a1549d29cf54e6e0a446ccd69b1ebef9c4bbd05"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/gem_regional-explicit.command.json",
+      "bytes": 1484,
+      "sha256": "14890f891c06774e40512b82fe4c1667b6109a202abc7689c9881a260904884c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/gem_regional-explicit.log",
+      "bytes": 144,
+      "sha256": "70204372307d1c066d5c511572f383437383d135b6faea6edacb2f27d7d784a1"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/gem_regional-explicit.metrics.json",
+      "bytes": 8908,
+      "sha256": "0d60e204b316961b4a645b53338b61d41de0579843f828d284c1199bddeeb5f6"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.4/values-fast/gem_regional-explicit.sql",
+      "bytes": 1015,
+      "sha256": "9fc0870ee948172dedad17b336b1ce74196227bb7b8aae4920d7eab8aef79b85"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.5/matrix-attempt2/extension-mismatch.command.json",
+      "bytes": 876,
+      "sha256": "ad15160e8855de15a1bdf53cbf774d1825bdbb331ebf012a14715fe19bf078be"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.5/matrix-attempt2/extension-mismatch.log",
+      "bytes": 287,
+      "sha256": "9db007b7cb9f25f941acd7168ed4369a621dafc425ce33880f0169e532db587e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.5/matrix-attempt2/extension-mismatch.sql",
+      "bytes": 116,
+      "sha256": "bec78b9667bfb622d4d4f7422cfa3d2b3b34f0e67eb8051eead307a08f883d64"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.5/matrix-attempt2/httpfs-mismatch.command.json",
+      "bytes": 870,
+      "sha256": "41e2e08237f60425058b5fa0c3a5ed248ed550a970a86b4deadaa9c2d27bfaf3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.5/matrix-attempt2/httpfs-mismatch.log",
+      "bytes": 284,
+      "sha256": "9d6fe80136b0a90ec1e18f586c87391ba28640eeca519584bde7d4292387fa09"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.5/matrix-attempt2/httpfs-mismatch.sql",
+      "bytes": 113,
+      "sha256": "cffbb3d57cc1c9b4ce3c1399d7126f77100c5673bafa9712beb2f8373034aba4"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.5/matrix-attempt2/load.sql",
+      "bytes": 327,
+      "sha256": "4402bb5c3294630fc7068ef6471f6c6e29bc41cb4c4e2cc3077c5e13de7f832c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.5/matrix-attempt2/matching-load.command.json",
+      "bytes": 869,
+      "sha256": "56d61ae5f376526590f69c207804788f8a0cc7c2532a6df63db8d86100e0071d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.5/matrix-attempt2/matching-load.log",
+      "bytes": 8948,
+      "sha256": "ffdcc01a42609d71b5a0ea40c3a50bc38130f6f05ad5b2a7f826eb9c61ea90d9"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.5/matrix-attempt2/version.command.json",
+      "bytes": 673,
+      "sha256": "4d665e0db4a966c2a236d51b6e964e2f129e5f9fcc0e832e7c9cf0b827b0c749"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.5/matrix-attempt2/version.log",
+      "bytes": 30,
+      "sha256": "fdcab0c50ad694205c7efe9dcbc089e1a96879ad653698cc7b57c1ae17c770d8"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.6/matrix-attempt2/extension-mismatch.command.json",
+      "bytes": 875,
+      "sha256": "407a8fe67fea1667a2587b687d29e53a17e2aa6c118e67515e89eb3f64b45e2e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.6/matrix-attempt2/extension-mismatch.log",
+      "bytes": 287,
+      "sha256": "ceae2e403c72dd5ce3415677f4e674f09e3ecd8f6fcfe4580c815c5d2c7bd3ce"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.6/matrix-attempt2/extension-mismatch.sql",
+      "bytes": 116,
+      "sha256": "19e28cf326aa4a253118235d5bc361ee8dbb13319d8962e464a1d71fd083da19"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.6/matrix-attempt2/httpfs-mismatch.command.json",
+      "bytes": 870,
+      "sha256": "ed94522a0aed5594e1c40ddf7e392e04080849fe5e68cb0b21654967cbd5ce9e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.6/matrix-attempt2/httpfs-mismatch.log",
+      "bytes": 284,
+      "sha256": "0abc3ee3f019e471306fd4e855657e7ac067c4d542d558297ff790a69a66111d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.6/matrix-attempt2/httpfs-mismatch.sql",
+      "bytes": 113,
+      "sha256": "f17d5a56c7e14689a6be2cd3246eb87dbd2707bdc3e855189ad8496d55976e64"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.6/matrix-attempt2/load.sql",
+      "bytes": 327,
+      "sha256": "48a8637f1692a791ec16f5387c02ed612515bbeeb5ee6fbfbb8fcca0b38f8004"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.6/matrix-attempt2/matching-load.command.json",
+      "bytes": 869,
+      "sha256": "94c935780ae82326d5fb9526ffc4593409cf121f7c42f896db8c9112c52863d5"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.6/matrix-attempt2/matching-load.log",
+      "bytes": 8948,
+      "sha256": "5e8f9256560f02bda894d0e5a2457ffa2603c77b0dc06aa2021a57b0e53e2638"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.6/matrix-attempt2/version.command.json",
+      "bytes": 673,
+      "sha256": "295a270276de16448534e9e0607ab6d4d1ef78bcb22dbb7273514db746789dec"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/v1.5.6/matrix-attempt2/version.log",
+      "bytes": 30,
+      "sha256": "61af5cda55fed247a8274aced77b7d3145325057d7138541b268176b5a6dca72"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/value_selfcheck_h9.py",
+      "bytes": 1134,
+      "sha256": "e53344de94537abd17632374369bcdbba61b679bf55b9ce37d8b78fd67424813"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/verify_final_seal.py",
+      "bytes": 1364,
+      "sha256": "fe84700ee6dd4d605b4bb5f4a16163ba30febc4e54421bf6a2d2db958f7089ba"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/verify_materialized_h9.py",
+      "bytes": 1517,
+      "sha256": "7607ee71b1ba48825acb6a699cacdbdc62b60193a1bacc2fc9019ea88aa650c9"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/manifest.json",
+      "bytes": 1129442,
+      "sha256": "d43d3846e098061750a295ab02889f61fbe0a4692182335e4b0ca0cc2af159bb"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/freeze.json",
+      "bytes": 11428,
+      "sha256": "f8347822046d0040dac6fd24c741b8b82b5bd606017f311fb4b477584e13f317"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/report.md",
+      "bytes": 8803,
+      "sha256": "5c96e922f8d7883e083dff6603e40cf6fa5c0c70a0882773ab4cce746ffa1b94"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/completed-local-audit.json",
+      "bytes": 9446,
+      "sha256": "f625755d380e71d2ce3cc3b3359cac87ed91da79755382a1b6a0300b0d64496d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/scripts/version_matrix.py",
+      "bytes": 17492,
+      "sha256": "3416f57f5915e137a9f50a4554333deee3be35bdd50cc23cf295151dd5dac44f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/test/tools/duckomo_fixture_tool.cpp",
+      "bytes": 152670,
+      "sha256": "7a082d59088e89074753dc9b53e3d6f12b0bc9893778d0e04ffa3725d48925bb"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/test/data/grids/coordinate-reference.json",
+      "bytes": 7881,
+      "sha256": "47712d94197d708b7ef1d48a4679d4eb5a38aecc324cc95d60d7b613314d33c7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/test/data/grids/sample-manifest.json",
+      "bytes": 35862,
+      "sha256": "72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/test/data/grids/source-manifest.json",
+      "bytes": 8983,
+      "sha256": "3666d27d5118bdfe53311ccf8eb36d3c7624dfcb40b09022071bb58c03e87112"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/test/data/grids/value-reference-manifest.json",
+      "bytes": 9899,
+      "sha256": "9ed46b9664c6023ee14e0fb2e5543d6829125e7dbfaeb0b0760e4906c9272e44"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-completion/remote-complete.json",
+      "bytes": 619,
+      "sha256": "819941296cf407e270e3ab41168b88090fb3ac859c2dc94aa1dbff17eae63d50"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-h5/manifest.json",
+      "bytes": 53710,
+      "sha256": "40716e8e071762cb9708fcbba31cd4f2b9aa9c147adea71c7be7c25a265991b8"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-h6-synthetic/manifest.json",
+      "bytes": 25613,
+      "sha256": "711881fb0e7eff08d8fc0efbc34263a89080bc1917119b0303e46b186ef2b847"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-s3-changes/manifest.json",
+      "bytes": 60858,
+      "sha256": "3c0abd2fdaea642dc5511cf973adfc54803c56ca9bc3698d6e1f76545c032f7e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-s3-authorization/manifest.json",
+      "bytes": 10443,
+      "sha256": "abbab1d1535100a40cf4ea08bc2b2a3b066c30553a67c4adbcb34efbd92eee8b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-s3-lifecycle/manifest.json",
+      "bytes": 40940,
+      "sha256": "a17985eeea72299faaf4ad17aca8d8f0221d056f5ea3b27cfac9ff9bcaa1d461"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/official/runtime.json",
+      "bytes": 701,
+      "sha256": "85ed4868bab19283eb72644f97e1daffb5b6bd90f6b60f54733f8af17b74fd13"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/evidence/regions/current-20261020/matrix-testfixed/v1.5.4/build-manifest.json",
+      "bytes": 4816,
+      "sha256": "2de8c8ce8492ec012934cd0db496b1ffc8c772a78d36000d216ee22b1edc036c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/duckomo.duckdb_extension",
+      "bytes": 13327102,
+      "sha256": "a1f1e62f69e9eb7d80789883ab23e84ee296b0bebd9e2b07c48f5fe40b9063b9"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/identity.json",
+      "bytes": 636,
+      "sha256": "523dc92b9511743c26e3972637ba23421f8d1a3178fd03550734a9ca1cc589b5"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/official/duckdb",
+      "bytes": 54251376,
+      "sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/official/httpfs.duckdb_extension",
+      "bytes": 19763390,
+      "sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/src/libduckdb_static.a",
+      "bytes": 97881986,
+      "sha256": "87eae877b81528ccda4df8b35bf71a21ce29998fdc70ae11decc0210a07db00b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/extension/duckomo/libduckomo_om.a",
+      "bytes": 4310930,
+      "sha256": "6135124c60582e783e928e8f3638cadf7c8bd8ada85927f018f2a3fd38ef5823"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/extension/core_functions/core_functions.duckdb_extension",
+      "bytes": 23949502,
+      "sha256": "c2e1c12ff23dad0a69ba02e2f1ba01ba978ff37f89197b015051c9790925423d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/official/runtime.json",
+      "bytes": 701,
+      "sha256": "36c0f58c4ac5740eb59e0d20b06b540b81b122b2c5b900bc1435785505c0f859"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/evidence/regions/current-20261020/matrix-testfixed/v1.5.5/build-manifest.json",
+      "bytes": 4816,
+      "sha256": "fabd279ab04d13211212860e5247657f79ae9c8509b14b2deb8b1c17787c72a4"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/duckomo.duckdb_extension",
+      "bytes": 13328870,
+      "sha256": "f05416b9bc0e5ddb07f95af5d1f1744c78b7fce7f3e5a41ea4d67a8af403a74c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/identity.json",
+      "bytes": 636,
+      "sha256": "f3455e9b678f7e4376e8e44acd7614d8108e017f89a48e49123e2a77a90f41eb"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/official/duckdb",
+      "bytes": 54323032,
+      "sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/official/httpfs.duckdb_extension",
+      "bytes": 19861758,
+      "sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/src/libduckdb_static.a",
+      "bytes": 98042348,
+      "sha256": "159ee24248172115b376fc7fd8350e8b771ebaba5e7ffcebfc392130a2a4590c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/extension/duckomo/libduckomo_om.a",
+      "bytes": 4310930,
+      "sha256": "6135124c60582e783e928e8f3638cadf7c8bd8ada85927f018f2a3fd38ef5823"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/extension/core_functions/core_functions.duckdb_extension",
+      "bytes": 23951598,
+      "sha256": "1da3f46d99617937ef684dd31c96b7ca903fbf19cf822fd57ac5d2ff89b3294b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/official/runtime.json",
+      "bytes": 701,
+      "sha256": "8b73462659d5275f517cb730d4d528378a05abf0487dc47c991d4e3af67b824f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/evidence/regions/current-20261020/matrix-testfixed/v1.5.6/build-manifest.json",
+      "bytes": 4816,
+      "sha256": "7b965c556a989a61c800fe1a7b162a76af1ffa60c8f9f7534bea4c6b73488cf0"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/duckomo.duckdb_extension",
+      "bytes": 13397734,
+      "sha256": "ee86c0c2864ebd044551746834765e2ed482583e9a40236fd9fde0710ea50e65"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/identity.json",
+      "bytes": 636,
+      "sha256": "de03c2e09cd091884dd625e8dd14e7b90a738af3c4084b28587e63f019cecb6c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/official/duckdb",
+      "bytes": 54304672,
+      "sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/official/httpfs.duckdb_extension",
+      "bytes": 19864758,
+      "sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/src/libduckdb_static.a",
+      "bytes": 98179760,
+      "sha256": "bb11e03fcdaeb7d5ec3a582ebca6a5ae55ebcf8215effcb5b1160dad92f49d24"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/extension/duckomo/libduckomo_om.a",
+      "bytes": 4310930,
+      "sha256": "6135124c60582e783e928e8f3638cadf7c8bd8ada85927f018f2a3fd38ef5823"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/extension/core_functions/core_functions.duckdb_extension",
+      "bytes": 24060270,
+      "sha256": "8251f4659de9666b861992caa9637b81ddc88f5b9d8c5343f388a9f2fdce7d85"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/references/gem_regional.selected.f32",
+      "bytes": 7752,
+      "sha256": "67f774c3c5167565fc8ae0ae963d91ed62ca4d1a38157fbd1279e5b9c0be61e5"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/references/gem_rdps_10km.selected.f32",
+      "bytes": 5928,
+      "sha256": "57e787e1118217ab51fa79e0c63069e50a6810231faa5a1076b599a8b883128c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/references/gem_regional.f32",
+      "bytes": 351320640,
+      "sha256": "25aa3a102d43cf55f998a625533ff65e8a521440a408052e01bd3e282e192219"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/references/ecmwf_ifs_hsurf.f32",
+      "bytes": 26398720,
+      "sha256": "5a7179879c38e9e206eb0ef08bd76065540a55eaa50b6eafa9e38454d84ce174"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/references/ecmwf_ifs.f32",
+      "bytes": 13304954880,
+      "sha256": "62a83f95c88d71e517742eaf520a726d6213059c121cd6520e32e2124f532420"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/references/ecmwf_ifs.selected.f32",
+      "bytes": 88704,
+      "sha256": "2891a4c2188f79d8bfb920483d8fafc2e6da8f6afb806f33000e9a72a2fcf3c4"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/references/aladin_central_europe_2km.selected.f32",
+      "bytes": 131040,
+      "sha256": "1a2d30df4f7f2683f320c2166a61cf6bc822135690925fce13df28a9af836bd3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/references/ecmwf_ifs_hsurf.selected.f32",
+      "bytes": 176,
+      "sha256": "799f0dc95b47f944e63e5feb0d0f40f46c70ec497836f5fec8ff9b602ce88b37"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/references/gem_rdps_10km.f32",
+      "bytes": 543232800,
+      "sha256": "2cdc96850930b8320e1a098101c2f73af686c03c0aad0e94f442dc95b2d068a3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/references/aladin_central_europe_2km.f32",
+      "bytes": 423053280,
+      "sha256": "1b991fdc0f009a166bcdf1215971e2af4ba78a5c7383a5d8dbf0ca007031289f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/references/ecmwf_ifs.coordinates.f64",
+      "bytes": 105594880,
+      "sha256": "a2540c4ecf9045e0544834f0acf2f0d1a04b20423e666cef4773e2d935c03f11"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/references/gem_regional.coordinates.f64",
+      "bytes": 12327040,
+      "sha256": "6736b6e0264b35ed53d1f75ec514b4e0b763fb5a0dbf3b21600e5fb1e65bcb14"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/references/aladin_central_europe_2km.coordinates.f64",
+      "bytes": 14101776,
+      "sha256": "53e37b87f7678f80a7b6a47b1e350486647ace1154b38cb61345f855767bc26f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/references/gem_rdps_10km.coordinates.f64",
+      "bytes": 19060800,
+      "sha256": "cba5c0eaedc54f970b63f3edafe9651ee1ca3a62b6e94cf01852eba4d49e146b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/evidence/003-dimensions-remote-parallel/current-delivery-20261021.md",
+      "bytes": 6235,
+      "sha256": "3e03de4458103fccec06b484c18876d4c1f25adcd09ed323842a91be9881cf4a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/evidence/003-dimensions-remote-parallel/current-engineering-20261021.json",
+      "bytes": 7148,
+      "sha256": "58f188a11357c0f0bb043624252721c70c256d261ef1d91ba846b59605cd0a9e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/evidence/003-dimensions-remote-parallel/independent-review-20261022.md",
+      "bytes": 7396,
+      "sha256": "a0788bc14b7f3c0335a0928894c1f7bcbd048904a0d04d78a88647053f52cda9"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/evidence/003-dimensions-remote-parallel/independent-review-20261022.json",
+      "bytes": 8363,
+      "sha256": "98c23c5894ac8f84e14883b716a561c683ebfb40800e78d87d2bfcf0a73f378e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-003/progress.md",
+      "bytes": 2163,
+      "sha256": "bf9f895281bbd741dcc57c6a77ac31266d82fa2a17207459d177f3eb8c9a55a0"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-003-final/manifest.json",
+      "bytes": 87096,
+      "sha256": "4315b06fd1660396c82af5acbc06839c8fc81f163ca0b851be2a685b60457101"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-003-final/closure.json",
+      "bytes": 6533,
+      "sha256": "3322a8ea33d80863c0867ff51103f2753c3c5e500a4155941147d2bb56c977ed"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-003-final/addendum-20261022/manifest.json",
+      "bytes": 87000,
+      "sha256": "a5c24d7be0bb9a2c09f22733b16a71180bf94791cf3d3aac21030f204a54e02b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-003-final/addendum-20261022/closure.json",
+      "bytes": 7768,
+      "sha256": "bb3dddecd1d8b141270347da0cea84df39e3822ce177ae3fde5c81b9a244ff06"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-remote-matrix/attempt-02/report.json",
+      "bytes": 221684,
+      "sha256": "905737f37daeee394ef858df7bd6acc35001613b1211f6478c4b09e34a624cbf"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-remote-matrix/attempt-02/manifest.json",
+      "bytes": 129326,
+      "sha256": "b60f774dd08254c5675ea6fda95949341c0b3e3cbc33f6096ac1c93efa33f79b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-remote-matrix/attempt-03/report.json",
+      "bytes": 238483,
+      "sha256": "2a1179578f3a763421572cb2eed6544e1344946c02e17a103e628ddd17c8effb"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-remote-matrix/attempt-03/manifest.json",
+      "bytes": 47610,
+      "sha256": "21d1e1f3aa58bfc8e2dade94d2557945c70fa773b6c4ced7b290438edc340b09"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-remote-matrix/run.py",
+      "bytes": 10709,
+      "sha256": "228fd8121ec1633d3f87165e0af7db92f1a46972fbb2214a5e38e9d154a5b73a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-remote-matrix/repair.py",
+      "bytes": 10775,
+      "sha256": "5876c6869f77e9221bf370cdae243a658f1775ef4c1a44c465f58e43e8da4e34"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/current-gates-audit/run.json",
+      "bytes": 39666,
+      "sha256": "598aeecd00084540c8b478152c88ee072dad5a3f8d46bf27371fa5cbd87071a0"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/full_values_fast_remote.cpp",
+      "bytes": 5197,
+      "sha256": "22b390fa22629d969264740486b963332ee6f59312fc7e8e90efcf5240c90f29"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/v1.5.5/full_values_fast_remote",
+      "bytes": 44547472,
+      "sha256": "e59239422df54395f68837e86957eb31c58f8f95eda792f4ae27922895d18a83"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/tls/loopback.crt",
+      "bytes": 1151,
+      "sha256": "d126909774e86b6b718e3b0c2549c06bf227592875aaa0369500650520bc61f8"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-remote-matrix/attempt-02/v1.5.5/services/s3-setup.sql",
+      "bytes": 248,
+      "sha256": "1159c070a3c7dbdae262b26f38970a3e23a836470bcb7c4653666e4dc0567b64"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/v1.5.4/full_values_fast_remote",
+      "bytes": 44408736,
+      "sha256": "30b76e6326292e1206ab2903ab39743bfb80c10e194b4289a06d5a0a9065393c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-remote-matrix/attempt-02/v1.5.4/services/s3-setup.sql",
+      "bytes": 248,
+      "sha256": "c9a8901514e4653c3176df73a2ae6163002f9c96a286c18d772ce832cffb41e8"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/v1.5.6/full_values_fast_remote",
+      "bytes": 44553464,
+      "sha256": "62851face4848ff7ff94ea95be8f85520677b8cf4bd9041dfc6c1e387c8d535a"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-remote-matrix/attempt-02/v1.5.6/services/s3-setup.sql",
+      "bytes": 248,
+      "sha256": "d9dbe914dca27ad0628c582127eb4c9ff143179cffaa98a0573ed40ce91941f2"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-remote-matrix/attempt-03/v1.5.4/services/s3-setup.sql",
+      "bytes": 248,
+      "sha256": "9e0006a46e17ae9ffbf6271959ee22e99cced69cf3a978fca36a0987bfacc313"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.om",
+      "bytes": 23835720,
+      "sha256": "1d701b188c8c264532f0d8fa917400a66cf28aa1c8e53a7b40781a775333c7c1"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/ecmwf-ifs-temperature-2m-chunk-817.om",
+      "bytes": 353999720,
+      "sha256": "483dd0be2096d3e3fff6731509400f97591ebcfc237a941a37460f42a7a10e7f"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.om",
+      "bytes": 2482560,
+      "sha256": "2e8279f8bd12052ba5be5a0bcba2293dc4316097e434d6691f9e6711249e1fd3"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om",
+      "bytes": 48727672,
+      "sha256": "cef407b0aae43498485b8f6e25907c1ecf8a82c6cb8aa2185fe860f0c491132c"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om",
+      "bytes": 68016448,
+      "sha256": "3db637197d27c65051e417b850f8c3656d1c5371ab78dcbd9fc05d0e440956f7"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/remote/run.env",
+      "bytes": 938,
+      "sha256": "cf2cba9316fd012ce1f1bfb477c5d04a8f21d005e39752610f1e1b6f0988f722"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/remote/run-manifest.json",
+      "bytes": 6177,
+      "sha256": "14cf4425b7ad6e4c4da670fa0d058f3b1eb76a1cbbd72e828c371a39a37c0887"
+    }
+  ],
+  "excluded": [
+    "manifest.json",
+    "events.jsonl",
+    "finalize-launch.command.json",
+    "finalize-launch.log",
+    "parent-note.md",
+    "parent-remote-release.md",
+    "resumed-events.jsonl",
+    "resumed-stderr.log",
+    "stderr.log",
+    "parent-*.md (parent-owned live notes; snapshots retained)",
+    "**/tmp/**",
+    "**/__pycache__/**"
+  ],
+  "inherited_manifest_hashes": [
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/grid-engineering/manifest.json",
+      "bytes": 1129442,
+      "sha256": "d43d3846e098061750a295ab02889f61fbe0a4692182335e4b0ca0cc2af159bb"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-h5/manifest.json",
+      "bytes": 53710,
+      "sha256": "40716e8e071762cb9708fcbba31cd4f2b9aa9c147adea71c7be7c25a265991b8"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-h6-synthetic/manifest.json",
+      "bytes": 25613,
+      "sha256": "711881fb0e7eff08d8fc0efbc34263a89080bc1917119b0303e46b186ef2b847"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-s3-changes/manifest.json",
+      "bytes": 60858,
+      "sha256": "3c0abd2fdaea642dc5511cf973adfc54803c56ca9bc3698d6e1f76545c032f7e"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-s3-authorization/manifest.json",
+      "bytes": 10443,
+      "sha256": "abbab1d1535100a40cf4ea08bc2b2a3b066c30553a67c4adbcb34efbd92eee8b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-s3-lifecycle/manifest.json",
+      "bytes": 40940,
+      "sha256": "a17985eeea72299faaf4ad17aca8d8f0221d056f5ea3b27cfac9ff9bcaa1d461"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-remote-matrix/attempt-02/manifest.json",
+      "bytes": 129326,
+      "sha256": "b60f774dd08254c5675ea6fda95949341c0b3e3cbc33f6096ac1c93efa33f79b"
+    },
+    {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-remote-matrix/attempt-03/manifest.json",
+      "bytes": 47610,
+      "sha256": "21d1e1f3aa58bfc8e2dade94d2557945c70fa773b6c4ced7b290438edc340b09"
+    }
+  ],
+  "identity_limit": "Model declarations are not serving attestations; prior default model unknown."
+}

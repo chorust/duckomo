@@ -139,6 +139,6 @@ SQL
 - `read_om_raw(path)` 扫描单个根 Float32/FPX 数组，暴露 `value FLOAT`。
 - `read_om(path, dimensions := map(VARCHAR, VARCHAR[]))` 支持 OM v3 层级容器中的 Float32/FPX 与 Float32/PFOR 数组；多变量需要一致的有序轴身份，可来自 `coordinates` 元数据或显式声明。schema 列按内部规范路径排序，对外列名不带前导 `/`。
 - NaN 映射为 SQL NULL，正负无穷及正负零保留。缺失文件、截断数据、未知版本、不支持的类型/压缩、缺少或不一致的轴声明会报错。
-- 当前仍只支持本地文件。Phase 0–2 示例不配置坐标；现在可通过 grid/domain 生成 latitude/longitude，time 等语义列仍未实现。
+- 本页只复现 Phase 0–2 本地读取范围。当前开发版另支持通过 grid/domain 生成 `lat/lon`、显式语义轴及官方 HTTPFS 远程读取，分别见 [空间查询指南](../002-spatial-pushdown/quickstart.md)、[维度指南](../003-dimensions-remote-parallel/quickstart.md) 和 [HTTPFS 指南](../../docs/official-httpfs.md)。
 
-历史测试记录对应 Linux AArch64；原计划的 Linux x86_64 支持与验证现已暂缓。SQL smoke command 只需 DuckDB CLI、扩展和 fixture，不运行 Python 或 Swift。最终验收中的隔离运行环境结果和未完成的平台检查见 [final evidence](evidence/final.md)；不能从 AArch64 结果推断 x86_64 已通过。
+历史测试记录对应 Linux AArch64；原计划的 Linux x86_64 支持与验证现已暂缓。SQL smoke command 只需 DuckDB CLI、扩展和 fixture，不运行 Python 或 Swift。SC-006 已由未参与实现的独立 AI 在 Linux AArch64 / DuckDB v1.5.4 上复现：36 次隔离 CLI 调用及 14 次 exec trace 均通过，查询进程未启动 Python/Swift，详见[独立复现](evidence/independent-sc006-20261021.md)与[最终验收](evidence/final.md)。这是 AI 验证，非人工；不能从 AArch64 结果推断 x86_64 已通过。

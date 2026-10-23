@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+  "versions": [
+    "v1.5.4",
+    "v1.5.5",
+    "v1.5.6"
+  ],
+  "platform": "Linux AArch64",
+  "build_limitation": "Changed-TU rebuild/relink, not clean rebuild",
+  "H5": {
+    "status": "pass",
+    "remote_pairs": 24,
+    "point_ratios": [
+      16,
+      15.5
+    ],
+    "max_work_peak_ratio": 1.0002097315436242,
+    "stress_terminal_scans": 612,
+    "stress_service_attempts": 8352,
+    "descriptor_observation": "baseline/max5 all six protocol/version runs",
+    "scope": "DuckOMO owned capacities only, HTTPFS internal heap unobserved"
+  },
+  "H6": {
+    "status": "pending-full-real-matrix",
+    "synthetic_sql_suites": 36,
+    "synthetic_assertions": 3261,
+    "s3_connection_transitions": 39,
+    "signed_same_uri_authorization_transitions": 9,
+    "authorization_scope": "Dedicated service proxy policy, valid signing credentials unchanged. Not SeaweedFS IAM mutation",
+    "real_matrix": "build/acceptance-closure-20261021/parent-remote-matrix/attempt-02",
+    "signed_real_grid_lifecycle_cases": 15,
+    "signed_real_grid_terminal_scans": 75,
+    "signed_real_grid_service_requests": 1455,
+    "completed_O1280_http_full_selected_versions": [
+      "v1.5.4",
+      "v1.5.5",
+      "v1.5.6"
+    ]
+  },
+  "H8": {
+    "status": "pending-H6"
+  },
+  "H9": {
+    "status": "independent-AI-executing",
+    "thread": "01a1614e-925c-76b0-a5f8-32c9bfe8fdb9",
+    "current_declared_model": "codex/gpt-6-astra",
+    "human": false,
+    "prior_default_model": "opencode-go/gemini-4-argon-contributor per CLI recovery event, not independently attested",
+    "actual_reproduction_status": "pass; final package acceptance pending complete real matrix and review",
+    "independent_local_value_positions": 672002720,
+    "independent_coordinate_positions": 18885562,
+    "remote_pair": {
+      "full_rows": 6599680,
+      "selected_rows": 18,
+      "service_sent_body_bytes": [
+        4125977,
+        1591
+      ],
+      "value_data_bytes": [
+        4083294,
+        1056
+      ],
+      "decoded_chunks": [
+        27649,
+        4
+      ],
+      "official_reference_parity": true
+    }
+  },
+  "packages": [
+    {
+      "package": "parent-h5",
+      "manifest_path": "build/acceptance-closure-20261021/parent-h5/manifest.json",
+      "manifest_sha256": "40716e8e071762cb9708fcbba31cd4f2b9aa9c147adea71c7be7c25a265991b8",
+      "verified_artifacts": 244,
+      "status": "pass",
+      "report_path": "build/acceptance-closure-20261021/parent-h5/report.json",
+      "report_sha256": "f68f8ea05d7fe8f90c5f5694ba04fe21bff2c94b96a2637e35bda269a6b1a632"
+    },
+    {
+      "package": "parent-h6-synthetic",
+      "manifest_path": "build/acceptance-closure-20261021/parent-h6-synthetic/manifest.json",
+      "manifest_sha256": "711881fb0e7eff08d8fc0efbc34263a89080bc1917119b0303e46b186ef2b847",
+      "verified_artifacts": 43,
+      "status": "pass",
+      "report_path": "build/acceptance-closure-20261021/parent-h6-synthetic/report.json",
+      "report_sha256": "915315e192b79f3b1f9df8a893fe3fec452b0ba6bd42d584707cc76df69e0fe0"
+    },
+    {
+      "package": "parent-s3-changes",
+      "manifest_path": "build/acceptance-closure-20261021/parent-s3-changes/manifest.json",
+      "manifest_sha256": "3c0abd2fdaea642dc5511cf973adfc54803c56ca9bc3698d6e1f76545c032f7e",
+      "verified_artifacts": 236,
+      "status": "pass",
+      "report_path": "build/acceptance-closure-20261021/parent-s3-changes/report.json",
+      "report_sha256": "4047cd3d19be36f58213e304d181801a972ecc19e4bbf2aa907b469d690716b8"
+    },
+    {
+      "package": "parent-s3-authorization",
+      "manifest_path": "build/acceptance-closure-20261021/parent-s3-authorization/manifest.json",
+      "manifest_sha256": "abbab1d1535100a40cf4ea08bc2b2a3b066c30553a67c4adbcb34efbd92eee8b",
+      "verified_artifacts": 42,
+      "status": "pass",
+      "report_path": "build/acceptance-closure-20261021/parent-s3-authorization/report.json",
+      "report_sha256": "153f6517fcc47e5cbc12b803f11c08176539ed275de691171efb8fec44fd36b9"
+    },
+    {
+      "package": "parent-s3-lifecycle",
+      "manifest_path": "build/acceptance-closure-20261021/parent-s3-lifecycle/manifest.json",
+      "manifest_sha256": "a17985eeea72299faaf4ad17aca8d8f0221d056f5ea3b27cfac9ff9bcaa1d461",
+      "verified_artifacts": 176,
+      "status": "pass",
+      "report_path": "build/acceptance-closure-20261021/parent-s3-lifecycle/report.json",
+      "report_sha256": "71d508a68f259f9508213e8d238788bfea86f1b75c9578deeecf18471f4670eb"
+    }
+  ]
+}

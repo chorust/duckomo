@@ -1,0 +1,86 @@
+[
+  {
+    "name": "semantic_axes",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "/home/blizhan/repo/github/duckomo/test/sql/semantic_axes.test"
+    ],
+    "exit_code": 0,
+    "stdout": "Filters: /home/blizhan/repo/github/duckomo/test/sql/semantic_axes.test\n\n[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/semantic_axes.test\n[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/semantic_axes.test\n===============================================================================\nAll tests passed (106 assertions in 1 test case)\n\n",
+    "stderr": ""
+  },
+  {
+    "name": "axis_filter",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "/home/blizhan/repo/github/duckomo/test/sql/axis_filter.test"
+    ],
+    "exit_code": 0,
+    "stdout": "Filters: /home/blizhan/repo/github/duckomo/test/sql/axis_filter.test\n\n[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/axis_filter.test\n[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/axis_filter.test\n===============================================================================\nAll tests passed (12 assertions in 1 test case)\n\n",
+    "stderr": ""
+  },
+  {
+    "name": "parallel_scan",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "/home/blizhan/repo/github/duckomo/test/sql/parallel_scan.test"
+    ],
+    "exit_code": 0,
+    "stdout": "Filters: /home/blizhan/repo/github/duckomo/test/sql/parallel_scan.test\n\n[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/parallel_scan.test\n[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/parallel_scan.test\n===============================================================================\nAll tests passed (11 assertions in 1 test case)\n\n",
+    "stderr": ""
+  },
+  {
+    "name": "cache_metrics",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "/home/blizhan/repo/github/duckomo/test/sql/cache_metrics.test"
+    ],
+    "exit_code": 0,
+    "stdout": "Filters: /home/blizhan/repo/github/duckomo/test/sql/cache_metrics.test\n\n[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/cache_metrics.test\n[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/cache_metrics.test\n===============================================================================\nAll tests passed (24 assertions in 1 test case)\n\n",
+    "stderr": ""
+  },
+  {
+    "name": "multi_grid",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "/home/blizhan/repo/github/duckomo/test/sql/multi_grid.test"
+    ],
+    "exit_code": 0,
+    "stdout": "Filters: /home/blizhan/repo/github/duckomo/test/sql/multi_grid.test\n\n[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/multi_grid.test\n[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/multi_grid.test\n===============================================================================\nAll tests passed (155 assertions in 1 test case)\n\n",
+    "stderr": ""
+  },
+  {
+    "name": "grid_selection",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "/home/blizhan/repo/github/duckomo/test/sql/grid_selection.test"
+    ],
+    "exit_code": 0,
+    "stdout": "Filters: /home/blizhan/repo/github/duckomo/test/sql/grid_selection.test\n\n[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/grid_selection.test\n[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/grid_selection.test\n===============================================================================\nAll tests passed (39 assertions in 1 test case)\n\n",
+    "stderr": ""
+  },
+  {
+    "name": "grid_info",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+      "--test-dir",
+      "/home/blizhan/repo/github/duckomo",
+      "/home/blizhan/repo/github/duckomo/test/sql/grid_info.test"
+    ],
+    "exit_code": 0,
+    "stdout": "Filters: /home/blizhan/repo/github/duckomo/test/sql/grid_info.test\n\n[0/1] (0%): /home/blizhan/repo/github/duckomo/test/sql/grid_info.test\n[1/1] (100%): /home/blizhan/repo/github/duckomo/test/sql/grid_info.test\n===============================================================================\nAll tests passed (103 assertions in 1 test case)\n\n",
+    "stderr": ""
+  }
+]

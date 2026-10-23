@@ -61,7 +61,7 @@ python3 scripts/validate-official-httpfs.py \
 
 删除 `duckomo_cache_enabled`、`duckomo_cache_capacity`、`duckomo_clear_cache()`，旧 SQL 会明确报未知设置/函数。v4/legacy 结构保留：远程 transport 为 NULL/complete=false，本地为 0/true；原自有 cache false/0、原因 removed。应用成功读取字节不等于物理网络字节；HTTPFS 总内存不由 DuckOMO 自有账本约束。
 
-旧 G5 为 superseded，原失败记录保留。三版本 runtime 通过不代表 004 全部真实网格门禁 H0–H9 完成。独立验证者复现仍是单独的发布条件，不由实现者代签。
+旧 G5 为 superseded，原失败记录保留。三版本 runtime 与完整网格验收分别留证；003 R21/R22 已完成[独立 AI 验证与当前映射](../evidence/003-dimensions-remote-parallel/current-delivery-20261021.md)，004 批准的四定义/五对象范围另已通过[H0–H9 及独立 AI H9](../specs/004-multi-grid-selection/evidence/current-20261021/report.md)。独立验证为 AI、非人工，范围外不继承；本次未发布。
 
 同一 URI 的访问变化可复现于迁移证据目录内的 `access-change.py`：通过现有 fixture service 的控制入口切换 normal → denied → normal，在同一连接检查失败与恢复。该用例仅证明固定官方版本/配置的受控行为，不扩展为任意上游缓存的即时撤权承诺。
 

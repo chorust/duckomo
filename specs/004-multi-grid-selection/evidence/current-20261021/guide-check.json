@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "scope": "Current quickstart examples only, parent execution; does not close H5/H6/H8/H9",
+  "human_verification": false,
+  "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+  "guide": "specs/004-multi-grid-selection/quickstart-current.md",
+  "guide_sha256": "c2569e713d7b6072cdea688d79360cc0d5f345d65cad278123aff3c067bf6d29",
+  "status": "pass",
+  "runs": [
+    {
+      "version": "v1.5.4",
+      "command": {
+        "argv": [
+          "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/official/duckdb",
+          "-unsigned",
+          "-batch",
+          "-bail",
+          ":memory:",
+          "-f",
+          "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-doc-check/current-guide.sql"
+        ],
+        "cwd": "/home/blizhan/repo/github/duckomo",
+        "exit_code": 0,
+        "elapsed_seconds": 20.005189895629883,
+        "sql_sha256": "7aa41d79cc0c4e577a12a4c0cbf40a80b32a5895f8724d0ee26be6b1417cecc8",
+        "output_sha256": "87231e145a7b056c942a1384cab085eab0a4700082ca5ca966b8305806667081"
+      },
+      "command_record": {
+        "path": "build/acceptance-closure-20261021/parent-doc-check/current-guide.command.json",
+        "sha256": "b58448c8fe2c10a82231f62308ba96d11a17ccb210dc3f96604f4f62ba609775"
+      },
+      "assertion": "Four real grid views bound and value/coordinate/source previews executed; full HSURF materialized baseline vs pushed planar triangle bidirectional EXCEPT ALL zero"
+    },
+    {
+      "version": "v1.5.5",
+      "command": {
+        "argv": [
+          "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/official/duckdb",
+          "-unsigned",
+          "-batch",
+          "-bail",
+          "-csv",
+          ":memory:",
+          "-f",
+          "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-doc-check/current-guide-v1.5.5.sql"
+        ],
+        "cwd": "/home/blizhan/repo/github/duckomo",
+        "exit_code": 0,
+        "elapsed_seconds": 19.73602843284607,
+        "spatial_assertion": true,
+        "sql_sha256": "19935d5bd7c105c29a971abc52a3f3fe24eb71c0e8be77227fc8afafcccaa26a",
+        "output_sha256": "064614e8a7560de130b7d06814fac8ced1714bd4745085e16bfac700aa4b9bc9"
+      },
+      "command_record": {
+        "path": "build/acceptance-closure-20261021/parent-doc-check/current-guide-v1.5.5.command.json",
+        "sha256": "4fd8c0d44c57ca4dc84fdecb74604cd260d918ee48b5e418db0b9a79d0094745"
+      },
+      "assertion": "Four real grid views bound and value/coordinate/source previews executed; full HSURF materialized baseline vs pushed planar triangle bidirectional EXCEPT ALL zero"
+    },
+    {
+      "version": "v1.5.6",
+      "command": {
+        "argv": [
+          "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/official/duckdb",
+          "-unsigned",
+          "-batch",
+          "-bail",
+          "-csv",
+          ":memory:",
+          "-f",
+          "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-doc-check/current-guide-v1.5.6.sql"
+        ],
+        "cwd": "/home/blizhan/repo/github/duckomo",
+        "exit_code": 0,
+        "elapsed_seconds": 19.37054944038391,
+        "spatial_assertion": true,
+        "sql_sha256": "70663a722b557ca00361524c371fec7592b5c23619334b2bb0d4f0b7950ecdb9",
+        "output_sha256": "6fc0f1151c5f3e3c83c417ffdba0a6de0e6559577fed8ebd3c6f50fd018c0d73"
+      },
+      "command_record": {
+        "path": "build/acceptance-closure-20261021/parent-doc-check/current-guide-v1.5.6.command.json",
+        "sha256": "efc276e6df5eac53da821338ee5599d543afea2fc98cc858233396dea6f8d1f4"
+      },
+      "assertion": "Four real grid views bound and value/coordinate/source previews executed; full HSURF materialized baseline vs pushed planar triangle bidirectional EXCEPT ALL zero"
+    }
+  ]
+}

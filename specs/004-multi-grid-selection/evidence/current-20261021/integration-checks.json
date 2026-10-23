@@ -1,0 +1,51 @@
+{
+  "status": "pass",
+  "source_unchanged": true,
+  "head_unchanged": true,
+  "product_source_edits": 0,
+  "sealed_input_edits": 0,
+  "historical_task_checkboxes_unchanged": 95,
+  "current_tasks_closed": 4,
+  "guide_command_records_verified": 3,
+  "frozen_input_records_verified": 44,
+  "authorized_document_updates": [
+    {
+      "path": "specs/004-multi-grid-selection/contracts/validation-evidence.md",
+      "frozen_sha256": "71733bc2c5509a1b681d1c64d4aff3568e40112b63025093361961dbf35239bf",
+      "entry_sha256": "f7f3b6280116856d4e9f38097e16f11a38aa20dfcfe3a1d8d7917101c2a5d1f3",
+      "current_sha256": "d55832e7e9f9ddc113908164952f2454f426d35c42134f96f220bbd246f12ce8",
+      "reason": "Tracked documentation/status synchronization authorized by owner; independent local audit already records these three pre-integration changes."
+    },
+    {
+      "path": "specs/004-multi-grid-selection/quickstart.md",
+      "frozen_sha256": "08f6bd6f9cd9a24c9b0bb37814697fdfbe0296a86b75d7ff27f6c796e194cbc7",
+      "entry_sha256": "938492d3bbc8740a733fe06b38a2549d865d9971fda3650eeaeb000a78cb88cd",
+      "current_sha256": "938492d3bbc8740a733fe06b38a2549d865d9971fda3650eeaeb000a78cb88cd",
+      "reason": "Tracked documentation/status synchronization authorized by owner; independent local audit already records these three pre-integration changes."
+    },
+    {
+      "path": "specs/004-multi-grid-selection/tasks.md",
+      "frozen_sha256": "20edde2c10e48ca1761fed01e455c13607f3d638ec54c9d53f33fc47ed4485fc",
+      "entry_sha256": "ce244751cd06eab8390503d28f564085424d5a533d8a688278d9628c2d45547c",
+      "current_sha256": "a54038f21097e91a0fe18824e1a8312cdae216ec4622949e5053ee513140346b",
+      "reason": "Tracked documentation/status synchronization authorized by owner; independent local audit already records these three pre-integration changes."
+    }
+  ],
+  "runtime_records_verified": 6,
+  "private_value_scan": {
+    "status": "pass",
+    "checked_public_files": 25,
+    "private_values_emitted": false
+  },
+  "link_checks": 415,
+  "broken_links": [],
+  "git_diff_check": "pass",
+  "verification_scope": "Final integration: read-only hash/identity/assertion review and documentation synchronization; no new full matrix execution.",
+  "fixture_cleanup": {
+    "status": "pass",
+    "terminated": 0,
+    "already_absent": 22,
+    "scope": "Only service-pids records checked against /proc cmdline; absent means not present in this execution namespace. No weedmini/historical/unrelated process or shared backend data touched."
+  },
+  "link_check_scope": "415 links in edited/new Markdown before adding this JSON and public manifest; no subsequent Markdown edits."
+}

@@ -1,5 +1,9 @@
 # 004 implementation evidence summary
 
+> 2026-10-22 最终更新：[当前 H0–H9 最终验收](current-20261021/report.md)与[独立 AI H9](current-20261021/independent-h9-final.json)支持 C004-01–04 全部关闭，当前批准范围 verified，四定义冻结对象为 remote-benefit-validated。45 对完整远程矩阵严格成本和溯源通过；三版本 changed-TU rebuild/relink，非 clean full build。以下历史状态原样保留并由本条替代，不将旧失败改为通过。
+
+> 当前状态入口（2026-10-21）：[有效待办 C004-01–04](../tasks.md#当前有效待办2026-10-20)、[当前范围修订](../contracts/gaussian-acceptance-20261010.md) 与 [本轮审计修复记录](../../../evidence/code-audit-remediation-20261021.md)。下文为 2026-10-08 历史快照：当前真实目标为三个投影定义和 O1280，N-grid 真实验收跳过，H8 为 v1.5.4/v1.5.5/v1.5.6。完整网格门禁、逐网格远程成本和 H9 仍开放。
+
 **Recorded:** 2026-10-08
 
 **Status:** implementation in progress; no H0–H9 gate is fully verified.

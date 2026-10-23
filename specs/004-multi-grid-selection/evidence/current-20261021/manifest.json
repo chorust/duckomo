@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "root": "/home/blizhan/repo/github/duckomo",
+  "scope": "Public current evidence and retained historical checkpoints; raw execution packages remain in ignored build with their original immutable manifests. This manifest excludes itself.",
+  "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+  "status": "pass",
+  "artifacts": [
+    {
+      "path": "specs/004-multi-grid-selection/evidence/current-20261021/engineering-audit.json",
+      "bytes": 6500,
+      "sha256": "ebf78b1a2ed8b041a110757ecfe36698aa8956508f248d33bb6fd7cfa86c5445"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/current-20261021/engineering-snapshot-20261022.md",
+      "bytes": 5123,
+      "sha256": "e45a67f5dea80cc5a74c498e692e1a71f7d9555c4e98feabe1ac925e674e1276"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/current-20261021/guide-check.json",
+      "bytes": 3888,
+      "sha256": "f1a4242fc8420fb172334aa694f15da63926f680d7365f2c24a518740a88111d"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/current-20261021/h0-h8-audit.json",
+      "bytes": 39666,
+      "sha256": "598aeecd00084540c8b478152c88ee072dad5a3f8d46bf27371fa5cbd87071a0"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/current-20261021/independent-h9-checkpoint.md",
+      "bytes": 2425,
+      "sha256": "daadbb879f62a394d5ce85b4cfc1c195075b5ef0227edc4e960d5f0eab25edfe"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/current-20261021/independent-h9-final.json",
+      "bytes": 10497,
+      "sha256": "fbfa54dd1b091e749f1f4a1f237c7b81526c55fa6edead391b77b41b434bf7d7"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/current-20261021/independent-h9-final.md",
+      "bytes": 12253,
+      "sha256": "0e461ed862bf9b55aea790e5fea1edc617cf871e29b7129f76dfe226bdeb2fc0"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/current-20261021/independent-h9-manifest.json",
+      "bytes": 151536,
+      "sha256": "52e92838cfdf650481aa99ea684bd2ba86af00aac4960626f2efafac06c96957"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/current-20261021/integration-checks.json",
+      "bytes": 2673,
+      "sha256": "40215a2171ccb05df3335fbd720cfaa81ebe8cdfa432f7a42a0e2725e8360e38"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/current-20261021/remote-matrix-attempt-03.json",
+      "bytes": 238483,
+      "sha256": "2a1179578f3a763421572cb2eed6544e1344946c02e17a103e628ddd17c8effb"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/current-20261021/remote-supplements.json",
+      "bytes": 4582,
+      "sha256": "a2b771dc005ff813ff2aa55948871faf6d6a5105c74016709bb1ed6d371bbe45"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/current-20261021/report.json",
+      "bytes": 66438,
+      "sha256": "5a7e528b47d563778b4fc77e5eed04930777777af364884a3506c96a1b898caa"
+    },
+    {
+      "path": "specs/004-multi-grid-selection/evidence/current-20261021/report.md",
+      "bytes": 7035,
+      "sha256": "f8812fc6ffe5812c1848abf65b323cd0296cf306db2a4535519c0979a71d8598"
+    }
+  ]
+}

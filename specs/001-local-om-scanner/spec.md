@@ -4,7 +4,7 @@
 
 **Created**: 2026-09-28
 
-**Status**: Draft
+**Status**: Verified（声明范围）；SC-006 已由未参与实现的 fresh-context 独立 AI 完成，非人工验收，独立执行限 Linux AArch64 / DuckDB v1.5.4。详见 [独立复现](evidence/independent-sc006-20261021.md)、[验收记录](evidence/final.md) 与 [当前路线图](../../.specify/memory/roadmap.md)。
 
 **Input**: User description: "Phase 0–2"
 

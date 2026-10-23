@@ -1,6 +1,6 @@
 # Quickstart: 空间查询与验收
 
-> 本页含历史阶段的构建/复现示例。当前开发版地理列已改为 `lat/lon`，并支持共享轴 `dimensions := [轴名...]`；旧 `latitude/longitude` 引用需迁移，详见 [接口修订](../../docs/interface-migration.md)。不改写历史验证结果。
+> 本页基础示例已同步当前 `lat/lon` 列名；当前开发版还支持共享轴 `dimensions := [轴名...]`，详见 [接口修订](../../docs/interface-migration.md)。历史验证结果仍对应其原构建，不据此扩大到全部 domain 验收。
 
 状态：Phase 3 实现、Linux AArch64 运行验证和独立 quickstart 复现指南。Linux x86_64 支持与验证按用户决策暂缓，不属于本期发布门禁。SQL 语义见 [接口契约](contracts/sql-interface.md)，指标见 [观测契约](contracts/validation-evidence.md)，布局见 [data model](data-model.md)。所有命令从仓库根目录执行。
 
@@ -30,36 +30,36 @@ SELECT * FROM read_om('test/data/raw.om',
   spatial_axes := ['lat','lon']);
 DESCRIBE SELECT * FROM spatial_raw;
 CREATE TEMP TABLE full_reference AS SELECT * FROM spatial_raw;
-SELECT value,latitude,longitude FROM spatial_raw
-WHERE latitude >= 11 AND longitude < 104 ORDER BY value;
+SELECT value,lat,lon FROM spatial_raw
+WHERE lat >= 11 AND lon < 104 ORDER BY value;
 SELECT * FROM (
-  (SELECT * FROM spatial_raw WHERE latitude >= 11 AND longitude < 104
-   EXCEPT ALL SELECT * FROM full_reference WHERE latitude >= 11 AND longitude < 104)
+  (SELECT * FROM spatial_raw WHERE lat >= 11 AND lon < 104
+   EXCEPT ALL SELECT * FROM full_reference WHERE lat >= 11 AND lon < 104)
   UNION ALL
-  (SELECT * FROM full_reference WHERE latitude >= 11 AND longitude < 104
-   EXCEPT ALL SELECT * FROM spatial_raw WHERE latitude >= 11 AND longitude < 104)
+  (SELECT * FROM full_reference WHERE lat >= 11 AND lon < 104
+   EXCEPT ALL SELECT * FROM spatial_raw WHERE lat >= 11 AND lon < 104)
 );
-SELECT count(*) FROM spatial_raw WHERE latitude > 90;
-SELECT count(*) FROM spatial_raw WHERE latitude >= 11;
+SELECT count(*) FROM spatial_raw WHERE lat > 90;
+SELECT count(*) FROM spatial_raw WHERE lat >= 11;
 SQL
 ```
 
-预期 schema 为 value FLOAT、latitude DOUBLE、longitude DOUBLE；区域输出 `(3,11,100)`、`(4,11,102)`；双向 EXCEPT ALL 返回零行；两个 count 分别为 0、3。全量人工坐标表：值 0/1/2 对应纬度 10、经度 100/102/104，值 3/4/5 对应纬度 11、同一经度序列。此表独立确认坐标，不只依赖两条 scanner 查询互相比较。
+预期 schema 为 value FLOAT、lat DOUBLE、lon DOUBLE；区域输出 `(3,11,100)`、`(4,11,102)`；双向 EXCEPT ALL 返回零行；两个 count 分别为 0、3。全量人工坐标表：值 0/1/2 对应纬度 10、经度 100/102/104，值 3/4/5 对应纬度 11、同一经度序列。此表独立确认坐标，不只依赖两条 scanner 查询互相比较。
 
 临时表必须先创建完成，避免子查询被优化器重新下推。小型 raw.om 只验证正确性，不作读取减少验收。
 
 ## 展平和额外轴
 
-仓库提供可重生成的 `test/data/spatial_flat.om`：根 value shape `[2,6]`，调用者轴 `[sample,point]`，每个 sample 的 point 对应 2×3 网格，lon_fastest。原扫描有 12 行；下面的聚合查询返回六组，每个 `(latitude,longitude)` 的 count 为 2，证明 sample 未被折叠。
+仓库提供可重生成的 `test/data/spatial_flat.om`：根 value shape `[2,6]`，调用者轴 `[sample,point]`，每个 sample 的 point 对应 2×3 网格，lon_fastest。原扫描有 12 行；下面的聚合查询返回六组，每个 `(lat,lon)` 的 count 为 2，证明 sample 未被折叠。
 
 ```sql
-SELECT latitude, longitude, count(*)
+SELECT lat, lon, count(*)
 FROM read_om('test/data/spatial_flat.om',
   dimensions := map(['value'], [['sample','point']]),
   grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0,
            'dlat':1.0, 'dlon':2.0, 'order':'lon_fastest'},
   spatial_axes := ['point'])
-GROUP BY latitude,longitude ORDER BY latitude,longitude;
+GROUP BY lat,lon ORDER BY lat,lon;
 ```
 
 输出为六组，每组 count=2；无 sample 语义列；带时间坐标的文件可输出 `valid_time`，见 [有效时间查询](../../README.md#有效时间查询)。lat_fastest、反向轴及额外轴在中/后位置的对照由 native/SQL 验收集覆盖。对于分离轴，spatial_axes 始终按纬度轴、经度轴填写，文件实际轴位置由 dimensions 确定。
@@ -85,12 +85,12 @@ LOAD 'build/release/extension/duckomo/duckomo.duckdb_extension';
 CREATE VIEW domain_grid AS SELECT * FROM read_om(
  'build/s3-samples/data_spatial/ncep_gfswave025/2026/09/28/0000Z/2026-10-02T0300.om',
  domain := 'ncep_gfswave025');
-SELECT count(*), min(latitude), max(latitude), min(longitude), max(longitude)
+SELECT count(*), min(lat), max(lat), min(lon), max(lon)
 FROM domain_grid;
-SELECT wave_height,latitude,longitude FROM domain_grid
-WHERE latitude BETWEEN 30 AND 40 AND longitude BETWEEN 110 AND 120;
-SELECT count(*) FROM domain_grid WHERE longitude >= 170 OR longitude < -170;
-SELECT count(*) FROM domain_grid WHERE longitude BETWEEN 170 AND -170;
+SELECT wave_height,lat,lon FROM domain_grid
+WHERE lat BETWEEN 30 AND 40 AND lon BETWEEN 110 AND 120;
+SELECT count(*) FROM domain_grid WHERE lon >= 170 OR lon < -170;
+SELECT count(*) FROM domain_grid WHERE lon BETWEEN 170 AND -170;
 SQL
 ```
 

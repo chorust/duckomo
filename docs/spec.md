@@ -2,7 +2,7 @@
 
 # DuckOMO 接口说明
 
-当前工作树包含本地扫描、维度语义、列裁剪、规则/投影/Gaussian 网格、多区域 polygon 读取、官方 HTTPFS 的 HTTP(S)/S3 范围读取、并行任务、opt-in 源位置、网格描述和 v4 扫描指标实现。v0.3.0 GitHub 包包含实验性 005 区域功能；当前源码的跨平台完整验收仍未完成，已验证范围见 [元数据修复记录](../specs/005-polygon-region-statistics/evidence/metadata-selection-fixes.md)；004 的新网格完整验收也尚未通过。DuckDB 2.0 已退出当前支持范围。[README](../README.md) 提供用法示例；原有空间契约见 [002 SQL 契约](../specs/002-spatial-pushdown/contracts/sql-interface.md)，维度与远程约定见 [003 SQL 契约](../specs/003-dimensions-remote-parallel/contracts/sql-interface.md)，多网格接口见 [004 SQL 契约](../specs/004-multi-grid-selection/contracts/sql-interface.md)，区域接口见 [005 SQL 契约](../specs/005-polygon-region-statistics/contracts/sql-interface.md)。
+当前工作树包含本地扫描、维度语义、列裁剪、规则/投影/Gaussian 网格、多区域 polygon 读取、官方 HTTPFS 的 HTTP(S)/S3 范围读取、并行任务、opt-in 源位置、网格描述和 v4 扫描指标实现。v0.3.0 GitHub 包包含实验性 005 区域功能；当前源码的跨平台完整验收仍未完成，已验证范围见 [元数据修复记录](../specs/005-polygon-region-statistics/evidence/metadata-selection-fixes.md)；004 的四定义/五冻结对象、三版本/AArch64 H0–H9 已通过，含独立 AI 复现，见[当前最终验收](../specs/004-multi-grid-selection/evidence/current-20261021/report.md)。DuckDB 2.0 已退出当前支持范围。[README](../README.md) 提供用法示例；原有空间契约见 [002 SQL 契约](../specs/002-spatial-pushdown/contracts/sql-interface.md)，维度与远程约定见 [003 SQL 契约](../specs/003-dimensions-remote-parallel/contracts/sql-interface.md)，多网格接口见 [004 SQL 契约](../specs/004-multi-grid-selection/contracts/sql-interface.md)，区域接口见 [005 SQL 契约](../specs/005-polygon-region-statistics/contracts/sql-interface.md)。
 
 ## 支持范围
 
@@ -19,7 +19,7 @@
 | 远程 | 匹配引擎版本/平台的官方 httpfs；标准范围读取和可观察长度/版本冲突检查，不承诺新鲜 HEAD 或扫描快照 |
 | 缓存 | 自有范围缓存及缓存 SQL 已删除；HTTPFS 内部缓存由官方依赖维护 |
 | Polygon 区域读取 | 开发版 `read_om_regions` 默认/points 输出原始区域—逻辑记录；nearest 为区域代表点按非空间轴组合选择一个最近网格源值，并输出逐变量状态/来源；调用者提供 `grid_lonlat` WKB，points 使用平面 `covers`，统计由 SQL 等权聚合；spatial 必须与 DuckDB 匹配并显式加载 |
-| 尚未实现 | 科学计算算子；新网格已实现，但 004 完整验收和独立复现未完成 |
+| 尚未实现 | 后续科学计算算子；004 网格验收仅覆盖下述批准范围 |
 
 ## 什么时候用哪个入口
 
@@ -108,7 +108,7 @@ HTTP(S)/S3 需要匹配 DuckDB 版本及平台的官方 `httpfs`；已安装且�
 
 006 nearest sampling 已在 `read_om_regions` 实现，points 默认兼容。006 已完成声明范围内的 N0–N7 验收：Linux AArch64、DuckDB v1.5.4/v1.5.5/v1.5.6、合成规则球面网格与固定 NCEP GFS025；真实输入仅私有留存、不公开分发，N7由独立用户执行。 [验收报告](../specs/006-region-nearest-sampling/evidence/final.md)。
 
-验收平台为 Linux AArch64，Linux x86_64 支持与验证暂缓。既有 002 空间门禁通过其原始规则网格范围；004 的合成实现回归与有限真实 metadata/值输入记录见 [004 本地 evidence](../specs/004-multi-grid-selection/evidence/baseline-local/)，不能替代四类真实坐标/值和独立 Gaussian 行序参考。**2026-10-10 修订**：按 [负责人批准的 Gaussian 范围修订](../specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md)，未取得匹配公开对象的 N160/N320/N 区域真实验收本轮跳过，不阻塞当前范围收口，定义及合成回归保留且不记为真实通过。按 [2026-10-10 pinned producer 参考决定](../specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md)，`ecmwf_ifs` O1280 与三个投影定义登记为 coordinate-value-validated（与 Open-Meteo 发布对象一致，非原生 GRIB 网格等价）；O1280 依据 [真实本地查询记录](../specs/004-multi-grid-selection/evidence/baseline-local/o1280-real-local-20261010/final.md)（官方值全量对照、producer 坐标误差 0、空间/时间筛选），详见 [多网格证据表](grid-domains.md)。完整远程 gate 与 H9 仍开放。官方 HTTPFS 迁移已在 v1.5.4、v1.5.5、v1.5.6 通过本地/HTTP/HTTPS/签名 S3 一致性、受控远程回归、访问变化及固定性能样本的局部收益检查，见 [迁移验证记录](../specs/004-multi-grid-selection/evidence/official-httpfs-refactor/status.md)。这些结果不替代 004 每类真实网格的远程收益、完整内存 ledger 和独立复现；完整 H8 仍未通过，2.0 开发版不在本轮范围。缺输入/服务/审计的 gate 保持 not-run。68 个规则 domain 以各自已有 evidence 记录为准，不能因注册而推定所有对象已验证；新网格覆盖见 [多网格证据表](grid-domains.md)。
+验收平台为 Linux AArch64，Linux x86_64 验证暂缓。既有 002 保持原始规则网格验收范围。004 四定义/五冻结对象、v1.5.4/v1.5.5/v1.5.6 的 H0–H9 及独立 AI 验收已完成，见[最终报告](../specs/004-multi-grid-selection/evidence/current-20261021/report.md)：45 对 HTTP/验证 TLS 的 HTTPS/签名 S3 全量与选择结果一致，三项成本严格下降，四定义在冻结范围登记 remote-benefit-validated。参考为 pinned Open-Meteo producer，不声明原生 GRIB 等价；真实 N160/N320/N 区域与 2.0 按批准范围排除，合成回归保留。H5 不覆盖上游 HTTPFS heap/cache；S3 服务权限转换为专用代理策略，并非上游 IAM 修改。68 个规则 domain 不因注册或这些样本通过而获得全部对象验收。逐定义边界见[网格证据表](grid-domains.md)。
 
 复现步骤见 [空间查询指南](../specs/002-spatial-pushdown/quickstart.md)，已记录结果见 [最终验收](../specs/002-spatial-pushdown/evidence/final.md)。未来能力见 [Roadmap](roadmap.md)。
 

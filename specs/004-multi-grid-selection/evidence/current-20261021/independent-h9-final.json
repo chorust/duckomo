@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-22T04:21:09.065027+00:00",
+  "reviewer": {
+    "recorded_utc": "2026-10-22T02:17:04.923580+00:00",
+    "human": false,
+    "prior_model": "provider default; unspecified; no GPT-6 claim",
+    "current_declared_model": "codex/gpt-6-astra",
+    "declaration_source": "user resumption instruction",
+    "serving_model_independently_attested": false,
+    "prior_thread_id": "01a1614e-925c-76b0-a5f8-32c9bfe8fdb9",
+    "provider_interruption": "429 stalled per user; prior logs preserved"
+  },
+  "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+  "head": "6b34e523fe9f636aec1cabdf4b14be6bc47a6ec1",
+  "scope": {
+    "platform": "Linux AArch64",
+    "versions": [
+      "v1.5.4",
+      "v1.5.5",
+      "v1.5.6"
+    ],
+    "definitions": [
+      "gem_rdps_10km",
+      "gem_regional",
+      "aladin_central_europe_2km",
+      "ecmwf_ifs"
+    ],
+    "real_objects": 5
+  },
+  "gates": {
+    "H0": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "Independent registry regeneration/check plus frozen source, artifact, sample, producer and reference hashes audited."
+    },
+    "H1": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "Inherited full three-version/five-object reference comparisons; independently executed four real grids, explicit/domain complete values and coordinates/source axes; freshly reproduced official value references and producer coordinate references."
+    },
+    "H2": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "Four new full spatial materializations; strict boundary/nextafter/seam/OR/empty/value-dependent and explicit/domain EXCEPT ALL assertions; inherited full matrix synthetic coverage."
+    },
+    "H3": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "New coordinate/source/info/count/empty zero index/data/decode checks; inherited three-version and remote checks."
+    },
+    "H4": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "Inherited audited 48 native and 24 SQL runs plus 1/2/4 real-object/lifecycle evidence; these were engineering executions."
+    },
+    "H5": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "Inherited local pairs plus independently audited 24 parent remote pairs, 612 lifecycle scans and 8352 attempts, bounded owned ledgers and descriptor retention."
+    },
+    "H6": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "Independent audit of all 45 engineering full/selected pairs including nine entire O1280 temperature scans, supplements, and accepted 003 prerequisite; own HSURF strict HTTP pair passed."
+    },
+    "H7": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "Four new complete producer-reference planar triangle/source comparisons and descriptor checks inherited from full engineering package; no physical area/datum equivalence claim."
+    },
+    "H8": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "All three official CLI/HTTPFS/extension identities, new matching loads/six version rejections, same-source H0-H7 evidence audited."
+    },
+    "H9": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "Independent AI executed four real grid types, one full/selected remote pair and complete spatial relations, and audited current package/gates."
+    }
+  },
+  "H9_reproduction_passed": true,
+  "H9_can_close": true,
+  "current_scope_can_close": true,
+  "independent_execution": {
+    "local_value_positions": 672002720,
+    "coordinate_source_positions": 18885562,
+    "full_spatial_materializations": 4,
+    "official_value_oracles_regenerated": 4,
+    "remote_executors": [
+      "actual official DuckDB CLI",
+      "independently compiled comparator using matching static engine"
+    ],
+    "remote_pairs": 2,
+    "remote_full_rows": 6599680,
+    "remote_selected_rows": 18,
+    "costs": {
+      "full": {
+        "service_sent_body_bytes": 4125977,
+        "value_data_bytes": 4083294,
+        "decoded_chunks": 27649
+      },
+      "selected": {
+        "service_sent_body_bytes": 1591,
+        "value_data_bytes": 1056,
+        "decoded_chunks": 4
+      }
+    },
+    "three_version_matching_loads": 3,
+    "mismatch_rejections": 6
+  },
+  "inherited": {
+    "engineering_manifest_artifacts": 4076,
+    "engineering_full_local_positions": 21973440480,
+    "parent_supplement_artifacts": 741,
+    "s3_lifecycle_cases": 15,
+    "s3_lifecycle_metrics": 75,
+    "s3_lifecycle_requests": 1455,
+    "s3_lifecycle_artifacts": 176,
+    "h5_remote_pairs": 24,
+    "h5_terminal_scans": 612,
+    "h5_attempts": 8352,
+    "synthetic_suites": 36,
+    "synthetic_assertions": 3261,
+    "s3_configuration_transitions": 39,
+    "s3_service_authorization_transitions": 9,
+    "real_remote_pairs": 45,
+    "full_temperature_values_each": 3326238720,
+    "full_temperature_remote_runs": 9
+  },
+  "failures_and_corrections": [
+    "Prior default-model audit harness: unsupported registry CLI flags (preserved regenerate-1 exit 2); nonexistent predecessor manifest; 003 manifest array-count/schema assumptions; corrected and local_audit rerun successfully. Raw command failure events preserved.",
+    "Resumed matrix_h9 first attempt: missing v1.5.5 output parent directory, exit 1. Original attempt script/logs preserved; corrected mkdir(parents=True) and fresh matrix-attempt2 passes all versions.",
+    "Comparator negative controls intentionally fail on altered coordinates/source axes, corrupted/truncated values and wrong row counts. They prove rejection and are not product failures.",
+    "Parent remote matrix attempt 01 failed service-log initialization/concurrent temporary-manifest handling; original reports/corrections retained. Canonical attempt-03 now replaces all 12 inherited pairs and preserves 33 untouched attempt-02 pairs; old reports retain their original dispositions.",
+    "Final gate audit attempt 1 started before its parent-matrix-audit.json dependency existed; all prior checkpoint/package hashes passed, then FileNotFoundError. Preserved attempt log/result; rerun sequentially after matrix audit completion.",
+    "Pair policy attempt 1 assumed colocated command output paths; actual inherited selected paths are remote-selected/. Attempt 2 checked byte identity and exposed a real sealed-metrics mismatch. Original scripts/logs preserved. Attempt 3 inspected all 45 pairs and recorded nine provenance failures; its exit 1 and failed seal remain archived under checkpoint-before-provenance-repair/. Parent reran all 12 inherited pairs in attempt-03; a fresh exact-path audit now checks all 45 canonical pairs. Historical failures are not rewritten as passes.",
+    "003 initial performance failure remains disclosed in accepted prerequisite; no old failure reclassified as pass."
+  ],
+  "limitations": [
+    "AI/non-human verification. Prior provider-default model unspecified; resumed declaration codex/gpt-6-astra from user. Serving identity not independently attested. Same runner thread resumed after reported provider 429 stall.",
+    "Independent actual grid/remote execution is v1.5.4 Linux AArch64; three-version full grid matrix executions are inherited engineering evidence, independently audited. Official matching/mismatch loads executed here on all three versions.",
+    "Changed-TU rebuild/relink of frozen unchanged base objects; not a clean build. Comparator harness compiled here links matching base static DuckDB/official OM library; official CLI identity/load checks are separate.",
+    "Pinned Open-Meteo producer-coordinate semantics only, including O1280 approximate latitude rule. No ECMWF native GRIB equivalence, physical area/distance or datum conversion claim.",
+    "Real N160/N320/N-region and DuckDB 2.0 excluded by owner scope; synthetic N-grid regressions retained and audited.",
+    "Remote transport remains NULL/unobserved in DuckOMO; server SENT bytes are not client received bytes. Official HTTPFS internal heap/cache behavior unobserved; OS caches not flushed.",
+    "S3 service access revoke/restore supplement uses a controlled proxy policy with valid signatures; upstream SeaweedFS IAM was not changed. Invalid signing key/secret, removed secret, endpoint and region transitions are separately audited.",
+    "Full local value checks consume all time indices for the three projected objects; independent spatial materializations select synthetic time index zero. Independent Gaussian object is entire HSURF; full temperature all-time coverage is inherited engineering evidence.",
+    "Parent owns tracked support/status documentation and final publication decision. This verifier edited only independent-004 evidence and stopped no services."
+  ],
+  "final_review": {
+    "required_audits": [
+      "parent-matrix-audit.json",
+      "final-gates-audit.json",
+      "pair-policy-audit.json"
+    ],
+    "resumption_identity": {
+      "recorded_utc": "2026-10-22T04:17:12.214948+00:00",
+      "human": false,
+      "same_independent_thread": true,
+      "declared_model": "codex/gpt-6-astra",
+      "serving_model_independently_attested": false,
+      "prior_default_model": "unspecified",
+      "archive": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair",
+      "canonical_parent_matrix": "parent-remote-matrix/attempt-03/report.json",
+      "scope": "Read-only review of 12 fresh replacement pairs and 33 unchanged pairs; no O1280 reexecution"
+    },
+    "prior_checkpoint_manifest": {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/manifest.json",
+      "bytes": 141936,
+      "sha256": "99e2991bff022cff20a9b20c74c783fa74cc010ac4a7a6e9d6908fda69d6a6c7"
+    },
+    "publication_and_tracked_status": "Parent-owned, not performed by independent verifier",
+    "matrix_artifacts": 190,
+    "inherited_attempt02_manifest_artifacts": 517,
+    "fresh_replacement_pairs": 12,
+    "unchanged_attempt02_pairs": 33,
+    "canonical_matrix": {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-remote-matrix/attempt-03/report.json",
+      "bytes": 238483,
+      "sha256": "2a1179578f3a763421572cb2eed6544e1344946c02e17a103e628ddd17c8effb"
+    },
+    "full_temperature_remote_positions": 29936148480,
+    "unresolved_findings": [],
+    "numerical_matrix_audit_passed": true,
+    "provenance_audit_passed": true
+  }
+}

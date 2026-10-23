@@ -1,5 +1,7 @@
 # Final Implementation Evidence: Phase 0–2 Local OM Scanner
 
+> 当前收口（2026-10-22，优先于下文 2026-09-28 历史快照）：未参与实现的 fresh-context 独立 AI（Codex GPT-6，会话 `01a15d61-e13b-7d10-91d4-c575806a80d9`，非人工）已在隔离 `PATH=/nonexistent` 环境完成 SC-006 四项操作、特殊值/投影对照与 14 次 exec trace 验证；父级复核 190 份封存产物与 23 份输入哈希一致，详见 [SC-006 独立验证报告](independent-sc006-20261021.md) 与 [机器复核记录](independent-sc006-20261021.json)。Linux x86_64 按 C-07 暂缓；001 在当前 Linux AArch64 声明范围内已闭环（`verified`）。下文保留 2026-09-28 原始记录。
+
 Date: 2026-09-28. Implementation and all executable repository gates passed on Linux AArch64. The plan names Linux x86_64 as the target; x86_64 execution and independent third-party verification are not available in this environment, so SC-006 remains partially verified.
 
 ## Final gate commands

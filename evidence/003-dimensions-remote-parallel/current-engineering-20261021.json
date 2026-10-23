@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-21T13:19:06.820619+00:00",
+  "status": "current official HTTPFS scope verified; R21/R22 closed 2026-10-22",
+  "build_scope": "Changed-TU relink with frozen unchanged base objects; not a clean full rebuild.",
+  "versions": [
+    {
+      "version": "v1.5.4",
+      "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+      "build_id": "fb49547ec3531e42eeb415ba7cf985989b57a4e1853f48425fc3ec187ca5f245",
+      "extension_sha256": "a1f1e62f69e9eb7d80789883ab23e84ee296b0bebd9e2b07c48f5fe40b9063b9",
+      "runtime_cases": 48,
+      "real_rows_per_source": 1038240,
+      "real_cross_source_sha256": "8ad54e920d73b4580b3b2424c19d020a2cad6715772962a353c3ec0f572510fb",
+      "five_run_median_seconds": {
+        "1": 0.009430032223463058,
+        "2": 0.0076820338144898415,
+        "4": 0.011543955188244581
+      },
+      "speedup_pass": true,
+      "dimensions_data_bytes": {
+        "full": 157635,
+        "selected": 4680
+      },
+      "dimensions_decoded_chunks": {
+        "full": 3704,
+        "selected": 8
+      },
+      "records": [
+        {
+          "path": "build/acceptance-closure-20261021/003/v1.5.4/runtime-retry/summary.json",
+          "sha256": "8ab89e0e247055ad4173fe6b4ecdaa7fe064d37d214ed573dd34d90d5dc72d05"
+        },
+        {
+          "path": "build/acceptance-closure-20261021/003/v1.5.4/real-summary.json",
+          "sha256": "0ce531c6f78d2c349d71ae54981bd0291e5b9b91e3027bc477d47482dd35019a"
+        },
+        {
+          "path": "build/acceptance-closure-20261021/003/v1.5.4/parallel-performance.json",
+          "sha256": "277a894cce19904400e47c41f9eacf3613f364c7a3a4e7cf99aae56f5a52d61f"
+        },
+        {
+          "path": "build/acceptance-closure-20261021/003/v1.5.4/dimensions/summary.json",
+          "sha256": "038ceb0967512ecd684f28ce5a8e4281c2f8bbed0b1cbaa4211f7fb5a997399e"
+        },
+        {
+          "path": "build/acceptance-closure-20261021/003/v1.5.4/access/summary.json",
+          "sha256": "45aa350e815b4fa813104e317ead25c4a8847a661c36964e800ae56a5e097934"
+        },
+        {
+          "path": "build/acceptance-closure-20261021/v1.5.4-003-native.log",
+          "sha256": "17c69da0ea2fafb855597a2b7c8d66af935e9d91eb63575f7c29fe394062b257"
+        }
+      ]
+    },
+    {
+      "version": "v1.5.5",
+      "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+      "build_id": "4eff09a4b1bdc8f283fea803e2e895a3062e9231957ad38a1e1d5fc591198e3f",
+      "extension_sha256": "f05416b9bc0e5ddb07f95af5d1f1744c78b7fce7f3e5a41ea4d67a8af403a74c",
+      "runtime_cases": 48,
+      "real_rows_per_source": 1038240,
+      "real_cross_source_sha256": "8ad54e920d73b4580b3b2424c19d020a2cad6715772962a353c3ec0f572510fb",
+      "five_run_median_seconds": {
+        "1": 0.01186353201046586,
+        "2": 0.011094462592154741,
+        "4": 0.008300467394292355
+      },
+      "speedup_pass": true,
+      "dimensions_data_bytes": {
+        "full": 157635,
+        "selected": 4680
+      },
+      "dimensions_decoded_chunks": {
+        "full": 3704,
+        "selected": 8
+      },
+      "records": [
+        {
+          "path": "build/acceptance-closure-20261021/003/v1.5.5/runtime-retry/summary.json",
+          "sha256": "16b1d4382cd1cf791d94dee79eca59f1ef64e7436b02f43c0260b1bfb9506894"
+        },
+        {
+          "path": "build/acceptance-closure-20261021/003/v1.5.5/real-summary.json",
+          "sha256": "42e209bc363929fe1b7671c460d22c26db3de3884e09d821aa5eed8d1edbb882"
+        },
+        {
+          "path": "build/acceptance-closure-20261021/003/v1.5.5/parallel-performance.json",
+          "sha256": "d8de4f304a744523dc43c4ecb4f22c3a07e1e72bfea4ad23b485dd99d8c8855e"
+        },
+        {
+          "path": "build/acceptance-closure-20261021/003/v1.5.5/dimensions/summary.json",
+          "sha256": "fd9d54d900d22a92ff0e00e1b50f8e49d4ae1896fd76da0d91a2687ac882308e"
+        },
+        {
+          "path": "build/acceptance-closure-20261021/003/v1.5.5/access/summary.json",
+          "sha256": "88c49ea1ba034d6c1b66983e8ef7f2af5b7aba8f638f0a84f8c4d6c0f1b7cb2c"
+        },
+        {
+          "path": "build/acceptance-closure-20261021/v1.5.5-003-native.log",
+          "sha256": "17c69da0ea2fafb855597a2b7c8d66af935e9d91eb63575f7c29fe394062b257"
+        }
+      ]
+    },
+    {
+      "version": "v1.5.6",
+      "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+      "build_id": "ba5a3e7b3f284dd8ad33fe269baf714f3be6ea5e9f949564e4afa3ac7b3e92c6",
+      "extension_sha256": "ee86c0c2864ebd044551746834765e2ed482583e9a40236fd9fde0710ea50e65",
+      "runtime_cases": 48,
+      "real_rows_per_source": 1038240,
+      "real_cross_source_sha256": "8ad54e920d73b4580b3b2424c19d020a2cad6715772962a353c3ec0f572510fb",
+      "five_run_median_seconds": {
+        "1": 0.011024740990251303,
+        "2": 0.007606416940689087,
+        "4": 0.00896229362115264
+      },
+      "speedup_pass": true,
+      "dimensions_data_bytes": {
+        "full": 157635,
+        "selected": 4680
+      },
+      "dimensions_decoded_chunks": {
+        "full": 3704,
+        "selected": 8
+      },
+      "records": [
+        {
+          "path": "build/acceptance-closure-20261021/003/v1.5.6/runtime-retry/summary.json",
+          "sha256": "7554328a39ae1bb9f17a22e191125a9079846cfbce4678c94033f2025ba43e83"
+        },
+        {
+          "path": "build/acceptance-closure-20261021/003/v1.5.6/real-summary.json",
+          "sha256": "445cc3fbacb9bd9ddb15cdac912ce78b78877c97ebd8ca1684be339aa76eb9c6"
+        },
+        {
+          "path": "build/acceptance-closure-20261021/003/v1.5.6/parallel-performance.json",
+          "sha256": "cfeaa1c346017536906c5be73ed370f2501671c89c47b8c68ded413d580ae84a"
+        },
+        {
+          "path": "build/acceptance-closure-20261021/003/v1.5.6/dimensions/summary.json",
+          "sha256": "ef014212174910fcabaa5d35dd957ab44659fb9f397872d74b2f4676fb2126cb"
+        },
+        {
+          "path": "build/acceptance-closure-20261021/003/v1.5.6/access/summary.json",
+          "sha256": "dedc28713288f496064997db3c2d462150b79ab1e956c1b7db0c142854b06b74"
+        },
+        {
+          "path": "build/acceptance-closure-20261021/v1.5.6-003-native.log",
+          "sha256": "17c69da0ea2fafb855597a2b7c8d66af935e9d91eb63575f7c29fe394062b257"
+        }
+      ]
+    }
+  ],
+  "o5": {
+    "path": "build/acceptance-closure-20261021/003/o5-performance/summary.json",
+    "sha256": "11c37696e8d2eb11adb3752f85218c2d2a77180f90b4baca370fb8e4d9c76e78"
+  },
+  "commands": {
+    "path": "build/acceptance-closure-20261021/003-commands.json",
+    "sha256": "38c3b5e73884c5e1c7e7027b7c660e2e66490e309a82926bf5efefea4a8ae8e1"
+  },
+  "independent_verifier": {
+    "record": "independent-review-20261022.json",
+    "scope": "Independent Luna execution plus fresh GPT-6 final reviewer/addendum executor; AI, not human; fresh independent execution v1.5.4 AArch64; engineering all three versions"
+  },
+  "historical_failed_attempts": "Original runtime directories/logs retained; runtime-retry is the completed current execution, not historical failure erasure."
+}

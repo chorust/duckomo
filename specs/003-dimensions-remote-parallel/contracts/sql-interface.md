@@ -2,7 +2,7 @@
 
 > 当前开发版修订：SQL 地理列统一为 `lat/lon`；`dimensions` 支持共享 `VARCHAR[]` 或完整逐变量 MAP；远程错误输出脱敏类别与建议。迁移及完整规则见 [读取接口修订](../../../docs/interface-migration.md)。历史 evidence 仍对应原构建，不因本修订提升验收状态。
 
-状态：实现已接入源码和配套构建；G3–G7 的外部验收及独立复现尚未全部完成。保留既有本地、空间及 `valid_time` 接口。
+状态（2026-10-22）：实现已接入源码和官方 HTTPFS；R20 三版本受控 runtime 已通过，R21 独立复现与 R22 当前交付映射已完成，现行官方 HTTPFS 声明范围 verified，见 [当前交付映射](../../../evidence/003-dimensions-remote-parallel/current-delivery-20261021.md)。工程验证限 Linux AArch64 / DuckDB v1.5.4–v1.5.6；fresh 独立执行限 v1.5.4，由 AI 完成，非人工验收。构建为变更 TU 重编译/relink，非 clean full rebuild。当前远程语义以 [官方 HTTPFS 修订](../../004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md) 为准，执行入口见 [指南](../../../docs/official-httpfs.md)。保留既有本地、空间及 `valid_time` 接口。
 
 ## 读取入口
 
@@ -77,28 +77,25 @@ time/run/lead_time/level 的 `= < <= > >= BETWEEN` 和 member 的 `=`，在类�
 
 ## 会话控制
 
-以下为新增连接级设置；通过设置回调保存到当前 ClientContextState，禁止变成所有连接共享的可变开关。
+`duckomo_max_threads` 是连接级设置，通过设置回调保存到当前 ClientContextState。HTTPFS 的凭据、代理、重试与内部缓存使用 DuckDB/HTTPFS 标准配置，具体能力边界见官方 HTTPFS 指南。
 
 | 设置 | 类型 / 默认值 | 规则 |
 | --- | --- | --- |
 | duckomo_max_threads | BIGINT / 0 | 0 使用 DuckDB threads；正数为上限，负数拒绝；实际受任务数与 DuckDB 调度限制 |
-| duckomo_cache_enabled | BOOLEAN / true | false 时不查不写本扩展缓存；关闭即清空已有条目 |
-| duckomo_cache_capacity | BIGINT / 67108864 | 字节数，非负；0 等同禁用存储；缩小时立即淘汰到上限 |
 
 ```sql
 SET threads=4;
 SET duckomo_max_threads=2;
-SET duckomo_cache_capacity=67108864;
-SET duckomo_cache_enabled=true;
-CALL duckomo_clear_cache();
 SELECT * FROM duckomo_last_scan_metrics();
 ```
 
-clear_cache 返回一行 `cleared_entries UBIGINT, cleared_bytes UBIGINT`；仅清理本会话缓存。last_scan_metrics 返回最近一次已结束、含 read_om 的 SQL query 的每个扫描一行：`query_id VARCHAR, scan_id UBIGINT, metrics VARCHAR`。metrics 为 v3 JSON 文本，不依赖 JSON 扩展；首次扫描前为零行。读取或清理操作不覆盖最近扫描记录；失败和取消记录仍可读取。metrics 的 SQL/URI 始终脱敏；嵌套 `legacy_v2` 保留 v2 字段的原统计含义。
+`duckomo_cache_enabled`、`duckomo_cache_capacity` 和 `duckomo_clear_cache()` 已删除；旧 SQL 会报未知设置/函数。DuckOMO 不提供跨查询范围缓存，不承诺上游缓存的容量、即时撤权或每查询新鲜探测。
 
-v3 JSON 包含 `scan_id`、`status`、`scan_complete`、axes/fallback、bind/scan metadata、coordinate、逐值变量逻辑/底层 index/data/decode、总逻辑/底层读取、transport response body/attempt/status/completeness、cache、task/worker、candidate/scanner/result rows、decode completeness、elapsed 和 memory scope。coordinate 单独包含 logical/physical index/data 请求与 `decoded_chunks`；`variables` 只列值数组。逻辑读取包含缓存命中；`physical_read_*` 只计缓存以下成功的 OM 读取；`response_body_bytes` 只来自 httpfs observer，未加载远程 observer 的本地结果为已知 0。旧版 `bytes_fetched` / `read_requests` 留在 `legacy_v2` 并维持 v2 含义。
+`duckomo_last_scan_metrics()` 返回最近一次已结束、含 `read_om` 的 SQL query 的每个扫描一行：`query_id VARCHAR, scan_id UBIGINT, metrics VARCHAR`。`metrics` 为 **v4 JSON** 文本，不依赖 JSON 扩展；首次扫描前为零行，读取指标不覆盖最近扫描记录，失败和取消记录仍可读取。嵌套 `legacy_v3` / `legacy_v2` 保留兼容结构及原统计口径，URI 和诊断始终脱敏。
 
-`scan_complete=false` 与 `status=success` 可同时出现，表示 SQL 成功但下游消费者（例如 LIMIT）提前停止扫描。`peak_rss_bytes` 使用进程 scope。`peak_query_owned_bytes` 汇总 DuckOMO 元数据 payload、decoder 状态及其参数/index/data/scratch vector capacity、坐标向量、选择游标和活跃批次 position/segment capacity；`query_memory_scope` 为 `duckomo_owned_buffer_decoder_selection_capacities`，不含共享会话缓存、DuckDB 输出 vector、httpfs/引擎内部内存及 allocator bookkeeping。正常结束且计数完整时提供峰值；失败、取消或计数不完整时为 JSON `null`、`query_memory_count_complete=false`，表示未知而不是零。进程 RSS 和查询归属内存是两个独立字段。
+v4 顶层包括 `outcome`、`grid`、`selection`、`coordinate_preparation`、`reads`、`transport` 和 `memory`。`reads.metadata` 分 bind/scan，`reads.coordinates` 单列坐标读取及解码，`reads.variables` 只列值数组，`reads.value_totals` 汇总值读取。应用成功读取字节和请求数不等于物理网络传输量；远程 `transport.response_body_bytes/attempts/responses` 为 `null`、`complete=false`，本地为 0/true。服务端已发送量由受控服务日志独立审计，不写成客户端接收量。legacy 自有 cache 字段为 false/0/removed，不承诺缓存收益。
+
+`outcome.scan_complete=false` 与 `outcome.status=success` 可同时出现，表示 SQL 成功但下游消费者（例如 LIMIT）提前停止扫描。`memory.query_owned_peak_bytes` 汇总 DuckOMO 自有元数据、decoder、选择游标及批次容量；`memory.query_owned_scope` 明确排除 allocator metadata，DuckDB 输出 vector、HTTPFS/spatial/引擎内部内存亦不计入自有总量。失败、取消或计数不完整时，无法证明的峰值为 `null`、`memory.query_owned_complete=false`，表示未知。`memory.process_peak_rss_bytes` 是独立的进程级指标。任务/worker、耗时等兼容指标仍可在 `legacy_v3` 中查询。
 
 ## 错误
 

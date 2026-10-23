@@ -21,7 +21,7 @@ duckomo 是一个 DuckDB C++ 扩展，将 [Open-Meteo OM](https://github.com/ope
 
 当前每次读取**单个对象**，不接受目录、glob 或文件列表。`read_om_regions` 的 points/nearest 都需要显式加载匹配版本的 DuckDB spatial；普通 `read_om` 不需要。区域 WKB 的 `grid_lonlat` 参考由调用者负责，points 边界按平面 `covers` 处理，统计为 SQL 等权聚合。nearest 的顶层 `lat/lon` 是面内目标，实际源坐标、距离、逐变量状态位于 `sampling`，COUNT(*)计结果行。006 已完成声明范围内的 N0–N7 验收：Linux AArch64、DuckDB v1.5.4/v1.5.5/v1.5.6、合成规则球面网格与固定 NCEP GFS025；真实输入仅私有留存、不公开分发，N7由独立用户执行。 [验收报告](specs/006-region-nearest-sampling/evidence/final.md)。
 
-2026-10-10 [范围修订](specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md)：因已调查 Open-Meteo 公开来源未找到匹配对象，负责人批准本轮跳过 N160/N320/N 区域真实验收，保留定义和合成回归，不记为通过也不阻塞当前范围收口。按 [2026-10-10 pinned producer 参考决定](specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md)，`ecmwf_ifs` O1280 与三个投影定义登记为 `coordinate-value-validated`（与 Open-Meteo 发布对象一致，非原生 GRIB 网格等价）；O1280 依据 [真实本地查询验证](specs/004-multi-grid-selection/evidence/baseline-local/o1280-real-local-20261010/final.md)（全量 HSURF 值/坐标、显式/domain、空间与抽样时间序列）。远程收益、完整 gate 与 H9 独立复现仍开放。Phase 8 跨 chunk 入口仍是待评审提案。
+2026-10-22 [最终验收](specs/004-multi-grid-selection/evidence/current-20261021/report.md)：`gem_rdps_10km`、`gem_regional`、`aladin_central_europe_2km`、`ecmwf_ifs` 四定义的五个冻结对象在 Linux AArch64 / DuckDB v1.5.4、v1.5.5、v1.5.6 通过 H0–H9；45 对 HTTP/HTTPS/签名 S3 完整远程结果与三项严格成本下降通过，范围内为 `remote-benefit-validated`。H9 为未参与产品实现的独立 AI 验证，非人工；构建为变更 TU 重编译/relink。坐标遵循 [pinned Open-Meteo producer](specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md)，不宣称原生 GRIB 等价。真实 N160/N320/N 区域按[批准范围](specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md)跳过，合成回归保留；不外推全部 68 个规则 domain、其他对象/平台或 DuckDB 2.0。Phase 8 跨 chunk 入口仍是待评审提案。
 
 ## Install
 
@@ -39,7 +39,7 @@ PRAGMA platform;
 GitHub 包未签名，只加载可信来源。用 `duckdb -unsigned` 启动后安装。Release 资产文件名带有版本和平台，直接把 URL 传给 `INSTALL` 时 DuckDB 会按第一个 `.` 截断扩展名（存成 `duckomo-v0.duckdb_extension`），导致后续 `LOAD duckomo` 找不到文件。因此先下载 `.duckdb_extension.gz` 并解压为标准文件名，再本地安装：
 
 ```bash
-DUCKOMO_VERSION=v0.3.2                                                    # DuckOMO 版本
+DUCKOMO_VERSION=v0.3.4                                                    # DuckOMO 版本
 DUCKDB_VERSION=$(duckdb -list -noheader :memory: "SELECT version();")      # 从本机 DuckDB 获取
 PLATFORM=$(duckdb -list -noheader :memory: "PRAGMA platform;")            # 从本机 DuckDB 获取
 
@@ -155,7 +155,7 @@ PY
 该文件声明 CRS84（x=经度、y=纬度），下例据此传入 `grid_lonlat`。边界版本为 GADM 4.1，不代表实时行政区划；不再使用未核实坐标参考的 DataV 绘图边界。
 
 ```sql
--- 先按 Install 章节安装 v0.3.2 的匹配包，并以 duckdb -unsigned 启动。
+-- 先按 Install 章节安装 v0.3.4 的匹配包，并以 duckdb -unsigned 启动。
 LOAD duckomo;
 INSTALL httpfs; LOAD httpfs;
 INSTALL spatial; LOAD spatial; -- 与当前 DuckDB 匹配；首次安装需要联网

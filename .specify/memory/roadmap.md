@@ -1,5 +1,35 @@
+<!-- Sync Impact Report — 2026-10-22 final integration
+Version change: 1.5.0 → 1.5.1
+Bump rationale: PATCH — 004 当前批准范围 H0–H9/独立 AI 证据已核验，C004-01–04 收口；未扩充产品范围。
+Specs affected: 004
+Evidence: specs/004-multi-grid-selection/evidence/current-20261021/report.md
+Historical impact reports below retain their original status and are superseded by this entry.
+-->
+
+<!-- Sync Impact Report — 2026-10-22
+Version change: 1.4.1 → 1.5.0
+Bump rationale: MINOR — 新增 007 窄范围 bilinear 规格；同步 003 当前契约验收收口与 004 局部门禁结果。
+Specs affected: 003, 004, 005, 007
+Changes:
+  - 003 R21/R22 实际独立 AI 复现、命令与服务切片补录、封存哈希和 FR/SC 映射完成；现行官方 HTTPFS 声明范围 verified。
+  - 首次并行性能失败和旧缓存失败保留；后续唯一预固定 1/2/4 五轮满足至少一种配置更快，不承诺普遍加速。
+  - 004 C004-01 已关闭；C004-02–04、剩余 H5/H6/H8/H9 保持开放。
+  - 005 预算修复与现行接口同步见本轮审计记录，不外推 clean rebuild 或全范围重验。
+  - 007 仅 specced / Draft，下一步 plan/contracts；没有 bilinear 实现。
+-->
+
 <!--
-LATEST SYNC IMPACT REPORT — 2026-10-20
+LATEST SYNC IMPACT REPORT — 2026-10-22
+======================================
+Version change: 1.4.0 → 1.4.1
+Bump rationale: PATCH — 核对预算修复后的当前代码/产物与工程证据，记录 C004-01 收口；不扩充验收范围。
+Changes this revision:
+  - 005 合计 64 MiB 检查与现行接口文档已修复，三版本定向回归和 180 份产物哈希复核。
+  - 003 当前三版本 runtime、真实全对象跨来源结果及 FR/SC 映射已补核；R21 独立 AI 复验仍在补齐，R22 未关闭。
+  - 004 C004-01 关闭；4,076 份工程产物哈希一致，完整 H5/H6/H8/H9 与 C004-02–04 保持开放。
+  - bilinear 仅冻结窄范围后续方向，尚未新增 spec 或宣称实现。
+
+HISTORICAL SYNC IMPACT REPORT — 2026-10-20
 ======================================
 Version change: 1.3.0 → 1.4.0
 Bump rationale: MINOR — 新增006及尚未立项方向，并归纳003/004修订后有效待办。
@@ -147,16 +177,18 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 
 | Spec | 产品阶段 | 生命周期 | 任务记录 | 状态边界 |
 | --- | --- | --- | --- | --- |
-| 001 | Phase 0–2 | `implemented` | 44/44 勾选 | AArch64 运行门禁有通过记录；SC-006 独立复现仍为 Partial |
+| 001 | Phase 0–2 | `verified` | 44/44 勾选；SC-006 独立记录完成 | Linux AArch64 原范围；fresh 独立 AI 于 v1.5.4 完成四项操作，非人工；x86_64 暂缓 |
 | 002 | Phase 3 | `verified` | 46/46 勾选 | 原始 Phase 3 / ncep_gfswave025 在 AArch64 独立验收；T042 为延期决定，未执行 |
-| 003 | Phase 4–5 | `in-progress` | 本地 G0–G2 通过，G4 只有本地部分结果；G3、G5–G7 未完成，完整交付门禁未闭环 |
-| 004 | Phase 6 | `in-progress` | 任务仍在实施；四个 Open-Meteo 定义 2026-10-10 已登记 coordinate-value-validated（C-14）；N-grid 本轮跳过，远程/内存/版本 gate、完整 H1/H2 和独立复现未闭环 |
+| 003 | Phase 4–5 | `verified` | R21/R22 完成 | 现行官方 HTTPFS 契约；三版本工程证据、v1.5.4 fresh 独立 AI 执行，非人工/非 clean rebuild；旧 G5 superseded |
+| 004 | Phase 6 | `verified` | C004-01–04 完成；旧 96 项历史保留 | 四定义/五对象、三版本/AArch64 H0–H9；45 对严格远程成本与独立 AI H9；真实 N-grid/2.0 排除 |
 | 005 | Phase 7 前置：多边形区域统计 | `verified` | 2026-10-20当前源码三版本P0–P6及独立AI P7通过；固定局部窗口、各项成本不增加且至少一项下降；全域收益不在范围 |
 | 006 | 区域最近邻采样 | `verified` | 声明范围N0–N7通过，独立用户N7；仅Linux AArch64、v1.5.4–v1.5.6、合成规则球面及固定GFS025，详见final |
 
-生命周期根据实施和验收 artifacts 归纳；任务勾选不代表运行 gate 通过。001 与 003 的 spec 头部仍写 `Draft`；原文件状态保留。
+| 007 | 窄范围 bilinear 区域采样 | `specced` | Draft 与质量清单完成 | 仅规则经纬度/单个连续标量，尚未 plan 或实施 |
 
-### 001 — Phase 0–2 本地 OM 可用扫描器  [status: implemented]
+生命周期根据实施和验收 artifacts 归纳；任务勾选不代表运行 gate 通过。001 SC-006 已依据独立 AI 实际执行和封存哈希复核收口；003 现行 R21/R22 已收口，历史任务/gate 保留原状态，不按 checkbox 自动升级。
+
+### 001 — Phase 0–2 本地 OM 可用扫描器  [status: verified]
 
 - **Description:** 建立可直接查询本地 OM 的 DuckDB 扩展，依次完成单变量纵向验证、稳定 schema/多变量对齐和按查询依赖裁剪值变量。
 - **Outcome:** 用户无需转换文件即可加载、查看列描述、完整扫描和单变量扫描；值、逻辑位置、NULL 与官方结果一致。固定多变量样本中无关变量解码为零，单变量数据字节严格少于全变量；错误与取消后可恢复，操作可独立复现。
@@ -167,7 +199,7 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 - **Addresses:** [产品路线图 Phase 0–2](../../docs/roadmap.md#阶段)、[接口说明](../../docs/spec.md)。
 - **Spec dir:** [specs/001-local-om-scanner/](../../specs/001-local-om-scanner/)；[spec](../../specs/001-local-om-scanner/spec.md)、[plan](../../specs/001-local-om-scanner/plan.md)、[tasks](../../specs/001-local-om-scanner/tasks.md)。
 - **Key decisions:** 官方 reader 唯一负责物理格式/解码；bind 校验所有值变量，不因投影隐藏不兼容；scan 使用实际列依赖，重复变量只解码一次；计数使用内部 cardinality 路径；未配置语义时只提供可证明的原始值。原计划的仅 FPX/显式轴方案已由[当前基础契约](../../specs/001-local-om-scanner/contracts/sql-interface.md)及[真实文件兼容修复记录](../../docs/issues/real-world-om-compatibility.md)补充，保留历史计划。
-- **Notes:** 44 项任务均勾选，[最终验收](../../specs/001-local-om-scanner/evidence/final.md)记录 AArch64 构建、SQL/native、样本重生、投影及 sanitizer 通过；temperature 单列数据字节 165,767，对照全变量 628,703。该记录明确 SC-006 为 Partial，隔离无 Python/Swift 的执行者来自实现环境，独立复现尚无完成记录，故不提升为 `verified`（Q-02）。002 的独立空间复现不自动补齐 001 的全部四项独立操作。
+- **Notes:** 44 项任务均勾选，[最终验收](../../specs/001-local-om-scanner/evidence/final.md)记录 AArch64 构建、SQL/native、样本重生、投影及 sanitizer 通过；temperature 单列数据字节 165,767，对照全变量 628,703。2026-09-28 历史记录的 SC-006 Partial 已由[2026-10-21 独立复现](../../specs/001-local-om-scanner/evidence/independent-sc006-20261021.md)补齐：fresh Codex GPT-6 AI、非人工，36 次隔离 CLI 调用，14 次 exec trace；父级核对 190 份封存产物与 23 份输入哈希一致。四项操作在 Linux AArch64 / DuckDB v1.5.4 通过，当前原范围升级 verified（Q-02 关闭），不扩大到 x86_64。
 
 ### 002 — Phase 3 规则网格空间下推  [status: verified]
 
@@ -183,9 +215,13 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 - **Notes:** [最终验收](../../specs/002-spatial-pushdown/evidence/final.md)、[AArch64 记录](../../specs/002-spatial-pushdown/evidence/linux-aarch64.md)及[独立复现](../../specs/002-spatial-pushdown/evidence/quickstart-review.md)支持原范围 SC-001–006 均通过。46 项勾选中，T042 按 x86_64 延期决定关闭，未执行；此状态不表示 x86_64 已验证。固定同列全域/区域数据字节为 165,767 → 1,795，解码块 503 → 5。
 - **Scope / verification boundary:** [当前 SQL 契约](../../specs/002-spatial-pushdown/contracts/sql-interface.md#命名-domain)已扩展至 68 个规则 domain、额外轴布局及存在时的 WKT BBOX 校验；[domain 审计](../../docs/regular-domains.md)主要是各目录首个样本的元数据绑定，另有具体 CHMI/GeoSphere 全值对照。原验收文件明确不覆盖所有新增 domain，`verified` 仅代表原始验收范围，不宣称 68 项、所有目录对象或后续修改均通过同等级完整验收（Q-05）。
 
-### 003 — Phase 4–5 维度语义、远程与并行读取  [status: in-progress]
+### 003 — Phase 4–5 维度语义、远程与并行读取  [status: verified]
+
+**当前结论（2026-10-22，优先于下列历史说明）：** R21/R22 已关闭，见[现行交付映射](../../evidence/003-dimensions-remote-parallel/current-delivery-20261021.md)与[独立封存复核](../../evidence/003-dimensions-remote-parallel/independent-review-20261022.json)。当前三版本工程运行和独立 Luna 执行 + fresh GPT-6 补录/复核支持现行声明范围 verified；fresh 独立执行限 v1.5.4/Linux AArch64，非人工。初次 4 worker 性能失败公开保留；唯一预固定 1/2/4 各五次中位数 8.415/6.310/5.621 ms，满足至少一种并行配置更快。旧 G5 superseded；004 未完成门禁不继承。构建为 changed-TU relink，非 clean full rebuild。下列 2026-10-20/21 及 2026-10-02 叙述保留其当时历史含义。
 
 **当前解释（2026-10-20，优先于下列历史Outcome/Scope/Key decisions中的缓存/ABI要求）：** 官方HTTPFS迁移的三版本各48项runtime与固定真实输入跨来源/恢复/并行记录已通过；自有LRU、专用provider ABI与旧G5已superseded，不恢复“热缓存收益”承诺。R21独立复现及当前最终交付映射仍开放，见[当前任务索引R21/R22](../../specs/003-dimensions-remote-parallel/tasks.md#当前有效待办2026-10-20)和[迁移状态](../../specs/004-multi-grid-selection/evidence/official-httpfs-refactor/status.md)。历史G0–G7结果原样保留，不冒称旧失败通过。
+
+**2026-10-21 当前产物补核：** 005 预算修复后的三版本扩展已实际重跑各 48 项 runtime，NCEP 每来源 1,038,240 行的 local/HTTP/HTTPS/签名 S3 全结果相同；同 URI 权限转换、native 取消/恢复/隔离和本地五轮性能通过。当前源码/扩展身份、12 份 CSV 实际哈希及适用边界见 [当前交付映射](../../evidence/003-dimensions-remote-parallel/current-delivery-20261021.md)。构建为变更 TU 重编译/relink，非 clean full rebuild；独立 Luna AI 正在执行 R21，R21/R22 关闭前生命周期保持 in-progress。
 
 - **Description:** 一个 feature 统一承接其他维度、混合筛选、远程单对象、并行扫描、会话缓存和逐查询 profiling；Phase 4 与 Phase 5 未拆成两个 spec。
 - **Outcome:** 五类坐标与值逐位置一致，混合查询精确且能证明局部读取收益；本地/HTTP(S)/S3 同内容结果一致，两远端冷局部响应 body 均减少；1/2/4 worker 上限无遗漏重复且固定样本五次并行耗时中位数下降；稳定对象热缓存减少网络字节或请求，权限/版本异常正确失效；G0–G7 和 SC-001–008 有完整记录及独立复现。
@@ -199,21 +235,23 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 - **Notes:** 截至 2026-10-02，73 项中 71 项勾选；T059 已完成，T070（独立复现）和 T073（完整验收后的路线图收尾）仍未完成。[最终证据记录](../../evidence/003-dimensions-remote-parallel/final.md)显示 G0–G2 在 Linux AArch64 本地通过，G4 有本地部分结果；G3 未通过完整门禁，G5/G6 的受控远程运行未执行，G7 独立复现未执行。T059 的成功本地 v3 profile 记录 `peak_query_owned_bytes=528249` 且 `query_memory_count_complete=true`；RSS 标为 process scope，失败/取消时无法证明的内存值仍为 NULL。任务勾选和本地门禁不等同完整发布验收；因此保持 `in-progress`，不标 `implemented` 或 `verified`。
 - **Internal sequencing:** [tasks 的故事依赖](../../specs/003-dimensions-remote-parallel/tasks.md#user-story-dependencies)明确 US2 依赖 US1；完整 G3 待 US2 路径完成；本地与远程完整 G4 依赖 US3；G5/G6 并发集成依赖 US4。部分基础开发可提前进行，任务先行勾选不能替代这些集成门禁。产品路线图现记录本地已验收范围和远程验收缺口；T073 仍待 G0–G7 及独立复现齐备后完成最终收尾。
 
-### 004 — Phase 6 多类型网格与远程空间选择  [status: in-progress]
+### 004 — Phase 6 多类型网格与远程空间选择  [status: verified]
 
 **当前执行索引（2026-10-20）：** 见[tasks C004-01–04](../../specs/004-multi-grid-selection/tasks.md#当前有效待办2026-10-20)，归纳三个投影/O1280的完整本地与公开source门禁、逐网格远程成本/恢复、三版本H8和独立H9。已批准跳过的N-grid真实样本和已退出的2.0不作为本轮前置，旧checkbox保留历史。
+
+**2026-10-22 当前门禁：** [最终 H0–H9](../../specs/004-multi-grid-selection/evidence/current-20261021/report.md)与[独立 AI 结论](../../specs/004-multi-grid-selection/evidence/current-20261021/independent-h9-final.json)支持 C004-01–04 全部关闭，生命周期 verified 限四定义/五冻结对象、Linux AArch64、v1.5.4/v1.5.5/v1.5.6。45 对完整远程值/成本、三版本 H8 与独立 H9 通过；attempt-03 用 12 对新执行修复溯源问题、继承 33 对未变结果，attempt-02 不作为最终严格溯源通过。独立 AI 实际复现限 v1.5.4，三版本工程结果由其独立审计；非人工、模型声明非服务证明。构建为 changed-TU relink。以下日期更早的条目保留历史含义，旧开放状态由本条替代。
 
 - **Description:** 在既有单对象扫描器上增加封闭的 rotated/Lambert/stereographic/reduced-Gaussian 定义、保守 native-window 空间选择、可选 source 位置和 `om_grid_info` 描述。
 - **Outcome:** 对固定真实来源完整核对坐标、值、布局及源位置；空间条件结果与完整物化后过滤一致，并在真实可跳块输入上证明局部读取收益；内存/取消/并行/终态可审计；逐 definition/domain 标注实际 evidence 等级。
 - **Historical scope (in, superseded for Gaussian real samples on 2026-10-10):** 固定 Open-Meteo 规则和数值来源；明示 N160/N320/N320 区域 Gaussian；有界选择与预算回退；source/grid-info；metrics v4；本地及远程、版本配套和独立复现门禁。公开 HRES O1280 对象为补充 Gaussian-family 证据，不替代 N-grid 样本。Evidence levels 按 definition 隔离。
-- **Scope (in, current):** 按 [负责人批准的 Gaussian 修订](../../specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md)，N160/N320/N 区域真实样本本轮跳过、不阻塞当前范围收口；定义/身份/native/synthetic 回归保留且不记为真实通过。O1280（ecmwf_ifs）与三个投影定义按 C-14 登记 coordinate-value-validated（evidence/baseline-local/o1280-real-local-20261010/ 与 h1-20261008-5dac993/）；完整时间值覆盖、远程证据、完整 gate 与 H9 仍待补齐。N-grid 定义与跳过决定不变；其他网格、选择、source/info、指标和独立复现范围不降低。
+- **Scope (in, current):** 按 [负责人批准的 Gaussian 修订](../../specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md)，N160/N320/N 区域真实样本本轮跳过、不阻塞当前范围收口；定义/身份/native/synthetic 回归保留且不记为真实通过。O1280（ecmwf_ifs）与三个投影定义按 C-14 的 producer 参考，在当前五冻结对象/三版本/AArch64 范围登记 remote-benefit-validated；完整时间值、逐网格远程证据、H0–H9 已齐备。N-grid 定义与跳过决定不变；其他网格、选择、source/info、指标和独立复现范围不降低。
 - **Scope (out):** 任意 CRS/PROJ、除登记 O1280 外的任意 Gaussian O/F 接受、由 BBOX 重建区域点序、解码块缓存、写入、多文件拼接、邻接/单元边界/面积/距离/向量方向算子，以及未经 gate 支持的发布声明。
 - **Depends on:** 复用 001–003 的 OM v3 reader、DuckDB table function、轴和受检 ReadAtFile 框架。本地网格内核可继续实现；H6 远程收益按官方 HTTPFS 新契约和受控服务独立审计。外部真实样本和独立 oracle 是 Gaussian 完整验收输入门槛，不阻止已有输入下的内核实现。
 - **Governed by:** C-01–C-13；spec 自带的 SQL、selection/I/O 和 evidence contracts。
 - **Addresses:** [产品路线图 Phase 6](../../docs/roadmap.md#阶段)、[多网格 SQL 契约](../../specs/004-multi-grid-selection/contracts/sql-interface.md)、[逐 definition 证据表](../../docs/grid-domains.md)。
 - **Spec dir:** [specs/004-multi-grid-selection/](../../specs/004-multi-grid-selection/)；[spec](../../specs/004-multi-grid-selection/spec.md)、[plan](../../specs/004-multi-grid-selection/plan.md)、[tasks](../../specs/004-multi-grid-selection/tasks.md)。
 - **Key decisions:** canonical identity 不含 provenance；未知/冲突 CRS fail closed；候选使用与输出一致的函数且保留 DuckDB residual；任务惰性、有界并可取消；Gaussian 显式完整行表/局部 parent segments；O1280 与 N family 分开；完整 scan 才能发布 authoritative exact count/成功 memory evidence。
-- **Current scope note (2026-10-10):** 下条历史 Notes 的 N-grid 阻塞及 O1280 supplemental 限制已由本轮修订替代；旧执行结果/hash 不变，T004 等其余工作和完整门禁仍开放，不提升 lifecycle。同日补记的 O1280 本地真实查询验证（含 HSURF 轴绑定修复）与 pinned producer 参考决定已使四个 Open-Meteo 定义登记 coordinate-value-validated（C-14）；远程/完整 gate/H9 仍开放。Phase 8 series 只是产品文档中的待评审提案，不新增已立项 spec。
+- **Historical scope note (2026-10-10; superseded by 2026-10-22 closure):** 下条历史 Notes 的 N-grid 阻塞及 O1280 supplemental 限制已由本轮修订替代；旧执行结果/hash 不变，T004 等其余工作和完整门禁仍开放，不提升 lifecycle。同日补记的 O1280 本地真实查询验证（含 HSURF 轴绑定修复）与 pinned producer 参考决定已使四个 Open-Meteo 定义登记 coordinate-value-validated（C-14）；远程/完整 gate/H9 仍开放。Phase 8 series 只是产品文档中的待评审提案，不新增已立项 spec。
 - **Historical notes (retained):** requirements checklist 全部通过。三类真实 Open-Meteo OM v3 投影样本已有独立坐标和官方 OM C 全量值参考；2026-10-08 匹配 baseline H1 子比较对全部可用投影坐标和值逐位置通过，但其 `[ny,nx,ntime]` 轴顺序仍来自 producer profile，OM 对象源轴映射尚无独立证明。HRES O1280 `HSURF.om` 全值参考仍是补充证据，行长/坐标 point order 未映射，不能提升 N160/N320/区域状态。T003/T004 对 N-grid真实对象、区域局部点序和完整验收参考仍未完成；本地合成选择回归不替代 H0/H1/H6。G3 的远程依赖、2.0 matrix 与 H9 独立复现仍待完成。因此保持 `in-progress`，不能只因实现代码或生成 registry 存在而标 `implemented` / `verified`。
 
 ### 005 — 多边形区域统计  [status: verified]
@@ -225,11 +263,11 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 **后续证据与当前工作（2026-10-20）：** [77b79d历史产物验收](../../specs/005-polygon-region-statistics/evidence/artifact-binding-77b79d279b73.md)已完成过绑定产物的三版本P0–P6和独立AI P7；之后[元数据选择修复](../../specs/005-polygon-region-statistics/evidence/metadata-selection-fixes.md)、[decoder范围复用](../../specs/005-polygon-region-statistics/evidence/decoder-range-reuse.md)及006改变共享路径，旧结果不覆盖当前源码。本轮已按固定窗口完成最终产物验收。下列“重复小读取未修复”是历史快照：同decoder最近成功压缩范围现在可复用，季节样本请求显著下降，但重复解码仍存在，也不能据单样本升级五目标P5。
 
 - **Description:** 在单对象扫描器上增加 `read_om_regions` 多区域读取入口：调用者显式提供标准 2D Polygon/MultiPolygon（WKB），平面 `covers` 精确筛选在值解码前执行，原生 SQL 分组统计区分空组与全 NULL，且无值依赖维持零值成本。
-- **Outcome:** 区域—原始记录多重集合匹配独立 oracle；五目标×三版本×四来源在冻结固定局部窗口内完整对照，HTTP/S3 的三项成本严格下降；预算、取消和生命周期可审计。
+- **Outcome:** 区域—原始记录多重集合匹配独立 oracle；五目标×三版本×四来源在冻结固定局部窗口内完整对照，每个 HTTP/S3 对照的三项成本均不增加且至少一项下降；预算、取消和生命周期可审计。
 - **Scope (in, 2026-10-13 修订):** 负责人授权取消全域远程扫描，P5/P6/P7 按 [固定局部窗口契约](../../specs/005-polygon-region-statistics/contracts/bounded-remote-validation-20261013.md) 执行；全域远程收益未验证、未宣称。`grid_lonlat` 为调用者声明，不重投影；上限 4096 区域/16 MiB 总 WKB；区域入口显式依赖 spatial。
 - **Scope (out):** 任意 CRS/重投影、面积加权、插值、跨 chunk 合并缓存、多对象拼接、Line/点几何。
-- **Evidence:** [final](../../specs/005-polygon-region-statistics/evidence/final.md)：三版本 16/16 sanitizer、942 断言 SQL 回归、P0–P4、固定窗口 P5（每版本 40/40 扫描）、P6 审计通过；P7 三次尝试完整留档，第三次 fresh-context AI 验证通过本地 108 行/12 组/18 组对照及 ncep 固定窗口 HTTPS 基准/区域对照（9 行相同、77,580→25,860 数据字节、135→45 解码块、150,469→79,671 服务字节）。独立报告一处 CSV hash 转录错误已由 final 记录父审计重算值。重复小远程读取限制未修复；2026-10-14 review修复后三版本P0–P4、16/16 sanitizer、19个SQL文件/1,028断言和93项Python回归通过，见[修复验证](../../specs/005-polygon-region-statistics/evidence/review-fixes-20261014.md)；新产物P5/P6/P7未重跑，旧记录保留历史范围。
-- **Notes:** lifecycle 保持 `implemented`：修复前产物P0–P6 在负责人批准的固定局部窗口修订范围完整通过，P7 有独立 fresh-context AI 复现记录；P7 明确为 AI 验证、非人工验收。roadmap debrief 建议确认该 AI 复现是否足以将本条升级为 `verified`，该建议尚未应用。全域远程收益/吞吐仍未验证，重复小远程读取限制保持开放。网格 registry 的既有支持声明 hash 未变。
+- **Evidence:** [当前收口](../../specs/005-polygon-region-statistics/evidence/current-20261020.md)记录三版本 P0–P6、每版 17 sanitizer 与独立 fresh-context AI P7；身份与适用范围以该报告为准。[final](../../specs/005-polygon-region-statistics/evidence/final.md) 和 [10-14 修复验证](../../specs/005-polygon-region-statistics/evidence/review-fixes-20261014.md)保留历史执行记录，不把其中旧 16 项数量、旧成本和“新产物未复跑”描述作为当前状态。
+- **Notes:** lifecycle 在声明范围为 `verified`；P7 为独立 AI 验证、非人工验收。全域远程收益/吞吐未验证，任意非相邻小窗口的重复读取/解码不保证减少；同 decoder 已支持覆盖范围复用。003/004 缺项及其他 domain 的支持等级不继承。
 
 ### 006 — 区域最近邻采样 [status: verified]
 
@@ -242,12 +280,22 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 - **Spec dir:** [specs/006-region-nearest-sampling/](../../specs/006-region-nearest-sampling/)；[spec](../../specs/006-region-nearest-sampling/spec.md)、[plan](../../specs/006-region-nearest-sampling/plan.md)、[tasks](../../specs/006-region-nearest-sampling/tasks.md)。
 - **Evidence:** [final](../../specs/006-region-nearest-sampling/evidence/final.md)：65/65任务、N0–N7声明范围通过；N7独立用户在fresh v1.5.5进程执行。N0–N6绑定各自源码/产物快照，后续证据工具/文档不冒称重跑scanner。
 
+### 007 — 窄范围规则网格 bilinear 区域采样 [status: specced]
+
+- **Description:** 在现有 read_om_regions 内显式选择 bilinear，服务小区域代表位置的连续标量估计。
+- **Outcome:** 用户取得可核对的 DOUBLE 估计值、最多四个正权重真实贡献者和明确缺测/域外状态。
+- **Scope (in):** 独立验证的完整规则经纬度轴；显式单个连续标量；复用 point_on_surface；源点/源边退化、周期接缝、降序轴、NULL 传播、无穷与 residual；四来源及有界执行验收。
+- **Scope (out):** projected/Gaussian、重归一化、nearest-valid、向量/角度、Line、面积统计、多变量自动插值、时间/垂直插值、目录拼接。
+- **Depends on:** 002 规则网格/布局、005 区域输入及预算、006 代表位置/采样来源、003 现行传输/并行/指标契约；不将 004 全部 projected/Gaussian 门禁设为泛化依赖。
+- **Spec dir:** [007](../../specs/007-region-bilinear-sampling/)；[规格](../../specs/007-region-bilinear-sampling/spec.md)、[质量清单](../../specs/007-region-bilinear-sampling/checklists/requirements.md)。
+- **Notes:** 2026-10-22 Draft，仅启动规格；16 FR / 7 SC。下一步 plan/contracts 冻结声明 SQL、权重/组合顺序和 sampling schema，再生成任务；尚无实现或运行验收。
+
 ### 尚未形成 spec 的其他方向
 
 | 产品方向 | 已有目标与范围依据 | 原产品阶段状态 | 尚待确认 |
 | --- | --- | --- | --- |
 | Phase 7 — 科学计算 | 独立设计 `om_slice`、`om_reduce`、`om_interp`、`om_regrid`；算子与扫描入口的职责分开。[来源](../../docs/roadmap.md#阶段) | 计划中 | 单一或多个 specs、编号、各算子的语义与约束、技术选型、验收及 spec 级依赖 |
-| 空间采样后续 | [空间计算提案](../../docs/plans/2026-10-14-spatial-sampling-and-computation.md)中的bilinear、Line、单元覆盖/面积统计；nearest已由006交付 | 提案，未形成新spec | 逐方法数值/缺测/来源/边界与验收；只在第二个真实消费者出现时提取通用设施 |
+| 空间采样后续 | [空间计算提案](../../docs/plans/2026-10-14-spatial-sampling-and-computation.md)中的Line、单元覆盖/面积统计；nearest已由006交付，窄范围bilinear已登记007 | 提案，未形成新spec | 逐方法数值/缺测/来源/边界与验收；只在第二个真实消费者出现时提取通用设施 |
 | Phase 8 — 跨chunk时间序列 | [series提案](../../docs/roadmap.md#phase-8--跨-chunk-时间序列入口待评审提案)以单对象read_om组合时间窗 | 待评审，未立项 | model参数证据、时间/缺失chunk政策、身份/指标、接口和独立spec；本次不批准草案默认跳过404 |
 
 以上保留现有产品文档和设计提案中的后续意图，不自动立项；Phase 6 已由004承接，nearest已由006交付。产品阶段顺序本身不足以确定未来科学算子的硬依赖边。
@@ -255,12 +303,13 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 ## Open Questions
 
 - **Q-01 — Constitution 治理待确认：** [constitution](constitution.md) 仍含项目名、原则、版本与日期占位符。正式原则、版本与批准日期尚未定义；本 roadmap 不代填，也不把模板示例当成约束。后续以实际批准的 constitution 解决。
-- **Q-02 — 001 的独立复现待确认：** [001 final](../../specs/001-local-om-scanner/evidence/final.md#sc-001sc-006-outcomes)仍将 SC-006 标为 Partial，虽然 T044 已勾选。需补充未参与实现者的加载、列描述、完整/单列扫描记录，或明确接受标准的范围修订依据，才可判断是否升级 `verified`。x86_64 延期已有依据，不重新假定其必须通过。
-- **Q-03 当前补记（2026-10-20）：** 下条为旧ABI/旧缓存路径历史快照；官方HTTPFS R20三版本受控验证已通过，R21独立复现与R22最终映射仍开放。旧G5 superseded，不恢复自有缓存要求。
+- **Q-02 — 已关闭（2026-10-22）：** 001 SC-006 的[独立 AI 实际复现与父级封存复核](../../specs/001-local-om-scanner/evidence/independent-sc006-20261021.json)已补齐加载、列描述、完整/单列扫描；原始 final 的 Partial 保留历史含义，当前 Linux AArch64 / v1.5.4 独立执行范围可 verified。非人工验证；x86_64 延期不变。
+- **Q-03 收口（2026-10-22）：** 003 当前官方 HTTPFS R21/R22 及归档已完成，现行映射与独立报告为准；下列缺口叙述保留历史。
+- **Q-03 历史补记（2026-10-20）：** 下条为旧ABI/旧缓存路径历史快照；官方HTTPFS R20三版本受控验证已通过，R21独立复现与R22最终映射仍开放。旧G5 superseded，不恢复自有缓存要求。
 - **Q-03 — 003 各门禁的实际完成状态（历史已记录，完整验收仍待完成）：** [最终证据](../../evidence/003-dimensions-remote-parallel/final.md)记录了构建身份、命令/退出码、原始本地指标及各门禁状态。G0–G2 本地通过；G4 只有本地部分结果；G3 未通过完整门禁，G5/G6/G7 未执行。后续状态以该记录和新增运行证据为准，不将未执行推定为通过。
 - **Q-04 — 产品文档与已记录基线的差异（已同步）：** README、[接口说明](../../docs/spec.md)、[技术架构](../../docs/architecture.md)及[产品路线图](../../docs/roadmap.md)现描述语义轴、并行和远程功能及其验收边界；功能已有实现不代表 Phase 4–5 完整交付。
 - **Q-05 — 002 后续 domain 扩展的验收边界待确认：** 68 项 registry 的来源及元数据审计已记录，但[原始 final](../../specs/002-spatial-pushdown/evidence/final.md)明确不覆盖全部新增 domain。后续扩展需要何种完整值、坐标、异常及独立复现证据才能作更广的 `verified` 声明，需补充对应范围与记录；缺样本项保留未知，不推定可读或不可读。
-- **Q-06 — Phase 7 的 spec 结构与依赖待确认：** 科学计算方向仍未形成项目 spec 目录。待确定算子拆分、编号、语义、技术约束和明确前置依据；不只凭阶段顺序推定其依赖边。Phase 6 已由 004 定义，生命周期见上文。
+- **Q-06 — Phase 7 的 spec 结构与依赖待确认：** 窄范围 bilinear 已形成 007；其余科学计算方向仍未形成项目 spec 目录。待确定算子拆分、编号、语义、技术约束和明确前置依据；不只凭阶段顺序推定其依赖边。Phase 6 已由 004 定义，生命周期见上文。
 - **Q-07 — 003 最终证据归档路径待统一：** T072 指定的仓库根 `evidence/003-dimensions-remote-parallel/final.md` 已存在；plan 的项目结构说明和[观测契约](../../specs/003-dimensions-remote-parallel/contracts/validation-evidence.md#执行范围与成功声明)使用 feature 级 `evidence/` 表述。当前记录可由 T072 路径访问，但设计文档与任务路径仍不一致，需后续明确唯一规范路径并同步引用。
 
 ## Cross-Cutting Notes
@@ -278,8 +327,8 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 
 ## 2026-10-08 官方 HTTPFS 接入
 
-用户指定 v1.5.4、v1.5.5、v1.5.6 / Linux AArch64。C-09/C-11/C-12 已按迁移契约修订；C-10 并行职责保留。官方运行兼容性证据另行记录，不提升 003/004 的 verified 状态。旧 G5 失败保留且 superseded，完整 004 真实网格门禁和独立验证仍未闭环。
+用户指定 v1.5.4、v1.5.5、v1.5.6 / Linux AArch64。C-09/C-11/C-12 已按迁移契约修订；C-10 并行职责保留。官方运行兼容性证据与完整验收分开记录；003/004 现行范围的 verified 分别依据各自完整门禁和独立 AI 记录。旧 G5 失败保留且 superseded。
 
 ---
 
-**Version**: 1.4.0 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-20
+**Version**: 1.5.1 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-22

@@ -1,5 +1,7 @@
 # 003 Dimensions, Remote and Parallel Reads — Final Evidence
 
+> 当前入口（2026-10-22）：[现行交付映射](current-delivery-20261021.md)。下文是 2026-10-02 历史记录；官方 HTTPFS 已替代专用 ABI、自有缓存与旧 G5。当前三版本工程证据及独立 AI 补跑/封存已核对，R21/R22 已收口，现行声明范围 verified，不把旧 not-run 或旧缓存要求当成现行契约。
+
 **Status: partial implementation evidence; full G0–G7 release acceptance has not passed.**  
 Validation date: 2026-10-02. The source tree was dirty on `main`; base commit: `50b51787a480d4abf11e45488fa44e5c60fc6394`.
 

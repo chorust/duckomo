@@ -6,7 +6,7 @@ description: "Implementation tasks for the Phase 0–2 local OM scanner"
 
 **Input**: `specs/001-local-om-scanner/{spec,plan,research,data-model,quickstart}.md` and `contracts/`
 
-**Prerequisites**: Linux x86_64; the fixed upstream commits in `research.md`. This repository currently contains design documents but no implementation.
+**Prerequisites**: 当前执行平台为 Linux AArch64，Linux x86_64 按现行路线图暂缓；依赖提交以当前构建 manifest 为准。扫描器已实现，下文任务保留历史执行状态；SC-006 已于 2026-10-22 按未参与实现的 fresh-context 独立 AI 验证收口（非人工，Linux AArch64 / DuckDB v1.5.4），见[独立报告](evidence/independent-sc006-20261021.md)与[父级哈希复核](evidence/independent-sc006-20261021.json)。
 
 **Tests**: Required by FR-012–014, SC-001–006 and `contracts/validation-evidence.md`. Write the specified SQL/native tests before their implementation and observe the expected failure. Fixture generation and its independent official-reader oracle precede those tests.
 

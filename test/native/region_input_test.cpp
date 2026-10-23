@@ -156,8 +156,12 @@ void TestOwnedCopyEmptyAndEndian() {
 	        "the structural parser records the exact coordinate envelope");
 	Require(collection.GetRegions()[2].envelope.empty && collection.GetRegions()[2].vertex_count == 0,
 	        "a typed empty geometry remains distinct from an empty input collection");
-	Require(collection.GetOwnedBytes() >= collection.GetRegions()[0].wkb.size() + 9,
-	        "the immutable result owns a byte-for-byte WKB copy");
+	std::uint64_t expected_owned = sizeof(RegionCollection) + collection.GetRegions().capacity() * sizeof(Region);
+	for (const auto &region : collection.GetRegions()) {
+		expected_owned += region.id.capacity() + region.wkb.capacity() + region.geometry_bytes;
+	}
+	Require(collection.GetOwnedBytes() == expected_owned,
+	        "owned input includes descriptor/ID/WKB capacities and every opaque geometry estimate");
 	input = Value(LogicalType::LIST(RegionStructType(true)));
 	Require(collection.GetRegions()[0].wkb.size() == PolygonWkb(ring, false).size(),
 	        "mutating the source Value does not change the owned region bytes");
@@ -256,6 +260,25 @@ void TestWkbStructuralAndCoordinateRejections() {
 	                   "a leading EMPTY does not short-circuit whole-set validation");
 }
 
+void TestOwnedBindingBudget() {
+	const auto collection = RegionCollection::Build(RegionList({{"polygon", PolygonWkb(
+	    {{0, 0}, {1, 0}, {1, 1}, {0, 1}, {0, 0}})}, {"empty", EmptyWkb()}}));
+	const auto remaining = REGION_MAX_OWNED_BYTES - collection.GetOwnedBytes();
+	Require(collection.ValidateOwnedBytes(remaining) == REGION_MAX_OWNED_BYTES,
+	        "the combined collection and binding budget accepts exactly 64 MiB");
+	for (const auto extra : {remaining + 1, std::numeric_limits<std::uint64_t>::max()}) {
+		bool rejected = false;
+		try {
+			(void)collection.ValidateOwnedBytes(extra);
+		} catch (const Exception &error) {
+			rejected = true;
+			Require(std::string(error.what()).find("[region_input_limit]") != std::string::npos,
+			        "combined budget and overflow use the region input limit category");
+		}
+		Require(rejected, "binding capacity must reject a one-byte excess and integer overflow");
+	}
+}
+
 void TestLimitsAndCancellation() {
 	std::vector<std::pair<std::string, std::string>> max_regions;
 	max_regions.reserve(REGION_MAX_COUNT);
@@ -340,6 +363,7 @@ int main() {
 		TestOwnedCopyEmptyAndEndian();
 		TestStrictShapeIdentityAndUtf8();
 		TestWkbStructuralAndCoordinateRejections();
+		TestOwnedBindingBudget();
 		TestLimitsAndCancellation();
 		std::cout << "region_input_test: ok\n";
 		return 0;

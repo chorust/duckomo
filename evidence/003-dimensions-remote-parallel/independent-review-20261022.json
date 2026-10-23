@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "date_utc": "2026-10-21T18:58:01.698297+00:00",
+  "reviewer": {
+    "identity": "Codex GPT-6 independent final reviewer, now actual executor of addendum tests",
+    "human": false,
+    "implemented_duckomo": false
+  },
+  "strict_exact_command_archive_complete": true,
+  "independent_server_audit": true,
+  "strict_archive_scope": "New actual native run, directly executable derivative run and preserved failure, bounded completion run, one preregistered 1/2/4 round; not a retroactive repair of Luna historical argv.",
+  "decisions": {
+    "R21": {
+      "can_close": true,
+      "status": "new strict provenance and four-part independent evidence complete; all new failures disclosed"
+    },
+    "G7": {
+      "can_close": true,
+      "status": "independent AI scope, matched v1.5.4 artifacts and actual runs"
+    },
+    "SC-008": {
+      "can_close": true,
+      "status": "four parts reviewed with accurate optimization/unknown-metric interpretation"
+    },
+    "SC-005": {
+      "status": "single precommitted 1/2/4 round meets at-least-one-parallel-cap criterion",
+      "earlier_addendum_round": "failed; preserved; demonstrates performance variation"
+    },
+    "R22": {
+      "can_close": false,
+      "status": "pending parent evidence mapping and final seal review; no tracked checkbox or roadmap edits"
+    }
+  },
+  "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+  "root_seal_unchanged": true,
+  "native": {
+    "exit_code": 0,
+    "exact_argv": "native-cancellation/argv.json",
+    "identity": "identity.json",
+    "stdout": "native-cancellation/stdout.txt",
+    "stderr": "native-cancellation/stderr.txt",
+    "assertions": "actual QueryEnd cancelled/failure/success; same-connection recovery; same-process connection isolation per binary success diagnostic and checked native source"
+  },
+  "runner": {
+    "original_copy": "run-remaining.original.py",
+    "provenance": "runner-provenance.json",
+    "first_diff": "runner.diff",
+    "completion_diff": "completion-runner.diff",
+    "launch_records": [
+      "launch-argv.json",
+      "remaining-launch/argv.json",
+      "completion-launch-argv.json",
+      "remaining-completion-launch/argv.json"
+    ],
+    "cli_child_commands": "cli-sessions/*.jsonl and attempt-02/cli-sessions/*.jsonl; private setup hash only"
+  },
+  "server_audit": {
+    "status": "pass",
+    "immutable_slices": 27,
+    "cold_repeat_pairs_per_source": 5,
+    "sources": [
+      "http",
+      "s3"
+    ],
+    "cold_repeat_queries": 20,
+    "full_selected_queries": 4,
+    "extra_NCEP_remote_slices": 3,
+    "full_sent_body_bytes": 158337,
+    "selected_sent_body_bytes": 5058,
+    "full_requests": 252,
+    "selected_requests": 19,
+    "cold_repeat_sent_body_bytes_each": 5058,
+    "local_oracle_parity": true,
+    "all_interval_started_requests_complete": true,
+    "s3_schema": "complete-only finally records; started set empty, no fabricated events",
+    "counts_match_original_run_scan_audit": true,
+    "all_slices_equal_original_log_byte_intervals": true,
+    "verification": "verification.json"
+  },
+  "performance": {
+    "policy": "performance-124/policy.json",
+    "medians_ms": {
+      "1": 8.415436837822199,
+      "2": 6.309781223535538,
+      "4": 5.620995070785284
+    },
+    "faster_parallel_caps": [
+      2,
+      4
+    ],
+    "all_15_raw_measurements_verified": true,
+    "review": "performance-round-review.json",
+    "first_failure": "first-performance-failure-audit.json"
+  },
+  "four_parts": {
+    "dimensions": "inherited predecessor local dimension CSV/metrics, EXCEPT zero and removed-cache unknown diagnostics, independently checked in root seal",
+    "remote": "inherited 48 synthetic; new actual native; four fresh NCEP window outputs with three remote slices; inherited access-change",
+    "parallel": "inherited four-source 1/2/4 multiset parity; new single 1/2/4 performance round plus preserved initial failure",
+    "cold_repeat": "new HTTP/S3 five same-connection pairs each; immutable audits; no repeated-query byte saving; honest v4 null/complete=false transport and distinct memory scopes"
+  },
+  "attempts": [
+    {
+      "attempt": "Luna historical attempt-01",
+      "status": "failed_preserved",
+      "evidence": "../.. /independent-003-retry/attempt-01 (see root manifest for exact paths)",
+      "cause": "fixture relative path per Luna progress; historical evidence unchanged"
+    },
+    {
+      "attempt": "addendum initial launch",
+      "native_exit": 0,
+      "remaining_exit": 1,
+      "outer_exit": 1,
+      "status": "performance_failed",
+      "runner": "run-remaining.py",
+      "evidence": [
+        "native-cancellation/",
+        "remaining-launch/",
+        "dimensions-perf-five-run/",
+        "first-performance-failure-audit.json"
+      ],
+      "cause": "parallel dimensions_perf median not faster than serial in 1/4 comparison; exact wall timings not persisted before assert",
+      "all_known_measurements_retained": true
+    },
+    {
+      "attempt": "addendum missing-cost completion",
+      "exit": 0,
+      "status": "cost_archive_pass",
+      "runner": "run-cost-completion.py",
+      "evidence": [
+        "remaining-completion-launch/",
+        "attempt-02/"
+      ],
+      "performance_evaluated": false,
+      "note": "Explicitly skipped completed NCEP and failed performance stage; never used completion exit0 to override that failure."
+    },
+    {
+      "attempt": "single precommitted 1/2/4 performance round",
+      "exit": 0,
+      "status": "pass",
+      "runner": "performance-124/run.py",
+      "policy": "performance-124/policy.json",
+      "runs_each": 5,
+      "workers": [
+        1,
+        2,
+        4
+      ],
+      "medians_ms": {
+        "1": 8.415436837822199,
+        "2": 6.309781223535538,
+        "4": 5.620995070785284
+      },
+      "faster_parallel_caps": [
+        2,
+        4
+      ],
+      "no_retry": true,
+      "all_wall_timings_saved_before_assertions": true
+    }
+  ],
+  "limitations": [
+    "独立AI执行与复核，非人工验收；模型名称不作服务端attestation。",
+    "构建为changed-TU rebuild/relink，非clean rebuild；native为父级提供的现有二进制，本次捕获其实际执行hash与当前源码digest，不追溯重建其编译过程。",
+    "仅v1.5.4 Linux AArch64；不扩大到其它版本/平台、004 H0–H9或完整发布门禁。",
+    "第一轮1/4并行性能门槛确实失败；10份结果/metrics和失败退出均保留。旧派生脚本在assert后才写summary，内存wall timings与精确中位数已丢失，不以scan elapsed替代。",
+    "唯一新预注册1/2/4轮各5次满足至少一种并行配置更快；它不覆盖或抹去前次失败，不承诺每轮、每个worker配置或任意查询均加速。OS cache未drop，未独立测冷磁盘条件。",
+    "HTTP审计有started/complete；S3代理只有finally完成记录，未伪造started事件。切片完整性按实际schema验证；S3后端版本/digest仍为父级caller-supplied信息，independent_server_audit指本次独立核对日志字节与计数，不是独立认证后端服务镜像。",
+    "旧Luna/native命令档案没有被倒填；strict_exact_command_archive_complete指替代性新增执行及其完整当前命令档案。旧root报告与全部旧输出保持原样。",
+    "真实NCEP仍为25行固定窗口；48-case synthetic、前任维度/缓存拒绝等继承原独立证据，本次未重跑。",
+    "私有run.env/setup仅记录hash并用于执行/敏感值扫描，未复制SQL或凭据。命令记录只公开明确选定的非敏感env字段，不公开完整继承环境。",
+    "R22交付映射与最终封存由父级复核；本次不改源码、checkbox、roadmap或停止服务。"
+  ],
+  "parent_acceptance": {
+    "date": "2026-10-22",
+    "R21": "closed",
+    "R22": "closed after current FR/SC and gate mapping review",
+    "addendum_manifest_sha256": "a5c24d7be0bb9a2c09f22733b16a71180bf94791cf3d3aac21030f204a54e02b",
+    "addendum_files_verified": 300,
+    "root_manifest_sha256": "4315b06fd1660396c82af5acbc06839c8fc81f163ca0b851be2a685b60457101",
+    "root_records_verified": 357,
+    "note": "301 files including self-excluded manifest. Parent hashes verify integrity; independent test conclusion is Noether plus preserved Luna execution, not parent self-signature."
+  }
+}

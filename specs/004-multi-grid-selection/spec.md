@@ -4,9 +4,11 @@
 
 **Created**: 2026-10-02
 
-**Status**: In progress — tasks.md 已生成并正在实施；真实样本、外部门禁和独立复现仍未全部完成，不表示完整网格支持或版本兼容已验收
+**Status**: Verified（2026-10-22，批准的四定义/五对象、Linux AArch64、v1.5.4/v1.5.5/v1.5.6 范围；H0–H9 通过，独立 H9 为 AI、非人工）。见[最终证据](evidence/current-20261021/report.md)。
 
 **Input**: User description: "docs/roadmap phase6多个网格支持，要思考如何让range 读取（s3远程文件）怎么适配，比如先把lot lat range转换成对应网格文件range读取再，还要考虑后面支持空间计算的适配，这个spec可能需要详细考虑一下后面肯定要支持到duckdb2.0"
+
+> 2026-10-22 当前结论优先：四定义在冻结真实对象范围为 remote-benefit-validated，C004-01–04 已关闭。以下带日期的范围修订说明保留其当时状态；旧远程/H9 开放说明已由最终证据替代，真实 N-grid 与 2.0 排除决定不变。
 
 ## 2026-10-10 当前 Gaussian 验收范围
 

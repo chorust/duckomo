@@ -1,6 +1,6 @@
 # 空间采样与区域计算设计提案
 
-状态：设计提案，未实现；首版范围已形成 [006 最近邻采样规格](../../specs/006-region-nearest-sampling/spec.md)，其中的规范要求优先于本提案，插值和区域权重仍为后续方向。用户已确定在现有 `read_om_regions` 内以 `method` 选择计算方式，不新增采样函数；本文件完善计算语义、接口边界和实施顺序，不把草案参数当成当前可调用 API。调研日期：2026-10-14 UTC。关联：[生态调研](../research/2026-10-14-spatial-computation-ecosystem.md)、[005 spec](../../specs/005-polygon-region-statistics/spec.md)、[当前架构](../architecture.md)。
+状态：设计提案，未实现；首版范围已形成 [006 最近邻采样规格](../../specs/006-region-nearest-sampling/spec.md)，其中的规范要求优先于本提案，窄范围插值已形成 [007 bilinear 草案](../../specs/007-region-bilinear-sampling/spec.md)，尚未实现；区域权重仍为后续方向。用户已确定在现有 `read_om_regions` 内以 `method` 选择计算方式，不新增采样函数；本文件完善计算语义、接口边界和实施顺序，不把草案参数当成当前可调用 API。调研日期：2026-10-14 UTC。关联：[生态调研](../research/2026-10-14-spatial-computation-ecosystem.md)、[005 spec](../../specs/005-polygon-region-statistics/spec.md)、[当前架构](../architecture.md)。
 
 ## 1. 问题与设计结论
 
@@ -189,6 +189,8 @@ nearest 默认在 sampling 内给 source_lon/source_lat/source_point_index，不
 `om_grid_info` 后续添加独立 computation capabilities，例如 nearest methods/distance models/support bounds evidence，不改变现有 grid_id 的规范语义。另建计算 plan_id/support_id；算法和支持范围变化不能伪装成同一结果身份。
 
 ## 6. bilinear 的预留契约
+
+2026-10-21 下一步范围：先完成 005 合计预算与现行接口文档修复，再收口 003 R21/R22，并行推进 004 当前门禁；之后为 bilinear 建立独立窄范围规格。首版候选限定已验证规则经纬度网格、面内代表位置、显式单个连续标量、最多四个正权重贡献点及传播缺测；输出 DOUBLE，公开真实贡献位置与权重。周期接缝、降序轴、源点/源边退化、域外与 ±Inf 必须有冻结的独立参考，不沿用 nearest 的距离规则代替插值定义。投影/Gaussian、缺测重归一化、向量/角度、Line 与面积统计不纳入首版。2026-10-22 已建立 [007 窄范围规格](../../specs/007-region-bilinear-sampling/spec.md)与质量清单，进入 plan/contracts 前准备；不表示 bilinear 已支持或通过运行验收。
 
 - 只对经验证的规则坐标轴提供；先解决是否插值到目标点，再决定值的组合。
 - 普通规则经纬度使用经纬轴分数生成四点权重。它是坐标轴上的双线性重建，不能称为按地表距离插值。

@@ -295,6 +295,10 @@ RegionCollection RegionCollection::Build(const Value &input, const std::function
 			LimitError(i, "vertex count exceeds the 1048576 collection limit");
 		}
 		total_vertices += item.vertices;
+		estimated_owned_bytes = CheckedAdd(estimated_owned_bytes, item.geometry_bytes, "owned region storage size overflows");
+		if (estimated_owned_bytes > REGION_MAX_OWNED_BYTES) {
+			LimitError(i, "owned region storage exceeds the 64 MiB collection limit");
+		}
 		parsed.push_back(item);
 	}
 
@@ -317,10 +321,19 @@ RegionCollection RegionCollection::Build(const Value &input, const std::function
 	for (const auto &region : result.regions) {
 		owned_bytes = CheckedAdd(owned_bytes, region.id.capacity(), "owned input size overflows");
 		owned_bytes = CheckedAdd(owned_bytes, region.wkb.capacity(), "owned input size overflows");
+		owned_bytes = CheckedAdd(owned_bytes, region.geometry_bytes, "owned region storage size overflows");
 	}
-	if (owned_bytes > REGION_MAX_OWNED_BYTES) CollectionLimitError("owned input exceeds the 64 MiB collection limit");
 	result.owned_bytes = owned_bytes;
+	result.ValidateOwnedBytes();
 	return result;
+}
+
+std::uint64_t RegionCollection::ValidateOwnedBytes(std::uint64_t binding_bytes) const {
+	const auto total = CheckedAdd(owned_bytes, binding_bytes, "owned region storage size overflows");
+	if (total > REGION_MAX_OWNED_BYTES) {
+		CollectionLimitError("owned region storage exceeds the 64 MiB collection limit");
+	}
+	return total;
 }
 
 bool RegionCollection::Equals(const RegionCollection &other) const noexcept {

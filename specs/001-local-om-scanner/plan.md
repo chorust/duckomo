@@ -55,11 +55,11 @@ specs/001-local-om-scanner/
 └── checklists/requirements.md
 ```
 
-`tasks.md` 由后续 `$speckit-tasks` 生成。
+`tasks.md` 已生成并记录历史实施任务；当前验收缺项以路线图和 evidence 为准。
 
 ### Source Code (repository root)
 
-以下为实施时创建的目标结构；当前仓库只有设计文档。
+以下为原计划的目标结构；当前仓库已包含实现、测试和验证工具，具体接口以现行 contracts 为准。
 
 ```text
 CMakeLists.txt

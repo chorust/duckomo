@@ -1,0 +1,83 @@
+[
+  {
+    "version": "v1.5.4",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/native/spatial_io_test"
+    ],
+    "exit_code": 0,
+    "stdout": "spatial_io full_rows=10541 restricted_rows=25 full_temperature_data_bytes=37700 restricted_temperature_data_bytes=1433 full_temperature_decoded_chunks=275 restricted_temperature_decoded_chunks=5 empty_rows=0 coordinates_rows=25 mixed_rows=1 safe_or_rows=332 unsafe_or_rows=273 count=25\nspatial I/O checks passed\n",
+    "stderr": ""
+  },
+  {
+    "version": "v1.5.4",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/native/spatial_lifecycle_test"
+    ],
+    "exit_code": 0,
+    "stdout": "spatial lifecycle checks passed (prepared rebinding, 100 failures, alias isolation)\n",
+    "stderr": ""
+  },
+  {
+    "version": "v1.5.4",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/native/spatial_metrics_test"
+    ],
+    "exit_code": 0,
+    "stdout": "spatial metrics checks passed\n",
+    "stderr": ""
+  },
+  {
+    "version": "v1.5.5",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/native/spatial_io_test"
+    ],
+    "exit_code": 0,
+    "stdout": "spatial_io full_rows=10541 restricted_rows=25 full_temperature_data_bytes=37700 restricted_temperature_data_bytes=1438 full_temperature_decoded_chunks=275 restricted_temperature_decoded_chunks=5 empty_rows=0 coordinates_rows=25 mixed_rows=1 safe_or_rows=332 unsafe_or_rows=273 count=25\nspatial I/O checks passed\n",
+    "stderr": ""
+  },
+  {
+    "version": "v1.5.5",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/native/spatial_lifecycle_test"
+    ],
+    "exit_code": 0,
+    "stdout": "spatial lifecycle checks passed (prepared rebinding, 100 failures, alias isolation)\n",
+    "stderr": ""
+  },
+  {
+    "version": "v1.5.5",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/native/spatial_metrics_test"
+    ],
+    "exit_code": 0,
+    "stdout": "spatial metrics checks passed\n",
+    "stderr": ""
+  },
+  {
+    "version": "v1.5.6",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/native/spatial_io_test"
+    ],
+    "exit_code": 0,
+    "stdout": "spatial_io full_rows=10541 restricted_rows=25 full_temperature_data_bytes=37700 restricted_temperature_data_bytes=719 full_temperature_decoded_chunks=275 restricted_temperature_decoded_chunks=5 empty_rows=0 coordinates_rows=25 mixed_rows=1 safe_or_rows=332 unsafe_or_rows=273 count=25\nspatial I/O checks passed\n",
+    "stderr": ""
+  },
+  {
+    "version": "v1.5.6",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/native/spatial_lifecycle_test"
+    ],
+    "exit_code": 0,
+    "stdout": "spatial lifecycle checks passed (prepared rebinding, 100 failures, alias isolation)\n",
+    "stderr": ""
+  },
+  {
+    "version": "v1.5.6",
+    "argv": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/native/spatial_metrics_test"
+    ],
+    "exit_code": 0,
+    "stdout": "spatial metrics checks passed\n",
+    "stderr": ""
+  }
+]

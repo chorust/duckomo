@@ -1,5 +1,7 @@
 # Validation and Version Evidence Contract
 
+> 当前入口（2026-10-22）：执行步骤见[当前复现指南](../quickstart-current.md)，工程门禁见[当前审计](../evidence/current-20261021/report.md)。当前四定义/五对象、三版本/AArch64 的 H0–H9 已通过，C004-01–04 关闭，独立 H9 为 AI、非人工；完整范围与身份见当前审计。003 R21/R22 已完成[现行契约收口](../../../evidence/003-dimensions-remote-parallel/current-delivery-20261021.md)。下面的 2026-10-03/06 矩阵和 gate 状态为历史记录；当前版本为官方 v1.5.4/v1.5.5/v1.5.6，按 Gaussian 范围修订及官方 HTTPFS 修订执行，不能恢复已退出的 2.0、专用 ABI 或自有缓存要求。
+
 日期：2026-10-03；2026-10-06 按当前 artifacts 复核。尚无完整 H0–H9 gate 可标为通过；已有合成、本地部分、真实对象 metadata 和 O1280 logical-index value 对照记录均按其窄范围引用，不拼接成完整 gate。主证据路径为 `specs/004-multi-grid-selection/evidence/`；003 既有记录仍引用仓库根 `evidence/003-dimensions-remote-parallel/final.md`。
 
 ## 2026-10-10 当前 Gaussian 范围

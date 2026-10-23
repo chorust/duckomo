@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "source_checkpoint": {
+    "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+    "matches_initial": true,
+    "head": "6b34e523fe9f636aec1cabdf4b14be6bc47a6ec1"
+  },
+  "build_limitation": "Changed-TU relinks using frozen unchanged base objects; product source digest stable, but this is not a clean full rebuild.",
+  "versions": [
+    "v1.5.4",
+    "v1.5.5",
+    "v1.5.6"
+  ],
+  "counts": {
+    "native_runs": 48,
+    "sql_runs": 24,
+    "full_value_comparisons": 30,
+    "full_coordinate_comparisons": 30,
+    "materialized_selection_objects": 15,
+    "independent_real_polygons": 15,
+    "real_parallel_cases": 15,
+    "remote_full_selected_cost_pairs": 12,
+    "remote_full_coordinate_comparisons": 45,
+    "remote_selected_value_comparisons": 45,
+    "remote_source_info_cases": 45,
+    "remote_lifecycle_cases": 30
+  },
+  "gate_dispositions": {
+    "H0": {
+      "status": "pass",
+      "reason": "Current source/artifacts and real/reference hashes frozen; all 13 pinned producer source hashes verified; two preserved registry/query regenerations byte-identical; schemas verified for five objects, explicit/domain and source/default, all three versions."
+    },
+    "H1": {
+      "status": "pass",
+      "reason": "All 3,662,240,080 Float32/NaN positions per five-object pass compared with independent official C decode, both explicit/domain on all three versions (21,973,440,480 positions); every spatial point and raw spatial-axis mapping compared with independently generated pinned-producer references; native synthetic N-grid/reversal/layout/interleaved/multivariable/five-axis tests pass."
+    },
+    "H2": {
+      "status": "pass",
+      "reason": "Five complete spatial planes at time index zero materialized before restrictions per version; bidirectional EXCEPT ALL covers open/closed boundaries, seam OR, unsafe OR, outside/reversed ranges, value dependencies, point/polygon and nextafter. Native curved/outside-corner, Gaussian region and 4096/4097 fallback tests pass; selected all-time values independently checked."
+    },
+    "H3": {
+      "status": "pass",
+      "reason": "All spatial coordinates/source, local and remote source/info, counts and provably empty selections preserve zero value index/data/decode; value-dependent controls read their required variable. Metrics retained per scan."
+    },
+    "H4": {
+      "status": "pass",
+      "reason": "Native 1/2/4 worker limits, cancellation/failure/same-connection recovery, LIMIT, long-line/cross-batch and connection lifecycle pass; all five real objects have 1/2/4 multiset equality per version. Actual parallelism observed for multi-task temperature samples; narrow HSURF may use one worker as permitted."
+    },
+    "H5": {
+      "status": "not-run",
+      "local_status": "pass",
+      "reason": "Four fixed same-chunk synthetic pairs increase points by 16x/15.5x and work peak by at most 1.000215x across all versions; reader transient/failure/cancel release checks pass. Current remote repeated-session attempt-growth stress and remote >=10x pairs are not executed; complete H5 is not claimed. Completed real remote fault/cancel metrics do show terminal owned-memory release; that does not replace the missing stress test. Official HTTPFS internal allocations remain outside DuckOMO owned-memory scope."
+    },
+    "H6": {
+      "status": "not-run",
+      "reason": "v1.5.4 three projected objects and O1280 HSURF have exact full/selected HTTP/HTTPS/signed-S3 values with strict body/value-data/decode declines (12 pairs). All versions have full remote spatial source/coordinates and selected values across all times. Full remote O1280 temperature was interrupted; full-object parity/cost is absent for O1280 temperature and the v1.5.5/v1.5.6 remote matrix. Signed-S3 authorization/endpoint/region changes, current remote synthetic interleaved/Gaussian-region cases and independent 003 prerequisite are not closed."
+    },
+    "H7": {
+      "status": "pass",
+      "reason": "Independent producer-backed planar triangle comparisons cover all spatial points of five real objects; four full synthetic relation/source tests pass; descriptors reconstructed/compared, original strides and full source axes verified, capabilities and CRS rejection boundaries retained. Cross-URI numeric source mappings match, while opaque object identities are checked per URI."
+    },
+    "H8": {
+      "status": "not-run",
+      "identity_status": "pass",
+      "reason": "All three official CLI/HTTPFS identities match runtime.json, current extension hashes/source IDs match identity.json, matching loads succeed and six cross-version loads fail closed. Same-input complete H5/H6 evidence is missing. Supplied extensions and relinked native tests reuse frozen unchanged base objects; no clean full matrix rebuild was performed."
+    },
+    "H9": {
+      "status": "not-run",
+      "reason": "Outside this engineering worker role; reserved for a later independent AI verifier."
+    }
+  },
+  "parent_review": {
+    "all_manifest_artifact_hashes_verified": 4076,
+    "total_artifact_bytes": 19025479583,
+    "manifest_path": "build/acceptance-closure-20261021/grid-engineering/manifest.json",
+    "manifest_sha256": "d43d3846e098061750a295ab02889f61fbe0a4692182335e4b0ca0cc2af159bb",
+    "independent_H9": false
+  },
+  "evidence": [
+    {
+      "path": "build/acceptance-closure-20261021/grid-engineering/report.md",
+      "sha256": "5c96e922f8d7883e083dff6603e40cf6fa5c0c70a0882773ab4cce746ffa1b94"
+    },
+    {
+      "path": "build/acceptance-closure-20261021/grid-engineering/completed-local-audit.json",
+      "sha256": "f625755d380e71d2ce3cc3b3359cac87ed91da79755382a1b6a0300b0d64496d"
+    },
+    {
+      "path": "build/acceptance-closure-20261021/grid-engineering/package-evidence-audit.json",
+      "sha256": "0a2de9463a1c202d62c7e5e3aa56bee4007f244475fe425cfcecd3a1060c70ef"
+    },
+    {
+      "path": "build/acceptance-closure-20261021/grid-engineering/remote-evidence-audit.json",
+      "sha256": "602c040ccfd7097534b55afc5f6d5db4dbf41e7cea77521bdaf841b378197bf4"
+    },
+    {
+      "path": "build/acceptance-closure-20261021/grid-engineering/source-final-checkpoint.json",
+      "sha256": "910fda0fa8730013a37a5922abfe9ba7c998d8d3c1fec5f687181365a8c192f0"
+    },
+    {
+      "path": "build/acceptance-closure-20261021/grid-engineering/remote-integration-complete.json",
+      "sha256": "4850d75ec53a23ce98bdc47036d9365b027e4d55ed28027ec264dfbb5be41da6"
+    }
+  ]
+}

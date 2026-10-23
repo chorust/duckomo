@@ -1282,8 +1282,10 @@ struct ReadOmBindData final : TableFunctionData {
 	      nearest_plan(std::move(nearest_plan_p)) {
 		memory_account->Set(EstimateBindMemory(*this));
 		if (region_collection_memory_account) {
+			const auto binding_bytes = EstimateRegionBindCopyMemory(region_crs, region_geometries, region_predicates);
+			regions->ValidateOwnedBytes(binding_bytes);
 			region_collection_memory_account->Set(EstimateRegionInputMemory(*regions));
-			region_bind_memory_account->Set(EstimateRegionBindCopyMemory(region_crs, region_geometries, region_predicates));
+			region_bind_memory_account->Set(binding_bytes);
 		}
 		axis_predicate_memory_account->Set(AddMemoryBytes(sizeof(*axis_predicate),
 		                                                  EstimateAxisPredicateMemory(*axis_predicate)));
@@ -1307,7 +1309,9 @@ struct ReadOmBindData final : TableFunctionData {
 		for (const auto &predicate : other.region_predicates) region_predicates.emplace_back(predicate->Copy());
 		memory_account->Set(EstimateBindMemory(*this));
 		if (region_bind_memory_account) {
-			region_bind_memory_account->Set(EstimateRegionBindCopyMemory(region_crs, region_geometries, region_predicates));
+			const auto binding_bytes = EstimateRegionBindCopyMemory(region_crs, region_geometries, region_predicates);
+			regions->ValidateOwnedBytes(binding_bytes);
+			region_bind_memory_account->Set(binding_bytes);
 		}
 	}
 
@@ -1527,11 +1531,7 @@ std::uint64_t EstimateRegionPredicateMemory(const Expression &expression) {
 }
 
 std::uint64_t EstimateRegionInputMemory(const RegionCollection &regions) {
-	std::uint64_t bytes = regions.GetOwnedBytes();
-	for (const auto &region : regions.GetRegions()) {
-		bytes = AddMemoryBytes(bytes, region.geometry_bytes);
-	}
-	return bytes;
+	return regions.GetOwnedBytes();
 }
 
 std::uint64_t EstimateRegionBindCopyMemory(const std::string &region_crs,
@@ -2602,6 +2602,8 @@ unique_ptr<FunctionData> BindReadOmInternal(ClientContext &context, TableFunctio
 		if (sampling_options.method == RegionMethod::Nearest) adapter.RequireNearestOperations();
 		region_geometries.reserve(regions->GetRegions().size());
 		region_predicates.reserve(regions->GetRegions().size());
+		auto region_binding_bytes = EstimateRegionBindCopyMemory(region_crs, region_geometries, region_predicates);
+		regions->ValidateOwnedBytes(region_binding_bytes);
 		std::vector<NearestRegionTarget> nearest_targets;
 		std::uint64_t nearest_target_prepare_ns = 0;
 		if (sampling_options.method == RegionMethod::Nearest) nearest_targets.reserve(regions->GetRegions().size());
@@ -2641,7 +2643,15 @@ unique_ptr<FunctionData> BindReadOmInternal(ClientContext &context, TableFunctio
 				}
 				nearest_targets.emplace_back(std::move(target));
 			} else {
-				region_predicates.emplace_back(adapter.BindCovers(geometry, 0, 1));
+				auto predicate = adapter.BindCovers(geometry, 0, 1);
+				const auto predicate_bytes = EstimateRegionPredicateMemory(*predicate);
+				// Check before retaining this region's expression and geometry. The collection
+				// already reserves the audited geometry estimate for every region.
+				if (predicate_bytes > REGION_MAX_OWNED_BYTES - regions->ValidateOwnedBytes(region_binding_bytes)) {
+					throw BinderException("[region_input_limit] owned region storage exceeds the 64 MiB collection limit");
+				}
+				region_binding_bytes += predicate_bytes;
+				region_predicates.emplace_back(std::move(predicate));
 			}
 			region_geometries.emplace_back(std::move(geometry));
 		}
@@ -2650,10 +2660,8 @@ unique_ptr<FunctionData> BindReadOmInternal(ClientContext &context, TableFunctio
 		metrics->RecordRegionPrepareNanoseconds(geometry_prepare_ns);
 		std::uint64_t input_wkb_bytes = 0;
 		std::uint64_t empty_region_count = 0;
-		std::uint64_t owned_input_bytes = EstimateRegionInputMemory(*regions);
-		owned_input_bytes = AddMemoryBytes(owned_input_bytes,
-		                                   EstimateRegionBindCopyMemory(region_crs, region_geometries,
-		                                                                region_predicates));
+		const auto owned_input_bytes = regions->ValidateOwnedBytes(
+		    EstimateRegionBindCopyMemory(region_crs, region_geometries, region_predicates));
 		for (const auto &region : regions->GetRegions()) {
 			input_wkb_bytes = AddMemoryBytes(input_wkb_bytes, region.wkb.size());
 			if (region.envelope.empty) ++empty_region_count;

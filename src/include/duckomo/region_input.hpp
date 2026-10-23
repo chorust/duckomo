@@ -47,9 +47,13 @@ public:
 		return total_vertices;
 	}
 
+	// Includes ID/WKB capacities, descriptors, and the audited opaque geometry estimate.
 	std::uint64_t GetOwnedBytes() const noexcept {
 		return owned_bytes;
 	}
+
+	// Check binding capacities against the same total used by the input metrics.
+	std::uint64_t ValidateOwnedBytes(std::uint64_t binding_bytes = 0) const;
 
 	bool Equals(const RegionCollection &other) const noexcept;
 

@@ -1,0 +1,2957 @@
+{
+  "schema_version": 1,
+  "status": "targeted remediation verified; full feature acceptance remains open",
+  "base_commit": "6b34e523fe9f636aec1cabdf4b14be6bc47a6ec1",
+  "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+  "build_scope": "Isolated changed-TU compile and relink using pinned unchanged engine/extension base objects. Shared build artifacts were not overwritten. Not a clean full rebuild or P0-P7/H0-H9 matrix.",
+  "versions": [
+    {
+      "version": "v1.5.4",
+      "identity": {
+        "base_manifest": "/home/blizhan/repo/github/duckomo/build/evidence/regions/current-20261020/matrix-testfixed/v1.5.4/build-manifest.json",
+        "base_build_id": "5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9",
+        "build_id": "fb49547ec3531e42eeb415ba7cf985989b57a4e1853f48425fc3ec187ca5f245",
+        "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+        "note": "Changed translation units rebuilt and relinked with unchanged pinned base objects; isolated regression build, not a full matrix gate.",
+        "extension_sha256": "a1f1e62f69e9eb7d80789883ab23e84ee296b0bebd9e2b07c48f5fe40b9063b9"
+      },
+      "sql_files": 11,
+      "sql_assertions": 764,
+      "native_tests": [
+        "region_input_test",
+        "region_scan_test",
+        "region_sampling_test"
+      ],
+      "input_sanitizer": "ASan+UBSan+leak detection pass; input parser compiled with instrumentation, pinned DuckDB archive reused without new instrumentation",
+      "official_cli_local_cases": 9
+    },
+    {
+      "version": "v1.5.5",
+      "identity": {
+        "base_manifest": "/home/blizhan/repo/github/duckomo/build/evidence/regions/current-20261020/matrix-testfixed/v1.5.5/build-manifest.json",
+        "base_build_id": "10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52",
+        "build_id": "4eff09a4b1bdc8f283fea803e2e895a3062e9231957ad38a1e1d5fc591198e3f",
+        "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+        "note": "Changed translation units rebuilt and relinked with unchanged pinned base objects; isolated regression build, not a full matrix gate.",
+        "extension_sha256": "f05416b9bc0e5ddb07f95af5d1f1744c78b7fce7f3e5a41ea4d67a8af403a74c"
+      },
+      "sql_files": 11,
+      "sql_assertions": 764,
+      "native_tests": [
+        "region_input_test",
+        "region_scan_test",
+        "region_sampling_test"
+      ],
+      "input_sanitizer": "ASan+UBSan+leak detection pass; input parser compiled with instrumentation, pinned DuckDB archive reused without new instrumentation",
+      "official_cli_local_cases": 9
+    },
+    {
+      "version": "v1.5.6",
+      "identity": {
+        "base_manifest": "/home/blizhan/repo/github/duckomo/build/evidence/regions/current-20261020/matrix-testfixed/v1.5.6/build-manifest.json",
+        "base_build_id": "ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e",
+        "build_id": "ba5a3e7b3f284dd8ad33fe269baf714f3be6ea5e9f949564e4afa3ac7b3e92c6",
+        "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+        "note": "Changed translation units rebuilt and relinked with unchanged pinned base objects; isolated regression build, not a full matrix gate.",
+        "extension_sha256": "ee86c0c2864ebd044551746834765e2ed482583e9a40236fd9fde0710ea50e65"
+      },
+      "sql_files": 11,
+      "sql_assertions": 764,
+      "native_tests": [
+        "region_input_test",
+        "region_scan_test",
+        "region_sampling_test"
+      ],
+      "input_sanitizer": "ASan+UBSan+leak detection pass; input parser compiled with instrumentation, pinned DuckDB archive reused without new instrumentation",
+      "official_cli_local_cases": 9
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        "c++",
+        "-DDUCKDB_BUILD_LIBRARY",
+        "-DEXT_VERSION_DUCKOMO=\"1378bfc\"",
+        "-I/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/generated",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/fsst",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/fmt/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/hyperloglog",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/fastpforlib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/skiplist",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/ska_sort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/fast_float",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/re2",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/miniz",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/utf8proc/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/concurrentqueue",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/pcg",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/pdqsort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/tdigest",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/mbedtls/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/httplib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/jaro_winkler",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/vergesort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/yyjson/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/zstd/include",
+        "-I/home/blizhan/repo/github/duckomo/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/extension/duckomo/generated",
+        "-I/home/blizhan/repo/github/duckomo/third_party/om-file-format/c/include",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fno-gnu-unique",
+        "-c",
+        "/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/read_om.o"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 20.606776357162744,
+      "log": "build/audit-remediation-20261021/v1.5.4-compile-read_om.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "c++",
+        "-DDUCKDB_BUILD_LIBRARY",
+        "-DEXT_VERSION_DUCKOMO=\"1378bfc\"",
+        "-I/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/generated",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/fsst",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/fmt/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/hyperloglog",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/fastpforlib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/skiplist",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/ska_sort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/fast_float",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/re2",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/miniz",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/utf8proc/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/concurrentqueue",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/pcg",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/pdqsort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/tdigest",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/mbedtls/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/httplib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/jaro_winkler",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/vergesort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/yyjson/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/zstd/include",
+        "-I/home/blizhan/repo/github/duckomo/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/extension/duckomo/generated",
+        "-I/home/blizhan/repo/github/duckomo/third_party/om-file-format/c/include",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fno-gnu-unique",
+        "-c",
+        "/home/blizhan/repo/github/duckomo/src/scan/region_input.cpp",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/region_input.o"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 1.8299991958774626,
+      "log": "build/audit-remediation-20261021/v1.5.4-compile-region_input.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-fPIC",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "-shared",
+        "-Wl,-soname,duckomo.duckdb_extension",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/duckomo.duckdb_extension",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/om_extension.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/compat/duckdb_api.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/om/local_file.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/om/metadata.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/om/reader.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/om/remote_file.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/batch.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/dimensions.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/axis_filter.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/axis_selection.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/projection.cpp.o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/read_om.o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/region_input.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_geometry.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/grid_info.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/grid_selection.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/semantic_axes.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/raw_scan.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/schema.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/spatial_filter.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/spatial_selection.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/domain_bbox.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/grid_definition.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/grid_identity.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/projected_grid.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/gaussian_grid.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/regular_grid.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/spatial_layout.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/domain_registry.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/nearest_sampling.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_sampling.cpp.o",
+        "../../src/libduckdb_static.a",
+        "../libdummy_static_extension_loader.a",
+        "-Wl,--gc-sections",
+        "-Wl,--exclude-libs,ALL",
+        "libduckomo_om.a",
+        "-ldl"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/extension/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 1.6254340531304479,
+      "log": "build/audit-remediation-20261021/v1.5.4-link-extension.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "cmake",
+        "-DABI_TYPE=CPP",
+        "-DEXTENSION=/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/duckomo.duckdb_extension",
+        "-DPLATFORM_FILE=/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/duckdb_platform_out",
+        "-DVERSION_FIELD=v1.5.4",
+        "-DEXTENSION_VERSION=audit-remediation-20261021",
+        "-DNULL_FILE=/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/scripts/null.txt",
+        "-P",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/scripts/append_metadata.cmake"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.014026496093720198,
+      "log": "build/audit-remediation-20261021/v1.5.4-metadata.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "c++",
+        "-DDUCKDB_BUILD_LIBRARY",
+        "-DEXT_VERSION_DUCKOMO=\"1378bfc\"",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/fsst",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/fmt/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/hyperloglog",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/fastpforlib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/skiplist",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/ska_sort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/fast_float",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/re2",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/miniz",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/utf8proc/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/concurrentqueue",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/pcg",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/pdqsort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/tdigest",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/mbedtls/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/httplib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/jaro_winkler",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/vergesort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/yyjson/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/zstd/include",
+        "-I/home/blizhan/repo/github/duckomo/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/extension/duckomo/generated",
+        "-I/home/blizhan/repo/github/duckomo/third_party/om-file-format/c/include",
+        "-std=c++17",
+        "-O2",
+        "-fno-gnu-unique",
+        "-c",
+        "/home/blizhan/repo/github/duckomo/test/native/region_input_test.cpp",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/region_input_test.o"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 6.8000766057521105,
+      "log": "build/audit-remediation-20261021/v1.5.4-compile-input-test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/read_om.o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/region_input.o",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/region_input_test.o",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/region_input_test",
+        "../../../src/libduckdb_static.a",
+        "../libduckomo_extension.a",
+        "../libduckomo_om.a",
+        "../../../src/libduckdb_static.a",
+        "-ldl"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/extension/duckomo/test",
+      "exit_code": 0,
+      "elapsed_seconds": 1.8369956389069557,
+      "log": "build/audit-remediation-20261021/v1.5.4-link-region_input_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/region_input_test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.14488889183849096,
+      "log": "build/audit-remediation-20261021/v1.5.4-region_input_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/read_om.o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/region_input.o",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "CMakeFiles/region_scan_test.dir/native/region_scan_test.cpp.o",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/region_scan_test",
+        "../../../src/libduckdb_static.a",
+        "../libduckomo_extension.a",
+        "../libduckomo_om.a",
+        "../../core_functions/libcore_functions_extension.a",
+        "../../../src/libduckdb_static.a",
+        "-ldl"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/extension/duckomo/test",
+      "exit_code": 0,
+      "elapsed_seconds": 2.786892370786518,
+      "log": "build/audit-remediation-20261021/v1.5.4-link-region_scan_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/region_scan_test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 1.9363586879335344,
+      "log": "build/audit-remediation-20261021/v1.5.4-region_scan_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/read_om.o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/region_input.o",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "CMakeFiles/region_sampling_test.dir/native/region_sampling_test.cpp.o",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/region_sampling_test",
+        "../../../src/libduckdb_static.a",
+        "../libduckomo_extension.a",
+        "../libduckomo_om.a",
+        "../../core_functions/libcore_functions_extension.a",
+        "../../../src/libduckdb_static.a",
+        "-ldl"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/extension/duckomo/test",
+      "exit_code": 0,
+      "elapsed_seconds": 2.2777500567026436,
+      "log": "build/audit-remediation-20261021/v1.5.4-link-region_sampling_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/region_sampling_test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.6358342627063394,
+      "log": "build/audit-remediation-20261021/v1.5.4-region_sampling_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/regions.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.015364295803010464,
+      "log": "build/audit-remediation-20261021/v1.5.4-sql-regions.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/region_sampling.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.01545474398881197,
+      "log": "build/audit-remediation-20261021/v1.5.4-sql-region_sampling.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/regions_spatial_dependency.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.013201883062720299,
+      "log": "build/audit-remediation-20261021/v1.5.4-sql-regions_spatial_dependency.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/region_sampling_spatial_dependency.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.010710909962654114,
+      "log": "build/audit-remediation-20261021/v1.5.4-sql-region_sampling_spatial_dependency.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/cache_metrics.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.009345845319330692,
+      "log": "build/audit-remediation-20261021/v1.5.4-sql-cache_metrics.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/multi_grid.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.005871905013918877,
+      "log": "build/audit-remediation-20261021/v1.5.4-sql-multi_grid.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/grid_selection.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.007246185094118118,
+      "log": "build/audit-remediation-20261021/v1.5.4-sql-grid_selection.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/grid_info.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.00974330399185419,
+      "log": "build/audit-remediation-20261021/v1.5.4-sql-grid_info.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "c++",
+        "-DDUCKDB_BUILD_LIBRARY",
+        "-DEXT_VERSION_DUCKOMO=\"1378bfc\"",
+        "-I/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/generated",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/fsst",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/fmt/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/hyperloglog",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/fastpforlib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/skiplist",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/ska_sort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/fast_float",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/re2",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/miniz",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/utf8proc/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/concurrentqueue",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/pcg",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/pdqsort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/tdigest",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/mbedtls/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/httplib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/jaro_winkler",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/vergesort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/yyjson/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/zstd/include",
+        "-I/home/blizhan/repo/github/duckomo/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/extension/duckomo/generated",
+        "-I/home/blizhan/repo/github/duckomo/third_party/om-file-format/c/include",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fno-gnu-unique",
+        "-c",
+        "/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/read_om.o"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 22.422267807181925,
+      "log": "build/audit-remediation-20261021/v1.5.5-compile-read_om.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "c++",
+        "-DDUCKDB_BUILD_LIBRARY",
+        "-DEXT_VERSION_DUCKOMO=\"1378bfc\"",
+        "-I/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/generated",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/fsst",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/fmt/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/hyperloglog",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/fastpforlib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/skiplist",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/ska_sort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/fast_float",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/re2",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/miniz",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/utf8proc/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/concurrentqueue",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/pcg",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/pdqsort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/tdigest",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/mbedtls/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/httplib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/jaro_winkler",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/vergesort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/yyjson/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/zstd/include",
+        "-I/home/blizhan/repo/github/duckomo/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/extension/duckomo/generated",
+        "-I/home/blizhan/repo/github/duckomo/third_party/om-file-format/c/include",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fno-gnu-unique",
+        "-c",
+        "/home/blizhan/repo/github/duckomo/src/scan/region_input.cpp",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/region_input.o"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 1.0675121727399528,
+      "log": "build/audit-remediation-20261021/v1.5.5-compile-region_input.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-fPIC",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "-shared",
+        "-Wl,-soname,duckomo.duckdb_extension",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/duckomo.duckdb_extension",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/om_extension.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/compat/duckdb_api.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/om/local_file.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/om/metadata.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/om/reader.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/om/remote_file.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/batch.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/dimensions.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/axis_filter.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/axis_selection.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/projection.cpp.o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/read_om.o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/region_input.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_geometry.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/grid_info.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/grid_selection.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/semantic_axes.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/raw_scan.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/schema.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/spatial_filter.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/spatial_selection.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/domain_bbox.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/grid_definition.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/grid_identity.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/projected_grid.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/gaussian_grid.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/regular_grid.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/spatial_layout.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/domain_registry.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/nearest_sampling.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_sampling.cpp.o",
+        "../../src/libduckdb_static.a",
+        "../libdummy_static_extension_loader.a",
+        "-Wl,--gc-sections",
+        "-Wl,--exclude-libs,ALL",
+        "libduckomo_om.a",
+        "-ldl"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/extension/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 1.6312037319876254,
+      "log": "build/audit-remediation-20261021/v1.5.5-link-extension.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "cmake",
+        "-DABI_TYPE=CPP",
+        "-DEXTENSION=/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/duckomo.duckdb_extension",
+        "-DPLATFORM_FILE=/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/duckdb_platform_out",
+        "-DVERSION_FIELD=v1.5.5",
+        "-DEXTENSION_VERSION=audit-remediation-20261021",
+        "-DNULL_FILE=/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/scripts/null.txt",
+        "-P",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/scripts/append_metadata.cmake"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.02653597667813301,
+      "log": "build/audit-remediation-20261021/v1.5.5-metadata.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "c++",
+        "-DDUCKDB_BUILD_LIBRARY",
+        "-DEXT_VERSION_DUCKOMO=\"1378bfc\"",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/fsst",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/fmt/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/hyperloglog",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/fastpforlib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/skiplist",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/ska_sort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/fast_float",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/re2",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/miniz",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/utf8proc/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/concurrentqueue",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/pcg",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/pdqsort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/tdigest",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/mbedtls/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/httplib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/jaro_winkler",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/vergesort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/yyjson/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/zstd/include",
+        "-I/home/blizhan/repo/github/duckomo/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/extension/duckomo/generated",
+        "-I/home/blizhan/repo/github/duckomo/third_party/om-file-format/c/include",
+        "-std=c++17",
+        "-O2",
+        "-fno-gnu-unique",
+        "-c",
+        "/home/blizhan/repo/github/duckomo/test/native/region_input_test.cpp",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/region_input_test.o"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 5.682772664818913,
+      "log": "build/audit-remediation-20261021/v1.5.5-compile-input-test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/read_om.o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/region_input.o",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/region_input_test.o",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/region_input_test",
+        "../../../src/libduckdb_static.a",
+        "../libduckomo_extension.a",
+        "../libduckomo_om.a",
+        "../../../src/libduckdb_static.a",
+        "-ldl"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/extension/duckomo/test",
+      "exit_code": 0,
+      "elapsed_seconds": 2.106895368080586,
+      "log": "build/audit-remediation-20261021/v1.5.5-link-region_input_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/region_input_test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.13049449864774942,
+      "log": "build/audit-remediation-20261021/v1.5.5-region_input_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/read_om.o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/region_input.o",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "CMakeFiles/region_scan_test.dir/native/region_scan_test.cpp.o",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/region_scan_test",
+        "../../../src/libduckdb_static.a",
+        "../libduckomo_extension.a",
+        "../libduckomo_om.a",
+        "../../core_functions/libcore_functions_extension.a",
+        "../../../src/libduckdb_static.a",
+        "-ldl"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/extension/duckomo/test",
+      "exit_code": 0,
+      "elapsed_seconds": 2.525847321841866,
+      "log": "build/audit-remediation-20261021/v1.5.5-link-region_scan_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/region_scan_test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 1.8478592461906374,
+      "log": "build/audit-remediation-20261021/v1.5.5-region_scan_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/read_om.o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/region_input.o",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "CMakeFiles/region_sampling_test.dir/native/region_sampling_test.cpp.o",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/region_sampling_test",
+        "../../../src/libduckdb_static.a",
+        "../libduckomo_extension.a",
+        "../libduckomo_om.a",
+        "../../core_functions/libcore_functions_extension.a",
+        "../../../src/libduckdb_static.a",
+        "-ldl"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/extension/duckomo/test",
+      "exit_code": 0,
+      "elapsed_seconds": 2.1564328321255744,
+      "log": "build/audit-remediation-20261021/v1.5.5-link-region_sampling_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/region_sampling_test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.6366141382604837,
+      "log": "build/audit-remediation-20261021/v1.5.5-region_sampling_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/regions.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.01489320583641529,
+      "log": "build/audit-remediation-20261021/v1.5.5-sql-regions.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/region_sampling.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.011121343821287155,
+      "log": "build/audit-remediation-20261021/v1.5.5-sql-region_sampling.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/regions_spatial_dependency.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.011966517195105553,
+      "log": "build/audit-remediation-20261021/v1.5.5-sql-regions_spatial_dependency.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/region_sampling_spatial_dependency.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.011024960316717625,
+      "log": "build/audit-remediation-20261021/v1.5.5-sql-region_sampling_spatial_dependency.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/cache_metrics.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.010304604191333055,
+      "log": "build/audit-remediation-20261021/v1.5.5-sql-cache_metrics.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/multi_grid.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.009085797239094973,
+      "log": "build/audit-remediation-20261021/v1.5.5-sql-multi_grid.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/grid_selection.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.009468214586377144,
+      "log": "build/audit-remediation-20261021/v1.5.5-sql-grid_selection.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/grid_info.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.008858914952725172,
+      "log": "build/audit-remediation-20261021/v1.5.5-sql-grid_info.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "c++",
+        "-DDUCKDB_BUILD_LIBRARY",
+        "-DEXT_VERSION_DUCKOMO=\"1378bfc\"",
+        "-I/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/generated",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/fsst",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/fmt/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/hyperloglog",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/fastpforlib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/skiplist",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/ska_sort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/fast_float",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/re2",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/miniz",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/utf8proc/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/concurrentqueue",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/pcg",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/pdqsort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/tdigest",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/mbedtls/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/httplib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/jaro_winkler",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/vergesort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/yyjson/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/zstd/include",
+        "-I/home/blizhan/repo/github/duckomo/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/extension/duckomo/generated",
+        "-I/home/blizhan/repo/github/duckomo/third_party/om-file-format/c/include",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fno-gnu-unique",
+        "-c",
+        "/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/read_om.o"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 20.789584506768733,
+      "log": "build/audit-remediation-20261021/v1.5.6-compile-read_om.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "c++",
+        "-DDUCKDB_BUILD_LIBRARY",
+        "-DEXT_VERSION_DUCKOMO=\"1378bfc\"",
+        "-I/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/generated",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/fsst",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/fmt/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/hyperloglog",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/fastpforlib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/skiplist",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/ska_sort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/fast_float",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/re2",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/miniz",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/utf8proc/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/concurrentqueue",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/pcg",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/pdqsort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/tdigest",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/mbedtls/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/httplib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/jaro_winkler",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/vergesort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/yyjson/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/zstd/include",
+        "-I/home/blizhan/repo/github/duckomo/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/extension/duckomo/generated",
+        "-I/home/blizhan/repo/github/duckomo/third_party/om-file-format/c/include",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "-std=c++17",
+        "-fPIC",
+        "-fno-gnu-unique",
+        "-c",
+        "/home/blizhan/repo/github/duckomo/src/scan/region_input.cpp",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/region_input.o"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 1.2667031339369714,
+      "log": "build/audit-remediation-20261021/v1.5.6-compile-region_input.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "-fPIC",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "-shared",
+        "-Wl,-soname,duckomo.duckdb_extension",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/duckomo.duckdb_extension",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/om_extension.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/compat/duckdb_api.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/om/local_file.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/om/metadata.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/om/reader.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/om/remote_file.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/batch.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/dimensions.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/axis_filter.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/axis_selection.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/projection.cpp.o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/read_om.o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/region_input.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_geometry.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/grid_info.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/grid_selection.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/semantic_axes.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/raw_scan.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/schema.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/spatial_filter.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/spatial_selection.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/domain_bbox.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/grid_definition.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/grid_identity.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/projected_grid.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/gaussian_grid.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/regular_grid.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/spatial_layout.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/domain_registry.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/grid/nearest_sampling.cpp.o",
+        "CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_sampling.cpp.o",
+        "../../src/libduckdb_static.a",
+        "../libdummy_static_extension_loader.a",
+        "-Wl,--gc-sections",
+        "-Wl,--exclude-libs,ALL",
+        "libduckomo_om.a",
+        "-ldl"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/extension/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 1.7825736040249467,
+      "log": "build/audit-remediation-20261021/v1.5.6-link-extension.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "cmake",
+        "-DABI_TYPE=CPP",
+        "-DEXTENSION=/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/duckomo.duckdb_extension",
+        "-DPLATFORM_FILE=/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/duckdb_platform_out",
+        "-DVERSION_FIELD=v1.5.6",
+        "-DEXTENSION_VERSION=audit-remediation-20261021",
+        "-DNULL_FILE=/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/scripts/null.txt",
+        "-P",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/scripts/append_metadata.cmake"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.009304086212068796,
+      "log": "build/audit-remediation-20261021/v1.5.6-metadata.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "c++",
+        "-DDUCKDB_BUILD_LIBRARY",
+        "-DEXT_VERSION_DUCKOMO=\"1378bfc\"",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/fsst",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/fmt/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/hyperloglog",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/fastpforlib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/skiplist",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/ska_sort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/fast_float",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/re2",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/miniz",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/utf8proc/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/concurrentqueue",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/pcg",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/pdqsort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/tdigest",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/mbedtls/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/httplib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/jaro_winkler",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/vergesort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/yyjson/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/zstd/include",
+        "-I/home/blizhan/repo/github/duckomo/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/extension/duckomo/generated",
+        "-I/home/blizhan/repo/github/duckomo/third_party/om-file-format/c/include",
+        "-std=c++17",
+        "-O2",
+        "-fno-gnu-unique",
+        "-c",
+        "/home/blizhan/repo/github/duckomo/test/native/region_input_test.cpp",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/region_input_test.o"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 5.945357859134674,
+      "log": "build/audit-remediation-20261021/v1.5.6-compile-input-test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/read_om.o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/region_input.o",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/region_input_test.o",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/region_input_test",
+        "../../../src/libduckdb_static.a",
+        "../libduckomo_extension.a",
+        "../libduckomo_om.a",
+        "../../../src/libduckdb_static.a",
+        "-ldl"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/extension/duckomo/test",
+      "exit_code": 0,
+      "elapsed_seconds": 2.129877866245806,
+      "log": "build/audit-remediation-20261021/v1.5.6-link-region_input_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/region_input_test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.09040315309539437,
+      "log": "build/audit-remediation-20261021/v1.5.6-region_input_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/read_om.o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/region_input.o",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "CMakeFiles/region_scan_test.dir/native/region_scan_test.cpp.o",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/region_scan_test",
+        "../../../src/libduckdb_static.a",
+        "../libduckomo_extension.a",
+        "../libduckomo_om.a",
+        "../../core_functions/libcore_functions_extension.a",
+        "../../../src/libduckdb_static.a",
+        "-ldl"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/extension/duckomo/test",
+      "exit_code": 0,
+      "elapsed_seconds": 2.9309182609431446,
+      "log": "build/audit-remediation-20261021/v1.5.6-link-region_scan_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/region_scan_test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 2.0027562277391553,
+      "log": "build/audit-remediation-20261021/v1.5.6-region_scan_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/usr/bin/c++",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/read_om.o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/region_input.o",
+        "-O3",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-O3",
+        "-DNDEBUG",
+        "CMakeFiles/region_sampling_test.dir/native/region_sampling_test.cpp.o",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/region_sampling_test",
+        "../../../src/libduckdb_static.a",
+        "../libduckomo_extension.a",
+        "../libduckomo_om.a",
+        "../../core_functions/libcore_functions_extension.a",
+        "../../../src/libduckdb_static.a",
+        "-ldl"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/extension/duckomo/test",
+      "exit_code": 0,
+      "elapsed_seconds": 2.153651983011514,
+      "log": "build/audit-remediation-20261021/v1.5.6-link-region_sampling_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/region_sampling_test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.5648823357187212,
+      "log": "build/audit-remediation-20261021/v1.5.6-region_sampling_test.log",
+      "valid_verification": true
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/regions.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.015251128934323788,
+      "log": "build/audit-remediation-20261021/v1.5.6-sql-regions.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/region_sampling.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.012414584867656231,
+      "log": "build/audit-remediation-20261021/v1.5.6-sql-region_sampling.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/regions_spatial_dependency.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.011225937865674496,
+      "log": "build/audit-remediation-20261021/v1.5.6-sql-regions_spatial_dependency.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/region_sampling_spatial_dependency.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.011785397306084633,
+      "log": "build/audit-remediation-20261021/v1.5.6-sql-region_sampling_spatial_dependency.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/cache_metrics.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.012032357975840569,
+      "log": "build/audit-remediation-20261021/v1.5.6-sql-cache_metrics.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/multi_grid.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.011654484085738659,
+      "log": "build/audit-remediation-20261021/v1.5.6-sql-multi_grid.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/grid_selection.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.012862570583820343,
+      "log": "build/audit-remediation-20261021/v1.5.6-sql-grid_selection.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/grid_info.test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "exit_code": 0,
+      "elapsed_seconds": 0.01233280822634697,
+      "log": "build/audit-remediation-20261021/v1.5.6-sql-grid_info.log",
+      "valid_verification": false,
+      "reason": "No test cases matched temporary path; exit 0 is not success. Replaced by sql-commands.json entries with positive assertion check."
+    }
+  ],
+  "sql_commands": [
+    {
+      "version": "v1.5.4",
+      "test": "regions",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/sql-root",
+        "test/sql/regions.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/regions.test\n\n[0/1] (0%): test/sql/regions.test\n[1/1] (100%): test/sql/regions.test\n===============================================================================\nAll tests passed (92 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.4",
+      "test": "region_sampling",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/sql-root",
+        "test/sql/region_sampling.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/region_sampling.test\n\n[0/1] (0%): test/sql/region_sampling.test\n[1/1] (100%): test/sql/region_sampling.test\n===============================================================================\nAll tests passed (212 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.4",
+      "test": "regions_spatial_dependency",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/sql-root",
+        "test/sql/regions_spatial_dependency.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/regions_spatial_dependency.test\n\n[0/1] (0%): test/sql/regions_spatial_dependency.test\n[1/1] (100%): test/sql/regions_spatial_dependency.test\n===============================================================================\nAll tests passed (5 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.4",
+      "test": "region_sampling_spatial_dependency",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/sql-root",
+        "test/sql/region_sampling_spatial_dependency.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/region_sampling_spatial_dependency.test\n\n[0/1] (0%): test/sql/region_sampling_spatial_dependency.test\n[1/1] (100%): test/sql/region_sampling_spatial_dependency.test\n===============================================================================\nAll tests passed (5 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.4",
+      "test": "cache_metrics",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/sql-root",
+        "test/sql/cache_metrics.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/cache_metrics.test\n\n[0/1] (0%): test/sql/cache_metrics.test\n[1/1] (100%): test/sql/cache_metrics.test\n===============================================================================\nAll tests passed (24 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.4",
+      "test": "multi_grid",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/sql-root",
+        "test/sql/multi_grid.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/multi_grid.test\n\n[0/1] (0%): test/sql/multi_grid.test\n[1/1] (100%): test/sql/multi_grid.test\n===============================================================================\nAll tests passed (155 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.4",
+      "test": "grid_selection",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/sql-root",
+        "test/sql/grid_selection.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/grid_selection.test\n\n[0/1] (0%): test/sql/grid_selection.test\n[1/1] (100%): test/sql/grid_selection.test\n===============================================================================\nAll tests passed (39 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.4",
+      "test": "grid_info",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/sql-root",
+        "test/sql/grid_info.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/grid_info.test\n\n[0/1] (0%): test/sql/grid_info.test\n[1/1] (100%): test/sql/grid_info.test\n===============================================================================\nAll tests passed (103 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.4",
+      "test": "semantic_axes",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/sql-root",
+        "test/sql/semantic_axes.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/semantic_axes.test\n\n[0/1] (0%): test/sql/semantic_axes.test\n[1/1] (100%): test/sql/semantic_axes.test\n===============================================================================\nAll tests passed (106 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.4",
+      "test": "axis_filter",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/sql-root",
+        "test/sql/axis_filter.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/axis_filter.test\n\n[0/1] (0%): test/sql/axis_filter.test\n[1/1] (100%): test/sql/axis_filter.test\n===============================================================================\nAll tests passed (12 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.4",
+      "test": "parallel_scan",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/sql-root",
+        "test/sql/parallel_scan.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/parallel_scan.test\n\n[0/1] (0%): test/sql/parallel_scan.test\n[1/1] (100%): test/sql/parallel_scan.test\n===============================================================================\nAll tests passed (11 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.5",
+      "test": "regions",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/sql-root",
+        "test/sql/regions.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/regions.test\n\n[0/1] (0%): test/sql/regions.test\n[1/1] (100%): test/sql/regions.test\n===============================================================================\nAll tests passed (92 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.5",
+      "test": "region_sampling",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/sql-root",
+        "test/sql/region_sampling.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/region_sampling.test\n\n[0/1] (0%): test/sql/region_sampling.test\n[1/1] (100%): test/sql/region_sampling.test\n===============================================================================\nAll tests passed (212 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.5",
+      "test": "regions_spatial_dependency",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/sql-root",
+        "test/sql/regions_spatial_dependency.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/regions_spatial_dependency.test\n\n[0/1] (0%): test/sql/regions_spatial_dependency.test\n[1/1] (100%): test/sql/regions_spatial_dependency.test\n===============================================================================\nAll tests passed (5 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.5",
+      "test": "region_sampling_spatial_dependency",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/sql-root",
+        "test/sql/region_sampling_spatial_dependency.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/region_sampling_spatial_dependency.test\n\n[0/1] (0%): test/sql/region_sampling_spatial_dependency.test\n[1/1] (100%): test/sql/region_sampling_spatial_dependency.test\n===============================================================================\nAll tests passed (5 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.5",
+      "test": "cache_metrics",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/sql-root",
+        "test/sql/cache_metrics.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/cache_metrics.test\n\n[0/1] (0%): test/sql/cache_metrics.test\n[1/1] (100%): test/sql/cache_metrics.test\n===============================================================================\nAll tests passed (24 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.5",
+      "test": "multi_grid",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/sql-root",
+        "test/sql/multi_grid.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/multi_grid.test\n\n[0/1] (0%): test/sql/multi_grid.test\n[1/1] (100%): test/sql/multi_grid.test\n===============================================================================\nAll tests passed (155 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.5",
+      "test": "grid_selection",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/sql-root",
+        "test/sql/grid_selection.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/grid_selection.test\n\n[0/1] (0%): test/sql/grid_selection.test\n[1/1] (100%): test/sql/grid_selection.test\n===============================================================================\nAll tests passed (39 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.5",
+      "test": "grid_info",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/sql-root",
+        "test/sql/grid_info.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/grid_info.test\n\n[0/1] (0%): test/sql/grid_info.test\n[1/1] (100%): test/sql/grid_info.test\n===============================================================================\nAll tests passed (103 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.5",
+      "test": "semantic_axes",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/sql-root",
+        "test/sql/semantic_axes.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/semantic_axes.test\n\n[0/1] (0%): test/sql/semantic_axes.test\n[1/1] (100%): test/sql/semantic_axes.test\n===============================================================================\nAll tests passed (106 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.5",
+      "test": "axis_filter",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/sql-root",
+        "test/sql/axis_filter.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/axis_filter.test\n\n[0/1] (0%): test/sql/axis_filter.test\n[1/1] (100%): test/sql/axis_filter.test\n===============================================================================\nAll tests passed (12 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.5",
+      "test": "parallel_scan",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/sql-root",
+        "test/sql/parallel_scan.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/parallel_scan.test\n\n[0/1] (0%): test/sql/parallel_scan.test\n[1/1] (100%): test/sql/parallel_scan.test\n===============================================================================\nAll tests passed (11 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.6",
+      "test": "regions",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/sql-root",
+        "test/sql/regions.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/regions.test\n\n[0/1] (0%): test/sql/regions.test\n[1/1] (100%): test/sql/regions.test\n===============================================================================\nAll tests passed (92 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.6",
+      "test": "region_sampling",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/sql-root",
+        "test/sql/region_sampling.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/region_sampling.test\n\n[0/1] (0%): test/sql/region_sampling.test\n[1/1] (100%): test/sql/region_sampling.test\n===============================================================================\nAll tests passed (212 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.6",
+      "test": "regions_spatial_dependency",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/sql-root",
+        "test/sql/regions_spatial_dependency.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/regions_spatial_dependency.test\n\n[0/1] (0%): test/sql/regions_spatial_dependency.test\n[1/1] (100%): test/sql/regions_spatial_dependency.test\n===============================================================================\nAll tests passed (5 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.6",
+      "test": "region_sampling_spatial_dependency",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/sql-root",
+        "test/sql/region_sampling_spatial_dependency.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/region_sampling_spatial_dependency.test\n\n[0/1] (0%): test/sql/region_sampling_spatial_dependency.test\n[1/1] (100%): test/sql/region_sampling_spatial_dependency.test\n===============================================================================\nAll tests passed (5 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.6",
+      "test": "cache_metrics",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/sql-root",
+        "test/sql/cache_metrics.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/cache_metrics.test\n\n[0/1] (0%): test/sql/cache_metrics.test\n[1/1] (100%): test/sql/cache_metrics.test\n===============================================================================\nAll tests passed (24 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.6",
+      "test": "multi_grid",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/sql-root",
+        "test/sql/multi_grid.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/multi_grid.test\n\n[0/1] (0%): test/sql/multi_grid.test\n[1/1] (100%): test/sql/multi_grid.test\n===============================================================================\nAll tests passed (155 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.6",
+      "test": "grid_selection",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/sql-root",
+        "test/sql/grid_selection.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/grid_selection.test\n\n[0/1] (0%): test/sql/grid_selection.test\n[1/1] (100%): test/sql/grid_selection.test\n===============================================================================\nAll tests passed (39 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.6",
+      "test": "grid_info",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/sql-root",
+        "test/sql/grid_info.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/grid_info.test\n\n[0/1] (0%): test/sql/grid_info.test\n[1/1] (100%): test/sql/grid_info.test\n===============================================================================\nAll tests passed (103 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.6",
+      "test": "semantic_axes",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/sql-root",
+        "test/sql/semantic_axes.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/semantic_axes.test\n\n[0/1] (0%): test/sql/semantic_axes.test\n[1/1] (100%): test/sql/semantic_axes.test\n===============================================================================\nAll tests passed (106 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.6",
+      "test": "axis_filter",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/sql-root",
+        "test/sql/axis_filter.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/axis_filter.test\n\n[0/1] (0%): test/sql/axis_filter.test\n[1/1] (100%): test/sql/axis_filter.test\n===============================================================================\nAll tests passed (12 assertions in 1 test case)\n\n"
+    },
+    {
+      "version": "v1.5.6",
+      "test": "parallel_scan",
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/test/unittest",
+        "--test-dir",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/sql-root",
+        "test/sql/parallel_scan.test"
+      ],
+      "exit_code": 0,
+      "assertions_passed": true,
+      "output": "Filters: test/sql/parallel_scan.test\n\n[0/1] (0%): test/sql/parallel_scan.test\n[1/1] (100%): test/sql/parallel_scan.test\n===============================================================================\nAll tests passed (11 assertions in 1 test case)\n\n"
+    }
+  ],
+  "extra_commands": [
+    {
+      "argv": [
+        "c++",
+        "-O1",
+        "-g",
+        "-std=c++17",
+        "-fno-gnu-unique",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/fsst",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/fmt/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/hyperloglog",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/fastpforlib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/skiplist",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/ska_sort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/fast_float",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/re2",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/miniz",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/utf8proc/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/concurrentqueue",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/pcg",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/pdqsort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/tdigest",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/mbedtls/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/httplib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/jaro_winkler",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/vergesort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/yyjson/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/source/duckdb/third_party/zstd/include",
+        "-I/home/blizhan/repo/github/duckomo/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/extension/duckomo/generated",
+        "-I/home/blizhan/repo/github/duckomo/third_party/om-file-format/c/include",
+        "/home/blizhan/repo/github/duckomo/test/native/region_input_test.cpp",
+        "/home/blizhan/repo/github/duckomo/src/scan/region_input.cpp",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/builds/5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9/release/src/libduckdb_static.a",
+        "-ldl",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/region_input_sanitizer"
+      ],
+      "exit_code": 0,
+      "log": "v1.5.4-build-input-sanitizer.log"
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/region_input_sanitizer"
+      ],
+      "exit_code": 0,
+      "log": "v1.5.4-input-sanitizer.log"
+    },
+    {
+      "argv": [
+        "/home/blizhan/miniconda3/bin/python3",
+        "/home/blizhan/repo/github/duckomo/scripts/validate-official-httpfs.py",
+        "--duckdb",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/official/duckdb",
+        "--httpfs",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/official/httpfs.duckdb_extension",
+        "--extension",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/duckomo.duckdb_extension",
+        "--output",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/official-local",
+        "--local-only"
+      ],
+      "exit_code": 0,
+      "log": "v1.5.4-official-local.log"
+    },
+    {
+      "argv": [
+        "c++",
+        "-O1",
+        "-g",
+        "-std=c++17",
+        "-fno-gnu-unique",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/fsst",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/fmt/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/hyperloglog",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/fastpforlib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/skiplist",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/ska_sort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/fast_float",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/re2",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/miniz",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/utf8proc/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/concurrentqueue",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/pcg",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/pdqsort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/tdigest",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/mbedtls/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/httplib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/jaro_winkler",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/vergesort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/yyjson/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/source/duckdb/third_party/zstd/include",
+        "-I/home/blizhan/repo/github/duckomo/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/extension/duckomo/generated",
+        "-I/home/blizhan/repo/github/duckomo/third_party/om-file-format/c/include",
+        "/home/blizhan/repo/github/duckomo/test/native/region_input_test.cpp",
+        "/home/blizhan/repo/github/duckomo/src/scan/region_input.cpp",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52/release/src/libduckdb_static.a",
+        "-ldl",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/region_input_sanitizer"
+      ],
+      "exit_code": 0,
+      "log": "v1.5.5-build-input-sanitizer.log"
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/region_input_sanitizer"
+      ],
+      "exit_code": 0,
+      "log": "v1.5.5-input-sanitizer.log"
+    },
+    {
+      "argv": [
+        "/home/blizhan/miniconda3/bin/python3",
+        "/home/blizhan/repo/github/duckomo/scripts/validate-official-httpfs.py",
+        "--duckdb",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/official/duckdb",
+        "--httpfs",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/official/httpfs.duckdb_extension",
+        "--extension",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/duckomo.duckdb_extension",
+        "--output",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/official-local",
+        "--local-only"
+      ],
+      "exit_code": 0,
+      "log": "v1.5.5-official-local.log"
+    },
+    {
+      "argv": [
+        "c++",
+        "-O1",
+        "-g",
+        "-std=c++17",
+        "-fno-gnu-unique",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/fsst",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/fmt/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/hyperloglog",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/fastpforlib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/skiplist",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/ska_sort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/fast_float",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/re2",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/miniz",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/utf8proc/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/concurrentqueue",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/pcg",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/pdqsort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/tdigest",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/mbedtls/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/httplib",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/jaro_winkler",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/vergesort",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/yyjson/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/source/duckdb/third_party/zstd/include",
+        "-I/home/blizhan/repo/github/duckomo/src/include",
+        "-I/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/extension/duckomo/generated",
+        "-I/home/blizhan/repo/github/duckomo/third_party/om-file-format/c/include",
+        "/home/blizhan/repo/github/duckomo/test/native/region_input_test.cpp",
+        "/home/blizhan/repo/github/duckomo/src/scan/region_input.cpp",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e/release/src/libduckdb_static.a",
+        "-ldl",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/region_input_sanitizer"
+      ],
+      "exit_code": 0,
+      "log": "v1.5.6-build-input-sanitizer.log"
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/region_input_sanitizer"
+      ],
+      "exit_code": 0,
+      "log": "v1.5.6-input-sanitizer.log"
+    },
+    {
+      "argv": [
+        "/home/blizhan/miniconda3/bin/python3",
+        "/home/blizhan/repo/github/duckomo/scripts/validate-official-httpfs.py",
+        "--duckdb",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/official/duckdb",
+        "--httpfs",
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/official/httpfs.duckdb_extension",
+        "--extension",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/duckomo.duckdb_extension",
+        "--output",
+        "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/official-local",
+        "--local-only"
+      ],
+      "exit_code": 0,
+      "log": "v1.5.6-official-local.log"
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/official/duckdb",
+        "-unsigned",
+        "-bail",
+        ":memory:"
+      ],
+      "exit_code": 0,
+      "log": "updated-spatial-quickstart.log"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "build/audit-remediation-20261021/build-and-test.py",
+      "sha256": "2387903ceec473ab0714e5c935e3f6c68fa03e62a5fcd493f3fcfd8510d32be8",
+      "bytes": 5710
+    },
+    {
+      "path": "build/audit-remediation-20261021/check-extra.py",
+      "sha256": "176593b8cc4eec7f031890edcc63f681166d9735f52338457d5bdb85e75e85d0",
+      "bytes": 2433
+    },
+    {
+      "path": "build/audit-remediation-20261021/commands.json",
+      "sha256": "291341e2cd8a8fcdba9495a85dfe44412fe7d77d6b7b590dae5cf7815d56f63d",
+      "bytes": 68400
+    },
+    {
+      "path": "build/audit-remediation-20261021/extra-commands.json",
+      "sha256": "3df6cb238452b1e4944ac4d3bb756d1c05049025fe74a8b0fc53039279aaa8b0",
+      "bytes": 12941
+    },
+    {
+      "path": "build/audit-remediation-20261021/extra-progress.log",
+      "sha256": "5a81e62024e77ca41f21d39041102e50e5454adf8f2f4b6ef0943c510845beac",
+      "bytes": 309
+    },
+    {
+      "path": "build/audit-remediation-20261021/progress.log",
+      "sha256": "6ba08b5ba30e3c384aec407341571f1bb1cec7740b32306f77f8cbc41548532c",
+      "bytes": 1866
+    },
+    {
+      "path": "build/audit-remediation-20261021/record-evidence.py",
+      "sha256": "29c19bfb1753fa59680e79ec005195ec97d5f9292b05dc6f66205c6d1d019af5",
+      "bytes": 3317
+    },
+    {
+      "path": "build/audit-remediation-20261021/red.txt",
+      "sha256": "77472deb963158299b17f9e41d49bb8c892c4abd2ebf2c118e97e502988532a5",
+      "bytes": 104
+    },
+    {
+      "path": "build/audit-remediation-20261021/run-sql.py",
+      "sha256": "78beaa76e410fe0b6c2357f7f2aab63eb67f00a04ea0ea791ec6d6f7caab8c25",
+      "bytes": 1874
+    },
+    {
+      "path": "build/audit-remediation-20261021/sql-commands.json",
+      "sha256": "773db26de0a6a1093cfdaf31f001bac6a310b2a7cbca75602dad4d85c0d2dae0",
+      "bytes": 24165
+    },
+    {
+      "path": "build/audit-remediation-20261021/sql-progress.log",
+      "sha256": "0e6f4bd5be61c30f578b1b5a556ec2d9fe4f9cece4ea5aee64fa5a071293c7af",
+      "bytes": 924
+    },
+    {
+      "path": "build/audit-remediation-20261021/updated-spatial-quickstart.log",
+      "sha256": "29541bc93cd3317a1d6265f2f7e022c23ae769d86e8cfebcd5c120194ca8fe7e",
+      "bytes": 2207
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/cache_metrics.test",
+      "sha256": "fec749ffc67685437f537152b53a7c6c46172e8b1469ccb331a2f5643892c1b2",
+      "bytes": 3538
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/duckomo.duckdb_extension",
+      "sha256": "a1f1e62f69e9eb7d80789883ab23e84ee296b0bebd9e2b07c48f5fe40b9063b9",
+      "bytes": 13327102
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/grid_info.test",
+      "sha256": "4b938c998df553979d301ef984396483319882a60687c4ac996d33455ca11abf",
+      "bytes": 6541
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/grid_selection.test",
+      "sha256": "316c73b93dd2912cfbcaa5db5337f37ede376f509cb7e0bbe079236cd33754b0",
+      "bytes": 12822
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/identity.json",
+      "sha256": "523dc92b9511743c26e3972637ba23421f8d1a3178fd03550734a9ca1cc589b5",
+      "bytes": 636
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/multi_grid.test",
+      "sha256": "aa7d18c32735c5889c8dc2893b3fc743aa760105f3dc8e44ced96c12cd7c0caf",
+      "bytes": 37772
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/official-local/cold-selected-local/result.json",
+      "sha256": "7b8a7df249506e9ef4072bcc6d7485f5740596e4c51d5086a0028c8c742ccd1c",
+      "bytes": 13714
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/official-local/limit-local/result.json",
+      "sha256": "44968286e8e52caf98095eee5e32314be1d848e34ea36980659e0d05b03e1f61",
+      "bytes": 13392
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/official-local/local-selected-reference-local/result.json",
+      "sha256": "9b676967da1f644b962877fb474b37cb6abe615a8a98fad3ab7900023e6124a8",
+      "bytes": 13737
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/official-local/parallel-local-1/result.json",
+      "sha256": "6d99156f4638f840b38161874c63dabab5cf0e1cafa0ac4409f9144603b552e6",
+      "bytes": 13480
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/official-local/parallel-local-2/result.json",
+      "sha256": "a6285ec2e370cbf49f937809722126a0c7fb8ad0242ae9c43123ca9622530e51",
+      "bytes": 13489
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/official-local/parallel-local-4/result.json",
+      "sha256": "89b53d0cefb2499d2b742dde11485f733d14e8c4344ed907eec345d96a2da6ee",
+      "bytes": 13489
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/official-local/repeated-local-0/result.json",
+      "sha256": "c19f218dd5faaab23c261d1256b2279793f5860d712c4dd158422a5581987b63",
+      "bytes": 13710
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/official-local/repeated-local-1/result.json",
+      "sha256": "ea3cc65ac14c1a1aef6ce0fd7b04fb26cab4a78ab8296201979a48386ec75687",
+      "bytes": 13710
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/official-local/same-content-local/result.json",
+      "sha256": "4f89615ec3864c3ead8a0018cc902f9fe0ce0d43cc39f1073c166d67e121afae",
+      "bytes": 13114
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/official-local/summary.json",
+      "sha256": "1585c697dc639c7693d669c57a6e7c6eb9a5d0b5875f4c1f4fc7558e21b5d132",
+      "bytes": 137852
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/read_om.o",
+      "sha256": "e7d587e33b5f2890e8b6d3b8db2d4d2354be8a2d519e7a0a6dfcaaa84ab185a0",
+      "bytes": 1115128
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/region_input.o",
+      "sha256": "229380b9c5a4fcb9d1635e5458706b14d8f3e6ae71f29ba444c07e85798093bb",
+      "bytes": 66352
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/region_input_test.o",
+      "sha256": "3b7807cbdb3ca354cbfe7b8680c094fd699bc17634d99eacdfaafb49112b7a14",
+      "bytes": 133888
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/region_sampling.test",
+      "sha256": "173be7795354c675276af5e488dc4712a0ba62c15de654fa635ee46e84f68afb",
+      "bytes": 69456
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/region_sampling_spatial_dependency.test",
+      "sha256": "866e8b3dd31a7ce071d831bedcef09204b3b1b8df7c91159657f39edf9270c15",
+      "bytes": 2363
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/regions.test",
+      "sha256": "68042b010f9b9f5126035d6171120efcdcf8842edf261a4eda262e803d587d76",
+      "bytes": 24431
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4/regions_spatial_dependency.test",
+      "sha256": "de40b4cb076bfac162c4c4182ed960186176de4e666380a1f44db9cef3df30f3",
+      "bytes": 2251
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-build-input-sanitizer.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-compile-input-test.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-compile-read_om.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-compile-region_input.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-input-sanitizer.log",
+      "sha256": "f14746be3b28b7da7de4d044f8b95cce04f56457fc7112404273971f6da10672",
+      "bytes": 22
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-link-extension.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-link-region_input_test.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-link-region_sampling_test.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-link-region_scan_test.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-metadata.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-official-local.log",
+      "sha256": "179fc2ae628d514c807fedefd85ba99928d602b35680ceaeb6266d81646c6c16",
+      "bytes": 131
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-region_input_test.log",
+      "sha256": "f14746be3b28b7da7de4d044f8b95cce04f56457fc7112404273971f6da10672",
+      "bytes": 22
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-region_sampling_test.log",
+      "sha256": "c64cc59a75ccacbbf60fd9fd3dc74a0f8795abbadc0470f2be0da6a4e56452fe",
+      "bytes": 1003
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-region_scan_test.log",
+      "sha256": "6b341a532713be04ea268388f4732b8c7a89cf8df82fdefe20fb3ebead223a5b",
+      "bytes": 276
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-axis_filter-actual.log",
+      "sha256": "20b807abb865196b7897034f7255e70e04780fe381c60392004ad893ff411ad5",
+      "bytes": 243
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-cache_metrics-actual.log",
+      "sha256": "b586e5fa32ea4ceb007bffe3b06454116d5eac9eb882344595b12dc52100fb57",
+      "bytes": 249
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-cache_metrics.log",
+      "sha256": "0cf1e98290cb923a9fe83d87b74da84dc2c53e7fe372cda65b42b56a1225e2a7",
+      "bytes": 313
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-grid_info-actual.log",
+      "sha256": "b4de700ed6048c3cf13a5d3c37642665d7fa71850514d4ce68dc724c02ba8c7c",
+      "bytes": 238
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-grid_info.log",
+      "sha256": "b0480bd8295af9aa81ec1c299ab553488eac0621b1d21b034b294ec544783de0",
+      "bytes": 305
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-grid_selection-actual.log",
+      "sha256": "ebfac85a0de270b95d81663236df5f4779776919685301b4687b22db84c9b392",
+      "bytes": 252
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-grid_selection.log",
+      "sha256": "bb84fe1d150bfbe876715fd1b978fefc7d52173ca7ffb24c611ba131ece36ccf",
+      "bytes": 315
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-multi_grid-actual.log",
+      "sha256": "3086bf99db2c0adfa8814b2ba9288e862503eef120e1dd09b703a67d515285f6",
+      "bytes": 241
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-multi_grid.log",
+      "sha256": "3c71595db0b0f0ea6d5cb5323c56e9a3097621859acac17c66783996aba99bae",
+      "bytes": 307
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-parallel_scan-actual.log",
+      "sha256": "3922065fe3fef2dade07461dc43a3d516d7dca27342e3094e314c4cfc0287a1a",
+      "bytes": 249
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-region_sampling-actual.log",
+      "sha256": "26ffbaf718702f9c98665902b283094d697900d39dc57ed47708316b77a26c41",
+      "bytes": 256
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-region_sampling.log",
+      "sha256": "f53834177c4c9f62daade998a9f490ed7b6eff918a42699b87850e7d5d0e3044",
+      "bytes": 317
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-region_sampling_spatial_dependency-actual.log",
+      "sha256": "50dadfae3c62a918864152ab11605ad1b4f38496b7e5907678fa32649f28e03d",
+      "bytes": 311
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-region_sampling_spatial_dependency.log",
+      "sha256": "18a7f210258b126c2fe04716a32471407979f531aa99897483329b004e544efd",
+      "bytes": 355
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-regions-actual.log",
+      "sha256": "316a428b8c36acdf450af1882ebd2397deed89b4b5de3fb16bff6da0fe963204",
+      "bytes": 231
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-regions.log",
+      "sha256": "6d18e5be30cddc21b8ca8b43bfa971327493aec4486dcf6efc3d376b99f397df",
+      "bytes": 301
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-regions_spatial_dependency-actual.log",
+      "sha256": "1331ce3bfae858b456e52ae4307b31650fc016becc04ab2e4279410055cee716",
+      "bytes": 287
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-regions_spatial_dependency.log",
+      "sha256": "8f9fe052a76bb4d0d85dfb5b4fdba75d7800aca8823434a2828c037ba963cb92",
+      "bytes": 339
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.4-sql-semantic_axes-actual.log",
+      "sha256": "5ec7de6f6eccdde826a0087fa57763da5238a74782b6cddd69bebca119f1f232",
+      "bytes": 250
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/cache_metrics.test",
+      "sha256": "ba1388ca03d7a77f8771f37bedd168b8b1019685d2c3794b34c35c7978e9455a",
+      "bytes": 3538
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/duckomo.duckdb_extension",
+      "sha256": "f05416b9bc0e5ddb07f95af5d1f1744c78b7fce7f3e5a41ea4d67a8af403a74c",
+      "bytes": 13328870
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/grid_info.test",
+      "sha256": "f4a5e6134f731ad18691270e2bbb8e25a06b025adbcffe2f2f76619e28997492",
+      "bytes": 6541
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/grid_selection.test",
+      "sha256": "23418068a5e5c4b2d39fe40bce5020f4a911855d983f564e5c033b8fcdd032c6",
+      "bytes": 12822
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/identity.json",
+      "sha256": "f3455e9b678f7e4376e8e44acd7614d8108e017f89a48e49123e2a77a90f41eb",
+      "bytes": 636
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/multi_grid.test",
+      "sha256": "d737298f7a98e79ae427686ce65d7d98e74cc20b5456232cabc4b7f95fe4b15f",
+      "bytes": 37772
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/official-local/cold-selected-local/result.json",
+      "sha256": "10cbe102f1656ee6716a20a2fd9bd15f0708f8c5f7f9956d9a8b05e03cbc7a50",
+      "bytes": 13713
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/official-local/limit-local/result.json",
+      "sha256": "bafd914178262bf368bd84fed2bc17eb7b51a85c77d3c0474073ea501e209f28",
+      "bytes": 13391
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/official-local/local-selected-reference-local/result.json",
+      "sha256": "4aca93590cbcabd392f14867494309d9f5deb8e03be1a2e0b2126c35bdffc0cd",
+      "bytes": 13736
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/official-local/parallel-local-1/result.json",
+      "sha256": "aa2c75c939e3aad678bdacafafe9f8e8d89b5bc48805778594d7db8c47eed737",
+      "bytes": 13479
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/official-local/parallel-local-2/result.json",
+      "sha256": "33e9ea456b1ad48e89d2f25758b7c59a507f0c6c3a39321b3af7fd0d2bf15df5",
+      "bytes": 13488
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/official-local/parallel-local-4/result.json",
+      "sha256": "157ed8d47cb626f8ff3b3cd1fdcb77347d7e0ea650c331d6cc20016aa1cc5240",
+      "bytes": 13488
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/official-local/repeated-local-0/result.json",
+      "sha256": "650c6526d5c821ebcc46989a2fd1cc155c8eff16c77b0cb98baebed20ad37932",
+      "bytes": 13709
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/official-local/repeated-local-1/result.json",
+      "sha256": "cebe968441345b74fc3edf769a1ff63ddd89df41840f459a2d3b79706a297b54",
+      "bytes": 13710
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/official-local/same-content-local/result.json",
+      "sha256": "c30db5fdf86877e6fdecdac7c0477888cc0f1b19b63c8422bca4171aebe35c4d",
+      "bytes": 13117
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/official-local/summary.json",
+      "sha256": "2700bd2837cc4dd85936c84e2b09686f421320de4b68047a20062fc868952f7e",
+      "bytes": 137848
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/read_om.o",
+      "sha256": "7a17cf375f7aec822ea80013c33564d7a65ad9e25c1b643fce6f1fadb3439b2f",
+      "bytes": 1115128
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/region_input.o",
+      "sha256": "229380b9c5a4fcb9d1635e5458706b14d8f3e6ae71f29ba444c07e85798093bb",
+      "bytes": 66352
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/region_input_test.o",
+      "sha256": "3b7807cbdb3ca354cbfe7b8680c094fd699bc17634d99eacdfaafb49112b7a14",
+      "bytes": 133888
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/region_sampling.test",
+      "sha256": "6b8d30951ada5793135e60f8c97b1b98a582005d4fa3e9ba3526ec62569240a5",
+      "bytes": 69456
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/region_sampling_spatial_dependency.test",
+      "sha256": "60db9a8deda3c439138a49f19e9e975d970d9d39493ee143d187a1daf875c0cc",
+      "bytes": 2363
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/regions.test",
+      "sha256": "8042e129c91ed3645bfd0e73d8a2dcbb91f413032f866c5df91e0825fb4384fe",
+      "bytes": 24431
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5/regions_spatial_dependency.test",
+      "sha256": "e7bbee53564f549104f2325fe8409fc18bb877454a62b6bcd2a7c33b8b81222a",
+      "bytes": 2251
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-build-input-sanitizer.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-compile-input-test.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-compile-read_om.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-compile-region_input.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-input-sanitizer.log",
+      "sha256": "f14746be3b28b7da7de4d044f8b95cce04f56457fc7112404273971f6da10672",
+      "bytes": 22
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-link-extension.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-link-region_input_test.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-link-region_sampling_test.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-link-region_scan_test.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-metadata.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-official-local.log",
+      "sha256": "7ead27f69b1aa0f733c76cc3801bfd586cda4913dbeb55c16c31d77a05b06fa6",
+      "bytes": 131
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-region_input_test.log",
+      "sha256": "f14746be3b28b7da7de4d044f8b95cce04f56457fc7112404273971f6da10672",
+      "bytes": 22
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-region_sampling_test.log",
+      "sha256": "1ecc55a496bc8a5a7893eea315ecadf42084b8aba6c14960fa14efb596d6dd2d",
+      "bytes": 1003
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-region_scan_test.log",
+      "sha256": "6b42b478979cbc9584652bf079609be5922d43ca46cd171e929e07acbe47ad7a",
+      "bytes": 275
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-axis_filter-actual.log",
+      "sha256": "20b807abb865196b7897034f7255e70e04780fe381c60392004ad893ff411ad5",
+      "bytes": 243
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-cache_metrics-actual.log",
+      "sha256": "b586e5fa32ea4ceb007bffe3b06454116d5eac9eb882344595b12dc52100fb57",
+      "bytes": 249
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-cache_metrics.log",
+      "sha256": "1f8ddb38da41dd28423bd5ab9f03ae19f6fbe2b745528921a3b19cff1429526f",
+      "bytes": 313
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-grid_info-actual.log",
+      "sha256": "b4de700ed6048c3cf13a5d3c37642665d7fa71850514d4ce68dc724c02ba8c7c",
+      "bytes": 238
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-grid_info.log",
+      "sha256": "0f4faa3da058057371fe49165cafc523f6972df024b77ed192fcd1338810a5e7",
+      "bytes": 305
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-grid_selection-actual.log",
+      "sha256": "ebfac85a0de270b95d81663236df5f4779776919685301b4687b22db84c9b392",
+      "bytes": 252
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-grid_selection.log",
+      "sha256": "4e7dc5772b2856556d506ac3c0a9659cd5646b1a98b8c7d779584625be6cb467",
+      "bytes": 315
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-multi_grid-actual.log",
+      "sha256": "3086bf99db2c0adfa8814b2ba9288e862503eef120e1dd09b703a67d515285f6",
+      "bytes": 241
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-multi_grid.log",
+      "sha256": "1ed4f2ddd56c9f09694c1860385582df8e8750a1b081b72e77b21a3876dd12f7",
+      "bytes": 307
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-parallel_scan-actual.log",
+      "sha256": "3922065fe3fef2dade07461dc43a3d516d7dca27342e3094e314c4cfc0287a1a",
+      "bytes": 249
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-region_sampling-actual.log",
+      "sha256": "26ffbaf718702f9c98665902b283094d697900d39dc57ed47708316b77a26c41",
+      "bytes": 256
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-region_sampling.log",
+      "sha256": "8489fcabab46e8239a7bb642ea7526e6276e55d58aef45b317a326c2669e902a",
+      "bytes": 317
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-region_sampling_spatial_dependency-actual.log",
+      "sha256": "50dadfae3c62a918864152ab11605ad1b4f38496b7e5907678fa32649f28e03d",
+      "bytes": 311
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-region_sampling_spatial_dependency.log",
+      "sha256": "5928c6097d1d5db80cfaa1064f283337609a87a3dbf555263c2bd0517ba11d84",
+      "bytes": 355
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-regions-actual.log",
+      "sha256": "316a428b8c36acdf450af1882ebd2397deed89b4b5de3fb16bff6da0fe963204",
+      "bytes": 231
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-regions.log",
+      "sha256": "2109f8b1a201aaf6b626d1ad9edf554ae556e1758573f3b34ca0f3e07e7be85c",
+      "bytes": 301
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-regions_spatial_dependency-actual.log",
+      "sha256": "1331ce3bfae858b456e52ae4307b31650fc016becc04ab2e4279410055cee716",
+      "bytes": 287
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-regions_spatial_dependency.log",
+      "sha256": "fc411a3c38a28b233dd65a4b07aef67a24b59011b07bd3f086e2c4d92d194bc0",
+      "bytes": 339
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.5-sql-semantic_axes-actual.log",
+      "sha256": "5ec7de6f6eccdde826a0087fa57763da5238a74782b6cddd69bebca119f1f232",
+      "bytes": 250
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/cache_metrics.test",
+      "sha256": "c1773eaa0f3c58c9453deddb78c3b8e158237c4d04db58c6ec785ef94ca8a047",
+      "bytes": 3538
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/duckomo.duckdb_extension",
+      "sha256": "ee86c0c2864ebd044551746834765e2ed482583e9a40236fd9fde0710ea50e65",
+      "bytes": 13397734
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/grid_info.test",
+      "sha256": "52874cd9f04dc9aa871e5379d530981fb450ba012d77845260f2eac6a2c6bd91",
+      "bytes": 6541
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/grid_selection.test",
+      "sha256": "05d76b415f172fd03f7806bebe6273f7fcb205167d88abcfa9a03a04bacf57af",
+      "bytes": 12822
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/identity.json",
+      "sha256": "de03c2e09cd091884dd625e8dd14e7b90a738af3c4084b28587e63f019cecb6c",
+      "bytes": 636
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/multi_grid.test",
+      "sha256": "fb554b2d4055922eb1fcdd253609c711242f6544589521a848eeed926c76e289",
+      "bytes": 37772
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/official-local/cold-selected-local/result.json",
+      "sha256": "479ea1531f7def1c40cb23c2b6f053478a2597b3b7ed49d1c35c17acccc0fc47",
+      "bytes": 13714
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/official-local/limit-local/result.json",
+      "sha256": "f603fa71c4303c0e59b1abdda8899b66f543b71d16e2871d9cd3c2bcf2dc072f",
+      "bytes": 13394
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/official-local/local-selected-reference-local/result.json",
+      "sha256": "c4805755835eb731bf2c9363fd76a09d89de70a8a6c2c92a347d279d4dd8a25c",
+      "bytes": 13736
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/official-local/parallel-local-1/result.json",
+      "sha256": "9aa701ebd25468a4b3763adbec6c0c9dbe793b25411e1db6b0124b4f8768c15c",
+      "bytes": 13479
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/official-local/parallel-local-2/result.json",
+      "sha256": "bf7888a91c2dd5d190911d07526322c3ce53ab5ad9c2156524aca6defb920a64",
+      "bytes": 13489
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/official-local/parallel-local-4/result.json",
+      "sha256": "4c2b1a6857876c4f59dbaaf6025f15632aac6d395ebae77feb5de0089511d785",
+      "bytes": 13489
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/official-local/repeated-local-0/result.json",
+      "sha256": "0a8ff244e5e844744fdd232da60a0273d2480b62d6611aea90cd830871cde780",
+      "bytes": 13708
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/official-local/repeated-local-1/result.json",
+      "sha256": "725ab54b8d42f7480cd02d4ff33aa261db1e95c331ab4fb687bd9ff98d2bdbe6",
+      "bytes": 13710
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/official-local/same-content-local/result.json",
+      "sha256": "bad93f83633452f71c01e328d57902316c4b11ad7b34c28cfc2d0938c943b541",
+      "bytes": 13117
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/official-local/summary.json",
+      "sha256": "1e9f33dbde066004f246ff3ba641f8f594fc7f0b1142209daea979118d598717",
+      "bytes": 137853
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/read_om.o",
+      "sha256": "915817202be1de594ce542733d597b4b4b49bf02547e20db5bf7ccc3ad12af58",
+      "bytes": 1114904
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/region_input.o",
+      "sha256": "229380b9c5a4fcb9d1635e5458706b14d8f3e6ae71f29ba444c07e85798093bb",
+      "bytes": 66352
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/region_input_test.o",
+      "sha256": "3b7807cbdb3ca354cbfe7b8680c094fd699bc17634d99eacdfaafb49112b7a14",
+      "bytes": 133888
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/region_sampling.test",
+      "sha256": "92f00c430d46c6a1eb4b66b33634543141a7f53d984ec62945027cabcc837c25",
+      "bytes": 69456
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/region_sampling_spatial_dependency.test",
+      "sha256": "35a649908d1ffb5c4ffe5cbebc070cb626f3429326c541a99eb6c46d24ac04ad",
+      "bytes": 2363
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/regions.test",
+      "sha256": "65ab8248ad808e810d29f44d70c5c16013628dc6248220ca11213b807a19b51c",
+      "bytes": 24431
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6/regions_spatial_dependency.test",
+      "sha256": "30c4377e65c41dbdf24471511cd55bac231cc00a94ce0f3823a164c12948734e",
+      "bytes": 2251
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-build-input-sanitizer.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-compile-input-test.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-compile-read_om.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-compile-region_input.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-input-sanitizer.log",
+      "sha256": "f14746be3b28b7da7de4d044f8b95cce04f56457fc7112404273971f6da10672",
+      "bytes": 22
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-link-extension.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-link-region_input_test.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-link-region_sampling_test.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-link-region_scan_test.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-metadata.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-official-local.log",
+      "sha256": "547b0414a5cfe70f7c284f9b3c899ca70c36891a6cce961456b3c0567a2b547c",
+      "bytes": 131
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-region_input_test.log",
+      "sha256": "f14746be3b28b7da7de4d044f8b95cce04f56457fc7112404273971f6da10672",
+      "bytes": 22
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-region_sampling_test.log",
+      "sha256": "bb02d7dd4028c722b2492a03875f62b54da9b2bb00f4a1bed5ab99e81a33b39f",
+      "bytes": 1003
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-region_scan_test.log",
+      "sha256": "56710c8c4a6375764986837a45ccec207bdbeb836dde5fa826426472612b587c",
+      "bytes": 276
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-axis_filter-actual.log",
+      "sha256": "20b807abb865196b7897034f7255e70e04780fe381c60392004ad893ff411ad5",
+      "bytes": 243
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-cache_metrics-actual.log",
+      "sha256": "b586e5fa32ea4ceb007bffe3b06454116d5eac9eb882344595b12dc52100fb57",
+      "bytes": 249
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-cache_metrics.log",
+      "sha256": "8107ec85460411a3756dc09b4cc2d31380e51aa042b3c94d3594456c51150c50",
+      "bytes": 313
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-grid_info-actual.log",
+      "sha256": "b4de700ed6048c3cf13a5d3c37642665d7fa71850514d4ce68dc724c02ba8c7c",
+      "bytes": 238
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-grid_info.log",
+      "sha256": "479aacdd0ca560352fd9e91dbc9f8644d5171d358a20a0601eb0a45eed7d4fa7",
+      "bytes": 305
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-grid_selection-actual.log",
+      "sha256": "ebfac85a0de270b95d81663236df5f4779776919685301b4687b22db84c9b392",
+      "bytes": 252
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-grid_selection.log",
+      "sha256": "a060ecaca36f9daba768ff2e14531236bc66fb0ec30a1f311183051bd9b495e6",
+      "bytes": 315
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-multi_grid-actual.log",
+      "sha256": "3086bf99db2c0adfa8814b2ba9288e862503eef120e1dd09b703a67d515285f6",
+      "bytes": 241
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-multi_grid.log",
+      "sha256": "4bf7d76fbabd33dd3b5cf13bd50f08ca40f1a5ba0f38229f2156828473355f71",
+      "bytes": 307
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-parallel_scan-actual.log",
+      "sha256": "3922065fe3fef2dade07461dc43a3d516d7dca27342e3094e314c4cfc0287a1a",
+      "bytes": 249
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-region_sampling-actual.log",
+      "sha256": "26ffbaf718702f9c98665902b283094d697900d39dc57ed47708316b77a26c41",
+      "bytes": 256
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-region_sampling.log",
+      "sha256": "c0303e9c8c791bf32a500b5f4a907161161cde5e9bcb2ec556df372cdc0e82bc",
+      "bytes": 317
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-region_sampling_spatial_dependency-actual.log",
+      "sha256": "50dadfae3c62a918864152ab11605ad1b4f38496b7e5907678fa32649f28e03d",
+      "bytes": 311
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-region_sampling_spatial_dependency.log",
+      "sha256": "bcfff81741c6603df13abf1c328597e52a1e1297cb3e43f14be2fe8c1238b1d2",
+      "bytes": 355
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-regions-actual.log",
+      "sha256": "316a428b8c36acdf450af1882ebd2397deed89b4b5de3fb16bff6da0fe963204",
+      "bytes": 231
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-regions.log",
+      "sha256": "02955026607cb5c629bd0b38bfdfdb85747b053329284040ce920ffde7e7f733",
+      "bytes": 301
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-regions_spatial_dependency-actual.log",
+      "sha256": "1331ce3bfae858b456e52ae4307b31650fc016becc04ab2e4279410055cee716",
+      "bytes": 287
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-regions_spatial_dependency.log",
+      "sha256": "ec1153634e02866ac1004bd27084c1cc0119c73571b0c148e509f1a458a98052",
+      "bytes": 339
+    },
+    {
+      "path": "build/audit-remediation-20261021/v1.5.6-sql-semantic_axes-actual.log",
+      "sha256": "5ec7de6f6eccdde826a0087fa57763da5238a74782b6cddd69bebca119f1f232",
+      "bytes": 250
+    }
+  ],
+  "remaining": [
+    "001 SC-006 independent reproduction",
+    "003 R21 independent reproduction",
+    "003 R22 final current-contract applicability mapping",
+    "004 C004-01 through C004-04 complete gates, per-grid remote cost and independent H9"
+  ],
+  "remote_probe": {
+    "existing_fixture_http": "connection refused",
+    "existing_fixture_https": "connection refused",
+    "full_remote_rerun": false
+  },
+  "red_regression": {
+    "exit_code": 1,
+    "log": "build/audit-remediation-20261021/red.txt",
+    "symptom": "owned input includes descriptor/ID/WKB capacities and every opaque geometry estimate"
+  },
+  "updated_spatial_quickstart": "two synthetic examples executed successfully"
+}

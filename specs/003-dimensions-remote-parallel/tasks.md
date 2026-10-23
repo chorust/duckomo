@@ -9,8 +9,10 @@ description: "Task list for Phase 4–5 dimension semantics, remote and parallel
 
 下文 T001–T073 保留历史实施及旧 gate 状态，不作为逐项恢复旧架构的执行清单。当前远程契约以 [官方 HTTPFS 修订](../004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md) 为准：专用 ABI、observer、自有 LRU、缓存 SQL 与旧 G5 已 superseded；不重新实现，也不将删除记为旧 gate 通过。
 
-- [ ] R21 按 [官方 HTTPFS 指南](../../docs/official-httpfs.md) 由未参与实现者独立复现并绑定实际源码/产物、输入、命令与退出码；历史 R20 三版本各48项受控 runtime 已通过，但不替代此项。
-- [ ] R22 以 R20/R21 和保留的 G0–G2/并行证据形成当前契约的最终交付映射，明确哪些旧 G3/G4/G6 要求已由新证据覆盖、哪些仍缺；更新 [最终汇总](../../evidence/003-dimensions-remote-parallel/final.md) 与产品状态。不得按任务勾选自动升级 verified。
+- [X] R21 按 [官方 HTTPFS 指南](../../docs/official-httpfs.md) 由未参与实现者独立复现并绑定实际源码/产物、输入、命令与退出码；历史 R20 三版本各48项受控 runtime 已通过，但不替代此项。
+- [X] R22 以 R20/R21 和保留的 G0–G2/并行证据形成当前契约的最终交付映射，明确哪些旧 G3/G4/G6 要求已由新证据覆盖、哪些仍缺；更新 [最终汇总](../../evidence/003-dimensions-remote-parallel/final.md) 与产品状态。不得按任务勾选自动升级 verified。
+
+2026-10-22 收口证据：[独立报告](../../evidence/003-dimensions-remote-parallel/independent-review-20261022.md)、[身份/封存复核](../../evidence/003-dimensions-remote-parallel/independent-review-20261022.json)及[当前 FR/SC 映射](../../evidence/003-dimensions-remote-parallel/current-delivery-20261021.md)。初次并行性能失败保留；唯一预先固定 1/2/4 五轮满足至少一种并行配置更快。独立 AI、非人工，fresh 执行限 v1.5.4；三版本工程证据另外绑定。
 
 旧 T070/T073 的独立复现/路线图收尾意图由上述当前待办承接；历史 checkbox 不改写。004 逐真实网格的完整门禁与 H9 独立复现仍由004负责，005/006通过不代签003。
 
@@ -280,4 +282,4 @@ Then: T064 SQL contract → T065 G5/G6 evidence → T066 register gates
 
 ### 官方 HTTPFS 重构执行状态
 
-R01–R19 已执行（性能门槛见独立报告）；R20 的三版本冻结产物验收已保存；完整 004 门禁的原有缺口保留。R21 独立验证者复现仍未执行。旧 T049/G5 失败保留且 superseded，不因缓存删除标为通过；004 完整真实网格 H0–H9 的未闭环项仍未完成。
+R01–R19 已执行（性能门槛见独立报告）；R20 的三版本冻结产物验收已保存；完整 004 门禁的原有缺口保留。R21/R22 已于 2026-10-22 完成现行契约独立 AI 复现及交付映射，见[当前交付映射](../../evidence/003-dimensions-remote-parallel/current-delivery-20261021.md)。旧 T049/G5 失败保留且 superseded，不因缓存删除标为通过；004 完整真实网格 H0–H9 的未闭环项仍未完成。

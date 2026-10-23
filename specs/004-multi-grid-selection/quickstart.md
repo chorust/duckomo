@@ -1,3 +1,5 @@
+> 当前复现入口（2026-10-22）：[quickstart-current.md](quickstart-current.md) 使用三份官方 v1.5.x 组合、`lat/lon`、O1280 与当前门禁边界。下文保留历史阶段的原始命令，不作为本轮可直接执行的指南。
+
 > 2026-10-08：当前未发布版本使用 [官方 HTTPFS 迁移契约](evidence/official-httpfs-refactor/contract.md)。下文专用 ABI、LRU 或 observer 的条款/命令为历史约定，已被本次契约替换。历史证据状态保持，当前复现请见 [官方流程](../../docs/official-httpfs.md)。
 
 > 本页含历史阶段的构建/复现示例。当前开发版地理列已改为 `lat/lon`，并支持共享轴 `dimensions := [轴名...]`；旧 `latitude/longitude` 引用需迁移，详见 [接口修订](../../docs/interface-migration.md)。不改写历史验证结果。

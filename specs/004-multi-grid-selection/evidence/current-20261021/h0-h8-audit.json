@@ -1,0 +1,1398 @@
+{
+  "schema_version": 1,
+  "status": "H0-H8-pass-H9-pending",
+  "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+  "head": "6b34e523fe9f636aec1cabdf4b14be6bc47a6ec1",
+  "platform": "Linux AArch64",
+  "gates": {
+    "H0": {
+      "status": "pass",
+      "evidence": "inherited immutable local/source/all-coordinate engineering package"
+    },
+    "H1": {
+      "status": "pass",
+      "evidence": "inherited immutable local/source/all-coordinate engineering package"
+    },
+    "H2": {
+      "status": "pass",
+      "evidence": "inherited immutable local/source/all-coordinate engineering package"
+    },
+    "H3": {
+      "status": "pass",
+      "evidence": "inherited immutable local/source/all-coordinate engineering package"
+    },
+    "H4": {
+      "status": "pass",
+      "evidence": "inherited immutable local/source/all-coordinate engineering package"
+    },
+    "H5": {
+      "status": "pass",
+      "evidence": "local fixed pairs+remote24 pairs;612 stress terminal scans/8352 attempts; bounded/released owned capacities+stable fds"
+    },
+    "H6": {
+      "status": "pass",
+      "evidence": "45exact full+selected real value/cost pairs;all45remote coordinate/source/selected;synthetic36SQL suites3261assertions;39S3config+9authorization transitions;HTTP/HTTPS30 and S3 15real-grid lifecycle cases;003 prerequisite"
+    },
+    "H7": {
+      "status": "pass",
+      "evidence": "inherited immutable local/source/all-coordinate engineering package"
+    },
+    "H8": {
+      "status": "pass",
+      "evidence": "same source and frozen sample set H0-H7;3official runtime identities/matching loads and6cross-version rejection;individual extension hashes explicitly bound"
+    },
+    "H9": {
+      "status": "pending-independent-final-review"
+    }
+  },
+  "packages": {
+    "engineering": {
+      "manifest": {
+        "path": "build/acceptance-closure-20261021/grid-engineering/manifest.json",
+        "sha256": "d43d3846e098061750a295ab02889f61fbe0a4692182335e4b0ca0cc2af159bb",
+        "bytes": 1129442
+      },
+      "verified_artifacts": 4076
+    },
+    "parent-h5": {
+      "manifest": {
+        "path": "build/acceptance-closure-20261021/parent-h5/manifest.json",
+        "sha256": "40716e8e071762cb9708fcbba31cd4f2b9aa9c147adea71c7be7c25a265991b8",
+        "bytes": 53710
+      },
+      "verified_artifacts": 244
+    },
+    "parent-h6-synthetic": {
+      "manifest": {
+        "path": "build/acceptance-closure-20261021/parent-h6-synthetic/manifest.json",
+        "sha256": "711881fb0e7eff08d8fc0efbc34263a89080bc1917119b0303e46b186ef2b847",
+        "bytes": 25613
+      },
+      "verified_artifacts": 43
+    },
+    "parent-s3-changes": {
+      "manifest": {
+        "path": "build/acceptance-closure-20261021/parent-s3-changes/manifest.json",
+        "sha256": "3c0abd2fdaea642dc5511cf973adfc54803c56ca9bc3698d6e1f76545c032f7e",
+        "bytes": 60858
+      },
+      "verified_artifacts": 236
+    },
+    "parent-s3-authorization": {
+      "manifest": {
+        "path": "build/acceptance-closure-20261021/parent-s3-authorization/manifest.json",
+        "sha256": "abbab1d1535100a40cf4ea08bc2b2a3b066c30553a67c4adbcb34efbd92eee8b",
+        "bytes": 10443
+      },
+      "verified_artifacts": 42
+    },
+    "parent-s3-lifecycle": {
+      "manifest": {
+        "path": "build/acceptance-closure-20261021/parent-s3-lifecycle/manifest.json",
+        "sha256": "a17985eeea72299faaf4ad17aca8d8f0221d056f5ea3b27cfac9ff9bcaa1d461",
+        "bytes": 40940
+      },
+      "verified_artifacts": 176
+    }
+  },
+  "real_matrix": {
+    "path": "build/acceptance-closure-20261021/parent-remote-matrix/attempt-03/report.json",
+    "sha256": "2a1179578f3a763421572cb2eed6544e1344946c02e17a103e628ddd17c8effb",
+    "bytes": 238483
+  },
+  "real_pairs": [
+    {
+      "version": "v1.5.5",
+      "object": "ecmwf_ifs",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "ecmwf_ifs",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "ecmwf_ifs",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "ecmwf_ifs",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "ecmwf_ifs",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "ecmwf_ifs",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "ecmwf_ifs",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "ecmwf_ifs",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "ecmwf_ifs",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "gem_rdps_10km",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "gem_rdps_10km",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "gem_rdps_10km",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "gem_rdps_10km",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "gem_rdps_10km",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "gem_rdps_10km",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "gem_regional",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "gem_regional",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "gem_regional",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "gem_regional",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "gem_regional",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "gem_regional",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "aladin_central_europe_2km",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "aladin_central_europe_2km",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "aladin_central_europe_2km",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "aladin_central_europe_2km",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "aladin_central_europe_2km",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "aladin_central_europe_2km",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "gem_rdps_10km",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "gem_rdps_10km",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "gem_rdps_10km",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "gem_regional",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "gem_regional",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "gem_regional",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "aladin_central_europe_2km",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "aladin_central_europe_2km",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "aladin_central_europe_2km",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    }
+  ],
+  "versions": [
+    {
+      "version": "v1.5.4",
+      "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+      "extension": {
+        "path": "build/audit-remediation-20261021/v1.5.4/duckomo.duckdb_extension",
+        "sha256": "a1f1e62f69e9eb7d80789883ab23e84ee296b0bebd9e2b07c48f5fe40b9063b9",
+        "bytes": 13327102
+      },
+      "identity_json": {
+        "path": "build/audit-remediation-20261021/v1.5.4/identity.json",
+        "sha256": "523dc92b9511743c26e3972637ba23421f8d1a3178fd03550734a9ca1cc589b5",
+        "bytes": 636
+      },
+      "official_runtime_json": {
+        "path": "build/official-matrix/v1.5.4/official/runtime.json",
+        "sha256": "85ed4868bab19283eb72644f97e1daffb5b6bd90f6b60f54733f8af17b74fd13",
+        "bytes": 701
+      },
+      "matching_load": {
+        "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.4/matrix/matching-load.command.json",
+        "sha256": "10c25c3fb00cfe96f8288cb8f0a33f9f84333dda1551962c460f9780682c9214",
+        "bytes": 854
+      },
+      "cross_version_rejection": [
+        {
+          "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.4/matrix/extension-mismatch.command.json",
+          "sha256": "8d3151e1a58d773bb75aab92cb689a70001b0be0eb2e38568e10cb84bbee5eef",
+          "bytes": 860
+        },
+        {
+          "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.4/matrix/httpfs-mismatch.command.json",
+          "sha256": "b7dcba8074cbb9710a3a4bdf4518ea86e8b6c46f4966fc866a1efdac44bcffed",
+          "bytes": 854
+        }
+      ]
+    },
+    {
+      "version": "v1.5.5",
+      "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+      "extension": {
+        "path": "build/audit-remediation-20261021/v1.5.5/duckomo.duckdb_extension",
+        "sha256": "f05416b9bc0e5ddb07f95af5d1f1744c78b7fce7f3e5a41ea4d67a8af403a74c",
+        "bytes": 13328870
+      },
+      "identity_json": {
+        "path": "build/audit-remediation-20261021/v1.5.5/identity.json",
+        "sha256": "f3455e9b678f7e4376e8e44acd7614d8108e017f89a48e49123e2a77a90f41eb",
+        "bytes": 636
+      },
+      "official_runtime_json": {
+        "path": "build/official-matrix/v1.5.5/official/runtime.json",
+        "sha256": "36c0f58c4ac5740eb59e0d20b06b540b81b122b2c5b900bc1435785505c0f859",
+        "bytes": 701
+      },
+      "matching_load": {
+        "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.5/matrix/matching-load.command.json",
+        "sha256": "caa9939bb9ed5f0aa839a15bba02ea6f7d522f470ae0d6734a61883bba3c8a02",
+        "bytes": 855
+      },
+      "cross_version_rejection": [
+        {
+          "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.5/matrix/extension-mismatch.command.json",
+          "sha256": "3fea69407921c2b8cd200e38e5e3ba02fe664f7c759af8b6b464a8a69e44a349",
+          "bytes": 861
+        },
+        {
+          "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.5/matrix/httpfs-mismatch.command.json",
+          "sha256": "98c3759e89f42f989ba1b24c754872af94c4489b70ba2d672a37792e1193c14b",
+          "bytes": 854
+        }
+      ]
+    },
+    {
+      "version": "v1.5.6",
+      "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+      "extension": {
+        "path": "build/audit-remediation-20261021/v1.5.6/duckomo.duckdb_extension",
+        "sha256": "ee86c0c2864ebd044551746834765e2ed482583e9a40236fd9fde0710ea50e65",
+        "bytes": 13397734
+      },
+      "identity_json": {
+        "path": "build/audit-remediation-20261021/v1.5.6/identity.json",
+        "sha256": "de03c2e09cd091884dd625e8dd14e7b90a738af3c4084b28587e63f019cecb6c",
+        "bytes": 636
+      },
+      "official_runtime_json": {
+        "path": "build/official-matrix/v1.5.6/official/runtime.json",
+        "sha256": "8b73462659d5275f517cb730d4d528378a05abf0487dc47c991d4e3af67b824f",
+        "bytes": 701
+      },
+      "matching_load": {
+        "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.6/matrix/matching-load.command.json",
+        "sha256": "88ef0284ff84562065b299ccbd3e8d29e35727c931e9d54e4e9438cdfad485aa",
+        "bytes": 854
+      },
+      "cross_version_rejection": [
+        {
+          "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.6/matrix/extension-mismatch.command.json",
+          "sha256": "aa392896faab28e3c01f525707f5427819f2b1911b38bec52ec3d151e073bd01",
+          "bytes": 861
+        },
+        {
+          "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.6/matrix/httpfs-mismatch.command.json",
+          "sha256": "e9ce178608664150bae86a561f3343bac8317d44dd8f9b5c8a5c79ba3f94787d",
+          "bytes": 854
+        }
+      ]
+    }
+  ],
+  "prerequisite_003": {
+    "path": "evidence/003-dimensions-remote-parallel/independent-review-20261022.json",
+    "sha256": "98c23c5894ac8f84e14883b716a561c683ebfb40800e78d87d2bfcf0a73f378e",
+    "bytes": 8363
+  },
+  "limitations": [
+    "Changed-TU rebuild/relink with fixed unchanged base objects;not clean full build",
+    "Owned memory excludes official HTTPFS internal allocations",
+    "Authorization revocation exercised at dedicated controlled S3 service proxy,not SeaweedFS IAM mutation",
+    "Signed region switch is valid/accepted by SeaweedFS;no claim every region rejected",
+    "Real N160/N320/N-region and DuckDB2.0 excluded by owner revisions;synthetic regression retained",
+    "Independent H9 actual execution/review separately sealed;no human attestation"
+  ]
+}

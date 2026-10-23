@@ -1,0 +1,1930 @@
+{
+  "schema_version": 1,
+  "recorded_date": "2026-10-22",
+  "status": "verified-current-approved-scope",
+  "current_scope_can_close": true,
+  "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+  "head": "6b34e523fe9f636aec1cabdf4b14be6bc47a6ec1",
+  "scope": {
+    "platform": "Linux AArch64",
+    "versions": [
+      "v1.5.4",
+      "v1.5.5",
+      "v1.5.6"
+    ],
+    "definitions": [
+      "gem_rdps_10km",
+      "gem_regional",
+      "aladin_central_europe_2km",
+      "ecmwf_ifs"
+    ],
+    "real_objects": 5
+  },
+  "gates": {
+    "H0": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "Independent registry regeneration/check plus frozen source, artifact, sample, producer and reference hashes audited."
+    },
+    "H1": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "Inherited full three-version/five-object reference comparisons; independently executed four real grids, explicit/domain complete values and coordinates/source axes; freshly reproduced official value references and producer coordinate references."
+    },
+    "H2": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "Four new full spatial materializations; strict boundary/nextafter/seam/OR/empty/value-dependent and explicit/domain EXCEPT ALL assertions; inherited full matrix synthetic coverage."
+    },
+    "H3": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "New coordinate/source/info/count/empty zero index/data/decode checks; inherited three-version and remote checks."
+    },
+    "H4": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "Inherited audited 48 native and 24 SQL runs plus 1/2/4 real-object/lifecycle evidence; these were engineering executions."
+    },
+    "H5": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "Inherited local pairs plus independently audited 24 parent remote pairs, 612 lifecycle scans and 8352 attempts, bounded owned ledgers and descriptor retention."
+    },
+    "H6": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "Independent audit of all 45 engineering full/selected pairs including nine entire O1280 temperature scans, supplements, and accepted 003 prerequisite; own HSURF strict HTTP pair passed."
+    },
+    "H7": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "Four new complete producer-reference planar triangle/source comparisons and descriptor checks inherited from full engineering package; no physical area/datum equivalence claim."
+    },
+    "H8": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "All three official CLI/HTTPFS/extension identities, new matching loads/six version rejections, same-source H0-H7 evidence audited."
+    },
+    "H9": {
+      "status": "pass",
+      "can_close": true,
+      "basis": "Independent AI executed four real grid types, one full/selected remote pair and complete spatial relations, and audited current package/gates."
+    }
+  },
+  "tasks": {
+    "C004-01": "closed",
+    "C004-02": "closed",
+    "C004-03": "closed",
+    "C004-04": "closed"
+  },
+  "versions": [
+    {
+      "version": "v1.5.4",
+      "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+      "extension": {
+        "path": "build/audit-remediation-20261021/v1.5.4/duckomo.duckdb_extension",
+        "sha256": "a1f1e62f69e9eb7d80789883ab23e84ee296b0bebd9e2b07c48f5fe40b9063b9",
+        "bytes": 13327102
+      },
+      "identity_json": {
+        "path": "build/audit-remediation-20261021/v1.5.4/identity.json",
+        "sha256": "523dc92b9511743c26e3972637ba23421f8d1a3178fd03550734a9ca1cc589b5",
+        "bytes": 636
+      },
+      "official_runtime_json": {
+        "path": "build/official-matrix/v1.5.4/official/runtime.json",
+        "sha256": "85ed4868bab19283eb72644f97e1daffb5b6bd90f6b60f54733f8af17b74fd13",
+        "bytes": 701
+      },
+      "matching_load": {
+        "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.4/matrix/matching-load.command.json",
+        "sha256": "10c25c3fb00cfe96f8288cb8f0a33f9f84333dda1551962c460f9780682c9214",
+        "bytes": 854
+      },
+      "cross_version_rejection": [
+        {
+          "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.4/matrix/extension-mismatch.command.json",
+          "sha256": "8d3151e1a58d773bb75aab92cb689a70001b0be0eb2e38568e10cb84bbee5eef",
+          "bytes": 860
+        },
+        {
+          "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.4/matrix/httpfs-mismatch.command.json",
+          "sha256": "b7dcba8074cbb9710a3a4bdf4518ea86e8b6c46f4966fc866a1efdac44bcffed",
+          "bytes": 854
+        }
+      ],
+      "identity": {
+        "base_manifest": "/home/blizhan/repo/github/duckomo/build/evidence/regions/current-20261020/matrix-testfixed/v1.5.4/build-manifest.json",
+        "base_build_id": "5a8700f3eb073f9f753d5cc5dc5d75b20c22ba622281228bd2a5a5e39dd971d9",
+        "build_id": "fb49547ec3531e42eeb415ba7cf985989b57a4e1853f48425fc3ec187ca5f245",
+        "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+        "note": "Changed translation units rebuilt and relinked with unchanged pinned base objects; isolated regression build, not a full matrix gate.",
+        "extension_sha256": "a1f1e62f69e9eb7d80789883ab23e84ee296b0bebd9e2b07c48f5fe40b9063b9"
+      },
+      "official_runtime": {
+        "cli": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/official/duckdb",
+          "sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+          "url": "https://github.com/duckdb/duckdb/releases/download/v1.5.4/duckdb_cli-linux-arm64.zip"
+        },
+        "httpfs": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/official/httpfs.duckdb_extension",
+          "sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+          "url": "https://extensions.duckdb.org/v1.5.4/linux_arm64/httpfs.duckdb_extension.gz"
+        },
+        "reported_version": "v1.5.4 (Variegata) 08e34c447b",
+        "version": "v1.5.4",
+        "platform": "linux_arm64"
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+      "extension": {
+        "path": "build/audit-remediation-20261021/v1.5.5/duckomo.duckdb_extension",
+        "sha256": "f05416b9bc0e5ddb07f95af5d1f1744c78b7fce7f3e5a41ea4d67a8af403a74c",
+        "bytes": 13328870
+      },
+      "identity_json": {
+        "path": "build/audit-remediation-20261021/v1.5.5/identity.json",
+        "sha256": "f3455e9b678f7e4376e8e44acd7614d8108e017f89a48e49123e2a77a90f41eb",
+        "bytes": 636
+      },
+      "official_runtime_json": {
+        "path": "build/official-matrix/v1.5.5/official/runtime.json",
+        "sha256": "36c0f58c4ac5740eb59e0d20b06b540b81b122b2c5b900bc1435785505c0f859",
+        "bytes": 701
+      },
+      "matching_load": {
+        "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.5/matrix/matching-load.command.json",
+        "sha256": "caa9939bb9ed5f0aa839a15bba02ea6f7d522f470ae0d6734a61883bba3c8a02",
+        "bytes": 855
+      },
+      "cross_version_rejection": [
+        {
+          "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.5/matrix/extension-mismatch.command.json",
+          "sha256": "3fea69407921c2b8cd200e38e5e3ba02fe664f7c759af8b6b464a8a69e44a349",
+          "bytes": 861
+        },
+        {
+          "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.5/matrix/httpfs-mismatch.command.json",
+          "sha256": "98c3759e89f42f989ba1b24c754872af94c4489b70ba2d672a37792e1193c14b",
+          "bytes": 854
+        }
+      ],
+      "identity": {
+        "base_manifest": "/home/blizhan/repo/github/duckomo/build/evidence/regions/current-20261020/matrix-testfixed/v1.5.5/build-manifest.json",
+        "base_build_id": "10fb4c1331f717e97196b6fb6990cacbab48cd44646c6a51ea4aa371ae577f52",
+        "build_id": "4eff09a4b1bdc8f283fea803e2e895a3062e9231957ad38a1e1d5fc591198e3f",
+        "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+        "note": "Changed translation units rebuilt and relinked with unchanged pinned base objects; isolated regression build, not a full matrix gate.",
+        "extension_sha256": "f05416b9bc0e5ddb07f95af5d1f1744c78b7fce7f3e5a41ea4d67a8af403a74c"
+      },
+      "official_runtime": {
+        "cli": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/official/duckdb",
+          "sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+          "url": "https://github.com/duckdb/duckdb/releases/download/v1.5.5/duckdb_cli-linux-arm64.zip"
+        },
+        "httpfs": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/official/httpfs.duckdb_extension",
+          "sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_arm64/httpfs.duckdb_extension.gz"
+        },
+        "reported_version": "v1.5.5 (Variegata) d8cdaa33fd",
+        "version": "v1.5.5",
+        "platform": "linux_arm64"
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+      "extension": {
+        "path": "build/audit-remediation-20261021/v1.5.6/duckomo.duckdb_extension",
+        "sha256": "ee86c0c2864ebd044551746834765e2ed482583e9a40236fd9fde0710ea50e65",
+        "bytes": 13397734
+      },
+      "identity_json": {
+        "path": "build/audit-remediation-20261021/v1.5.6/identity.json",
+        "sha256": "de03c2e09cd091884dd625e8dd14e7b90a738af3c4084b28587e63f019cecb6c",
+        "bytes": 636
+      },
+      "official_runtime_json": {
+        "path": "build/official-matrix/v1.5.6/official/runtime.json",
+        "sha256": "8b73462659d5275f517cb730d4d528378a05abf0487dc47c991d4e3af67b824f",
+        "bytes": 701
+      },
+      "matching_load": {
+        "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.6/matrix/matching-load.command.json",
+        "sha256": "88ef0284ff84562065b299ccbd3e8d29e35727c931e9d54e4e9438cdfad485aa",
+        "bytes": 854
+      },
+      "cross_version_rejection": [
+        {
+          "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.6/matrix/extension-mismatch.command.json",
+          "sha256": "aa392896faab28e3c01f525707f5427819f2b1911b38bec52ec3d151e073bd01",
+          "bytes": 861
+        },
+        {
+          "path": "build/acceptance-closure-20261021/grid-engineering/v1.5.6/matrix/httpfs-mismatch.command.json",
+          "sha256": "e9ce178608664150bae86a561f3343bac8317d44dd8f9b5c8a5c79ba3f94787d",
+          "bytes": 854
+        }
+      ],
+      "identity": {
+        "base_manifest": "/home/blizhan/repo/github/duckomo/build/evidence/regions/current-20261020/matrix-testfixed/v1.5.6/build-manifest.json",
+        "base_build_id": "ab0257d665a469cae1f1e33da2449c91009137e745262de32b2ad447a00d3e5e",
+        "build_id": "ba5a3e7b3f284dd8ad33fe269baf714f3be6ea5e9f949564e4afa3ac7b3e92c6",
+        "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+        "note": "Changed translation units rebuilt and relinked with unchanged pinned base objects; isolated regression build, not a full matrix gate.",
+        "extension_sha256": "ee86c0c2864ebd044551746834765e2ed482583e9a40236fd9fde0710ea50e65"
+      },
+      "official_runtime": {
+        "cli": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/official/duckdb",
+          "sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+          "url": "https://github.com/duckdb/duckdb/releases/download/v1.5.6/duckdb_cli-linux-arm64.zip"
+        },
+        "httpfs": {
+          "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/official/httpfs.duckdb_extension",
+          "sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+          "url": "https://extensions.duckdb.org/v1.5.6/linux_arm64/httpfs.duckdb_extension.gz"
+        },
+        "reported_version": "v1.5.6 (Variegata) 069cc9f9b5",
+        "version": "v1.5.6",
+        "platform": "linux_arm64"
+      }
+    }
+  ],
+  "frozen_inputs": {
+    "created_unix": 1792568345.122399,
+    "head": "6b34e523fe9f636aec1cabdf4b14be6bc47a6ec1",
+    "source_sha256": "5e73cfe7ca159159c61cc8bab98cc2a84f02a9e18439e051596a9f4b57d51f4c",
+    "coordinate_tolerance_degrees": 0.0001,
+    "value_policy": "exact float32 bits; every NaN maps to SQL NULL",
+    "scope": [
+      "gem_rdps_10km",
+      "gem_regional",
+      "aladin_central_europe_2km",
+      "ecmwf_ifs temperature chunk_817 and HSURF"
+    ],
+    "build_limitation": "Changed-TU relinks using frozen unchanged base objects; not clean full builds",
+    "files": [
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/duckomo.duckdb_extension",
+        "bytes": 13327102,
+        "sha256": "a1f1e62f69e9eb7d80789883ab23e84ee296b0bebd9e2b07c48f5fe40b9063b9"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.4/identity.json",
+        "bytes": 636,
+        "sha256": "523dc92b9511743c26e3972637ba23421f8d1a3178fd03550734a9ca1cc589b5"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/duckomo.duckdb_extension",
+        "bytes": 13328870,
+        "sha256": "f05416b9bc0e5ddb07f95af5d1f1744c78b7fce7f3e5a41ea4d67a8af403a74c"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.5/identity.json",
+        "bytes": 636,
+        "sha256": "f3455e9b678f7e4376e8e44acd7614d8108e017f89a48e49123e2a77a90f41eb"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/duckomo.duckdb_extension",
+        "bytes": 13397734,
+        "sha256": "ee86c0c2864ebd044551746834765e2ed482583e9a40236fd9fde0710ea50e65"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/audit-remediation-20261021/v1.5.6/identity.json",
+        "bytes": 636,
+        "sha256": "de03c2e09cd091884dd625e8dd14e7b90a738af3c4084b28587e63f019cecb6c"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/evidence/regions/current-20261020/matrix-testfixed/v1.5.4/build-manifest.json",
+        "bytes": 4816,
+        "sha256": "2de8c8ce8492ec012934cd0db496b1ffc8c772a78d36000d216ee22b1edc036c"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/evidence/regions/current-20261020/matrix-testfixed/v1.5.5/build-manifest.json",
+        "bytes": 4816,
+        "sha256": "fabd279ab04d13211212860e5247657f79ae9c8509b14b2deb8b1c17787c72a4"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/evidence/regions/current-20261020/matrix-testfixed/v1.5.6/build-manifest.json",
+        "bytes": 4816,
+        "sha256": "7b965c556a989a61c800fe1a7b162a76af1ffa60c8f9f7534bea4c6b73488cf0"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/grid-references/pinned-producer-f32-20261008/lambert-chmi-aladin-ce-cape-chunk-4135.coordinates.csv",
+        "bytes": 45735346,
+        "sha256": "c9aebe8aa88a2ce11e3c7789be475b6051c90ebfeece7f2e5412bbfc2dbff719"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/grid-references/pinned-producer-f32-20261008/rotated-cmc-gem-rdps-10km-cape-chunk-4337.coordinates.csv",
+        "bytes": 63233163,
+        "sha256": "be2598b5dd60b80248d58ee9f215732eafb8dd133e8305997cec90506e382552"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/grid-references/pinned-producer-f32-20261008/stereographic-cmc-gem-rdps-cape-chunk-4337.coordinates.csv",
+        "bytes": 40327501,
+        "sha256": "d6556760901be1a17873825f680c3df7e4e51b11704042ae8967653c232d61f0"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/grid-references/revalidated-20261007/lambert-chmi-aladin-ce-cape-chunk-4135.official-reference.csv",
+        "bytes": 1282839785,
+        "sha256": "7fc25500b7c6387f2408caf04322a2955f15f89cd401700016f26c4d8355e4dd"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/grid-references/revalidated-20261007/rotated-cmc-gem-rdps-10km-cape-chunk-4337.official-reference.csv",
+        "bytes": 1723440347,
+        "sha256": "cdcd6650b7d9acb6695886f7359ae2c8453e6b9ad972402a0699f35297be7f85"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/grid-references/revalidated-20261007/stereographic-cmc-gem-rdps-cape-chunk-4337.official-reference.csv",
+        "bytes": 1106242733,
+        "sha256": "ea70e1d945d885e2cc20159afb76db9e5a0c79effe45be2d50ddf018903ba467"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/hres-o1280/source/Curl+Grib.swift",
+        "bytes": 10625,
+        "sha256": "212e97efb147bf80c466ad3f19f1cbd94f08b92a4639f79c47de1ef937c2c593"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/hres-o1280/source/EcmwfEcpdsDomain.swift",
+        "bytes": 6994,
+        "sha256": "70cccf553cbeef823d8ac7da7df9e686e1761871dc079a90be0dabcfea258805"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/hres-o1280/source/EcmwfEcpdsDownloader.swift",
+        "bytes": 33733,
+        "sha256": "17b3e4d2467fc165d982e8379430a3d7388f4ea48beba94e3549639221cbf9c3"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/hres-o1280/source/GaussianGrid.swift",
+        "bytes": 20963,
+        "sha256": "b913a4ec63b5889466d44ffffccd38aa4f9288d07c4c3b6786df9aa9f9c6d516"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/hres-o1280/source/GenericVariableHandle.swift",
+        "bytes": 31189,
+        "sha256": "a20f1d77b5cffdfe7fcf1333a99d1fc12344790270d1eebc919bdcc3ce56480e"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/hres-o1280/source/Gridable.swift",
+        "bytes": 11360,
+        "sha256": "939431d274047ec6d46695f43a839aeddb524646d3ab035e5a249aba6458b679"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/hres-o1280/source/OmFileSplitter.swift",
+        "bytes": 45578,
+        "sha256": "23975b7e45bce942b85b6f03c661ccc75a7fd5720226a7f939fa78ace0d8328a"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/hres-o1280/source/OmSpatialTimestepWriter.swift",
+        "bytes": 16948,
+        "sha256": "15067b7f58d388acee8a730866399ffe9c51b06e8c9efe91a86467421fc736fd"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.4/official/duckdb",
+        "bytes": 54251376,
+        "sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/official/duckdb",
+        "bytes": 54323032,
+        "sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/official/duckdb",
+        "bytes": 54304672,
+        "sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/chmi-aladin-ce-cape-chunk-4135.om",
+        "bytes": 48727672,
+        "sha256": "cef407b0aae43498485b8f6e25907c1ecf8a82c6cb8aa2185fe860f0c491132c"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/cmc-gem-rdps-10km-cape-chunk-4337.om",
+        "bytes": 68016448,
+        "sha256": "3db637197d27c65051e417b850f8c3656d1c5371ab78dcbd9fc05d0e440956f7"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/cmc-gem-rdps-cape-chunk-4337.om",
+        "bytes": 23835720,
+        "sha256": "1d701b188c8c264532f0d8fa917400a66cf28aa1c8e53a7b40781a775333c7c1"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/ecmwf-ifs-hsurf-o1280.om",
+        "bytes": 2482560,
+        "sha256": "2e8279f8bd12052ba5be5a0bcba2293dc4316097e434d6691f9e6711249e1fd3"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/build/s3-samples/openmeteo-v3/ecmwf-ifs-temperature-2m-chunk-817.om",
+        "bytes": 353999720,
+        "sha256": "483dd0be2096d3e3fff6731509400f97591ebcfc237a941a37460f42a7a10e7f"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/evidence/code-audit-remediation-20261021.json",
+        "bytes": 155412,
+        "sha256": "bf1dbc86e8c37c1e1203261c4c6a726b5963a305318bc5f86c7180e1f663ebc0"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md",
+        "bytes": 5223,
+        "sha256": "8ab84d26eb91321004740aceebeb4bb409ab36c115e5cabdb63622e264fa3257"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md",
+        "bytes": 3437,
+        "sha256": "c4059cec79e179096b1a28b431628018e02191449dbe9e5c9fe6b689d14eecb0"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/contracts/selection-and-io.md",
+        "bytes": 12375,
+        "sha256": "386c190f1b64c454469d0d7ebcd1f3b55cefa918fa3c43770cb02bfb058bc6a8"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/contracts/sql-interface.md",
+        "bytes": 13424,
+        "sha256": "97b11e85b90ff3b99e457e31f2e381a270d7bd1e9b6ddae8b8ad86bb3b8a7b54"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/contracts/validation-evidence.md",
+        "bytes": 12658,
+        "sha256": "71733bc2c5509a1b681d1c64d4aff3568e40112b63025093361961dbf35239bf"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/evidence/official-httpfs-refactor/contract.md",
+        "bytes": 2910,
+        "sha256": "d9d143a613fe995f0c007b5da7217966258818b8972e07ab19225fe11f1d7b28"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/quickstart.md",
+        "bytes": 29663,
+        "sha256": "08f6bd6f9cd9a24c9b0bb37814697fdfbe0296a86b75d7ff27f6c796e194cbc7"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/specs/004-multi-grid-selection/tasks.md",
+        "bytes": 72328,
+        "sha256": "20edde2c10e48ca1761fed01e455c13607f3d638ec54c9d53f33fc47ed4485fc"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/test/data/grids/coordinate-reference.json",
+        "bytes": 7881,
+        "sha256": "47712d94197d708b7ef1d48a4679d4eb5a38aecc324cc95d60d7b613314d33c7"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/test/data/grids/definitions.json",
+        "bytes": 838792,
+        "sha256": "a479d53356dbc313177858a17ee581c51e675d26b12ba11571ec3644c4aad6dd"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/test/data/grids/sample-manifest.json",
+        "bytes": 35862,
+        "sha256": "72af60d4769c2fc7b262864f1fb8e4f434e8a89ec463824f482c39103dc1939f"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/test/data/grids/source-manifest.json",
+        "bytes": 8983,
+        "sha256": "3666d27d5118bdfe53311ccf8eb36d3c7624dfcb40b09022071bb58c03e87112"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/test/data/grids/value-reference-manifest.json",
+        "bytes": 9899,
+        "sha256": "9ed46b9664c6023ee14e0fb2e5543d6829125e7dbfaeb0b0760e4906c9272e44"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/test/data/grids/version-matrix.json",
+        "bytes": 7247,
+        "sha256": "c72b11267bd1f8795f3c1ddb96d07a74bf3e292bbf3e560cf4174300ae80d060"
+      },
+      {
+        "path": "/home/blizhan/repo/github/duckomo/test/tools/duckomo_grid_validation.cpp",
+        "bytes": 101473,
+        "sha256": "6b590f3b16b58b9f21af1d9d5030a9dc272d46fcb20bc08da3b58bc74ee6db62"
+      }
+    ]
+  },
+  "packages": {
+    "engineering": {
+      "manifest": {
+        "path": "build/acceptance-closure-20261021/grid-engineering/manifest.json",
+        "sha256": "d43d3846e098061750a295ab02889f61fbe0a4692182335e4b0ca0cc2af159bb",
+        "bytes": 1129442
+      },
+      "artifacts": 4076
+    },
+    "parent-h5": {
+      "manifest": {
+        "path": "build/acceptance-closure-20261021/parent-h5/manifest.json",
+        "sha256": "40716e8e071762cb9708fcbba31cd4f2b9aa9c147adea71c7be7c25a265991b8",
+        "bytes": 53710
+      },
+      "artifacts": 244
+    },
+    "parent-h6-synthetic": {
+      "manifest": {
+        "path": "build/acceptance-closure-20261021/parent-h6-synthetic/manifest.json",
+        "sha256": "711881fb0e7eff08d8fc0efbc34263a89080bc1917119b0303e46b186ef2b847",
+        "bytes": 25613
+      },
+      "artifacts": 43
+    },
+    "parent-s3-changes": {
+      "manifest": {
+        "path": "build/acceptance-closure-20261021/parent-s3-changes/manifest.json",
+        "sha256": "3c0abd2fdaea642dc5511cf973adfc54803c56ca9bc3698d6e1f76545c032f7e",
+        "bytes": 60858
+      },
+      "artifacts": 236
+    },
+    "parent-s3-authorization": {
+      "manifest": {
+        "path": "build/acceptance-closure-20261021/parent-s3-authorization/manifest.json",
+        "sha256": "abbab1d1535100a40cf4ea08bc2b2a3b066c30553a67c4adbcb34efbd92eee8b",
+        "bytes": 10443
+      },
+      "artifacts": 42
+    },
+    "parent-s3-lifecycle": {
+      "manifest": {
+        "path": "build/acceptance-closure-20261021/parent-s3-lifecycle/manifest.json",
+        "sha256": "a17985eeea72299faaf4ad17aca8d8f0221d056f5ea3b27cfac9ff9bcaa1d461",
+        "bytes": 40940
+      },
+      "artifacts": 176
+    },
+    "parent-remote-matrix/attempt-02": {
+      "manifest": {
+        "path": "build/acceptance-closure-20261021/parent-remote-matrix/attempt-02/manifest.json",
+        "bytes": 129326,
+        "sha256": "b60f774dd08254c5675ea6fda95949341c0b3e3cbc33f6096ac1c93efa33f79b"
+      },
+      "artifacts": 517,
+      "inputs": 0
+    },
+    "parent-remote-matrix/attempt-03": {
+      "manifest": {
+        "path": "build/acceptance-closure-20261021/parent-remote-matrix/attempt-03/manifest.json",
+        "bytes": 47610,
+        "sha256": "21d1e1f3aa58bfc8e2dade94d2557945c70fa773b6c4ced7b290438edc340b09"
+      },
+      "artifacts": 190,
+      "inputs": 0
+    },
+    "independent-004": {
+      "manifest": {
+        "path": "build/acceptance-closure-20261021/independent-004/manifest.json",
+        "bytes": 151536,
+        "sha256": "52e92838cfdf650481aa99ea684bd2ba86af00aac4960626f2efafac06c96957"
+      },
+      "artifacts": 486,
+      "inputs": 89
+    }
+  },
+  "canonical_matrix": {
+    "path": "build/acceptance-closure-20261021/parent-remote-matrix/attempt-03/report.json",
+    "bytes": 238483,
+    "sha256": "2a1179578f3a763421572cb2eed6544e1344946c02e17a103e628ddd17c8effb"
+  },
+  "matrix_provenance": {
+    "required_audits": [
+      "parent-matrix-audit.json",
+      "final-gates-audit.json",
+      "pair-policy-audit.json"
+    ],
+    "resumption_identity": {
+      "recorded_utc": "2026-10-22T04:17:12.214948+00:00",
+      "human": false,
+      "same_independent_thread": true,
+      "declared_model": "codex/gpt-6-astra",
+      "serving_model_independently_attested": false,
+      "prior_default_model": "unspecified",
+      "archive": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair",
+      "canonical_parent_matrix": "parent-remote-matrix/attempt-03/report.json",
+      "scope": "Read-only review of 12 fresh replacement pairs and 33 unchanged pairs; no O1280 reexecution"
+    },
+    "prior_checkpoint_manifest": {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/independent-004/checkpoint-before-provenance-repair/manifest.json",
+      "bytes": 141936,
+      "sha256": "99e2991bff022cff20a9b20c74c783fa74cc010ac4a7a6e9d6908fda69d6a6c7"
+    },
+    "publication_and_tracked_status": "Parent-owned, not performed by independent verifier",
+    "matrix_artifacts": 190,
+    "inherited_attempt02_manifest_artifacts": 517,
+    "fresh_replacement_pairs": 12,
+    "unchanged_attempt02_pairs": 33,
+    "canonical_matrix": {
+      "path": "/home/blizhan/repo/github/duckomo/build/acceptance-closure-20261021/parent-remote-matrix/attempt-03/report.json",
+      "bytes": 238483,
+      "sha256": "2a1179578f3a763421572cb2eed6544e1344946c02e17a103e628ddd17c8effb"
+    },
+    "full_temperature_remote_positions": 29936148480,
+    "unresolved_findings": [],
+    "numerical_matrix_audit_passed": true,
+    "provenance_audit_passed": true
+  },
+  "real_pairs": [
+    {
+      "version": "v1.5.5",
+      "object": "ecmwf_ifs",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "ecmwf_ifs",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "ecmwf_ifs",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "ecmwf_ifs",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "ecmwf_ifs",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "ecmwf_ifs",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "ecmwf_ifs",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "ecmwf_ifs",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "ecmwf_ifs",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 355323256,
+            "value_data_bytes": 352676190,
+            "decoded_chunks": 13133299
+          },
+          "selected": {
+            "service_sent_body_bytes": 5443,
+            "value_data_bytes": 4559,
+            "decoded_chunks": 44
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "gem_rdps_10km",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "gem_rdps_10km",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "gem_rdps_10km",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "gem_rdps_10km",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "gem_rdps_10km",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "gem_rdps_10km",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "gem_regional",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "gem_regional",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "gem_regional",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "gem_regional",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "gem_regional",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "gem_regional",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "aladin_central_europe_2km",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "aladin_central_europe_2km",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "aladin_central_europe_2km",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "aladin_central_europe_2km",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "aladin_central_europe_2km",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "aladin_central_europe_2km",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.6",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.5",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "gem_rdps_10km",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "gem_rdps_10km",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "gem_rdps_10km",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 69099752,
+            "value_data_bytes": 68955707,
+            "decoded_chunks": 820972
+          },
+          "selected": {
+            "service_sent_body_bytes": 5835,
+            "value_data_bytes": 5090,
+            "decoded_chunks": 13
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "gem_regional",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "gem_regional",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "gem_regional",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 25821745,
+            "value_data_bytes": 25728700,
+            "decoded_chunks": 530897
+          },
+          "selected": {
+            "service_sent_body_bytes": 3596,
+            "value_data_bytes": 2951,
+            "decoded_chunks": 17
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "aladin_central_europe_2km",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "aladin_central_europe_2km",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "aladin_central_europe_2km",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 49447014,
+            "value_data_bytes": 49334169,
+            "decoded_chunks": 638728
+          },
+          "selected": {
+            "service_sent_body_bytes": 37093,
+            "value_data_bytes": 35348,
+            "decoded_chunks": 273
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "http",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "https",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    },
+    {
+      "version": "v1.5.4",
+      "object": "ecmwf_ifs_hsurf",
+      "protocol": "s3",
+      "inherited": false,
+      "benefit": {
+        "status": "pass",
+        "costs": {
+          "full": {
+            "service_sent_body_bytes": 4125977,
+            "value_data_bytes": 4083294,
+            "decoded_chunks": 27649
+          },
+          "selected": {
+            "service_sent_body_bytes": 2069,
+            "value_data_bytes": 1452,
+            "decoded_chunks": 7
+          }
+        },
+        "strict_declines": {
+          "service_sent_body_bytes": true,
+          "value_data_bytes": true,
+          "decoded_chunks": true
+        }
+      }
+    }
+  ],
+  "engineering_and_supplement_counts": {
+    "engineering_manifest_artifacts": 4076,
+    "engineering_full_local_positions": 21973440480,
+    "parent_supplement_artifacts": 741,
+    "s3_lifecycle_cases": 15,
+    "s3_lifecycle_metrics": 75,
+    "s3_lifecycle_requests": 1455,
+    "s3_lifecycle_artifacts": 176,
+    "h5_remote_pairs": 24,
+    "h5_terminal_scans": 612,
+    "h5_attempts": 8352,
+    "synthetic_suites": 36,
+    "synthetic_assertions": 3261,
+    "s3_configuration_transitions": 39,
+    "s3_service_authorization_transitions": 9,
+    "real_remote_pairs": 45,
+    "full_temperature_values_each": 3326238720,
+    "full_temperature_remote_runs": 9
+  },
+  "independent_execution": {
+    "local_value_positions": 672002720,
+    "coordinate_source_positions": 18885562,
+    "full_spatial_materializations": 4,
+    "official_value_oracles_regenerated": 4,
+    "remote_executors": [
+      "actual official DuckDB CLI",
+      "independently compiled comparator using matching static engine"
+    ],
+    "remote_pairs": 2,
+    "remote_full_rows": 6599680,
+    "remote_selected_rows": 18,
+    "costs": {
+      "full": {
+        "service_sent_body_bytes": 4125977,
+        "value_data_bytes": 4083294,
+        "decoded_chunks": 27649
+      },
+      "selected": {
+        "service_sent_body_bytes": 1591,
+        "value_data_bytes": 1056,
+        "decoded_chunks": 4
+      }
+    },
+    "three_version_matching_loads": 3,
+    "mismatch_rejections": 6
+  },
+  "independent_identity": {
+    "recorded_utc": "2026-10-22T02:17:04.923580+00:00",
+    "human": false,
+    "prior_model": "provider default; unspecified; no GPT-6 claim",
+    "current_declared_model": "codex/gpt-6-astra",
+    "declaration_source": "user resumption instruction",
+    "serving_model_independently_attested": false,
+    "prior_thread_id": "01a1614e-925c-76b0-a5f8-32c9bfe8fdb9",
+    "provider_interruption": "429 stalled per user; prior logs preserved",
+    "thread_id": "01a1614e-925c-76b0-a5f8-32c9bfe8fdb9",
+    "initial_runner_config_recorded_model": "opencode-go/gemini-4-argon-contributor",
+    "initial_serving_model": "not attested"
+  },
+  "independent_outputs": {
+    "report.md": {
+      "path": "build/acceptance-closure-20261021/independent-004/report.md",
+      "bytes": 12253,
+      "sha256": "0e461ed862bf9b55aea790e5fea1edc617cf871e29b7129f76dfe226bdeb2fc0"
+    },
+    "closure.json": {
+      "path": "build/acceptance-closure-20261021/independent-004/closure.json",
+      "bytes": 10497,
+      "sha256": "fbfa54dd1b091e749f1f4a1f237c7b81526c55fa6edead391b77b41b434bf7d7"
+    },
+    "manifest.json": {
+      "path": "build/acceptance-closure-20261021/independent-004/manifest.json",
+      "bytes": 151536,
+      "sha256": "52e92838cfdf650481aa99ea684bd2ba86af00aac4960626f2efafac06c96957"
+    },
+    "parent-matrix-audit.json": {
+      "path": "build/acceptance-closure-20261021/independent-004/parent-matrix-audit.json",
+      "bytes": 31857,
+      "sha256": "03c55935ec6c1eb1ad3bce7502d6db23be5a5403f8c63a096239ed2c8d765b21"
+    },
+    "pair-policy-audit.json": {
+      "path": "build/acceptance-closure-20261021/independent-004/pair-policy-audit.json",
+      "bytes": 20936,
+      "sha256": "9ab9a2cc2649749cb65054269d66a08046061850e5b47f53f2fe641a32f939ca"
+    },
+    "final-gates-audit.json": {
+      "path": "build/acceptance-closure-20261021/independent-004/final-gates-audit.json",
+      "bytes": 5851,
+      "sha256": "592f75e5e7293484832e0d617ee194e8cd99b887c289052c604e272cad900177"
+    }
+  },
+  "independent_final_runner_command": {
+    "path": "build/acceptance-closure-20261021/repaired-supervisor/independent-repaired-review.command.json",
+    "bytes": 1529,
+    "sha256": "a5119350e7638bafe8299decfaae30404a7098ea2a4c1c0188b8c25b73ef44ed"
+  },
+  "integration_verification": {
+    "unique_files_hashed": 6076,
+    "total_bytes_hashed": 26913559848,
+    "matrix_pairs": 45,
+    "strict_declines_verified": 135,
+    "independent_thread_final_commands_verified": true
+  },
+  "verification_record": {
+    "path": "build/acceptance-closure-20261021/final-integration/input-verification.json",
+    "bytes": 1439380,
+    "sha256": "0e222cd83827889262ff2896253efa858ea83a5ae9334df533017935e6cc944e"
+  },
+  "limitations": [
+    "AI/non-human verification. Prior provider-default model unspecified; resumed declaration codex/gpt-6-astra from user. Serving identity not independently attested. Same runner thread resumed after reported provider 429 stall.",
+    "Independent actual grid/remote execution is v1.5.4 Linux AArch64; three-version full grid matrix executions are inherited engineering evidence, independently audited. Official matching/mismatch loads executed here on all three versions.",
+    "Changed-TU rebuild/relink of frozen unchanged base objects; not a clean build. Comparator harness compiled here links matching base static DuckDB/official OM library; official CLI identity/load checks are separate.",
+    "Pinned Open-Meteo producer-coordinate semantics only, including O1280 approximate latitude rule. No ECMWF native GRIB equivalence, physical area/distance or datum conversion claim.",
+    "Real N160/N320/N-region and DuckDB 2.0 excluded by owner scope; synthetic N-grid regressions retained and audited.",
+    "Remote transport remains NULL/unobserved in DuckOMO; server SENT bytes are not client received bytes. Official HTTPFS internal heap/cache behavior unobserved; OS caches not flushed.",
+    "S3 service access revoke/restore supplement uses a controlled proxy policy with valid signatures; upstream SeaweedFS IAM was not changed. Invalid signing key/secret, removed secret, endpoint and region transitions are separately audited.",
+    "Full local value checks consume all time indices for the three projected objects; independent spatial materializations select synthetic time index zero. Independent Gaussian object is entire HSURF; full temperature all-time coverage is inherited engineering evidence.",
+    "Parent owns tracked support/status documentation and final publication decision. This verifier edited only independent-004 evidence and stopped no services."
+  ],
+  "historical_records_preserved": [
+    "parent-remote-matrix/report.json: failed setup attempt",
+    "parent-remote-matrix/attempt-02: previous numerical pass, NOT final strict provenance acceptance",
+    "independent-004/checkpoint-before-provenance-repair: rejected nine selected command/metrics paths",
+    "grid-engineering: interrupted original temperature remote scans"
+  ],
+  "build_method": "Changed translation units rebuilt and relinked with frozen unchanged base objects; not clean full build",
+  "publication": "Documentation only; no commit, push or release; raw SQL/environment/credentials/TLS material remain ignored build inputs",
+  "frozen_input_document_status_note": "freeze.json preserves original input hashes. validation-evidence.md, quickstart.md and tasks.md had authorized parent documentation updates already recorded by the independent local audit; final integration updates current status further. Immutable product, sample, oracle and binary inputs remain unchanged."
+}
