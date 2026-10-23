@@ -471,6 +471,9 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
                     duckomo_om
                 )
                 duckomo_link_generated_extension_loader("${test_target}")
+                if(COMMAND duckdb_link_deferred_extension_libraries)
+                    link_extension_libraries("${test_target}" "PRIVATE")
+                endif()
             add_test(NAME "duckomo_sanitizer_${test}"
                 COMMAND "$<TARGET_FILE:${test_target}>"
             )
@@ -514,6 +517,9 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
             duckomo_om
         )
         duckomo_link_generated_extension_loader(duckomo_lifecycle_sanitizer)
+        if(COMMAND duckdb_link_deferred_extension_libraries)
+            link_extension_libraries(duckomo_lifecycle_sanitizer "PRIVATE")
+        endif()
         add_test(NAME duckomo_sanitizer_lifecycle
             COMMAND "$<TARGET_FILE:duckomo_lifecycle_sanitizer>"
         )
@@ -568,6 +574,9 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
             target_link_options("${test_target}" PRIVATE ${DUCKOMO_SANITIZER_LINK_OPTIONS})
             target_link_libraries("${test_target}" PRIVATE duckdb_static duckomo_om)
             duckomo_link_generated_extension_loader("${test_target}")
+            if(COMMAND duckdb_link_deferred_extension_libraries)
+                link_extension_libraries("${test_target}" "PRIVATE")
+            endif()
             add_test(NAME "duckomo_sanitizer_${test}"
                 COMMAND "$<TARGET_FILE:${test_target}>"
             )
@@ -596,6 +605,9 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
                 target_link_libraries("${test_target}" PRIVATE core_functions_extension)
             endif()
             duckomo_link_generated_extension_loader("${test_target}")
+            if(COMMAND duckdb_link_deferred_extension_libraries)
+                link_extension_libraries("${test_target}" "PRIVATE")
+            endif()
             if(test STREQUAL "region_input_test")
                 add_test(NAME "duckomo_sanitizer_${test}"
                     COMMAND "$<TARGET_FILE:${test_target}>"
@@ -648,6 +660,9 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
             duckdb_static duckomo_extension_sanitized duckomo_om
         )
         duckomo_link_generated_extension_loader(duckomo_projection_evidence_sanitizer)
+        if(COMMAND duckdb_link_deferred_extension_libraries)
+            link_extension_libraries(duckomo_projection_evidence_sanitizer "PRIVATE")
+        endif()
         add_test(NAME duckomo_sanitizer_projection_evidence
             COMMAND "$<TARGET_FILE:duckomo_projection_evidence_sanitizer>"
         )
