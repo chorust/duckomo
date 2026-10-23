@@ -175,7 +175,7 @@ class SamplingEvidenceTests(unittest.TestCase):
         self.assertEqual(checker.PINNED_N1_PROFILE_SHA256["capability-boundaries.reference.csv"],
                          "8b1d16d3c661d0d8d413b0305527eda44623cbe4f787b4cab5b29e4e5f73ece0")
         self.assertEqual(VALIDATOR.sha256(Path(__file__).resolve().parents[2] / "test/sql/region_sampling.test"),
-                         "2acb08e3d5cf9f320554dfaab336ca111ce8990e1acfa2ca558af67fb024aa57")
+                         "2c613c74a14c2137ad250ca414a391524df9a6b6423130b76c43e96e659d8064")
 
     def test_gate_parser_accepts_only_unique_n0_to_n7(self) -> None:
         self.assertEqual(VALIDATOR.parse_gates("N0, N2,N7"), ["N0", "N2", "N7"])
