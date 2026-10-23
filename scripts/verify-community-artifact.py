@@ -19,17 +19,21 @@ def literal(value):
     return "'" + str(value).replace("'", "''") + "'"
 
 
-def main():
+def build_parser():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument('--version', required=True, choices=['v1.5.4', 'v1.5.5', 'v1.5.6'])
+    parser.add_argument('--version', required=True, choices=['v1.5.4', 'v1.5.5', 'v1.5.6', 'v2.0.0'])
     parser.add_argument('--platform', default='linux_arm64',
                         choices=['linux_amd64', 'linux_arm64', 'osx_amd64', 'osx_arm64'])
     parser.add_argument('--runtime-manifest', type=Path,
                         help='multi-platform release runtime manifest; omitted uses historical ARM64 pins')
     for name in ('duckdb', 'httpfs', 'extension', 'output'):
         parser.add_argument('--' + name, type=Path, required=True)
-    args = parser.parse_args()
+    return parser
+
+
+def main():
+    args = build_parser().parse_args()
     args.root = args.root.resolve()
     for name in ('duckdb', 'httpfs', 'extension', 'output'):
         setattr(args, name, getattr(args, name).resolve())
@@ -43,7 +47,9 @@ def main():
         else:
             if args.platform != 'linux_arm64':
                 raise ValueError('non-ARM64 validation requires --runtime-manifest')
-            matrix = json.loads((args.root / 'test/data/grids/version-matrix.json').read_text())
+            # 2.0 lives in its own matrix so the 1.5 grid assertions stay intact.
+            matrix_name = ('engine-compatibility' if args.version.startswith('v2.') else 'grids') + '/version-matrix.json'
+            matrix = json.loads((args.root / 'test/data' / matrix_name).read_text())
             runtime = next(p['official_runtime'] for p in matrix['pairs'] if p['pair_id'] == args.version)
         assert sha(args.duckdb) == runtime['cli_sha256'], 'Official CLI hash mismatch'
         assert sha(args.httpfs) == runtime['httpfs_sha256'], 'Official HTTPFS hash mismatch'

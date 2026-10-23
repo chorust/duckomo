@@ -3,7 +3,8 @@
   "versions": [
     "v1.5.4",
     "v1.5.5",
-    "v1.5.6"
+    "v1.5.6",
+    "v2.0.0"
   ],
   "platforms": [
     {
@@ -119,6 +120,38 @@
       "httpfs_url": "https://extensions.duckdb.org/v1.5.6/osx_arm64/httpfs.duckdb_extension.gz",
       "cli_sha256": "7d15b2aaf6be05212ada5f99fe79e0b83e63b7ed91e7e422c0b925278e9e0c39",
       "httpfs_sha256": "0cde1f5acd1970bfd414b11f5e945a1eddd8425e96e273f6411538d8fe3d951d"
+    },
+    {
+      "version": "v2.0.0",
+      "platform": "linux_amd64",
+      "cli_url": "https://github.com/duckdb/duckdb/releases/download/v2.0.0/duckdb-cli-linux-amd64.tar.gz",
+      "httpfs_url": "https://extensions.duckdb.org/v2.0.0/linux_amd64/httpfs.duckdb_extension.gz",
+      "cli_sha256": "c41f957db5645d545a9caef430994cf262d24fad9297fef70c691395aadb43fb",
+      "httpfs_sha256": "77e6c429aa04f25da7962572f12b19113e0ce46080fa1365ad66017aadcdb68d"
+    },
+    {
+      "version": "v2.0.0",
+      "platform": "linux_arm64",
+      "cli_url": "https://github.com/duckdb/duckdb/releases/download/v2.0.0/duckdb-cli-linux-arm64.tar.gz",
+      "httpfs_url": "https://extensions.duckdb.org/v2.0.0/linux_arm64/httpfs.duckdb_extension.gz",
+      "cli_sha256": "f4c681bcf41a5c43dcf9a354703fe5bded9e2265282d1915d6d99637cd1e1f29",
+      "httpfs_sha256": "53f7aea1a0448ea62ef9b63f95da37c5766070084f14f14110e275e76382e7b2"
+    },
+    {
+      "version": "v2.0.0",
+      "platform": "osx_amd64",
+      "cli_url": "https://github.com/duckdb/duckdb/releases/download/v2.0.0/duckdb-cli-osx-amd64.tar.gz",
+      "httpfs_url": "https://extensions.duckdb.org/v2.0.0/osx_amd64/httpfs.duckdb_extension.gz",
+      "cli_sha256": "3abb2f746efe011979290d40448b8ac011b7fd7c55094ac00e7beeb8482c5ac0",
+      "httpfs_sha256": "0bfd8ca53a2ce0434ee52f99b7d1695098b8c1c0557128f7c3d5d06b0881badf"
+    },
+    {
+      "version": "v2.0.0",
+      "platform": "osx_arm64",
+      "cli_url": "https://github.com/duckdb/duckdb/releases/download/v2.0.0/duckdb-cli-osx-arm64.tar.gz",
+      "httpfs_url": "https://extensions.duckdb.org/v2.0.0/osx_arm64/httpfs.duckdb_extension.gz",
+      "cli_sha256": "432e9c8012d0259e7c4630fa2136bf59fb832769ca7e0f6e374b8af2d2cebed9",
+      "httpfs_sha256": "c2d72a98ad081bf4d62c908b8d9f60b70ab1b83faa9141fc7e7d53526658761d"
     }
   ]
 }

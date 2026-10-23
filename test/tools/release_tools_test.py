@@ -26,11 +26,70 @@ class ReleaseTests(unittest.TestCase):
 
     def test_exact_twelve_pinned_pairs(self):
         document = release.load_runtimes(ROOT / 'test/data/release-runtimes.json')
-        self.assertEqual(len(release.runtime_matrix(document)['include']), 12)
+        # One artifact per pinned version and platform; v2.0.0 raises this from 12 to 16.
+        self.assertEqual(len(release.runtime_matrix(document)['include']),
+                         len(document['versions']) * len(document['platforms']))
         old = json.loads((ROOT / 'test/data/grids/version-matrix.json').read_text())
         for pair in old['pairs']:
             self.assertEqual(release.find_runtime(document, pair['pair_id'], 'linux_arm64'),
                              pair['official_runtime'])
+
+    def test_cli_archive_format_depends_on_engine_generation(self):
+        platform = 'linux_amd64'
+        v2 = copy.deepcopy(self.document)
+        v2['versions'] = [v for v in v2['versions'] if not v.startswith('v2.')]
+        v2['runtimes'] = [r for r in v2['runtimes'] if not r['version'].startswith('v2.')]
+        v2['versions'].append('v2.0.0')
+        for runtime in [r for r in v2['runtimes'] if r['version'] == 'v1.5.6']:
+            added = copy.deepcopy(runtime)
+            added['version'] = 'v2.0.0'
+            plat = added['platform'].replace('_', '-')
+            added['cli_url'] = f'https://github.com/duckdb/duckdb/releases/download/v2.0.0/duckdb-cli-{plat}.tar.gz'
+            added['httpfs_url'] = f'https://extensions.duckdb.org/v2.0.0/{added["platform"]}/httpfs.duckdb_extension.gz'
+            v2['runtimes'].append(added)
+        release.load_runtimes_document = None
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'matrix.json'
+            path.write_text(json.dumps(v2))
+            loaded = release.load_runtimes(path)
+            self.assertIn('v2.0.0', loaded['versions'])
+        # A 2.0 runtime still pointing at the 1.5 zip, or a 1.5 runtime using the tarball, is rejected.
+        for version, cli_url in [
+            ('v2.0.0', f'https://github.com/duckdb/duckdb/releases/download/v2.0.0/duckdb_cli-{platform.replace("_", "-")}.zip'),
+            ('v1.5.6', f'https://github.com/duckdb/duckdb/releases/download/v1.5.6/duckdb-cli-{platform.replace("_", "-")}.tar.gz'),
+        ]:
+            broken = copy.deepcopy(self.document)
+            target = next(r for r in broken['runtimes'] if (r['version'], r['platform']) == (version, platform)) \
+                if version.startswith('v1.') else runtime
+            document = copy.deepcopy(v2 if version.startswith('v2.') else self.document)
+            entry = next(r for r in document['runtimes'] if (r['version'], r['platform']) == (version, platform))
+            entry['cli_url'] = cli_url
+            with tempfile.TemporaryDirectory() as directory, self.subTest(version=version):
+                path = Path(directory) / 'matrix.json'
+                path.write_text(json.dumps(document))
+                with self.assertRaises(ValueError):
+                    release.load_runtimes(path)
+
+    def test_verifier_accepts_v2_and_grid_matrix_stays_three_versions(self):
+        import argparse
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            'verify_community_artifact', ROOT / 'scripts/verify-community-artifact.py')
+        verifier = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(verifier)
+        parser = verifier.build_parser()
+        parser.parse_args(['--version', 'v2.0.0', '--extension', 'x', '--duckdb', 'y', '--httpfs', 'z',
+                            '--output', 'o'])
+        with self.assertRaises(SystemExit):
+            parser.parse_args(['--version', 'v2.0.1', '--extension', 'x', '--duckdb', 'y', '--httpfs', 'z',
+                                '--output', 'o'])
+        grids = json.loads((ROOT / 'test/data/grids/version-matrix.json').read_text())
+        self.assertEqual([p['pair_id'] for p in grids['pairs']], ['v1.5.4', 'v1.5.5', 'v1.5.6'])
+
+    def test_matrix_output_groups_versions_by_generation(self):
+        groups = release.version_groups(self.document)
+        self.assertEqual(groups['versions_1_5'], ['v1.5.4', 'v1.5.5', 'v1.5.6'])
+        self.assertEqual(groups['versions_2_0'], ['v2.0.0'])
 
     def test_missing_duplicate_bad_hash_and_wrong_urls_rejected(self):
         documents = []
@@ -141,13 +200,14 @@ class ReleaseTests(unittest.TestCase):
             output = root / 'dist'
             release.assemble(self.document, self.tag, self.commit, root / 'packages', output)
             manifest = json.loads((output / 'manifest.json').read_text())
-            self.assertEqual(len(manifest['packages']), 12)
+            pairs = len(self.document['runtimes'])
+            self.assertEqual(len(manifest['packages']), pairs)
             for record in manifest['packages']:
                 self.assertEqual(record['gz_file'], release.gz_asset_name(self.tag, record['duckdb_version'], record['platform']))
                 self.assertEqual(release.sha(output / record['gz_file']), record['gz_sha256'])
-            self.assertEqual(len(list(output.glob('*.duckdb_extension.gz'))), 12)
-            # 12 ZIP + 12 gz assets + manifest.json
-            self.assertEqual(len((output / 'SHA256SUMS').read_text().splitlines()), 25)
+            self.assertEqual(len(list(output.glob('*.duckdb_extension.gz'))), pairs)
+            # One ZIP and one gz asset per runtime pair, plus manifest.json.
+            self.assertEqual(len((output / 'SHA256SUMS').read_text().splitlines()), 2 * pairs + 1)
             for line in (output / 'SHA256SUMS').read_text().splitlines():
                 digest, name = line.split('  '); self.assertEqual(release.sha(output / name), digest)
             with self.assertRaises(ValueError):
@@ -162,7 +222,7 @@ class ReleaseTests(unittest.TestCase):
             for row in self.document['runtimes']:
                 self.pack(root, row['version'], row['platform'])
             gz_assets = sorted(root.rglob('*.duckdb_extension.gz'))
-            self.assertEqual(len(gz_assets), 12)
+            self.assertEqual(len(gz_assets), len(self.document['runtimes']))
             gz_assets[0].unlink()
             with self.assertRaises(ValueError):
                 release.assemble(self.document, self.tag, self.commit, root / 'packages', root / 'dist')

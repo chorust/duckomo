@@ -43,7 +43,10 @@ def load_runtimes(path):
         raise ValueError('missing, duplicate or unexpected runtime pair')
     for runtime in document['runtimes']:
         version, platform = runtime['version'], runtime['platform']
-        cli_url = f'https://github.com/duckdb/duckdb/releases/download/{version}/duckdb_cli-{platform.replace("_", "-")}.zip'
+        # DuckDB 1.5 ships the CLI as a zip; 2.0 ships it as a gzip tarball under a different name.
+        cli_file = ('duckdb-cli-' if version.startswith('v2.') else 'duckdb_cli-') + platform.replace('_', '-')
+        cli_file += '.tar.gz' if version.startswith('v2.') else '.zip'
+        cli_url = f'https://github.com/duckdb/duckdb/releases/download/{version}/{cli_file}'
         httpfs_url = f'https://extensions.duckdb.org/{version}/{platform}/httpfs.duckdb_extension.gz'
         if runtime['cli_url'] != cli_url or runtime['httpfs_url'] != httpfs_url:
             raise ValueError('runtime URL must identify the matching official version/platform')
@@ -62,6 +65,14 @@ def find_runtime(document, version, platform):
 
 def runtime_matrix(document):
     return {'include': [dict(version=v, **p) for v in document['versions'] for p in document['platforms']]}
+
+
+def version_groups(document):
+    """Split versions by engine generation so each CI job pins its own toolchain."""
+    groups = {'versions_1_5': [], 'versions_2_0': []}
+    for version in document['versions']:
+        groups['versions_2_0' if version.startswith('v2.') else 'versions_1_5'].append(version)
+    return groups
 
 
 def archive_name(tag, version, platform):
@@ -190,6 +201,8 @@ def main():
     if args.command == 'matrix':
         validate_tag(args.tag)
         print('versions=' + json.dumps(document['versions'], separators=(',', ':')))
+        for name, versions in version_groups(document).items():
+            print(name + '=' + json.dumps(versions, separators=(',', ':')))
         print('runtime=' + json.dumps(runtime_matrix(document), separators=(',', ':')))
     elif args.command == 'fetch-runtime':
         fetch_runtime(dict(runtime_dir=str(args.output), official_runtime=find_runtime(document, args.version, args.platform)))
