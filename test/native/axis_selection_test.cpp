@@ -1,6 +1,7 @@
 #include "duckomo/axis_selection.hpp"
 #include "duckomo/spatial_selection.hpp"
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/main/extension_helper.hpp"
 
 #include <cstdint>
@@ -11,7 +12,7 @@
 #include <vector>
 
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(database) {
 }
 } // namespace duckdb
 

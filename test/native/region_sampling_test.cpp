@@ -1,4 +1,5 @@
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/main/extension_helper.hpp"
 #include "core_functions_extension.hpp"
 #include "duckomo/local_file.hpp"
@@ -33,7 +34,7 @@ extern "C" {
 }
 
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(database) {
 	database.LoadStaticExtension<DuckomoExtension>();
 }
 } // namespace duckdb
@@ -62,8 +63,8 @@ std::string SqlLiteral(const std::string &value) {
 	return result;
 }
 
-std::unique_ptr<duckomo_test::CollectedQueryResult> Query(Connection &connection, const std::string &sql) {
-	return duckomo_test::Query(connection, sql);
+std::unique_ptr<::duckomo_test::CollectedQueryResult> Query(Connection &connection, const std::string &sql) {
+	return ::duckomo_test::Query(connection, sql);
 }
 
 std::vector<std::uint64_t> ParseIndices(const Value &value) {
@@ -702,7 +703,7 @@ void TestNearestCancellationAndRecovery(Connection &connection) {
 	std::string query_error;
 	std::thread query_thread([&] {
 		try {
-			auto result = connection.SendQuery(sql);
+			auto result = duckdb::duckomo_test::SendQuery(connection, sql);
 			if (!result) {
 				query_error = "nearest cancellation query returned no result";
 			} else if (result->HasError()) {
@@ -1179,6 +1180,7 @@ int main(int argc, char **argv) {
 			config.SetOptionByName("allow_unsigned_extensions", true);
 			config.options.maximum_threads = 4;
 			DuckDB database(nullptr, &config);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(database);
 			database.LoadStaticExtension<CoreFunctionsExtension>();
 			Connection connection(database);
 			Query(connection, "LOAD " + SqlLiteral(spatial_path));

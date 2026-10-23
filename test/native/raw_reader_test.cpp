@@ -1,4 +1,5 @@
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/main/extension_helper.hpp"
 #include "duckomo_extension.hpp"
 
@@ -27,7 +28,7 @@ extern "C" {
 // of the native-test link line, so provide the narrow startup hook needed by
 // DuckDB and load the extension under test itself.
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(database) {
 	database.LoadStaticExtension<DuckomoExtension>();
 }
 } // namespace duckdb
@@ -131,7 +132,8 @@ void CheckQueryAgainstOracle(duckdb::Connection &connection, const fs::path &om_
 	Require(!result->HasError(), "read_om_raw failed for " + om_path.string() + ": " + result->GetError());
 	Require(result->ColumnCount() == 1 && result->ColumnName(0) == "value",
 	        "read_om_raw must expose exactly one value column for " + om_path.string());
-	Require(result->types.size() == 1 && result->types[0] == duckdb::LogicalType::FLOAT,
+	Require(duckdb::duckomo_test::ResultTypes(*result).size() == 1 &&
+	            duckdb::duckomo_test::ResultTypes(*result)[0].id() == duckdb::LogicalTypeId::FLOAT,
 	        "read_om_raw value column must be FLOAT for " + om_path.string());
 
 	std::size_t row_index = 0;
@@ -340,6 +342,7 @@ int main() {
 		const fs::path raw_path = fixture_directory / "raw.om";
 		const fs::path raw_csv = fixture_directory / "raw.reference.csv";
 		duckdb::DuckDB database(nullptr);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(database);
 		duckdb::Connection connection(database);
 
 		CheckQueryAgainstOracle(connection, raw_path, raw_csv);

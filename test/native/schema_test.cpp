@@ -1,4 +1,5 @@
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/main/extension_helper.hpp"
 #include "duckdb/common/types/value.hpp"
 #include "duckomo/dimensions.hpp"
@@ -31,11 +32,9 @@ extern "C" {
 }
 
 namespace duckdb {
-#if DUCKOMO_DUCKDB_API_GENERATION < 2
-void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(database) {
 	database.LoadStaticExtension<DuckomoExtension>();
 }
-#endif
 } // namespace duckdb
 
 namespace {
@@ -252,8 +251,9 @@ void TestSelectedMetadata(duckdb::Connection &connection, const fs::path &fixtur
 	}
 	for (const auto *mode : {"false", "true"}) {
 		connection.Query(std::string("SET duckomo_revalidate_metadata=") + mode);
-		auto result = connection.Query("SELECT avg(temperature) FROM read_om(" + SqlLiteral(fixtures / "multi.om") +
-		                               ", variable := 'temperature', dimensions := ['row','column'])");
+		auto result = duckdb::duckomo_test::Rows(connection.Query("SELECT avg(temperature) FROM read_om(" +
+		                                                          SqlLiteral(fixtures / "multi.om") +
+		                                                          ", variable := 'temperature', dimensions := ['row','column'])"));
 		Require(result && !result->HasError() && result->GetValue(0, 0).GetValue<double>() == 2.5,
 		        "selected variable must work in default and strict modes");
 	}
@@ -555,7 +555,8 @@ void TestMetadataOnlyDescribe(duckdb::Connection &connection, const fs::path &ra
 	const auto damaged_path = temporary.File("metadata_only_corrupt_payload.om");
 	WriteFixture(damaged_path, damaged);
 
-	auto result = connection.Query("DESCRIBE SELECT * FROM read_om(" + SqlLiteral(damaged_path) + ")");
+	auto result = duckdb::duckomo_test::Rows(
+	    connection.Query("DESCRIBE SELECT * FROM read_om(" + SqlLiteral(damaged_path) + ")"));
 	Require(result != nullptr && !result->HasError(),
 	        "DESCRIBE read_om must bind from metadata without decoding the damaged payload" +
 	            (result && result->HasError() ? ": " + result->GetError() : ""));
@@ -571,8 +572,9 @@ int main() {
 	try {
 		const fs::path fixture_directory("test/data");
 		duckdb::DuckDB database(nullptr);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(database);
 #if DUCKOMO_DUCKDB_API_GENERATION >= 2
-		database.LoadStaticExtension<DuckomoExtension>();
+		database.LoadStaticExtension<duckdb::DuckomoExtension>();
 #endif
 		database.LoadStaticExtension<duckdb::CoreFunctionsExtension>();
 		duckdb::Connection connection(database);

@@ -13,7 +13,7 @@
 #include <vector>
 
 #include "duckdb/main/connection.hpp"
-#include "duckdb/main/materialized_query_result.hpp"
+#include "duckdb/main/query_result.hpp"
 
 namespace duckomo_test {
 namespace spatial_reference {
@@ -87,8 +87,9 @@ inline std::string Sha256(duckdb::Connection &connection, const std::string &pat
 	auto result = connection.Query("SELECT sha256(content) FROM read_blob(" + SqlLiteral(path) + ")");
 	Require(result && !result->HasError(), "cannot hash file " + path + ": " +
 	                                           (result ? result->GetError() : "no query result"));
-	Require(result->RowCount() == 1, "hash query returned an unexpected number of rows for " + path);
-	return result->GetValue(0, 0).GetValue<std::string>();
+	auto chunk = result->Fetch();
+	Require(chunk && chunk->size() == 1, "hash query returned an unexpected number of rows for " + path);
+	return chunk->GetValue(0, 0).GetValue<std::string>();
 }
 
 inline void VerifyPinnedDomainManifest(const std::string &manifest_path) {
@@ -157,10 +158,9 @@ inline std::pair<double, double> IndependentDomainCoordinate(std::uint64_t logic
 	        -180.0 + static_cast<double>(longitude_index) * 0.25};
 }
 
-inline void CompareDomainResult(duckdb::MaterializedQueryResult &result,
+inline void CompareDomainResult(duckdb::QueryResult &result,
 	                            const std::array<std::vector<float>, 15> &references) {
 	Require(result.ColumnCount() == 18, "domain query must return 15 values, two coordinates, and valid_time");
-	Require(result.RowCount() == DOMAIN_ROWS, "domain query returned an unexpected full-grid row count");
 	std::uint64_t logical_index = 0;
 	while (auto chunk = result.Fetch()) {
 		for (duckdb::idx_t row = 0; row < chunk->size(); row++, logical_index++) {

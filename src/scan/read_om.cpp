@@ -2953,7 +2953,7 @@ void ScanGridInfo(ClientContext &, TableFunctionInput &input, DataChunk &output)
 	output.SetValue(10, 0, document.object_version ? Value(*document.object_version) : Value(LogicalType::VARCHAR));
 	output.SetValue(11, 0, Value(document.version_strength));
 	output.SetValue(12, 0, Value::BOOLEAN(document.content_verified));
-	output.SetCardinality(1);
+	SetOutputCardinality(output, 1);
 	state.emitted = true;
 }
 
@@ -3334,7 +3334,7 @@ void ScanNearestBatch(ClientContext &context, ReadOmGlobalState &state, ReadOmLo
 	}
 	local.task_position_offset += count;
 	state.metrics->RecordScannedRows(count);
-	output.SetCardinality(count);
+	SetOutputCardinality(output, count);
 	if (!batch_statuses.empty()) state.metrics->RecordNearestSamplingStatuses(batch_statuses, count);
 	state.metrics->RecordNearestSamplingRows(count);
 	if (!local.registered_as_active) {
@@ -3345,7 +3345,7 @@ void ScanNearestBatch(ClientContext &context, ReadOmGlobalState &state, ReadOmLo
 
 void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLocalState &local,
 	                const ReadOmBindData &bind_data, DataChunk &output) {
-	output.SetCardinality(0);
+	SetOutputCardinality(output, 0);
 	if (state.stop_requested.load() || context.IsInterrupted()) {
 		throw InterruptException();
 	}
@@ -3563,11 +3563,7 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLoca
 	// array has decoded successfully. Exceptions leave a zero-row chunk.
 	local.task_position_offset += candidate_count;
 	state.metrics->RecordScannedRows(count);
-#if DUCKOMO_DUCKDB_API_GENERATION >= 2
-	output.SetChildCardinality(static_cast<idx_t>(count));
-#else
-	output.SetCardinality(static_cast<idx_t>(count));
-#endif
+	SetOutputCardinality(output, static_cast<idx_t>(count));
 	if (!local.registered_as_active) {
 		state.metrics->RecordWorkerActive(local.worker_id);
 		local.registered_as_active = true;
@@ -3674,7 +3670,7 @@ void ScanLastMetrics(ClientContext &, TableFunctionInput &input, DataChunk &outp
 		output.SetValue(2, count, Value(row.metrics));
 		++count;
 	}
-	output.SetCardinality(count);
+	SetOutputCardinality(output, count);
 }
 
 } // namespace

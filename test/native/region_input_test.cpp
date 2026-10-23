@@ -14,9 +14,10 @@
 #include "duckdb/common/types.hpp"
 #include "duckdb/common/types/value.hpp"
 #include "duckdb/main/extension_helper.hpp"
+#include "duckdb_test_compat.hpp"
 
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(database) {
 	(void)database;
 }
 } // namespace duckdb

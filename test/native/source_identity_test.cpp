@@ -1,4 +1,5 @@
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/main/extension_helper.hpp"
 #include "duckomo/compat/duckdb_api.hpp"
 #include "core_functions_extension.hpp"
@@ -15,16 +16,14 @@
 #include <vector>
 
 namespace duckdb {
-#if DUCKOMO_DUCKDB_API_GENERATION < 2
-void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(database) {
 	database.LoadStaticExtension<DuckomoExtension>();
 }
-#endif
 } // namespace duckdb
 
 namespace {
 using namespace duckdb;
-using duckomo_test::Query;
+using ::duckomo_test::Query;
 
 void Require(bool condition, const std::string &message) {
 	if (!condition) throw std::runtime_error(message);
@@ -238,6 +237,7 @@ int main() {
 		DBConfig config;
 		config.SetOptionByName("allow_unsigned_extensions", true);
 		DuckDB database(nullptr, &config);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(database);
 		#if DUCKOMO_DUCKDB_API_GENERATION >= 2
 		database.LoadStaticExtension<DuckomoExtension>();
 		#endif

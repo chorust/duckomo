@@ -1,4 +1,5 @@
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/main/extension_helper.hpp"
 #include "core_functions_extension.hpp"
 #include "duckomo/local_file.hpp"
@@ -33,7 +34,7 @@ extern "C" {
 #include <vector>
 
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(database) {
 	database.LoadStaticExtension<DuckomoExtension>();
 }
 } // namespace duckdb
@@ -63,8 +64,8 @@ std::string SqlLiteral(const std::string &value) {
 	return result;
 }
 
-std::unique_ptr<duckomo_test::CollectedQueryResult> Query(Connection &connection, const std::string &sql) {
-	return duckomo_test::Query(connection, sql);
+std::unique_ptr<::duckomo_test::CollectedQueryResult> Query(Connection &connection, const std::string &sql) {
+	return ::duckomo_test::Query(connection, sql);
 }
 
 std::string SmallRegionScan(const std::string &regions, bool include_source = false) {
@@ -304,7 +305,7 @@ void TestRegionOrdinalAcrossTasks(Connection &connection) {
 		cancellation_error.clear();
 		std::thread query_thread([&] {
 			try {
-				auto result = connection.SendQuery("SELECT region_id,value FROM " + read_sql);
+				auto result = duckdb::duckomo_test::SendQuery(connection, "SELECT region_id,value FROM " + read_sql);
 				if (!result) {
 					cancellation_error = "query returned no result";
 				} else if (result->HasError()) {
@@ -830,6 +831,7 @@ int main(int argc, char **argv) {
 		config.SetOptionByName("allow_unsigned_extensions", true);
 		config.options.maximum_threads = 4;
 		DuckDB database(nullptr, &config);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(database);
 		database.LoadStaticExtension<CoreFunctionsExtension>();
 		Connection connection(database);
 		if (core_path != nullptr && core_path[0] != '\0') Query(connection, "LOAD " + SqlLiteral(core_path));

@@ -1,4 +1,5 @@
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/main/extension_helper.hpp"
 #include "duckomo_extension.hpp"
 #include "duckomo/compat/duckdb_api.hpp"
@@ -10,11 +11,9 @@
 #include <string>
 #include <thread>
 #include <utility>
-#if DUCKOMO_DUCKDB_API_GENERATION < 2
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &db) { db.LoadStaticExtension<DuckomoExtension>(); }
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(db) { db.LoadStaticExtension<DuckomoExtension>(); }
 }
-#endif
 namespace {
 using namespace duckdb;
 void Require(bool yes,const char *message) {
@@ -36,6 +35,7 @@ int main() {
  try {
   DBConfig config;config.SetOptionByName("allow_unsigned_extensions",Value::BOOLEAN(true));
   DuckDB db(nullptr,&config);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(db);
 #if DUCKOMO_DUCKDB_API_GENERATION >= 2
   db.LoadStaticExtension<DuckomoExtension>();
 #endif
@@ -70,6 +70,7 @@ int main() {
   Require(!conn.Query("SET http_proxy=''")->HasError(),"reset test proxy");
   {
    DuckDB missing_db(nullptr,&config);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(missing_db);
 #if DUCKOMO_DUCKDB_API_GENERATION >= 2
    missing_db.LoadStaticExtension<DuckomoExtension>();
 #endif

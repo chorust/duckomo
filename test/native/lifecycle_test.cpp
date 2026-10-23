@@ -1,4 +1,5 @@
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/main/extension_helper.hpp"
 
 extern "C" {
@@ -37,9 +38,9 @@ const char *ConfiguredExtensionPath() {
 // quickstart extension artifact without pulling unrelated built-in extension
 // archives into its link.
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(database) {
 	const auto *extension_path = ConfiguredExtensionPath();
-	ExtensionHelper::LoadExternalExtension(*database.instance, database.GetFileSystem(), extension_path);
+	duckdb::duckomo_test::LoadExternalExtension(*database.instance, database.GetFileSystem(), extension_path);
 	std::cout << "lifecycle loaded DuckOMO: " << std::filesystem::canonical(extension_path).string() << '\n';
 }
 } // namespace duckdb
@@ -203,7 +204,7 @@ void TestScanFailureRecovery(Connection &connection, const TemporaryPartialFixtu
 	}
 	RequireQueryError(connection, ScanQuery(partial_fixture.Path()), "full scan with a corrupt final chunk");
 
-	auto recovered = connection.Query(ScanQuery(RAW_FIXTURE));
+	auto recovered = duckdb::duckomo_test::Rows(connection.Query(ScanQuery(RAW_FIXTURE)));
 	Require(recovered != nullptr, "valid raw scan returned no result after partial scan error");
 	if (recovered->HasError()) {
 		throw std::runtime_error("valid raw scan failed after partial scan error: " + recovered->GetError());
@@ -222,7 +223,7 @@ void TestCancellationAndRecovery(Connection &connection) {
 	std::string query_error;
 	std::thread query_thread([&] {
 		try {
-			auto result = connection.SendQuery("SELECT a.value FROM read_om_raw(" + SqlLiteral(RAW_LARGE_FIXTURE) +
+			auto result = duckdb::duckomo_test::SendQuery(connection, "SELECT a.value FROM read_om_raw(" + SqlLiteral(RAW_LARGE_FIXTURE) +
 			                                  ") AS a CROSS JOIN read_om_raw(" + SqlLiteral(RAW_LARGE_FIXTURE) +
 			                                  ") AS b CROSS JOIN read_om_raw(" + SqlLiteral(RAW_LARGE_FIXTURE) +
 			                                  ") AS c");
@@ -257,7 +258,7 @@ void TestCancellationAndRecovery(Connection &connection) {
 	query_thread.join();
 	Require(failed_with_interrupt, "long-running raw scan query was not cancelled: " + query_error);
 
-	auto recovered = connection.Query(ScanQuery(RAW_FIXTURE));
+	auto recovered = duckdb::duckomo_test::Rows(connection.Query(ScanQuery(RAW_FIXTURE)));
 	Require(recovered != nullptr, "valid raw scan returned no result after cancellation");
 	if (recovered->HasError()) {
 		throw std::runtime_error("valid raw scan failed after cancellation: " + recovered->GetError());
@@ -312,6 +313,7 @@ int main() {
 	duckdb::DBConfig config;
 	config.SetOptionByName("allow_unsigned_extensions", true);
 	DuckDB database(nullptr, &config);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(database);
 		Connection connection(database);
 		LoadExtension(connection);
 		TemporaryPartialFixture partial_fixture(RAW_LARGE_FIXTURE);

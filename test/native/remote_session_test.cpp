@@ -1,4 +1,5 @@
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/main/config.hpp"
 #include "duckdb/main/extension_helper.hpp"
 #include "duckdb/main/client_context.hpp"
@@ -20,7 +21,7 @@
 #include <vector>
 
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &db) { db.LoadStaticExtension<DuckomoExtension>(); }
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(db) { db.LoadStaticExtension<DuckomoExtension>(); }
 }
 namespace {
 using namespace duckdb;
@@ -75,7 +76,8 @@ template<class F> void Fails(F action,const char *why) {
 }
 void TestDiagnosticFailures() {
     State state;
-    DuckDB db(nullptr); Connection conn(db);
+    DuckDB db(nullptr);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(db); Connection conn(db);
     FileSystem::GetFileSystem(*conn.context).RegisterSubSystem(make_uniq<FakeFileSystem>(state));
     auto metrics=std::make_shared<ScanMetrics>();
     auto session=RemoteReadSession::Create(*conn.context,"https://duckomo-test/object.om?token=sensitive-marker",metrics);
@@ -181,7 +183,7 @@ void TestQueryObjectIdentity(Connection &conn) {
     Require(core && !core->HasError(),"core functions available for identity queries");
     FileSystem::GetFileSystem(*conn.context).RegisterSubSystem(make_uniq<IdentityFileSystem>());
     const auto scalar=[&](const std::string &sql) {
-        auto result=conn.Query(sql);
+        auto result=duckdb::duckomo_test::Rows(conn.Query(sql));
         Require(result && !result->HasError() && result->RowCount()==1,"identity query succeeds");
         return result->GetValue(0,0).ToString();
     };
@@ -209,7 +211,8 @@ int main() {
     try {
         State state;
         DBConfig query_config;query_config.SetOptionByName("allow_unsigned_extensions",Value::BOOLEAN(true));
-        DuckDB db(nullptr,&query_config); Connection conn(db);
+        DuckDB db(nullptr,&query_config);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(db); Connection conn(db);
         auto &fs=FileSystem::GetFileSystem(*conn.context);
         fs.RegisterSubSystem(make_uniq<FakeFileSystem>(state));
         auto metrics=std::make_shared<ScanMetrics>();
@@ -245,7 +248,8 @@ int main() {
         weak->Open(*conn.context,ScanMetadataStage::Bind);
         weak->Open(*conn.context,ScanMetadataStage::Scan); // Empty tag is allowed, never content_verified.
         DBConfig config; config.SetOptionByName("enable_external_access",Value::BOOLEAN(false));
-        DuckDB restricted(nullptr,&config);Connection denied(restricted);
+        DuckDB restricted(nullptr,&config);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(restricted);Connection denied(restricted);
         Fails([&]{ RemoteReadSession::Create(*denied.context,"https://duckomo-test/object.om?token=secret",metrics); },"external access restriction");
         Require(!IsSupportedRemoteOmUri("https://host/*.om"),"reject globs");
         Require(!IsSupportedRemoteOmUri("https://host/file.om#frag"),"reject fragments");

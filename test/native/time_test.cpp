@@ -1,4 +1,5 @@
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/main/extension_helper.hpp"
 #include "duckomo_extension.hpp"
 #include <cstdlib>
@@ -17,7 +18,7 @@ extern "C" {
 }
 
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &db) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(db) {
 	db.LoadStaticExtension<DuckomoExtension>();
 }
 } // namespace duckdb
@@ -105,7 +106,7 @@ std::string Spatial() {
 	       ":= ['lat','lon']";
 }
 void Expect(duckdb::Connection &connection, const std::string &sql, const std::vector<std::string> &expected) {
-	auto result = connection.Query(sql);
+	auto result = duckdb::duckomo_test::Rows(connection.Query(sql));
 	Require(result && !result->HasError(), sql + "\n" + (result ? result->GetError() : "no result"));
 	Require(result->RowCount() * result->ColumnCount() == expected.size(), "unexpected result size: " + sql);
 	std::size_t index = 0;
@@ -138,6 +139,7 @@ void Run(const std::filesystem::path &dir) {
 	duckdb::DBConfig config;
 	config.SetOptionByName("allow_unsigned_extensions", true);
 	duckdb::DuckDB db(nullptr, &config);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(db);
 	db.LoadStaticExtension<duckdb::DuckomoExtension>();
 	duckdb::Connection connection(db);
 	const auto *core_override = std::getenv("DUCKOMO_CORE_FUNCTIONS_EXTENSION");
@@ -148,7 +150,7 @@ void Run(const std::filesystem::path &dir) {
 	Fixture(run, {2, 2, 3}, "lat lon time", {start, start + 3600, start + 10800});
 	Expect(connection, "SELECT value, valid_time FROM " + Read(run) + " WHERE value BETWEEN 6 AND 8 ORDER BY value",
 	       {"6.0", "2026-09-21 00:00:00", "7.0", "2026-09-21 01:00:00", "8.0", "2026-09-21 03:00:00"});
-	auto metric_rows = connection.Query("SELECT metrics FROM duckomo_last_scan_metrics()");
+	auto metric_rows = duckdb::duckomo_test::Rows(connection.Query("SELECT metrics FROM duckomo_last_scan_metrics()"));
 	Require(metric_rows && !metric_rows->HasError() && metric_rows->RowCount() == 1,
 	        "time array scan must publish one v3 metrics row");
 	const auto time_metrics = metric_rows->GetValue(0, 0).GetValue<std::string>();

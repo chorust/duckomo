@@ -1,4 +1,5 @@
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/main/extension_helper.hpp"
 
 #include <array>
@@ -11,7 +12,7 @@
 #include "spatial_reference.hpp"
 
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(database) {
 	(void)database;
 }
 } // namespace duckdb
@@ -54,6 +55,7 @@ void Run(const fs::path &sample_path, const fs::path &manifest_path, const fs::p
 	duckdb::DBConfig config;
 	config.SetOptionByName("allow_unsigned_extensions", true);
 	duckdb::DuckDB database(nullptr, &config);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(database);
 	duckdb::Connection connection(database);
 	RequireSuccess(connection, "LOAD " + SqlLiteral(FindCoreFunctionsExtension()));
 	const auto *duckomo_override = std::getenv("DUCKOMO_TEST_EXTENSION");
@@ -81,15 +83,14 @@ void Run(const fs::path &sample_path, const fs::path &manifest_path, const fs::p
 	auto result = connection.Query(query);
 	Require(result != nullptr && !result->HasError(), "explicit-domain-grid query failed: " +
 	                                                     (result ? result->GetError() : "no result"));
-	auto &materialized = result->Cast<duckdb::MaterializedQueryResult>();
-	CompareDomainResult(materialized, references);
+	CompareDomainResult(*result, references);
 
 	const auto domain_query = "SELECT * FROM read_om(" + SqlLiteral(sample) +
 	                          ", domain := 'ncep_gfswave025') ORDER BY lat, lon";
 	auto domain_result = connection.Query(domain_query);
 	Require(domain_result != nullptr && !domain_result->HasError(), "registered-domain query failed: " +
 	                                                                 (domain_result ? domain_result->GetError() : "no result"));
-	CompareDomainResult(domain_result->Cast<duckdb::MaterializedQueryResult>(), references);
+	CompareDomainResult(*domain_result, references);
 }
 
 } // namespace

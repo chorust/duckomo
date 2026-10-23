@@ -1,4 +1,5 @@
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/main/extension_helper.hpp"
 
 #include <filesystem>
@@ -12,7 +13,7 @@
 #include <unistd.h>
 
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(database) {
 	(void)database;
 }
 } // namespace duckdb
@@ -26,7 +27,7 @@ void Require(bool condition, const std::string &message) {
 	}
 }
 
-std::unique_ptr<duckdb::MaterializedQueryResult> RequireSuccess(duckdb::Connection &connection,
+std::unique_ptr<duckdb::duckomo_test::MaterializedQueryResult> RequireSuccess(duckdb::Connection &connection,
 	                                                             const std::string &sql) {
 	auto result = connection.Query(sql);
 	Require(result != nullptr && !result->HasError(), "query failed: " + (result ? result->GetError() : "no result"));
@@ -64,7 +65,7 @@ std::uint64_t JsonUnsigned(const std::string &json, const std::string &key) {
 }
 
 struct RunResult final {
-	std::unique_ptr<duckdb::MaterializedQueryResult> query;
+	duckdb::unique_ptr<duckdb::duckomo_test::ResultRows<std::unique_ptr<duckdb::duckomo_test::MaterializedQueryResult>>> query;
 	std::string metrics;
 };
 
@@ -74,7 +75,7 @@ RunResult RunWithMetrics(duckdb::Connection &connection, const fs::path &metrics
 	fs::remove(metrics_path, ignored);
 	setenv("DUCKOMO_METRICS_OUTPUT", metrics_path.c_str(), 1);
 	setenv("DUCKOMO_SCENARIO", scenario.c_str(), 1);
-	auto query = RequireSuccess(connection, sql);
+	auto query = duckdb::duckomo_test::Rows(RequireSuccess(connection, sql));
 	auto metrics = ReadText(metrics_path);
 	Require(metrics.find("\"schema_version\":2") != std::string::npos, "spatial I/O sidecar must use schema v2");
 	Require(metrics.find("\"status\":\"success\"") != std::string::npos, "successful query must be recorded as success");
@@ -277,6 +278,7 @@ int main() {
 		duckdb::DBConfig config;
 		config.SetOptionByName("allow_unsigned_extensions", true);
 		duckdb::DuckDB database(nullptr, &config);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(database);
 		duckdb::Connection connection(database);
 		const auto core_functions = FindCoreFunctions();
 		Require(!core_functions.empty(), "cannot find core_functions extension in the release repository");

@@ -142,7 +142,7 @@ void ScanRaw(ClientContext &context, TableFunctionInput &input, DataChunk &outpu
 	if (!input.global_state) {
 		throw InternalException("read_om_raw scan has no global state");
 	}
-	output.SetCardinality(0);
+	SetOutputCardinality(output, 0);
 	auto &state = input.global_state->Cast<RawGlobalState>();
 	if (state.next_linear_index >= state.row_count) {
 		return;
@@ -174,7 +174,7 @@ void ScanRaw(ClientContext &context, TableFunctionInput &input, DataChunk &outpu
 	}
 
 	state.next_linear_index += count;
-	output.SetCardinality(static_cast<idx_t>(count));
+	SetOutputCardinality(output, static_cast<idx_t>(count));
 }
 
 } // namespace

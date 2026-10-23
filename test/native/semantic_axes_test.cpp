@@ -1,6 +1,7 @@
 #include "duckomo/semantic_axes.hpp"
 
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/common/exception/binder_exception.hpp"
 #include "duckdb/main/extension_helper.hpp"
 
@@ -13,7 +14,7 @@
 #include <vector>
 
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(database) {
 }
 } // namespace duckdb
 

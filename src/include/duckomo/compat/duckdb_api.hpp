@@ -61,6 +61,15 @@ T *MutableVectorData(Vector &vector) {
 	return FlatVector::GetData<T>(vector);
 #endif
 }
+//! Sets the logical cardinality of an output chunk and, on 2.0, resizes its child vectors to match. 1.x vectors
+//! have no size of their own, so there it only sets the chunk cardinality.
+inline void SetOutputCardinality(DataChunk &chunk, idx_t count) {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	chunk.SetChildCardinality(count);
+#else
+	chunk.SetCardinality(count);
+#endif
+}
 ExpressionClass ExpressionClassOf(const Expression &expression);
 ExpressionType ExpressionTypeOf(const Expression &expression);
 const LogicalType &ExpressionReturnType(const Expression &expression);

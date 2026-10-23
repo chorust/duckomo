@@ -1,4 +1,5 @@
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/main/extension_helper.hpp"
 #include "duckomo_extension.hpp"
 
@@ -30,19 +31,19 @@ void Require(bool condition, const std::string &message) {
 }
 
 std::string Scalar(duckdb::Connection &connection, const std::string &sql) {
-	auto result = connection.Query(sql);
+	auto result = duckdb::duckomo_test::Rows(connection.Query(sql));
 	Require(result != nullptr && !result->HasError(), sql + ": " + (result ? result->GetError() : "no result"));
 	Require(result->RowCount() == 1 && result->ColumnCount() == 1, "expected one scalar result: " + sql);
 	return result->GetValue(0, 0).ToString();
 }
 
 void RequireSuccess(duckdb::Connection &connection, const std::string &sql) {
-	auto result = connection.Query(sql);
+	auto result = duckdb::duckomo_test::Rows(connection.Query(sql));
 	Require(result != nullptr && !result->HasError(), sql + ": " + (result ? result->GetError() : "no result"));
 }
 
 void RequireFailure(duckdb::Connection &connection, const std::string &sql) {
-	auto result = connection.Query(sql);
+	auto result = duckdb::duckomo_test::Rows(connection.Query(sql));
 	Require(result != nullptr && result->HasError(), "expected query to fail: " + sql);
 }
 
@@ -251,7 +252,7 @@ void TestCancellationFailureAndRecovery(duckdb::Connection &connection) {
 	std::string query_error;
 	std::thread query_thread([&] {
 		try {
-			auto result = connection.SendQuery("SELECT " + HeavyExpression() + " FROM " + PerfRead());
+			auto result = duckdb::duckomo_test::SendQuery(connection, "SELECT " + HeavyExpression() + " FROM " + PerfRead());
 			if (!result) {
 				query_error = "cancel query returned no result";
 			} else if (result->HasError()) {
@@ -302,7 +303,7 @@ void TestCancellationFailureAndRecovery(duckdb::Connection &connection) {
 } // namespace
 
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(database) {
 	database.LoadStaticExtension<DuckomoExtension>();
 }
 } // namespace duckdb
@@ -312,6 +313,7 @@ int main() {
 		duckdb::DBConfig config;
 		config.SetOptionByName("allow_unsigned_extensions", true);
 		duckdb::DuckDB database(nullptr, &config);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(database);
 		duckdb::Connection connection(database);
 		const auto *core_override = std::getenv("DUCKOMO_CORE_FUNCTIONS_EXTENSION");
 		const std::string core_path = core_override ? core_override :

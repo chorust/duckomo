@@ -1,4 +1,5 @@
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/main/extension_helper.hpp"
 #include "duckomo/metrics.hpp"
 #include "duckomo/projection.hpp"
@@ -31,12 +32,12 @@ extern "C" {
 }
 
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(database) {
 	const auto *extension_path = std::getenv("DUCKOMO_TEST_EXTENSION");
 	if (extension_path == nullptr || extension_path[0] == '\0') {
 		extension_path = "./build/release/extension/duckomo/duckomo.duckdb_extension";
 	}
-	ExtensionHelper::LoadExternalExtension(*database.instance, database.GetFileSystem(),
+	duckdb::duckomo_test::LoadExternalExtension(*database.instance, database.GetFileSystem(),
 	                                       extension_path);
 }
 } // namespace duckdb
@@ -89,7 +90,7 @@ std::string SpatialProjectionRead() {
 	       "spatial_axes := ['row','column'])";
 }
 
-std::unique_ptr<duckdb::MaterializedQueryResult> RequireSuccess(duckdb::Connection &connection,
+std::unique_ptr<duckdb::duckomo_test::MaterializedQueryResult> RequireSuccess(duckdb::Connection &connection,
 	                                                               const std::string &sql,
 	                                                               const std::string &description) {
 	auto result = connection.Query(sql);
@@ -732,7 +733,7 @@ void TestProjectionMetrics(duckdb::Connection &connection, MetricsOutput &metric
 	metrics.SetFixture("projection", PROJECTION_SHA256);
 	metrics.SetScenario("native_count_only");
 	metrics.Clear();
-	auto count = RequireSuccess(connection, "SELECT count(*) FROM " + read_om, "cardinality-only query");
+	auto count = duckdb::duckomo_test::Rows(RequireSuccess(connection, "SELECT count(*) FROM " + read_om, "cardinality-only query"));
 	Require(count->RowCount() == 1 && count->GetValue(0, 0).GetValue<std::int64_t>() == 10541,
 	        "count-only query returned an unexpected count");
 	count.reset();
@@ -849,7 +850,7 @@ void TestCancellationMetricsAndRecovery(duckdb::Connection &connection, MetricsO
 		std::string query_error;
 		std::thread query_thread([&] {
 			try {
-				auto result = connection.SendQuery(CancellationSql());
+				auto result = duckdb::duckomo_test::SendQuery(connection, CancellationSql());
 				if (!result) {
 					query_error = "cancel query returned no result";
 				} else if (result->HasError()) {
@@ -943,6 +944,7 @@ int main() {
 		config.SetOptionByName("allow_unsigned_extensions", true);
 		config.options.maximum_threads = 1;
 		duckdb::DuckDB database(nullptr, &config);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(database);
 		duckdb::Connection connection(database);
 		LoadExtension(connection);
 		MetricsOutput metrics;

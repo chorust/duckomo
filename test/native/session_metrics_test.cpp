@@ -1,4 +1,5 @@
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/main/extension_helper.hpp"
 #include "duckomo_extension.hpp"
 
@@ -7,7 +8,7 @@
 #include <string>
 
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(database) {
 	database.LoadStaticExtension<DuckomoExtension>();
 }
 } // namespace duckdb
@@ -20,7 +21,7 @@ void Require(bool condition, const std::string &message) {
 }
 
 std::string Scalar(Connection &connection, const std::string &sql) {
-	auto result = connection.Query(sql);
+	auto result = duckdb::duckomo_test::Rows(connection.Query(sql));
 	Require(result && !result->HasError(), sql + ": " + (result ? result->GetError() : "no result"));
 	Require(result->RowCount() == 1 && result->ColumnCount() == 1, "expected one scalar result: " + sql);
 	return result->GetValue(0, 0).ToString();
@@ -30,6 +31,7 @@ std::string Scalar(Connection &connection, const std::string &sql) {
 int main() {
 	try {
 		DuckDB database(nullptr);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(database);
 		Connection first(database);
 		Connection second(database);
 		Require(first.Query("SET duckomo_cache_enabled=false")->HasError(), "removed cache setting must fail");

@@ -119,6 +119,7 @@ function(duckomo_add_source_target target source output_dir)
         "${PROJECT_SOURCE_DIR}/src/include"
         "${PROJECT_SOURCE_DIR}/third_party/om-file-format/c/include"
         "${DUCKOMO_GENERATED_INCLUDE_DIR}"
+        "${CMAKE_CURRENT_SOURCE_DIR}/native"
     )
 endfunction()
 
@@ -161,6 +162,9 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
 		elseif(test STREQUAL "axis_selection_test" OR test STREQUAL "semantic_axes_test" OR
 		       test STREQUAL "parallel_scan_test")
             target_link_libraries("${test}" PRIVATE duckdb_static duckomo_extension duckomo_om)
+            if(COMMAND duckdb_link_deferred_extension_libraries)
+                link_extension_libraries("${test}" "PRIVATE")
+            endif()
             if(test STREQUAL "axis_selection_test")
                 target_sources("${test}" PRIVATE "${PROJECT_SOURCE_DIR}/src/scan/spatial_selection.cpp")
             endif()
@@ -282,8 +286,9 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
         else()
             target_link_libraries("${test}" PRIVATE duckdb_static duckomo_extension duckomo_om)
             duckomo_link_generated_extension_loader("${test}")
-            if(test STREQUAL "official_httpfs_test" AND COMMAND duckdb_link_deferred_extension_libraries)
-                # 2.0 separates dynamic loading into a linked capability.
+            if(COMMAND duckdb_link_deferred_extension_libraries)
+                # 2.0 separates dynamic extension loading into a linked capability, which every native test that loads
+                # an official extension at runtime needs.
                 link_extension_libraries("${test}" "PRIVATE")
             endif()
             if(test STREQUAL "grid_zero_io_test" OR test STREQUAL "source_identity_test" OR test STREQUAL "schema_test")

@@ -1,4 +1,5 @@
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/common/exception.hpp"
 #include "duckdb/catalog/catalog.hpp"
 #include "duckdb/function/scalar_function.hpp"
@@ -16,7 +17,7 @@
 #include <vector>
 
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(database) {
 	(void)database;
 }
 } // namespace duckdb
@@ -77,7 +78,11 @@ void CheckQuery(Connection &connection, const std::string &sql) {
 
 void RegisterStub(ClientContext &context, const std::string &name, std::vector<LogicalType> arguments,
                   LogicalType return_type) {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	ScalarFunction function(Identifier(name), std::move(arguments), std::move(return_type), ScalarFunction::NopFunction);
+#else
 	ScalarFunction function(name, std::move(arguments), std::move(return_type), ScalarFunction::NopFunction);
+#endif
 	CreateScalarFunctionInfo info(std::move(function));
 	Catalog::GetSystemCatalog(context).AddFunction(context, info);
 }
@@ -102,6 +107,7 @@ std::vector<idx_t> Select(RegionPredicateEvaluator &predicate, ClientContext &co
 
 void TestMissingDependency() {
 	DuckDB database(nullptr);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(database);
 	Connection connection(database);
 	CheckQuery(connection, "BEGIN TRANSACTION");
 	bool diagnosed = false;
@@ -118,6 +124,7 @@ void TestMissingDependency() {
 
 void TestMissingNearestSignature() {
 	DuckDB database(nullptr);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(database);
 	Connection connection(database);
 	CheckQuery(connection, "BEGIN TRANSACTION");
 	const auto geometry = LogicalType::GEOMETRY();
@@ -148,14 +155,15 @@ void TestMissingNearestSignature() {
 
 void TestAdapterAndWorkerState(const std::string &extension_path, const std::string &expected_hash) {
 	DuckDB database(nullptr);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(database);
 	Connection connection(database);
 	CheckQuery(connection, "LOAD '" + extension_path + "'");
 
-	auto metadata = connection.Query(
-	    "SELECT extension_version, coalesce(install_path, '') FROM duckdb_extensions() WHERE extension_name='spatial'");
+	auto metadata = duckdb::duckomo_test::Rows(connection.Query(
+	    "SELECT extension_version, coalesce(install_path, '') FROM duckdb_extensions() WHERE extension_name='spatial'"));
 	Require(metadata && !metadata->HasError() && metadata->RowCount() == 1,
 	        "loaded spatial extension must appear in duckdb_extensions()");
-	auto version = connection.Query("PRAGMA version");
+	auto version = duckdb::duckomo_test::Rows(connection.Query("PRAGMA version"));
 	Require(version && !version->HasError() && version->RowCount() == 1 && version->ColumnCount() >= 2,
 	        "the native runtime must report its DuckDB version");
 	std::cout << "duckdb_version=" << version->GetValue(0, 0).ToString() << '\n';
@@ -165,7 +173,7 @@ void TestAdapterAndWorkerState(const std::string &extension_path, const std::str
 	std::cout << "spatial_package_sha256=" << expected_hash << '\n';
 
 	CheckQuery(connection, "CREATE TEMP MACRO st_point(x, y) AS NULL::GEOMETRY");
-	auto shadow = connection.Query("SELECT st_point(1.0, 2.0) IS NULL");
+	auto shadow = duckdb::duckomo_test::Rows(connection.Query("SELECT st_point(1.0, 2.0) IS NULL"));
 	Require(shadow && !shadow->HasError() && shadow->GetValue(0, 0).GetValue<bool>(),
 	        "the test temporary function must shadow unqualified ST_Point");
 

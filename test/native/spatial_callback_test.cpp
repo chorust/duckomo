@@ -1,4 +1,5 @@
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/main/extension_helper.hpp"
 #include "duckomo/read_om.hpp"
 
@@ -12,7 +13,7 @@
 #include <unistd.h>
 
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(database) {
 	(void)database;
 }
 } // namespace duckdb
@@ -36,7 +37,7 @@ std::string SpatialRawRead() {
 	       "spatial_axes := ['lat','lon'])";
 }
 
-std::unique_ptr<duckdb::MaterializedQueryResult> RequireSuccess(duckdb::Connection &connection,
+std::unique_ptr<duckdb::duckomo_test::MaterializedQueryResult> RequireSuccess(duckdb::Connection &connection,
 	                                                             const std::string &sql) {
 	auto result = connection.Query(sql);
 	Require(result != nullptr && !result->HasError(), "query failed: " + (result ? result->GetError() : "no result"));
@@ -50,7 +51,7 @@ void TestCallbackRetainsFilterAndProjection(duckdb::Connection &connection) {
 	Require(static_cast<bool>(function.pushdown_complex_filter), "complex-filter callback is registered");
 
 	const auto source = ProjectionRead();
-	auto explain = RequireSuccess(connection, "EXPLAIN SELECT temperature FROM " + source + " WHERE humidity = 96");
+	auto explain = duckdb::duckomo_test::Rows(RequireSuccess(connection, "EXPLAIN SELECT temperature FROM " + source + " WHERE humidity = 96"));
 	std::string plan;
 	for (idx_t row = 0; row < explain->RowCount(); row++) {
 		plan += explain->GetValue(1, row).ToString();
@@ -65,8 +66,8 @@ void TestCallbackRetainsFilterAndProjection(duckdb::Connection &connection) {
 	                             "SELECT temperature FROM " + source + " WHERE 96 <= humidity AND humidity <= 96");
 	Require(result->RowCount() == 108, "integer and reversed-comparison residual filters return the exact rows");
 
-	auto coordinate_explain = RequireSuccess(
-	    connection, "EXPLAIN SELECT value FROM " + SpatialRawRead() + " WHERE lat >= 11");
+	auto coordinate_explain = duckdb::duckomo_test::Rows(RequireSuccess(
+	    connection, "EXPLAIN SELECT value FROM " + SpatialRawRead() + " WHERE lat >= 11"));
 	std::string coordinate_plan;
 	for (idx_t row = 0; row < coordinate_explain->RowCount(); row++) {
 		coordinate_plan += coordinate_explain->GetValue(1, row).ToString();
@@ -96,6 +97,7 @@ void TestMetricsRecordCallback() {
 	duckdb::DBConfig config;
 	config.SetOptionByName("allow_unsigned_extensions", true);
 	duckdb::DuckDB database(nullptr, &config);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(database);
 	duckdb::Connection connection(database);
 	const auto *core_override = std::getenv("DUCKOMO_CORE_FUNCTIONS_EXTENSION");
 	std::filesystem::path core_functions_path = core_override ? core_override : "";

@@ -1,4 +1,5 @@
 #include "duckdb.hpp"
+#include "duckdb_test_compat.hpp"
 #include "duckdb/main/extension_helper.hpp"
 
 #include <cstdlib>
@@ -11,7 +12,7 @@
 #include <unistd.h>
 
 namespace duckdb {
-void ExtensionHelper::LoadAllExtensions(DuckDB &database) {
+DUCKOMO_TEST_LOAD_ALL_EXTENSIONS(database) {
 	(void)database;
 }
 } // namespace duckdb
@@ -23,14 +24,14 @@ void Require(bool condition, const std::string &message) {
 	if (!condition) throw std::runtime_error(message);
 }
 
-std::unique_ptr<duckdb::MaterializedQueryResult> Query(duckdb::Connection &connection, const std::string &sql) {
+std::unique_ptr<duckdb::duckomo_test::MaterializedQueryResult> Query(duckdb::Connection &connection, const std::string &sql) {
 	auto result = connection.Query(sql);
 	Require(result != nullptr, "query returned no result");
 	return result;
 }
 
 std::int64_t RequireScalar(duckdb::Connection &connection, const std::string &sql, const std::string &description) {
-	auto result = Query(connection, sql);
+	auto result = duckdb::duckomo_test::Rows(Query(connection, sql));
 	Require(!result->HasError(), description + " failed: " + result->GetError());
 	Require(result->RowCount() == 1 && result->ColumnCount() == 1, description + " returned a malformed scalar result");
 	return result->GetValue(0, 0).GetValue<std::int64_t>();
@@ -138,6 +139,7 @@ int main() {
 		duckdb::DBConfig config;
 		config.SetOptionByName("allow_unsigned_extensions", true);
 		duckdb::DuckDB database(nullptr, &config);
+	DUCKOMO_TEST_LOAD_EXTENSIONS(database);
 		duckdb::Connection connection(database);
 		const auto core = FindCoreFunctions();
 		Require(!core.empty(), "cannot find core_functions extension in the release repository");
