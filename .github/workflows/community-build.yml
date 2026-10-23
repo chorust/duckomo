@@ -14,7 +14,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  # 1.5 and 2.0 use different extension-ci-tools revisions, and a reusable workflow's `uses:` cannot be
+  # matrixed, so each generation gets its own build job. Both build only linux_arm64.
+  build-1-5:
     strategy:
       fail-fast: false
       matrix:
@@ -29,13 +31,37 @@ jobs:
       exclude_archs: "linux_amd64;linux_amd64_musl;linux_arm64_musl;osx_amd64;osx_arm64;windows_amd64;windows_arm64;windows_amd64_mingw;windows_amd64_rtools;wasm_mvp;wasm_eh;wasm_threads"
       reduced_ci_mode: disabled
 
+  build-2-0:
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [v2.0.0]
+    uses: duckdb/extension-ci-tools/.github/workflows/_extension_distribution.yml@v2.0-cyanoptera
+    with:
+      extension_name: duckomo
+      duckdb_version: ${{ matrix.version }}
+      ci_tools_version: v2.0-cyanoptera
+      # The v2.0-cyanoptera vcpkg pin recorded in the engine-compatibility matrix.
+      vcpkg_commit: cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3
+      # 2.0's platform set has no windows_amd64_rtools; exclude everything except linux_arm64.
+      exclude_archs: "linux_amd64;linux_amd64_musl;linux_arm64_musl;osx_amd64;osx_arm64;windows_amd64;windows_arm64;windows_amd64_mingw;wasm_mvp;wasm_eh;wasm_threads"
+      reduced_ci_mode: disabled
+
   arm64-runtime:
-    needs: build
+    needs: [build-1-5, build-2-0]
     runs-on: ubuntu-24.04-arm
     strategy:
       fail-fast: false
       matrix:
-        version: [v1.5.4, v1.5.5, v1.5.6]
+        include:
+          - version: v1.5.4
+            runtime_matrix: test/data/grids/version-matrix.json
+          - version: v1.5.5
+            runtime_matrix: test/data/grids/version-matrix.json
+          - version: v1.5.6
+            runtime_matrix: test/data/grids/version-matrix.json
+          - version: v2.0.0
+            runtime_matrix: test/data/engine-compatibility/version-matrix.json
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -45,7 +71,7 @@ jobs:
       - name: Fetch matching official CLI and HTTPFS
         run: |
           python3 scripts/version_matrix.py fetch-runtime --root . \
-            --matrix test/data/grids/version-matrix.json --pair '${{ matrix.version }}'
+            --matrix '${{ matrix.runtime_matrix }}' --pair '${{ matrix.version }}'
       # The upstream distribution workflow skips tests on linux_arm64.
       # Check its actual binary in the official engine on a native ARM runner.
       - name: Verify community build artifact

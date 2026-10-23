@@ -33,6 +33,8 @@ jobs:
     timeout-minutes: 10
     outputs:
       versions: ${{ steps.matrix.outputs.versions }}
+      versions_1_5: ${{ steps.matrix.outputs.versions_1_5 }}
+      versions_2_0: ${{ steps.matrix.outputs.versions_2_0 }}
       runtime: ${{ steps.matrix.outputs.runtime }}
     steps:
       - uses: actions/checkout@v4
@@ -65,14 +67,15 @@ jobs:
       - name: Build actual OM C target in isolation
         run: python3 test/tools/om_build_test.py
 
-  build:
+  # A reusable workflow's `uses:` cannot vary per matrix row, so the two engine generations build in separate
+  # jobs, each pinned to the extension-ci-tools commit recorded for it.
+  build-1-5:
     needs: [prepare, om-codec]
     if: github.event_name != 'pull_request'
     strategy:
       fail-fast: false
       matrix:
-        version: ${{ fromJSON(needs.prepare.outputs.versions) }}
-    # Same community toolchain, pinned rather than following a mutable tag.
+        version: ${{ fromJSON(needs.prepare.outputs.versions_1_5) }}
     uses: duckdb/extension-ci-tools/.github/workflows/_extension_distribution.yml@3fd6109fc01555673b7c7123eba8d0d143fe8ce4
     with:
       extension_name: duckomo
@@ -83,8 +86,27 @@ jobs:
       reduced_ci_mode: disabled
       skip_tests: false
 
+  build-2-0:
+    needs: [prepare, om-codec]
+    if: github.event_name != 'pull_request'
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ${{ fromJSON(needs.prepare.outputs.versions_2_0) }}
+    uses: duckdb/extension-ci-tools/.github/workflows/_extension_distribution.yml@b8d325c37e82160886579880707493bd358c0e62
+    with:
+      extension_name: duckomo
+      duckdb_version: ${{ matrix.version }}
+      ci_tools_version: b8d325c37e82160886579880707493bd358c0e62
+      vcpkg_commit: cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3
+      # 2.0 has no windows_amd64_rtools platform, and osx_amd64 is opt-in there.
+      exclude_archs: "linux_amd64_musl;linux_arm64_musl;windows_amd64;windows_arm64;windows_amd64_mingw;wasm_mvp;wasm_eh;wasm_threads"
+      opt_in_archs: osx_amd64
+      reduced_ci_mode: disabled
+      skip_tests: false
+
   verify-package:
-    needs: [prepare, build]
+    needs: [prepare, build-1-5, build-2-0]
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
     strategy:
