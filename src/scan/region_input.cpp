@@ -1,4 +1,5 @@
 #include "duckomo/region_input.hpp"
+#include "duckomo/compat/duckdb_api.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -220,7 +221,7 @@ void ValidateStructType(const LogicalType &type, idx_t &id_index, idx_t &wkb_ind
 		CollectionInputError("regions list elements must be STRUCT(id VARCHAR, wkb BLOB)");
 	}
 	for (idx_t i = 0; i < 2; ++i) {
-		const auto &name = StructType::GetChildName(type, i);
+		const auto name = IdentifierNameString(StructType::GetChildName(type, i));
 		if (name == "id" && id_index == DConstants::INVALID_INDEX) id_index = i;
 		else if (name == "wkb" && wkb_index == DConstants::INVALID_INDEX) wkb_index = i;
 		else CollectionInputError("regions STRUCT field names must be exactly id and wkb with exact spelling");

@@ -1,6 +1,7 @@
 #include "duckdb.hpp"
 #include "duckdb/main/extension_helper.hpp"
 #include "duckomo_extension.hpp"
+#include "duckomo/compat/duckdb_api.hpp"
 #include <chrono>
 #include <cstdlib>
 #include <fstream>
@@ -9,9 +10,11 @@
 #include <string>
 #include <thread>
 #include <utility>
+#if DUCKOMO_DUCKDB_API_GENERATION < 2
 namespace duckdb {
 void ExtensionHelper::LoadAllExtensions(DuckDB &db) { db.LoadStaticExtension<DuckomoExtension>(); }
 }
+#endif
 namespace {
 using namespace duckdb;
 void Require(bool yes,const char *message) {
@@ -21,7 +24,7 @@ std::string Lit(const std::string &s) {std::string r="'";for(char c:s){r+=c;if(c
 std::string Metrics(Connection &c) {
  auto result=c.Query("SELECT metrics FROM duckomo_last_scan_metrics()");
  Require(result && !result->HasError() && result->RowCount()==1,"one query metrics record");
- return result->GetValue(0,0).ToString();
+ return result->Fetch()->GetValue(0,0).ToString();
 }
 }
 int main() {
@@ -32,7 +35,11 @@ int main() {
  for(const auto *key:{"HTTP_PROXY","HTTPS_PROXY","ALL_PROXY","http_proxy","https_proxy","all_proxy"})unsetenv(key);
  try {
   DBConfig config;config.SetOptionByName("allow_unsigned_extensions",Value::BOOLEAN(true));
-  DuckDB db(nullptr,&config);Connection conn(db),second(db);
+  DuckDB db(nullptr,&config);
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+  db.LoadStaticExtension<DuckomoExtension>();
+#endif
+  Connection conn(db),second(db);
   auto load=conn.Query("LOAD "+Lit(httpfs));Require(load && !load->HasError(),"matching official HTTPFS must load");
   Require(!conn.Query("SET http_retries=0")->HasError(),"disable retry for controlled cancel latency");
   for (const auto &fault : {std::pair<const char *,const char *>{"403","access_denied"},
@@ -52,7 +59,7 @@ int main() {
    Require(message.find("sensitive-marker")==std::string::npos,"HTTP diagnostics redact signed parameters");
    Require(Metrics(conn).find("\"status\":\"failure\"")!=std::string::npos,"classified failure publishes QueryEnd");
    auto recovery=conn.Query("SELECT count(*) FROM read_om("+Lit(std::string(base)+"/raw.om")+")");
-   Require(recovery && !recovery->HasError() && recovery->GetValue(0,0).GetValue<int64_t>()==6,"same-connection HTTP error recovery");
+   Require(recovery && !recovery->HasError() && recovery->Fetch()->GetValue(0,0).GetValue<int64_t>()==6,"same-connection HTTP error recovery");
   }
   Require(!conn.Query("SET http_proxy='http://sensitive-marker:invalid-port/'")->HasError(),"set malformed test proxy");
   Require(!conn.Query("SET VARIABLE diagnostic_uri="+Lit(std::string(base)+"/raw.om?token=sensitive-marker"))->HasError(),"set proxy-test URI");
@@ -62,7 +69,11 @@ int main() {
   Require(proxy_error->GetError().find("sensitive-marker")==std::string::npos,"proxy credentials are not exposed");
   Require(!conn.Query("SET http_proxy=''")->HasError(),"reset test proxy");
   {
-   DuckDB missing_db(nullptr,&config);Connection missing(missing_db);
+   DuckDB missing_db(nullptr,&config);
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+   missing_db.LoadStaticExtension<DuckomoExtension>();
+#endif
+   Connection missing(missing_db);
    Require(!missing.Query("SET autoload_known_extensions=false")->HasError(),"disable extension autoload for missing-extension test");
    Require(!missing.Query("SET VARIABLE diagnostic_uri='https://example.invalid/file.om?token=sensitive-marker'")->HasError(),"set missing-extension URI");
    auto failure=missing.Query("SELECT * FROM read_om(getvariable('diagnostic_uri'))");
@@ -79,7 +90,7 @@ int main() {
   Require(recovered && !recovered->HasError() && recovered->RowCount()==6,"same-connection recovery");
   Require(Metrics(conn).find("\"status\":\"success\"")!=std::string::npos,"recovery terminal status");
   auto second_result=second.Query("SELECT count(*) FROM duckomo_last_scan_metrics()");
-  Require(second_result && !second_result->HasError() && second_result->GetValue(0,0).GetValue<int64_t>()==0,"connection metrics isolated");
+  Require(second_result && !second_result->HasError() && second_result->Fetch()->GetValue(0,0).GetValue<int64_t>()==0,"connection metrics isolated");
   // Concurrent independent connections in one process/database.
   auto one=std::async(std::launch::async,[&]{return conn.Query("SELECT * FROM read_om("+Lit(std::string(base)+"/raw.om")+") ORDER BY ALL");});
   auto two=second.Query("SELECT * FROM read_om("+Lit(std::string(base)+"/raw.om")+") ORDER BY ALL");

@@ -282,6 +282,10 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
         else()
             target_link_libraries("${test}" PRIVATE duckdb_static duckomo_extension duckomo_om)
             duckomo_link_generated_extension_loader("${test}")
+            if(test STREQUAL "official_httpfs_test" AND COMMAND duckdb_link_deferred_extension_libraries)
+                # 2.0 separates dynamic loading into a linked capability.
+                link_extension_libraries("${test}" "PRIVATE")
+            endif()
             if(test STREQUAL "grid_zero_io_test" OR test STREQUAL "source_identity_test" OR test STREQUAL "schema_test")
                 target_include_directories("${test}" PRIVATE
                     "${CMAKE_SOURCE_DIR}/extension/core_functions/include"

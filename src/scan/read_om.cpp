@@ -1509,15 +1509,26 @@ std::uint64_t EstimateRegionPredicateMemory(const Expression &expression) {
 	if (ExpressionClassOf(expression) == ExpressionClass::BOUND_FUNCTION) {
 		const auto &function = expression.Cast<BoundFunctionExpression>();
 		std::uint64_t bytes = sizeof(BoundFunctionExpression);
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+		const auto &bound = function.Function();
+		bytes = AddMemoryBytes(bytes, StringMemoryBytes(bound.GetName().GetIdentifierName()));
+		bytes = AddMemoryBytes(bytes, StringMemoryBytes(bound.GetExtraInfo()));
+		bytes = AddMemoryBytes(bytes, StringMemoryBytes(bound.GetCatalogName().GetIdentifierName()));
+		bytes = AddMemoryBytes(bytes, StringMemoryBytes(bound.GetSchemaName().GetIdentifierName()));
+		bytes = AddMemoryBytes(bytes, VectorMemoryBytes(bound.GetArguments().capacity(), sizeof(LogicalType)));
+		const auto &children = function.GetChildren();
+		if (function.BindInfo()) bytes = AddMemoryBytes(bytes, sizeof(FunctionData));
+#else
 		bytes = AddMemoryBytes(bytes, StringMemoryBytes(function.function.name));
 		bytes = AddMemoryBytes(bytes, StringMemoryBytes(function.function.extra_info));
 		bytes = AddMemoryBytes(bytes, StringMemoryBytes(function.function.catalog_name));
 		bytes = AddMemoryBytes(bytes, StringMemoryBytes(function.function.schema_name));
 		bytes = AddMemoryBytes(bytes, VectorMemoryBytes(function.function.arguments.capacity(), sizeof(LogicalType)));
-		bytes = AddMemoryBytes(bytes,
-		                       VectorMemoryBytes(function.children.capacity(), sizeof(unique_ptr<Expression>)));
+		const auto &children = function.children;
 		if (function.bind_info) bytes = AddMemoryBytes(bytes, sizeof(FunctionData));
-		for (const auto &child : function.children) {
+#endif
+		bytes = AddMemoryBytes(bytes, VectorMemoryBytes(children.capacity(), sizeof(unique_ptr<Expression>)));
+		for (const auto &child : children) {
 			bytes = AddMemoryBytes(bytes, EstimateRegionPredicateMemory(*child));
 		}
 		return bytes;
@@ -3552,7 +3563,11 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLoca
 	// array has decoded successfully. Exceptions leave a zero-row chunk.
 	local.task_position_offset += candidate_count;
 	state.metrics->RecordScannedRows(count);
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	output.SetChildCardinality(static_cast<idx_t>(count));
+#else
 	output.SetCardinality(static_cast<idx_t>(count));
+#endif
 	if (!local.registered_as_active) {
 		state.metrics->RecordWorkerActive(local.worker_id);
 		local.registered_as_active = true;

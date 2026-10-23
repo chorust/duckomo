@@ -1,4 +1,5 @@
 #include "duckomo/region_geometry.hpp"
+#include "duckomo/compat/duckdb_api.hpp"
 
 #include <cmath>
 
@@ -23,6 +24,14 @@ namespace {
 
 bool ExactSignature(const ScalarFunction &function, const std::vector<LogicalType> &arguments,
                     const LogicalType &return_type) {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	const auto &signature = function.GetSignature();
+	if (signature.GetParameterCount() != arguments.size() || signature.IsVariadic() ||
+	    signature.GetReturnType() != return_type) return false;
+	for (idx_t i = 0; i < arguments.size(); ++i) {
+		if (signature.GetParameter(i).GetType() != arguments[i]) return false;
+	}
+#else
 	if (function.arguments.size() != arguments.size() || function.varargs.id() != LogicalTypeId::INVALID ||
 	    function.return_type != return_type) {
 		return false;
@@ -30,10 +39,13 @@ bool ExactSignature(const ScalarFunction &function, const std::vector<LogicalTyp
 	for (idx_t i = 0; i < arguments.size(); ++i) {
 		if (function.arguments[i] != arguments[i]) return false;
 	}
+#endif
 	return true;
 }
 
 } // namespace
+
+RegionPredicateEvaluator::~RegionPredicateEvaluator() = default;
 
 RegionGeometryAdapter::RegionGeometryAdapter(ClientContext &context) : context(context) {
 	const auto blob = LogicalType(LogicalTypeId::BLOB);
@@ -65,13 +77,23 @@ void RegionGeometryAdapter::RequireNearestOperations() const {
 
 void RegionGeometryAdapter::RequireSignature(const std::string &name, const std::vector<LogicalType> &arguments,
                                              const LogicalType &return_type) const {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	auto entry = Catalog::GetEntry<ScalarFunctionCatalogEntry>(
+	    context, QualifiedName(Identifier(SYSTEM_CATALOG), Identifier(DEFAULT_SCHEMA), Identifier(name)),
+	    OnEntryNotFound::RETURN_NULL);
+#else
 	auto entry = Catalog::GetSystemCatalog(context).GetEntry<ScalarFunctionCatalogEntry>(
 	    context, DEFAULT_SCHEMA, name, OnEntryNotFound::RETURN_NULL);
+#endif
 	if (!entry) {
 		DependencyError("DuckDB spatial is required; explicitly load a matching spatial extension before using region reads");
 	}
 	for (const auto &function : entry->functions.functions) {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+		if (ExactSignature(*function, arguments, return_type)) return;
+#else
 		if (ExactSignature(function, arguments, return_type)) return;
+#endif
 	}
 	DependencyError("loaded spatial function " + name + " does not have the required exact signature");
 }
@@ -81,12 +103,17 @@ unique_ptr<Expression> RegionGeometryAdapter::BindScalar(const std::string &name
 	                                                       const LogicalType &return_type,
 	                                                       std::vector<unique_ptr<Expression>> children) const {
 	RequireSignature(name, arguments, return_type);
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	auto &entry = Catalog::GetEntry<ScalarFunctionCatalogEntry>(
+	    context, QualifiedName(Identifier(SYSTEM_CATALOG), Identifier(DEFAULT_SCHEMA), Identifier(name)));
+#else
 	auto &entry = Catalog::GetSystemCatalog(context).GetEntry<ScalarFunctionCatalogEntry>(context, DEFAULT_SCHEMA, name);
+#endif
 	ErrorData error;
 	FunctionBinder binder(context);
 	auto result = binder.BindScalarFunction(entry, std::move(children), error);
 	if (!result) error.Throw("[spatial_dependency] failed to bind required spatial expression");
-	if (result->return_type != return_type) {
+	if (ExpressionReturnType(*result) != return_type) {
 		DependencyError("loaded spatial function " + name + " returned an unexpected type");
 	}
 	return result;

@@ -477,7 +477,9 @@ WITH expected(function_name, parameters, parameter_types) AS (
     WHERE function_name IN ('read_om_raw','read_om','read_om_regions','om_grid_info')
 )
 SELECT count(*) FROM expected e LEFT JOIN actual a USING (function_name)
-WHERE a.function_name IS NULL OR a.parameters <> e.parameters OR a.parameter_types <> e.parameter_types;
+-- Named options have no positional order; 2.0 reports registration order.
+WHERE a.function_name IS NULL
+   OR list_sort(list_zip(a.parameters, a.parameter_types)) <> list_sort(list_zip(e.parameters, e.parameter_types));
 ----
 0
 
@@ -922,7 +924,7 @@ SELECT * FROM read_om_regions(
 statement error
 SELECT * FROM read_om_regions(
     '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
-    regions := list_transform(range(4097), i -> {'id':i::VARCHAR,'wkb':ST_AsWKB(ST_GeomFromText('POLYGON EMPTY'))}),
+    regions := list_transform(range(4097), lambda i: {'id':i::VARCHAR,'wkb':ST_AsWKB(ST_GeomFromText('POLYGON EMPTY'))}),
     region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
     grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'], method := 'nearest');
 ----

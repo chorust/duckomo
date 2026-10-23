@@ -43,6 +43,7 @@ private:
 class RegionPredicateEvaluator final {
 public:
 	RegionPredicateEvaluator(ClientContext &context, const Expression &bound_expression);
+	~RegionPredicateEvaluator();
 
 	idx_t Select(DataChunk &coordinates, SelectionVector &selected);
 

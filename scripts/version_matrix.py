@@ -187,6 +187,7 @@ def resolve(args):
 def fetch_runtime(resolved):
     import gzip
     import zipfile
+    import tarfile
     runtime = resolved['official_runtime']
     dest = pathlib.Path(resolved['runtime_dir'])
     dest.mkdir(parents=True, exist_ok=True)
@@ -202,8 +203,19 @@ def fetch_runtime(resolved):
                 raise MatrixError(f'official {kind} artifact unavailable for {runtime["version"]}/{runtime["platform"]}; no source fallback')
             try:
                 if kind == 'cli':
-                    with zipfile.ZipFile(download) as archive:
-                        artifact.write_bytes(archive.read('duckdb'))
+                    if zipfile.is_zipfile(download):
+                        with zipfile.ZipFile(download) as archive:
+                            artifact.write_bytes(archive.read('duckdb'))
+                    else:
+                        # DuckDB 2.0 distributes CLI tarballs. Read only the
+                        # executable, never extract archive paths to disk.
+                        with tarfile.open(download, 'r:gz') as archive:
+                            members = [m for m in archive.getmembers()
+                                       if m.isfile() and pathlib.PurePosixPath(m.name).name == 'duckdb']
+                            if len(members) != 1:
+                                raise MatrixError('official CLI archive must contain exactly one duckdb executable')
+                            with archive.extractfile(members[0]) as executable:
+                                artifact.write_bytes(executable.read())
                     artifact.chmod(0o755)
                 else:
                     artifact.write_bytes(gzip.decompress(download.read_bytes()))
