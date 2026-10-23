@@ -34,6 +34,22 @@ class MatrixTests(unittest.TestCase):
         for field in ('cli_sha256','httpfs_sha256','platform'):
             pair=copy.deepcopy(self.pair);pair['official_runtime'][field]='bad'
             with self.assertRaises(m.MatrixError):m.input_payload(self.matrix,pair,'a'*64)
+    def test_ci_toolchain_is_optional_and_excluded_from_build_identity(self):
+        # Absent on the 1.5 matrix, present on the 2.0 matrix; neither changes the build id.
+        payload=m.input_payload(self.matrix,self.pair,'a'*64)
+        pair=copy.deepcopy(self.pair)
+        pair['ci_toolchain']={'ref':'v2.0-cyanoptera','commit':'b'*40,'vcpkg_commit':'c'*40}
+        self.assertEqual(m.compute_build_id(payload),m.compute_build_id(m.input_payload(self.matrix,pair,'a'*64)))
+        for field in ('commit','vcpkg_commit'):
+            broken=copy.deepcopy(pair);broken['ci_toolchain'][field]='short'
+            with self.assertRaises(m.MatrixError):m.input_payload(self.matrix,broken,'a'*64)
+        broken=copy.deepcopy(pair);broken['ci_toolchain']['ref']=''
+        with self.assertRaises(m.MatrixError):m.input_payload(self.matrix,broken,'a'*64)
+        compatibility=json.loads((ROOT/'test/data/engine-compatibility/version-matrix.json').read_text())
+        pair_2=next(p for p in compatibility['pairs'] if p['pair_id']=='v2.0.0')
+        self.assertEqual(pair_2['ci_toolchain']['ref'],'v2.0-cyanoptera')
+        self.assertEqual(len(pair_2['ci_toolchain']['commit']),40)
+        m.input_payload(compatibility,pair_2,'a'*64)
     def test_runtime_and_result_not_part_of_source_build_identity(self):
         payload=m.input_payload(self.matrix,self.pair,'a'*64)
         pair=copy.deepcopy(self.pair);pair['build']={'status':'pass'}

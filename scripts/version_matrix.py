@@ -138,7 +138,29 @@ def find_pair(matrix, pair_id):
     return matches[0]
 
 
+def validate_ci_toolchain(pair):
+    """Check the optional CI-only toolchain pin.
+
+    The field records the extension-ci-tools ref, commit and vcpkg commit that
+    CI and release jobs use. Local builds keep `extension_ci_tools.commit`
+    equal to the submodule HEAD for build identity, so this pin must stay out
+    of the build id.
+    """
+    toolchain = pair.get('ci_toolchain')
+    if toolchain is None:
+        return
+    if not isinstance(toolchain, dict):
+        raise MatrixError('ci_toolchain must be an object')
+    ref = toolchain.get('ref')
+    if not isinstance(ref, str) or not ref:
+        raise MatrixError('ci_toolchain ref required')
+    for field in ('commit', 'vcpkg_commit'):
+        if not COMMIT_SHA_RE.fullmatch(str(toolchain.get(field, ''))):
+            raise MatrixError(f'ci_toolchain {field} must be a 40 character SHA')
+
+
 def input_payload(matrix, pair, source_sha):
+    validate_ci_toolchain(pair)
     commits = {}
     for component in ('duckdb', 'om_c', 'extension_ci_tools'):
         item = pair.get(component, {})

@@ -23,6 +23,11 @@
         "repository": "https://github.com/duckdb/extension-ci-tools.git",
         "commit": "b777c70d30942cca5bef62d6d4fa23a13362f398"
       },
+      "ci_toolchain": {
+        "ref": "v2.0-cyanoptera",
+        "commit": "b8d325c37e82160886579880707493bd358c0e62",
+        "vcpkg_commit": "cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3"
+      },
       "official_runtime": {
         "version": "v2.0.0",
         "platform": "linux_arm64",
