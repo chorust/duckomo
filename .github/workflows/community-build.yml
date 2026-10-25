@@ -2,7 +2,7 @@ name: Community build compatibility
 
 on:
   push:
-    branches: [main]
+    branches: [main, feat/spec008-experimental-remote-io]
   pull_request:
   workflow_dispatch:
 
