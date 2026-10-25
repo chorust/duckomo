@@ -9,8 +9,7 @@ require allow_unsigned_extensions
 statement ok
 LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
 
-statement ok
-LOAD '__BUILD_DIRECTORY__/extension/json/json.duckdb_extension';
+require json
 
 # A rotated grid with its north pole at the geographic north pole is an
 # identity mapping. The fixture has six row-major values in [row, column].
