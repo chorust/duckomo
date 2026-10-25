@@ -1,0 +1,120 @@
+# name: test/sql/remote_io_settings.test
+# description: Remote read merge and async settings are validated and never affect local reads
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+query TTTT
+SELECT current_setting('duckomo_remote_merge')::VARCHAR, current_setting('duckomo_remote_merge_gap')::VARCHAR,
+       current_setting('duckomo_remote_max_request')::VARCHAR,
+       current_setting('duckomo_async_max_inflight')::VARCHAR;
+----
+true	4096	65536	8
+
+query I
+SELECT current_setting('duckomo_async_io') = starts_with(version(), 'v2.');
+----
+true
+
+statement ok
+SET duckomo_remote_merge = false;
+
+statement ok
+SET duckomo_remote_merge_gap = 4096;
+
+statement ok
+SET duckomo_remote_max_request = 65536;
+
+statement ok
+SET duckomo_async_max_inflight = 1;
+
+statement ok
+SET duckomo_async_io = false;
+
+query I
+SELECT current_setting('duckomo_async_io') = false;
+----
+true
+
+statement ok
+RESET duckomo_async_io;
+
+statement ok
+RESET duckomo_async_max_inflight;
+
+statement ok
+RESET duckomo_remote_merge;
+
+statement ok
+RESET duckomo_remote_merge_gap;
+
+statement ok
+RESET duckomo_remote_max_request;
+
+query IIII
+SELECT current_setting('duckomo_remote_merge'), current_setting('duckomo_remote_merge_gap'),
+       current_setting('duckomo_remote_max_request'), current_setting('duckomo_async_max_inflight');
+----
+true	4096	65536	8
+
+statement error
+SET duckomo_remote_max_request = 100;
+----
+Invalid Input Error: duckomo_remote_max_request must be between 512 bytes and 1 GiB
+
+statement error
+SET duckomo_remote_merge_gap = 2000000000;
+----
+Invalid Input Error: duckomo_remote_merge_gap must be at most 1 GiB
+
+statement error
+SET duckomo_async_max_inflight = 0;
+----
+Invalid Input Error: duckomo_async_max_inflight must be between 1 and 256
+
+statement error
+SET duckomo_async_max_inflight = 257;
+----
+Invalid Input Error: duckomo_async_max_inflight must be between 1 and 256
+
+# Local scans ignore every remote setting and never report remote_io.
+statement ok
+SET duckomo_remote_merge = false;
+
+statement ok
+SET duckomo_remote_merge_gap = 0;
+
+statement ok
+SET duckomo_remote_max_request = 512;
+
+statement ok
+SET duckomo_async_io = true;
+
+query I
+SELECT sum(value) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');
+----
+15.0
+
+query I
+SELECT contains(metrics, '"remote_io":null') FROM duckomo_last_scan_metrics();
+----
+true
+
+statement ok
+RESET duckomo_remote_merge;
+
+statement ok
+RESET duckomo_remote_merge_gap;
+
+statement ok
+RESET duckomo_remote_max_request;
+
+query I
+SELECT sum(value) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');
+----
+15.0

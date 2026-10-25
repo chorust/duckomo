@@ -34,6 +34,7 @@ namespace {
 namespace fs = std::filesystem;
 using duckdb::duckomo::OmDecoderState;
 using duckdb::duckomo::OmV3Reader;
+using duckdb::duckomo::RemoteReadBudget;
 using duckdb::duckomo::ReadAtFile;
 using duckdb::duckomo::ReaderError;
 using duckdb::duckomo::ScanMetrics;
@@ -87,6 +88,7 @@ public:
 		}
 		if (phase == ScanReadPhase::Data) {
 			data_reads_++;
+			max_data_size_ = std::max(max_data_size_, size);
 			if (before_data_read_) before_data_read_();
 		}
 		if (size != 0) std::memcpy(destination, bytes_.data() + static_cast<std::size_t>(offset),
@@ -102,6 +104,7 @@ public:
 
 	std::uint64_t IndexReads() const noexcept { return index_reads_; }
 	std::uint64_t DataReads() const noexcept { return data_reads_; }
+	std::uint64_t MaxDataSize() const noexcept { return max_data_size_; }
 	void SetBeforeIndexRead(std::function<void()> callback) {
 		before_index_read_ = std::move(callback);
 	}
@@ -115,6 +118,7 @@ private:
 	std::shared_ptr<ScanMetrics> metrics_;
 	mutable std::uint64_t index_reads_ = 0;
 	mutable std::uint64_t data_reads_ = 0;
+	mutable std::uint64_t max_data_size_ = 0;
 	std::function<void()> before_index_read_;
 	std::function<void()> before_data_read_;
 };
@@ -307,6 +311,50 @@ void CheckAdjacentSelectionsReuseRanges() {
 	        "retry after data read failure must not reuse incomplete bytes");
 }
 
+void CheckRemoteRangesMergeWithinBudget() {
+	const auto object = ReadBinaryFile("test/data/raw_large.om");
+	auto baseline_file = std::make_unique<MemoryReadAtFile>(object);
+	auto *baseline_observer = baseline_file.get();
+	OmV3Reader baseline_reader(std::move(baseline_file));
+	OmDecoderState baseline_state(baseline_reader.ReadRootVariable());
+	const auto *variable = baseline_state.variable_owner.Get();
+	const auto *dimensions_ptr = om_variable_get_dimensions(variable);
+	std::vector<std::uint64_t> dimensions(dimensions_ptr, dimensions_ptr + om_variable_get_dimensions_count(variable));
+	std::vector<float> baseline(static_cast<std::size_t>(dimensions[0] * dimensions[1]));
+	RemoteReadBudget off;
+	off.enabled = true;
+	off.merge_gap = 0;
+	off.max_request = object.size();
+	baseline_reader.DecodeSelection(baseline_state, "value", {0, 0}, dimensions, {0, 0}, dimensions,
+	                                baseline.data(), baseline.size() * sizeof(float), off);
+
+	auto merged_file = std::make_unique<MemoryReadAtFile>(object);
+	auto *merged_observer = merged_file.get();
+	OmV3Reader merged_reader(std::move(merged_file));
+	OmDecoderState merged_state(merged_reader.ReadRootVariable());
+	std::vector<float> merged(baseline.size());
+	RemoteReadBudget on = off;
+	on.merge_gap = object.size();
+	merged_reader.DecodeSelection(merged_state, "value", {0, 0}, dimensions, {0, 0}, dimensions,
+	                              merged.data(), merged.size() * sizeof(float), on);
+	Require(std::memcmp(baseline.data(), merged.data(), baseline.size() * sizeof(float)) == 0,
+	        "bounded remote range merging must preserve every decoded value");
+	Require(merged_observer->DataReads() <= baseline_observer->DataReads(),
+	        "remote range merging must not increase physical data reads");
+
+	auto capped_file = std::make_unique<MemoryReadAtFile>(object);
+	auto *capped_observer = capped_file.get();
+	OmV3Reader capped_reader(std::move(capped_file));
+	OmDecoderState capped_state(capped_reader.ReadRootVariable());
+	std::vector<float> capped(baseline.size());
+	on.max_request = 512;
+	capped_reader.DecodeSelection(capped_state, "value", {0, 0}, dimensions, {0, 0}, dimensions,
+	                              capped.data(), capped.size() * sizeof(float), on);
+	Require(std::memcmp(baseline.data(), capped.data(), baseline.size() * sizeof(float)) == 0 &&
+	            capped_observer->MaxDataSize() <= on.max_request,
+	        "remote request cap must prevent oversized merged reads while preserving results");
+}
+
 void CheckRectangularBatchAvoidsRepeatedChunkDecoding() {
 	const auto object = ReadBinaryFile("test/data/raw_large.om");
 	auto metrics = std::make_shared<ScanMetrics>();
@@ -362,6 +410,7 @@ int main() {
 		CheckRawLargeBounds();
 		CheckIncompressibleFpxChunk();
 		CheckAdjacentSelectionsReuseRanges();
+		CheckRemoteRangesMergeWithinBudget();
 		CheckRectangularBatchAvoidsRepeatedChunkDecoding();
 		CheckBufferReplacementReleasesBeforeAllocation();
 		std::cout << "reader capacity bounds passed\n";

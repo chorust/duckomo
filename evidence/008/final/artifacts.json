@@ -1,0 +1,18 @@
+{
+  "v1.5.4": {
+    "path": "/home/blizhan/repo/github/duckomo/build/release/extension/duckomo/duckomo.duckdb_extension",
+    "sha256": "036e13eb6ebb8aa5cfab5ffa641264aa9dcb0b5627a06b1898b0a6d5bbe8eb43"
+  },
+  "v1.5.5": {
+    "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/builds/70c0cde18df35d7defe4e8ec918981bbaa00b7e65265a92d1b0fee58edd6c703/release/extension/duckomo/duckomo.duckdb_extension",
+    "sha256": "fd5050d50561db4a84d265c232226564a8189ceafd7665820a6c28513fd47346"
+  },
+  "v1.5.6": {
+    "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/builds/97591abf2e140ca1e91619532f77cf41566573bb03cf859db980e6c493ee784d/release/extension/duckomo/duckomo.duckdb_extension",
+    "sha256": "21b4d7cae97e9a56463d316742277ed2204cc084921f7d99914d28b234cfd9b5"
+  },
+  "v2.0.0": {
+    "path": "/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/builds/68583bd5755d710e1d45b5a514f085ca08456fbf45343a7badb0a223bd89feaf/release/extension/duckomo/duckomo.duckdb_extension",
+    "sha256": "fccc437c8e71f59b94d9912acdb829b35f4c4a19d7723ea231265a4d4470346d"
+  }
+}

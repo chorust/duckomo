@@ -1,0 +1,27 @@
+-- git hash d54cbbe3df, version v2.0.0-dev1, extension folder d54cbbe3df
+-- Build workers: compile= link_release=4 link_non_release=2
+-- Extensions will be deployed to: /home/blizhan/repo/github/duckomo/build/008/tsan/repository
+-- Load extension 'json' from '/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/extensions' @ d54cbbe3df
+-- Load extension 'parquet' from '/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/extensions' @ d54cbbe3df
+-- Load extension 'duckomo' from '/home/blizhan/repo/github/duckomo' @ 07eb1d98c9
+-- Load extension 'core_functions' from '/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/extensions' @ d54cbbe3df
+-- Load extension 'icu' from '/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/extensions' @ d54cbbe3df
+CMake Warning at extension/extension_build_tools.cmake:1008 (message):
+  Extension 'duckomo' has a vcpkg.json, but build was not run with VCPKG.  If
+  build fails, check out VCPKG build instructions in
+  'duckdb/extension/README.md' or try manually installing the dependencies in
+  /home/blizhan/repo/github/duckomo/vcpkg.json
+Call Stack (most recent call first):
+  CMakeLists.txt:1256 (include)
+
+
+-- Not registering region_geometry_test_sanitizer: verified matching spatial runtime was not supplied
+-- Not registering region_scan_test_sanitizer: verified matching spatial runtime was not supplied
+-- Not registering region_sampling_test_sanitizer: verified matching spatial runtime was not supplied
+-- Linked into DuckDB: extensions [core_functions, parquet, json, icu], capabilities [httplib, loadable_extensions, local_extension_repository]
+-- Extensions built but not linked: [duckomo]
+-- Tests loaded for extensions: [duckomo]
+-- DuckDB CLI Release architecture flags: -march=armv8-a -mtune=generic
+-- Configuring done (2.9s)
+-- Generating done (0.5s)
+-- Build files have been written to: /home/blizhan/repo/github/duckomo/build/008/tsan

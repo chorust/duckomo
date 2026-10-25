@@ -1,0 +1,20 @@
+# Spec 008 success criteria status
+
+A checked criterion requires evidence for its full stated scope and a matching build identity. Historical benchmark files in `evidence/008/` predate the review fixes and are not evidence for the current source. Different artifact SHA256 values identify separate builds; they must not be combined into a single final acceptance claim.
+
+- [ ] SC-001 — 16 release artifacts and matching runtime verification. CI dispatch was rejected with HTTP 403; see `evidence/duckdb-2.0/final/ci.json`. Requires execution with CI privileges.
+- [x] SC-002 — Four-version SQL and core native checks pass; latest 2.0 unified validate.sh exits 0, including all SQL/native/Python and official HTTPFS 48/48. ASan/UBSan 14/14 and TSan (system allocator, ASLR off) pass. Evidence: `evidence/008/final/aggregate20-verified.log`, aggregate20-remote-summary.json, sanitizer20-final.log, tsan-system-run.log. Python build-selection and blocked evaluation-runtime tests were fixed; historical filter-plan failure is resolved.
+- [ ] SC-003 — Controlled HTTP/S3 O1280 default merge: 11591→840 requests (92.75% reduction), 4125977→2741967 application physical bytes (66.46%). See `evidence/008/final/benchmark-default.json` and full 12-combination `merge-sweep.json`; runs carry artifact hashes. These measurements precede the subsequent local streaming and identical pending-range dedup fixes, which must retain this gate on final rerun.
+- [ ] SC-004 — Explicit O1280 domain + lat/lon selection: HTTP/S3 merge off/on each 2769 bytes, less than full scan; coordinate-only 453 bytes. Matched selected hashes agree; see `evidence/008/final/benchmark-default.json` and `merge-sweep.json`. Final build rerun remains part of T031.
+- [ ] SC-005 — Controlled S3 default run recorded 53364→5304ms process time (90.1% relative improvement), but misses the historical 4.75s absolute threshold. Later query-profiled parameter sweep records default 2261ms. Because these use different timing/load conditions, an uncontended matched final run is still required.
+- [ ] SC-006 — ≥20% additional async speedup is NOT established. Correct query-profiled HTTP/S3 multi-variable runs and controlled 10ms-latency runs show actual concurrency but <20% gain or regressions. Dimensions workload still issues more reads async than sync after exact-range dedup. See projection-profiled/async-delay10ms/dimensions-dedup JSON in `evidence/008/final/`. T043 实验有界跨输出批次窗口已实现，默认1关闭；显式4批 HTTP O1280 测量1351→1910ms，请求840→1523，结果相同。该窗口不提供I/O/解码重叠，完整流水线仍未实现；保留未达标结论，见 `evidence/008/prefetch/report.md`。Old 46.1% claim is withdrawn.
+- [ ] SC-007 — HTTP 256MB full/selected × 1/4-worker repeated scans pass, peak RSS ratios async/sync 0.979–1.012 and matching hashes (`evidence/008/final/rss256.json`). Full controlled S3 and latest dedup artifact matrix remain required before closing the complete gate.
+- [ ] SC-008 — Every cancellation <1s, no remaining requests or ledger entries. Native injected cancellation returns in approximately 53–54ms, has zero active reads and permits same-connection recovery. Full HTTP/S3 cancellation and ledger acceptance remain to be rerun.
+- [ ] SC-009 — Same-engine pre-feature/current comparisons now exist (31/51 repetitions, full/selected × 1/4 workers × fresh/repeat). Local streaming removes plan payload allocation but selected medians still exceed 5% in some combinations; not accepted. See local-stream-final.json/local-stream-51.json in `evidence/008/final/`.
+- [x] FR-018 — Historical real-cloud first/repeat-read verification is recorded in `evidence/008/cloud.json`. This verifies endpoint access for those builds only; it does not establish current async performance.
+
+## Review fixes
+
+See `evidence/008/review-fixes.md` for commands, observed results and remaining gates. The benchmark runner records extension SHA256 and process RSS, rejects resume across artifact identities, and requires explicit SQL for selected/coordinate/polygon/nearest queries.
+
+The old JSON files are retained as historical measurements, without replacing them with fabricated results. Final acceptance must regenerate them using the final artifact(s).

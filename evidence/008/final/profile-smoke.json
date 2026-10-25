@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "runs": [
+    {
+      "runtime": "v2.0.0",
+      "object_id": "local",
+      "query": "full",
+      "mode": "async-off",
+      "workers": 1,
+      "repeat": 0,
+      "memory_limit": "",
+      "executor_threads": 4,
+      "query_sha256": "14835cd41715d26b3153bb34a21e8d6c95e5fa100ac7cf2d05b41fb3cd2e62cc",
+      "elapsed_ms": 3.657381,
+      "process_elapsed_ms": 95.61293618753552,
+      "peak_rss_bytes": 50032640,
+      "extension_sha256": "d275c76bc8f89ab71c59453259ff1acb45ea9969a547149bffcd25aca30dc9c4",
+      "result_sha256": "26f6cefc7029d002e4ffe94b09d725578ac827ba3f8c4b9dfccd413bca132f5f",
+      "remote_io": null
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "local",
+      "query": "full",
+      "mode": "async-on",
+      "workers": 1,
+      "repeat": 0,
+      "memory_limit": "",
+      "executor_threads": 4,
+      "query_sha256": "14835cd41715d26b3153bb34a21e8d6c95e5fa100ac7cf2d05b41fb3cd2e62cc",
+      "elapsed_ms": 3.274915,
+      "process_elapsed_ms": 103.7952690385282,
+      "peak_rss_bytes": 49192960,
+      "extension_sha256": "d275c76bc8f89ab71c59453259ff1acb45ea9969a547149bffcd25aca30dc9c4",
+      "result_sha256": "26f6cefc7029d002e4ffe94b09d725578ac827ba3f8c4b9dfccd413bca132f5f",
+      "remote_io": null
+    }
+  ],
+  "summaries": [
+    {
+      "runtime": "v2.0.0",
+      "object_id": "local",
+      "query": "full",
+      "mode": "async-off",
+      "workers": 1,
+      "memory_limit": "",
+      "repeats": 1,
+      "median_elapsed_ms": 3.657381,
+      "result_sha256": "26f6cefc7029d002e4ffe94b09d725578ac827ba3f8c4b9dfccd413bca132f5f",
+      "result_hashes_match": true,
+      "remote_io": null
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "local",
+      "query": "full",
+      "mode": "async-on",
+      "workers": 1,
+      "memory_limit": "",
+      "repeats": 1,
+      "median_elapsed_ms": 3.274915,
+      "result_sha256": "26f6cefc7029d002e4ffe94b09d725578ac827ba3f8c4b9dfccd413bca132f5f",
+      "result_hashes_match": true,
+      "remote_io": null
+    }
+  ]
+}

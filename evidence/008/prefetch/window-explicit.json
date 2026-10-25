@@ -1,0 +1,277 @@
+{
+  "schema_version": 1,
+  "runs": [
+    {
+      "runtime": "v2.0.0",
+      "object_id": "http",
+      "query": "full",
+      "mode": "async-off",
+      "workers": 1,
+      "repeat": 0,
+      "memory_limit": "256MB",
+      "executor_threads": 4,
+      "prefetch_batches": 4,
+      "query_sha256": "14835cd41715d26b3153bb34a21e8d6c95e5fa100ac7cf2d05b41fb3cd2e62cc",
+      "elapsed_ms": 1445.7145030000001,
+      "process_elapsed_ms": 1632.3926500044763,
+      "peak_rss_bytes": 246378496,
+      "extension_sha256": "4a9e52040953b92e0b8dc689b36fae9d7697d63d9474b6f43e3c02976f770379",
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 840,
+        "physical_bytes": 2741967,
+        "useful_bytes": 403151,
+        "gap_bytes": 2338816,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 258,
+          "data": 571
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "http",
+      "query": "full",
+      "mode": "async-off",
+      "workers": 1,
+      "repeat": 1,
+      "memory_limit": "256MB",
+      "executor_threads": 4,
+      "prefetch_batches": 4,
+      "query_sha256": "14835cd41715d26b3153bb34a21e8d6c95e5fa100ac7cf2d05b41fb3cd2e62cc",
+      "elapsed_ms": 1350.731701,
+      "process_elapsed_ms": 1500.7901866920292,
+      "peak_rss_bytes": 245129216,
+      "extension_sha256": "4a9e52040953b92e0b8dc689b36fae9d7697d63d9474b6f43e3c02976f770379",
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 840,
+        "physical_bytes": 2741967,
+        "useful_bytes": 403151,
+        "gap_bytes": 2338816,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 258,
+          "data": 571
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "http",
+      "query": "full",
+      "mode": "async-off",
+      "workers": 1,
+      "repeat": 2,
+      "memory_limit": "256MB",
+      "executor_threads": 4,
+      "prefetch_batches": 4,
+      "query_sha256": "14835cd41715d26b3153bb34a21e8d6c95e5fa100ac7cf2d05b41fb3cd2e62cc",
+      "elapsed_ms": 1322.7067459999998,
+      "process_elapsed_ms": 1476.4616773463786,
+      "peak_rss_bytes": 251457536,
+      "extension_sha256": "4a9e52040953b92e0b8dc689b36fae9d7697d63d9474b6f43e3c02976f770379",
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 840,
+        "physical_bytes": 2741967,
+        "useful_bytes": 403151,
+        "gap_bytes": 2338816,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 258,
+          "data": 571
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "http",
+      "query": "full",
+      "mode": "async-on",
+      "workers": 1,
+      "repeat": 0,
+      "memory_limit": "256MB",
+      "executor_threads": 4,
+      "prefetch_batches": 4,
+      "query_sha256": "14835cd41715d26b3153bb34a21e8d6c95e5fa100ac7cf2d05b41fb3cd2e62cc",
+      "elapsed_ms": 1909.514094,
+      "process_elapsed_ms": 2008.8447742164135,
+      "peak_rss_bytes": 247390208,
+      "extension_sha256": "4a9e52040953b92e0b8dc689b36fae9d7697d63d9474b6f43e3c02976f770379",
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": true,
+        "inflight_peak": 4,
+        "inflight_budget_bytes": 524288,
+        "requests": 1523,
+        "physical_bytes": 5835828,
+        "useful_bytes": 699444,
+        "gap_bytes": 5136384,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 258,
+          "data": 1254
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "http",
+      "query": "full",
+      "mode": "async-on",
+      "workers": 1,
+      "repeat": 1,
+      "memory_limit": "256MB",
+      "executor_threads": 4,
+      "prefetch_batches": 4,
+      "query_sha256": "14835cd41715d26b3153bb34a21e8d6c95e5fa100ac7cf2d05b41fb3cd2e62cc",
+      "elapsed_ms": 1908.96607,
+      "process_elapsed_ms": 2010.6156379915774,
+      "peak_rss_bytes": 248287232,
+      "extension_sha256": "4a9e52040953b92e0b8dc689b36fae9d7697d63d9474b6f43e3c02976f770379",
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": true,
+        "inflight_peak": 4,
+        "inflight_budget_bytes": 524288,
+        "requests": 1523,
+        "physical_bytes": 5835828,
+        "useful_bytes": 699444,
+        "gap_bytes": 5136384,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 258,
+          "data": 1254
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "http",
+      "query": "full",
+      "mode": "async-on",
+      "workers": 1,
+      "repeat": 2,
+      "memory_limit": "256MB",
+      "executor_threads": 4,
+      "prefetch_batches": 4,
+      "query_sha256": "14835cd41715d26b3153bb34a21e8d6c95e5fa100ac7cf2d05b41fb3cd2e62cc",
+      "elapsed_ms": 2121.668147,
+      "process_elapsed_ms": 2278.335233684629,
+      "peak_rss_bytes": 248131584,
+      "extension_sha256": "4a9e52040953b92e0b8dc689b36fae9d7697d63d9474b6f43e3c02976f770379",
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": true,
+        "inflight_peak": 4,
+        "inflight_budget_bytes": 524288,
+        "requests": 1523,
+        "physical_bytes": 5835828,
+        "useful_bytes": 699444,
+        "gap_bytes": 5136384,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 258,
+          "data": 1254
+        }
+      }
+    }
+  ],
+  "summaries": [
+    {
+      "runtime": "v2.0.0",
+      "object_id": "http",
+      "query": "full",
+      "mode": "async-off",
+      "workers": 1,
+      "memory_limit": "256MB",
+      "repeats": 3,
+      "median_elapsed_ms": 1350.731701,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "result_hashes_match": true,
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 840,
+        "physical_bytes": 2741967,
+        "useful_bytes": 403151,
+        "gap_bytes": 2338816,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 258,
+          "data": 571
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "http",
+      "query": "full",
+      "mode": "async-on",
+      "workers": 1,
+      "memory_limit": "256MB",
+      "repeats": 3,
+      "median_elapsed_ms": 1909.514094,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "result_hashes_match": true,
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": true,
+        "inflight_peak": 4,
+        "inflight_budget_bytes": 524288,
+        "requests": 1523,
+        "physical_bytes": 5835828,
+        "useful_bytes": 699444,
+        "gap_bytes": 5136384,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 258,
+          "data": 1254
+        }
+      }
+    }
+  ]
+}

@@ -98,13 +98,13 @@ struct OmMetadataTree final {
 // Reads and validates all metadata nodes through the official OM v3 reader.
 // Float32 arrays are value columns; their descendants and scalar siblings are metadata.
 // Int64 time coordinate arrays are decoded as UTC Unix seconds, never value columns.
-OmMetadataTree ReadMetadataTree(const OmV3Reader &reader);
+OmMetadataTree ReadMetadataTree(const OmV3Reader &reader, const RemoteReadBudget *budget = nullptr);
 
 // Reads only the named root-level value array and metadata needed to locate its grid.
 // Names are canonical encoded SQL column paths, with optional leading '/'.
 // Compact root directories are prefetched once; sparse and nested layouts use
 // ordinary validated traversal. Only the selected value array enters the schema.
-OmMetadataTree ReadNamedMetadataTree(const OmV3Reader &reader, const std::string &variable_name);
+OmMetadataTree ReadNamedMetadataTree(const OmV3Reader &reader, const std::string &variable_name, const RemoteReadBudget *budget = nullptr);
 
 // Encodes a single metadata name segment as a canonical OM path segment.
 std::string EncodeMetadataName(const std::string &name);

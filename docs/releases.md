@@ -9,10 +9,11 @@
 | v1.5.4 | `linux_amd64` | `linux_arm64` | `osx_amd64` | `osx_arm64` |
 | v1.5.5 | `linux_amd64` | `linux_arm64` | `osx_amd64` | `osx_arm64` |
 | v1.5.6 | `linux_amd64` | `linux_arm64` | `osx_amd64` | `osx_arm64` |
+| v2.0.0 | `linux_amd64` | `linux_arm64` | `osx_amd64` | `osx_arm64` |
 
 x86_64 产物的 OM C 库要求 CPU 支持 **SSSE3**；不要求 AVX2，也不使用构建机特定的 `-march=native`。ARM64 保持原有 NEON 路径。
 
-每次发布必须产生全部 12 份 ZIP；不发布部分成功的矩阵。Windows、musl、Wasm 和 DuckDB 2.0 不在此流程范围。社区登记仍只申请 v1.5.6 / Linux ARM64，不能把 GitHub 发布矩阵当作社区支持矩阵。
+每次发布产生 16 份产物：4 个引擎版本（v1.5.4、v1.5.5、v1.5.6、v2.0.0）× 4 个平台（linux_amd64、linux_arm64、osx_amd64、osx_arm64）。不发布部分成功的矩阵。Windows、musl 和 Wasm 不在此流程范围。社区登记仍只申请 v1.5.6 / Linux ARM64；2.0 产物由本仓库 tag 发布提供，不能把 GitHub 发布矩阵当作社区支持矩阵。
 
 原有深入验证记录主要来自 Linux ARM64。新增 Linux x86_64/macOS 平台在各自工作流实际通过前，仅是配置目标，不是已验证的支持声明。Release 的本地/HTTP 冒烟测试不替代完整 SQL/native 回归、HTTPS/签名 S3、真实网格、完整内存审计和独立验证者复现；既有 003/004 未完成门禁保持原状。未完成完整验收时，建议使用 `v0.1.0-rc.1` 等预发布 tag 供试用，不将 GitHub 包发布等同于生产就绪或 R21 通过。
 
@@ -148,3 +149,18 @@ python3 scripts/verify-community-artifact.py \
   --extension /path/to/duckomo.duckdb_extension \
   --output build/release-verification.json
 ```
+
+## DuckDB 2.0 行为差异
+
+2.0 产物与 1.5.6 返回相同行，但有两处上游差异需要知道：
+
+- FLOAT 转 DECIMAL 的精度在 2.0 中按上游 PR #24814 修正，与 1.5.6 的舍入结果可能不同。
+- 2.0 进程的基线 RSS 比 1.5.6 高约 20–29 MiB，这是引擎自身的开销，不是扫描额外读取。
+
+## 下一预发布：实验性远程 I/O 与 DuckDB 2.0 evaluation
+
+- 远程范围合并与请求/有用字节/间隙指标，新增实际并发及内存压力收缩检查。
+- DuckDB 2.0 使用引擎 AsyncResult；1.5.x 保持同步。本地同步读取保留逐块解码。
+- 异步未稳定加速；跨批实验窗口默认关闭，固定样本中开启后请求增加、耗时变长。部分本地首次查询超过5%性能门槛。
+- 不宣称 Spec 008 完成或2.0正式支持。完整平台CI/dry-run通过后才生成预发布tag；不发布未验证矩阵。
+- 实测和限制：[prefetch report](../evidence/008/prefetch/report.md)、[verification status](../evidence/008/final/status.md)。

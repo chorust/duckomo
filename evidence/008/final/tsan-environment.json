@@ -1,0 +1,26 @@
+[
+  {
+    "command": [
+      "/tmp/duckomo-tsan-probe"
+    ],
+    "returncode": 66,
+    "output": "FATAL: ThreadSanitizer: unexpected memory mapping 0xca0c55830000-0xca0c55833000\n"
+  },
+  {
+    "command": [
+      "setarch",
+      "aarch64",
+      "-R",
+      "/tmp/duckomo-tsan-probe"
+    ],
+    "returncode": 0,
+    "output": ""
+  },
+  {
+    "command": [
+      "/tmp/duckomo-tsan-probe-nopie"
+    ],
+    "returncode": 66,
+    "output": "FATAL: ThreadSanitizer: unexpected memory mapping 0xfa6213400000-0xfa6213500000\n"
+  }
+]

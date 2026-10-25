@@ -1,3 +1,14 @@
+<!-- Sync Impact Report — 2026-10-25 spec 008 evaluation
+Version change: 1.5.1 → 1.5.2
+Bump rationale: MINOR — add spec 008 as an active evaluation item; record local compatibility evidence and outstanding remote merge/async/release gates without promoting support.
+Specs affected: 008
+Evidence: specs/008-duckdb2-async-io/checklists/success-criteria.md, evidence/duckdb-2.0/final/
+Changes:
+  - Add DuckDB 2.0 build/release configuration and local cross-version validation as in-progress evidence.
+  - Keep 2.0 release_state at evaluation; full HTTPFS, async scheduling/memory, CI artifact verification and success criteria remain open.
+  - Supersede the historical 004 note that 2.0 is out of scope for the roadmap, without changing 004 acceptance evidence.
+-->
+
 <!-- Sync Impact Report — 2026-10-22 final integration
 Version change: 1.5.0 → 1.5.1
 Bump rationale: PATCH — 004 当前批准范围 H0–H9/独立 AI 证据已核验，C004-01–04 收口；未扩充产品范围。
@@ -322,6 +333,14 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 - **项目来源边界：** 本次台账只纳入仓库根的 `specs/`；`.specify/extensions/roadmap/specs/` 及其内嵌 roadmap/constitution 属于扩展自身示例，不作为 duckomo specs。项目无 `docs/adr/`，配置 PRD globs 未匹配到项目 PRD；普通 `docs/spec.md` 用作接口来源，不改称或编写外部 PRD。
 
 ---
+
+## Spec 008 — DuckDB 2.0, remote merge and async I/O
+
+**Lifecycle:** in-progress / evaluation. DuckDB v2.0.0 Linux AArch64 build adaptation and release configuration exist. This is not formal support: final controlled remote HTTPFS, request-reduction/RSS/latency benchmarks, thread-sanitizer acceptance, and release/community workflow verification remain incomplete. Review fixes now demonstrate scheduled concurrent reads, configured per-worker bounds, pressure-driven reduction/restoration, and cancellation recovery in native tests; local SQL regression passes on 1.5.4 and 2.0. The 1.5.4–1.5.6 compatibility baseline remains active.
+
+- **Scope:** add DuckDB v2.0.0 to a separate engine-compatibility and release matrix while retaining 1.5.4–1.5.6; calibrate remote OM range merging; add true DuckDB 2.0 async reads only with correctness, cancellation, and memory evidence.
+- **Current evidence:** [success criteria](../../specs/008-duckdb2-async-io/checklists/success-criteria.md), [cross-version local result](../../evidence/duckdb-2.0/final/cross-version.json), [CI dispatch status](../../evidence/duckdb-2.0/final/ci.json), [evaluation notes](../../docs/duckdb-2.0-evaluation.md).
+- **Governing decisions:** keep `extension_ci_tools.commit` equal to the submodule HEAD while separately pinning the CI toolchain; do not claim async is applied until multi-range scheduled I/O exists; do not set matrix `release_state` to `target` before T015–T017 pass.
 
 <!-- Historical version snapshot: **Version**: 1.2.0 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-10 -->
 

@@ -1,0 +1,32 @@
+[
+  {
+    "name": "remote_async_test",
+    "returncode": 0,
+    "output": "=== Running DuckDB 2.0 Remote Async I/O Native Tests ===\n  [PASS] Async on/off results match bit-for-bit (peak inflight=4, budget=524288, max concurrent=4)\n  [PASS] Multi-worker (2 threads): peak inflight=2, max concurrent=2, total reads=43\n  [PASS] Multi-worker (4 threads): peak inflight=4, max concurrent=4, total reads=43\n  [PASS] Multi-worker (8 threads): peak inflight=4, max concurrent=4, total reads=43\n  [PASS] Async error classification and token redaction verified for 403, 404, short read, version change\n  [PASS] Cancellation finishes in 54ms with status='cancelled'\n  [PASS] Same-connection query succeeds after cancellation recovery\n  [PASS] Inflight budget responds to memory limit: default=524288, constrained=65536\n=== All DuckDB 2.0 Remote Async I/O Native Tests Passed! ===\n"
+  },
+  {
+    "name": "remote_session_test",
+    "returncode": 0,
+    "output": "remote_session_test: standard interface, handles, errors, cancellation, permissions, range merge passed\n"
+  },
+  {
+    "name": "reader_capacity_test",
+    "returncode": 0,
+    "output": "rectangular batch decoded chunks: 35 -> 5\nreader capacity bounds passed\n"
+  },
+  {
+    "name": "scan_metrics_v4_test",
+    "returncode": 0,
+    "output": "scan metrics v4 checks passed\n"
+  },
+  {
+    "name": "projection_evidence_test",
+    "returncode": 0,
+    "output": "projection metrics and lifecycle checks passed\n"
+  },
+  {
+    "name": "spatial_callback_test",
+    "returncode": 0,
+    "output": "spatial complex-filter callback checks passed\n"
+  }
+]

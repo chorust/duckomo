@@ -71,6 +71,7 @@ void TestV4SeparatesExactObservedUpperAndCompleteness() {
 	                std::string::npos &&
 	            v4.find("\"coordinate_preparation\":{\"evaluations\":104,\"complete\":false}") != std::string::npos,
 	        "v4 JSON preserves nullable exact values, selector work counts, and coordinate preparation evidence");
+	Require(v4.find("\"remote_io\":null") != std::string::npos, "local scans omit remote_io");
 	Require(v4.find("https://example.invalid/private") == std::string::npos,
 	        "compatibility snapshots continue to redact remote source URIs");
 }
@@ -262,6 +263,52 @@ void TestUnobservedEvidenceStaysNullAndLegacyV3IsEmbeddedVerbatim() {
 	Require(v4.find("secret-token") == std::string::npos,
 	        "signed source credentials stay redacted in the embedded legacy and v4 snapshots");
 }
+void TestRemoteIoMetricsSerialization() {
+	// 1. Local scan (default): remote_io is null
+	ScanMetrics local_metrics;
+	local_metrics.SetQueryIdentity("local-q", "unit", "SELECT * FROM read_om('test/data/test.om')");
+	local_metrics.SetScanComplete(true);
+	local_metrics.SetStatus(ScanStatus::Succeeded);
+	local_metrics.PublishQueryTerminal();
+	const auto local_v4 = local_metrics.ToMetricsV4Json();
+	Require(local_v4.find("\"remote_io\":null") != std::string::npos,
+	        "local scan metrics serialize remote_io as null");
+
+	// 2. Remote scan: remote_io has full contract fields
+	ScanMetrics remote_metrics;
+	remote_metrics.SetQueryIdentity("remote-q", "unit", "SELECT * FROM read_om('https://example.com/test.om')");
+	remote_metrics.SetRemoteIo(true, 4096, 65536, true);
+	remote_metrics.RecordSuccessfulRead(ScanReadPhase::Metadata, 100);
+	remote_metrics.DeclareVariable("/val");
+	remote_metrics.RecordSuccessfulRead(ScanReadPhase::Data, 1024, "/val");
+	remote_metrics.RecordRemoteUsefulBytes(1024);
+	remote_metrics.RecordRemoteInflight(3, 524288);
+	remote_metrics.SetScanComplete(true);
+	remote_metrics.SetStatus(ScanStatus::Succeeded);
+	remote_metrics.PublishQueryTerminal();
+
+	const auto remote_v4 = remote_metrics.ToMetricsV4Json();
+	Require(remote_v4.find("\"remote_io\":{") != std::string::npos,
+	        "remote scan metrics serialize remote_io object");
+	Require(remote_v4.find("\"merge_enabled\":true") != std::string::npos,
+	        "remote_io includes merge_enabled");
+	Require(remote_v4.find("\"merge_gap_bytes\":4096") != std::string::npos,
+	        "remote_io includes merge_gap_bytes");
+	Require(remote_v4.find("\"max_request_bytes\":65536") != std::string::npos,
+	        "remote_io includes max_request_bytes");
+	Require(remote_v4.find("\"async_applied\":true") != std::string::npos,
+	        "remote_io includes async_applied");
+	Require(remote_v4.find("\"inflight_peak\":3") != std::string::npos,
+	        "remote_io includes inflight_peak");
+	Require(remote_v4.find("\"inflight_budget_bytes\":524288") != std::string::npos,
+	        "remote_io includes inflight_budget_bytes");
+	Require(remote_v4.find("\"useful_bytes\":1024") != std::string::npos,
+	        "remote_io includes useful_bytes");
+	Require(remote_v4.find("\"gap_bytes\":100") != std::string::npos,
+	        "remote_io includes gap_bytes (physical - useful)");
+	Require(remote_v4.find("\"phase_requests\":{\"metadata\":1,\"coordinate\":0,\"index\":0,\"data\":1}") != std::string::npos,
+	        "remote_io includes phase_requests counts");
+}
 } // namespace
 
 int main() {
@@ -274,6 +321,7 @@ int main() {
 		TestNonSuccessfulOrEarlyStoppedScansDoNotPublishExactCounts();
 		TestTerminalMemoryReleaseReportsOutstandingAccounts();
 		TestUnobservedEvidenceStaysNullAndLegacyV3IsEmbeddedVerbatim();
+		TestRemoteIoMetricsSerialization();
 		std::cout << "scan metrics v4 checks passed\n";
 		return 0;
 	} catch (const std::exception &error) {

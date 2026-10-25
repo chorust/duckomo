@@ -1,0 +1,938 @@
+[
+  {
+    "merge_gap": 0,
+    "max_request": 16384,
+    "groups": [
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 23633.38015321642,
+        "requests": 11648,
+        "physical_bytes": 4144756,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 15588.954370003194,
+        "requests": 11757,
+        "physical_bytes": 4153349,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 515.8888129517436,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 376.3120612129569,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 52536.794357933104,
+        "requests": 11648,
+        "physical_bytes": 4144756,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 20923.788877669722,
+        "requests": 11757,
+        "physical_bytes": 4153349,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 520.6465544179082,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 392.2298401594162,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      }
+    ]
+  },
+  {
+    "merge_gap": 0,
+    "max_request": 262144,
+    "groups": [
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 9245.08087,
+        "requests": 11648,
+        "physical_bytes": 4144756,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 6450.140762,
+        "requests": 11757,
+        "physical_bytes": 4153349,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 234.32573000000002,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 156.086304,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 21491.573429,
+        "requests": 11648,
+        "physical_bytes": 4144756,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 8565.884751,
+        "requests": 11756,
+        "physical_bytes": 4153267,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 257.93209900000005,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 175.00616399999998,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      }
+    ]
+  },
+  {
+    "merge_gap": 0,
+    "max_request": 65536,
+    "groups": [
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 13067.012611999999,
+        "requests": 11648,
+        "physical_bytes": 4144756,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 7491.046899999999,
+        "requests": 11757,
+        "physical_bytes": 4153349,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 312.28981500000003,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 183.164513,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 27826.60046,
+        "requests": 11648,
+        "physical_bytes": 4144756,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 10123.930529000001,
+        "requests": 11757,
+        "physical_bytes": 4153349,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 280.770609,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 184.528671,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      }
+    ]
+  },
+  {
+    "merge_gap": 16384,
+    "max_request": 16384,
+    "groups": [
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 858.36855,
+        "requests": 424,
+        "physical_bytes": 2582203,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 531.909796,
+        "requests": 591,
+        "physical_bytes": 3557370,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 228.898029,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 148.458573,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 1669.3151260000002,
+        "requests": 424,
+        "physical_bytes": 2582203,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 667.920583,
+        "requests": 592,
+        "physical_bytes": 3557452,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 264.766137,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 169.947851,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      }
+    ]
+  },
+  {
+    "merge_gap": 16384,
+    "max_request": 262144,
+    "groups": [
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 879.511225,
+        "requests": 418,
+        "physical_bytes": 2570812,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 533.7312029999999,
+        "requests": 589,
+        "physical_bytes": 3614806,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 230.951406,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 153.120574,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 1341.331021,
+        "requests": 418,
+        "physical_bytes": 2570812,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 604.092119,
+        "requests": 589,
+        "physical_bytes": 3614780,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 269.53414599999996,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 180.49030199999999,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      }
+    ]
+  },
+  {
+    "merge_gap": 16384,
+    "max_request": 65536,
+    "groups": [
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 736.275436,
+        "requests": 418,
+        "physical_bytes": 2570812,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 497.09486400000003,
+        "requests": 589,
+        "physical_bytes": 3614252,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 231.744527,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 164.641534,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 1543.377278,
+        "requests": 418,
+        "physical_bytes": 2570812,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 634.777755,
+        "requests": 588,
+        "physical_bytes": 3598034,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 247.270388,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 170.609509,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      }
+    ]
+  },
+  {
+    "merge_gap": 4096,
+    "max_request": 16384,
+    "groups": [
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 1200.995424,
+        "requests": 840,
+        "physical_bytes": 2741967,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 703.8574100000001,
+        "requests": 997,
+        "physical_bytes": 2951426,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 242.228485,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 156.59168,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 2223.891782,
+        "requests": 840,
+        "physical_bytes": 2741967,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 826.902441,
+        "requests": 997,
+        "physical_bytes": 2951410,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 250.91177,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 184.729035,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      }
+    ]
+  },
+  {
+    "merge_gap": 4096,
+    "max_request": 262144,
+    "groups": [
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 1099.4813379999998,
+        "requests": 840,
+        "physical_bytes": 2741967,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 749.840807,
+        "requests": 997,
+        "physical_bytes": 2951426,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 231.469325,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 158.626485,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 2248.4305889999996,
+        "requests": 840,
+        "physical_bytes": 2741967,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 1000.252964,
+        "requests": 997,
+        "physical_bytes": 2951426,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 263.87471899999997,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 184.906339,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      }
+    ]
+  },
+  {
+    "merge_gap": 4096,
+    "max_request": 65536,
+    "groups": [
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 1173.40284,
+        "requests": 840,
+        "physical_bytes": 2741967,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 711.451354,
+        "requests": 997,
+        "physical_bytes": 2951426,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 226.379347,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 156.555883,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 2260.556952,
+        "requests": 840,
+        "physical_bytes": 2741967,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 916.831402,
+        "requests": 997,
+        "physical_bytes": 2951426,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 258.52581200000003,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 186.92334799999998,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      }
+    ]
+  },
+  {
+    "merge_gap": 512,
+    "max_request": 16384,
+    "groups": [
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 2907.156816,
+        "requests": 3586,
+        "physical_bytes": 3716467,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 2104.539939,
+        "requests": 3743,
+        "physical_bytes": 3754713,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 227.950232,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 160.883646,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 7080.250725,
+        "requests": 3586,
+        "physical_bytes": 3716467,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 2809.987945,
+        "requests": 3743,
+        "physical_bytes": 3754713,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 248.899542,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 172.13362600000002,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      }
+    ]
+  },
+  {
+    "merge_gap": 512,
+    "max_request": 262144,
+    "groups": [
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 2952.410841,
+        "requests": 3586,
+        "physical_bytes": 3716467,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 2109.6177260000004,
+        "requests": 3739,
+        "physical_bytes": 3753726,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 227.131052,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 156.120858,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 6925.529278,
+        "requests": 3586,
+        "physical_bytes": 3716467,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 2790.464188,
+        "requests": 3743,
+        "physical_bytes": 3754713,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 255.84981499999998,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 176.419859,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      }
+    ]
+  },
+  {
+    "merge_gap": 512,
+    "max_request": 65536,
+    "groups": [
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 3004.13027,
+        "requests": 3586,
+        "physical_bytes": 3716467,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 2054.5443880000003,
+        "requests": 3743,
+        "physical_bytes": 3754713,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 236.41637400000002,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "http",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 159.721907,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 1,
+        "median_query_ms": 7069.641611999999,
+        "requests": 3586,
+        "physical_bytes": 3716467,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "full",
+        "workers": 4,
+        "median_query_ms": 2824.112979,
+        "requests": 3743,
+        "physical_bytes": 3754713,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 1,
+        "median_query_ms": 262.398466,
+        "requests": 19,
+        "physical_bytes": 2769,
+        "hashes_match": true
+      },
+      {
+        "object": "s3",
+        "query": "selected",
+        "workers": 4,
+        "median_query_ms": 180.531585,
+        "requests": 28,
+        "physical_bytes": 3162,
+        "hashes_match": true
+      }
+    ]
+  }
+]

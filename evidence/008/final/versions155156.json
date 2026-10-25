@@ -1,0 +1,68 @@
+[
+  {
+    "version": "v1.5.5",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/release/test/unittest",
+      "test/sql/*"
+    ],
+    "returncode": 0,
+    "output": "Filters: test/sql/*\n\n[0/23] (0%): test/sql/read_om.test\n[1/23] (4%): test/sql/projection.test\n[2/23] (8%): test/sql/remote_async_io.test\n[3/23] (13%): test/sql/source_identity.test\n[4/23] (17%): test/sql/semantic_axes.test\n[5/23] (21%): test/sql/parallel_scan.test\n[6/23] (26%): test/sql/spatial.test\n[7/23] (30%): test/sql/grid_selection.test\n[8/23] (34%): test/sql/region_sampling_spatial_dependency.test\n[9/23] (39%): test/sql/grid_zero_io.test\n[10/23] (43%): test/sql/grid_version_compat.test\n[11/23] (47%): test/sql/regions_spatial_dependency.test\n[12/23] (52%): test/sql/cache_metrics.test\n[13/23] (56%): test/sql/interface_usability.test\n[14/23] (60%): test/sql/regions.test\n[15/23] (65%): test/sql/raw.test\n[16/23] (69%): test/sql/spatial_pushdown.test\n[17/23] (73%): test/sql/region_sampling.test\n[18/23] (78%): test/sql/multi_grid.test\n[19/23] (82%): test/sql/axis_filter.test\n[20/23] (86%): test/sql/grid_info.test\n[21/23] (91%): test/sql/remote_io_settings.test\n[22/23] (95%): test/sql/spatial_composition.test\n[23/23] (100%): test/sql/spatial_composition.test\n===============================================================================\nAll tests passed (1319 assertions in 23 test cases)\n\n"
+  },
+  {
+    "version": "v1.5.5",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/release/test/native/remote_session_test"
+    ],
+    "returncode": 0,
+    "output": "remote_session_test: standard interface, handles, errors, cancellation, permissions, range merge passed\n"
+  },
+  {
+    "version": "v1.5.5",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/release/test/native/reader_capacity_test"
+    ],
+    "returncode": 0,
+    "output": "rectangular batch decoded chunks: 35 -> 5\nreader capacity bounds passed\n"
+  },
+  {
+    "version": "v1.5.5",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.5/release/test/native/scan_metrics_v4_test"
+    ],
+    "returncode": 0,
+    "output": "scan metrics v4 checks passed\n"
+  },
+  {
+    "version": "v1.5.6",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/release/test/unittest",
+      "test/sql/*"
+    ],
+    "returncode": 0,
+    "output": "Filters: test/sql/*\n\n[0/23] (0%): test/sql/read_om.test\n[1/23] (4%): test/sql/projection.test\n[2/23] (8%): test/sql/remote_async_io.test\n[3/23] (13%): test/sql/source_identity.test\n[4/23] (17%): test/sql/semantic_axes.test\n[5/23] (21%): test/sql/parallel_scan.test\n[6/23] (26%): test/sql/spatial.test\n[7/23] (30%): test/sql/grid_selection.test\n[8/23] (34%): test/sql/region_sampling_spatial_dependency.test\n[9/23] (39%): test/sql/grid_zero_io.test\n[10/23] (43%): test/sql/grid_version_compat.test\n[11/23] (47%): test/sql/regions_spatial_dependency.test\n[12/23] (52%): test/sql/cache_metrics.test\n[13/23] (56%): test/sql/interface_usability.test\n[14/23] (60%): test/sql/regions.test\n[15/23] (65%): test/sql/raw.test\n[16/23] (69%): test/sql/spatial_pushdown.test\n[17/23] (73%): test/sql/region_sampling.test\n[18/23] (78%): test/sql/multi_grid.test\n[19/23] (82%): test/sql/axis_filter.test\n[20/23] (86%): test/sql/grid_info.test\n[21/23] (91%): test/sql/remote_io_settings.test\n[22/23] (95%): test/sql/spatial_composition.test\n[23/23] (100%): test/sql/spatial_composition.test\n===============================================================================\nAll tests passed (1319 assertions in 23 test cases)\n\n"
+  },
+  {
+    "version": "v1.5.6",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/release/test/native/remote_session_test"
+    ],
+    "returncode": 0,
+    "output": "remote_session_test: standard interface, handles, errors, cancellation, permissions, range merge passed\n"
+  },
+  {
+    "version": "v1.5.6",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/release/test/native/reader_capacity_test"
+    ],
+    "returncode": 0,
+    "output": "rectangular batch decoded chunks: 35 -> 5\nreader capacity bounds passed\n"
+  },
+  {
+    "version": "v1.5.6",
+    "command": [
+      "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/release/test/native/scan_metrics_v4_test"
+    ],
+    "returncode": 0,
+    "output": "scan metrics v4 checks passed\n"
+  }
+]

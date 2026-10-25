@@ -1,0 +1,11 @@
+=== Running DuckDB 2.0 Remote Async I/O Native Tests ===
+  [PASS] Async on/off results match bit-for-bit (peak inflight=4, budget=524288, max concurrent=4)
+  [PASS] Single-variable cross-batch window preserves results with concurrent reads=4
+  [PASS] Multi-worker (2 threads): peak inflight=2, max concurrent=2, total reads=43
+  [PASS] Multi-worker (4 threads): peak inflight=4, max concurrent=4, total reads=43
+  [PASS] Multi-worker (8 threads): peak inflight=4, max concurrent=4, total reads=43
+  [PASS] Async error classification and token redaction verified for 403, 404, short read, version change
+  [PASS] Cancellation finishes in 53ms with status='cancelled'
+  [PASS] Same-connection query succeeds after cancellation recovery
+  [PASS] Inflight budget responds to memory limit: default=524288, constrained=65536
+=== All DuckDB 2.0 Remote Async I/O Native Tests Passed! ===

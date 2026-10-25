@@ -1,3 +1,6 @@
+extern "C" {
+#include "om_compression.h"
+}
 #include "duckomo/reader.hpp"
 #include "duckomo/local_file.hpp"
 
@@ -11,6 +14,63 @@
 
 namespace duckdb {
 namespace duckomo {
+namespace {
+std::uint64_t UsefulDataBytes(const OmDecoder_t &decoder, const std::uint8_t *index_data,
+                          std::uint64_t index_count, const OmDecoder_dataRead_t &data_read) {
+	if (decoder.lut_chunk_length == 0) return data_read.count;
+	const auto chunk_length = decoder.lut_chunk_length;
+	const auto lut_offset = data_read.indexRange.lowerBound / LUT_CHUNK_COUNT * chunk_length;
+	std::uint64_t useful = 0;
+	std::uint64_t loaded = UINT64_MAX;
+	std::uint64_t lut[LUT_CHUNK_COUNT] = {};
+	for (auto chunk = data_read.chunkIndex.lowerBound; chunk < data_read.chunkIndex.upperBound; chunk++) {
+		const auto lut_chunk = chunk / LUT_CHUNK_COUNT;
+		if (lut_chunk != loaded) {
+			const auto elements = std::min<std::uint64_t>((lut_chunk + 1) * LUT_CHUNK_COUNT,
+			                                              decoder.number_of_chunks + 1) - lut_chunk * LUT_CHUNK_COUNT;
+			const auto start = lut_chunk * chunk_length - lut_offset;
+			if (start > index_count || chunk_length > index_count - start || elements > LUT_CHUNK_COUNT) return data_read.count;
+			if (om_pfor_decode(index_data + start, static_cast<std::size_t>(chunk_length),
+			                   static_cast<std::size_t>(elements), lut, 64, false) == SIZE_MAX) return data_read.count;
+			loaded = lut_chunk;
+		}
+		// Merged chunkIndex intervals include unselected chunks. Count only
+		// chunks intersecting the requested selection in every dimension.
+		bool selected = true;
+		auto position = chunk;
+		for (std::uint64_t axis = decoder.dimensions_count; axis-- > 0;) {
+			const auto dimension = decoder.dimensions[axis];
+			const auto width = decoder.chunks[axis];
+			const auto chunks = dimension / width + (dimension % width != 0);
+			const auto start = (position % chunks) * width;
+			position /= chunks;
+			if (start >= decoder.read_offset[axis] + decoder.read_count[axis] ||
+			    std::min(dimension, start + width) <= decoder.read_offset[axis]) selected = false;
+		}
+		if (!selected) continue;
+		const auto begin = lut[chunk % LUT_CHUNK_COUNT];
+		const auto next_chunk = (chunk + 1) / LUT_CHUNK_COUNT;
+		std::uint64_t end_value;
+		if (next_chunk != loaded) {
+			std::uint64_t next_lut[LUT_CHUNK_COUNT] = {};
+			const auto elements = std::min<std::uint64_t>((next_chunk + 1) * LUT_CHUNK_COUNT,
+			                                              decoder.number_of_chunks + 1) - next_chunk * LUT_CHUNK_COUNT;
+			const auto start = next_chunk * chunk_length - lut_offset;
+			if (start > index_count || chunk_length > index_count - start || elements > LUT_CHUNK_COUNT) return data_read.count;
+			if (om_pfor_decode(index_data + start, static_cast<std::size_t>(chunk_length),
+			                   static_cast<std::size_t>(elements), next_lut, 64, false) == SIZE_MAX) return data_read.count;
+			end_value = next_lut[(chunk + 1) % LUT_CHUNK_COUNT];
+		} else {
+			end_value = lut[(chunk + 1) % LUT_CHUNK_COUNT];
+		}
+		if (end_value < begin) return data_read.count;
+		useful += end_value - begin;
+	}
+	return useful;
+}
+
+} // namespace
+
 
 namespace {
 
@@ -54,6 +114,21 @@ ReaderErrorCode TranslateOmError(OmError_t error, ReaderErrorCode fallback) {
 
 [[noreturn]] void ThrowAllocationError(const char *message) {
 	throw ReaderError(ReaderErrorCode::Allocation, message);
+}
+
+// The account follows shared buffer ownership, including a cached last range.
+std::shared_ptr<std::vector<std::uint8_t>> AllocateReadBuffer(
+    std::uint64_t size, const std::shared_ptr<ScanMetrics> &metrics) {
+	try {
+		auto account = std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::Decoder);
+		auto buffer = std::shared_ptr<std::vector<std::uint8_t>>(
+		    new std::vector<std::uint8_t>(static_cast<std::size_t>(size)),
+		    [account](std::vector<std::uint8_t> *value) { delete value; });
+		account->Set(sizeof(*buffer) + buffer->capacity() + sizeof(ScanMemoryAccount));
+		return buffer;
+	} catch (const std::bad_alloc &) {
+		ThrowAllocationError("unable to allocate OM planned read buffer");
+	}
 }
 
 void CopySelection(const std::vector<std::uint64_t> &source,
@@ -236,8 +311,8 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::vector<std::u
 	                              const std::vector<std::uint64_t> &cube_dimensions, void *output,
 	                              std::uint64_t output_bytes, std::uint64_t io_size_merge,
 	                              std::uint64_t io_size_max, ScanDecodePurpose purpose) const {
-	DecodeSelection(state, std::string(), read_offset, read_count, cube_offset, cube_dimensions, output,
-	                output_bytes, io_size_merge, io_size_max, purpose);
+	DecodeSelectionImpl(state, std::string(), read_offset, read_count, cube_offset, cube_dimensions, output,
+	                output_bytes, io_size_merge, io_size_max, purpose, nullptr);
 }
 
 void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &variable_path,
@@ -247,6 +322,45 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 	                              const std::vector<std::uint64_t> &cube_dimensions, void *output,
 	                              std::uint64_t output_bytes, std::uint64_t io_size_merge,
 	                              std::uint64_t io_size_max, ScanDecodePurpose purpose) const {
+	DecodeSelectionImpl(state, variable_path, read_offset, read_count, cube_offset, cube_dimensions, output,
+	                    output_bytes, io_size_merge, io_size_max, purpose, nullptr);
+}
+
+void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &variable_path,
+	                              const std::vector<std::uint64_t> &read_offset,
+	                              const std::vector<std::uint64_t> &read_count,
+	                              const std::vector<std::uint64_t> &cube_offset,
+	                              const std::vector<std::uint64_t> &cube_dimensions, void *output,
+	                              std::uint64_t output_bytes, const RemoteReadBudget &budget,
+	                              ScanDecodePurpose purpose) const {
+	// Give the official decoder the full remote coalescing gap and cap; this is
+	// the only layer that sees adjacent compressed chunks before fetching them.
+	const auto gap = budget.enabled ? budget.merge_gap : DEFAULT_LOCAL_MERGE_GAP;
+	const auto cap = budget.enabled ? budget.max_request : DEFAULT_LOCAL_MAX_REQUEST;
+	DecodeSelectionImpl(state, variable_path, read_offset, read_count, cube_offset, cube_dimensions, output,
+	                    output_bytes, gap, cap, purpose, &budget);
+}
+
+PlannedSelection OmV3Reader::PlanSelection(OmDecoderState &state, const std::string &variable_path,
+                                             const std::vector<std::uint64_t> &read_offset,
+                                             const std::vector<std::uint64_t> &read_count,
+                                             const std::vector<std::uint64_t> &cube_offset,
+                                             const std::vector<std::uint64_t> &cube_dimensions,
+                                             std::uint64_t output_bytes, std::uint64_t io_size_merge,
+                                             std::uint64_t io_size_max, ScanDecodePurpose purpose,
+                                             const RemoteReadBudget *budget, void *synchronous_output) const {
+	PlannedSelection plan;
+	if (!synchronous_output) {
+		plan.purpose = purpose;
+		plan.variable_path = variable_path;
+		plan.read_offset = read_offset;
+		plan.read_count = read_count;
+		plan.cube_offset = cube_offset;
+		plan.cube_dimensions = cube_dimensions;
+		plan.io_size_merge = io_size_merge;
+		plan.io_size_max = io_size_max;
+	}
+
 	const auto metrics = file_->Metrics();
 	RefreshDecoderMemoryAccount(state, metrics);
 	const auto *variable = state.variable_owner.Get();
@@ -306,7 +420,7 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 	}
 	const auto required_output_bytes =
 	    CheckedByteSize(CheckedShapeProduct(cube_dimensions), element_size, "OM decoder output");
-	if (output == nullptr || output_bytes < required_output_bytes) {
+	if (output_bytes < required_output_bytes) {
 		throw ReaderError(ReaderErrorCode::InvalidSelection, "OM decoder output buffer is smaller than its cube");
 	}
 	const auto chunk_scratch_bytes = CheckedByteSize(chunk_product, element_size, "OM chunk scratch");
@@ -339,6 +453,10 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 	if (init_error != ERROR_OK) {
 		ThrowOmError(init_error, ReaderErrorCode::InvalidSelection, file_->Path(), "OM decoder initialization");
 	}
+	if (budget && state.decoder.lut_chunk_length > budget->max_request) {
+		throw ReaderError(ReaderErrorCode::InvalidSelection,
+		                  "[configuration] duckomo_remote_max_request is smaller than an official LUT block");
+	}
 	if (state.decoder.lut_chunk_length > io_size_max) {
 		throw ReaderError(ReaderErrorCode::InvalidSelection,
 		                  "OM decoder maximum I/O size is smaller than an official LUT block");
@@ -361,8 +479,6 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 	RefreshDecoderMemoryAccount(state, metrics);
 	const auto index_phase = purpose == ScanDecodePurpose::Coordinate ? ScanReadPhase::CoordinateIndex
 	                                                                 : ScanReadPhase::Index;
-	const auto data_phase = purpose == ScanDecodePurpose::Coordinate ? ScanReadPhase::CoordinateData
-	                                                                : ScanReadPhase::Data;
 	const auto &metric_variable_path = purpose == ScanDecodePurpose::Coordinate ? std::string() : variable_path;
 
 	OmDecoder_indexRead_t index_read{};
@@ -386,6 +502,7 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 				RefreshDecoderMemoryAccount(state, metrics);
 				file_->ReadRange(index_read.offset, index_read.count, state.index_bytes.Data(), index_phase,
 				                 metric_variable_path);
+				if (budget && metrics) metrics->RecordRemoteUsefulBytes(index_read.count);
 			} catch (const std::bad_alloc &) {
 				ThrowAllocationError("unable to allocate OM index buffer");
 			}
@@ -396,9 +513,67 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 		}
 		const auto *index_data = state.index_bytes.Data() + (index_read.offset - state.index_range_offset);
 
+		PlannedIndexBlock block;
+		block.index_read = index_read;
+		if (!synchronous_output) {
+			block.index_data = AllocateReadBuffer(index_read.count, metrics);
+			std::memcpy(block.index_data->data(), index_data, static_cast<std::size_t>(index_read.count));
+		}
+
 		OmDecoder_dataRead_t data_read{};
 		om_decoder_init_data_read(&data_read, &index_read);
 		OmError_t read_error = ERROR_OK;
+		std::vector<OmDecoder_dataRead_t> pending_ranges;
+
+		auto add_planned_group = [&](const std::vector<OmDecoder_dataRead_t> &ranges) {
+			if (ranges.empty()) return;
+			const auto merged_begin = ranges.front().offset;
+			const auto merged_end = ranges.back().offset + ranges.back().count;
+			if (merged_end < merged_begin) throw ReaderError(ReaderErrorCode::DataRead, "OM merged range overflows");
+			const auto merged_size = merged_end - merged_begin;
+			for (const auto &range : ranges) {
+				ValidateBodyRange(range.offset, range.count, "data");
+			}
+			const bool can_merge = budget && budget->enabled && ranges.size() > 1;
+			const bool reuse_range = !can_merge && ranges.size() == 1 && state.data_range_size != 0 &&
+			    state.data_cache != nullptr &&
+			    ranges.front().offset >= state.data_range_offset &&
+			    ranges.front().offset - state.data_range_offset <= state.data_range_size &&
+			    ranges.front().count <= state.data_range_size - (ranges.front().offset - state.data_range_offset);
+			const auto read_offset = can_merge ? merged_begin : (reuse_range ? state.data_range_offset : ranges.front().offset);
+			const auto requested_read_size = can_merge ? merged_size : ranges.front().count;
+			const auto available_bytes = file_->Size() > read_offset + requested_read_size
+			    ? file_->Size() - (read_offset + requested_read_size)
+			    : 0;
+			const auto read_ahead = budget && budget->enabled && budget->allow_read_ahead && !reuse_range
+			    ? std::min({budget->merge_gap,
+			                budget->max_request > requested_read_size ? budget->max_request - requested_read_size : 0,
+			                state.capacity_bounds.data_buffer_upper_bound_bytes > requested_read_size
+			                    ? state.capacity_bounds.data_buffer_upper_bound_bytes - requested_read_size
+			                    : 0,
+			                available_bytes})
+			    : 0;
+			const auto read_size = reuse_range ? state.data_range_size : requested_read_size + read_ahead;
+
+			PlannedDataRange planned;
+			planned.read_offset = read_offset;
+			planned.read_size = read_size;
+			planned.reuse_range = reuse_range;
+			planned.ranges = ranges;
+			for (const auto &range : ranges) {
+				planned.useful_bytes = CheckedAddBytes(planned.useful_bytes,
+				    UsefulDataBytes(state.decoder, index_data, index_read.count, range), "OM useful bytes");
+			}
+			if (reuse_range) {
+				planned.buffer = state.data_cache;
+			} else {
+				state.data_range_size = 0;
+				state.data_cache.reset();
+				planned.buffer = AllocateReadBuffer(read_size, metrics);
+			}
+			block.data_ranges.push_back(std::move(planned));
+		};
+
 		while (om_decoder_next_data_read(&state.decoder, &data_read, index_data,
 		                                 index_read.count, &read_error)) {
 			ValidateBodyRange(data_read.offset, data_read.count, "data");
@@ -409,45 +584,166 @@ void OmV3Reader::DecodeSelection(OmDecoderState &state, const std::string &varia
 			if (data_read.count > static_cast<std::uint64_t>(std::numeric_limits<std::size_t>::max())) {
 				ThrowAllocationError("OM data buffer exceeds addressable memory");
 			}
-			const bool reuse_data = state.data_range_size != 0 && data_read.offset >= state.data_range_offset &&
-			    data_read.offset - state.data_range_offset <= state.data_range_size &&
-			    data_read.count <= state.data_range_size - (data_read.offset - state.data_range_offset);
-			if (!reuse_data) {
-				state.data_range_size = 0;
-				try {
-					state.data_bytes.EnsureSize(static_cast<std::size_t>(data_read.count));
-					RefreshDecoderMemoryAccount(state, metrics);
-					file_->ReadRange(data_read.offset, data_read.count, state.data_bytes.Data(), data_phase,
-					                 metric_variable_path);
-				} catch (const std::bad_alloc &) {
-					ThrowAllocationError("unable to allocate OM data buffer");
+			if (synchronous_output) {
+				const bool reuse = state.data_range_size && data_read.offset >= state.data_range_offset &&
+				    data_read.offset - state.data_range_offset <= state.data_range_size &&
+				    data_read.count <= state.data_range_size - (data_read.offset - state.data_range_offset);
+				const auto phase = purpose == ScanDecodePurpose::Coordinate ? ScanReadPhase::CoordinateData : ScanReadPhase::Data;
+				if (!reuse) {
+					state.data_range_size = 0;
+					try {
+						state.data_bytes.EnsureSize(static_cast<std::size_t>(data_read.count));
+						RefreshDecoderMemoryAccount(state, metrics);
+						file_->ReadRange(data_read.offset, data_read.count, state.data_bytes.Data(), phase, metric_variable_path);
+					} catch (const std::bad_alloc &) { ThrowAllocationError("unable to allocate OM data buffer"); }
+					state.data_range_offset = data_read.offset;
+					state.data_range_size = data_read.count;
+				} else if (metrics) metrics->RecordLogicalRead(phase, data_read.count, metric_variable_path);
+				OmError_t error = ERROR_OK;
+				if (!om_decoder_decode_chunks(&state.decoder, data_read.chunkIndex,
+				    state.data_bytes.Data() + data_read.offset - state.data_range_offset, data_read.count,
+				    synchronous_output, state.chunk_scratch.Data(), &error)) {
+					if (metrics) {
+						if (purpose == ScanDecodePurpose::Coordinate) metrics->MarkCoordinateDecodeCountIncomplete();
+						else metrics->MarkDecodeCountIncomplete(variable_path);
+					}
+					ThrowOmError(error, ReaderErrorCode::Decode, file_->Path(), "OM chunk decode");
 				}
-				state.data_range_offset = data_read.offset;
-				state.data_range_size = data_read.count;
-			} else if (metrics) {
-				metrics->RecordLogicalRead(data_phase, data_read.count, metric_variable_path);
-			}
-			const auto *data = state.data_bytes.Data() + (data_read.offset - state.data_range_offset);
-
-			OmError_t decode_error = ERROR_OK;
-			if (!om_decoder_decode_chunks(&state.decoder, data_read.chunkIndex, data,
-			                              data_read.count, output, state.chunk_scratch.Data(), &decode_error)) {
 				if (metrics) {
-					if (purpose == ScanDecodePurpose::Coordinate) metrics->MarkCoordinateDecodeCountIncomplete();
-					else metrics->MarkDecodeCountIncomplete(variable_path);
+					const auto chunks = data_read.chunkIndex.upperBound - data_read.chunkIndex.lowerBound;
+					if (purpose == ScanDecodePurpose::Coordinate) metrics->RecordSuccessfulCoordinateDecode(chunks);
+					else metrics->RecordSuccessfulDecode(variable_path, chunks);
 				}
-				ThrowOmError(decode_error, ReaderErrorCode::Decode, file_->Path(), "OM chunk decode");
-			}
-			if (metrics) {
-				const auto decoded_ranges = data_read.chunkIndex.upperBound - data_read.chunkIndex.lowerBound;
-				if (purpose == ScanDecodePurpose::Coordinate) metrics->RecordSuccessfulCoordinateDecode(decoded_ranges);
-				else metrics->RecordSuccessfulDecode(variable_path, decoded_ranges);
-			}
+			} else pending_ranges.push_back(data_read);
 		}
 		if (read_error != ERROR_OK) {
 			ThrowOmError(read_error, ReaderErrorCode::DataRead, file_->Path(), "OM data request planning");
 		}
+
+		if (synchronous_output) continue;
+		std::vector<OmDecoder_dataRead_t> merge_group;
+		for (const auto &range : pending_ranges) {
+			if (!merge_group.empty()) {
+				const auto previous_end = merge_group.back().offset + merge_group.back().count;
+				const auto merged_end = range.offset + range.count;
+				const auto merged_size = merged_end >= merge_group.front().offset ? merged_end - merge_group.front().offset : UINT64_MAX;
+				const auto decoder_gap = range.offset >= previous_end ? range.offset - previous_end : UINT64_MAX;
+				const bool merge_allowed = budget && budget->enabled && range.offset >= previous_end &&
+				    decoder_gap <= budget->merge_gap && merged_size <= budget->max_request &&
+				    merged_size <= state.capacity_bounds.data_buffer_upper_bound_bytes;
+				if (!merge_allowed) {
+					add_planned_group(merge_group);
+					merge_group.clear();
+				}
+			}
+			merge_group.push_back(range);
+		}
+		add_planned_group(merge_group);
+		plan.blocks.push_back(std::move(block));
 	}
+	if (synchronous_output) return plan;
+	std::uint64_t control_bytes = sizeof(plan);
+	for (const auto *selection : {&plan.read_offset, &plan.read_count, &plan.cube_offset, &plan.cube_dimensions})
+		control_bytes = CheckedAddBytes(control_bytes, selection->capacity() * sizeof(std::uint64_t), "plan control");
+	control_bytes = CheckedAddBytes(control_bytes, plan.variable_path.capacity() + 1, "plan control");
+	control_bytes = CheckedAddBytes(control_bytes, plan.blocks.capacity() * sizeof(PlannedIndexBlock), "plan control");
+	for (const auto &block : plan.blocks) {
+		control_bytes = CheckedAddBytes(control_bytes, block.data_ranges.capacity() * sizeof(PlannedDataRange), "plan control");
+		for (const auto &range : block.data_ranges)
+			control_bytes = CheckedAddBytes(control_bytes, range.ranges.capacity() * sizeof(OmDecoder_dataRead_t), "plan control");
+	}
+	plan.control_account = std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::Decoder);
+	plan.control_account->Set(control_bytes);
+	return plan;
+}
+
+void OmV3Reader::FetchSelection(PlannedSelection &plan, const RemoteReadBudget *budget) const {
+	const auto metrics = file_->Metrics();
+	const auto data_phase = plan.purpose == ScanDecodePurpose::Coordinate ? ScanReadPhase::CoordinateData
+	                                                                      : ScanReadPhase::Data;
+	const auto &metric_variable_path = plan.purpose == ScanDecodePurpose::Coordinate ? std::string() : plan.variable_path;
+
+	for (auto &block : plan.blocks) {
+		for (auto &range : block.data_ranges) {
+			if (range.reuse_range) {
+				if (metrics) metrics->RecordLogicalRead(data_phase, range.ranges.front().count, metric_variable_path);
+			} else {
+				const auto cap = budget ? budget->max_request : range.read_size;
+				for (std::uint64_t done = 0; done < range.read_size;) {
+					const auto bytes = std::min(cap, range.read_size - done);
+					file_->ReadRange(range.read_offset + done, bytes, range.buffer->data() + done,
+					                 data_phase, metric_variable_path);
+					done += bytes;
+				}
+				if (budget && metrics) metrics->RecordRemoteUsefulBytes(range.useful_bytes);
+			}
+		}
+	}
+}
+
+void OmV3Reader::DecodeSelectionPlan(OmDecoderState &state, const PlannedSelection &plan, void *output,
+                                    const RemoteReadBudget *) const {
+	const auto metrics = file_->Metrics();
+	const auto *variable = state.variable_owner.Get();
+	if (variable && !plan.read_offset.empty()) {
+		om_decoder_init(&state.decoder, variable, om_variable_get_dimensions_count(variable),
+		                plan.read_offset.data(), plan.read_count.data(),
+		                plan.cube_offset.data(), plan.cube_dimensions.data(),
+		                plan.io_size_merge, plan.io_size_max);
+	}
+
+	for (const auto &block : plan.blocks) {
+		for (const auto &range : block.data_ranges) {
+			if (!range.reuse_range && range.ranges.size() == 1) {
+				state.data_cache = range.buffer;
+				state.data_range_offset = range.read_offset;
+				state.data_range_size = range.read_size;
+			}
+			for (const auto &sub_range : range.ranges) {
+				const auto *data = range.buffer->data() + (sub_range.offset - range.read_offset);
+				OmError_t decode_error = ERROR_OK;
+				if (!om_decoder_decode_chunks(&state.decoder, sub_range.chunkIndex, data, sub_range.count, output,
+				                              state.chunk_scratch.Data(), &decode_error)) {
+					if (metrics) {
+						if (plan.purpose == ScanDecodePurpose::Coordinate) metrics->MarkCoordinateDecodeCountIncomplete();
+						else metrics->MarkDecodeCountIncomplete(plan.variable_path);
+					}
+					ThrowOmError(decode_error, ReaderErrorCode::Decode, file_->Path(), "OM chunk decode");
+				}
+				if (metrics) {
+					const auto decoded_ranges = sub_range.chunkIndex.upperBound - sub_range.chunkIndex.lowerBound;
+					if (plan.purpose == ScanDecodePurpose::Coordinate) metrics->RecordSuccessfulCoordinateDecode(decoded_ranges);
+					else metrics->RecordSuccessfulDecode(plan.variable_path, decoded_ranges);
+				}
+			}
+		}
+	}
+}
+
+void OmV3Reader::DecodeSelectionImpl(OmDecoderState &state, const std::string &variable_path,
+                                    const std::vector<std::uint64_t> &read_offset,
+                                    const std::vector<std::uint64_t> &read_count,
+                                    const std::vector<std::uint64_t> &cube_offset,
+                                    const std::vector<std::uint64_t> &cube_dimensions, void *output,
+                                    std::uint64_t output_bytes, std::uint64_t io_size_merge,
+                                    std::uint64_t io_size_max, ScanDecodePurpose purpose,
+                                    const RemoteReadBudget *budget) const {
+	if (output == nullptr) {
+		throw ReaderError(ReaderErrorCode::InvalidSelection, "OM decoder output buffer must not be NULL");
+	}
+	const bool local = file_->Path().find("://") == std::string::npos || file_->Path().rfind("memory://", 0) == 0;
+	auto plan = PlanSelection(state, variable_path, read_offset, read_count, cube_offset,
+	                          cube_dimensions, output_bytes, io_size_merge, io_size_max,
+	                          purpose, budget, local ? output : nullptr);
+	if (local) return;
+	try {
+		FetchSelection(plan, budget);
+	} catch (...) {
+		state.data_range_size = 0;
+		state.data_cache.reset();
+		throw;
+	}
+	DecodeSelectionPlan(state, plan, output, budget);
 }
 
 const ReadAtFile &OmV3Reader::File() const noexcept {

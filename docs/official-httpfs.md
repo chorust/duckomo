@@ -1,6 +1,6 @@
 # 官方 HTTPFS 支持与复现
 
-本轮支持范围：DuckDB **v1.5.4、v1.5.5、v1.5.6 / Linux AArch64**。其它平台及 2.0 开发版未通过本轮验证。每个 DuckOMO 产物对应自己的引擎版本，不允许把三个扩展文件互换。版本和官方产物 SHA256 固定在 `test/data/grids/version-matrix.json`。
+稳定网格验收范围：DuckDB **v1.5.4、v1.5.5、v1.5.6 / Linux AArch64**。DuckDB 2.0.0 已加入独立构建与发布矩阵，但该版本的完整远程 HTTPFS、异步读取和内存门禁尚未完成，当前不作为正式支持声明。每个 DuckOMO 产物对应自己的引擎版本，不允许互换。1.5.x 版本固定在 `test/data/grids/version-matrix.json`；2.0.0 固定在 `test/data/engine-compatibility/version-matrix.json`。
 
 ## 安装和构建
 

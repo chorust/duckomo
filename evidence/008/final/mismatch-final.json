@@ -1,0 +1,14 @@
+[
+  {
+    "runtime": "v2.0.0",
+    "extension": "/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/release/extension/duckomo/duckomo.duckdb_extension",
+    "returncode": 1,
+    "error": "Invalid Input Error: Failed to load '/home/blizhan/repo/github/duckomo/build/official-matrix/v1.5.6/release/extension/duckomo/duckomo.duckdb_extension', The file was built specifically for DuckDB version 'v1.5.6' and can only be loaded with that version of DuckDB. (this version of DuckDB is 'v2.0.0')\n"
+  },
+  {
+    "runtime": "v1.5.6",
+    "extension": "/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/release/extension/duckomo/duckomo.duckdb_extension",
+    "returncode": 1,
+    "error": "Invalid Input Error: Failed to load '/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/release/extension/duckomo/duckomo.duckdb_extension', The file was built specifically for DuckDB version 'v2.0.0' and can only be loaded with that version of DuckDB. (this version of DuckDB is 'v1.5.6')\n"
+  }
+]

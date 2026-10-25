@@ -160,7 +160,7 @@ std::vector<std::string> ParseCoordinates(const OmVariable_t *variable) {
 	return axes;
 }
 
-void Traverse(const OmV3Reader &reader, std::uint64_t offset, std::uint64_t size, const std::string &parent_path,
+void Traverse(const OmV3Reader &reader, std::uint64_t offset, std::uint64_t size, const std::string &parent_path, const RemoteReadBudget *budget,
               bool root_node, bool array_attribute, std::unordered_set<std::uint64_t> &active_offsets,
               std::unordered_map<std::string, std::vector<std::string>> &coordinates_by_path,
               std::unordered_map<std::string, OmTimeCoordinate> &time_by_path, OmMetadataTree &tree) {
@@ -213,7 +213,7 @@ void Traverse(const OmV3Reader &reader, std::uint64_t offset, std::uint64_t size
 			time.RefreshMemoryAccount();
 			OmDecoderState decoder(borrowed);
 			reader.DecodeSelection(decoder, node_path, {0}, {count}, {0}, {count}, time.epoch_seconds.data(),
-			                       count * sizeof(std::int64_t), 512, 64 * 1024, ScanDecodePurpose::Coordinate);
+			                       count * sizeof(std::int64_t), budget ? *budget : RemoteReadBudget{}, ScanDecodePurpose::Coordinate);
 		} else {
 			void *value = nullptr;
 			std::uint64_t value_size = 0;
@@ -285,7 +285,7 @@ void Traverse(const OmV3Reader &reader, std::uint64_t offset, std::uint64_t size
 	                      (node_path.empty() ? "/" : node_path) + "'");
 	}
 	for (std::uint32_t child = 0; child < children_count; child++) {
-		Traverse(reader, child_offsets[child], child_sizes[child], node_path, false,
+		Traverse(reader, child_offsets[child], child_sizes[child], node_path, budget, false,
 		         array_attribute || type != DATA_TYPE_NONE, active_offsets, coordinates_by_path, time_by_path, tree);
 	}
 }
@@ -374,12 +374,12 @@ std::string EncodeMetadataName(const std::string &name) {
 	return result;
 }
 
-OmMetadataTree ReadMetadataTree(const OmV3Reader &reader) {
+OmMetadataTree ReadMetadataTree(const OmV3Reader &reader, const RemoteReadBudget *budget) {
 	OmMetadataTree result;
 	std::unordered_set<std::uint64_t> active_offsets;
 	std::unordered_map<std::string, std::vector<std::string>> coordinates_by_path;
 	std::unordered_map<std::string, OmTimeCoordinate> time_by_path;
-	Traverse(reader, reader.RootOffset(), reader.RootSize(), "", true, false, active_offsets, coordinates_by_path,
+	Traverse(reader, reader.RootOffset(), reader.RootSize(), "", budget, true, false, active_offsets, coordinates_by_path,
 	         time_by_path, result);
 	FinalizeMetadata(result, coordinates_by_path, time_by_path);
 	if (result.arrays.empty()) {
@@ -388,7 +388,7 @@ OmMetadataTree ReadMetadataTree(const OmV3Reader &reader) {
 	return result;
 }
 
-OmMetadataTree ReadNamedMetadataTree(const OmV3Reader &reader, const std::string &variable_name) {
+OmMetadataTree ReadNamedMetadataTree(const OmV3Reader &reader, const std::string &variable_name, const RemoteReadBudget *budget) {
 	if (variable_name.empty()) throw ReaderError(ReaderErrorCode::InvalidMetadata, "OM variable name must not be empty");
 	auto root = reader.ReadRootVariable();
 	const auto *root_variable = root.Get();
@@ -439,7 +439,7 @@ OmMetadataTree ReadNamedMetadataTree(const OmV3Reader &reader, const std::string
 		                    (name == "valid_time" && type != DATA_TYPE_NONE && type < DATA_TYPE_INT8_ARRAY);
 		if (!match && !shared) continue;
 		if (match && selected) throw ReaderError(ReaderErrorCode::InvalidMetadata, "duplicate selected OM variable '" + variable_name + "'");
-		Traverse(reader, child.offset, child.size, "", false, false, active_offsets, coordinates_by_path, time_by_path, result);
+		Traverse(reader, child.offset, child.size, "", budget, false, false, active_offsets, coordinates_by_path, time_by_path, result);
 		selected = selected || match;
 	}
 	if (!selected || result.arrays.size() != 1) {

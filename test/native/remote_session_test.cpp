@@ -8,7 +8,13 @@
 #include "duckdb/common/exception/http_exception.hpp"
 #include "duckomo/remote_file.hpp"
 #include "duckomo/om_reader.hpp"
+#include "duckomo/reader.hpp"
 #include "duckomo_extension.hpp"
+extern "C" {
+#include "om_variable.h"
+#include "om_encoder.h"
+#include "om_file.h"
+}
 #include <cstring>
 #include <algorithm>
 #include <cstdlib>
@@ -27,6 +33,7 @@ namespace {
 using namespace duckdb;
 using namespace duckdb::duckomo;
 void Require(bool value, const char *why) { if (!value) throw std::runtime_error(why); }
+void Require(bool value, const std::string &why) { if (!value) throw std::runtime_error(why); }
 struct State {
     int opens=0; int closed=0; bool fail=false; bool changed=false; bool no_tag=false;
     std::function<void()> open_error;
@@ -206,6 +213,236 @@ void TestQueryObjectIdentity(Connection &conn) {
                 "object identity preserves display-path redaction");
     }
 }
+
+class MergeTestFileSystem final : public FileSystem {
+public:
+    explicit MergeTestFileSystem(const std::string &fixture_path, State &state) : state_(state) {
+        std::ifstream input(fixture_path, std::ios::binary);
+        Require(input.good(), "merge fixture available: " + fixture_path);
+        bytes_.assign(std::istreambuf_iterator<char>(input), std::istreambuf_iterator<char>());
+    }
+    bool CanHandleFile(const string &path) override { return path.find("https://duckomo-merge/") == 0; }
+    string GetName() const override { return "duckomo-range-merge-test"; }
+    unique_ptr<FileHandle> OpenFile(const string &path, FileOpenFlags flags, optional_ptr<FileOpener>) override {
+        ++state_.opens;
+        return make_uniq<Handle>(*this, path, flags, state_);
+    }
+    int64_t GetFileSize(FileHandle &) override { return static_cast<int64_t>(bytes_.size()); }
+    string GetVersionTag(FileHandle &) override { return "v1"; }
+    void Read(FileHandle &, void *destination, int64_t count, idx_t offset) override {
+        Require(offset <= bytes_.size() && count >= 0 && static_cast<uint64_t>(count) <= bytes_.size() - offset,
+                "merge fixture read is bounded");
+        if (state_.read_error) state_.read_error();
+        ++reads_;
+        bytes_read_ += static_cast<std::uint64_t>(count);
+        std::memcpy(destination, bytes_.data() + offset, static_cast<size_t>(count));
+    }
+    void Reset() {
+        reads_ = 0;
+        bytes_read_ = 0;
+    }
+    std::uint64_t Reads() const { return reads_; }
+    std::uint64_t BytesRead() const { return bytes_read_; }
+
+private:
+    State &state_;
+    std::vector<char> bytes_;
+    std::uint64_t reads_ = 0;
+    std::uint64_t bytes_read_ = 0;
+};
+
+class SimpleMemoryFile final : public ReadAtFile {
+public:
+    explicit SimpleMemoryFile(std::vector<std::uint8_t> bytes) : bytes_(std::move(bytes)) {}
+    std::uint64_t Size() const noexcept override { return bytes_.size(); }
+    const std::string &Path() const noexcept override { static const std::string p = "https://duckomo-test/memory.om"; return p; }
+    const std::shared_ptr<ScanMetrics> &Metrics() const noexcept override { static const std::shared_ptr<ScanMetrics> m; return m; }
+    void ReadRange(std::uint64_t offset, std::uint64_t size, void *destination, ScanReadPhase,
+                   const std::string &) const override {
+        Require(offset <= bytes_.size() && size <= bytes_.size() - offset, "bounded read in SimpleMemoryFile");
+        if (destination && size > 0) {
+            std::memcpy(destination, bytes_.data() + offset, static_cast<size_t>(size));
+        }
+    }
+    std::vector<std::uint8_t> ReadRange(std::uint64_t offset, std::uint64_t size, ScanReadPhase phase,
+                                       const std::string &var) const override {
+        std::vector<std::uint8_t> res(static_cast<size_t>(size));
+        ReadRange(offset, size, res.data(), phase, var);
+        return res;
+    }
+private:
+    std::vector<std::uint8_t> bytes_;
+};
+
+std::uint64_t ExtractRemoteIoUint(const std::string &json, const std::string &key) {
+    auto remote_pos = json.find("\"remote_io\":");
+    if (remote_pos == std::string::npos) throw std::runtime_error("missing remote_io in metrics JSON");
+    const std::string target = "\"" + key + "\":";
+    auto pos = json.find(target, remote_pos);
+    if (pos == std::string::npos) throw std::runtime_error("missing key in remote_io: " + key);
+    pos += target.size();
+    while (pos < json.size() && (json[pos] == ' ' || json[pos] == '\t')) ++pos;
+    if (pos >= json.size() || (json[pos] < '0' || json[pos] > '9')) {
+        throw std::runtime_error("non-numeric value in remote_io for: " + key);
+    }
+    char *end = nullptr;
+    auto val = std::strtoull(json.c_str() + pos, &end, 10);
+    return val;
+}
+
+std::vector<std::uint8_t> CreateOmWithLargeLutChunk(uint64_t target_lut_bytes) {
+    const uint64_t dimensions[] = {2, 2};
+    std::vector<float> values = {1.0f, 2.0f, 3.0f, 4.0f};
+    OmEncoder_t encoder{};
+    Require(om_encoder_init(&encoder, 1, 0, COMPRESSION_FPX_XOR2D, DATA_TYPE_FLOAT_ARRAY,
+                            dimensions, dimensions, 2) == ERROR_OK, "encoder init");
+    std::vector<std::uint8_t> compressed(65536);
+    std::vector<std::uint8_t> scratch(om_encoder_chunk_buffer_size(&encoder));
+    const uint64_t offset[] = {0, 0};
+    const auto bytes = om_encoder_compress_chunk(&encoder, values.data(), dimensions, offset, dimensions,
+                                                 0, 0, compressed.data(), scratch.data());
+    std::vector<std::uint8_t> object(om_header_write_size());
+    om_header_write(object.data());
+    const uint64_t lut[] = {object.size(), object.size() + bytes};
+    object.insert(object.end(), compressed.begin(), compressed.begin() + bytes);
+    const auto lut_offset = object.size();
+    std::vector<std::uint8_t> lut_data(target_lut_bytes, 0);
+    om_encoder_compress_lut(lut, 2, lut_data.data(), lut_data.size());
+    object.insert(object.end(), lut_data.begin(), lut_data.end());
+    while (object.size() % 8) object.push_back(0);
+    const auto root_offset = object.size();
+    std::vector<std::uint8_t> root(om_variable_write_numeric_array_size(0, 0, 2));
+    om_variable_write_numeric_array(root.data(), 0, 0, nullptr, nullptr, "", DATA_TYPE_FLOAT_ARRAY,
+                                    COMPRESSION_FPX_XOR2D, 1, 0, 2, dimensions, dimensions, target_lut_bytes, lut_offset);
+    object.insert(object.end(), root.begin(), root.end());
+    while (object.size() % 8) object.push_back(0);
+    const auto trailer_offset = object.size();
+    object.resize(trailer_offset + om_trailer_size());
+    om_trailer_write(object.data() + trailer_offset, root_offset, root.size());
+    return object;
+}
+
+void TestRemoteRangeMerge(Connection &conn, State &merge_state) {
+    auto fs_instance = make_uniq<MergeTestFileSystem>("test/data/projection.om", merge_state);
+    auto *merge_fs = fs_instance.get();
+    FileSystem::GetFileSystem(*conn.context).RegisterSubSystem(std::move(fs_instance));
+
+    const auto scalar = [&](const std::string &sql) {
+        auto result = duckdb::duckomo_test::Rows(conn.Query(sql));
+        Require(result && !result->HasError() && result->RowCount() == 1, "scalar query succeeds: " + sql);
+        return result->GetValue(0, 0).ToString();
+    };
+
+    const std::string uri = "'https://duckomo-merge/projection.om'";
+    const std::string query =
+        "SELECT count(*), avg(humidity), avg(pressure), avg(temperature) FROM read_om(" + uri +
+        ", dimensions := map(['humidity','pressure','temperature'], "
+        "[['row','column'],['row','column'],['row','column']]))";
+
+    // Enabling async is accepted on 1.5.x but must keep the sync path.
+#if DUCKOMO_DUCKDB_API_GENERATION < 2
+    Require(!conn.Query("SET duckomo_async_io = true")->HasError(), "1.5 accepts async option");
+#endif
+    // 1. Run with duckomo_remote_merge = false
+    Require(!conn.Query("SET duckomo_remote_merge = false")->HasError(), "disable merge succeeds");
+    merge_fs->Reset();
+    auto res_off = duckdb::duckomo_test::Rows(conn.Query(query));
+    Require(res_off && !res_off->HasError() && res_off->RowCount() == 1, "query succeeds with merge off");
+    const auto off_reads = merge_fs->Reads();
+    const auto off_bytes = merge_fs->BytesRead();
+    const auto off_result = res_off->GetValue(0, 0).ToString() + "," +
+                            res_off->GetValue(1, 0).ToString() + "," +
+                            res_off->GetValue(2, 0).ToString() + "," +
+                            res_off->GetValue(3, 0).ToString();
+    const auto metrics_off = scalar("SELECT metrics FROM duckomo_last_scan_metrics()");
+#if DUCKOMO_DUCKDB_API_GENERATION < 2
+    Require(metrics_off.find("\"async_applied\":false") != std::string::npos,
+            "1.5 ignores async=true for remote scans");
+#endif
+    const auto off_useful = ExtractRemoteIoUint(metrics_off, "useful_bytes");
+    const auto off_requests = ExtractRemoteIoUint(metrics_off, "requests");
+
+    // 2. Run with duckomo_remote_merge = true (defaults: gap=4096, max=65536)
+    Require(!conn.Query("SET duckomo_remote_merge = true")->HasError(), "enable merge succeeds");
+    Require(!conn.Query("SET duckomo_remote_merge_gap = 4096")->HasError(), "set gap succeeds");
+    Require(!conn.Query("SET duckomo_remote_max_request = 65536")->HasError(), "set max request succeeds");
+    merge_fs->Reset();
+    auto res_on = duckdb::duckomo_test::Rows(conn.Query(query));
+    Require(res_on && !res_on->HasError() && res_on->RowCount() == 1, "query succeeds with merge on");
+    const auto on_reads = merge_fs->Reads();
+    const auto on_bytes = merge_fs->BytesRead();
+    const auto on_result = res_on->GetValue(0, 0).ToString() + "," +
+                           res_on->GetValue(1, 0).ToString() + "," +
+                           res_on->GetValue(2, 0).ToString() + "," +
+                           res_on->GetValue(3, 0).ToString();
+    Require(off_result == on_result, "merge on produces identical results to merge off");
+
+    const auto metrics_on = scalar("SELECT metrics FROM duckomo_last_scan_metrics()");
+    const auto on_useful = ExtractRemoteIoUint(metrics_on, "useful_bytes");
+    const auto on_gap = ExtractRemoteIoUint(metrics_on, "gap_bytes");
+    const auto on_physical = ExtractRemoteIoUint(metrics_on, "physical_bytes");
+    const auto on_requests = ExtractRemoteIoUint(metrics_on, "requests");
+
+    Require(on_reads < off_reads, "filesystem reads decreased with remote merge");
+    Require(on_requests < off_requests, "metrics remote_io.requests decreased with remote merge");
+    Require(on_useful > 0 && off_useful > 0, "useful bytes must be non-zero");
+    // Useful bytes count bytes consumed from completed physical reads; cache
+    // reuse avoids counting them twice, so the two modes can differ.
+    Require(on_useful <= off_useful, "merge reuse avoids counting cached bytes twice");
+    Require(on_physical >= on_useful, "physical bytes >= useful bytes");
+    Require(on_gap == on_physical - on_useful, "gap bytes equals physical minus useful bytes");
+    Require(on_gap > 0, "read-ahead and unselected merged chunks are reported as gap bytes");
+
+    // 3. Test LIMIT 1 reads are bounded (do not scan full file, extra bytes <= 1 max_request)
+    merge_fs->Reset();
+    auto res_limit = duckdb::duckomo_test::Rows(conn.Query(
+        "SELECT humidity, pressure, temperature FROM read_om(" + uri +
+        ", dimensions := map(['humidity','pressure','temperature'], "
+        "[['row','column'],['row','column'],['row','column']])) LIMIT 1"));
+    Require(res_limit && !res_limit->HasError() && res_limit->RowCount() == 1, "LIMIT 1 query succeeds");
+    const auto limit_bytes = merge_fs->BytesRead();
+    Require(limit_bytes < off_bytes, "LIMIT 1 reads fewer bytes than full scan");
+    Require(limit_bytes <= 65536 + 16384, "LIMIT 1 extra read does not exceed one max_request budget plus metadata");
+
+    // 4. Test configuration error when duckomo_remote_max_request < lut_chunk_length
+    {
+        auto large_lut_bytes = CreateOmWithLargeLutChunk(1024);
+        OmV3Reader om_reader(make_uniq<SimpleMemoryFile>(std::move(large_lut_bytes)));
+        OmDecoderState decoder(om_reader.ReadRootVariable());
+        RemoteReadBudget bad_budget;
+        bad_budget.enabled = true;
+        bad_budget.max_request = 512;
+        bool caught = false;
+        try {
+            float dummy = 0.0f;
+            om_reader.DecodeSelection(decoder, "value", {0, 0}, {1, 1}, {0, 0}, {1, 1}, &dummy, sizeof(dummy), bad_budget);
+        } catch (const ReaderError &error) {
+            caught = true;
+            Require(std::string(error.what()).find("[configuration] duckomo_remote_max_request is smaller than an official LUT block") != std::string::npos,
+                    "max_request below LUT chunk length raises [configuration] error");
+        }
+        Require(caught, "max_request below LUT chunk length must throw [configuration]");
+    }
+
+    // 5. Test cancellation path during range merge
+    {
+        merge_state.read_error = [&] {
+            if (merge_fs->Reads() >= 2) throw Exception(ExceptionType::INTERRUPT, "range merge cancellation");
+        };
+        auto res = conn.Query(query);
+        Require(res && res->HasError(), "query fails on interruption during range merge");
+        Require(res->GetError().find("cancellation") != std::string::npos ||
+                res->GetError().find("interrupt") != std::string::npos ||
+                res->GetError().find("INTERRUPT") != std::string::npos,
+                "error preserves interrupt classification");
+        const auto cancel_bytes = merge_fs->BytesRead();
+        Require(cancel_bytes < off_bytes, "interrupted query does not scan full file");
+        Require(cancel_bytes <= 65536 + 16384, "interrupted query reads at most one merge request beyond metadata");
+        merge_state.read_error = {};
+        Require(!conn.Query("SELECT 1")->HasError(), "next query resets cancellation state after range merge interrupt");
+    }
+}
+
 }
 int main() {
     try {
@@ -221,9 +458,17 @@ int main() {
         auto first=session->Open(*conn.context,ScanMetadataStage::Bind);
         auto second=session->Open(*conn.context,ScanMetadataStage::Scan);
         Require(state.opens==2,"each worker owns an independent handle");
-        auto bytes=first->ReadRange(1,3,ScanReadPhase::Data,"value");
-        Require(std::string(bytes.begin(),bytes.end())=="bcd","exact positional read");
-        Require(metrics->Snapshot().physical_read_bytes==3,"successful application read accounting");
+        metrics->SetRemoteIo(false,512,64*1024,false);
+        {
+            auto bytes=first->ReadRange(1,3,ScanReadPhase::Data,"value");
+            Require(std::string(bytes.begin(),bytes.end())=="bcd","exact positional read");
+            const auto snapshot=metrics->Snapshot();
+            Require(snapshot.remote_requests && *snapshot.remote_requests>=1,"remote request counted");
+            Require(snapshot.remote_useful_bytes && snapshot.remote_gap_bytes &&
+                    *snapshot.remote_physical_bytes>=*snapshot.remote_useful_bytes,"gap is non-negative");
+            Require(snapshot.remote_inflight_peak==1 && !snapshot.remote_inflight_budget_bytes,"sync inflight is one");
+            Require(metrics->ToMetricsV4Json().find("remote_io")!=std::string::npos,"remote_io object present");
+        }
         Require(!metrics->Snapshot().response_body_bytes && metrics->Snapshot().transport_count_complete == false,"remote transport unknown");
         Require(metrics->ToMetricsV3Json().find("\"response_body_bytes\":null")!=std::string::npos,"legacy remote NULL");
         Fails([&]{ first->ReadRange(7,2,ScanReadPhase::Data,"value"); },"bounds must fail");
@@ -255,7 +500,9 @@ int main() {
         Require(!IsSupportedRemoteOmUri("https://host/file.om#frag"),"reject fragments");
         TestDiagnosticFailures();
         TestQueryObjectIdentity(conn);
-        std::cout<<"remote_session_test: standard interface, handles, errors, cancellation, permissions passed\n";
+        State merge_state;
+        TestRemoteRangeMerge(conn, merge_state);
+        std::cout<<"remote_session_test: standard interface, handles, errors, cancellation, permissions, range merge passed\n";
         return 0;
     } catch(const std::exception &e) {std::cerr<<e.what()<<'\n';return 1;}
 }

@@ -38,6 +38,7 @@ enum class ScanMemoryComponent : std::uint8_t {
 	Decoder,
 	Coalescing,
 	TransportControl,
+	RemoteInflight,
 	Unclassified,
 	RegionInput,
 	Count
@@ -57,6 +58,7 @@ inline const char *ScanMemoryComponentName(ScanMemoryComponent component) noexce
 	case ScanMemoryComponent::Decoder: return "decoder";
 	case ScanMemoryComponent::Coalescing: return "coalescing";
 	case ScanMemoryComponent::TransportControl: return "transport_control";
+	case ScanMemoryComponent::RemoteInflight: return "remote_inflight";
 	case ScanMemoryComponent::Unclassified: return "unclassified";
 	case ScanMemoryComponent::RegionInput: return "region_input";
 	case ScanMemoryComponent::Count: break;
@@ -236,6 +238,17 @@ struct ScanMetricsSnapshot final {
 	std::optional<std::uint64_t> sampling_result_rows_exact;
 	std::optional<bool> sampling_result_count_complete;
 	std::uint64_t sampling_source_rows_requested = 0;
+	std::optional<bool> remote_merge_enabled;
+	std::optional<std::uint64_t> remote_merge_gap_bytes;
+	std::optional<std::uint64_t> remote_max_request_bytes;
+	std::optional<bool> remote_async_applied;
+	std::optional<std::uint64_t> remote_inflight_peak;
+	std::optional<std::uint64_t> remote_inflight_budget_bytes;
+	std::optional<std::uint64_t> remote_requests;
+	std::optional<std::uint64_t> remote_physical_bytes;
+	std::optional<std::uint64_t> remote_useful_bytes;
+	std::optional<std::uint64_t> remote_gap_bytes;
+	std::array<std::uint64_t, 4> remote_phase_requests{};
 	std::uint64_t sampling_distinct_sources_observed = 0;
 	std::uint64_t sampling_result_rows_observed = 0;
 	std::uint64_t sampling_coordinate_comparisons = 0;
@@ -580,6 +593,11 @@ public:
 		active_worker_ids_.insert(worker_id);
 	}
 
+	std::uint64_t MaxActiveWorkers() const {
+		std::lock_guard<std::mutex> guard(mutex_);
+		return max_active_workers_;
+	}
+
 	void BeginWorkerExecution(std::uint64_t worker_id) {
 		std::lock_guard<std::mutex> guard(mutex_);
 		active_worker_ids_.insert(worker_id);
@@ -845,6 +863,30 @@ public:
 		query_terminal_published_ = true;
 	}
 
+	void SetRemoteIo(bool merge_enabled, std::uint64_t merge_gap_bytes, std::uint64_t max_request_bytes,
+	                 bool async_applied) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		remote_observed_ = true;
+		remote_merge_enabled_ = merge_enabled;
+		remote_merge_gap_bytes_ = merge_gap_bytes;
+		remote_max_request_bytes_ = max_request_bytes;
+		remote_async_applied_ = async_applied;
+		if (!remote_inflight_peak_) remote_inflight_peak_ = 1;
+	}
+
+	void RecordRemoteUsefulBytes(std::uint64_t useful_bytes) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		AddChecked(remote_useful_bytes_, useful_bytes);
+	}
+
+	void RecordRemoteInflight(std::uint64_t inflight, std::uint64_t budget_bytes) {
+		std::lock_guard<std::mutex> guard(mutex_);
+		remote_inflight_peak_ = std::max<std::uint64_t>(remote_inflight_peak_.value_or(0), inflight);
+		if (!remote_inflight_budget_bytes_ || budget_bytes < *remote_inflight_budget_bytes_) {
+			remote_inflight_budget_bytes_ = budget_bytes;
+		}
+	}
+
 	void RecordSuccessfulRead(ScanReadPhase phase, std::uint64_t returned_bytes,
 	                          const std::string &variable_path = std::string()) {
 		std::lock_guard<std::mutex> guard(mutex_);
@@ -1081,6 +1123,24 @@ public:
 			AddChecked(snapshot.read_requests, metrics.index_requests);
 			AddChecked(snapshot.read_requests, metrics.data_requests);
 			snapshot.decode_count_complete = snapshot.decode_count_complete && metrics.decode_count_complete;
+		}
+		if (remote_observed_) {
+			snapshot.remote_merge_enabled = remote_merge_enabled_;
+			snapshot.remote_merge_gap_bytes = remote_merge_gap_bytes_;
+			snapshot.remote_max_request_bytes = remote_max_request_bytes_;
+			snapshot.remote_async_applied = remote_async_applied_;
+			snapshot.remote_inflight_peak = remote_inflight_peak_;
+			snapshot.remote_inflight_budget_bytes = remote_inflight_budget_bytes_;
+			snapshot.remote_requests = physical_read_requests_;
+			snapshot.remote_physical_bytes = physical_read_bytes_;
+			snapshot.remote_useful_bytes = remote_useful_bytes_;
+			snapshot.remote_gap_bytes = physical_read_bytes_ - remote_useful_bytes_;
+			snapshot.remote_phase_requests = {bind_metadata_requests_ + scan_metadata_requests_, coordinate_requests_,
+			                                  coordinate_metrics_.index_requests, coordinate_metrics_.data_requests};
+			for (const auto &entry : variables_) {
+				snapshot.remote_phase_requests[2] += entry.second.index_requests;
+				snapshot.remote_phase_requests[3] += entry.second.data_requests;
+			}
 		}
 		return snapshot;
 	}
@@ -1387,6 +1447,7 @@ public:
 		     << ",\"data_requests\":" << total_value_data_requests
 		     << ",\"decoded_chunks\":" << total_value_decoded_chunks
 		     << ",\"decode_complete\":" << JsonOptionalBool(snapshot.value_decode_complete) << "}}"
+		     << ",\"remote_io\":" << RemoteIoJson(snapshot)
 		     << ",\"transport\":{\"response_body_bytes\":" << JsonOptionalUint(snapshot.response_body_bytes)
 		     << ",\"attempts\":" << JsonOptionalUint(snapshot.transport_requests)
 		     << ",\"responses\":" << JsonOptionalUint(snapshot.transport_responses)
@@ -1465,6 +1526,26 @@ private:
 		}
 	}
 
+	static std::string RemoteIoJson(const ScanMetricsSnapshot &snapshot) {
+		if (!snapshot.remote_merge_enabled) return "null";
+		std::ostringstream json;
+		json << "{\"merge_enabled\":" << JsonBool(*snapshot.remote_merge_enabled)
+		     << ",\"merge_gap_bytes\":" << JsonOptionalUint(snapshot.remote_merge_gap_bytes)
+		     << ",\"max_request_bytes\":" << JsonOptionalUint(snapshot.remote_max_request_bytes)
+		     << ",\"async_applied\":" << JsonBool(snapshot.remote_async_applied.value_or(false))
+		     << ",\"inflight_peak\":" << JsonOptionalUint(snapshot.remote_inflight_peak)
+		     << ",\"inflight_budget_bytes\":" << JsonOptionalUint(snapshot.remote_inflight_budget_bytes)
+		     << ",\"requests\":" << JsonOptionalUint(snapshot.remote_requests)
+		     << ",\"physical_bytes\":" << JsonOptionalUint(snapshot.remote_physical_bytes)
+		     << ",\"useful_bytes\":" << JsonOptionalUint(snapshot.remote_useful_bytes)
+		     << ",\"gap_bytes\":" << JsonOptionalUint(snapshot.remote_gap_bytes)
+		     << ",\"phase_requests\":{\"metadata\":" << snapshot.remote_phase_requests[0]
+		     << ",\"coordinate\":" << snapshot.remote_phase_requests[1]
+		     << ",\"index\":" << snapshot.remote_phase_requests[2]
+		     << ",\"data\":" << snapshot.remote_phase_requests[3] << "}}";
+		return json.str();
+	}
+
 	static std::string JsonBool(bool value) {
 		return value ? "true" : "false";
 	}
@@ -1517,6 +1598,7 @@ private:
 		json << '[';
 		for (std::size_t index = 0; index < values.size(); index++) {
 			if (index != 0) json << ',';
+
 			json << JsonString(values[index]);
 		}
 		json << ']';
@@ -1643,6 +1725,14 @@ private:
 	double coordinate_tolerance_ = 1e-9;
 	std::optional<bool> logical_positions_match_;
 	std::optional<bool> null_positions_match_;
+	bool remote_observed_ = false;
+	bool remote_merge_enabled_ = false;
+	std::uint64_t remote_merge_gap_bytes_ = 0;
+	std::uint64_t remote_max_request_bytes_ = 0;
+	bool remote_async_applied_ = false;
+	std::optional<std::uint64_t> remote_inflight_peak_;
+	std::optional<std::uint64_t> remote_inflight_budget_bytes_;
+	std::uint64_t remote_useful_bytes_ = 0;
 	std::map<std::string, ScanVariableMetrics> variables_;
 	std::optional<double> elapsed_ms_;
 	std::map<std::string, std::string> environment_;

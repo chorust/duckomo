@@ -1,0 +1,1369 @@
+{
+  "schema_version": 1,
+  "sweep": [
+    {
+      "gap": 512,
+      "max_request": 65536,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 8242.24666506052,
+      "requests": 3557,
+      "physical_bytes": 3686452,
+      "useful_bytes": 3686452,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 3288
+      }
+    },
+    {
+      "gap": 512,
+      "max_request": 65536,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 5699.781249277294,
+      "requests": 3712,
+      "physical_bytes": 3723934,
+      "useful_bytes": 3723934,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 357,
+        "data": 3335
+      }
+    },
+    {
+      "gap": 512,
+      "max_request": 65536,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 353.6055809818208,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 512,
+      "max_request": 65536,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 381.3435211777687,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 512,
+      "max_request": 1048576,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 8138.944969046861,
+      "requests": 3557,
+      "physical_bytes": 3686452,
+      "useful_bytes": 3686452,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 3288
+      }
+    },
+    {
+      "gap": 512,
+      "max_request": 1048576,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 6516.382487025112,
+      "requests": 3713,
+      "physical_bytes": 3723903,
+      "useful_bytes": 3723903,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 358,
+        "data": 3335
+      }
+    },
+    {
+      "gap": 512,
+      "max_request": 1048576,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 442.0141652226448,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 512,
+      "max_request": 1048576,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 372.7226173505187,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 512,
+      "max_request": 4194304,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 8039.588245097548,
+      "requests": 3557,
+      "physical_bytes": 3686452,
+      "useful_bytes": 3686452,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 3288
+      }
+    },
+    {
+      "gap": 512,
+      "max_request": 4194304,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 6409.143411088735,
+      "requests": 3711,
+      "physical_bytes": 3723288,
+      "useful_bytes": 3723288,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 357,
+        "data": 3334
+      }
+    },
+    {
+      "gap": 512,
+      "max_request": 4194304,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 471.5154701843858,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 512,
+      "max_request": 4194304,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 391.69002091512084,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 512,
+      "max_request": 16777216,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 7791.074723005295,
+      "requests": 3557,
+      "physical_bytes": 3686452,
+      "useful_bytes": 3686452,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 3288
+      }
+    },
+    {
+      "gap": 512,
+      "max_request": 16777216,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 6383.615246973932,
+      "requests": 3713,
+      "physical_bytes": 3723903,
+      "useful_bytes": 3723903,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 358,
+        "data": 3335
+      }
+    },
+    {
+      "gap": 512,
+      "max_request": 16777216,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 403.83128076791763,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 512,
+      "max_request": 16777216,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 442.93224811553955,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 4096,
+      "max_request": 65536,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 2807.2435818612576,
+      "requests": 840,
+      "physical_bytes": 2741967,
+      "useful_bytes": 2741967,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 571
+      }
+    },
+    {
+      "gap": 4096,
+      "max_request": 65536,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 1982.756343204528,
+      "requests": 997,
+      "physical_bytes": 2951426,
+      "useful_bytes": 2951426,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 358,
+        "data": 619
+      }
+    },
+    {
+      "gap": 4096,
+      "max_request": 65536,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 515.1592614129186,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 4096,
+      "max_request": 65536,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 299.6471952646971,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 4096,
+      "max_request": 1048576,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 2750.855273101479,
+      "requests": 840,
+      "physical_bytes": 2741967,
+      "useful_bytes": 2741967,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 571
+      }
+    },
+    {
+      "gap": 4096,
+      "max_request": 1048576,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 2335.2368380874395,
+      "requests": 997,
+      "physical_bytes": 2951410,
+      "useful_bytes": 2951410,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 358,
+        "data": 619
+      }
+    },
+    {
+      "gap": 4096,
+      "max_request": 1048576,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 463.6768000200391,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 4096,
+      "max_request": 1048576,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 381.3029960729182,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 4096,
+      "max_request": 4194304,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 3500.2415850758553,
+      "requests": 840,
+      "physical_bytes": 2741967,
+      "useful_bytes": 2741967,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 571
+      }
+    },
+    {
+      "gap": 4096,
+      "max_request": 4194304,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 1993.900602683425,
+      "requests": 996,
+      "physical_bytes": 2947309,
+      "useful_bytes": 2947309,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 358,
+        "data": 618
+      }
+    },
+    {
+      "gap": 4096,
+      "max_request": 4194304,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 342.2974389977753,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 4096,
+      "max_request": 4194304,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 483.7427525781095,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 4096,
+      "max_request": 16777216,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 2847.843769006431,
+      "requests": 840,
+      "physical_bytes": 2741967,
+      "useful_bytes": 2741967,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 571
+      }
+    },
+    {
+      "gap": 4096,
+      "max_request": 16777216,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 2090.6706317327917,
+      "requests": 996,
+      "physical_bytes": 2947309,
+      "useful_bytes": 2947309,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 358,
+        "data": 618
+      }
+    },
+    {
+      "gap": 4096,
+      "max_request": 16777216,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 537.8279108554125,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 4096,
+      "max_request": 16777216,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 395.28114814311266,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 16384,
+      "max_request": 65536,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 2289.9203822016716,
+      "requests": 418,
+      "physical_bytes": 2570812,
+      "useful_bytes": 2570812,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 149
+      }
+    },
+    {
+      "gap": 16384,
+      "max_request": 65536,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 1527.5351232849061,
+      "requests": 585,
+      "physical_bytes": 3580680,
+      "useful_bytes": 3580680,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 356,
+        "data": 209
+      }
+    },
+    {
+      "gap": 16384,
+      "max_request": 65536,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 344.445105176419,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 16384,
+      "max_request": 65536,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 381.36450620368123,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 16384,
+      "max_request": 1048576,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 2352.4835258722305,
+      "requests": 418,
+      "physical_bytes": 2570812,
+      "useful_bytes": 2570812,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 149
+      }
+    },
+    {
+      "gap": 16384,
+      "max_request": 1048576,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 1576.5013499185443,
+      "requests": 588,
+      "physical_bytes": 3597944,
+      "useful_bytes": 3597944,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 358,
+        "data": 210
+      }
+    },
+    {
+      "gap": 16384,
+      "max_request": 1048576,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 430.2463768981397,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 16384,
+      "max_request": 1048576,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 285.21442599594593,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 16384,
+      "max_request": 4194304,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 1993.4618747793138,
+      "requests": 418,
+      "physical_bytes": 2570812,
+      "useful_bytes": 2570812,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 149
+      }
+    },
+    {
+      "gap": 16384,
+      "max_request": 4194304,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 1379.1587739251554,
+      "requests": 588,
+      "physical_bytes": 3614714,
+      "useful_bytes": 3614714,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 357,
+        "data": 211
+      }
+    },
+    {
+      "gap": 16384,
+      "max_request": 4194304,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 464.42556707188487,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 16384,
+      "max_request": 4194304,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 354.8521902412176,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 16384,
+      "max_request": 16777216,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 2672.8580300696194,
+      "requests": 418,
+      "physical_bytes": 2570812,
+      "useful_bytes": 2570812,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 149
+      }
+    },
+    {
+      "gap": 16384,
+      "max_request": 16777216,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 1559.0192526578903,
+      "requests": 590,
+      "physical_bytes": 3631268,
+      "useful_bytes": 3631268,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 358,
+        "data": 212
+      }
+    },
+    {
+      "gap": 16384,
+      "max_request": 16777216,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 405.2431443706155,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 16384,
+      "max_request": 16777216,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 342.9470658302307,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 65536,
+      "max_request": 65536,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 2107.7282121405005,
+      "requests": 307,
+      "physical_bytes": 2533051,
+      "useful_bytes": 2533051,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 38
+      }
+    },
+    {
+      "gap": 65536,
+      "max_request": 65536,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 1252.3416192270815,
+      "requests": 464,
+      "physical_bytes": 5687372,
+      "useful_bytes": 4153349,
+      "gap_bytes": 1534023,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 358,
+        "data": 86
+      }
+    },
+    {
+      "gap": 65536,
+      "max_request": 65536,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 618.4329781681299,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 65536,
+      "max_request": 65536,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 431.65795877575874,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 65536,
+      "max_request": 1048576,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 2264.88950708881,
+      "requests": 307,
+      "physical_bytes": 2539660,
+      "useful_bytes": 2539660,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 38
+      }
+    },
+    {
+      "gap": 65536,
+      "max_request": 1048576,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 1236.7728389799595,
+      "requests": 467,
+      "physical_bytes": 5984329,
+      "useful_bytes": 4153267,
+      "gap_bytes": 1831062,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 357,
+        "data": 90
+      }
+    },
+    {
+      "gap": 65536,
+      "max_request": 1048576,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 395.1684832572937,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 65536,
+      "max_request": 1048576,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 366.1434738896787,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 65536,
+      "max_request": 4194304,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 2354.64204614982,
+      "requests": 307,
+      "physical_bytes": 2539660,
+      "useful_bytes": 2539660,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 38
+      }
+    },
+    {
+      "gap": 65536,
+      "max_request": 4194304,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 1385.2503569796681,
+      "requests": 467,
+      "physical_bytes": 5920514,
+      "useful_bytes": 4153349,
+      "gap_bytes": 1767165,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 358,
+        "data": 89
+      }
+    },
+    {
+      "gap": 65536,
+      "max_request": 4194304,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 536.221319809556,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 65536,
+      "max_request": 4194304,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 354.07122876495123,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 65536,
+      "max_request": 16777216,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 2367.543058935553,
+      "requests": 307,
+      "physical_bytes": 2539660,
+      "useful_bytes": 2539660,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 38
+      }
+    },
+    {
+      "gap": 65536,
+      "max_request": 16777216,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 1329.7785236500204,
+      "requests": 466,
+      "physical_bytes": 5853452,
+      "useful_bytes": 4153349,
+      "gap_bytes": 1700103,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 358,
+        "data": 88
+      }
+    },
+    {
+      "gap": 65536,
+      "max_request": 16777216,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 444.65412106364965,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 65536,
+      "max_request": 16777216,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 316.74144323915243,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 262144,
+      "max_request": 65536,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 1969.19041313231,
+      "requests": 307,
+      "physical_bytes": 2533051,
+      "useful_bytes": 2533051,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 38
+      }
+    },
+    {
+      "gap": 262144,
+      "max_request": 65536,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 1287.2192291542888,
+      "requests": 466,
+      "physical_bytes": 5818444,
+      "useful_bytes": 4153349,
+      "gap_bytes": 1665095,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 358,
+        "data": 88
+      }
+    },
+    {
+      "gap": 262144,
+      "max_request": 65536,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 541.0281103104353,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 262144,
+      "max_request": 65536,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 353.2617217861116,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 262144,
+      "max_request": 1048576,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 2128.572444897145,
+      "requests": 279,
+      "physical_bytes": 2528854,
+      "useful_bytes": 2528854,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 10
+      }
+    },
+    {
+      "gap": 262144,
+      "max_request": 1048576,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 1357.7476129867136,
+      "requests": 413,
+      "physical_bytes": 8865263,
+      "useful_bytes": 4153349,
+      "gap_bytes": 4711914,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 358,
+        "data": 35
+      }
+    },
+    {
+      "gap": 262144,
+      "max_request": 1048576,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 473.13383175060153,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 262144,
+      "max_request": 1048576,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 423.56941290199757,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 262144,
+      "max_request": 4194304,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 2352.1042023785412,
+      "requests": 279,
+      "physical_bytes": 2528854,
+      "useful_bytes": 2528854,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 10
+      }
+    },
+    {
+      "gap": 262144,
+      "max_request": 4194304,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 1222.3887876607478,
+      "requests": 412,
+      "physical_bytes": 8654199,
+      "useful_bytes": 4153349,
+      "gap_bytes": 4500850,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 358,
+        "data": 34
+      }
+    },
+    {
+      "gap": 262144,
+      "max_request": 4194304,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 516.1978388205171,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 262144,
+      "max_request": 4194304,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 319.3359598517418,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 262144,
+      "max_request": 16777216,
+      "query": "full",
+      "workers": 1,
+      "elapsed_ms": 2009.5230741426349,
+      "requests": 279,
+      "physical_bytes": 2528854,
+      "useful_bytes": 2528854,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 258,
+        "data": 10
+      }
+    },
+    {
+      "gap": 262144,
+      "max_request": 16777216,
+      "query": "full",
+      "workers": 4,
+      "elapsed_ms": 1183.266222011298,
+      "requests": 412,
+      "physical_bytes": 8719908,
+      "useful_bytes": 4153349,
+      "gap_bytes": 4566559,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 358,
+        "data": 34
+      }
+    },
+    {
+      "gap": 262144,
+      "max_request": 16777216,
+      "query": "selected",
+      "workers": 1,
+      "elapsed_ms": 419.7111460380256,
+      "requests": 13,
+      "physical_bytes": 960,
+      "useful_bytes": 960,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 11,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    },
+    {
+      "gap": 262144,
+      "max_request": 16777216,
+      "query": "selected",
+      "workers": 4,
+      "elapsed_ms": 344.8403519578278,
+      "requests": 22,
+      "physical_bytes": 1353,
+      "useful_bytes": 1353,
+      "gap_bytes": 0,
+      "phase_requests": {
+        "metadata": 20,
+        "coordinate": 0,
+        "index": 1,
+        "data": 1
+      }
+    }
+  ],
+  "recommended_default": {
+    "gap": 4096,
+    "max_request": 65536
+  }
+}

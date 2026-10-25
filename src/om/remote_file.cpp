@@ -69,6 +69,11 @@ void RecordReadMetric(const std::shared_ptr<ScanMetrics> &metrics, ScanMetadataS
 	} else {
 		metrics->RecordSuccessfulRead(phase, size, variable_path);
 	}
+	// Data reads report only the selected chunk bytes; every other phase is useful in full.
+	if (phase != ScanReadPhase::Data && phase != ScanReadPhase::CoordinateData &&
+	    phase != ScanReadPhase::Index && phase != ScanReadPhase::CoordinateIndex) {
+		metrics->RecordRemoteUsefulBytes(size);
+	}
 }
 
 struct RemoteFailure final {
@@ -184,8 +189,13 @@ public:
         CheckInterrupt();
         // Let the OM reader choose ranges: the standard DirectIO flag avoids
         // HTTPFS read-ahead on small objects without a private HTTPFS interface.
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+        FileOpenFlags flags(FileFlags::FILE_FLAGS_READ | FileFlags::FILE_FLAGS_DIRECT_IO |
+                            FileFlags::FILE_FLAGS_DISABLE_LOGGING | FileFlags::FILE_FLAGS_PARALLEL_ACCESS);
+#else
         FileOpenFlags flags(FileFlags::FILE_FLAGS_READ | FileFlags::FILE_FLAGS_DIRECT_IO |
                             FileFlags::FILE_FLAGS_DISABLE_LOGGING);
+#endif
         flags.SetCachingMode(CachingMode::NO_CACHING);
         try {
             handle_ = file_system_->OpenFile(session_->Uri(), flags, &opener_);
@@ -219,7 +229,11 @@ public:
             throw ReaderError(ReaderErrorCode::InvalidSelection, "remote OM range exceeds DuckDB I/O limits");
         if (Metrics()) Metrics()->RecordLogicalRead(phase, size, variable_path, stage_);
         try {
-            // DuckDB's positional overload fulfills the entire range or throws.
+#if DUCKOMO_DUCKDB_API_GENERATION < 2
+            std::lock_guard<std::mutex> lock(read_mutex_);
+#endif
+            // 2.0 handles are opened with PARALLEL_ACCESS and DIRECT_IO.
+            // The positional overload fulfills the entire range or throws.
             file_system_->Read(*handle_, destination, static_cast<std::int64_t>(size), static_cast<idx_t>(offset));
             CheckInterrupt();
         } catch (const InterruptException &) { throw;
@@ -250,6 +264,7 @@ private:
     RemoteFileOpener opener_;
     FileSystem *file_system_;
     unique_ptr<FileHandle> handle_; // Destroy before opener and context dependencies.
+    mutable std::mutex read_mutex_;
     std::uint64_t size_ = 0;
     std::shared_ptr<ScanMemoryAccount> memory_account_;
 };

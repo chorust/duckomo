@@ -162,6 +162,8 @@ def http_server_main(args: list[str]) -> int:
     parser.add_argument("--log", required=True)
     parser.add_argument("--tls-cert")
     parser.add_argument("--tls-key")
+    parser.add_argument("--read-delay-ms", type=float, default=0,
+                        help="Controlled latency per GET range request (benchmarking only)")
     options = parser.parse_args(args)
     if bool(options.tls_cert) != bool(options.tls_key):
         parser.error("--tls-cert and --tls-key must be supplied together")
@@ -215,6 +217,8 @@ def http_server_main(args: list[str]) -> int:
                 "body_bytes": 0,
             })
             try:
+                if method == "GET" and options.read_delay_ms > 0:
+                    time.sleep(options.read_delay_ms / 1000)
                 if state == "denied" or fault == "403" or (fault == "403-data" and method == "GET"):
                     status = 403
                     self.send_response(status)

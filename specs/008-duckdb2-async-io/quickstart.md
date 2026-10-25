@@ -23,10 +23,18 @@ source <run.env> && scripts/validate.sh --matrix test/data/engine-compatibility/
 ## 3. 请求合并（US2）
 
 ```bash
-python3 scripts/benchmark-remote-io.py --runtimes <runtimes.json> --env <run.env> \
-  --object ecmwf_ifs_static_hsurf_reduced_gaussian_o1280 \
-  --modes merge=off,merge=on --queries full,selected --output build/remote-io/merge
+python3 scripts/benchmark-remote-io.py \
+  --runtime 'v2.0.0=<official-duckdb>|<duckomo-extension>' \
+  --httpfs 'v2.0.0=<official-httpfs>' --run-env <run.env> \
+  --object 'o1280=<HTTP-or-S3-object-URI>' \
+  --query-file <queries.json> --queries full,selected \
+  --modes merge-off,merge-on --workers 1,4 --repeats 3 \
+  --output build/remote-io/merge.json
 ```
+
+`queries.json` 将查询名称映射到带 `{object}` 占位符的 SQL。O1280 空间选择需显式 `domain := 'ecmwf_ifs'` 才有 lat/lon 列，例如 `SELECT value FROM read_om('{object}', domain := 'ecmwf_ifs') WHERE lat BETWEEN 39.8 AND 40.2 AND lon BETWEEN 116.2 AND 116.6 ORDER BY value`。值 residual 过滤不能代替局部空间读取。S3 凭据由私有 run.env 引用的 `DUCKOMO_S3_SETUP` 文件加载。
+
+runner 的 workers 设置 `duckomo_max_threads`；executor 保留至少 4 个线程供 AsyncResult 执行，并记录 process peak RSS 与扩展 SHA256。性能比较应停止并行编译等竞争负载后按相同配置复测。
 
 期望（O1280 全扫，单 worker，受控 S3）：
 - `merge=off` 复现基线约 11,592 次请求 / 4,125,977 字节。
@@ -38,8 +46,13 @@ python3 scripts/benchmark-remote-io.py --runtimes <runtimes.json> --env <run.env
 ## 4. 异步 I/O（US3，仅 2.0）
 
 ```bash
-python3 scripts/benchmark-remote-io.py ... --modes merge=on:async=off,merge=on:async=on \
-  --queries full,selected,coordinates,polygon,nearest --output build/remote-io/async
+python3 scripts/benchmark-remote-io.py <同上 runtime/httpfs/run-env/object 参数> \
+  --modes async-off,async-on --query-file <queries.json> \
+  --queries full,selected,coordinates,polygon,nearest \
+  --workers 1,4 --repeats 3 --output build/remote-io/async.json
+# 对同一组合另加 --memory-limit 256MB，写入独立输出文件。
+# 实验跨批窗口另加 --prefetch-batches 4，写入独立文件；默认1关闭。
+# 当前固定样本中该窗口增加请求并变慢，不预期所有模式加速。
 ```
 
 期望：

@@ -1,0 +1,2738 @@
+Filters: test/sql/*
+
+[0/23] (0%): test/sql/read_om.testReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/read_om.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om'));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/pfor_attributes.om'));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT humidity, temperature
+FROM read_om('__WORKING_DIRECTORY__/test/data/pfor_attributes.om')
+ORDER BY humidity;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/pfor_attributes.om',
+    dimensions := map(['humidity', 'temperature'], [['x', 'y'], ['x', 'y']])
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om') ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := NULL);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FILTER (WHERE value IS NULL),
+       count(*) FILTER (WHERE isinf(value) AND value > 0),
+       count(*) FILTER (WHERE isinf(value) AND value < 0),
+       count(*) FILTER (WHERE value = 0 AND NOT signbit(value)),
+       count(*) FILTER (WHERE value = 0 AND signbit(value))
+FROM read_om('__WORKING_DIRECTORY__/test/data/special.om');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/multi.om',
+    dimensions := map(
+        ['humidity', 'temperature'],
+        [['row', 'column'], ['row', 'column']]
+    )
+))
+ORDER BY column_name;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT "humidity", "temperature"
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/multi.om',
+    dimensions := map(
+        ['humidity', 'temperature'],
+        [['row', 'column'], ['row', 'column']]
+    )
+)
+ORDER BY "humidity";" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT "humidity", "temperature"
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/multi.om',
+    dimensions := map(
+        ['humidity', 'temperature'],
+        [['row', 'column'], ['row', 'column']]
+    )
+)
+ORDER BY "humidity";" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/nested.om',
+    dimensions := map(
+        ['layer_a/value', 'layer_b/temperature', 'layer_b/value', 'temperature', 'weird%2Fname%25/value'],
+        [['row', 'column'], ['row', 'column'], ['row', 'column'], ['row', 'column'], ['row', 'column']]
+    )
+))
+ORDER BY column_name;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT "layer_a/value", "layer_b/temperature", "layer_b/value", "temperature",
+       "weird%2Fname%25/value"
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/nested.om',
+    dimensions := map(
+        ['layer_a/value', 'layer_b/temperature', 'layer_b/value', 'temperature', 'weird%2Fname%25/value'],
+        [['row', 'column'], ['row', 'column'], ['row', 'column'], ['row', 'column'], ['row', 'column']]
+    )
+)
+ORDER BY "temperature";" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT avg("weird%2Fname%25/value") FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/nested.om', variable := '/weird%2Fname%25/value',
+    dimensions := map(['weird%2Fname%25/value'], [['row','column']]));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT avg(temperature) FROM read_om('__WORKING_DIRECTORY__/test/data/multi.om',
+    variable := 'temperature', dimensions := ['row','column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT avg("layer_a/value") FROM read_om('__WORKING_DIRECTORY__/test/data/nested.om',
+    dimensions := ['row','column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM om_grid_info('__WORKING_DIRECTORY__/test/data/multi.om', variable := 'temperature',
+    dimensions := ['row','column'], spatial_axes := ['row','column'],
+    grid := {'nx':3,'ny':2,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'});" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/multi.om', variable := NULL);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/multi.om', variable := 'missing');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/multi.om', variable := 'temperature',
+    dimensions := map(['temperature','humidity'], [['row','column'],['row','column']]));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/multi.om',
+    dimensions := map(['temperature'], [['row', 'column']])
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/multi.om',
+    dimensions := map(['/other', 'temperature'], [['row', 'column'], ['row', 'column']])
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/multi.om',
+    dimensions := map(
+        ['humidity', 'temperature'],
+        [['row'], ['row', 'column']]
+    )
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/multi.om',
+    dimensions := map(
+        ['humidity', 'temperature'],
+        [['row', 'row'], ['row', 'column']]
+    )
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/multi.om',
+    dimensions := map(
+        ['humidity', 'temperature'],
+        [['row', ''], ['row', 'column']]
+    )
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/multi.om',
+    dimensions := map(
+        ['humidity', 'temperature'],
+        [['row', NULL], ['row', 'column']]
+    )
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/multi.om',
+    dimensions := map(
+        ['humidity', 'temperature'],
+        [NULL, ['row', 'column']]
+    )
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := 42);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/multi.om',
+    dimensions := map(
+        ['humidity', 'temperature'],
+        [['row', 'other'], ['row', 'column']]
+    )
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/negative/shape_mismatch.om',
+    dimensions := map(
+        ['humidity', 'temperature'],
+        [['row', 'column'], ['row', 'column']]
+    )
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/multi.om');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/negative/unsupported_version.om',
+    dimensions := map(
+        ['humidity', 'temperature'],
+        [['row', 'column'], ['row', 'column']]
+    )
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/negative/unsupported_type.om',
+    dimensions := map(
+        ['humidity', 'temperature'],
+        [['row', 'column'], ['row', 'column']]
+    )
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/negative/unsupported_compression.om',
+    dimensions := map(
+        ['humidity', 'temperature'],
+        [['row', 'column'], ['row', 'column']]
+    )
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/negative/empty_array_zero_axis.om',
+    dimensions := map(
+        ['humidity', 'temperature'],
+        [['row', 'column'], ['row', 'column']]
+    )
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT lat
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/multi.om',
+    dimensions := map(
+        ['humidity', 'temperature'],
+        [['row', 'column'], ['row', 'column']]
+    )
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT lon, time
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/multi.om',
+    dimensions := map(
+        ['humidity', 'temperature'],
+        [['row', 'column'], ['row', 'column']]
+    )
+);" - please replace with {WORKING_DIRECTORY}
+
+[1/23] (4%): test/sql/read_om.test took 0.098sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/projection.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT "temperature", "humidity", "temperature"
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/projection.om',
+    dimensions := map(
+        ['humidity', 'pressure', 'temperature'],
+        [['row', 'column'], ['row', 'column'], ['row', 'column']]
+    )
+)
+ORDER BY "temperature"
+LIMIT 4;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "WITH full_read AS MATERIALIZED (
+    SELECT "humidity", "pressure", "temperature"
+    FROM read_om(
+        '__WORKING_DIRECTORY__/test/data/projection.om',
+        dimensions := map(
+            ['humidity', 'pressure', 'temperature'],
+            [['row', 'column'], ['row', 'column'], ['row', 'column']]
+        )
+    )
+),
+expected AS (
+    SELECT "temperature" AS first, "humidity" AS second, "temperature" AS third
+    FROM full_read
+),
+projected AS MATERIALIZED (
+    SELECT "temperature" AS first, "humidity" AS second, "temperature" AS third
+    FROM read_om(
+        '__WORKING_DIRECTORY__/test/data/projection.om',
+        dimensions := map(
+            ['humidity', 'pressure', 'temperature'],
+            [['row', 'column'], ['row', 'column'], ['row', 'column']]
+        )
+    )
+)
+SELECT (
+    SELECT count(*) FROM (
+        (SELECT * FROM expected EXCEPT ALL SELECT * FROM projected)
+        UNION ALL
+        (SELECT * FROM projected EXCEPT ALL SELECT * FROM expected)
+    ) differences
+)::BIGINT;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "WITH full_read AS MATERIALIZED (
+    SELECT "humidity", "pressure", "temperature"
+    FROM read_om(
+        '__WORKING_DIRECTORY__/test/data/projection.om',
+        dimensions := map(
+            ['humidity', 'pressure', 'temperature'],
+            [['row', 'column'], ['row', 'column'], ['row', 'column']]
+        )
+    )
+),
+expected AS (
+    SELECT "pressure" / 2 AS half_pressure,
+           "temperature" + "humidity" AS temperature_plus_humidity,
+           "temperature" * 2 - "pressure" AS difference
+    FROM full_read
+),
+projected AS MATERIALIZED (
+    SELECT "pressure" / 2 AS half_pressure,
+           "temperature" + "humidity" AS temperature_plus_humidity,
+           "temperature" * 2 - "pressure" AS difference
+    FROM read_om(
+        '__WORKING_DIRECTORY__/test/data/projection.om',
+        dimensions := map(
+            ['humidity', 'pressure', 'temperature'],
+            [['row', 'column'], ['row', 'column'], ['row', 'column']]
+        )
+    )
+)
+SELECT (
+    SELECT count(*) FROM (
+        (SELECT * FROM expected EXCEPT ALL SELECT * FROM projected)
+        UNION ALL
+        (SELECT * FROM projected EXCEPT ALL SELECT * FROM expected)
+    ) differences
+)::BIGINT;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "WITH full_read AS MATERIALIZED (
+    SELECT "humidity", "pressure", "temperature"
+    FROM read_om(
+        '__WORKING_DIRECTORY__/test/data/projection.om',
+        dimensions := map(
+            ['humidity', 'pressure', 'temperature'],
+            [['row', 'column'], ['row', 'column'], ['row', 'column']]
+        )
+    )
+),
+expected AS (
+    SELECT "temperature" AS value FROM full_read WHERE "humidity" = 96
+),
+projected AS MATERIALIZED (
+    SELECT "temperature" AS value
+    FROM read_om(
+        '__WORKING_DIRECTORY__/test/data/projection.om',
+        dimensions := map(
+            ['humidity', 'pressure', 'temperature'],
+            [['row', 'column'], ['row', 'column'], ['row', 'column']]
+        )
+    )
+    WHERE "humidity" = 96
+)
+SELECT
+    (SELECT count(*) FROM (
+        (SELECT * FROM expected EXCEPT ALL SELECT * FROM projected)
+        UNION ALL
+        (SELECT * FROM projected EXCEPT ALL SELECT * FROM expected)
+    ) differences)::BIGINT,
+    (SELECT count(*) FROM projected)::BIGINT,
+    (SELECT sum(value) FROM projected);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT "temperature"
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/projection.om',
+    dimensions := map(
+        ['humidity', 'pressure', 'temperature'],
+        [['row', 'column'], ['row', 'column'], ['row', 'column']]
+    )
+)
+ORDER BY "pressure" DESC
+LIMIT 8;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "WITH full_read AS MATERIALIZED (
+    SELECT "humidity", "pressure", "temperature"
+    FROM read_om(
+        '__WORKING_DIRECTORY__/test/data/projection.om',
+        dimensions := map(
+            ['humidity', 'pressure', 'temperature'],
+            [['row', 'column'], ['row', 'column'], ['row', 'column']]
+        )
+    )
+),
+expected AS (
+    SELECT floor("pressure" / 100)::INTEGER AS band, sum("temperature") AS total
+    FROM full_read
+    GROUP BY floor("pressure" / 100)::INTEGER
+),
+projected AS MATERIALIZED (
+    SELECT floor("pressure" / 100)::INTEGER AS band, sum("temperature") AS total
+    FROM read_om(
+        '__WORKING_DIRECTORY__/test/data/projection.om',
+        dimensions := map(
+            ['humidity', 'pressure', 'temperature'],
+            [['row', 'column'], ['row', 'column'], ['row', 'column']]
+        )
+    )
+    GROUP BY floor("pressure" / 100)::INTEGER
+)
+SELECT
+    (SELECT count(*) FROM (
+        (SELECT * FROM expected EXCEPT ALL SELECT * FROM projected)
+        UNION ALL
+        (SELECT * FROM projected EXCEPT ALL SELECT * FROM expected)
+    ) differences)::BIGINT,
+    (SELECT count(*) FROM expected)::BIGINT;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/projection.om',
+    dimensions := map(
+        ['humidity', 'pressure', 'temperature'],
+        [['row', 'column'], ['row', 'column'], ['row', 'column']]
+    )
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT "temperature"
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/projection.om',
+    dimensions := map(
+        ['humidity', 'pressure', 'temperature'],
+        [['row', 'column'], ['row', 'column'], ['row', 'column']]
+    )
+)
+WHERE FALSE;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT "temperature"
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/projection.om',
+    dimensions := map(
+        ['humidity', 'pressure', 'temperature'],
+        [['row', 'column'], ['row', 'column'], ['row', 'column']]
+    )
+)
+WHERE "humidity" = -999999;" - please replace with {WORKING_DIRECTORY}
+
+[2/23] (8%): test/sql/projection.test took 0.148sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/remote_async_io.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT sum(value) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT sum(value) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');" - please replace with {WORKING_DIRECTORY}
+
+[3/23] (13%): test/sql/remote_async_io.test took 0.041sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/source_identity.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "DESCRIBE SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT typeof(om_source)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column'], include_source := true)
+LIMIT 1;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "DESCRIBE SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {'nx': 3, 'ny': 2, 'lat0': 0.0, 'lon0': 0.0,
+             'dlat': 1.0, 'dlon': 1.0, 'order': 'separate'},
+    spatial_axes := ['row', 'column'], include_source := true);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/source-conflict.om',
+    dimensions := map(['om_source'], [['row', 'column']]),
+    grid := {'nx': 3, 'ny': 2, 'lat0': 0.0, 'lon0': 0.0,
+             'dlat': 1.0, 'dlon': 1.0, 'order': 'separate'},
+    spatial_axes := ['row', 'column'], include_source := true);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT om_source FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT om_source.logical_index
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column'], include_source := true)
+WHERE om_source.logical_index > 2
+ORDER BY om_source.logical_index DESC;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*)::INTEGER, count(DISTINCT om_source.logical_index)::INTEGER
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/interleaved.om',
+    dimensions := map(
+        ['interleaved/temperature', 'interleaved/humidity'],
+        [['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run'],
+         ['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['latitude_axis', 'longitude_axis'], include_source := true)
+WHERE lat BETWEEN 0.99 AND 1.01 AND lon BETWEEN 1.99 AND 2.01;" - please replace with {WORKING_DIRECTORY}
+
+[4/23] (17%): test/sql/source_identity.test took 0.071sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/semantic_axes.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','member_axis']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-09-30 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member_axis', 'values':[10,20,30]}
+    }
+));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value, valid_time, member
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','member_axis']]),
+    axes := {
+        'member': {'axis':'member_axis', 'values':[10,20,30]},
+        'time': {'axis':'time', 'values':[TIMESTAMP '2026-09-30 00:00:00', TIMESTAMP '2026-09-30 01:00:00']}
+    }
+)
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value, valid_time, member
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/dimensions.om',
+    dimensions := map(['value'], [['time','member']]),
+    axes := {
+        'time': {'axis':'time', 'values':[TIMESTAMP '2026-09-30 00:00:00', TIMESTAMP '2026-09-30 01:00:00']},
+        'member': {'axis':'member', 'values':[10,20,30]}
+    }
+)
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value, valid_time, member
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/dimensions_axis_order.om',
+    dimensions := map(['value'], [['member','time']]),
+    axes := {
+        'member': {'axis':'member', 'values':[10,20,30]},
+        'time': {'axis':'time', 'values':[TIMESTAMP '2026-09-30 00:00:00', TIMESTAMP '2026-09-30 01:00:00']}
+    }
+)
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value, member
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['level_axis','member_axis']]),
+    axes := {
+        'level': {'axis':'level_axis', 'values':[1000,850], 'kind':'pressure', 'unit':'hPa'},
+        'member': {'axis':'member_axis', 'values':['ctl','pert','p3']}
+    }
+)
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value, lead_time, run
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['forecast','point']]),
+    axes := {
+        'lead_time': {'axis':'forecast', 'values':[INTERVAL '0 hours', INTERVAL '-90 minutes']},
+        'run': {'axis':'point', 'start':TIMESTAMPTZ '2026-09-30 08:00:00+08', 'step':INTERVAL '1 day'}
+    }
+)
+WHERE value IN (0,2,3,5)
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value::INTEGER, level, member
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['level_axis','member_axis']]),
+    axes := {
+        'level': {'axis':'level_axis', 'start':1000, 'step':-10, 'kind':'pressure', 'unit':'hPa'},
+        'member': {'axis':'member_axis', 'start':20, 'step':0}
+    }
+)
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','member_axis']]),
+    axes := {'member': {'axis':'member_axis', 'start':9223372036854775807, 'step':1}}
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','point']]),
+    axes := {'time': {'axis':'time', 'values':[TIMESTAMP '2026-09-30']}},
+    valid_times := [TIMESTAMP '2026-09-30']
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','point']]),
+    axes := {'level': {'axis':'time', 'start':1000, 'step':-10, 'kind':'pressure', 'unit':'unknown'}}
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','point']]),
+    axes := {'level': {'axis':'point', 'start':1, 'step':0.5, 'kind':'model', 'unit':'1'}}
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','point']]),
+    axes := {'member': {'axis':'point', 'values':[10,20]}}
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','point']]),
+    axes := {
+        'member': {'axis':'point', 'values':[10,20,30]},
+        'run': {'axis':'point', 'values':[TIMESTAMP '2026-09-30', TIMESTAMP '2026-10-01', TIMESTAMP '2026-10-02']}
+    }
+);" - please replace with {WORKING_DIRECTORY}
+
+[5/23] (21%): test/sql/semantic_axes.test took 0.029sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/parallel_scan.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP TABLE parallel_one AS
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/dimensions_perf.om',
+    dimensions := map(['value'], [['time','member']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-01-01 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member', 'start':0, 'step':1}
+    }
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP TABLE parallel_two AS
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/dimensions_perf.om',
+    dimensions := map(['value'], [['time','member']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-01-01 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member', 'start':0, 'step':1}
+    }
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP TABLE parallel_four AS
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/dimensions_perf.om',
+    dimensions := map(['value'], [['time','member']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-01-01 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member', 'start':0, 'step':1}
+    }
+);" - please replace with {WORKING_DIRECTORY}
+
+[6/23] (26%): test/sql/parallel_scan.test took 0.219sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/spatial.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om'));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value, lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value, lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lon','lat']]),
+    grid := {'nx':2, 'ny':3, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value, lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+WHERE lat >= 11 AND lon < 104
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT lat, lon, count(*)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/spatial_flat.om',
+    dimensions := map(['value'], [['sample','point']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'lon_fastest'},
+    spatial_axes := ['point']
+)
+GROUP BY lat, lon
+ORDER BY lat, lon;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value, lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/spatial_flat.om',
+    dimensions := map(['value'], [['sample','point']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'lat_fastest'},
+    spatial_axes := ['point']
+)
+WHERE value < 6
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT lon, value, lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/spatial_flat.om',
+    dimensions := map(['value'], [['sample','point']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'lon_fastest'},
+    spatial_axes := ['point']
+)
+WHERE value < 3
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT lat, lon, count(*)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/spatial_axes.om',
+    dimensions := map(['value'], [['member','lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+GROUP BY lat,lon ORDER BY lat,lon;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT lat, lon, count(*)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/spatial_axes.om',
+    dimensions := map(['value'], [['lat','member','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+GROUP BY lat,lon ORDER BY lat,lon;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT lat, lon, count(*)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/spatial_axes.om',
+    dimensions := map(['value'], [['lat','lon','member']]),
+    grid := {'nx':2, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+GROUP BY lat,lon ORDER BY lat,lon;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value, lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':11.0, 'lon0':104.0, 'dlat':-1.0, 'dlon':-2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT lat, lon, count(*)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':0.0, 'lon0':0.0, 'dlat':1.0, 'dlon':360.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+GROUP BY lat, lon
+ORDER BY lat, lon;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/spatial_single.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':1, 'ny':1, 'lat0':90.0, 'lon0':180.0, 'dlat':0.25, 'dlon':0.25, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value, lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw_large.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':61, 'ny':73, 'lat0':-36.0, 'lon0':-90.0, 'dlat':1.0, 'dlon':1.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']
+)
+WHERE value BETWEEN 411.75 AND 412.5
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'});" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'unknown'}, spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate', 'extra':1}, spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':NULL, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3.5, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':0, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':9223372036854775807, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':4, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':0.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':'NaN'::DOUBLE, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':91.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':1e308, 'dlat':1.0, 'dlon':1e308, 'order':'separate'}, spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lat']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon'], domain := 'ncep_gfswave025');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count("Latitude"), count(lat), count(lon) FROM read_om('__WORKING_DIRECTORY__/test/data/spatial_conflict.om', dimensions := ['lat','lon'], grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]), grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'}, spatial_axes := NULL);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', domain := 'no_such_grid');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', domain := 'ncep_gfswave025');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', domain := 'ncep_gfswave025', spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+
+[7/23] (30%): test/sql/spatial.test took 0.124sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/grid_selection.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP VIEW rotated_grid AS
+SELECT humidity, pressure, temperature, lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/projection.om',
+    dimensions := map(['humidity','pressure','temperature'],
+                      [['row','column'],['row','column'],['row','column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 127, 'ny': 83, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row','column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP VIEW lambert_grid AS
+SELECT temperature, lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/projection.om',
+    dimensions := map(['humidity','pressure','temperature'],
+                      [['row','column'],['row','column'],['row','column']]),
+    grid := {
+        'version': 1, 'type': 'lambert_conformal_conic', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 127, 'ny': 83, 'order': 'separate'},
+        'parameters': {'x0': -63000.0, 'y0': -41000.0, 'dx': 1000.0, 'dy': 1000.0,
+                       'central_meridian': 10.0, 'latitude_of_origin': 46.244,
+                       'standard_parallel_1': 40.0, 'standard_parallel_2': 50.0}
+    }, spatial_axes := ['row','column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP VIEW stereographic_grid AS
+SELECT temperature, lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/projection.om',
+    dimensions := map(['humidity','pressure','temperature'],
+                      [['row','column'],['row','column'],['row','column']]),
+    grid := {
+        'version': 1, 'type': 'stereographic', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 127, 'ny': 83, 'order': 'separate'},
+        'parameters': {'x0': -63000.0, 'y0': -41000.0, 'dx': 1000.0, 'dy': 1000.0,
+                       'central_meridian': 10.0, 'latitude_of_origin': 45.0, 'scale_factor': 1.0}
+    }, spatial_axes := ['row','column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP VIEW gaussian_grid AS
+SELECT "flattened_x_fastest/value" AS value, lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/x-fastest.om',
+    dimensions := map(['flattened_x_fastest/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'reduced_gaussian', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'wgs84', 'semi_major_m': 6378137.0, 'inverse_flattening': 298.257223563},
+        'layout': {'order': 'row_major'},
+        'parameters': {
+            'n': 1, 'latitude_rule': 'explicit_v1',
+            'rows': [{'latitude': 60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0},
+                     {'latitude': -60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0}],
+            'subset_segments': NULL
+        }
+    }, spatial_axes := ['point']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP VIEW stereographic_f32_grid AS
+SELECT value, lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'stereographic', 'numeric_policy': 'openmeteo_f32_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1000.0, 'dy': 1000.0,
+                       'central_meridian': 270.0, 'latitude_of_origin': 45.0, 'scale_factor': 1.0}
+    }, spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP VIEW interleaved_grid AS
+SELECT "interleaved/temperature" AS temperature, "interleaved/humidity" AS humidity,
+       lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/interleaved.om',
+    dimensions := map(
+        ['interleaved/temperature', 'interleaved/humidity'],
+        [['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run'],
+         ['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['latitude_axis', 'longitude_axis']);" - please replace with {WORKING_DIRECTORY}
+
+[8/23] (34%): test/sql/grid_selection.test took 0.372sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/region_sampling_spatial_dependency.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om_raw('__WORKING_DIRECTORY__/test/data/raw.om');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    dimensions := ['member','time','lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'],
+    axes := {
+        'time':{'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},
+        'member':{'axis':'member','values':[0::BIGINT,1::BIGINT]}});" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'],
+    axes := {
+        'time':{'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},
+        'member':{'axis':'member','values':[0::BIGINT,1::BIGINT]}});" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'],
+    axes := {
+        'time':{'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},
+        'member':{'axis':'member','values':[0::BIGINT,1::BIGINT]}},
+    method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+
+[9/23] (39%): test/sql/region_sampling_spatial_dependency.test took 0.057sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/grid_zero_io.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP VIEW interleaved_grid AS
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/interleaved.om',
+    dimensions := map(
+        ['interleaved/temperature','interleaved/humidity'],
+        [['time','latitude_axis','level','longitude_axis','lead_time','member','run'],
+         ['time','latitude_axis','level','longitude_axis','lead_time','member','run']]),
+    grid := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0
+        }
+    },
+    spatial_axes := ['latitude_axis','longitude_axis']);" - please replace with {WORKING_DIRECTORY}
+
+[10/23] (43%): test/sql/grid_zero_io.test took 0.122sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/grid_version_compat.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0
+        }
+    },
+    spatial_axes := ['row', 'column'], include_source := true
+)
+WHERE (lon >= 1 AND value % 2 = 1) OR value = 0;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value, lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    DIMENSIONS := map(['value'], [['row', 'column']]),
+    GRID := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0
+        }
+    },
+    SPATIAL_AXES := ['row', 'column']
+)
+WHERE lon BETWEEN 0.9 AND 2.1 AND value >= 3
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+
+[11/23] (47%): test/sql/grid_version_compat.test took 0.035sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/regions_spatial_dependency.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om_raw('__WORKING_DIRECTORY__/test/data/raw.om');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    dimensions := ['member','time','lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'],
+    axes := {
+        'time':{'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},
+        'member':{'axis':'member','values':[0::BIGINT,1::BIGINT]}});" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row','column']]),
+    grid := {
+        'version':1,'type':'rotated_latlon','numeric_policy':'float64_v1',
+        'earth':{'model':'sphere','radius_m':6371229.0},
+        'layout':{'nx':3,'ny':2,'order':'separate'},
+        'parameters':{'x0':0.0,'y0':0.0,'dx':1.0,'dy':1.0,
+                      'north_pole_latitude':90.0,'north_pole_longitude':0.0,'rotation':0.0}
+    }, spatial_axes := ['row','column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'],
+    axes := {
+        'time':{'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},
+        'member':{'axis':'member','values':[0::BIGINT,1::BIGINT]}});" - please replace with {WORKING_DIRECTORY}
+
+[12/23] (52%): test/sql/regions_spatial_dependency.test took 0.038sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/cache_metrics.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om')
+WHERE concat('http', '://host/file.om?X-Amz-Signature=secret-token') IS NOT NULL;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM (
+  SELECT value FROM read_om('__WORKING_DIRECTORY__/test/data/dimensions_perf.om') LIMIT 1
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om') a,
+                           read_om('__WORKING_DIRECTORY__/test/data/raw.om') b;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/missing_dimensions.om');" - please replace with {WORKING_DIRECTORY}
+
+[13/23] (56%): test/sql/cache_metrics.test took 0.064sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/interface_usability.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP VIEW usability_short AS
+SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := ['lat','lon'], grid := usability_grid(), spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM (
+    (SELECT * FROM usability_short EXCEPT ALL
+     SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om',
+         dimensions := map(['value'], [['lat','lon']]), grid := usability_grid(), spatial_axes := ['lat','lon']))
+    UNION ALL
+    (SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om',
+         dimensions := map(['/'], [['lat','lon']]), grid := usability_grid(), spatial_axes := ['lat','lon'])
+     EXCEPT ALL SELECT * FROM usability_short));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om('__WORKING_DIRECTORY__/test/data/multi.om', dimensions := ['row','column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM (
+    SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/nested.om', dimensions := ['row','column'])
+    EXCEPT ALL
+    SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/nested.om', dimensions := map(
+        ['layer_a/value','layer_b/temperature','layer_b/value','temperature','weird%2Fname%25/value'],
+        [['row','column'],['row','column'],['row','column'],['row','column'],['row','column']])));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT lat FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/negative/shape_mismatch.om', dimensions := ['row','column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/pfor_attributes.om', dimensions := ['x','y']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := ['row']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := []::VARCHAR[]);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := ['row','row']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := ['row','']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := ['row',NULL]);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := [1,2]);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := {'value':['row','column']});" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := NULL);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM
+    om_grid_info('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := ['lat','lon'],
+        grid := usability_grid(), spatial_axes := ['lat','lon']) AS a,
+    om_grid_info('__WORKING_DIRECTORY__/test/data/raw.om', dimensions := map(['value'], [['lat','lon']]),
+        grid := usability_grid(), spatial_axes := ['lat','lon']) AS b
+WHERE a.grid_id IS DISTINCT FROM b.grid_id OR a.layout IS DISTINCT FROM b.layout;" - please replace with {WORKING_DIRECTORY}
+
+[14/23] (60%): test/sql/interface_usability.test took 0.083sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/regions.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated ${DUCKOMO_SPATIAL_EXTENSION} in test test/sql/regions.test - please replace with {DUCKOMO_SPATIAL_EXTENSION}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP VIEW region_samples AS
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'), include_source := true);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP VIEW region_samples_explicit_points AS
+SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'),
+    method := 'points', include_source := true);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes')));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := [{'wkb':ST_AsWKB(ST_GeomFromText('POLYGON((100 20,102 20,102 22,100 22,100 20))')),
+                 'id':'Literal'}], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om', variable := 'value',
+    regions := [{'wkb':ST_AsWKB(ST_GeomFromText('POLYGON((100 20,102 20,102 22,100 22,100 20))')),
+                 'id':'Selected'}], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/grids/gaussian-n160-identity.om',
+    regions := [{'id':'EmptyDomain','wkb':ST_AsWKB(ST_GeomFromText('POLYGON EMPTY'))}],
+    region_crs := 'grid_lonlat', dimensions := map(['n160_identity/value'], [['point']]),
+    domain := 'n160');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions_region_id_conflict.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['lat','lon'], grid := getvariable('demo_grid'), spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/source-conflict.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := map(['om_source'], [['row','column']]),
+    grid := {'nx':3,'ny':2,'lat0':0.0,'lon0':0.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['row','column'], include_source := true);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := getvariable('region_input'), region_crs := 'EPSG:4326',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'EPSG:4326',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := [{'id':1,'wkb':ST_AsWKB(ST_GeomFromText('POLYGON((100 20,101 20,101 21,100 21,100 20))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','lat','lon'],
+    grid := getvariable('demo_grid'), spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := [{'id':'Overlap','wkb':ST_AsWKB(ST_GeomFromText(
+        'MULTIPOLYGON(((100 20,102 20,102 22,100 22,100 20)),((101 21,103 21,103 23,101 23,101 21)))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','lat','lon'],
+    grid := getvariable('demo_grid'), spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := [{'id':'Seam','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((-180 0,180 0,180 1,-180 1,-180 0))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','lat','lon'],
+    grid := getvariable('demo_grid'), spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := [{'id':'Pole','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0 89,1 89,1 90,0 90,0 89))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','lat','lon'],
+    grid := getvariable('demo_grid'), spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], domain := 'not_a_registered_grid',
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := [
+        {'id':'Good','wkb':ST_AsWKB(ST_GeomFromText('POLYGON((100 20,102 20,102 22,100 22,100 20))'))},
+        {'id':'Bad','wkb':from_hex('010300000001000000')}], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'))
+WHERE region_id='Good' LIMIT 1;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := [
+        {'id':'Duplicate','wkb':ST_AsWKB(ST_GeomFromText('POLYGON((100 20,101 20,101 21,100 21,100 20))'))},
+        {'id':'Duplicate','wkb':ST_AsWKB(ST_GeomFromText('POLYGON((101 21,102 21,102 22,101 22,101 21))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','lat','lon'],
+    grid := getvariable('demo_grid'), spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := NULL, region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/does-not-exist.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP TABLE full_baseline AS
+SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'), include_source := true);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP TABLE independent_region_samples AS
+SELECT * FROM read_csv('__WORKING_DIRECTORY__/test/data/regions/regions-membership.reference.csv',
+    header=true, nullstr='', columns={
+        'region_id':'VARCHAR', 'logical_index':'UBIGINT', 'member':'BIGINT',
+        'time_index':'INTEGER', 'lat':'DOUBLE', 'lon':'DOUBLE', 'value':'FLOAT'});" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP TABLE expected_region_statistics AS
+SELECT * FROM read_csv_auto('__WORKING_DIRECTORY__/test/data/regions/regions-statistics.reference.csv',
+                            header=true, nullstr='');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT valid_time::VARCHAR || '/' || member::VARCHAR || '/' || count(*)::VARCHAR || '/' ||
+       count(DISTINCT om_source.logical_index)::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions_axis_order.om',
+    regions := getvariable('repeated_time_region'), region_crs := 'grid_lonlat',
+    dimensions := ['time','member','lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], axes := {
+        'time':{'axis':'time','values':[TIMESTAMP '2026-01-01 00:00:00',
+                                      TIMESTAMP '2026-01-01 00:00:00',
+                                      TIMESTAMP '2026-01-01 01:00:00']},
+        'member':{'axis':'member','values':[0::BIGINT,1::BIGINT]}}, include_source := true)
+GROUP BY valid_time, member ORDER BY valid_time, member;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*)::VARCHAR || '/' || count(value)::VARCHAR || '/' ||
+       (isinf(min(value)) AND min(value) < 0)::VARCHAR || '/' ||
+       (isinf(max(value)) AND max(value) > 0)::VARCHAR || '/' ||
+       isnan(sum(value))::VARCHAR || '/' || isnan(avg(value))::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions_nonfinite.om',
+    regions := getvariable('nonfinite_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['lat','lon'],
+    grid := {'nx':2,'ny':2,'lat0':0.0,'lon0':0.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions_no_time.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['lat','lon'], grid := getvariable('demo_grid'), spatial_axes := ['lat','lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes')));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "PREPARE region_count AS SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "PREPARE region_count AS SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions.om',
+    regions := getvariable('region_input'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','lat','lon'], grid := getvariable('demo_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('demo_axes'));" - please replace with {WORKING_DIRECTORY}
+
+[15/23] (65%): test/sql/regions.test took 0.476sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/raw.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om_raw('__WORKING_DIRECTORY__/test/data/raw.om'));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om_raw('__WORKING_DIRECTORY__/test/data/raw.om');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value
+FROM read_om_raw('__WORKING_DIRECTORY__/test/data/raw.om')
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FILTER (WHERE value IS NULL),
+       count(*) FILTER (WHERE isinf(value) AND value > 0),
+       count(*) FILTER (WHERE isinf(value) AND value < 0),
+       count(*) FILTER (WHERE value = 0 AND NOT signbit(value)),
+       count(*) FILTER (WHERE value = 0 AND signbit(value))
+FROM read_om_raw('__WORKING_DIRECTORY__/test/data/special.om');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value
+FROM read_om_raw('__WORKING_DIRECTORY__/test/data/special.om')
+WHERE isfinite(value) AND value <> 0
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_raw('__WORKING_DIRECTORY__/test/data/does-not-exist.om');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __TEST_DIR__ in path "COPY (
+    SELECT array_slice(content, 0, size - 1)
+    FROM read_blob('__WORKING_DIRECTORY__/test/data/raw.om')
+) TO '__TEST_DIR__/duckomo_raw_truncated.om' (FORMAT BLOB);" - please replace with {TEST_DIR}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "COPY (
+    SELECT array_slice(content, 0, size - 1)
+    FROM read_blob('__WORKING_DIRECTORY__/test/data/raw.om')
+) TO 'duckdb_unittest_tempdir/2026-10-25T07-56-38Z--olive-cusp-88/test_sql_raw_test/duckomo_raw_truncated.om' (FORMAT BLOB);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __TEST_DIR__ in path "SELECT * FROM read_om_raw('__TEST_DIR__/duckomo_raw_truncated.om');" - please replace with {TEST_DIR}
+Replacing deprecated string __TEST_DIR__ in path "COPY (
+    SELECT blob 'OM\x02' || array_slice(content, 4, size)
+    FROM read_blob('__WORKING_DIRECTORY__/test/data/raw.om')
+) TO '__TEST_DIR__/duckomo_raw_v2.om' (FORMAT BLOB);" - please replace with {TEST_DIR}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "COPY (
+    SELECT blob 'OM\x02' || array_slice(content, 4, size)
+    FROM read_blob('__WORKING_DIRECTORY__/test/data/raw.om')
+) TO 'duckdb_unittest_tempdir/2026-10-25T07-56-38Z--olive-cusp-88/test_sql_raw_test/duckomo_raw_v2.om' (FORMAT BLOB);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __TEST_DIR__ in path "SELECT * FROM read_om_raw('__TEST_DIR__/duckomo_raw_v2.om');" - please replace with {TEST_DIR}
+
+[16/23] (69%): test/sql/raw.test took 0.048sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/spatial_pushdown.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']) WHERE lat = 11;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']) WHERE 11 <= lat AND lon < 104;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']) WHERE 12 > lat AND 10 < lat;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']) WHERE lat BETWEEN 11 AND 11 AND lon BETWEEN 102 AND 104;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon'])
+WHERE lat >= nextafter(10.0, 11.0);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']) WHERE lat > 11 AND lat < 10;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']) WHERE FALSE;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':181.0, 'dlat':-1.0, 'dlon':-1.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']) WHERE lon = 179;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':179.0, 'dlat':1.0, 'dlon':1.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']) WHERE lon >= 179 OR lon < -179;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT min(lat), max(lon), count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'separate'},
+    spatial_axes := ['lat','lon']) WHERE lat > 10;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/spatial_flat.om',
+    dimensions := map(['value'], [['sample','point']]),
+    grid := {'nx':3, 'ny':2, 'lat0':10.0, 'lon0':100.0, 'dlat':1.0, 'dlon':2.0, 'order':'lon_fastest'},
+    spatial_axes := ['point']) WHERE lat = 10 AND lon = 102;" - please replace with {WORKING_DIRECTORY}
+
+[17/23] (73%): test/sql/spatial_pushdown.test took 0.128sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/region_sampling.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated ${DUCKOMO_SPATIAL_EXTENSION} in test test/sql/region_sampling.test - please replace with {DUCKOMO_SPATIAL_EXTENSION}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*)::VARCHAR, first(typeof(sampling.status)), first(sampling.status)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':-2.0,'lon0':-2.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*)::VARCHAR, first(typeof(sampling.source_point_index)), first(sampling.source_point_index)::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':-2.0,'lon0':-2.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'), method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(sampling.status) FROM read_om_regions(
+        '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+        regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+        dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+        spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'), method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(sampling::VARCHAR) FROM read_om_regions(
+        '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+        regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+        dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+        spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'), method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(sampling.variables['small-separate/temperature'].status) FROM read_om_regions(
+        '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+        regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+        dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+        spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'), method := 'nearest',
+        variable := 'small-separate/temperature');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*)::VARCHAR, count(duplicate_status)::VARCHAR FROM (
+    SELECT sampling.status, sampling.status AS duplicate_status FROM read_om_regions(
+        '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+        regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+        dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+        spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'), method := 'nearest')) q;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*), count(DISTINCT sampling.source_point_index),
+       min(sampling.source_point_index), min(sampling.status), max(sampling.status),
+       min(sampling.source_lon), max(sampling.source_lon),
+       min(sampling.source_lat), max(sampling.source_lat)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT region_id, "small-separate/temperature", sampling.axis_indices,
+       sampling.variables['small-separate/temperature'].status,
+       sampling.variables['small-separate/temperature'].source_count,
+       sampling.variables['small-separate/temperature'].valid_source_count
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+WHERE sampling.axis_indices = [0,0,0];" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*)::VARCHAR || '/' || count(DISTINCT sampling.axis_indices)::VARCHAR || '/' ||
+       count(DISTINCT member)::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := {'member':{'axis':'member','values':[0::BIGINT,0::BIGINT]},
+             'time':{'axis':'time','start':TIMESTAMP '2026-01-01 00:00:00','step':INTERVAL '1 hour'},
+             'level':{'axis':'level','values':[100::BIGINT,200::BIGINT],'kind':'pressure','unit':'hPa'}},
+    method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT sampling.source_point_index::VARCHAR || '/' ||
+       sampling.variables['small-separate/temperature'].status || '/' ||
+       sampling.variables['small-separate/humidity'].status || '/' ||
+       sampling.variables['small-separate/temperature'].source_count::VARCHAR || '/' ||
+       sampling.variables['small-separate/humidity'].valid_source_count::VARCHAR || '/' ||
+       "small-separate/humidity"::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((1.05 0.05,1.15 0.05,1.15 0.15,1.05 0.15,1.05 0.05))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+WHERE member = 1 AND valid_time = TIMESTAMP '2026-01-01 02:00:00' AND level = 100;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT sampling.status || '/' ||
+       sampling.variables['value'].status || '/' ||
+       coalesce(sampling.source_point_index::VARCHAR, 'NULL')
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions_nonfinite.om',
+    regions := [{'id':'All','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((-0.5 -0.5,1.5 -0.5,1.5 1.5,-0.5 1.5,-0.5 -0.5))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['lat','lon'],
+    grid := {'nx':2,'ny':2,'lat0':0.0,'lon0':0.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'nearest')
+WHERE sampling.axis_indices = [];" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT (isinf(value) AND value > 0)::VARCHAR || '/' ||
+       sampling.variables['value'].status || '/' || sampling.variables['value'].valid_source_count::VARCHAR || '/' ||
+       sampling.source_point_index::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions_nonfinite.om',
+    regions := [{'id':'PositiveInf','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.9 -0.1,1.1 -0.1,1.1 0.1,0.9 0.1,0.9 -0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['lat','lon'],
+    grid := {'nx':2,'ny':2,'lat0':0.0,'lon0':0.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT (isinf(value) AND value < 0)::VARCHAR || '/' ||
+       sampling.variables['value'].status || '/' || sampling.variables['value'].valid_source_count::VARCHAR || '/' ||
+       sampling.source_point_index::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions_nonfinite.om',
+    regions := [{'id':'NegativeInf','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((-0.1 0.9,0.1 0.9,0.1 1.1,-0.1 1.1,-0.1 0.9))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['lat','lon'],
+    grid := {'nx':2,'ny':2,'lat0':0.0,'lon0':0.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "WITH actual AS MATERIALIZED (
+    SELECT sampling.axis_indices AS axis_indices,
+           "small-separate/temperature" AS temperature,
+           "small-separate/humidity" AS humidity,
+           sampling.source_point_index AS point_index
+    FROM read_om_regions(
+        '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+        regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+            'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+        region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+        grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+        axes := getvariable('nearest_axes'), method := 'nearest')
+), expected(axis_indices, temperature, humidity, point_index) AS (
+    VALUES ([0,0,0]::UBIGINT[],12.0::FLOAT,10012.0::FLOAT,12::UBIGINT),
+           ([0,0,1]::UBIGINT[],1012.0::FLOAT,11012.0::FLOAT,12::UBIGINT),
+           ([0,1,0]::UBIGINT[],100012.0::FLOAT,110012.0::FLOAT,12::UBIGINT),
+           ([0,1,1]::UBIGINT[],101012.0::FLOAT,111012.0::FLOAT,12::UBIGINT),
+           ([0,2,0]::UBIGINT[],200012.0::FLOAT,210012.0::FLOAT,12::UBIGINT),
+           ([0,2,1]::UBIGINT[],201012.0::FLOAT,211012.0::FLOAT,12::UBIGINT),
+           ([1,0,0]::UBIGINT[],10012.0::FLOAT,20012.0::FLOAT,12::UBIGINT),
+           ([1,0,1]::UBIGINT[],11012.0::FLOAT,21012.0::FLOAT,12::UBIGINT),
+           ([1,1,0]::UBIGINT[],110012.0::FLOAT,120012.0::FLOAT,12::UBIGINT),
+           ([1,1,1]::UBIGINT[],111012.0::FLOAT,121012.0::FLOAT,12::UBIGINT),
+           ([1,2,0]::UBIGINT[],210012.0::FLOAT,220012.0::FLOAT,12::UBIGINT),
+           ([1,2,1]::UBIGINT[],211012.0::FLOAT,221012.0::FLOAT,12::UBIGINT)
+), differences AS (
+    (SELECT * FROM actual EXCEPT ALL SELECT * FROM expected)
+    UNION ALL
+    (SELECT * FROM expected EXCEPT ALL SELECT * FROM actual)
+)
+SELECT count(*) FROM differences;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+WHERE lat BETWEEN 0.14 AND 0.16 AND lon BETWEEN 0.14 AND 0.16
+  AND "small-separate/temperature" >= 100000;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "WITH full_sampling AS MATERIALIZED (
+    SELECT * FROM read_om_regions(
+        '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+        regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+            'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+        region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+        grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+        axes := getvariable('nearest_axes'), method := 'nearest')
+),
+expected AS (
+    SELECT * FROM full_sampling
+    WHERE lat BETWEEN 0.14 AND 0.16 AND lon BETWEEN 0.14 AND 0.16
+      AND "small-separate/temperature" >= 100000
+),
+actual AS (
+    SELECT * FROM read_om_regions(
+        '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+        regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+            'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+        region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+        grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+        axes := getvariable('nearest_axes'), method := 'nearest')
+    WHERE lat BETWEEN 0.14 AND 0.16 AND lon BETWEEN 0.14 AND 0.16
+      AND "small-separate/temperature" >= 100000
+),
+differences AS (
+    (SELECT region_id, sampling.axis_indices, "small-separate/temperature" FROM actual
+     EXCEPT ALL SELECT region_id, sampling.axis_indices, "small-separate/temperature" FROM expected)
+    UNION ALL
+    (SELECT region_id, sampling.axis_indices, "small-separate/temperature" FROM expected
+     EXCEPT ALL SELECT region_id, sampling.axis_indices, "small-separate/temperature" FROM actual)
+)
+SELECT count(*) FROM differences;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT region_id, count(*), count(DISTINCT sampling.source_point_index)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [
+        {'id':'SharedA','wkb':ST_AsWKB(ST_GeomFromText(
+            'POLYGON((0.9 -0.1,1.1 -0.1,1.1 0.1,0.9 0.1,0.9 -0.1))'))},
+        {'id':'SharedB','wkb':ST_AsWKB(ST_GeomFromText(
+            'POLYGON((0.9 -0.1,1.1 -0.1,1.1 0.1,0.9 0.1,0.9 -0.1))'))}
+    ], region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+GROUP BY region_id ORDER BY region_id;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT "small-separate/temperature", lat, lon,
+       sampling.source_point_index, sampling.source_lon, sampling.source_lat,
+       sampling.variables['small-separate/temperature'].status,
+       sampling.variables['small-separate/temperature'].source_count,
+       sampling.variables['small-separate/temperature'].valid_source_count,
+       om_source.logical_index
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'NaN','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.9 -0.1,1.1 -0.1,1.1 0.1,0.9 0.1,0.9 -0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest', include_source := true)
+WHERE member = 1 AND valid_time = TIMESTAMP '2026-01-01 02:00:00' AND level = 100;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT region_id FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/sampling-conflict.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((99 19,105 19,105 25,99 25,99 19))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/sampling-conflict.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], variable := 'sampling', method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/regions/regions_region_id_conflict.om',
+    regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/source-conflict.om',
+    regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+    dimensions := map(['om_source'], [['row','column']]),
+    grid := {'nx':3,'ny':2,'lat0':0.0,'lon0':0.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['row','column'], method := 'nearest', include_source := true);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/sampling-conflict.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((99 19,105 19,105 25,99 25,99 19))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':20.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'points');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest'))
+WHERE column_name IN ('small-separate/temperature','small-separate/humidity','sampling')
+ORDER BY CASE column_name WHEN 'small-separate/humidity' THEN 1 WHEN 'small-separate/temperature' THEN 2 ELSE 3 END;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'points'))
+WHERE column_name IN ('small-separate/temperature','small-separate/humidity','sampling')
+ORDER BY column_name;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT column_name || ' ' || column_type
+FROM (DESCRIBE SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest', include_source := true))
+WHERE column_name IN ('region_id','sampling','om_source')
+ORDER BY CASE column_name WHEN 'region_id' THEN 1 WHEN 'sampling' THEN 2 ELSE 3 END;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT region_id, count(*), min(sampling.status), max(sampling.status),
+       count(sampling.source_point_index), count("small-separate/temperature")
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+GROUP BY region_id ORDER BY region_id;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT region_id || ':' || sampling.status || ':' ||
+       sampling.variables['small-separate/temperature'].status || ':' ||
+       sampling.variables['small-separate/temperature'].source_count::VARCHAR || ':' ||
+       sampling.variables['small-separate/temperature'].valid_source_count::VARCHAR || ':' ||
+       sampling.variables['small-separate/humidity'].status || ':' ||
+       sampling.variables['small-separate/humidity'].source_count::VARCHAR || ':' ||
+       sampling.variables['small-separate/humidity'].valid_source_count::VARCHAR || ':' ||
+       (lat IS NULL)::VARCHAR || ':' || (lon IS NULL)::VARCHAR || ':' ||
+       (sampling.source_point_index IS NULL)::VARCHAR || ':' ||
+       (sampling.source_lon IS NULL)::VARCHAR || ':' ||
+       (sampling.source_lat IS NULL)::VARCHAR || ':' ||
+       (sampling.distance_m IS NULL)::VARCHAR || ':' || (om_source IS NULL)::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'),
+    method := 'nearest', include_source := true)
+WHERE sampling.axis_indices = [1,2,1] AND region_id IN ('Empty','Outside')
+ORDER BY region_id;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT sampling.status || ':' || ("small-separate/temperature" IS NULL)::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Outside','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((10 10,11 10,11 11,10 11,10 10))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    method := 'nearest', out_of_bounds := 'null')
+WHERE sampling.axis_indices = [0,0,0];" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT sampling.status, count(sampling.source_point_index),
+       count("small-separate/temperature"), min(sampling.distance_m), max(sampling.distance_m)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest',
+    max_distance_m := 23588.840376362383)
+GROUP BY sampling.status;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT sampling.status, count(sampling.source_point_index),
+       count("small-separate/temperature"), min(sampling.distance_m), max(sampling.distance_m)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest',
+    max_distance_m := nextafter(23588.840376362383, 'Infinity'::DOUBLE))
+GROUP BY sampling.status;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT sampling.status, count(sampling.source_point_index),
+       count("small-separate/temperature"), min(sampling.distance_m), max(sampling.distance_m)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest',
+    max_distance_m := nextafter(23588.840376362383, 0.0))
+GROUP BY sampling.status;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT sampling.status, count(sampling.source_point_index),
+       count("small-separate/temperature"), min(sampling.distance_m), max(sampling.distance_m)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Exact','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((-0.1 -0.1,0.1 -0.1,0.1 0.1,-0.1 0.1,-0.1 -0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest', max_distance_m := 0.0)
+GROUP BY sampling.status;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*), min(sampling.status), max(sampling.status),
+       count(sampling.source_point_index), count("small-separate/temperature"),
+       min(sampling.variables['small-separate/temperature'].status)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest', max_distance_m := 0.0);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT region_id || ':' || sampling.status || ':' ||
+       sampling.variables['small-separate/temperature'].status || ':' ||
+       sampling.variables['small-separate/temperature'].source_count::VARCHAR || ':' ||
+       sampling.variables['small-separate/temperature'].valid_source_count::VARCHAR || ':' ||
+       (lat IS NULL)::VARCHAR || ':' || (sampling.source_point_index IS NULL)::VARCHAR || ':' ||
+       (sampling.source_lon IS NULL)::VARCHAR || ':' || (sampling.source_lat IS NULL)::VARCHAR || ':' ||
+       (sampling.distance_m IS NULL)::VARCHAR || ':' || (om_source IS NULL)::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest', max_distance_m := 0.0,
+    include_source := true)
+WHERE sampling.axis_indices = [1,2,1];" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT sampling.axis_indices, "small-interleaved/temperature", sampling.source_point_index,
+       sampling.source_lon, sampling.source_lat, om_source.logical_index
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-interleaved.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','lat','time','level','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest', include_source := true)
+WHERE sampling.axis_indices = [1,2,1];" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT sampling.axis_indices, "small-spatial-first/temperature",
+       sampling.source_point_index, om_source.logical_index
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-spatial-first.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['lat','lon','member','time','level'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest', include_source := true)
+WHERE sampling.axis_indices = [1,2,1];" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT sampling.axis_indices, "small-unmapped/temperature", sampling.source_point_index,
+       om_source.logical_index
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-unmapped.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['other','lat','member','lon','time'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_unmapped_axes'), method := 'nearest', include_source := true)
+WHERE sampling.axis_indices = [1,1,2];" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*), first(sampling.axis_indices), min("small-spatial-only/temperature"),
+       min(sampling.source_point_index)
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-spatial-only.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((-0.9 -0.9,-0.8 -0.9,-0.8 -0.8,-0.9 -0.8,-0.9 -0.9))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['lat','lon'],
+    grid := {'nx':2,'ny':2,'lat0':-1.0,'lon0':-1.0,'dlat':2.0,'dlon':2.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*)::VARCHAR || '/' || min(list_extract(sampling.axis_indices, 1))::VARCHAR || '/' ||
+       max(list_extract(sampling.axis_indices, 1))::VARCHAR || '/' || sum("small-many-axis/temperature")::BIGINT::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-many-axis.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['sample','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*), min(sampling.axis_indices[2]), max(sampling.axis_indices[2])
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+WHERE valid_time = TIMESTAMP '2026-01-01 01:00:00';" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*), count(DISTINCT sampling.source_point_index),
+       min(sampling.source_point_index), min("small-flat-lon/temperature"),
+       max("small-flat-lon/temperature")
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-flat-lon.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','point'],
+    grid := {'nx':5,'ny':5,'lat0':-2.0,'lon0':-2.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], axes := getvariable('nearest_axes'), method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'points', max_distance_m := 0.0);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'bilinear');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', out_of_bounds := 'error');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'),
+    method := 'nearest', out_of_bounds := 'error') WHERE region_id = 'Gap';" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'),
+    method := 'nearest', out_of_bounds := 'error') LIMIT 0;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 1,
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'ID':'Bad','wkb':ST_AsWKB(ST_GeomFromText('POLYGON EMPTY'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Bad','wkb':'not a blob'}], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := NULL::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := ['not a struct'], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [
+        {'id':'Duplicate','wkb':ST_AsWKB(ST_GeomFromText('POLYGON EMPTY'))},
+        {'id':'Duplicate','wkb':ST_AsWKB(ST_GeomFromText('POLYGON EMPTY'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := list_transform(range(4097), lambda i: {'id':i::VARCHAR,'wkb':ST_AsWKB(ST_GeomFromText('POLYGON EMPTY'))}),
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [
+        {'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+            'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))},
+        {'id':'Bad','wkb':from_hex('010300000001000000')}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+WHERE region_id = 'Gap' LIMIT 1;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [
+        {'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+            'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))},
+        {'id':'Bad','wkb':ST_AsWKB(ST_GeomFromText(
+            'MULTIPOLYGON(((0 0,2 0,2 2,0 2,0 0)),((1 1,3 1,3 3,1 3,1 1)))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+WHERE region_id = 'Gap' LIMIT 0;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    domain := 'ncep_gfs025', spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    method := 'unsupported');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    region_crs := 'wrong', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := NULL::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'wrong',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := NULL::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    domain := 'ncep_gfs025', spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[],
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'GRID_LONLAT',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := NULL::VARCHAR,
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'unknown');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'NEAREST');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := NULL::VARCHAR);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 1);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := true);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', max_distance_m := NULL::DOUBLE);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', max_distance_m := '10');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', max_distance_m := true);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', max_distance_m := 'NaN'::DOUBLE);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', max_distance_m := 'Infinity'::DOUBLE);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', out_of_bounds := 'ERROR');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', out_of_bounds := NULL::VARCHAR);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', include_source := NULL::BOOLEAN);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', variable := NULL::VARCHAR);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := NULL::VARCHAR[], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := 42, grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := NULL::VARCHAR[], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := 42, method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], method := 'nearest', valid_times := []::TIMESTAMP[]);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'),
+    valid_times := [TIMESTAMP '2026-01-01 00:00:00'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), valid_times := NULL::TIMESTAMP[], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Gap','wkb':ST_AsWKB(ST_GeomFromText(
+        'POLYGON((0.1 0.1,0.2 0.1,0.2 0.2,0.1 0.2,0.1 0.1))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest')
+WHERE member = 999;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*)::VARCHAR || '/' || first(sampling.status) || '/' ||
+       count(DISTINCT sampling.source_point_index)::VARCHAR
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := [{'id':'Multi','wkb':ST_AsWKB(ST_GeomFromText(
+        'MULTIPOLYGON(((-2 -2,-1 -2,-1 -1,-2 -1,-2 -2)),((1 1,2 1,2 2,1 2,1 1)))'))}],
+    region_crs := 'grid_lonlat', dimensions := ['member','time','level','lat','lon'],
+    grid := getvariable('nearest_grid'), spatial_axes := ['lat','lon'],
+    axes := getvariable('nearest_axes'), method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-spatial-only.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := map(['small-spatial-only/temperature'], [['row','column']]),
+    grid := {'version':1,'type':'rotated_latlon','numeric_policy':'float64_v1',
+             'earth':{'model':'sphere','radius_m':6371229.0},
+             'layout':{'nx':2,'ny':2,'order':'separate'},
+             'parameters':{'x0':0.0,'y0':0.0,'dx':1.0,'dy':1.0,
+                           'north_pole_latitude':90.0,'north_pole_longitude':0.0,'rotation':0.0}},
+    spatial_axes := ['row','column'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-spatial-only.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := map(['small-spatial-only/temperature'], [['row','column']]),
+    grid := {'version':1,'type':'lambert_conformal_conic','numeric_policy':'float64_v1',
+             'earth':{'model':'sphere','radius_m':6371229.0},
+             'layout':{'nx':2,'ny':2,'order':'separate'},
+             'parameters':{'x0':0.0,'y0':0.0,'dx':1.0,'dy':1.0,'central_meridian':0.0,
+                           'latitude_of_origin':0.0,'standard_parallel_1':30.0,'standard_parallel_2':60.0}},
+    spatial_axes := ['row','column'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-spatial-only.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := map(['small-spatial-only/temperature'], [['row','column']]),
+    grid := {'version':1,'type':'stereographic','numeric_policy':'float64_v1',
+             'earth':{'model':'sphere','radius_m':6371229.0},
+             'layout':{'nx':2,'ny':2,'order':'separate'},
+             'parameters':{'x0':0.0,'y0':0.0,'dx':1.0,'dy':1.0,'central_meridian':0.0,
+                           'latitude_of_origin':0.0,'scale_factor':1.0}},
+    spatial_axes := ['row','column'], method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/grids/gaussian-n160-identity.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := map(['n160_identity/value'], [['point']]), domain := 'n160', method := 'nearest');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := []::STRUCT(id VARCHAR,wkb BLOB)[], region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'],
+    grid := {'nx':5,'ny':5,'lat0':-2.0,'lon0':-2.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon'], method := 'nearest', max_distance_m := -1.0);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "PREPARE nearest_rebind AS SELECT region_id || ':' || min(sampling.status) || ':' ||
+       coalesce(min(sampling.source_point_index)::VARCHAR, 'NULL')
+FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_rebind_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'), method := 'nearest')
+GROUP BY region_id;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT column_name || ':' || column_type
+FROM (DESCRIBE SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_rebind_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'), method := 'nearest'))
+WHERE column_name IN ('region_id','sampling');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT column_name || ':' || column_type
+FROM (DESCRIBE SELECT * FROM read_om_regions(
+    '__WORKING_DIRECTORY__/test/data/sampling/small-separate.om',
+    regions := getvariable('nearest_rebind_regions'), region_crs := 'grid_lonlat',
+    dimensions := ['member','time','level','lat','lon'], grid := getvariable('nearest_grid'),
+    spatial_axes := ['lat','lon'], axes := getvariable('nearest_axes'), method := 'points'))
+WHERE column_name IN ('region_id','sampling');" - please replace with {WORKING_DIRECTORY}
+
+[18/23] (78%): test/sql/region_sampling.test took 0.722sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/multi_grid.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated __BUILD_DIRECTORY__ in test test/sql/multi_grid.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value, lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0
+        }
+    },
+    spatial_axes := ['row', 'column']
+)
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*), count(*) FILTER (WHERE om_source.version_strength = 'unverifiable'),
+       count(*) FILTER (WHERE om_source.content_verified), min(om_source.logical_index),
+       max(om_source.logical_index), min(om_source.point_index), max(om_source.point_index),
+       count(*) FILTER (WHERE om_source.object_version IS NULL),
+       count(*) FILTER (WHERE starts_with(om_source.object_id, 'sha256:')),
+       count(*) FILTER (WHERE om_source.grid_id IS NOT NULL AND om_source.layout_id IS NOT NULL),
+       count(*) FILTER (WHERE om_source.axis_indices[1] BETWEEN 0 AND 1 AND
+                              om_source.axis_indices[2] BETWEEN 0 AND 2)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0
+        }
+    },
+    spatial_axes := ['row', 'column'], include_source := true
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', include_source := NULL);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om', include_source := true);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {'nx': 3, 'ny': 2, 'lat0': 0.0, 'lon0': 0.0,
+             'dlat': 1.0, 'dlon': 1.0, 'order': 'separate'},
+    spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value, lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {'nx': 3, 'ny': 2, 'lat0': 0.0, 'lon0': 0.0,
+             'dlat': 1.0, 'dlon': 1.0, 'order': 'separate'},
+    spatial_axes := ['row', 'column'])
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value, lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0
+        }
+    },
+    spatial_axes := ['row', 'column'])
+WHERE lon >= 1.5 OR lon < 0.5
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0
+        }
+    },
+    spatial_axes := ['row', 'column'])
+WHERE lon >= 1 OR value = 0;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 2, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'unknown_grid_type', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0}
+    }, spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0}
+    }, spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3.5, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 9223372036854775808, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'row']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/crs-conflict.om',
+    dimensions := map(['unknown_crs/value'], [['latitude_axis', 'longitude_axis']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['latitude_axis', 'longitude_axis']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT "gaussian_wgs84/value", lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/crs-wgs84-gaussian.om',
+    dimensions := map(['gaussian_wgs84/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'reduced_gaussian', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'wgs84', 'semi_major_m': 6378137.0, 'inverse_flattening': 298.257223563},
+        'layout': {'order': 'row_major'},
+        'parameters': {
+            'n': 1, 'latitude_rule': 'explicit_v1',
+            'rows': [{'latitude': 60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0},
+                     {'latitude': -60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0}],
+            'subset_segments': NULL
+        }
+    }, spatial_axes := ['point'])
+ORDER BY "gaussian_wgs84/value";" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/crs-wgs84-gaussian.om',
+    dimensions := map(['gaussian_wgs84/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'reduced_gaussian', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'order': 'row_major'},
+        'parameters': {
+            'n': 1, 'latitude_rule': 'explicit_v1',
+            'rows': [{'latitude': 60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0},
+                     {'latitude': -60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0}],
+            'subset_segments': NULL
+        }
+    }, spatial_axes := ['point']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column'], domain := 'ncep_gfswave025');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    domain := 'n160');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': NULL}
+    }, spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/x-fastest.om',
+    dimensions := map(['flattened_x_fastest/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'reduced_gaussian', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'wgs84', 'semi_major_m': 6378137.0, 'inverse_flattening': 298.257223563},
+        'layout': {'order': 'row_major'},
+        'parameters': {
+            'n': 1, 'latitude_rule': 'explicit_v1',
+            'rows': [{'latitude': 60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0},
+                     {'latitude': -60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0}],
+            'subset_segments': [{'parent_row': 0, 'parent_begin': 0, 'count': 5},
+                                {'parent_row': 1, 'parent_begin': 0, 'count': 6}]
+        }
+    }, spatial_axes := ['point']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/layouts.om',
+    dimensions := map(
+        ['reverse/value', 'flattened_x_fastest/value', 'flattened_y_fastest/value',
+         'interleaved/temperature', 'interleaved/humidity'],
+        [['latitude_axis', 'longitude_axis'], ['point'], ['point'],
+         ['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run'],
+         ['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['latitude_axis', 'longitude_axis']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*), count(*) FILTER (WHERE lat IS NULL),
+       count(*) FILTER (WHERE lon IS NULL)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/reverse.om',
+    dimensions := map(['reverse/value'], [['latitude_axis', 'longitude_axis']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    },
+    spatial_axes := ['latitude_axis', 'longitude_axis']
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*)::INTEGER, sum("flattened_x_fastest/value")::INTEGER,
+       min("flattened_x_fastest/value")::INTEGER, max("flattened_x_fastest/value")::INTEGER
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/x-fastest.om',
+    dimensions := map(['flattened_x_fastest/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'reduced_gaussian', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'wgs84', 'semi_major_m': 6378137.0, 'inverse_flattening': 298.257223563},
+        'layout': {'order': 'row_major'},
+        'parameters': {
+            'n': 1, 'latitude_rule': 'explicit_v1',
+            'rows': [{'latitude': 60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0},
+                     {'latitude': -60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0}],
+            'subset_segments': [{'parent_row': 0, 'parent_begin': 3, 'count': 3},
+                                {'parent_row': 1, 'parent_begin': 0, 'count': 6},
+                                {'parent_row': 0, 'parent_begin': 0, 'count': 3}]
+        }
+    }, spatial_axes := ['point'])
+WHERE lon BETWEEN -70 AND 70;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*), count(*) FILTER (WHERE lat IS NULL),
+       count(*) FILTER (WHERE lon IS NULL)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/x-fastest.om',
+    dimensions := map(['flattened_x_fastest/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'lambert_conformal_conic', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'x_fastest'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1000.0, 'dy': 1000.0,
+                       'central_meridian': 10.0, 'latitude_of_origin': 45.0,
+                       'standard_parallel_1': 45.0, 'standard_parallel_2': 45.0}
+    },
+    spatial_axes := ['point']
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*), count(*) FILTER (WHERE lat IS NULL),
+       count(*) FILTER (WHERE lon IS NULL)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/y-fastest.om',
+    dimensions := map(['flattened_y_fastest/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'stereographic', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'y_fastest'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1000.0, 'dy': 1000.0,
+                       'central_meridian': 0.0, 'latitude_of_origin': 90.0, 'scale_factor': 1.0}
+    },
+    spatial_axes := ['point']
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*), count(*) FILTER (WHERE lat IS NULL),
+       count(*) FILTER (WHERE lon IS NULL)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/x-fastest.om',
+    dimensions := map(['flattened_x_fastest/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'reduced_gaussian', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'wgs84', 'semi_major_m': 6378137.0, 'inverse_flattening': 298.257223563},
+        'layout': {'order': 'row_major'},
+        'parameters': {
+            'n': 1, 'latitude_rule': 'explicit_v1',
+            'rows': [{'latitude': 60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0},
+                     {'latitude': -60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0}],
+            'subset_segments': NULL
+        }
+    },
+    spatial_axes := ['point']
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*), count(*) FILTER (WHERE lat IS NULL),
+       count(*) FILTER (WHERE lon IS NULL)
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/interleaved.om',
+    dimensions := map(
+        ['interleaved/temperature', 'interleaved/humidity'],
+        [['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run'],
+         ['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    },
+    spatial_axes := ['latitude_axis', 'longitude_axis']
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*)::INTEGER, sum("interleaved/temperature")::INTEGER
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/interleaved.om',
+    dimensions := map(
+        ['interleaved/temperature', 'interleaved/humidity'],
+        [['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run'],
+         ['time', 'latitude_axis', 'level', 'longitude_axis', 'lead_time', 'member', 'run']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 4, 'ny': 3, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['latitude_axis', 'longitude_axis'])
+WHERE lat BETWEEN 0.99 AND 1.01 AND lon BETWEEN 1.99 AND 2.01;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0, 'unexpected': 1.0
+        }
+    },
+    spatial_axes := ['row', 'column']
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1,
+        'type': 'rotated_latlon',
+        'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 2, 'ny': 3, 'order': 'separate'},
+        'parameters': {
+            'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+            'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0,
+            'rotation': 0.0
+        }
+    },
+    spatial_axes := ['row', 'column']
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT temperature FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/multi.om',
+    dimensions := map(['temperature', 'humidity'], [['row', 'column'], ['column', 'row']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    },
+    spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count("Latitude"), count(lat), count(lon) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/spatial_conflict.om',
+    dimensions := map(['Latitude'], [['lat', 'lon']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    },
+    spatial_axes := ['lat', 'lon']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/multi.om',
+    dimensions := map(['temperature'], [['row', 'column']]),
+    grid := {'nx': 3, 'ny': 2, 'lat0': 0.0, 'lon0': 0.0,
+             'dlat': 1.0, 'dlon': 1.0, 'order': 'separate'},
+    spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/grids/x-fastest.om',
+    dimensions := map(['flattened_x_fastest/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'reduced_gaussian', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'wgs84', 'semi_major_m': 6378137.0, 'inverse_flattening': 298.257223563},
+        'layout': {'order': 'row_major'},
+        'parameters': {
+            'n': 1, 'latitude_rule': 'explicit_v1',
+            'rows': [{'latitude': 60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0},
+                     {'latitude': -60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0}]
+        }
+    }, spatial_axes := ['point']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['y', 'x']]),
+    domain := 'lambert_formula_vector');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    domain := 'not_a_registered_domain');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    domain := 'aladin_central_europe_2km');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "WITH domain_info AS (
+    SELECT grid_id, layout::VARCHAR AS layout
+    FROM om_grid_info(
+        '__WORKING_DIRECTORY__/test/data/grids/gaussian-n160-identity.om',
+        dimensions := map(['n160_identity/value'], [['point']]),
+        domain := 'n160'
+    )
+), explicit_info AS (
+    SELECT grid_id, layout::VARCHAR AS layout
+    FROM om_grid_info(
+        '__WORKING_DIRECTORY__/test/data/grids/gaussian-n160-identity.om',
+        dimensions := map(['n160_identity/value'], [['point']]),
+        grid := n160_explicit_grid(),
+        spatial_axes := ['point']
+    )
+)
+SELECT domain_info.grid_id = explicit_info.grid_id,
+       domain_info.layout = explicit_info.layout
+FROM domain_info CROSS JOIN explicit_info;" - please replace with {WORKING_DIRECTORY}
+
+[19/23] (82%): test/sql/multi_grid.test took 0.303sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/axis_filter.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value::INTEGER, valid_time, member
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','member_axis']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-09-30 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member_axis', 'values':[10,20,30]}
+    }
+)
+WHERE 20 = member AND TIMESTAMP '2026-09-30 01:00:00' <= valid_time
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value::INTEGER
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','member_axis']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-09-30 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member_axis', 'values':[10,20,30]}
+    }
+)
+WHERE member BETWEEN 20 AND 30 AND valid_time BETWEEN TIMESTAMP '2026-09-30 00:00:00' AND TIMESTAMP '2026-09-30 00:00:00'
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value::INTEGER
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','member_axis']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-09-30 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member_axis', 'values':[10,20,30]}
+    }
+)
+WHERE (member = 20 OR value = 0)
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value::INTEGER
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','member_axis']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-09-30 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member_axis', 'values':[10,20,30]}
+    }
+)
+WHERE member + 0 = 20
+ORDER BY value;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value::INTEGER
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','member_axis']]),
+    axes := {
+        'time': {'axis':'time', 'start':TIMESTAMP '2026-09-30 00:00:00', 'step':INTERVAL '1 hour'},
+        'member': {'axis':'member_axis', 'values':[10,20,30]}
+    }
+)
+WHERE member = 20 AND member = 30;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT value::INTEGER
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['time','point']]),
+    grid := {'nx':3,'ny':1,'lat0':0.0,'lon0':0.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    axes := {'time': {'axis':'time', 'start':TIMESTAMP '2026-09-30 00:00:00', 'step':INTERVAL '1 hour'}}
+)
+WHERE lon = 1 AND valid_time = TIMESTAMP '2026-09-30 01:00:00';" - please replace with {WORKING_DIRECTORY}
+
+[20/23] (86%): test/sql/axis_filter.test took 0.118sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/grid_info.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "DESCRIBE SELECT * FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT descriptor_version, grid_type, parent_grid_id IS NULL,
+       starts_with(object_id, 'sha256:'), object_version IS NULL,
+       version_strength, content_verified,
+       definition::VARCHAR LIKE '%"grid_id":"%' AND definition::VARCHAR LIKE '%"parameters":{"nx":3,"ny":2%',
+       layout::VARCHAR LIKE '%"shape":[2,3],"axes":["row","column"],"strides":[3,1]%',
+       layout::VARCHAR LIKE '%"point_axis":null%',
+       crs::VARCHAR LIKE '%"earth":{"model":"sphere","radius_m":6371229}%' AND
+           crs::VARCHAR LIKE '%"output_crs":"+proj=longlat +R=6371229 +type=crs"%' AND
+           crs::VARCHAR LIKE '%"axis_order":["longitude","latitude"]%',
+       capabilities::VARCHAR LIKE '%"point_semantics":{"status":"defined","name":"native_point_sample"%',
+       provenance::VARCHAR LIKE '%identity_hash_excludes_provenance%'
+FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT capabilities::VARCHAR LIKE '%"adjacency":{"status":"unsupported","reason"%',
+       capabilities::VARCHAR LIKE '%"cell_boundary":{"status":"unsupported","reason"%',
+       capabilities::VARCHAR LIKE '%"area":{"status":"unsupported","reason"%',
+       capabilities::VARCHAR LIKE '%"distance":{"status":"unsupported","reason"%',
+       capabilities::VARCHAR LIKE '%"vector_orientation":{"status":"unsupported","reason"%'
+FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371229.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT * FROM om_grid_info('__WORKING_DIRECTORY__/test/data/raw.om');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT crs::VARCHAR LIKE '%"output_crs":"+proj=longlat +R=6371000 +type=crs"%'
+FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['row', 'column']]),
+    grid := {
+        'version': 1, 'type': 'rotated_latlon', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'sphere', 'radius_m': 6371000.0},
+        'layout': {'nx': 3, 'ny': 2, 'order': 'separate'},
+        'parameters': {'x0': 0.0, 'y0': 0.0, 'dx': 1.0, 'dy': 1.0,
+                       'north_pole_latitude': 90.0, 'north_pole_longitude': 0.0, 'rotation': 0.0}
+    }, spatial_axes := ['row', 'column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT crs::VARCHAR LIKE '%"output_crs":"OGC:CRS84"%',
+       crs::VARCHAR LIKE '%"axis_order":["longitude","latitude"]%'
+FROM om_grid_info(
+    '__WORKING_DIRECTORY__/test/data/grids/crs-wgs84-gaussian.om',
+    dimensions := map(['gaussian_wgs84/value'], [['point']]),
+    grid := {
+        'version': 1, 'type': 'reduced_gaussian', 'numeric_policy': 'float64_v1',
+        'earth': {'model': 'wgs84', 'semi_major_m': 6378137.0, 'inverse_flattening': 298.257223563},
+        'layout': {'order': 'row_major'},
+        'parameters': {'n': 1, 'latitude_rule': 'explicit_v1',
+                       'rows': [{'latitude': 60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0},
+                                {'latitude': -60.0, 'point_count': 6, 'longitude_origin': 0.0, 'longitude_step': 60.0}],
+                       'subset_segments': NULL}
+    }, spatial_axes := ['point']);" - please replace with {WORKING_DIRECTORY}
+
+[21/23] (91%): test/sql/grid_info.test took 0.116sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/remote_io_settings.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT sum(value) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT sum(value) FROM read_om('__WORKING_DIRECTORY__/test/data/raw.om');" - please replace with {WORKING_DIRECTORY}
+
+[22/23] (95%): test/sql/remote_io_settings.test took 0.097sReplacing deprecated __BUILD_DIRECTORY__ in test test/sql/spatial_composition.test - please replace with {BUILD_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "CREATE TEMP TABLE spatial_baseline AS
+SELECT humidity, pressure, temperature, lat, lon
+FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/projection.om',
+    dimensions := map(['humidity','pressure','temperature'], [['row','column'],['row','column'],['row','column']]),
+    grid := {'nx':127,'ny':83,'lat0':-41.0,'lon0':-126.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
+    spatial_axes := ['row','column']);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT
+    (SELECT count(*) FROM (
+        (SELECT temperature, lat, lon FROM spatial_baseline
+         WHERE humidity = 96 AND lat BETWEEN -41 AND -37 AND lon BETWEEN 50 AND 70)
+        EXCEPT ALL
+        (SELECT temperature, lat, lon FROM read_om(
+            '__WORKING_DIRECTORY__/test/data/projection.om',
+            dimensions := map(['humidity','pressure','temperature'], [['row','column'],['row','column'],['row','column']]),
+            grid := {'nx':127,'ny':83,'lat0':-41.0,'lon0':-126.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
+            spatial_axes := ['row','column'])
+         WHERE humidity = 96 AND lat BETWEEN -41 AND -37 AND lon BETWEEN 50 AND 70)
+    )),
+    (SELECT count(*) FROM (
+        (SELECT temperature, lat, lon FROM read_om(
+            '__WORKING_DIRECTORY__/test/data/projection.om',
+            dimensions := map(['humidity','pressure','temperature'], [['row','column'],['row','column'],['row','column']]),
+            grid := {'nx':127,'ny':83,'lat0':-41.0,'lon0':-126.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
+            spatial_axes := ['row','column'])
+         WHERE humidity = 96 AND lat BETWEEN -41 AND -37 AND lon BETWEEN 50 AND 70)
+        EXCEPT ALL
+        (SELECT temperature, lat, lon FROM spatial_baseline
+         WHERE humidity = 96 AND lat BETWEEN -41 AND -37 AND lon BETWEEN 50 AND 70)
+    ));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT
+    (SELECT count(*) FROM (
+        (SELECT lon, temperature, lat, lon FROM spatial_baseline WHERE lat BETWEEN -1 AND 1)
+        EXCEPT ALL
+        (SELECT lon, temperature, lat, lon FROM read_om(
+            '__WORKING_DIRECTORY__/test/data/projection.om',
+            dimensions := map(['humidity','pressure','temperature'], [['row','column'],['row','column'],['row','column']]),
+            grid := {'nx':127,'ny':83,'lat0':-41.0,'lon0':-126.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
+            spatial_axes := ['row','column']) WHERE lat BETWEEN -1 AND 1)
+    )),
+    (SELECT count(*) FROM (
+        (SELECT lon, temperature, lat, lon FROM read_om(
+            '__WORKING_DIRECTORY__/test/data/projection.om',
+            dimensions := map(['humidity','pressure','temperature'], [['row','column'],['row','column'],['row','column']]),
+            grid := {'nx':127,'ny':83,'lat0':-41.0,'lon0':-126.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
+            spatial_axes := ['row','column']) WHERE lat BETWEEN -1 AND 1)
+        EXCEPT ALL
+        (SELECT lon, temperature, lat, lon FROM spatial_baseline WHERE lat BETWEEN -1 AND 1)
+    ));" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM (
+    (SELECT count(*), min(temperature), max(temperature) FROM spatial_baseline
+     WHERE lat BETWEEN -2 AND 2 AND lon BETWEEN -4 AND 4 AND humidity % 2 = 0)
+    EXCEPT ALL
+    (SELECT count(*), min(temperature), max(temperature) FROM read_om(
+        '__WORKING_DIRECTORY__/test/data/projection.om',
+        dimensions := map(['humidity','pressure','temperature'], [['row','column'],['row','column'],['row','column']]),
+        grid := {'nx':127,'ny':83,'lat0':-41.0,'lon0':-126.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
+        spatial_axes := ['row','column'])
+     WHERE lat BETWEEN -2 AND 2 AND lon BETWEEN -4 AND 4 AND humidity % 2 = 0)
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM (
+    SELECT temperature FROM read_om(
+        '__WORKING_DIRECTORY__/test/data/projection.om',
+        dimensions := map(['humidity','pressure','temperature'], [['row','column'],['row','column'],['row','column']]),
+        grid := {'nx':127,'ny':83,'lat0':-41.0,'lon0':-126.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
+        spatial_axes := ['row','column'])
+WHERE lat BETWEEN -2 AND 2 ORDER BY temperature
+);" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':179.0,'dlat':1.0,'dlon':1.0,'order':'separate'},
+    spatial_axes := ['lat','lon']) WHERE lon >= 179 OR lon < -179;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
+    spatial_axes := ['lat','lon']) WHERE CAST(lat AS INTEGER) = 11;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
+    spatial_axes := ['lat','lon']) WHERE abs(lat - 11) = 0;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
+    spatial_axes := ['lat','lon']) WHERE 11 BETWEEN lat AND 12;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
+    spatial_axes := ['lat','lon']) WHERE lat = 'NaN'::DOUBLE OR lat = 'Infinity'::DOUBLE;" - please replace with {WORKING_DIRECTORY}
+Replacing deprecated string __WORKING_DIRECTORY__ in path "SELECT count(*) FROM read_om(
+    '__WORKING_DIRECTORY__/test/data/raw.om',
+    dimensions := map(['value'], [['lat','lon']]),
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':2.0,'order':'separate'},
+    spatial_axes := ['lat','lon']) WHERE lat = NULL::DOUBLE;" - please replace with {WORKING_DIRECTORY}
+
+[23/23] (100%): test/sql/spatial_composition.test took 0.081s
+===============================================================================
+All tests passed (1323 assertions in 23 test cases)

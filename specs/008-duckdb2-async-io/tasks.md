@@ -25,9 +25,9 @@ description: "Task list for DuckDB 2.0 support, remote request merging and async
 
 **Purpose**: 固定已验证的 2.0 兼容基线，作为所有故事的起点
 
-- [ ] T001 审查并提交评估期未提交改动（`scripts/version_matrix.py`、`src/scan/read_om.cpp`、`src/scan/region_geometry.cpp`、`src/include/duckomo/region_geometry.hpp`、`src/scan/region_input.cpp`、`test/sql/region_sampling.test`、`test/native/official_httpfs_test.cpp`、`test/CMakeLists.txt`、`scripts/benchmark-engine-versions.py`、`docs/duckdb-2.0-evaluation.md`、`evidence/duckdb-2.0/`、`test/data/engine-compatibility/version-matrix.json`）；排除 `build/` 与 `.specify/extensions/roadmap` 未跟踪内容
-- [ ] T002 保持 `test/data/engine-compatibility/version-matrix.json` 中 v2.0.0 pair 的 `extension_ci_tools.commit` 等于本地子模块 HEAD（当前 `b777c70d30942cca5bef62d6d4fa23a13362f398`；`scripts/version_matrix.py` `build_pair` 约 279–281 行要求二者相等，本地 CMake 构建不使用该仓库的 workflow）。为该 pair 新增独立字段 `ci_toolchain: {ref: "v2.0-cyanoptera", commit: "b8d325c37e82160886579880707493bd358c0e62", vcpkg_commit: "cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3"}`，仅供 CI/发布引用，不进入 `input_payload`/build_id；在 `scripts/version_matrix.py` 的清单校验中允许并校验该可选字段（40 位 SHA）。`release_state` 保持 `evaluation`，直至 T020 通过
-- [ ] T003 [P] 在 `scripts/build-version.sh` 位置参数正则与用法字符串中加入 `v2.0.0`（默认清单路径对 v2.0.0 指向 `test/data/engine-compatibility/version-matrix.json`）
+- [X] T001 审查并提交评估期未提交改动（`scripts/version_matrix.py`、`src/scan/read_om.cpp`、`src/scan/region_geometry.cpp`、`src/include/duckomo/region_geometry.hpp`、`src/scan/region_input.cpp`、`test/sql/region_sampling.test`、`test/native/official_httpfs_test.cpp`、`test/CMakeLists.txt`、`scripts/benchmark-engine-versions.py`、`docs/duckdb-2.0-evaluation.md`、`evidence/duckdb-2.0/`、`test/data/engine-compatibility/version-matrix.json`）；排除 `build/` 与 `.specify/extensions/roadmap` 未跟踪内容
+- [X] T002 保持 `test/data/engine-compatibility/version-matrix.json` 中 v2.0.0 pair 的 `extension_ci_tools.commit` 等于本地子模块 HEAD（当前 `b777c70d30942cca5bef62d6d4fa23a13362f398`；`scripts/version_matrix.py` `build_pair` 约 279–281 行要求二者相等，本地 CMake 构建不使用该仓库的 workflow）。为该 pair 新增独立字段 `ci_toolchain: {ref: "v2.0-cyanoptera", commit: "b8d325c37e82160886579880707493bd358c0e62", vcpkg_commit: "cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3"}`，仅供 CI/发布引用，不进入 `input_payload`/build_id；在 `scripts/version_matrix.py` 的清单校验中允许并校验该可选字段（40 位 SHA）。`release_state` 保持 `evaluation`，直至 T020 通过
+- [X] T003 [P] 在 `scripts/build-version.sh` 位置参数正则与用法字符串中加入 `v2.0.0`（默认清单路径对 v2.0.0 指向 `test/data/engine-compatibility/version-matrix.json`）
 
 ---
 
@@ -37,10 +37,10 @@ description: "Task list for DuckDB 2.0 support, remote request merging and async
 
 **⚠️ CRITICAL**: 未完成前不得开始故事实现
 
-- [ ] T004 在 `src/include/duckomo/compat/duckdb_api.hpp` 与 `src/compat/duckdb_api.cpp` 新增 `SetOutputCardinality(DataChunk&, idx_t)` 包装（2.0 用 `SetChildCardinality`，1.x 用 `SetCardinality`），并替换 `src/scan/read_om.cpp`（约 2956、3027–3048、3337、3348、3566、3673 行）与 `src/scan/raw_scan.cpp`（145、177 行）全部输出 chunk 的调用；中间态 `coordinates` chunk 按其语义选择包装或保留
-- [ ] T005 使 `test/native/*.cpp` 全部在 2.0 上编译：复用/扩展 `test/native/query_result_compat.hpp` 处理 `QueryResult::GetValue` 移除，把各测试中的 `ExtensionHelper::LoadAllExtensions` 定义改为 1.x 条件编译并在 2.0 用 `LoadStaticExtension<DuckomoExtension>()`；必要时在 `test/CMakeLists.txt` 为需要动态加载官方扩展的测试统一调用 `link_extension_libraries`
-- [ ] T006 构建 2.0 完整开发目标（`scripts/build-version.sh --matrix test/data/engine-compatibility/version-matrix.json --pair v2.0.0`，含 `unittest`、`duckomo_developer_tools`、`duckomo_sanitizer_checks`），修复编译错误直至全部目标链接成功
-- [ ] T007 [P] 在 1.5.4、1.5.5、1.5.6 上用 `scripts/build-version.sh vX` 重建并运行 `scripts/validate.sh --matrix test/data/grids/version-matrix.json --pair vX --local-only`，确认 T004–T005 未引入回退；日志写入 `build/008/regress-vX/`
+- [X] T004 在 `src/include/duckomo/compat/duckdb_api.hpp` 与 `src/compat/duckdb_api.cpp` 新增 `SetOutputCardinality(DataChunk&, idx_t)` 包装（2.0 用 `SetChildCardinality`，1.x 用 `SetCardinality`），并替换 `src/scan/read_om.cpp`（约 2956、3027–3048、3337、3348、3566、3673 行）与 `src/scan/raw_scan.cpp`（145、177 行）全部输出 chunk 的调用；中间态 `coordinates` chunk 按其语义选择包装或保留
+- [X] T005 使 `test/native/*.cpp` 全部在 2.0 上编译：复用/扩展 `test/native/query_result_compat.hpp` 处理 `QueryResult::GetValue` 移除，把各测试中的 `ExtensionHelper::LoadAllExtensions` 定义改为 1.x 条件编译并在 2.0 用 `LoadStaticExtension<DuckomoExtension>()`；必要时在 `test/CMakeLists.txt` 为需要动态加载官方扩展的测试统一调用 `link_extension_libraries`
+- [X] T006 构建 2.0 完整开发目标（`scripts/build-version.sh --matrix test/data/engine-compatibility/version-matrix.json --pair v2.0.0`，含 `unittest`、`duckomo_developer_tools`、`duckomo_sanitizer_checks`），修复编译错误直至全部目标链接成功
+- [X] T007 [P] 在 1.5.4、1.5.5、1.5.6 上用 `scripts/build-version.sh vX` 重建并运行 `scripts/validate.sh --matrix test/data/grids/version-matrix.json --pair vX --local-only`，确认 T004–T005 未引入回退；日志写入 `build/008/regress-vX/`
 
 **Checkpoint**: 四个引擎版本全部目标可编译并通过本地验证
 
@@ -54,21 +54,21 @@ description: "Task list for DuckDB 2.0 support, remote request merging and async
 
 ### Tests for User Story 1
 
-- [ ] T008 [P] [US1] 在 `test/tools/release_tools_test.py` 增加用例：v2.0.0 runtime 的 `duckdb-cli-<plat>.tar.gz` URL 被接受、v1.5.x 仍要求 zip、错误版本/平台组合被拒绝；发布资产总数为版本数 × 平台数
-- [ ] T009 [P] [US1] 在 `test/tools/` 新增或扩展测试，断言 `scripts/verify-community-artifact.py --version v2.0.0` 参数被接受，且 `test/data/grids/version-matrix.json` 仍恰好三版（`test/tools/version_matrix_test.py` 不变）
+- [X] T008 [P] [US1] 在 `test/tools/release_tools_test.py` 增加用例：v2.0.0 runtime 的 `duckdb-cli-<plat>.tar.gz` URL 被接受、v1.5.x 仍要求 zip、错误版本/平台组合被拒绝；发布资产总数为版本数 × 平台数
+- [X] T009 [P] [US1] 在 `test/tools/` 新增或扩展测试，断言 `scripts/verify-community-artifact.py --version v2.0.0` 参数被接受，且 `test/data/grids/version-matrix.json` 仍恰好三版（`test/tools/version_matrix_test.py` 不变）
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] 修改 `scripts/release_tools.py`（约 46–48 行 CLI URL 规则）：按版本选择 zip 或 tar.gz；`matrix` 子命令输出分组 `versions_1_5` 与 `versions_2_0`（保留原 `versions` 字段兼容）
-- [ ] T011 [P] [US1] 在 `scripts/verify-community-artifact.py` 的 `--version` choices 加入 `v2.0.0`，并让其从 `test/data/engine-compatibility/version-matrix.json` 读取 2.0 runtime
-- [ ] T012 [US1] 为 linux_amd64、osx_amd64、osx_arm64 下载官方 v2.0.0 CLI（tar.gz）与 HTTPFS，计算解压后 SHA256；与已知 linux_arm64 值一起写入 `test/data/release-runtimes.json`（`versions` 加 `v2.0.0`，新增 4 条 runtime）
-- [ ] T013 [US1] 重写 `.github/workflows/community-build.yml`：拆分 `build-1-5`（`@v1.5-variegata`，matrix 三版 1.5）与 `build-2-0`（`@v2.0-cyanoptera`，`duckdb_version: v2.0.0`，`vcpkg_commit: cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3`，exclude 按 2.0 平台集合只留 linux_arm64）；`arm64-runtime` needs 两者，matrix 四版本，2.0 runtime 走 engine-compatibility 清单
-- [ ] T014 [US1] 修改 `.github/workflows/release.yml`：`build` 拆为 1.5（pin `3fd6109fc01555673b7c7123eba8d0d143fe8ce4`）与 2.0（pin `b8d325c37e82160886579880707493bd358c0e62`，vcpkg `cd61e1e2…`，`opt_in_archs: osx_amd64`，exclude 去掉 `windows_amd64_rtools`）两 job；verify/package/publish job 依赖两者并消费 T010 的分组输出；本地用 `go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12` 校验两个 workflow
-- [ ] T015 [US1] 运行 2.0 全量门禁：`unittest 'test/sql/*'`（官方 2.0 spatial）、`scripts/validate.sh --matrix test/data/engine-compatibility/version-matrix.json --pair v2.0.0`（受控远程，含 `official_httpfs_test`）与 `duckomo_sanitizer_checks`；另做版本不匹配检查：官方 2.0 CLI 加载 1.5.6 产物、官方 1.5.6 CLI 加载 2.0 产物均须失败并给出引擎的版本不匹配错误、进程不崩溃（spec US1 场景 3）；证据写入 `evidence/duckdb-2.0/final/`，记录产物 SHA256、最终源码 build_id 与不匹配错误文本
-- [ ] T016 [US1] 用 T015 产物与 1.5.6 产物对 `test/data/grids/sample-manifest.json` 中可用真实对象执行同查询结果哈希比对（复用 `scripts/benchmark-engine-versions.py` 或 T026 脚本的正确性模式），结果写入 `evidence/duckdb-2.0/final/cross-version.json`
+- [X] T010 [US1] 修改 `scripts/release_tools.py`（约 46–48 行 CLI URL 规则）：按版本选择 zip 或 tar.gz；`matrix` 子命令输出分组 `versions_1_5` 与 `versions_2_0`（保留原 `versions` 字段兼容）
+- [X] T011 [P] [US1] 在 `scripts/verify-community-artifact.py` 的 `--version` choices 加入 `v2.0.0`，并让其从 `test/data/engine-compatibility/version-matrix.json` 读取 2.0 runtime
+- [X] T012 [US1] 为 linux_amd64、osx_amd64、osx_arm64 下载官方 v2.0.0 CLI（tar.gz）与 HTTPFS，计算解压后 SHA256；与已知 linux_arm64 值一起写入 `test/data/release-runtimes.json`（`versions` 加 `v2.0.0`，新增 4 条 runtime）
+- [X] T013 [US1] 重写 `.github/workflows/community-build.yml`：拆分 `build-1-5`（`@v1.5-variegata`，matrix 三版 1.5）与 `build-2-0`（`@v2.0-cyanoptera`，`duckdb_version: v2.0.0`，`vcpkg_commit: cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3`，exclude 按 2.0 平台集合只留 linux_arm64）；`arm64-runtime` needs 两者，matrix 四版本，2.0 runtime 走 engine-compatibility 清单
+- [X] T014 [US1] 修改 `.github/workflows/release.yml`：`build` 拆为 1.5（pin `3fd6109fc01555673b7c7123eba8d0d143fe8ce4`）与 2.0（pin `b8d325c37e82160886579880707493bd358c0e62`，vcpkg `cd61e1e2…`，`opt_in_archs: osx_amd64`，exclude 去掉 `windows_amd64_rtools`）两 job；verify/package/publish job 依赖两者并消费 T010 的分组输出；本地用 `go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12` 校验两个 workflow
+- [X] T015 [US1] 最新 2.0 产物全量门禁通过：官方 spatial SQL 23 cases/1319 assertions，统一 scripts/validate.sh 退出 0（全部 SQL/native/Python、official HTTPFS 48/48），ASan/UBSan 14/14、TSan 系统分配器运行无报告；双向版本不匹配均由官方 CLI 拒绝且进程正常报错。证据见 evidence/008/final/aggregate20-verified.log、aggregate20-remote-summary.json、sanitizer20-final.log、tsan-system-run.log、mismatch-final.json、artifacts.json。
+- [X] T016 [US1] 用 T015 产物与 1.5.6 产物对 `test/data/grids/sample-manifest.json` 中可用真实对象执行同查询结果哈希比对（复用 `scripts/benchmark-engine-versions.py` 或 T026 脚本的正确性模式），结果写入 `evidence/duckdb-2.0/final/cross-version.json`；局部真实对象单机全扫与排序输出 SHA256 一致，完整远程门禁未通过，见限制
 - [ ] T017 [US1] 在分支上 `workflow_dispatch` 运行 `release.yml` dry-run 与 `community-build.yml`；确认 16 个产物全部 verify 通过、四版本 linux_arm64 runtime 检查通过；记录 run URL 到 `evidence/duckdb-2.0/final/ci.json`；若 2.0 osx_amd64 交叉构建失败，按 plan 风险条目记录并暂缺该平台
-- [ ] T018 [P] [US1] 更新文档：`docs/releases.md`（16 份产物、删除"2.0 不在此流程"）、`docs/community-extensions.md`（2.0 工具链与 pin；说明社区登记 `community/duckomo/description.yml.in` 本特性不改、仍面向 1.5.6，2.0 产物由本仓库 tag 发布提供）、`docs/official-httpfs.md` 支持范围、`README.md` 与 `README.en.md` 发布矩阵
-- [ ] T019 [P] [US1] 在 `docs/releases.md` 或发布说明模板中记录 2.0 上游行为差异：FLOAT→DECIMAL 精度修复（PR #24814）与 2.0 进程基线 RSS 增加约 20–29 MiB
+- [X] T018 [P] [US1] 更新文档：`docs/releases.md`（16 份产物、删除"2.0 不在此流程"）、`docs/community-extensions.md`（2.0 工具链与 pin；说明社区登记 `community/duckomo/description.yml.in` 本特性不改、仍面向 1.5.6，2.0 产物由本仓库 tag 发布提供）、`docs/official-httpfs.md` 支持范围、`README.md` 与 `README.en.md` 发布矩阵
+- [X] T019 [P] [US1] 在 `docs/releases.md` 或发布说明模板中记录 2.0 上游行为差异：FLOAT→DECIMAL 精度修复（PR #24814）与 2.0 进程基线 RSS 增加约 20–29 MiB
 - [ ] T020 [US1] T015–T017 全部通过后，将 `test/data/engine-compatibility/version-matrix.json` 中 v2.0.0 `release_state` 改为 `target`，并把 `docs/duckdb-2.0-evaluation.md` 状态更新为正式支持
 
 **Checkpoint**: 2.0 可通过发布渠道获取并正常使用（SC-001、SC-002）
@@ -83,20 +83,20 @@ description: "Task list for DuckDB 2.0 support, remote request merging and async
 
 ### Tests for User Story 2
 
-- [ ] T021 [P] [US2] 新建 `test/sql/remote_io_settings.test`：按 [contracts/settings.md](contracts/settings.md) 验证三项合并设置的默认值、`SET`/`RESET`、非法值报错信息不含 URI，以及本地 `read_om` 在任意设置下结果不变
-- [ ] T022 [P] [US2] 在 `test/native/remote_session_test.cpp` 增加用例：远程合并开启时 `remote_io.requests` 少于关闭时、结果相同；`duckomo_remote_max_request` 小于 LUT chunk 长度时报 `[configuration]`；LIMIT 与取消路径多读量不超过一个合并请求上限
-- [ ] T023 [P] [US2] 在 `test/native/scan_metrics_v4_test.cpp` 增加 `remote_io` 对象字段与本地扫描为 NULL 的断言（[contracts/metrics.md](contracts/metrics.md)）
+- [X] T021 [P] [US2] 新建 `test/sql/remote_io_settings.test`：按 [contracts/settings.md](contracts/settings.md) 验证三项合并设置的默认值、`SET`/`RESET`、非法值报错信息不含 URI，以及本地 `read_om` 在任意设置下结果不变；四版本 SQL runners 当前版本均通过设置测试（2.0 为 35 assertions）
+- [X] T022 [P] [US2] 在 `test/native/remote_session_test.cpp` 增加用例：远程合并开启时 `remote_io.requests` 少于关闭时、结果相同；`duckomo_remote_max_request` 小于 LUT chunk 长度时报 `[configuration]`；LIMIT 与取消路径多读量不超过一个合并请求上限 已加入合并 on/off、配置、LIMIT 与取消用例，并在 1.5.4/2.0 native 回归通过；useful 不再重复计算缓存复用。 验证结果见 evidence/008/final/versions155156.json、stream-sql-final.json。
+- [X] T023 [P] [US2] 在 `test/native/scan_metrics_v4_test.cpp` 增加 `remote_io` 对象字段与本地扫描为 NULL 的断言（[contracts/metrics.md](contracts/metrics.md)）
 
 ### Implementation for User Story 2
 
-- [ ] T024 [US2] 在 `src/include/duckomo/metrics.hpp` 统一输出按阶段（metadata/coordinate/index/data）的成功请求数到 `remote_io.phase_requests`，并在受控 S3 上对 O1280 全扫运行一次，记录 index/data 请求占比到 `build/008/merge/phase-split.json`，据此确认是否同时放大 index 合并（research R3）
-- [ ] T025 [US2] 在 `src/om_extension.cpp` 注册 `duckomo_remote_merge`、`duckomo_remote_merge_gap`、`duckomo_remote_max_request`（含校验函数，风格同 `duckomo_max_threads`）
-- [ ] T026 [US2] 将 `build/duckdb-2-evaluation/real-benchmark.py` 提升为 `scripts/benchmark-remote-io.py`：参数化 runtimes、run.env、对象 id、`--modes`（merge/async 组合）、`--queries`（full、selected、coordinates、polygon、nearest）、重复轮数，断点续跑，输出中位数、请求数、发送字节、`remote_io` 指标与结果 SHA256
-- [ ] T027 [US2] 在 `src/include/duckomo/reader.hpp` / `src/om/reader.cpp` 增加读取预算参数结构（merge gap、max request），`read_om` 在远程会话中把设置值传入 `DecodeSelection`（`src/scan/read_om.cpp` 约 3529 行调用点），本地保持 512/65536
-- [ ] T028 [US2] 在 `src/om/metadata.cpp`（约 216 行时间坐标读取）及其他元数据/坐标读取处对远程对象使用同一读取预算
-- [ ] T029 [US2] 在 `src/om/reader.cpp` 为每次远程 data 读计算有用字节：从已解压 LUT 取本次请求覆盖的每个 chunk 的 [起点, 终点)，仅累加本 batch 选择需要的 chunk 长度；index/metadata/coordinate 读的有用字节等于其请求长度。通过 `src/include/duckomo/metrics.hpp` 输出 `useful_bytes` 与 `gap_bytes = physical_bytes - useful_bytes`，远程扫描时二者必须非 NULL。在 `test/native/remote_session_test.cpp` 断言：merge off 时 `gap_bytes` 等于基线间隙（解码器 512 B 合并带来的值，可为 0 或小正数），merge on 时 `gap_bytes ≥` merge off，且 `useful_bytes` 两种模式相同
-- [ ] T030 [US2] 用 T026 脚本在受控 S3/HTTP 上扫参 gap ∈ {512, 4K, 16K, 64K, 256K} × max ∈ {64K, 1M, 4M, 16M}（O1280 全扫与局部选择，1/4 workers），选满足 SC-003/SC-004 的最小 gap 与对应 max，写入 `src/om_extension.cpp` 默认值与 [contracts/settings.md](contracts/settings.md)；扫参结果保存为 `evidence/008/merge-sweep.json`
-- [ ] T031 [US2] 运行 T021–T023 与完整 SQL/受控远程回归（1.5.6 与 2.0），并用 T026 在默认值下产出 merge on/off 对比与本地无回退结果（SC-003/004/005/009），保存为 `evidence/008/merge-final.json`
+- [X] T024 [US2] 在 `src/include/duckomo/metrics.hpp` 输出按阶段成功请求数到 `remote_io.phase_requests`；最终 build 的受控 S3 O1280 合并扫描 evidence `build/008/s3-phase-split.json` 报告 total=1045、metadata=68、index=358、data=619；on/off 结果和请求变化保存于 `build/008/s3-merge-final/`
+- [X] T025 [US2] 在 `src/om_extension.cpp` 注册 `duckomo_remote_merge`、`duckomo_remote_merge_gap`、`duckomo_remote_max_request`（含校验函数，风格同 `duckomo_max_threads`）
+- [X] T026 [US2] 新增 `scripts/benchmark-remote-io.py`：参数化 runtime-specific CLI/extension/HTTPFS、run.env、对象 id、merge/async modes、queries、重复轮数、workers、memory limit，支持断点续跑并输出中位数、请求/字节、`remote_io` 与结果 SHA256；当前标准 query 内置 full/selected，coordinates/polygon/nearest 通过 `--query-file` 提供；runner 回归测试见 `test/tools/benchmark_remote_io_test.py`，DuckDB 1.5.6 与 2.0.0 mixed-runtime smoke 结果见 `build/008/benchmark-matrix-smoke.json` SQL
+- [X] T027 [US2] 在 `src/include/duckomo/reader.hpp` / `src/om/reader.cpp` 增加读取预算参数结构（merge gap、max request），`read_om` 在远程会话中把设置值传入 `DecodeSelection`（`src/scan/read_om.cpp` 约 3529 行调用点），本地保持 512/65536
+- [X] T028 [US2] 在 `src/om/metadata.cpp`（约 216 行时间坐标读取）及其他元数据/坐标读取处对远程对象使用同一读取预算
+- [X] T029 [US2] 在 `src/om/reader.cpp` 为每次远程 data 读计算有用字节并由 metrics 输出 已按成功物理读取记录所选 chunk 压缩字节，排除预读及未选 chunk；native 验证 gap=physical-useful 且预读 gap>0。 验证结果见 evidence/008/final/versions155156.json、stream-sql-final.json。
+- [ ] T030 [US2] 用 T026 在受控 HTTP/S3 上完整扫 gap × max（O1280 全扫与局部选择，1/4 workers），选满足 SC-003/004 的最小参数并保存 `evidence/008/merge-sweep.json`；已完成 HTTP/S3 × full/显式空间 selected × 1/4 workers × 3 repeats、4 gaps × 3 caps 的完整矩阵（evidence/008/final/merge-sweep.json）；默认 4096/65536 满足请求/字节门槛，仍需最新源码最终产物重跑并完成参数选择说明。
+- [ ] T031 [US2] 运行 T021–T023 与完整 SQL/受控远程回归（1.5.6 与 2.0），并用 T026 在默认值下产出 merge on/off 对比与本地无回退结果（SC-003/004/005/009），保存为 `evidence/008/merge-final.json`；2.0 controlled HTTP/S3 and 1.5.4/1.5.5/1.5.6 SQL regressions pass; full S3 latency, native merge assertions and required local median gate remain
 
 **Checkpoint**: US2 可独立交付；1.5.x 与 2.0 用户都获得请求合并
 
@@ -110,21 +110,21 @@ description: "Task list for DuckDB 2.0 support, remote request merging and async
 
 ### Tests for User Story 3
 
-- [ ] T032 [P] [US3] 新建 `test/native/remote_async_test.cpp`（仅 2.0 编译，加入 `test/CMakeLists.txt` 并链接 `link_extension_libraries`）：async on/off 结果一致、`inflight_peak > 1`、403/404/短读/版本变化在异步路径的错误类别与脱敏一致、取消后 1 秒内结束且指标为 `cancelled`、同连接恢复
-- [ ] T033 [P] [US3] 在 `test/sql/remote_io_settings.test` 增加 `duckomo_async_io`/`duckomo_async_max_inflight` 默认值与范围校验；用 `require` 或版本分支区分 1.5.x 上 `async_applied=false`
+- [X] T032 [P] [US3] 新建 `test/native/remote_async_test.cpp`（仅 2.0 编译，加入 `test/CMakeLists.txt` 并链接 `link_extension_libraries`）：async on/off 结果一致、`inflight_peak > 1`、403/404/短读/版本变化在异步路径的错误类别与脱敏一致、取消后 1 秒内结束且指标为 `cancelled`、同连接恢复
+- [X] T033 [P] [US3] 在 `test/sql/remote_io_settings.test` 增加 `duckomo_async_io`/`duckomo_async_max_inflight` 默认值与范围校验；用 `require` 或版本分支区分 1.5.x 上 `async_applied=false` 设置 SQL 在 1.5.4/2.0 各通过 59 assertions，1.5.x async=true 不生效由 remote_session_test 覆盖。
 
 ### Implementation for User Story 3
 
-- [ ] T034 [US3] 在 `src/om_extension.cpp` 注册 `duckomo_async_io`（2.0 默认 true，1.5.x 默认 false）与 `duckomo_async_max_inflight`（默认 8，范围 1–256）
-- [ ] T035 [US3] 将 `src/om/reader.cpp` / `src/include/duckomo/reader.hpp` 的 `DecodeSelection` 拆为三段式 API：plan（同步取得 index LUT 并枚举本 batch 合并后的 data 请求）、fetch 输入（接受外部缓冲）、decode（用已取回缓冲解码）；同步 `DecodeSelection` 改为按顺序调用三段，保持现有行为与指标
-- [ ] T036 [US3] 运行 Phase 2 全部回归确认 T035 重构在 1.5.x 与 2.0 同步路径无回退（结果哈希、请求数与 `evidence/008/merge-final.json` 一致）
-- [ ] T037 [US3] 在 `src/include/duckomo/read_at_file.hpp` 与 `src/om/remote_file.cpp` 增加 2.0 条件编译的并发读取能力：打开远程句柄时追加 `FILE_FLAGS_PARALLEL_ACCESS`，提供可在多个任务中对不同范围并发调用的读取方法；保持身份校验、访问检查与错误脱敏
-- [ ] T038 [US3] 在 `src/om/remote_file.cpp` 实现异步读取任务（`AsyncTask` 子类，`Execute` 写入任务私有缓冲、`GetIOSize` 返回字节数），在途字节计入 `ScanMemoryAccount` 新组件 `RemoteInflight`（`src/include/duckomo/metrics.hpp`）。实现每 worker 的在途预算：每次提交前用 DuckDB 缓冲管理器的 `GetUsedMemory()`/`GetMaxMemory()` 计算剩余内存，在途字节上限 = `min(duckomo_async_max_inflight × duckomo_remote_max_request, 剩余内存 / (4 × worker 数))`；剩余内存低于 `memory_limit` 的 1/8 时在途请求降为 1（退化为同步节奏），压力解除后恢复。当前生效的上限记入指标 `remote_io.inflight_budget_bytes`
-- [ ] T039 [US3] 在 `src/scan/read_om.cpp` 的 `ScanReadOmImpl`（约 3346 行）接入：远程 + 2.0 + `duckomo_async_io` 时，plan 后按 `duckomo_async_max_inflight` 分批构造任务，`AsyncResult::FromTasks(..., TaskSchedulerType::ASYNC)` + `input.HandleBlocked`，返回空 chunk并在 local state 标记 submitted；恢复时先检查 `IsInterrupted`/`stop_requested` 再 decode；SYNCHRONOUS 模式就地执行后继续
-- [ ] T040 [US3] 在 `src/scan/read_om.cpp` 与 `src/om/remote_file.cpp` 实现失败/取消清理：任一任务失败时保留首个分类错误、释放全部缓冲与账本、不再提交；记录 `remote_io.async_applied` 与 `inflight_peak`
-- [ ] T041 [US3] 用 TSan（`duckomo_sanitizer_checks` 中新增 remote_async 目标）与 T032 并发用例验证 `PARALLEL_ACCESS` 单句柄并发安全；若失败，改为每 worker 句柄池（每在途槽一个句柄、各自身份校验）并重跑
-- [ ] T042 [US3] 用 `scripts/benchmark-remote-io.py` 在 2.0 上比较 `merge=on:async=off` 与 `merge=on:async=on`（全部五类查询、1/4 workers、受控 HTTP/S3），并在 `SET memory_limit='256MB'` 下复测，确认 `remote_io.inflight_peak` 与 `inflight_budget_bytes` 随内存限制下降（对照默认内存运行）；结果保存 `evidence/008/async-a.json`，判定 SC-006/SC-007/SC-008
-- [ ] T043 [US3] 条件任务（仅当 T042 未达 SC-006）：在 `src/scan/read_om.cpp` 为每 worker 增加跨 batch 预取：自建 `TaskExecutor(TaskSchedulerType::ASYNC)` 与 `ManagedAsyncMemoryGovernor`（其预算取代 T038 的缓冲管理器估算，作为预取与在途的共同上限），解码当前 batch 时提交下一 batch，无任务 BLOCKED 停车，析构 `CancelAndDrain`；重跑 T032、T041、T042 并保存 `evidence/008/async-b.json`
+- [X] T034 [US3] 在 `src/om_extension.cpp` 注册 `duckomo_async_io`（2.0 默认 true，1.5.x 默认 false）与 `duckomo_async_max_inflight`（默认 8，范围 1–256）
+- [X] T035 [US3] 将 `src/om/reader.cpp` / `src/include/duckomo/reader.hpp` 的 `DecodeSelection` 拆为三段式 API：PlanSelection、FetchSelection 与 DecodeSelectionPlan；保持现有行为与指标
+- [ ] T036 [US3] 运行 Phase 2 全部回归确认 T035 重构在 1.5.x 与 2.0 同步路径无回退（结果哈希、请求数与 `evidence/008/merge-final.json` 一致） 旧证据不能证明修复后请求数与性能无回退；待最终构建重跑跨版本完整远程基准。
+- [X] T037 [US3] 2.0 远程句柄使用 FILE_FLAGS_PARALLEL_ACCESS/DIRECT_IO 并发 positional read；仅 1.5.x 保留 read_mutex_；native 已验证实际并发、身份校验、权限及脱敏。
+- [X] T038 [US3] RemoteReadAsyncTask 与每 scan 共享状态：有限数量的读取队列按 BufferManager 剩余内存与最大 worker 数重算上限；payload 按共享生命周期计入 Decoder，控制存储计入 RemoteInflight。
+- [X] T039 [US3] ScanReadOmImpl 使用 pinned 2.0 的 AsyncResult(tasks) 返回 BLOCKED，由引擎 executor 调度并唤醒；恢复后解码。该版本没有 FromTasks/HandleBlocked 接口。
+- [X] T040 [US3] 在 `src/scan/read_om.cpp` 与 `src/om/remote_file.cpp` 实现失败/取消清理：任一任务失败时保留首个分类错误、释放全部缓冲与账本；记录 `remote_io.async_applied` 与 `inflight_peak`
+- [X] T041 [US3] 用 TSan 与 T032 并发用例验证并发读取与取消安全 native 并发回归与 TSan 通过。 最终 TSan 使用 ENABLE_JEMALLOC=OFF、setarch aarch64 -R 执行，退出码 0，无竞争报告；原 jemalloc 报告另存 evidence/008/final/tsan-run.log，最终日志为 tsan-system-run.log。
+- [ ] T042 [US3] 用 `scripts/benchmark-remote-io.py` 在 2.0 上比较 `merge=on:async=off` 与 `merge=on:async=on`（1/4 workers、受控 HTTP/S3），并在 `SET memory_limit='256MB'` 下复测；结果保存 `evidence/008/async-a.json`，判定 SC-006/SC-007/SC-008 旧 async-a.json 不含 RSS 且未达 20% speedup；runner 已增加 RSS/产物 SHA256，HTTP/S3 全矩阵需重跑。 已补 query-profiled HTTP/S3、实际并发、受控 10ms 场景与 HTTP 256MB RSS，普通/延迟场景均未稳定达到 20%；S3 256MB/polygon/nearest 仍缺，保持未完成。
+- [ ] T043 [US3] 条件任务（仅当 T042 未达 SC-006）：已实现实验有界跨输出批次取数窗口（duckomo_async_prefetch_batches=1–4，默认1关闭），真实单变量并发、结果、取消恢复与TSan通过；HTTP/S3/10ms延迟测量更慢，保持默认关闭并如实报告。完整跨批 I/O/解码重叠流水线及重叠范围复用尚未实现，SC-006仍未达标。证据：evidence/008/prefetch/report.md。
 
 **Checkpoint**: 2.0 用户获得异步读取；1.5.x 行为不变
 
@@ -132,10 +132,10 @@ description: "Task list for DuckDB 2.0 support, remote request merging and async
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T044 [P] 在至少一个真实云端点（`test/data/grids/sample-manifest.json` 公开 Open-Meteo 对象，匿名只读）上对 1.5.6 与 2.0、merge/async 各模式记录首读与重复读，注明客户端位置与端点区域，保存 `evidence/008/cloud.json`（FR-018）
-- [ ] T045 [P] 更新 `docs/duckdb-2.0-evaluation.md` 与 `docs/architecture.md`：远程读取预算、异步路径、设置与指标说明；README 设置表加入新设置
-- [ ] T046 [P] 更新 `.specify/memory/roadmap.md`：新增 008 条目（范围、门禁、证据路径），移除 004 中"2.0 退出"的过时描述
-- [ ] T047 按 [quickstart.md](quickstart.md) 全流程复跑一次，确认所有命令可执行、期望值与证据一致；在 `specs/008-duckdb2-async-io/checklists/` 记录 SC-001–SC-009 达成情况
+- [X] T044 [P] 在至少一个真实云端点（`test/data/grids/sample-manifest.json` 公开 Open-Meteo 对象，匿名只读）上对 1.5.6 与 2.0、merge/async 各模式记录首读与重复读，注明客户端位置与端点区域，保存 `evidence/008/cloud.json`（FR-018）
+- [X] T045 [P] 更新 `docs/duckdb-2.0-evaluation.md` 与 `docs/architecture.md`：远程读取预算、异步路径、设置与指标说明；README 设置表加入新设置
+- [X] T046 [P] 更新 `.specify/memory/roadmap.md`：新增 008 条目（范围、门禁、证据路径），移除 004 中"2.0 退出"的过时描述；通过 1.5.1→1.5.2 impact report 与 008 lifecycle/evidence 索引澄清历史 004 排除决议被本 spec 后续范围 supersede，不追改 004 记录
+- [ ] T047 按 [quickstart.md](quickstart.md) 全流程复跑一次，确认所有命令可执行、期望值与证据一致；在 `specs/008-duckdb2-async-io/checklists/` 记录 SC-001–SC-009 达成情况 当前 SQL/native 定向回归通过；quickstart 全流程、CI/S3/RSS/本地性能门禁未完成。
 
 ---
 

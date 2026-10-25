@@ -245,6 +245,7 @@ struct OmDecoderState final {
 	std::uint64_t index_range_size = 0;
 	std::uint64_t data_range_offset = 0;
 	std::uint64_t data_range_size = 0;
+	std::shared_ptr<std::vector<std::uint8_t>> data_cache;
 	OmByteBuffer chunk_scratch;
 	OmDecoderCapacityBounds capacity_bounds;
 	std::shared_ptr<ScanMemoryAccount> memory_account;

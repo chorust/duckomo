@@ -99,7 +99,13 @@ class OfficialHttpfsValidationTest(unittest.TestCase):
             self.skipTest("local runtime is unavailable")
         matrix = json.loads((ROOT / "test/data/regions/runtime-matrix.json").read_text())
         version = subprocess.check_output([str(cli), "--version"], text=True).split()[0]
-        record = next(item for item in matrix["runtimes"] if item.get("version") == version)
+        # Build a deliberately blocked record even for an evaluation engine
+        # that is not yet present in the production region runtime matrix.
+        record = next((item for item in matrix["runtimes"] if item.get("version") == version), None)
+        if record is None:
+            record = json.loads(json.dumps(matrix["runtimes"][0]))
+            record["version"] = version
+            matrix["runtimes"].append(record)
         record["gate_status"] = "blocked_identity_mismatch"
         record["source_identity_match"] = False
         record["spatial_artifact"]["sha256"] = official_httpfs.sha(spatial)
@@ -127,7 +133,11 @@ class OfficialHttpfsValidationTest(unittest.TestCase):
             self.skipTest("local region validator artifacts are unavailable")
         matrix = json.loads((ROOT / "test/data/regions/runtime-matrix.json").read_text())
         version = subprocess.check_output([str(cli), "--version"], text=True).split()[0]
-        record = next(item for item in matrix["runtimes"] if item.get("version") == version)
+        record = next((item for item in matrix["runtimes"] if item.get("version") == version), None)
+        if record is None:
+            record = json.loads(json.dumps(matrix["runtimes"][0]))
+            record["version"] = version
+            matrix["runtimes"].append(record)
         record["gate_status"] = "blocked_identity_mismatch"
         record["source_identity_match"] = False
         record["spatial_artifact"]["sha256"] = official_httpfs.sha(spatial)

@@ -1,0 +1,30 @@
+{
+  "dispatch_attempts": [
+    {
+      "workflow": "release.yml",
+      "ref": "main",
+      "result": "rejected",
+      "http_status": 403,
+      "message": "Resource not accessible by personal access token",
+      "run_url": null
+    },
+    {
+      "workflow": "community-build.yml",
+      "ref": "main",
+      "result": "rejected",
+      "http_status": 403,
+      "message": "Resource not accessible by personal access token",
+      "run_url": null
+    }
+  ],
+  "existing_runs": {
+    "community_build": {
+      "url": "https://github.com/chorust/duckomo/actions/runs/39879459610",
+      "event": "push",
+      "head_sha": "c3084c6937d7d4de02a4edb7aaa68cdb5086f7f6",
+      "note": "Predates the current uncommitted worktree and only contains v1.5.4-v1.5.6 jobs; it is not evidence for this change or the 16-artifact matrix."
+    }
+  },
+  "release_artifact_verification": "not_run",
+  "four_version_linux_arm64_runtime_matrix": "not_run"
+}

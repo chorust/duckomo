@@ -1,0 +1,1 @@
+Invalid Input Error: Failed to load 'build/official-matrix/v1.5.6/builds/97591abf2e140ca1e91619532f77cf41566573bb03cf859db980e6c493ee784d/release/extension/duckomo/duckomo.duckdb_extension', The file was built specifically for DuckDB version 'v1.5.6' and can only be loaded with that version of DuckDB. (this version of DuckDB is 'v2.0.0')

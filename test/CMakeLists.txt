@@ -37,6 +37,7 @@ set(DUCKOMO_NATIVE_TEST_SOURCES
     spatial_lifecycle_test
     domain_reference_test
     remote_session_test
+    remote_async_test
     official_httpfs_test
     projected_grid_test
     gaussian_grid_test
@@ -72,6 +73,7 @@ set(DUCKOMO_SQLLOGICTEST_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/regions_spatial_dependency.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/region_sampling.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/region_sampling_spatial_dependency.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/remote_io_settings.test"
 )
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
     ${DUCKOMO_SQLLOGICTEST_FILES}
@@ -177,7 +179,7 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
                 "${PROJECT_SOURCE_DIR}/src/grid/gaussian_grid.cpp"
                 "${PROJECT_SOURCE_DIR}/src/scan/spatial_selection.cpp"
                 "${PROJECT_SOURCE_DIR}/src/scan/batch.cpp"
-                "${PROJECT_SOURCE_DIR}/duckdb/extension/loader/dummy_static_extension_loader.cpp"
+                "${PROJECT_SOURCE_DIR}/test/tools/dummy_static_extension_loader.cpp"
             )
             target_link_libraries("${test}" PRIVATE duckdb_static duckomo_extension duckomo_om)
         elseif(test STREQUAL "nearest_sampling_test")
@@ -234,7 +236,7 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
                 "${PROJECT_SOURCE_DIR}/src/grid/projected_grid.cpp"
                 "${PROJECT_SOURCE_DIR}/src/grid/gaussian_grid.cpp"
                 "${PROJECT_SOURCE_DIR}/src/scan/grid_selection.cpp"
-                "${PROJECT_SOURCE_DIR}/duckdb/extension/loader/dummy_static_extension_loader.cpp"
+                "${PROJECT_SOURCE_DIR}/test/tools/dummy_static_extension_loader.cpp"
             )
             target_link_libraries("${test}" PRIVATE duckdb_static duckomo_extension duckomo_om)
         elseif(test STREQUAL "regular_grid_test" OR test STREQUAL "spatial_layout_test" OR
@@ -267,7 +269,7 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
                     "${PROJECT_SOURCE_DIR}/src/grid/grid_definition.cpp"
                     "${PROJECT_SOURCE_DIR}/src/grid/projected_grid.cpp"
                     "${PROJECT_SOURCE_DIR}/src/grid/gaussian_grid.cpp"
-                    "${PROJECT_SOURCE_DIR}/duckdb/extension/loader/dummy_static_extension_loader.cpp"
+                    "${PROJECT_SOURCE_DIR}/test/tools/dummy_static_extension_loader.cpp"
                 )
                 target_link_libraries("${test}" PRIVATE duckdb_static)
             elseif(test STREQUAL "grid_identity_test")
@@ -279,7 +281,7 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
                     "${PROJECT_SOURCE_DIR}/src/grid/grid_identity.cpp"
                     "${PROJECT_SOURCE_DIR}/src/grid/projected_grid.cpp"
                     "${PROJECT_SOURCE_DIR}/src/grid/gaussian_grid.cpp"
-                    "${PROJECT_SOURCE_DIR}/duckdb/extension/loader/dummy_static_extension_loader.cpp"
+                    "${PROJECT_SOURCE_DIR}/test/tools/dummy_static_extension_loader.cpp"
                 )
                 target_link_libraries("${test}" PRIVATE duckdb_static)
             endif()
@@ -325,6 +327,7 @@ set(DUCKOMO_SAMPLING_BUNDLE_SOURCES
 foreach(source
         "${CMAKE_CURRENT_SOURCE_DIR}/sql/region_sampling.test"
         "${CMAKE_CURRENT_SOURCE_DIR}/sql/region_sampling_spatial_dependency.test"
+        "${CMAKE_CURRENT_SOURCE_DIR}/sql/remote_io_settings.test"
         "${CMAKE_CURRENT_SOURCE_DIR}/native/nearest_sampling_test.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/native/region_sampling_test.cpp")
     if(EXISTS "${source}")
@@ -551,7 +554,7 @@ if(UNIX AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang" AND CMAKE_CXX_COMPILER_ID MA
             "${PROJECT_SOURCE_DIR}/src/scan/spatial_selection.cpp"
             "${PROJECT_SOURCE_DIR}/src/scan/grid_selection.cpp"
             "${PROJECT_SOURCE_DIR}/src/scan/batch.cpp"
-            "${PROJECT_SOURCE_DIR}/duckdb/extension/loader/dummy_static_extension_loader.cpp"
+            "${PROJECT_SOURCE_DIR}/test/tools/dummy_static_extension_loader.cpp"
         )
         target_compile_options(duckomo_spatial_selection_sanitizer PRIVATE ${DUCKOMO_SANITIZER_COMPILE_OPTIONS})
         target_link_options(duckomo_spatial_selection_sanitizer PRIVATE ${DUCKOMO_SANITIZER_LINK_OPTIONS})

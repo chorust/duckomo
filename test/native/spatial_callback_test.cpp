@@ -57,7 +57,8 @@ void TestCallbackRetainsFilterAndProjection(duckdb::Connection &connection) {
 		plan += explain->GetValue(1, row).ToString();
 		plan.push_back('\n');
 	}
-	Require(plan.find("FILTER") != std::string::npos && plan.find("humidity = 96.0") != std::string::npos,
+	Require((plan.find("FILTER") != std::string::npos || plan.find("Filter") != std::string::npos) &&
+	            plan.find("humidity = 96.0") != std::string::npos,
 	        "DuckDB's physical plan keeps the exact filter above READ_OM");
 	Require(plan.find("humidity") != std::string::npos && plan.find("temperature") != std::string::npos,
 	        "the scan projection retains the unselected filter dependency");
@@ -73,7 +74,8 @@ void TestCallbackRetainsFilterAndProjection(duckdb::Connection &connection) {
 		coordinate_plan += coordinate_explain->GetValue(1, row).ToString();
 		coordinate_plan.push_back('\n');
 	}
-	Require(coordinate_plan.find("FILTER") != std::string::npos &&
+	Require((coordinate_plan.find("FILTER") != std::string::npos ||
+	         coordinate_plan.find("Filter") != std::string::npos) &&
 	            coordinate_plan.find("lat >= 11.0") != std::string::npos,
 	        "DOUBLE coordinate comparison with an integer literal remains as an exact filter");
 	auto reverse_coordinate = RequireSuccess(connection,

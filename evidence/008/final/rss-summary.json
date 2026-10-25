@@ -1,0 +1,29 @@
+{
+  "scope": "HTTP 256MB; intermediate recorded build; S3/latest artifact not established",
+  "groups": [
+    {
+      "query": "full",
+      "workers": 1,
+      "ratio": 1.0124897557777413,
+      "hashes_match": true
+    },
+    {
+      "query": "full",
+      "workers": 4,
+      "ratio": 0.9789119852859567,
+      "hashes_match": true
+    },
+    {
+      "query": "selected",
+      "workers": 1,
+      "ratio": 1.0076267115061255,
+      "hashes_match": true
+    },
+    {
+      "query": "selected",
+      "workers": 4,
+      "ratio": 0.9961086970620663,
+      "hashes_match": true
+    }
+  ]
+}

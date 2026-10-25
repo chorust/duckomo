@@ -2,7 +2,11 @@
 
 ## 状态
 
-2026-10-23：完成 Linux AArch64 上的构建适配、SQL 回归、受控 loopback HTTP/HTTPS/S3 验收、native 取消/连接隔离测试，以及固定真实 OM 对象的 1.5.6 对 2.0 对比。**属于实验性兼容，不是完整支持或发布承诺。** 正式支持矩阵仍为 1.5.4–1.5.6。未验证：公网/云区域对象存储的 RTT 与带宽、native sanitizer、1.5.5 回归、以最终源码重建并重新计算 build_id 的矩阵产物。
+当前 2.0 维持 **evaluation / 实验性兼容**，正式支持矩阵仍为 1.5.4–1.5.6。四版本 SQL 回归、2.0 统一验证入口、官方 HTTPFS 48/48、ASan/UBSan 14/14 与系统分配器 TSan 已通过，详见 [最终验证记录](../evidence/008/final/status.md)。发布 CI 与匹配平台产物仍需远端验证。
+
+远程合并在固定 O1280 的受控 HTTP/S3 测量中将请求从 11,591 降到 840。useful_bytes 排除预读、未选 chunk 和缓存复用，不再宣称等于 physical_bytes。
+
+**异步没有稳定加速，也未达到额外快 20% 的目标。** 实验跨批窗口 `duckomo_async_prefetch_batches` 默认1关闭；显式4批的 HTTP O1280 单 worker /256MB 中位数1351→1910ms，请求840→1523，结果相同。详见 [真实实验结果](../evidence/008/prefetch/report.md)。本地热查询大体接近基线，部分首次查询超过5%门槛，保留未达标结论。旧46.1%提升声明已撤销。Spec 008 没有全部完成，不据此提升支持状态。
 
 官方 [v2.0.0 release](https://github.com/duckdb/duckdb/releases/tag/v2.0.0) 与 tag 指向 `d54cbbe3df17e8e5ce68312f483b4155836112aa`。实验输入、官方 CLI/HTTPFS 解压后 SHA256 见 [独立矩阵](../test/data/engine-compatibility/version-matrix.json)。不替换现有稳定矩阵或 DuckDB 子模块。
 

@@ -51,6 +51,12 @@ DuckDB SQL
 
 网格/轴选择只提供逻辑切片。OM chunk 交集、LUT、字节范围和解码策略由官方 reader 负责。`ReadAtFile` 通过 DuckDB 标准文件系统读取。本地/远程 Adapter 携带 ClientContext；每 worker 独立句柄。远程使用 opener 局部配置禁止完整下载回退并保留 ETag 检查，使用标准 DIRECT_IO 让 OM reader 控制范围；比较打开时可观察长度/版本。HTTPFS 内部缓存和网络字节不由 DuckOMO 观测，远程 transport 为 NULL/false；服务端日志仅用于验收。
 
+Spec 008 实现了远程读取请求合并与 DuckDB 2.0 原生异步 I/O 调度：
+- **请求合并**：在 `OmV3Reader` 中将范围解码解耦为 `PlanSelection`（根据 `duckomo_remote_merge_gap` 与 `duckomo_remote_max_request` 规划物理读取范围与缓冲区）、`FetchSelection`（执行 I/O 读取到 planned 缓冲区）与 `DecodeSelectionPlan`（驱动解码器解码）。本地同步路径保留逐块读取和立即解码，复用既有容量受限缓冲，不分配远程计划载荷。历史 O1280 loopback 证据记录了 92.8% 的请求数下降；该记录来自修复前构建，不能替代当前构建的性能验收。指标按成功物理读取统计有用字节，预读与未选择 chunk 记为 gap，缓存复用不重复计数。
+- **异步调度**：DuckDB 2.0 下开启 `duckomo_async_io = true` 时，`read_om` 将计划好的远程数据块封装为 `RemoteReadAsyncTask` 通过当前 pinned 2.0 的 `AsyncResult(tasks)` 返回 BLOCKED，由引擎 executor 调度、完成后唤醒。相同批次内完全相同且 useful_bytes 相同的待读范围共享一次取数及其载荷；请求分配给有限数量的顺序队列，每个 worker 的队列数量受 `duckomo_async_max_inflight` 与 BufferManager 动态剩余内存联合约束，每批重算。实验设置 `duckomo_async_prefetch_batches` 可把单变量无过滤全扫扩为最多4个输出批次的取数窗口，逐批解码输出；默认1关闭，因为HTTP/S3固定样本的请求数和耗时增加。该窗口不等于I/O与解码重叠的完整流水线，性能实测见 [prefetch report](../evidence/008/prefetch/report.md)。载荷缓冲通过共享所有权计入 Decoder 账本，任务控制存储计入 RemoteInflight；指标记录实际执行中的请求数。
+- **并发与兼容安全**：2.0 使用 `PARALLEL_ACCESS | DIRECT_IO` 句柄执行并发 positional read，1.5.x 句柄保留串行互斥保护。异常与取消时任务共享首个错误并跳过剩余读取，引擎完成已提交任务后再销毁私有缓冲；DuckDB 1.5.x 保持同步读取路径不变，`async_applied` 始终报告 false。
+- **可观测性**：`remote_io` 对象准确记录合并设置、生效预算、`async_applied`、`inflight_peak`、`inflight_budget_bytes`、各阶段请求数与有用/缺口字节数，本地扫描报告为 null。详细证据见 [success-criteria checklist](../specs/008-duckdb2-async-io/checklists/success-criteria.md)。
+
 批内连续逻辑位置使用完整尾轴组成矩形读取；不完整尾轴、缺口和未对齐起点仍拆段，输出源顺序和选取集合保持不变。此优化减少可合并扫描的decoder调用及重复解码，既有64KiB映射预算与reader容量界限保留。decoder仅复用最近成功的index/data缓冲范围，不缓存解码值。请求合并可能增加读取字节，局部窗口也可能不受益，实测边界见[连续矩形性能记录](../specs/005-polygon-region-statistics/evidence/contiguous-rectangle-performance-20261020.md)。
 
 远程打开和范围读取复用脱敏失败分类器；只从 DuckDB 公开异常类型及严格校验的 HTTP status 选择固定类别/建议，不转发异常正文、response body、reason 或 headers。不通过字符串猜测未知 HTTP 状态，不影响取消和成功读取计数。

@@ -1,0 +1,123 @@
+=== Running DuckDB 2.0 Remote Async I/O Native Tests ===
+  [PASS] Async on/off results match bit-for-bit (peak inflight=4, budget=524288, max concurrent=4)
+==================
+WARNING: ThreadSanitizer: data race (pid=1808728)
+  Atomic read of size 1 at 0xffffedc10e28 by main thread (mutexes: write M0, write M1):
+    #0 pthread_mutex_trylock ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1354 (libtsan.so.2+0x5b0a4) (BuildId: dc0d657f42587fea53114ce058dbdfe5834e0205)
+    #1 duckdb_je_arena_decay <null> (remote_async_test+0x28899f8) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #2 duckdb::BlockAllocator::FlushAll(duckdb::optional_idx) const <null> (remote_async_test+0xab6124) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #3 duckdb::TaskSchedulerPool::RelaunchThreads(duckdb::TaskScheduler&, bool) <null> (remote_async_test+0x7e77f4) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #4 duckdb::TaskScheduler::RelaunchThreads() <null> (remote_async_test+0x7e7c24) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #5 duckdb::ClientContext::CleanupInternal(duckdb::ClientContextLock&, duckdb::BaseQueryResult*, bool) <null> (remote_async_test+0x6de330) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #6 duckdb::QueryResult::EndFinishedInternal(duckdb::ClientContextLock&) <null> (remote_async_test+0x76af80) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #7 duckdb::QueryResult::CompleteInternal(duckdb::ClientContextLock&) <null> (remote_async_test+0x77d720) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #8 duckdb::ClientContext::CompleteInternal(duckdb::ClientContextLock&, duckdb::unique_ptr<duckdb::QueryResult, std::default_delete<duckdb::QueryResult>, true>) <null> (remote_async_test+0x77d8dc) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #9 duckdb::ClientContext::Query(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, duckdb::QueryParameters) <null> (remote_async_test+0x78de14) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #10 duckdb::Connection::Query(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) <null> (remote_async_test+0x78ed70) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #11 main <null> (remote_async_test+0x1c0cb8) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+
+  Previous write of size 1 at 0xffffedc10e28 by thread T26 (mutexes: write M2):
+    #0 pthread_mutex_init ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1315 (libtsan.so.2+0x5c494) (BuildId: dc0d657f42587fea53114ce058dbdfe5834e0205)
+    #1 duckdb_je_malloc_mutex_init <null> (remote_async_test+0x28c6d14) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #2 duckdb::BlockAllocator::ThreadFlush(bool, unsigned long, unsigned long) const <null> (remote_async_test+0xab53b0) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #3 duckdb::TaskScheduler::ExecuteForever(std::atomic<bool>*, duckdb::TaskSchedulerType) <null> (remote_async_test+0x7f7f54) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #4 duckdb::ThreadExecuteTasks(duckdb::TaskScheduler*, std::atomic<bool>*, duckdb::TaskSchedulerType) <null> (remote_async_test+0x7f82c4) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #5 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (*)(duckdb::TaskScheduler*, std::atomic<bool>*, duckdb::TaskSchedulerType), duckdb::TaskScheduler*, std::atomic<bool>*, duckdb::TaskSchedulerType> > >::_M_run() <null> (remote_async_test+0x79a3c8) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #6 <null> <null> (libstdc++.so.6+0xe1adc) (BuildId: 7c239d1743727054caa3df1ab866bfa72cd4dd93)
+
+  Mutex M0 (0xfffff0c06bd8) created at:
+    #0 pthread_mutex_lock ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1341 (libtsan.so.2+0x5cc14) (BuildId: dc0d657f42587fea53114ce058dbdfe5834e0205)
+    #1 duckdb::ClientContext::LockContext() <null> (remote_async_test+0x684a10) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #2 duckdb::ClientContext::Query(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, duckdb::QueryParameters) <null> (remote_async_test+0x78dbc4) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #3 duckdb::Connection::Query(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) <null> (remote_async_test+0x78ed70) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #4 (anonymous namespace)::TestAsyncOnOffMatches(duckdb::Connection&, (anonymous namespace)::AsyncTestFileSystem&, (anonymous namespace)::AsyncState&) <null> (remote_async_test+0x1cd240) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #5 main <null> (remote_async_test+0x1c0aec) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+
+  Mutex M1 (0xfffff4c01448) created at:
+    #0 pthread_mutex_lock ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1341 (libtsan.so.2+0x5cc14) (BuildId: dc0d657f42587fea53114ce058dbdfe5834e0205)
+    #1 duckdb::TaskScheduler::RelaunchThreads() <null> (remote_async_test+0x7e7c04) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #2 duckdb::DatabaseInstance::StartScheduler() <null> (remote_async_test+0x68c9ac) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #3 duckdb::DatabaseInstance::Initialize(char const*, duckdb::DBConfig*) <null> (remote_async_test+0x791d28) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #4 duckdb::DuckDB::DuckDB(char const*, duckdb::DBConfig*) <null> (remote_async_test+0x791f28) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #5 main <null> (remote_async_test+0x1c0784) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+
+  Mutex M2 (0xaaaaaf6f5408) created at:
+    #0 pthread_mutex_init ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1315 (libtsan.so.2+0x5c494) (BuildId: dc0d657f42587fea53114ce058dbdfe5834e0205)
+    #1 duckdb_je_malloc_mutex_init <null> (remote_async_test+0x28c6d14) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+
+  Thread T26 (tid=1808755, running) created by main thread at:
+    #0 pthread_create ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1022 (libtsan.so.2+0x5dd98) (BuildId: dc0d657f42587fea53114ce058dbdfe5834e0205)
+    #1 std::thread::_M_start_thread(std::unique_ptr<std::thread::_State, std::default_delete<std::thread::_State> >, void (*)()) <null> (libstdc++.so.6+0xe1c64) (BuildId: 7c239d1743727054caa3df1ab866bfa72cd4dd93)
+    #2 duckdb::TaskScheduler::RelaunchThreads() <null> (remote_async_test+0x7e7c40) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #3 duckdb::DatabaseInstance::StartScheduler() <null> (remote_async_test+0x68c9ac) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #4 duckdb::DatabaseInstance::Initialize(char const*, duckdb::DBConfig*) <null> (remote_async_test+0x791d28) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #5 duckdb::DuckDB::DuckDB(char const*, duckdb::DBConfig*) <null> (remote_async_test+0x791f28) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #6 main <null> (remote_async_test+0x1c0784) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+
+SUMMARY: ThreadSanitizer: data race (/home/blizhan/repo/github/duckomo/build/008/tsan/test/native/remote_async_test+0x28899f8) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9) in duckdb_je_arena_decay
+==================
+==================
+WARNING: ThreadSanitizer: data race (pid=1808728)
+  Atomic read of size 1 at 0xffffedc11528 by main thread (mutexes: write M0, write M1):
+    #0 pthread_mutex_trylock ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1354 (libtsan.so.2+0x5b0a4) (BuildId: dc0d657f42587fea53114ce058dbdfe5834e0205)
+    #1 duckdb_je_arena_decay <null> (remote_async_test+0x2889a9c) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #2 duckdb::BlockAllocator::FlushAll(duckdb::optional_idx) const <null> (remote_async_test+0xab6124) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #3 duckdb::TaskSchedulerPool::RelaunchThreads(duckdb::TaskScheduler&, bool) <null> (remote_async_test+0x7e77f4) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #4 duckdb::TaskScheduler::RelaunchThreads() <null> (remote_async_test+0x7e7c24) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #5 duckdb::ClientContext::CleanupInternal(duckdb::ClientContextLock&, duckdb::BaseQueryResult*, bool) <null> (remote_async_test+0x6de330) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #6 duckdb::QueryResult::EndFinishedInternal(duckdb::ClientContextLock&) <null> (remote_async_test+0x76af80) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #7 duckdb::QueryResult::CompleteInternal(duckdb::ClientContextLock&) <null> (remote_async_test+0x77d720) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #8 duckdb::ClientContext::CompleteInternal(duckdb::ClientContextLock&, duckdb::unique_ptr<duckdb::QueryResult, std::default_delete<duckdb::QueryResult>, true>) <null> (remote_async_test+0x77d8dc) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #9 duckdb::ClientContext::Query(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, duckdb::QueryParameters) <null> (remote_async_test+0x78de14) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #10 duckdb::Connection::Query(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) <null> (remote_async_test+0x78ed70) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #11 main <null> (remote_async_test+0x1c0cb8) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+
+  Previous write of size 1 at 0xffffedc11528 by thread T26 (mutexes: write M2):
+    #0 pthread_mutex_init ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1315 (libtsan.so.2+0x5c494) (BuildId: dc0d657f42587fea53114ce058dbdfe5834e0205)
+    #1 duckdb_je_malloc_mutex_init <null> (remote_async_test+0x28c6d14) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #2 duckdb::BlockAllocator::ThreadFlush(bool, unsigned long, unsigned long) const <null> (remote_async_test+0xab53b0) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #3 duckdb::TaskScheduler::ExecuteForever(std::atomic<bool>*, duckdb::TaskSchedulerType) <null> (remote_async_test+0x7f7f54) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #4 duckdb::ThreadExecuteTasks(duckdb::TaskScheduler*, std::atomic<bool>*, duckdb::TaskSchedulerType) <null> (remote_async_test+0x7f82c4) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #5 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (*)(duckdb::TaskScheduler*, std::atomic<bool>*, duckdb::TaskSchedulerType), duckdb::TaskScheduler*, std::atomic<bool>*, duckdb::TaskSchedulerType> > >::_M_run() <null> (remote_async_test+0x79a3c8) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #6 <null> <null> (libstdc++.so.6+0xe1adc) (BuildId: 7c239d1743727054caa3df1ab866bfa72cd4dd93)
+
+  Mutex M0 (0xfffff0c06bd8) created at:
+    #0 pthread_mutex_lock ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1341 (libtsan.so.2+0x5cc14) (BuildId: dc0d657f42587fea53114ce058dbdfe5834e0205)
+    #1 duckdb::ClientContext::LockContext() <null> (remote_async_test+0x684a10) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #2 duckdb::ClientContext::Query(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, duckdb::QueryParameters) <null> (remote_async_test+0x78dbc4) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #3 duckdb::Connection::Query(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) <null> (remote_async_test+0x78ed70) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #4 (anonymous namespace)::TestAsyncOnOffMatches(duckdb::Connection&, (anonymous namespace)::AsyncTestFileSystem&, (anonymous namespace)::AsyncState&) <null> (remote_async_test+0x1cd240) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #5 main <null> (remote_async_test+0x1c0aec) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+
+  Mutex M1 (0xfffff4c01448) created at:
+    #0 pthread_mutex_lock ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1341 (libtsan.so.2+0x5cc14) (BuildId: dc0d657f42587fea53114ce058dbdfe5834e0205)
+    #1 duckdb::TaskScheduler::RelaunchThreads() <null> (remote_async_test+0x7e7c04) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #2 duckdb::DatabaseInstance::StartScheduler() <null> (remote_async_test+0x68c9ac) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #3 duckdb::DatabaseInstance::Initialize(char const*, duckdb::DBConfig*) <null> (remote_async_test+0x791d28) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #4 duckdb::DuckDB::DuckDB(char const*, duckdb::DBConfig*) <null> (remote_async_test+0x791f28) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #5 main <null> (remote_async_test+0x1c0784) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+
+  Mutex M2 (0xaaaaaf6f5408) created at:
+    #0 pthread_mutex_init ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1315 (libtsan.so.2+0x5c494) (BuildId: dc0d657f42587fea53114ce058dbdfe5834e0205)
+    #1 duckdb_je_malloc_mutex_init <null> (remote_async_test+0x28c6d14) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+
+  Thread T26 (tid=1808755, running) created by main thread at:
+    #0 pthread_create ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1022 (libtsan.so.2+0x5dd98) (BuildId: dc0d657f42587fea53114ce058dbdfe5834e0205)
+    #1 std::thread::_M_start_thread(std::unique_ptr<std::thread::_State, std::default_delete<std::thread::_State> >, void (*)()) <null> (libstdc++.so.6+0xe1c64) (BuildId: 7c239d1743727054caa3df1ab866bfa72cd4dd93)
+    #2 duckdb::TaskScheduler::RelaunchThreads() <null> (remote_async_test+0x7e7c40) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #3 duckdb::DatabaseInstance::StartScheduler() <null> (remote_async_test+0x68c9ac) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #4 duckdb::DatabaseInstance::Initialize(char const*, duckdb::DBConfig*) <null> (remote_async_test+0x791d28) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #5 duckdb::DuckDB::DuckDB(char const*, duckdb::DBConfig*) <null> (remote_async_test+0x791f28) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+    #6 main <null> (remote_async_test+0x1c0784) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9)
+
+SUMMARY: ThreadSanitizer: data race (/home/blizhan/repo/github/duckomo/build/008/tsan/test/native/remote_async_test+0x2889a9c) (BuildId: 65889000d551286b7184a263d77a8ac6f50789a9) in duckdb_je_arena_decay
+==================
+  [PASS] Multi-worker (2 threads): peak inflight=2, max concurrent=2, total reads=45
+  [PASS] Multi-worker (4 threads): peak inflight=4, max concurrent=4, total reads=45
+  [PASS] Multi-worker (8 threads): peak inflight=4, max concurrent=4, total reads=45
+  [PASS] Async error classification and token redaction verified for 403, 404, short read, version change
+  [PASS] Cancellation finishes in 61ms with status='cancelled'
+  [PASS] Same-connection query succeeds after cancellation recovery
+  [PASS] Inflight budget responds to memory limit: default=524288, constrained=65536
+=== All DuckDB 2.0 Remote Async I/O Native Tests Passed! ===
+ThreadSanitizer: reported 2 warnings

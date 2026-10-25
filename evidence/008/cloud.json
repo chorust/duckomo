@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "target": "real_public_cloud_endpoint",
+  "client_location": "Linux aarch64 local environment (Asia/Shanghai)",
+  "cloud_endpoint": {
+    "service": "AWS S3 Open Data (openmeteo)",
+    "region": "us-west-2",
+    "url": "https://openmeteo.s3.us-west-2.amazonaws.com/data/cmc_gem_rdps_10km/cape/chunk_4337.om",
+    "object_id": "rotated_cmc_gem_rdps_10km_cape_chunk_4337",
+    "source_manifest": "test/data/grids/sample-manifest.json"
+  },
+  "query": "SELECT value FROM read_om('https://openmeteo.s3.us-west-2.amazonaws.com/data/cmc_gem_rdps_10km/cape/chunk_4337.om') WHERE value != 0 LIMIT 10",
+  "runs": [
+    {
+      "runtime": "v1.5.6",
+      "mode": "merge-off",
+      "repeat": 0,
+      "kind": "first_read",
+      "elapsed_ms": 3729.07385090366,
+      "result_sha256": "18dd6e048c0b63b191a51409a2b8184da54344b224c0f4160e584114ca8838f5",
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 11,
+        "physical_bytes": 2206,
+        "useful_bytes": 2206,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 9,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v1.5.6",
+      "mode": "merge-off",
+      "repeat": 1,
+      "kind": "repeat_read",
+      "elapsed_ms": 3819.9462867341936,
+      "result_sha256": "18dd6e048c0b63b191a51409a2b8184da54344b224c0f4160e584114ca8838f5",
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 11,
+        "physical_bytes": 2206,
+        "useful_bytes": 2206,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 9,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v1.5.6",
+      "mode": "merge-on",
+      "repeat": 0,
+      "kind": "first_read",
+      "elapsed_ms": 4009.0897609479725,
+      "result_sha256": "18dd6e048c0b63b191a51409a2b8184da54344b224c0f4160e584114ca8838f5",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 11,
+        "physical_bytes": 2206,
+        "useful_bytes": 2206,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 9,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v1.5.6",
+      "mode": "merge-on",
+      "repeat": 1,
+      "kind": "repeat_read",
+      "elapsed_ms": 3977.9470777139068,
+      "result_sha256": "18dd6e048c0b63b191a51409a2b8184da54344b224c0f4160e584114ca8838f5",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 11,
+        "physical_bytes": 2206,
+        "useful_bytes": 2206,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 9,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "mode": "merge-off",
+      "repeat": 0,
+      "kind": "first_read",
+      "elapsed_ms": 2952.899467200041,
+      "result_sha256": "18dd6e048c0b63b191a51409a2b8184da54344b224c0f4160e584114ca8838f5",
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 11,
+        "physical_bytes": 2206,
+        "useful_bytes": 2206,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 9,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "mode": "merge-off",
+      "repeat": 1,
+      "kind": "repeat_read",
+      "elapsed_ms": 2820.7685947418213,
+      "result_sha256": "18dd6e048c0b63b191a51409a2b8184da54344b224c0f4160e584114ca8838f5",
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 11,
+        "physical_bytes": 2206,
+        "useful_bytes": 2206,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 9,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "mode": "async-off",
+      "repeat": 0,
+      "kind": "first_read",
+      "elapsed_ms": 3135.5576240457594,
+      "result_sha256": "18dd6e048c0b63b191a51409a2b8184da54344b224c0f4160e584114ca8838f5",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 11,
+        "physical_bytes": 6302,
+        "useful_bytes": 3967,
+        "gap_bytes": 2335,
+        "phase_requests": {
+          "metadata": 9,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "mode": "async-off",
+      "repeat": 1,
+      "kind": "repeat_read",
+      "elapsed_ms": 3121.2364649400115,
+      "result_sha256": "18dd6e048c0b63b191a51409a2b8184da54344b224c0f4160e584114ca8838f5",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 11,
+        "physical_bytes": 6302,
+        "useful_bytes": 3967,
+        "gap_bytes": 2335,
+        "phase_requests": {
+          "metadata": 9,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "mode": "async-on",
+      "repeat": 0,
+      "kind": "first_read",
+      "elapsed_ms": 3382.3007559403777,
+      "result_sha256": "18dd6e048c0b63b191a51409a2b8184da54344b224c0f4160e584114ca8838f5",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": true,
+        "inflight_peak": 2,
+        "inflight_budget_bytes": 524288,
+        "requests": 12,
+        "physical_bytes": 12159,
+        "useful_bytes": 3967,
+        "gap_bytes": 8192,
+        "phase_requests": {
+          "metadata": 9,
+          "coordinate": 0,
+          "index": 1,
+          "data": 2
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "mode": "async-on",
+      "repeat": 1,
+      "kind": "repeat_read",
+      "elapsed_ms": 3363.589571788907,
+      "result_sha256": "18dd6e048c0b63b191a51409a2b8184da54344b224c0f4160e584114ca8838f5",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": true,
+        "inflight_peak": 2,
+        "inflight_budget_bytes": 524288,
+        "requests": 12,
+        "physical_bytes": 12159,
+        "useful_bytes": 3967,
+        "gap_bytes": 8192,
+        "phase_requests": {
+          "metadata": 9,
+          "coordinate": 0,
+          "index": 1,
+          "data": 2
+        }
+      }
+    }
+  ]
+}

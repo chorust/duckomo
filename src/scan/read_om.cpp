@@ -35,6 +35,7 @@
 #include "duckdb/common/vector.hpp"
 #include "duckdb/main/client_context_state.hpp"
 #include "duckdb/main/database.hpp"
+#include "duckdb/storage/buffer_manager.hpp"
 #include "duckdb/planner/column_binding.hpp"
 #include "duckdb/planner/expression/bound_constant_expression.hpp"
 #include "duckdb/planner/expression/bound_function_expression.hpp"
@@ -76,6 +77,34 @@ namespace {
 
 constexpr idx_t SCAN_TASK_POSITION_WINDOW = 65536;
 constexpr std::uint64_t MAX_REGION_GEOMETRY_SCRATCH_BYTES = 64 * 1024;
+
+RemoteReadBudget RemoteReadBudgetFromContext(ClientContext &context) {
+	RemoteReadBudget budget;
+	Value value;
+	if (context.TryGetCurrentSetting("duckomo_remote_merge", value) && !value.IsNull()) {
+		budget.enabled = value.GetValue<bool>();
+	}
+	if (budget.enabled) {
+		if (context.TryGetCurrentSetting("duckomo_remote_merge_gap", value) && !value.IsNull()) {
+			budget.merge_gap = value.GetValue<std::uint64_t>();
+		}
+		if (context.TryGetCurrentSetting("duckomo_remote_max_request", value) && !value.IsNull()) {
+			budget.max_request = value.GetValue<std::uint64_t>();
+		}
+	}
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	if (context.TryGetCurrentSetting("duckomo_async_io", value) && !value.IsNull()) {
+		budget.async_requested = value.GetValue<bool>();
+	}
+	if (context.TryGetCurrentSetting("duckomo_async_prefetch_batches", value) && !value.IsNull()) {
+		budget.prefetch_batches = value.GetValue<std::uint64_t>();
+	}
+	if (context.TryGetCurrentSetting("duckomo_async_max_inflight", value) && !value.IsNull()) {
+		budget.max_inflight = value.GetValue<std::uint64_t>();
+	}
+#endif
+	return budget;
+}
 
 std::unique_ptr<ReadAtFile> OpenOmReadAt(ClientContext &context, const std::string &path,
                                          const std::shared_ptr<RemoteReadSession> &remote_session,
@@ -1689,10 +1718,11 @@ bool RevalidateCompleteMetadata(ClientContext &context) {
 }
 
 BoundSchema MetadataForScan(ClientContext &context, OmV3Reader &reader, const BoundSchema &bound_schema,
-                            const std::string &path, bool variable_selected) {
+                            const std::string &path, bool variable_selected,
+                            const std::optional<RemoteReadBudget> &budget) {
 	if (!RevalidateCompleteMetadata(context)) return bound_schema;
 	ScanMemoryAccount tree_account(reader.File().Metrics(), ScanMemoryComponent::Definitions);
-	auto tree = ReadMetadataTree(reader);
+	auto tree = ReadMetadataTree(reader, budget ? &*budget : nullptr);
 	tree_account.Set(EstimateMetadataTreeMemory(tree));
 	// Compare the same selected view; an unchanged full file must not be
 	// compared to a one-variable binding as though an array disappeared.
@@ -1758,7 +1788,7 @@ struct ReadOmGlobalState final : GlobalTableFunctionState {
 		// needed after DuckDB has resolved projected columns.
 		if (RevalidateCompleteMetadata(context)) {
 			ScanMemoryAccount schema_account(metrics, ScanMemoryComponent::Definitions);
-			auto current_schema = MetadataForScan(context, *reader, schema, path, bind_data.variable_selected);
+			auto current_schema = MetadataForScan(context, *reader, schema, path, bind_data.variable_selected, bind_data.remote_session ? std::optional<RemoteReadBudget>(RemoteReadBudgetFromContext(context)) : std::nullopt);
 			schema_account.Set(EstimateSchemaMemory(current_schema));
 		}
 		if (spatial.HasGrid() && spatial.layout) {
@@ -2420,7 +2450,7 @@ struct ReadOmLocalState final : LocalTableFunctionState {
 		ScanMemoryAccount schema_account(bind_data.metrics, ScanMemoryComponent::Definitions);
 		std::optional<BoundSchema> revalidated;
 		if (RevalidateCompleteMetadata(context)) {
-			revalidated = MetadataForScan(context, *reader, global_state.schema, bind_data.path, bind_data.variable_selected);
+			revalidated = MetadataForScan(context, *reader, global_state.schema, bind_data.path, bind_data.variable_selected, bind_data.remote_session ? std::optional<RemoteReadBudget>(RemoteReadBudgetFromContext(context)) : std::nullopt);
 			schema_account.Set(EstimateSchemaMemory(*revalidated));
 		}
 		const auto &current_schema = revalidated ? *revalidated : global_state.schema;
@@ -2447,6 +2477,35 @@ struct ReadOmLocalState final : LocalTableFunctionState {
 		task_positions_account->Set(task_bytes);
 		region_evaluator_account->Set(region_evaluator_memory_bytes);
 	}
+
+	~ReadOmLocalState() override {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+		if (pending_async.active && pending_async.inflight_account) {
+			pending_async.inflight_account->Set(0);
+			pending_async.active = false;
+		}
+#endif
+	}
+
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	struct PendingAsyncItem {
+		std::size_t required_index = 0;
+		PlannedSelection plan;
+		std::uint64_t batch_offset = 0;
+		std::uint64_t count = 0;
+	};
+	struct PendingAsyncScan {
+		bool active = false;
+		std::vector<PendingAsyncItem> items;
+		std::vector<std::uint64_t> logical_positions;
+		idx_t count = 0;
+		idx_t candidate_count = 0;
+		idx_t emitted = 0;
+		std::shared_ptr<RemoteAsyncState> shared_exception;
+		std::shared_ptr<ScanMemoryAccount> inflight_account;
+	};
+	PendingAsyncScan pending_async;
+#endif
 
 	unique_ptr<OmV3Reader> reader;
 	vector<unique_ptr<OmDecoderState>> decoders;
@@ -2501,10 +2560,12 @@ unique_ptr<FunctionData> BindReadOmInternal(ClientContext &context, TableFunctio
 	ScanMemoryAccount requested_path_account(metrics, ScanMemoryComponent::Bind);
 	requested_path_account.Set(AddMemoryBytes(sizeof(requested_path), StringMemoryBytes(requested_path)));
 	std::shared_ptr<RemoteReadSession> remote_session;
+	const auto remote_budget = RemoteReadBudgetFromContext(context);
 	std::string path;
 	std::unique_ptr<ReadAtFile> input_file;
 	if (IsSupportedRemoteOmUri(requested_path)) {
 		remote_session = RemoteReadSession::Create(context, requested_path, metrics);
+		metrics->SetRemoteIo(remote_budget.enabled, remote_budget.merge_gap, remote_budget.max_request, false);
 		path = remote_session->Path();
 		input_file = remote_session->Open(context, ScanMetadataStage::Bind);
 	} else {
@@ -2524,7 +2585,7 @@ unique_ptr<FunctionData> BindReadOmInternal(ClientContext &context, TableFunctio
 		}
 		selected_variable = variable_value->GetValue<std::string>();
 	}
-	auto metadata_tree = selected_variable ? ReadNamedMetadataTree(reader, *selected_variable) : ReadMetadataTree(reader);
+	auto metadata_tree = selected_variable ? ReadNamedMetadataTree(reader, *selected_variable, remote_session ? &remote_budget : nullptr) : ReadMetadataTree(reader, remote_session ? &remote_budget : nullptr);
 	metadata_tree_account.Set(EstimateMetadataTreeMemory(metadata_tree));
 	auto schema = BuildBoundSchema(metadata_tree);
 	memory_account->Set(AddMemoryBytes(
@@ -3172,10 +3233,13 @@ void ScanNearestBatch(ClientContext &context, ReadOmGlobalState &state, ReadOmLo
 			if (context.IsInterrupted()) throw InterruptException();
 			const auto bytes = segment.count * sizeof(float);
 			std::vector<std::uint64_t> cube_offset(segment.read_count.size(), 0);
+			auto remote_budget = bind_data.remote_session ? RemoteReadBudgetFromContext(context) : RemoteReadBudget{};
+			remote_budget.allow_read_ahead = false;
 			local.reader->DecodeSelection(*local.decoders[required_index], variable.canonical_path,
 			                              segment.read_offset, segment.read_count,
 			                              cube_offset, segment.read_count,
-			                              decoded[required_index].data() + segment.batch_offset, bytes);
+			                              decoded[required_index].data() + segment.batch_offset, bytes,
+			                              remote_budget);
 		}
 	}
 	auto decoded_value = [&](idx_t variable_index, std::uint64_t logical) -> Value {
@@ -3344,11 +3408,178 @@ void ScanNearestBatch(ClientContext &context, ReadOmGlobalState &state, ReadOmLo
 }
 
 void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLocalState &local,
-	                const ReadOmBindData &bind_data, DataChunk &output) {
+	                const ReadOmBindData &bind_data, DataChunk &output, TableFunctionInput &input) {
 	SetOutputCardinality(output, 0);
 	if (state.stop_requested.load() || context.IsInterrupted()) {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+		if (local.pending_async.active) {
+			local.pending_async.active = false;
+			if (local.pending_async.inflight_account) local.pending_async.inflight_account->Set(0);
+		}
+#endif
 		throw InterruptException();
 	}
+
+	const auto &slots = state.projection.GetOutputSlots();
+	const auto &required_variables = state.projection.GetRequiredVariableIds();
+
+	auto populate_non_value_columns = [&](const std::vector<std::uint64_t> &positions, idx_t row_count) {
+		for (std::size_t output_column = 0; output_column < slots.size(); output_column++) {
+			if (slots[output_column].kind == OutputColumnKind::ValidTime) {
+				auto *values = MutableVectorData<timestamp_t>(output.data[output_column]);
+				for (std::uint64_t row = 0; row < row_count; row++) {
+					values[row] = state.temporal->Coordinate(positions[row]);
+				}
+				MutableVectorValidity(output.data[output_column]).SetAllValid(static_cast<idx_t>(row_count));
+				continue;
+			}
+			if (slots[output_column].kind == OutputColumnKind::Latitude ||
+			    slots[output_column].kind == OutputColumnKind::Longitude) {
+				if (!state.spatial.HasGrid() || !state.spatial.layout) {
+					throw InternalException("read_om projected a spatial column without a bound grid");
+				}
+				auto *values = MutableVectorData<double>(output.data[output_column]);
+				for (std::uint64_t row = 0; row < row_count; row++) {
+					const auto logical_index = positions[row];
+					const auto coordinate = state.spatial.Coordinate(logical_index);
+					values[row] = slots[output_column].kind == OutputColumnKind::Latitude ? coordinate.latitude
+					                                                                      : coordinate.longitude;
+				}
+				state.metrics->RecordCoordinateEvaluations(row_count);
+				MutableVectorValidity(output.data[output_column]).SetAllValid(static_cast<idx_t>(row_count));
+				continue;
+			}
+			if (slots[output_column].kind == OutputColumnKind::SemanticCoordinate) {
+				if (slots[output_column].semantic_axis_index >= state.semantic_axes.size()) {
+					throw InternalException("read_om projected an unknown semantic coordinate");
+				}
+				const auto &semantic_axis = state.semantic_axes[slots[output_column].semantic_axis_index];
+				for (std::uint64_t row = 0; row < row_count; row++) {
+					output.data[output_column].SetValue(row, semantic_axis.CoordinateValue(positions[row]));
+				}
+				continue;
+			}
+			if (slots[output_column].kind == OutputColumnKind::Source) {
+				for (std::uint64_t row = 0; row < row_count; row++) {
+					output.data[output_column].SetValue(row,
+					    MakeOmSourceValue(state.spatial, positions[row]));
+				}
+				continue;
+			}
+			if (slots[output_column].kind == OutputColumnKind::RegionId) {
+				if (!state.regions_mode || local.task_region_ordinal >= bind_data.regions->GetRegions().size()) {
+					throw InternalException("read_om projected region_id without a bound region task");
+				}
+				const auto &region_id = bind_data.regions->GetRegions()[local.task_region_ordinal].id;
+				for (idx_t row = 0; row < row_count; ++row) output.data[output_column].SetValue(row, Value(region_id));
+				continue;
+			}
+			if (slots[output_column].kind == OutputColumnKind::Cardinality) {
+				auto *values = MutableVectorData<bool>(output.data[output_column]);
+				std::fill_n(values, static_cast<idx_t>(row_count), true);
+				MutableVectorValidity(output.data[output_column]).SetAllValid(static_cast<idx_t>(row_count));
+				continue;
+			}
+		}
+	};
+
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	auto decode_planned_items = [&](const std::vector<ReadOmLocalState::PendingAsyncItem> &items,
+	                                idx_t row_count, const RemoteReadBudget &budget, idx_t window_offset = 0) {
+		for (std::size_t req_idx = 0; req_idx < required_variables.size(); req_idx++) {
+			idx_t primary_output = DConstants::INVALID_INDEX;
+			for (idx_t output_column = 0; output_column < slots.size(); output_column++) {
+				if (slots[output_column].kind == OutputColumnKind::Value &&
+				    slots[output_column].required_variable_index == req_idx) {
+					primary_output = output_column;
+					break;
+				}
+			}
+			if (primary_output == DConstants::INVALID_INDEX) {
+				throw InternalException("read_om projection plan has an unreferenced required variable");
+			}
+			auto *values = MutableVectorData<float>(output.data[primary_output]);
+			auto &validity = MutableVectorValidity(output.data[primary_output]);
+			validity.SetAllValid(static_cast<idx_t>(row_count));
+
+			for (const auto &item : items) {
+				if (item.required_index != req_idx || item.batch_offset < window_offset ||
+				    item.batch_offset >= window_offset + row_count) continue;
+				local.reader->DecodeSelectionPlan(*local.decoders[req_idx], item.plan,
+				                                  values + item.batch_offset - window_offset, &budget);
+				for (std::uint64_t index = 0; index < item.count; index++) {
+					const auto batch_index = item.batch_offset - window_offset + index;
+					if (std::isnan(values[batch_index])) {
+						validity.SetInvalid(static_cast<idx_t>(batch_index));
+					}
+				}
+			}
+
+			for (idx_t output_column = 0; output_column < slots.size(); output_column++) {
+				if (output_column == primary_output || slots[output_column].kind != OutputColumnKind::Value ||
+				    slots[output_column].required_variable_index != req_idx) {
+					continue;
+				}
+				auto *duplicate_values = MutableVectorData<float>(output.data[output_column]);
+				std::memcpy(duplicate_values, values, static_cast<std::size_t>(row_count) * sizeof(float));
+				auto &duplicate_validity = MutableVectorValidity(output.data[output_column]);
+				duplicate_validity.SetAllValid(static_cast<idx_t>(row_count));
+				for (idx_t row = 0; row < row_count; row++) {
+					if (!validity.RowIsValid(row)) {
+						duplicate_validity.SetInvalid(row);
+					}
+				}
+			}
+		}
+	};
+
+	if (local.pending_async.active) {
+		if (state.stop_requested.load() || context.IsInterrupted()) {
+			local.pending_async.active = false;
+			if (local.pending_async.inflight_account) local.pending_async.inflight_account->Set(0);
+			throw InterruptException();
+		}
+		if (local.pending_async.shared_exception && local.pending_async.shared_exception->exception) {
+			auto exc = local.pending_async.shared_exception->exception;
+			local.pending_async.active = false;
+			if (local.pending_async.inflight_account) local.pending_async.inflight_account->Set(0);
+			std::rethrow_exception(exc);
+		}
+		if (local.pending_async.inflight_account) {
+			local.pending_async.inflight_account->Set(0);
+		}
+		const auto window_offset = local.pending_async.emitted;
+		const auto count = std::min<idx_t>(local.pending_async.count - window_offset,
+		    static_cast<idx_t>(MaxBatchPositionCount(state.schema.shape.size())));
+		const auto candidate_count = local.pending_async.count == local.pending_async.candidate_count
+		    ? count : local.pending_async.candidate_count;
+		std::vector<std::uint64_t> positions(local.pending_async.logical_positions.begin() + window_offset,
+		    local.pending_async.logical_positions.begin() + window_offset + count);
+		populate_non_value_columns(positions, count);
+		auto remote_budget = bind_data.remote_session ? RemoteReadBudgetFromContext(context) : RemoteReadBudget{};
+		if ((state.spatial.HasGrid() && state.selection.mode != SpatialSelectionMode::Full) ||
+		    !state.axis_predicate.necessary_conditions.empty() || state.regions_mode) {
+			remote_budget.allow_read_ahead = false;
+		}
+		decode_planned_items(local.pending_async.items, count, remote_budget, window_offset);
+
+		local.pending_async.emitted += count;
+		if (local.pending_async.emitted == local.pending_async.count) {
+			local.pending_async.active = false;
+			local.pending_async.items.clear();
+			local.pending_async.logical_positions.clear();
+		}
+		local.task_position_offset += candidate_count;
+		state.metrics->RecordScannedRows(count);
+		SetOutputCardinality(output, static_cast<idx_t>(count));
+		if (!local.registered_as_active) {
+			state.metrics->RecordWorkerActive(local.worker_id);
+			local.registered_as_active = true;
+		}
+		return;
+	}
+#endif
+
 	while (true) {
 	while (local.task_position_offset >= local.task_positions.size()) {
 		if (local.task_active) {
@@ -3438,63 +3669,204 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLoca
 		throw InternalException("read_om output column count does not match its projection plan");
 	}
 
-    for (std::size_t output_column = 0; output_column < slots.size(); output_column++) {
-		if (slots[output_column].kind == OutputColumnKind::ValidTime) {
-			auto *values = MutableVectorData<timestamp_t>(output.data[output_column]);
-			for (std::uint64_t row = 0; row < count; row++) {
-				values[row] = state.temporal->Coordinate(logical_positions[row]);
+	auto remote_budget = bind_data.remote_session ? RemoteReadBudgetFromContext(context) : RemoteReadBudget{};
+	if ((state.spatial.HasGrid() && state.selection.mode != SpatialSelectionMode::Full) ||
+	    !state.axis_predicate.necessary_conditions.empty() || state.regions_mode) {
+		remote_budget.allow_read_ahead = false;
+	}
+
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	if (bind_data.remote_session != nullptr && remote_budget.async_requested &&
+	    !required_variables.empty() && !segments.empty()) {
+		std::vector<ReadOmLocalState::PendingAsyncItem> planned_items;
+		std::vector<unique_ptr<AsyncTask>> async_tasks;
+		auto shared_exception = std::make_shared<RemoteAsyncState>();
+		auto window_segments = segments;
+		// Only full, unfiltered scans may read ahead across output batches.
+		// Keep at most four batches, within the current task and memory share.
+		auto &manager = BufferManager::GetBufferManager(context);
+		const auto available = manager.GetMaxMemory() > manager.GetUsedMemory()
+		    ? manager.GetMaxMemory() - manager.GetUsedMemory() : 0;
+		const auto window_limit = std::min<std::uint64_t>(remote_budget.prefetch_batches, remote_budget.max_inflight);
+		const bool prefetch = remote_budget.allow_read_ahead && required_variables.size() == 1 && !state.regions_mode &&
+		    input.results_execution_mode != AsyncResultsExecutionMode::SYNCHRONOUS &&
+		    available / (64 * std::max<idx_t>(1, state.MaxThreads())) >=
+		        window_limit * remote_budget.max_request;
+		if (prefetch && count == candidate_count) {
+			const auto batch_size = count;
+			const auto remaining = local.task_positions.size() - local.task_position_offset;
+			const auto window_count = std::min<idx_t>(remaining, batch_size * window_limit);
+			while (count < window_count) {
+				const auto next_count = std::min<idx_t>(batch_size, window_count - count);
+				std::vector<std::uint64_t> next_positions(
+				    local.task_positions.begin() + local.task_position_offset + count,
+				    local.task_positions.begin() + local.task_position_offset + count + next_count);
+				auto next_segments = BuildSelectedBatchSegments(state.schema.shape, next_positions);
+				for (auto &segment : next_segments) {
+					segment.batch_offset += count;
+					window_segments.push_back(std::move(segment));
+				}
+				logical_positions.insert(logical_positions.end(), next_positions.begin(), next_positions.end());
+				count += next_count;
 			}
-			MutableVectorValidity(output.data[output_column]).SetAllValid(static_cast<idx_t>(count));
-			continue;
+			candidate_count = count;
 		}
-		if (slots[output_column].kind == OutputColumnKind::Latitude ||
-		    slots[output_column].kind == OutputColumnKind::Longitude) {
-			if (!state.spatial.HasGrid() || !state.spatial.layout) {
-				throw InternalException("read_om projected a spatial column without a bound grid");
+
+		for (std::size_t req_idx = 0; req_idx < required_variables.size(); req_idx++) {
+			const auto variable_index = required_variables[req_idx];
+			const auto &variable = state.schema.variables.at(variable_index);
+			for (const auto &segment : window_segments) {
+				std::vector<std::uint64_t> cube_offset(segment.read_count.size(), 0);
+				auto plan = local.reader->PlanSelection(
+				    *local.decoders[req_idx], variable.canonical_path, segment.read_offset,
+				    segment.read_count, cube_offset, segment.read_count, segment.count * sizeof(float),
+				    remote_budget.merge_gap, remote_budget.max_request, ScanDecodePurpose::Value,
+				    &remote_budget);
+
+				planned_items.push_back({req_idx, std::move(plan), segment.batch_offset, segment.count});
 			}
-			auto *values = MutableVectorData<double>(output.data[output_column]);
-			for (std::uint64_t row = 0; row < count; row++) {
-				const auto logical_index = logical_positions[row];
-				const auto coordinate = state.spatial.Coordinate(logical_index);
-				values[row] = slots[output_column].kind == OutputColumnKind::Latitude ? coordinate.latitude
-				                                                                            : coordinate.longitude;
-			}
-			state.metrics->RecordCoordinateEvaluations(count);
-			MutableVectorValidity(output.data[output_column]).SetAllValid(static_cast<idx_t>(count));
-			continue;
 		}
-		if (slots[output_column].kind == OutputColumnKind::SemanticCoordinate) {
-			if (slots[output_column].semantic_axis_index >= state.semantic_axes.size()) {
-				throw InternalException("read_om projected an unknown semantic coordinate");
+
+		// Identical encoded ranges can appear in multiple segments of one
+		// batch. Share the pending payload before submitting any I/O, just as
+		// the synchronous decoder shares its last completed range.
+		std::map<std::pair<std::uint64_t, std::uint64_t>, PlannedDataRange *> pending_ranges;
+		for (auto &item : planned_items) {
+			for (auto &block : item.plan.blocks) {
+				for (auto &range : block.data_ranges) {
+					if (!range.reuse_range) {
+						auto inserted = pending_ranges.emplace(std::make_pair(range.read_offset, range.read_size), &range);
+						if (!inserted.second && inserted.first->second->useful_bytes == range.useful_bytes) {
+							range.buffer = inserted.first->second->buffer;
+							range.reuse_range = true;
+						}
+					}
+					if (range.reuse_range) state.metrics->RecordLogicalRead(
+					    ScanReadPhase::Data, range.ranges.front().count, item.plan.variable_path);
+				}
 			}
-			const auto &semantic_axis = state.semantic_axes[slots[output_column].semantic_axis_index];
-			for (std::uint64_t row = 0; row < count; row++) {
-				output.data[output_column].SetValue(row, semantic_axis.CoordinateValue(logical_positions[row]));
-			}
-			continue;
 		}
-		if (slots[output_column].kind == OutputColumnKind::Source) {
-			for (std::uint64_t row = 0; row < count; row++) {
-				output.data[output_column].SetValue(row,
-				    MakeOmSourceValue(state.spatial, logical_positions[row]));
+		for (auto &item : planned_items) {
+			for (auto &block : item.plan.blocks) {
+				for (auto &range : block.data_ranges) {
+					if (!range.reuse_range) async_tasks.push_back(make_uniq<RemoteReadAsyncTask>(
+					    local.reader->File(), range.read_offset, range.read_size, range.buffer->data(),
+					    ScanReadPhase::Data, item.plan.variable_path, shared_exception,
+					    range.useful_bytes, remote_budget.max_request));
+				}
 			}
-			continue;
 		}
-		if (slots[output_column].kind == OutputColumnKind::RegionId) {
-			if (!state.regions_mode || local.task_region_ordinal >= bind_data.regions->GetRegions().size()) {
-				throw InternalException("read_om projected region_id without a bound region task");
+
+		if (async_tasks.empty() && count > MaxBatchPositionCount(state.schema.shape.size())) {
+			local.pending_async.active = true;
+			local.pending_async.emitted = 0;
+			local.pending_async.items = std::move(planned_items);
+			local.pending_async.logical_positions = std::move(logical_positions);
+			local.pending_async.count = count;
+			local.pending_async.candidate_count = candidate_count;
+			local.pending_async.shared_exception = shared_exception;
+			ScanReadOmImpl(context, state, local, bind_data, output, input);
+			return;
+		}
+		if (async_tasks.empty()) {
+			populate_non_value_columns(logical_positions, count);
+			decode_planned_items(planned_items, count, remote_budget);
+			local.task_position_offset += candidate_count;
+			state.metrics->RecordScannedRows(count);
+			SetOutputCardinality(output, static_cast<idx_t>(count));
+			if (!local.registered_as_active) {
+				state.metrics->RecordWorkerActive(local.worker_id);
+				local.registered_as_active = true;
 			}
-			const auto &region_id = bind_data.regions->GetRegions()[local.task_region_ordinal].id;
-			for (idx_t row = 0; row < count; ++row) output.data[output_column].SetValue(row, Value(region_id));
-			continue;
+			return;
 		}
-		if (slots[output_column].kind != OutputColumnKind::Cardinality) {
-            continue;
-        }
-        auto *values = MutableVectorData<bool>(output.data[output_column]);
-        std::fill_n(values, static_cast<idx_t>(count), true);
-        MutableVectorValidity(output.data[output_column]).SetAllValid(static_cast<idx_t>(count));
-    }
+
+		auto &buffer_manager = BufferManager::GetBufferManager(context);
+		const auto used_memory = static_cast<std::uint64_t>(buffer_manager.GetUsedMemory());
+		const auto max_memory = static_cast<std::uint64_t>(buffer_manager.GetMaxMemory());
+		const auto remaining_memory = max_memory > used_memory ? max_memory - used_memory : 0;
+		const auto worker_count = std::max<std::uint64_t>(1, state.MaxThreads());
+
+		std::uint64_t inflight_request_limit = remote_budget.max_inflight;
+		std::uint64_t inflight_budget_bytes = inflight_request_limit * remote_budget.max_request;
+
+		if (max_memory > 0) {
+			if (remaining_memory < max_memory / 8) {
+				inflight_request_limit = 1;
+				inflight_budget_bytes = remote_budget.max_request;
+			} else {
+				// Reserve headroom for decoding, output vectors and other operators.
+				const auto memory_budget = remaining_memory / (64 * worker_count);
+				inflight_budget_bytes = std::min(inflight_budget_bytes, memory_budget);
+				if (inflight_budget_bytes < remote_budget.max_request) {
+					inflight_budget_bytes = remote_budget.max_request;
+					inflight_request_limit = 1;
+				} else {
+					inflight_request_limit =
+					    std::min(inflight_request_limit, inflight_budget_bytes / remote_budget.max_request);
+					if (inflight_request_limit == 0) inflight_request_limit = 1;
+				}
+			}
+		}
+
+		inflight_budget_bytes = inflight_request_limit * remote_budget.max_request;
+		state.metrics->SetRemoteIo(remote_budget.enabled, remote_budget.merge_gap, remote_budget.max_request, true);
+		shared_exception->budget_bytes = inflight_budget_bytes;
+		const auto task_control_bytes = async_tasks.size() * sizeof(RemoteReadAsyncTask);
+		const auto lane_count = std::min<std::uint64_t>(inflight_request_limit, async_tasks.size());
+		std::vector<unique_ptr<AsyncTask>> lanes;
+		for (std::uint64_t i = 0; i < lane_count; ++i) lanes.push_back(make_uniq<RemoteReadAsyncLane>());
+		for (std::size_t i = 0; i < async_tasks.size(); ++i) {
+			static_cast<RemoteReadAsyncLane &>(*lanes[i % lane_count]).tasks.push_back(std::move(async_tasks[i]));
+		}
+		async_tasks = std::move(lanes);
+		if (!local.pending_async.inflight_account) {
+			local.pending_async.inflight_account =
+			    std::make_shared<ScanMemoryAccount>(bind_data.metrics, ScanMemoryComponent::RemoteInflight);
+		}
+		// Buffers have ownership-based Decoder accounts; this component tracks
+		// only task/control storage, avoiding double counting their payloads.
+		local.pending_async.inflight_account->Set(
+		    async_tasks.capacity() * sizeof(unique_ptr<AsyncTask>) + sizeof(RemoteAsyncState) +
+		    task_control_bytes + lane_count * sizeof(RemoteReadAsyncLane));
+
+		if (input.results_execution_mode == AsyncResultsExecutionMode::SYNCHRONOUS) {
+			for (auto &task : async_tasks) {
+				task->Execute();
+			}
+			if (local.pending_async.inflight_account) {
+				local.pending_async.inflight_account->Set(0);
+			}
+			if (shared_exception->exception) {
+				std::rethrow_exception(shared_exception->exception);
+			}
+			populate_non_value_columns(logical_positions, count);
+			decode_planned_items(planned_items, count, remote_budget);
+			local.task_position_offset += candidate_count;
+			state.metrics->RecordScannedRows(count);
+			SetOutputCardinality(output, static_cast<idx_t>(count));
+			if (!local.registered_as_active) {
+				state.metrics->RecordWorkerActive(local.worker_id);
+				local.registered_as_active = true;
+			}
+			return;
+		}
+
+		local.pending_async.active = true;
+		local.pending_async.emitted = 0;
+		local.pending_async.items = std::move(planned_items);
+		local.pending_async.logical_positions = std::move(logical_positions);
+		local.pending_async.count = count;
+		local.pending_async.candidate_count = candidate_count;
+		local.pending_async.shared_exception = shared_exception;
+
+		input.async_result = AsyncResult(std::move(async_tasks));
+		SetOutputCardinality(output, 0);
+		return;
+	}
+#endif
+
+	populate_non_value_columns(logical_positions, count);
 
     for (std::size_t required_index = 0; required_index < required_variables.size(); required_index++) {
         idx_t primary_output = DConstants::INVALID_INDEX;
@@ -3529,7 +3901,7 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLoca
 			local.reader->DecodeSelection(*local.decoders[required_index], variable.canonical_path,
                                           segment.read_offset, segment.read_count,
                                           cube_offset, segment.read_count, values + segment.batch_offset,
-                                          segment.count * sizeof(float));
+                                          segment.count * sizeof(float), remote_budget);
 			for (std::uint64_t index = 0; index < segment.count; index++) {
 				const auto batch_index = segment.batch_offset + index;
 				if (std::isnan(values[batch_index])) {
@@ -3582,8 +3954,14 @@ void ScanReadOm(ClientContext &context, TableFunctionInput &input, DataChunk &ou
 	}
 	auto &local = input.local_state->Cast<ReadOmLocalState>();
 	try {
-		ScanReadOmImpl(context, state, local, input.bind_data->Cast<ReadOmBindData>(), output);
+		ScanReadOmImpl(context, state, local, input.bind_data->Cast<ReadOmBindData>(), output, input);
 	} catch (const InterruptException &) {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+		if (local.pending_async.active) {
+			local.pending_async.active = false;
+			if (local.pending_async.inflight_account) local.pending_async.inflight_account->Set(0);
+		}
+#endif
 		const auto first_stop = state.RequestStop();
 		if (local.task_active) {
 			state.RecordTaskFailed(true);
@@ -3595,6 +3973,12 @@ void ScanReadOm(ClientContext &context, TableFunctionInput &input, DataChunk &ou
 		}
 		throw;
 	} catch (const ReaderError &error) {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+		if (local.pending_async.active) {
+			local.pending_async.active = false;
+			if (local.pending_async.inflight_account) local.pending_async.inflight_account->Set(0);
+		}
+#endif
 		const auto first_stop = state.RequestStop();
 		if (local.task_active) {
 			state.RecordTaskFailed(error.Code() == ReaderErrorCode::Cancelled);
@@ -3611,6 +3995,12 @@ void ScanReadOm(ClientContext &context, TableFunctionInput &input, DataChunk &ou
 		}
 		throw;
 	} catch (const std::exception &) {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+		if (local.pending_async.active) {
+			local.pending_async.active = false;
+			if (local.pending_async.inflight_account) local.pending_async.inflight_account->Set(0);
+		}
+#endif
 		const auto first_stop = state.RequestStop();
 		if (local.task_active) {
 			state.RecordTaskFailed(false);

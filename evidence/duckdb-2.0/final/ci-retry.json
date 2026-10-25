@@ -1,0 +1,16 @@
+[
+  {
+    "workflow": "release.yml",
+    "ref": "main",
+    "returncode": 1,
+    "response": "could not create workflow dispatch event: HTTP 403: Resource not accessible by personal access token (https://api.github.com/repos/chorust/duckomo/actions/workflows/379482221/dispatches)\n",
+    "scope": "remote main only; local uncommitted fixes are not present"
+  },
+  {
+    "workflow": "community-build.yml",
+    "ref": "main",
+    "returncode": 1,
+    "response": "could not create workflow dispatch event: HTTP 403: Resource not accessible by personal access token (https://api.github.com/repos/chorust/duckomo/actions/workflows/379382598/dispatches)\n",
+    "scope": "remote main only; local uncommitted fixes are not present"
+  }
+]

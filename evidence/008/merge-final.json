@@ -1,0 +1,943 @@
+{
+  "schema_version": 1,
+  "runs": [
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "full",
+      "mode": "merge-off",
+      "workers": 1,
+      "repeat": 0,
+      "memory_limit": "",
+      "elapsed_ms": 23995.37512101233,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 11591,
+        "physical_bytes": 4125977,
+        "useful_bytes": 4125977,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 258,
+          "data": 11322
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "full",
+      "mode": "merge-off",
+      "workers": 1,
+      "repeat": 1,
+      "memory_limit": "",
+      "elapsed_ms": 23805.166241247207,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 11591,
+        "physical_bytes": 4125977,
+        "useful_bytes": 4125977,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 258,
+          "data": 11322
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "full",
+      "mode": "merge-off",
+      "workers": 1,
+      "repeat": 2,
+      "memory_limit": "",
+      "elapsed_ms": 23302.5416219607,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 11591,
+        "physical_bytes": 4125977,
+        "useful_bytes": 4125977,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 258,
+          "data": 11322
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "full",
+      "mode": "merge-off",
+      "workers": 4,
+      "repeat": 0,
+      "memory_limit": "",
+      "elapsed_ms": 16921.681936830282,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 11700,
+        "physical_bytes": 4134570,
+        "useful_bytes": 4134570,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 20,
+          "coordinate": 0,
+          "index": 358,
+          "data": 11322
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "full",
+      "mode": "merge-off",
+      "workers": 4,
+      "repeat": 1,
+      "memory_limit": "",
+      "elapsed_ms": 17315.855255816132,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 11700,
+        "physical_bytes": 4134570,
+        "useful_bytes": 4134570,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 20,
+          "coordinate": 0,
+          "index": 358,
+          "data": 11322
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "full",
+      "mode": "merge-off",
+      "workers": 4,
+      "repeat": 2,
+      "memory_limit": "",
+      "elapsed_ms": 16868.388378061354,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 11700,
+        "physical_bytes": 4134570,
+        "useful_bytes": 4134570,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 20,
+          "coordinate": 0,
+          "index": 358,
+          "data": 11322
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "full",
+      "mode": "merge-on",
+      "workers": 1,
+      "repeat": 0,
+      "memory_limit": "",
+      "elapsed_ms": 3386.558962985873,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 840,
+        "physical_bytes": 2741967,
+        "useful_bytes": 2741967,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 258,
+          "data": 571
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "full",
+      "mode": "merge-on",
+      "workers": 1,
+      "repeat": 1,
+      "memory_limit": "",
+      "elapsed_ms": 2987.637539859861,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 840,
+        "physical_bytes": 2741967,
+        "useful_bytes": 2741967,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 258,
+          "data": 571
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "full",
+      "mode": "merge-on",
+      "workers": 1,
+      "repeat": 2,
+      "memory_limit": "",
+      "elapsed_ms": 3171.928535681218,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 840,
+        "physical_bytes": 2741967,
+        "useful_bytes": 2741967,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 258,
+          "data": 571
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "full",
+      "mode": "merge-on",
+      "workers": 4,
+      "repeat": 0,
+      "memory_limit": "",
+      "elapsed_ms": 2333.6738417856395,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 997,
+        "physical_bytes": 2951426,
+        "useful_bytes": 2951426,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 20,
+          "coordinate": 0,
+          "index": 358,
+          "data": 619
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "full",
+      "mode": "merge-on",
+      "workers": 4,
+      "repeat": 1,
+      "memory_limit": "",
+      "elapsed_ms": 2003.567568026483,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 996,
+        "physical_bytes": 2951282,
+        "useful_bytes": 2951282,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 20,
+          "coordinate": 0,
+          "index": 357,
+          "data": 619
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "full",
+      "mode": "merge-on",
+      "workers": 4,
+      "repeat": 2,
+      "memory_limit": "",
+      "elapsed_ms": 2097.2170559689403,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 995,
+        "physical_bytes": 2947128,
+        "useful_bytes": 2947128,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 20,
+          "coordinate": 0,
+          "index": 357,
+          "data": 618
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "selected",
+      "mode": "merge-off",
+      "workers": 1,
+      "repeat": 0,
+      "memory_limit": "",
+      "elapsed_ms": 306.3540868461132,
+      "result_sha256": "11979a89c35f1377eda9a3c951adb2a30e0dc2060a47bdcd7d4cfcf9b9aa5c88",
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 13,
+        "physical_bytes": 960,
+        "useful_bytes": 960,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "selected",
+      "mode": "merge-off",
+      "workers": 1,
+      "repeat": 1,
+      "memory_limit": "",
+      "elapsed_ms": 359.2458348721266,
+      "result_sha256": "11979a89c35f1377eda9a3c951adb2a30e0dc2060a47bdcd7d4cfcf9b9aa5c88",
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 13,
+        "physical_bytes": 960,
+        "useful_bytes": 960,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "selected",
+      "mode": "merge-off",
+      "workers": 1,
+      "repeat": 2,
+      "memory_limit": "",
+      "elapsed_ms": 512.4976220540702,
+      "result_sha256": "11979a89c35f1377eda9a3c951adb2a30e0dc2060a47bdcd7d4cfcf9b9aa5c88",
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 13,
+        "physical_bytes": 960,
+        "useful_bytes": 960,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "selected",
+      "mode": "merge-off",
+      "workers": 4,
+      "repeat": 0,
+      "memory_limit": "",
+      "elapsed_ms": 341.2976488471031,
+      "result_sha256": "11979a89c35f1377eda9a3c951adb2a30e0dc2060a47bdcd7d4cfcf9b9aa5c88",
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 22,
+        "physical_bytes": 1353,
+        "useful_bytes": 1353,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 20,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "selected",
+      "mode": "merge-off",
+      "workers": 4,
+      "repeat": 1,
+      "memory_limit": "",
+      "elapsed_ms": 279.0265902876854,
+      "result_sha256": "11979a89c35f1377eda9a3c951adb2a30e0dc2060a47bdcd7d4cfcf9b9aa5c88",
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 22,
+        "physical_bytes": 1353,
+        "useful_bytes": 1353,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 20,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "selected",
+      "mode": "merge-off",
+      "workers": 4,
+      "repeat": 2,
+      "memory_limit": "",
+      "elapsed_ms": 269.3945080973208,
+      "result_sha256": "11979a89c35f1377eda9a3c951adb2a30e0dc2060a47bdcd7d4cfcf9b9aa5c88",
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 22,
+        "physical_bytes": 1353,
+        "useful_bytes": 1353,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 20,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "selected",
+      "mode": "merge-on",
+      "workers": 1,
+      "repeat": 0,
+      "memory_limit": "",
+      "elapsed_ms": 425.8033148944378,
+      "result_sha256": "11979a89c35f1377eda9a3c951adb2a30e0dc2060a47bdcd7d4cfcf9b9aa5c88",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 13,
+        "physical_bytes": 960,
+        "useful_bytes": 960,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "selected",
+      "mode": "merge-on",
+      "workers": 1,
+      "repeat": 1,
+      "memory_limit": "",
+      "elapsed_ms": 354.72203604876995,
+      "result_sha256": "11979a89c35f1377eda9a3c951adb2a30e0dc2060a47bdcd7d4cfcf9b9aa5c88",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 13,
+        "physical_bytes": 960,
+        "useful_bytes": 960,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "selected",
+      "mode": "merge-on",
+      "workers": 1,
+      "repeat": 2,
+      "memory_limit": "",
+      "elapsed_ms": 496.1105873808265,
+      "result_sha256": "11979a89c35f1377eda9a3c951adb2a30e0dc2060a47bdcd7d4cfcf9b9aa5c88",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 13,
+        "physical_bytes": 960,
+        "useful_bytes": 960,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "selected",
+      "mode": "merge-on",
+      "workers": 4,
+      "repeat": 0,
+      "memory_limit": "",
+      "elapsed_ms": 331.714048050344,
+      "result_sha256": "11979a89c35f1377eda9a3c951adb2a30e0dc2060a47bdcd7d4cfcf9b9aa5c88",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 22,
+        "physical_bytes": 1353,
+        "useful_bytes": 1353,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 20,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "selected",
+      "mode": "merge-on",
+      "workers": 4,
+      "repeat": 1,
+      "memory_limit": "",
+      "elapsed_ms": 450.36603696644306,
+      "result_sha256": "11979a89c35f1377eda9a3c951adb2a30e0dc2060a47bdcd7d4cfcf9b9aa5c88",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 22,
+        "physical_bytes": 1353,
+        "useful_bytes": 1353,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 20,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "selected",
+      "mode": "merge-on",
+      "workers": 4,
+      "repeat": 2,
+      "memory_limit": "",
+      "elapsed_ms": 292.8498601540923,
+      "result_sha256": "11979a89c35f1377eda9a3c951adb2a30e0dc2060a47bdcd7d4cfcf9b9aa5c88",
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 22,
+        "physical_bytes": 1353,
+        "useful_bytes": 1353,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 20,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    }
+  ],
+  "summaries": [
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "full",
+      "mode": "merge-off",
+      "workers": 1,
+      "memory_limit": "",
+      "repeats": 3,
+      "median_elapsed_ms": 23805.166241247207,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "result_hashes_match": true,
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 11591,
+        "physical_bytes": 4125977,
+        "useful_bytes": 4125977,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 258,
+          "data": 11322
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "full",
+      "mode": "merge-off",
+      "workers": 4,
+      "memory_limit": "",
+      "repeats": 3,
+      "median_elapsed_ms": 16921.681936830282,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "result_hashes_match": true,
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 11700,
+        "physical_bytes": 4134570,
+        "useful_bytes": 4134570,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 20,
+          "coordinate": 0,
+          "index": 358,
+          "data": 11322
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "full",
+      "mode": "merge-on",
+      "workers": 1,
+      "memory_limit": "",
+      "repeats": 3,
+      "median_elapsed_ms": 3171.928535681218,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "result_hashes_match": true,
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 840,
+        "physical_bytes": 2741967,
+        "useful_bytes": 2741967,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 258,
+          "data": 571
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "full",
+      "mode": "merge-on",
+      "workers": 4,
+      "memory_limit": "",
+      "repeats": 3,
+      "median_elapsed_ms": 2097.2170559689403,
+      "result_sha256": "01dddd21eee4a98ad43d05b13d140488547e28316c5424bc9ac9bf4ca17e9e95",
+      "result_hashes_match": true,
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 996,
+        "physical_bytes": 2951282,
+        "useful_bytes": 2951282,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 20,
+          "coordinate": 0,
+          "index": 357,
+          "data": 619
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "selected",
+      "mode": "merge-off",
+      "workers": 1,
+      "memory_limit": "",
+      "repeats": 3,
+      "median_elapsed_ms": 359.2458348721266,
+      "result_sha256": "11979a89c35f1377eda9a3c951adb2a30e0dc2060a47bdcd7d4cfcf9b9aa5c88",
+      "result_hashes_match": true,
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 13,
+        "physical_bytes": 960,
+        "useful_bytes": 960,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "selected",
+      "mode": "merge-off",
+      "workers": 4,
+      "memory_limit": "",
+      "repeats": 3,
+      "median_elapsed_ms": 279.0265902876854,
+      "result_sha256": "11979a89c35f1377eda9a3c951adb2a30e0dc2060a47bdcd7d4cfcf9b9aa5c88",
+      "result_hashes_match": true,
+      "remote_io": {
+        "merge_enabled": false,
+        "merge_gap_bytes": 512,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 22,
+        "physical_bytes": 1353,
+        "useful_bytes": 1353,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 20,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "selected",
+      "mode": "merge-on",
+      "workers": 1,
+      "memory_limit": "",
+      "repeats": 3,
+      "median_elapsed_ms": 425.8033148944378,
+      "result_sha256": "11979a89c35f1377eda9a3c951adb2a30e0dc2060a47bdcd7d4cfcf9b9aa5c88",
+      "result_hashes_match": true,
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 13,
+        "physical_bytes": 960,
+        "useful_bytes": 960,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 11,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    },
+    {
+      "runtime": "v2.0.0",
+      "object_id": "o1280",
+      "query": "selected",
+      "mode": "merge-on",
+      "workers": 4,
+      "memory_limit": "",
+      "repeats": 3,
+      "median_elapsed_ms": 331.714048050344,
+      "result_sha256": "11979a89c35f1377eda9a3c951adb2a30e0dc2060a47bdcd7d4cfcf9b9aa5c88",
+      "result_hashes_match": true,
+      "remote_io": {
+        "merge_enabled": true,
+        "merge_gap_bytes": 4096,
+        "max_request_bytes": 65536,
+        "async_applied": false,
+        "inflight_peak": 1,
+        "inflight_budget_bytes": null,
+        "requests": 22,
+        "physical_bytes": 1353,
+        "useful_bytes": 1353,
+        "gap_bytes": 0,
+        "phase_requests": {
+          "metadata": 20,
+          "coordinate": 0,
+          "index": 1,
+          "data": 1
+        }
+      }
+    }
+  ]
+}

@@ -56,6 +56,9 @@ if [[ "$SAMPLING" == true ]]; then
         [[ -x "$BUILD/test/$executable" ]] || { echo "Required sampling validation executable missing: $BUILD/test/$executable (build duckomo_sampling_validation_bundle)" >&2; exit 2; }
     done < "$SAMPLING_EXECUTABLES"
 fi
+# Python integration checks must use the same build as SQL/native checks.
+# Otherwise a 2.0 spatial override can be loaded by their default 1.5.4 CLI.
+export DUCKOMO_BUILD="$BUILD"
 export DUCKOMO_CORE_FUNCTIONS_EXTENSION="$BUILD/extension/core_functions/core_functions.duckdb_extension"
 export DUCKOMO_TEST_EXTENSION="$BUILD/extension/duckomo/duckomo.duckdb_extension"
 if [[ "$REGIONS" == true || "$SAMPLING" == true ]]; then

@@ -1,0 +1,2 @@
+duckdb agent mode on: AI_AGENT is set and stdout is not a terminal; -no-agent turns it off, .help agent explains the output
+official HTTPFS: pass, 48 completed cases; /home/blizhan/repo/github/duckomo/build/008/final-validation/httpfs20

@@ -1,0 +1,87 @@
+[
+  {
+    "test": "benchmark_remote_io_test.py",
+    "returncode": 0,
+    "output": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK\n"
+  },
+  {
+    "test": "grid_evidence_test.py",
+    "returncode": 0,
+    "output": ".............\n----------------------------------------------------------------------\nRan 13 tests in 0.015s\n\nOK\n"
+  },
+  {
+    "test": "grid_reference_test.py",
+    "returncode": 0,
+    "output": "..................ss\n----------------------------------------------------------------------\nRan 20 tests in 0.024s\n\nOK (skipped=2)\n"
+  },
+  {
+    "test": "grid_registry_test.py",
+    "returncode": 0,
+    "output": "grid registry and canonical vectors verified: /home/blizhan/repo/github/duckomo/src/include/duckomo/generated_grid_registry.hpp\ngrid registry and canonical vectors verified: /home/blizhan/repo/github/duckomo/src/include/duckomo/generated_grid_registry.hpp\nsample queries verified: /home/blizhan/repo/github/duckomo/test/data/grids/sample-queries.sql\ngrid registry checks passed\n"
+  },
+  {
+    "test": "hres_domain_test.py",
+    "returncode": 0,
+    "output": "HRES O1280 domain checks passed\n"
+  },
+  {
+    "test": "official_httpfs_validation_test.py",
+    "returncode": 0,
+    "output": "...............\n----------------------------------------------------------------------\nRan 15 tests in 0.558s\n\nOK\n"
+  },
+  {
+    "test": "om_build_test.py",
+    "returncode": 0,
+    "output": ".\n----------------------------------------------------------------------\nRan 1 test in 79.817s\n\nOK\n"
+  },
+  {
+    "test": "record_region_regressions_test.py",
+    "returncode": 0,
+    "output": ".\n----------------------------------------------------------------------\nRan 1 test in 0.886s\n\nOK\n"
+  },
+  {
+    "test": "region_evidence_test.py",
+    "returncode": 0,
+    "output": "..............\n----------------------------------------------------------------------\nRan 14 tests in 0.692s\n\nOK\n"
+  },
+  {
+    "test": "region_remote_fixture_test.py",
+    "returncode": 0,
+    "output": "...\n----------------------------------------------------------------------\nRan 3 tests in 0.123s\n\nOK\n"
+  },
+  {
+    "test": "release_tools_test.py",
+    "returncode": 0,
+    "output": "v1.5.6 DuckOMO candidate: fail (/tmp/tmp2lyyma_w/report.json)\n............usage: release_tools_test.py [-h] [--root ROOT]\n                             --version {v1.5.4,v1.5.5,v1.5.6,v2.0.0}\n                             [--platform {linux_amd64,linux_arm64,osx_amd64,osx_arm64}]\n                             [--runtime-manifest RUNTIME_MANIFEST]\n                             --duckdb DUCKDB --httpfs HTTPFS\n                             --extension EXTENSION --output OUTPUT\nrelease_tools_test.py: error: argument --version: invalid choice: 'v2.0.1' (choose from v1.5.4, v1.5.5, v1.5.6, v2.0.0)\n..\n----------------------------------------------------------------------\nRan 14 tests in 0.044s\n\nOK\n"
+  },
+  {
+    "test": "remote_fixture_proxy_test.py",
+    "returncode": 0,
+    "output": ".......\n----------------------------------------------------------------------\nRan 7 tests in 5.565s\n\nOK\n"
+  },
+  {
+    "test": "sampling_audit_test.py",
+    "returncode": 0,
+    "output": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.025s\n\nOK\n"
+  },
+  {
+    "test": "sampling_evidence_test.py",
+    "returncode": 0,
+    "output": "...............\n----------------------------------------------------------------------\nRan 15 tests in 0.015s\n\nOK\n"
+  },
+  {
+    "test": "sampling_independent_test.py",
+    "returncode": 0,
+    "output": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.139s\n\nOK\n"
+  },
+  {
+    "test": "seasonal_domain_test.py",
+    "returncode": 0,
+    "output": "SEAS5/EC46 O320 and N160 definitions verified\ngenerated seasonal Gaussian fixtures in \"/tmp/duckomo-seasonal-hsj2hhef\"\nten SEAS5/EC46 domains, independent coordinates, time/member axes and wrong-grid rejection passed\n"
+  },
+  {
+    "test": "version_matrix_test.py",
+    "returncode": 0,
+    "output": ".............\n----------------------------------------------------------------------\nRan 13 tests in 0.129s\n\nOK\n"
+  }
+]

@@ -1,0 +1,48 @@
+{
+  "sample": "ecmwf_ifs_static_hsurf_reduced_gaussian_o1280",
+  "object_sha256": "2e8279f8bd12052ba5be5a0bcba2293dc4316097e434d6691f9e6711249e1fd3",
+  "query": "count, min, max, sum(value::DOUBLE::DECIMAL(20,6)); ORDER BY value result CSV",
+  "results": {
+    "1.5.6": {
+      "summary": [
+        "6599680",
+        "6599680",
+        "-999.0",
+        "6366.0",
+        "-3285892933.000000"
+      ],
+      "ordered_csv_sha256": "94dd654de13420346336b6ec6f8932d25996c2d0304ef6110e4355f689cf3a2a"
+    },
+    "2.0.0": {
+      "summary": [
+        "6599680",
+        "6599680",
+        "-999.0",
+        "6366.0",
+        "-3285892933.000000"
+      ],
+      "merge_off_ordered_csv_sha256": "94dd654de13420346336b6ec6f8932d25996c2d0304ef6110e4355f689cf3a2a",
+      "merge_on_ordered_csv_sha256": "94dd654de13420346336b6ec6f8932d25996c2d0304ef6110e4355f689cf3a2a"
+    }
+  },
+  "artifacts": {
+    "v2.0.0": {
+      "cli_sha256": "f4c681bcf41a5c43dcf9a354703fe5bded9e2265282d1915d6d99637cd1e1f29",
+      "httpfs_sha256": "53f7aea1a0448ea62ef9b63f95da37c5766070084f14f14110e275e76382e7b2",
+      "duckomo_sha256": "a2bfe1534071ebba5340f86afc2bbb3235a6ede8e6d9aacc01dd7cfff16b278e"
+    },
+    "v1.5.6": {
+      "cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+      "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+      "duckomo_sha256": "3c61f0b64c4c27ee1ca85211d4406ada381583ce56e108e9ed32b771c9efa1f4"
+    }
+  },
+  "build_ids": {
+    "v2.0.0": "053235dc56d2bd45335a437886ee596901788bc1351d07e734912d3afe9efcf4",
+    "v1.5.6": "97591abf2e140ca1e91619532f77cf41566573bb03cf859db980e6c493ee784d"
+  },
+  "limitations": [
+    "Object is a supplemental real public sample, not a core required N160/N320/N-region sample.",
+    "Local-file test; does not establish remote merge request reduction or async overlap."
+  ]
+}
