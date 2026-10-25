@@ -1,0 +1,22 @@
+name: Experimental prerelease notes
+
+on:
+  push:
+    branches: [feat/spec008-experimental-remote-io]
+    paths:
+      - '.github/workflows/experimental-release-notes.yml'
+      - 'docs/release-notes/v0.3.5-rc.1.md'
+
+permissions:
+  contents: write
+
+jobs:
+  update-notes:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Describe measured prerelease limitations
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release edit v0.3.5-rc.1 --notes-file docs/release-notes/v0.3.5-rc.1.md
