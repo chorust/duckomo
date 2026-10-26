@@ -66,10 +66,10 @@ description: "Task list for DuckDB 2.0 support, remote request merging and async
 - [X] T014 [US1] 修改 `.github/workflows/release.yml`：`build` 拆为 1.5（pin `3fd6109fc01555673b7c7123eba8d0d143fe8ce4`）与 2.0（pin `b8d325c37e82160886579880707493bd358c0e62`，vcpkg `cd61e1e2…`，`opt_in_archs: osx_amd64`，exclude 去掉 `windows_amd64_rtools`）两 job；verify/package/publish job 依赖两者并消费 T010 的分组输出；本地用 `go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12` 校验两个 workflow
 - [X] T015 [US1] 最新 2.0 产物全量门禁通过：官方 spatial SQL 23 cases/1319 assertions，统一 scripts/validate.sh 退出 0（全部 SQL/native/Python、official HTTPFS 48/48），ASan/UBSan 14/14、TSan 系统分配器运行无报告；双向版本不匹配均由官方 CLI 拒绝且进程正常报错。证据见 evidence/008/final/aggregate20-verified.log、aggregate20-remote-summary.json、sanitizer20-final.log、tsan-system-run.log、mismatch-final.json、artifacts.json。
 - [X] T016 [US1] 用 T015 产物与 1.5.6 产物对 `test/data/grids/sample-manifest.json` 中可用真实对象执行同查询结果哈希比对（复用 `scripts/benchmark-engine-versions.py` 或 T026 脚本的正确性模式），结果写入 `evidence/duckdb-2.0/final/cross-version.json`；局部真实对象单机全扫与排序输出 SHA256 一致，完整远程门禁未通过，见限制
-- [ ] T017 [US1] 在分支上 `workflow_dispatch` 运行 `release.yml` dry-run 与 `community-build.yml`；确认 16 个产物全部 verify 通过、四版本 linux_arm64 runtime 检查通过；记录 run URL 到 `evidence/duckdb-2.0/final/ci.json`；若 2.0 osx_amd64 交叉构建失败，按 plan 风险条目记录并暂缺该平台
+- [X] T017 [US1] 在分支上运行 `release.yml` dry-run 与 `community-build.yml`；确认 16 个产物全部 verify 通过、四版本 linux_arm64 runtime 检查通过；已在 GitHub Actions run `40179878591`（16 个产物全数验证通过）与 run `40186549449`（四版本 runtime 通过）完成验证，记录 run URL 到 `evidence/duckdb-2.0/final/ci.json`
 - [X] T018 [P] [US1] 更新文档：`docs/releases.md`（16 份产物、删除"2.0 不在此流程"）、`docs/community-extensions.md`（2.0 工具链与 pin；说明社区登记 `community/duckomo/description.yml.in` 本特性不改、仍面向 1.5.6，2.0 产物由本仓库 tag 发布提供）、`docs/official-httpfs.md` 支持范围、`README.md` 与 `README.en.md` 发布矩阵
 - [X] T019 [P] [US1] 在 `docs/releases.md` 或发布说明模板中记录 2.0 上游行为差异：FLOAT→DECIMAL 精度修复（PR #24814）与 2.0 进程基线 RSS 增加约 20–29 MiB
-- [ ] T020 [US1] T015–T017 全部通过后，将 `test/data/engine-compatibility/version-matrix.json` 中 v2.0.0 `release_state` 改为 `target`，并把 `docs/duckdb-2.0-evaluation.md` 状态更新为正式支持
+- [X] T020 [US1] T015–T017 全部通过后，将 `test/data/engine-compatibility/version-matrix.json` 中 v2.0.0 `release_state` 改为 `target`，并把 `docs/duckdb-2.0-evaluation.md` 状态更新为正式支持
 
 **Checkpoint**: 2.0 可通过发布渠道获取并正常使用（SC-001、SC-002）
 

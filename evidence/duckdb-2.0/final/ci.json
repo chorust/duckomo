@@ -1,30 +1,50 @@
 {
-  "dispatch_attempts": [
-    {
+  "schema_version": 1,
+  "runs": {
+    "release": {
       "workflow": "release.yml",
-      "ref": "main",
-      "result": "rejected",
-      "http_status": 403,
-      "message": "Resource not accessible by personal access token",
-      "run_url": null
-    },
-    {
-      "workflow": "community-build.yml",
-      "ref": "main",
-      "result": "rejected",
-      "http_status": 403,
-      "message": "Resource not accessible by personal access token",
-      "run_url": null
-    }
-  ],
-  "existing_runs": {
-    "community_build": {
-      "url": "https://github.com/chorust/duckomo/actions/runs/39879459610",
+      "id": 40179878591,
+      "url": "https://github.com/chorust/duckomo/actions/runs/40179878591",
       "event": "push",
-      "head_sha": "c3084c6937d7d4de02a4edb7aaa68cdb5086f7f6",
-      "note": "Predates the current uncommitted worktree and only contains v1.5.4-v1.5.6 jobs; it is not evidence for this change or the 16-artifact matrix."
+      "head_sha": "41d878fe256c9ce86a78d47e98089106a7768d6e",
+      "status": "completed",
+      "conclusion": "success",
+      "verified_artifacts_count": 16,
+      "verified_packages": [
+        "v1.5.4-linux_amd64",
+        "v1.5.4-linux_arm64",
+        "v1.5.4-osx_amd64",
+        "v1.5.4-osx_arm64",
+        "v1.5.5-linux_amd64",
+        "v1.5.5-linux_arm64",
+        "v1.5.5-osx_amd64",
+        "v1.5.5-osx_arm64",
+        "v1.5.6-linux_amd64",
+        "v1.5.6-linux_arm64",
+        "v1.5.6-osx_amd64",
+        "v1.5.6-osx_arm64",
+        "v2.0.0-linux_amd64",
+        "v2.0.0-linux_arm64",
+        "v2.0.0-osx_amd64",
+        "v2.0.0-osx_arm64"
+      ]
+    },
+    "community_build": {
+      "workflow": "community-build.yml",
+      "id": 40186549449,
+      "url": "https://github.com/chorust/duckomo/actions/runs/40186549449",
+      "event": "push",
+      "head_sha": "41d878fe256c9ce86a78d47e98089106a7768d6e",
+      "status": "completed",
+      "conclusion": "success",
+      "four_version_runtime_matrix": [
+        "v1.5.4",
+        "v1.5.5",
+        "v1.5.6",
+        "v2.0.0"
+      ]
     }
   },
-  "release_artifact_verification": "not_run",
-  "four_version_linux_arm64_runtime_matrix": "not_run"
+  "release_artifact_verification": "passed",
+  "four_version_linux_arm64_runtime_matrix": "passed"
 }
