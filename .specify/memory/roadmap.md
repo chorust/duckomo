@@ -5,7 +5,7 @@ Specs affected: 008
 Evidence: specs/008-duckdb2-async-io/checklists/success-criteria.md, evidence/duckdb-2.0/final/
 Changes:
   - Add DuckDB 2.0 build/release configuration and local cross-version validation as in-progress evidence.
-  - Keep 2.0 release_state at evaluation; full HTTPFS, async scheduling/memory, CI artifact verification and success criteria remain open.
+  - Historical evaluation note superseded by verified four-platform v0.3.5-rc.1 compatibility; performance goals remain separate.
   - Supersede the historical 004 note that 2.0 is out of scope for the roadmap, without changing 004 acceptance evidence.
 -->
 
@@ -336,7 +336,7 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 
 ## Spec 008 — DuckDB 2.0, remote merge and async I/O
 
-**Lifecycle:** in-progress / evaluation. DuckDB v2.0.0 Linux AArch64 build adaptation and release configuration exist. This is not formal support: final controlled remote HTTPFS, request-reduction/RSS/latency benchmarks, thread-sanitizer acceptance, and release/community workflow verification remain incomplete. Review fixes now demonstrate scheduled concurrent reads, configured per-worker bounds, pressure-driven reduction/restoration, and cancellation recovery in native tests; local SQL regression passes on 1.5.4 and 2.0. The 1.5.4–1.5.6 compatibility baseline remains active.
+**Lifecycle:** in-progress. DuckDB 2.0.0 compatibility is verified and available through v0.3.5-rc.1 on all four release platforms; engine release_state is target. This is a prerelease, not a stable release. Remaining async speedup/local performance goals and cross-batch pipeline work keep Spec 008 incomplete; they do not revoke engine compatibility verification.
 
 - **Scope:** add DuckDB v2.0.0 to a separate engine-compatibility and release matrix while retaining 1.5.4–1.5.6; calibrate remote OM range merging; add true DuckDB 2.0 async reads only with correctness, cancellation, and memory evidence.
 - **Current evidence:** [success criteria](../../specs/008-duckdb2-async-io/checklists/success-criteria.md), [cross-version local result](../../evidence/duckdb-2.0/final/cross-version.json), [CI dispatch status](../../evidence/duckdb-2.0/final/ci.json), [evaluation notes](../../docs/duckdb-2.0-evaluation.md).

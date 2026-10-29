@@ -1,12 +1,12 @@
-# DuckDB 2.0 接入评估
+# DuckDB 2.0 兼容性与预发布状态
 
 ## 状态
 
-当前 2.0 维持 **evaluation / 实验性兼容**，正式支持矩阵仍为 1.5.4–1.5.6。四版本 SQL 回归、2.0 统一验证入口、官方 HTTPFS 48/48、ASan/UBSan 14/14 与系统分配器 TSan 已通过，详见 [最终验证记录](../evidence/008/final/status.md)。发布 CI 与匹配平台产物仍需远端验证。
+DuckDB 2.0.0 **已验证兼容，通过 v0.3.5-rc.1 预发布提供**。四版本 SQL、2.0 统一验证入口、官方 HTTPFS 48/48、ASan/UBSan 14/14 与系统分配器 TSan 已通过；四平台产物均通过匹配官方运行时校验并发布。参见 [发布流水线](https://github.com/chorust/duckomo/actions/runs/40178444705)、[Release](https://github.com/chorust/duckomo/releases/tag/v0.3.5-rc.1) 与[验证记录](../evidence/008/final/status.md)。这尚非稳定版发布；异步功能的性能目标与引擎兼容状态分别记录。
 
 远程合并在固定 O1280 的受控 HTTP/S3 测量中将请求从 11,591 降到 840。useful_bytes 排除预读、未选 chunk 和缓存复用，不再宣称等于 physical_bytes。
 
-**异步没有稳定加速，也未达到额外快 20% 的目标。** 实验跨批窗口 `duckomo_async_prefetch_batches` 默认1关闭；显式4批的 HTTP O1280 单 worker /256MB 中位数1351→1910ms，请求840→1523，结果相同。详见 [真实实验结果](../evidence/008/prefetch/report.md)。本地热查询大体接近基线，部分首次查询超过5%门槛，保留未达标结论。旧46.1%提升声明已撤销。Spec 008 没有全部完成，不据此提升支持状态。
+**异步没有稳定加速，也未达到额外快 20% 的目标。** 实验跨批窗口 `duckomo_async_prefetch_batches` 默认1关闭；显式4批的 HTTP O1280 单 worker /256MB 中位数1351→1910ms，请求840→1523，结果相同。详见 [真实实验结果](../evidence/008/prefetch/report.md)。本地热查询大体接近基线，部分首次查询超过5%门槛，保留未达标结论。旧46.1%提升声明已撤销。Spec 008 性能目标尚未全部完成，不影响已验证的引擎兼容状态。
 
 官方 [v2.0.0 release](https://github.com/duckdb/duckdb/releases/tag/v2.0.0) 与 tag 指向 `d54cbbe3df17e8e5ce68312f483b4155836112aa`。实验输入、官方 CLI/HTTPFS 解压后 SHA256 见 [独立矩阵](../test/data/engine-compatibility/version-matrix.json)。不替换现有稳定矩阵或 DuckDB 子模块。
 
@@ -110,10 +110,8 @@ OM → Parquet 可以作为独立实验，分开测 OM 输入、编码/写出、
 
 官方 2.0 spatial 已用于本轮现有区域/nearest SQL 回归；这证明该覆盖范围的功能可用，未证明几何运算加速，也未覆盖 native sanitizer 和空间扩展的全部行为。
 
-## 升格正式支持的剩余门槛
+## 发布与功能验收分别记录
 
-1. 用最终源码重新生成带正确 build_id 的 2.0 矩阵产物；扩展、官方 CLI、HTTPFS、spatial 与 CI 发布工具（extension-ci-tools 2.0 分支、vcpkg pin）逐一锁定，并重跑 native checks/sanitizers 与 1.5.4/1.5.5 回归。
-2. ~~受控远程验收~~：已完成（1.5.6 与 2.0 各 48 项 + native 取消/隔离）。
-3. 真实对象对比：全扫已完成；仍需单变量局部选择、坐标-only、polygon、nearest，以及至少一个真实云端点（同区域）的首读/重复读。
-4. 远程瓶颈已确认是请求数。先做 range 合并原型（可在 1.5.x 与 2.0 上同时受益），再做 2.0 同步/异步原型对照；读放大上界、低内存退化、取消释放、LIMIT 多读量是验收条件。Parquet 导出/读取与 VARIANT 侧表实验另行报告。
-5. 通过上述门槛后更新 CI（`community-build.yml` 增加 v2.0.0）、发布脚本、稳定支持文档；当前不宣称完成这些步骤。
+2.0 兼容性及四平台产物已验证，不再标记为 evaluation。稳定版发布仍待后续正式 tag；社区扩展登记仍为1.5.6，未随本预发布更改。
+
+Spec 008 尚未全部完成：异步未稳定达到20%加速，部分本地首次查询超出5%门槛，完整跨批重叠流水线尚未完成。这些是实验功能与性能限制，不撤销已验证的2.0引擎兼容性。详见[实测报告](../evidence/008/prefetch/report.md)。

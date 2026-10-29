@@ -21,7 +21,7 @@ duckomo 是一个 DuckDB C++ 扩展，将 [Open-Meteo OM](https://github.com/ope
 
 当前每次读取**单个对象**，不接受目录、glob 或文件列表。`read_om_regions` 的 points/nearest 都需要显式加载匹配版本的 DuckDB spatial；普通 `read_om` 不需要。区域 WKB 的 `grid_lonlat` 参考由调用者负责，points 边界按平面 `covers` 处理，统计为 SQL 等权聚合。nearest 的顶层 `lat/lon` 是面内目标，实际源坐标、距离、逐变量状态位于 `sampling`，COUNT(*)计结果行。006 已完成声明范围内的 N0–N7 验收：Linux AArch64、DuckDB v1.5.4/v1.5.5/v1.5.6、合成规则球面网格与固定 NCEP GFS025；真实输入仅私有留存、不公开分发，N7由独立用户执行。 [验收报告](specs/006-region-nearest-sampling/evidence/final.md)。
 
-本仓库 tag release 已配置 DuckDB v1.5.4、v1.5.5、v1.5.6、v2.0.0 × 四平台，共 16 个开发产物。DuckDB 2.0.0 当前仍在评估中，尚无完整远程 I/O/async 验收或正式支持声明。2026-10-22 [最终验收](specs/004-multi-grid-selection/evidence/current-20261021/report.md)：`gem_rdps_10km`、`gem_regional`、`aladin_central_europe_2km`、`ecmwf_ifs` 四定义的五个冻结对象在 Linux AArch64 / DuckDB v1.5.4、v1.5.5、v1.5.6 通过 H0–H9；45 对 HTTP/HTTPS/签名 S3 完整远程结果与三项严格成本下降通过，范围内为 `remote-benefit-validated`。H9 为未参与产品实现的独立 AI 验证，非人工；构建为变更 TU 重编译/relink。坐标遵循 [pinned Open-Meteo producer](specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md)，不宣称原生 GRIB 等价。真实 N160/N320/N 区域按[批准范围](specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md)跳过，合成回归保留；不外推全部 68 个规则 domain、其他对象/平台或 DuckDB 2.0。Phase 8 跨 chunk 入口仍是待评审提案。
+本仓库 tag release 已配置 DuckDB v1.5.4、v1.5.5、v1.5.6、v2.0.0 × 四平台，共 16 个开发产物。DuckDB 2.0.0 已验证兼容，通过 [v0.3.5-rc.1 预发布](https://github.com/chorust/duckomo/releases/tag/v0.3.5-rc.1) 提供四平台产物；异步 I/O 仍为实验功能，无稳定加速承诺。2026-10-22 [最终验收](specs/004-multi-grid-selection/evidence/current-20261021/report.md)：`gem_rdps_10km`、`gem_regional`、`aladin_central_europe_2km`、`ecmwf_ifs` 四定义的五个冻结对象在 Linux AArch64 / DuckDB v1.5.4、v1.5.5、v1.5.6 通过 H0–H9；45 对 HTTP/HTTPS/签名 S3 完整远程结果与三项严格成本下降通过，范围内为 `remote-benefit-validated`。H9 为未参与产品实现的独立 AI 验证，非人工；构建为变更 TU 重编译/relink。坐标遵循 [pinned Open-Meteo producer](specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md)，不宣称原生 GRIB 等价。真实 N160/N320/N 区域按[批准范围](specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md)跳过，合成回归保留；不外推全部 68 个规则 domain、其他对象/平台或 DuckDB 2.0。Phase 8 跨 chunk 入口仍是待评审提案。
 
 ## Install
 
@@ -34,7 +34,7 @@ SELECT version();
 PRAGMA platform;
 ```
 
-GitHub tag 开发发行矩阵配置为 **DuckDB v1.5.4 / v1.5.5 / v1.5.6 / v2.0.0** × **Linux glibc x86_64 / ARM64、macOS Intel / Apple Silicon**。DuckDB 2.0.0 仍在评估，当前没有完整远程 I/O/async 验收或正式支持声明；以实际发布的资产和对应验证记录为准。若尚无匹配资产，可按 [Dev](#dev) 从源码构建。
+GitHub tag 开发发行矩阵配置为 **DuckDB v1.5.4 / v1.5.5 / v1.5.6 / v2.0.0** × **Linux glibc x86_64 / ARM64、macOS Intel / Apple Silicon**。DuckDB 2.0.0 已验证兼容，当前通过 v0.3.5-rc.1 预发布提供，尚非稳定版发布；以实际发布的资产和对应验证记录为准。若尚无匹配资产，可按 [Dev](#dev) 从源码构建。
 
 GitHub 包未签名，只加载可信来源。用 `duckdb -unsigned` 启动后安装。Release 资产文件名带有版本和平台，直接把 URL 传给 `INSTALL` 时 DuckDB 会按第一个 `.` 截断扩展名（存成 `duckomo-v0.duckdb_extension`），导致后续 `LOAD duckomo` 找不到文件。因此先下载 `.duckdb_extension.gz` 并解压为标准文件名，再本地安装：
 

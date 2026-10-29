@@ -157,10 +157,10 @@ python3 scripts/verify-community-artifact.py \
 - FLOAT 转 DECIMAL 的精度在 2.0 中按上游 PR #24814 修正，与 1.5.6 的舍入结果可能不同。
 - 2.0 进程的基线 RSS 比 1.5.6 高约 20–29 MiB，这是引擎自身的开销，不是扫描额外读取。
 
-## 下一预发布：实验性远程 I/O 与 DuckDB 2.0 evaluation
+## v0.3.5-rc.1：实验性远程 I/O 与已验证的 DuckDB 2.0 兼容性
 
 - 远程范围合并与请求/有用字节/间隙指标，新增实际并发及内存压力收缩检查。
 - DuckDB 2.0 使用引擎 AsyncResult；1.5.x 保持同步。本地同步读取保留逐块解码。
 - 异步未稳定加速；跨批实验窗口默认关闭，固定样本中开启后请求增加、耗时变长。部分本地首次查询超过5%性能门槛。
-- 不宣称 Spec 008 完成或2.0正式支持。完整平台CI/dry-run通过后才生成预发布tag；不发布未验证矩阵。
+- 已发布 v0.3.5-rc.1；16份产物均通过匹配官方运行时校验。2.0已验证兼容，通过预发布提供；尚非稳定版。Spec 008性能目标未全部完成，异步继续标记实验性。
 - 实测和限制：[prefetch report](../evidence/008/prefetch/report.md)、[verification status](../evidence/008/final/status.md)。

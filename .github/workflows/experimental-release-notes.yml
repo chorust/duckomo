@@ -2,7 +2,7 @@ name: Experimental prerelease notes
 
 on:
   push:
-    branches: [feat/spec008-experimental-remote-io]
+    branches: [main, feat/spec008-experimental-remote-io]
     paths:
       - '.github/workflows/experimental-release-notes.yml'
       - 'docs/release-notes/v0.3.5-rc.1.md'

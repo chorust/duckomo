@@ -2,7 +2,7 @@
 
 状态：**现有 ARM64 GitHub CI 已通过；社区登记和签名发布待执行**，见 [main 构建记录](https://github.com/chorust/duckomo/actions/runs/37905479056)。登记草案在 [`community/duckomo/description.yml.in`](../community/duckomo/description.yml.in)，首次版本暂定 `0.1.0`，维护者按源码仓库 owner 填写为 `chorust`。本次检查记录见 [`community/validation.json`](../community/validation.json)：三版本既有产物检查、新编译 v1.5.6 生产配置产物、登记解析、平台过滤和 manifest 校验通过；完整社区 Docker 构建尚未执行。
 
-新增的 [GitHub tag 发布流程](releases.md) 独立于社区流程，配置为四个 DuckDB 版本（1.5.4、1.5.5、1.5.6、2.0.0）× Linux/macOS 双架构，共 16 个产物；本特性的社区登记模板不改，仍面向 v1.5.6。DuckDB 2.0.0 尚未通过完整验收，相关产物在当前仍是 evaluation，不形成正式支持声明。新增平台须在各自 CI 实际通过后才能形成验证记录。GitHub 包未签名，不扩大本文件的社区首发平台范围，也不替代完整生产验收和独立复现。
+新增的 [GitHub tag 发布流程](releases.md) 独立于社区流程，配置为四个 DuckDB 版本（1.5.4、1.5.5、1.5.6、2.0.0）× Linux/macOS 双架构，共 16 个产物；本特性的社区登记模板不改，仍面向 v1.5.6。DuckDB 2.0.0 已通过兼容性与四平台产物校验，并由 v0.3.5-rc.1 预发布提供；尚未进入稳定版或社区登记。异步性能验收独立于引擎兼容状态。新增平台须在各自 CI 实际通过后才能形成验证记录。GitHub 包未签名，不扩大本文件的社区首发平台范围，也不替代完整生产验收和独立复现。
 
 ## 发布契约
 
