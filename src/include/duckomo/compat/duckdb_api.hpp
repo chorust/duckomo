@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -27,10 +28,14 @@ namespace duckdb {
 class BoundConstantExpression;
 class BoundConjunctionExpression;
 class BoundCastExpression;
+class LogicalGet;
+class LogicalOperator;
+class Binder;
 namespace duckomo {
 
 #if DUCKOMO_DUCKDB_API_GENERATION >= 2
 using TableFunctionColumnName = Identifier;
+using TableFunctionNamedArguments = named_argument_map_t;
 inline std::string IdentifierNameString(const TableFunctionColumnName &name) {
 	return name.GetIdentifierName();
 }
@@ -39,6 +44,7 @@ inline std::string TableFunctionColumnNameString(const TableFunctionColumnName &
 }
 #else
 using TableFunctionColumnName = std::string;
+using TableFunctionNamedArguments = named_parameter_map_t;
 inline std::string IdentifierNameString(const TableFunctionColumnName &name) {
 	return name;
 }
@@ -49,8 +55,42 @@ inline const std::string &TableFunctionColumnNameString(const TableFunctionColum
 
 using TableFunctionColumnNames = vector<TableFunctionColumnName>;
 
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+using ReadOmBoundTableFunction = BoundTableFunction;
+#else
+using ReadOmBoundTableFunction = TableFunction;
+#endif
+ReadOmBoundTableFunction BindReadOmFunctionCall(const TableFunction &function,
+                                                const TableFunctionBindInput &input);
+unique_ptr<LogicalOperator> CreateReadOmLogicalGet(idx_t bind_index, ReadOmBoundTableFunction function,
+                                                   unique_ptr<FunctionData> bind_data,
+                                                   const std::vector<LogicalType> &return_types,
+                                                   const std::vector<std::string> &return_names,
+                                                   virtual_column_map_t virtual_columns);
+idx_t ReadOmLogicalGetTableIndex(const LogicalGet &get);
+idx_t ReadOmColumnBindingTableIndex(const ColumnBinding &binding);
+unique_ptr<LogicalOperator> CreateReadOmUnionOperator(
+    idx_t bind_index, idx_t column_count, std::vector<unique_ptr<LogicalOperator>> children);
+unique_ptr<LogicalOperator> CreateReadOmSeriesCardinalityProjection(unique_ptr<LogicalOperator> child,
+                                                                   idx_t projection_index,
+                                                                   idx_t child_table_index,
+                                                                   idx_t input_column_count);
+unique_ptr<LogicalOperator> CreateReadOmSeriesOutputProjection(unique_ptr<LogicalOperator> child,
+                                                               idx_t output_table_index,
+                                                               idx_t child_table_index,
+                                                               idx_t output_column_count);
+idx_t GenerateReadOmTableIndex(Binder &binder);
+unique_ptr<LogicalOperator> CreateReadOmEmptyResult(idx_t bind_index,
+                                                    const std::vector<LogicalType> &return_types);
+unique_ptr<LogicalOperator> CreateReadOmTimestampWindowFilter(unique_ptr<LogicalOperator> child,
+                                                              idx_t table_index, idx_t column_index,
+                                                              std::int64_t start_microseconds,
+                                                              std::int64_t end_microseconds);
+
 void AddTableFunctionOption(TableFunction &function, std::string name, LogicalType type);
 const Value *GetTableFunctionNamedArgument(const TableFunctionBindInput &input, const std::string &name);
+void RemoveTableFunctionNamedArgument(TableFunctionNamedArguments &parameters, const std::string &name);
+void SetTableFunctionNamedArgument(TableFunctionNamedArguments &parameters, std::string name, Value value);
 Value ValueWithLogicalType(Value value, const LogicalType &type);
 ValidityMask &MutableVectorValidity(Vector &vector);
 template <class T>

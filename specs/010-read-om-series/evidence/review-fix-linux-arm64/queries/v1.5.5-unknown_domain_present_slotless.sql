@@ -1,0 +1,2 @@
+LOAD '/home/blizhan/repo/github/duckomo/build/series-review-fix/v1.5.5/extension/duckomo/duckomo.duckdb_extension';
+SELECT count(*) FROM read_om_series('/home/blizhan/repo/github/duckomo/build/series-fixtures/data/synthetic/temperature', chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'], domain := 'review_nonexistent_domain', start := TIMESTAMP '1970-01-01 00:00:00.000001', "end" := TIMESTAMP '1970-01-01 00:59:59.999999');

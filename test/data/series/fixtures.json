@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "feature": "010-read-om-series",
+  "official_writer": "test/tools/duckomo_fixture_tool.cpp --series-output",
+  "value_rule": {
+    "expression": "1000 * chunk_index + 100 * point_index + slot_index + array_offset",
+    "chunk_time_length": 4,
+    "step_seconds": 3600,
+    "shape": [1, 6, 4],
+    "dimensions": ["lead", "point", "time"],
+    "point_order": "row-major point index; explicit 2x3 grid uses x-fastest flattening",
+    "nan_slots": [
+      {"role": "adjacent_root", "chunk_index": 1, "point_index": 2, "slot_index": 1},
+      {"role": "named_arrays", "array": "/temperature", "chunk_index": 1, "point_index": 2, "slot_index": 1}
+    ],
+    "named_array_offsets": {"/temperature": 0, "/humidity": 5000}
+  },
+  "reduced_gaussian_series": {
+    "classification": "synthetic_only",
+    "registered_domain": "n160",
+    "definition_source": "test/data/grids/definitions.json (existing definition; unchanged)",
+    "producer_validation": "not_claimed; no matching N160 OM producer object is frozen",
+    "shape": [1, 138346, 4],
+    "dimensions": ["lead", "point", "time"],
+    "spatial_axis_profile": ["point"],
+    "chunk_shapes_by_index": {"0": [1, 2048, 4], "1": [1, 1024, 2], "2": [1, 4096, 1]},
+    "compression_by_index": {"0": "FPX_XOR2D", "1": "FPX_XOR2D", "2": "FPX_XOR2D"},
+    "value_expression": "1000 * chunk_index + 100 * point_index + slot_index",
+    "nan_slots": []
+  },
+  "writer_objects": [
+    {"id": "adjacent_0000", "role": "adjacent_root", "chunk_index": 0, "path": "data/synthetic/temperature/chunk_0000.om", "shape": [1, 6, 4], "array_paths": ["/"]},
+    {"id": "adjacent_0001", "role": "adjacent_root", "chunk_index": 1, "path": "data/synthetic/temperature/chunk_0001.om", "shape": [1, 6, 4], "array_paths": ["/"]},
+    {"id": "adjacent_0002", "role": "adjacent_root", "chunk_index": 2, "path": "data/synthetic/temperature/chunk_0002.om", "shape": [1, 6, 4], "array_paths": ["/"]},
+    {"id": "reduced_gaussian_n160_0000", "role": "reduced_gaussian_n160", "chunk_index": 0, "path": "data/synthetic/reduced-gaussian-n160/temperature/chunk_0000.om", "shape": [1, 138346, 4], "chunk_shape": [1, 2048, 4], "compression": "FPX_XOR2D", "array_paths": ["/"]},
+    {"id": "reduced_gaussian_n160_0001", "role": "reduced_gaussian_n160", "chunk_index": 1, "path": "data/synthetic/reduced-gaussian-n160/temperature/chunk_0001.om", "shape": [1, 138346, 4], "chunk_shape": [1, 1024, 2], "compression": "FPX_XOR2D", "array_paths": ["/"]},
+    {"id": "reduced_gaussian_n160_0002", "role": "reduced_gaussian_n160", "chunk_index": 2, "path": "data/synthetic/reduced-gaussian-n160/temperature/chunk_0002.om", "shape": [1, 138346, 4], "chunk_shape": [1, 4096, 1], "compression": "FPX_XOR2D", "array_paths": ["/"]},
+    {"id": "all_nan_0000", "role": "all_nan", "chunk_index": 0, "path": "data/all_nan/temperature/chunk_0000.om", "shape": [1, 6, 4], "array_paths": ["/"]},
+    {"id": "negative_-001", "role": "negative_time", "chunk_index": -1, "path": "data/negative/temperature/chunk_-001.om", "shape": [1, 6, 4], "array_paths": ["/"]},
+    {"id": "negative_0000", "role": "negative_time", "chunk_index": 0, "path": "data/negative/temperature/chunk_0000.om", "shape": [1, 6, 4], "array_paths": ["/"]},
+    {"id": "named_0000", "role": "named_arrays", "chunk_index": 0, "path": "data/named/temperature/chunk_0000.om", "shape": [1, 6, 4], "array_paths": ["/humidity", "/temperature"]},
+    {"id": "named_0001", "role": "named_arrays", "chunk_index": 1, "path": "data/named/temperature/chunk_0001.om", "shape": [1, 6, 4], "array_paths": ["/humidity", "/temperature"]},
+    {"id": "time_extent_good_0000", "role": "mismatch_time_extent", "chunk_index": 0, "path": "data/mismatch/time-extent/temperature/chunk_0000.om", "shape": [1, 6, 4], "array_paths": ["/"]},
+    {"id": "time_extent_bad_0001", "role": "mismatch_time_extent", "chunk_index": 1, "path": "data/mismatch/time-extent/temperature/chunk_0001.om", "shape": [1, 6, 3], "array_paths": ["/"]},
+    {"id": "point_extent_good_0000", "role": "mismatch_point_extent", "chunk_index": 0, "path": "data/mismatch/point-extent/temperature/chunk_0000.om", "shape": [1, 6, 4], "array_paths": ["/"]},
+    {"id": "point_extent_bad_0001", "role": "mismatch_point_extent", "chunk_index": 1, "path": "data/mismatch/point-extent/temperature/chunk_0001.om", "shape": [1, 5, 4], "array_paths": ["/"]},
+    {"id": "metadata_time_conflict_0000", "role": "mismatch_time_metadata", "chunk_index": 0, "path": "data/mismatch/embedded-time/temperature/chunk_0000.om", "shape": [1, 6, 4], "array_paths": ["/temperature"], "metadata": {"valid_time": 3600}},
+    {"id": "dimension_order_bad_0000", "role": "mismatch_dimension_order", "chunk_index": 0, "path": "data/mismatch/dimension-order/temperature/chunk_0000.om", "shape": [1, 6, 4], "array_paths": ["/temperature"], "metadata": {"coordinates": "lead time point"}},
+    {"id": "spatial_profile_bad_0000", "role": "mismatch_spatial_profile", "chunk_index": 0, "path": "data/mismatch/spatial-profile/temperature/chunk_0000.om", "shape": [1, 6, 4], "array_paths": ["/temperature"], "metadata": {"coordinates": "lead latitude_axis time"}},
+    {"id": "grid_identity_bad_0000", "role": "mismatch_grid_identity", "chunk_index": 0, "path": "data/mismatch/grid-identity/temperature/chunk_0000.om", "shape": [1, 6, 4], "array_paths": ["/temperature"], "metadata": {"coordinates": "lead point time", "crs_wkt": "GEOGCRS[\"Reduced Gaussian Grid\", DATUM[\"World Geodetic System 1984\", ELLIPSOID[\"WGS 84\",6378137,298.257223563]], CS[ellipsoidal,2], AXIS[\"latitude\",north], AXIS[\"longitude\",east], ANGLEUNIT[\"degree\",0.0174532925199433], USAGE[SCOPE[\"grid\"],BBOX[-90,-180.0,90,180]]]"}},
+    {"id": "declared_type_bad_0000", "role": "mismatch_declared_type", "chunk_index": 0, "path": "data/mismatch/declared-type/temperature/chunk_0000.om", "shape": [1, 6, 4], "array_paths": ["/temperature"], "data_type": "DOUBLE_ARRAY"},
+    {"id": "array_set_good_0000", "role": "mismatch_array_set", "chunk_index": 0, "path": "data/mismatch/array-set/temperature/chunk_0000.om", "shape": [1, 6, 4], "array_paths": ["/humidity", "/temperature"]},
+    {"id": "array_set_bad_0001", "role": "mismatch_array_set", "chunk_index": 1, "path": "data/mismatch/array-set/temperature/chunk_0001.om", "shape": [1, 6, 4], "array_paths": ["/temperature"]}
+  ],
+  "gap_prefixes": [
+    {"id": "first_missing", "prefix": "data/gaps/first-missing/temperature", "present_chunk_indices": [1, 2]},
+    {"id": "middle_missing", "prefix": "data/gaps/middle-missing/temperature", "present_chunk_indices": [0, 2]},
+    {"id": "last_missing", "prefix": "data/gaps/last-missing/temperature", "present_chunk_indices": [0, 1]},
+    {"id": "all_missing", "prefix": "data/gaps/all-missing/temperature", "present_chunk_indices": []}
+  ],
+  "independent_oracle": {
+    "time_formula": "origin = chunk_index * chunk_time_length * step_seconds; slot_time = origin + slot_index * step_seconds",
+    "value_formula": "1000 * chunk_index + 100 * point_index + slot_index + array_offset",
+    "expected_schema_root": ["value FLOAT", "lat DOUBLE", "lon DOUBLE", "valid_time TIMESTAMP"],
+    "comparison": "manual explicit-origin read_om calls combined with UNION ALL and EXCEPT ALL in both directions"
+  }
+}

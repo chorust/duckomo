@@ -349,6 +349,7 @@ PlannedSelection OmV3Reader::PlanSelection(OmDecoderState &state, const std::str
                                              std::uint64_t output_bytes, std::uint64_t io_size_merge,
                                              std::uint64_t io_size_max, ScanDecodePurpose purpose,
                                              const RemoteReadBudget *budget, void *synchronous_output) const {
+	OmPlannedCacheScope planned_cache_scope(state);
 	PlannedSelection plan;
 	if (!synchronous_output) {
 		plan.purpose = purpose;
@@ -567,9 +568,8 @@ PlannedSelection OmV3Reader::PlanSelection(OmDecoderState &state, const std::str
 			if (reuse_range) {
 				planned.buffer = state.data_cache;
 			} else {
-				state.data_range_size = 0;
-				state.data_cache.reset();
 				planned.buffer = AllocateReadBuffer(read_size, metrics);
+				state.planned_cache.push_back({planned.read_offset, planned.read_size, planned.buffer});
 			}
 			block.data_ranges.push_back(std::move(planned));
 		};
@@ -623,6 +623,56 @@ PlannedSelection OmV3Reader::PlanSelection(OmDecoderState &state, const std::str
 		if (synchronous_output) continue;
 		std::vector<OmDecoder_dataRead_t> merge_group;
 		for (const auto &range : pending_ranges) {
+			std::shared_ptr<std::vector<std::uint8_t>> cached_buf;
+			std::uint64_t cached_base = 0;
+			std::uint64_t cached_size = 0;
+			if (state.data_range_size != 0 && state.data_cache != nullptr &&
+			    range.offset >= state.data_range_offset &&
+			    range.offset - state.data_range_offset <= state.data_range_size &&
+			    range.count <= state.data_range_size - (range.offset - state.data_range_offset)) {
+				cached_buf = state.data_cache;
+				cached_base = state.data_range_offset;
+				cached_size = state.data_range_size;
+			} else {
+				for (auto it = state.planned_cache.rbegin(); it != state.planned_cache.rend(); ++it) {
+					if (it->size != 0 && it->buffer != nullptr &&
+					    range.offset >= it->offset &&
+					    range.offset - it->offset <= it->size &&
+					    range.count <= it->size - (range.offset - it->offset)) {
+						cached_buf = it->buffer;
+						cached_base = it->offset;
+						cached_size = it->size;
+						break;
+					}
+				}
+			}
+
+			if (cached_buf != nullptr) {
+				if (!merge_group.empty()) {
+					add_planned_group(merge_group);
+					merge_group.clear();
+				}
+				if (!block.data_ranges.empty() && block.data_ranges.back().reuse_range &&
+				    block.data_ranges.back().buffer == cached_buf &&
+				    block.data_ranges.back().read_offset == cached_base) {
+					block.data_ranges.back().ranges.push_back(range);
+					block.data_ranges.back().useful_bytes = CheckedAddBytes(
+					    block.data_ranges.back().useful_bytes,
+					    UsefulDataBytes(state.decoder, index_data, index_read.count, range),
+					    "OM useful bytes");
+				} else {
+					PlannedDataRange reused;
+					reused.read_offset = cached_base;
+					reused.read_size = cached_size;
+					reused.reuse_range = true;
+					reused.ranges.push_back(range);
+					reused.useful_bytes = UsefulDataBytes(state.decoder, index_data, index_read.count, range);
+					reused.buffer = cached_buf;
+					block.data_ranges.push_back(std::move(reused));
+				}
+				continue;
+			}
+
 			if (!merge_group.empty()) {
 				const auto previous_end = merge_group.back().offset + merge_group.back().count;
 				const auto merged_end = range.offset + range.count;
@@ -666,7 +716,9 @@ void OmV3Reader::FetchSelection(PlannedSelection &plan, const RemoteReadBudget *
 	for (auto &block : plan.blocks) {
 		for (auto &range : block.data_ranges) {
 			if (range.reuse_range) {
-				if (metrics) metrics->RecordLogicalRead(data_phase, range.ranges.front().count, metric_variable_path);
+				for (const auto &sub_range : range.ranges) {
+					if (metrics) metrics->RecordLogicalRead(data_phase, sub_range.count, metric_variable_path);
+				}
 			} else {
 				const auto cap = budget ? budget->max_request : range.read_size;
 				for (std::uint64_t done = 0; done < range.read_size;) {
@@ -694,7 +746,7 @@ void OmV3Reader::DecodeSelectionPlan(OmDecoderState &state, const PlannedSelecti
 
 	for (const auto &block : plan.blocks) {
 		for (const auto &range : block.data_ranges) {
-			if (!range.reuse_range && range.ranges.size() == 1) {
+			if (!range.reuse_range && range.buffer && range.read_size > 0) {
 				state.data_cache = range.buffer;
 				state.data_range_offset = range.read_offset;
 				state.data_range_size = range.read_size;
@@ -728,6 +780,7 @@ void OmV3Reader::DecodeSelectionImpl(OmDecoderState &state, const std::string &v
                                     std::uint64_t output_bytes, std::uint64_t io_size_merge,
                                     std::uint64_t io_size_max, ScanDecodePurpose purpose,
                                     const RemoteReadBudget *budget) const {
+	OmPlannedCacheScope planned_cache_scope(state);
 	if (output == nullptr) {
 		throw ReaderError(ReaderErrorCode::InvalidSelection, "OM decoder output buffer must not be NULL");
 	}

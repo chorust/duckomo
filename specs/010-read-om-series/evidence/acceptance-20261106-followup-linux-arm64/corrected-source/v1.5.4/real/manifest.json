@@ -1,0 +1,408 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.4/official/duckdb",
+        "-no-init",
+        "-version"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "elapsed_seconds": 0.009,
+      "ended_at_utc": "2026-11-06T06:38:08Z",
+      "exit_code": 0,
+      "started_at_utc": "2026-11-06T06:38:08Z",
+      "stderr": "",
+      "stdout": "v1.5.4 (Variegata) 08e34c447b\n"
+    },
+    {
+      "argv": [
+        "/usr/bin/strace",
+        "-f",
+        "-qq",
+        "-e",
+        "trace=openat,openat2",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.4/real/extension-load.strace",
+        "--",
+        "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.4/official/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        ":memory:",
+        "-c",
+        "LOAD '/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.4/builds/19b0d53c9b42e73c00d210f4d2b99736566fad20b0ce582673d8552f325c804d/release/extension/duckomo/duckomo.duckdb_extension'; SELECT count(*) FROM duckomo_last_scan_metrics();"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "elapsed_seconds": 0.021,
+      "ended_at_utc": "2026-11-06T06:38:08Z",
+      "exit_code": 0,
+      "scenario": "verify_explicit_extension_load",
+      "started_at_utc": "2026-11-06T06:38:08Z",
+      "stderr": "",
+      "stdout": "┌──────────────┐\n│ count_star() │\n│    int64     │\n├──────────────┤\n│            0 │\n└──────────────┘\n",
+      "trace_path": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.4/real/extension-load.strace"
+    },
+    {
+      "argv": [
+        "/usr/bin/strace",
+        "-f",
+        "-qq",
+        "-e",
+        "trace=openat,openat2",
+        "-o",
+        "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.4/real/httpfs-load.strace",
+        "--",
+        "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.4/official/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-bail",
+        ":memory:",
+        "-c",
+        "LOAD '/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.4/official/httpfs.duckdb_extension'; SELECT 1;"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "elapsed_seconds": 0.025,
+      "ended_at_utc": "2026-11-06T06:38:08Z",
+      "exit_code": 0,
+      "scenario": "verify_explicit_httpfs_load",
+      "started_at_utc": "2026-11-06T06:38:08Z",
+      "stderr": "",
+      "stdout": "┌───────┐\n│   1   │\n│ int32 │\n├───────┤\n│     1 │\n└───────┘\n",
+      "trace_path": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.4/real/httpfs-load.strace"
+    },
+    {
+      "argv": [
+        "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.4/official/duckdb",
+        "-no-init",
+        "-unsigned",
+        "-json",
+        "-bail",
+        "-init",
+        "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.4/real/httpfs-init.sql",
+        ":memory:",
+        "-f",
+        "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.4/real/queries/real-boundary-series-vs-manual-union.sql"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "elapsed_seconds": 24.665,
+      "ended_at_utc": "2026-11-06T06:38:34Z",
+      "exit_code": 0,
+      "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+      "init_sql_path": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.4/real/httpfs-init.sql",
+      "query_sha256": "6af9ac6b40ec7574e3d9193d405faeb2aa027d25f4ec4146c72296596a563f65",
+      "scenario": "real_adjacent_boundary",
+      "sql_path": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.4/real/queries/real-boundary-series-vs-manual-union.sql",
+      "sql_sha256": "e83f90d6e3005722412c4c74d1d6fbb1e5e2eb2402927535d6774b99d2fa14de",
+      "started_at_utc": "2026-11-06T06:38:09Z",
+      "stderr": "",
+      "stdout": "[{\"validation_result\":{\"engine_version\":\"v1.5.4\",\"actual_schema\":[{\"name\":\"value\",\"type\":\"FLOAT\"},{\"name\":\"lat\",\"type\":\"DOUBLE\"},{\"name\":\"lon\",\"type\":\"DOUBLE\"},{\"name\":\"valid_time\",\"type\":\"TIMESTAMP\"}],\"manual_schema\":[{\"name\":\"value\",\"type\":\"FLOAT\"},{\"name\":\"lat\",\"type\":\"DOUBLE\"},{\"name\":\"lon\",\"type\":\"DOUBLE\"},{\"name\":\"valid_time\",\"type\":\"TIMESTAMP\"}],\"actual_count\":2,\"manual_count\":2,\"actual_rows\":[{\"value\":25.950000762939453,\"lat\":0.0,\"lon\":0.0,\"valid_time\":\"2026-10-08 21:00:00\"},{\"value\":25.600000381469727,\"lat\":0.0,\"lon\":0.0,\"valid_time\":\"2026-10-09 00:00:00\"}],\"manual_rows\":[{\"value\":25.950000762939453,\"lat\":0.0,\"lon\":0.0,\"valid_time\":\"2026-10-08 21:00:00\"},{\"value\":25.600000381469727,\"lat\":0.0,\"lon\":0.0,\"valid_time\":\"2026-10-09 00:00:00\"}],\"actual_only_rows\":null,\"manual_only_rows\":null}}]\n"
+    }
+  ],
+  "comparison": {
+    "actual_count": 2,
+    "actual_matches_frozen_oracle": true,
+    "actual_matches_manual_union": true,
+    "actual_only_rows": [],
+    "actual_rows": [
+      {
+        "lat": 0.0,
+        "lon": 0.0,
+        "valid_time": "2026-10-08 21:00:00",
+        "value": 25.950000762939453
+      },
+      {
+        "lat": 0.0,
+        "lon": 0.0,
+        "valid_time": "2026-10-09 00:00:00",
+        "value": 25.600000381469727
+      }
+    ],
+    "actual_schema": [
+      {
+        "name": "value",
+        "type": "FLOAT"
+      },
+      {
+        "name": "lat",
+        "type": "DOUBLE"
+      },
+      {
+        "name": "lon",
+        "type": "DOUBLE"
+      },
+      {
+        "name": "valid_time",
+        "type": "TIMESTAMP"
+      }
+    ],
+    "engine_version": "v1.5.4",
+    "frozen_count": 2,
+    "frozen_rows": [
+      {
+        "lat": 0.0,
+        "lon": 0.0,
+        "valid_time": "2026-10-08 21:00:00",
+        "value": 25.950000762939453
+      },
+      {
+        "lat": 0.0,
+        "lon": 0.0,
+        "valid_time": "2026-10-09 00:00:00",
+        "value": 25.600000381469727
+      }
+    ],
+    "manual_count": 2,
+    "manual_only_rows": [],
+    "manual_rows": [
+      {
+        "lat": 0.0,
+        "lon": 0.0,
+        "valid_time": "2026-10-08 21:00:00",
+        "value": 25.950000762939453
+      },
+      {
+        "lat": 0.0,
+        "lon": 0.0,
+        "valid_time": "2026-10-09 00:00:00",
+        "value": 25.600000381469727
+      }
+    ],
+    "manual_schema": [
+      {
+        "name": "value",
+        "type": "FLOAT"
+      },
+      {
+        "name": "lat",
+        "type": "DOUBLE"
+      },
+      {
+        "name": "lon",
+        "type": "DOUBLE"
+      },
+      {
+        "name": "valid_time",
+        "type": "TIMESTAMP"
+      }
+    ],
+    "manual_union_matches_frozen_oracle": true,
+    "schema_equal": true,
+    "sql_two_way_except_all_empty": true,
+    "status": "passed"
+  },
+  "ended_at_utc": "2026-11-06T06:38:34Z",
+  "extension_load_check": {
+    "command_exit_code": 0,
+    "expected_extension_path": "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.4/builds/19b0d53c9b42e73c00d210f4d2b99736566fad20b0ce582673d8552f325c804d/release/extension/duckomo/duckomo.duckdb_extension",
+    "opened_exact_extension": true,
+    "status": "passed",
+    "summary": "strace observed DuckDB opening the exact requested extension file",
+    "trace_path": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.4/real/extension-load.strace",
+    "trace_sha256": "564d7782929b9d7dbda3ae61b0e12ff6b39fdb5647dbeae48208d648443d1b51"
+  },
+  "feature": "010-read-om-series",
+  "gates": {
+    "S7": {
+      "status": "passed",
+      "summary": "live read_om_series, manual read_om UNION ALL and frozen boundary rows matched"
+    }
+  },
+  "httpfs_load_check": {
+    "command_exit_code": 0,
+    "expected_extension_path": "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.4/official/httpfs.duckdb_extension",
+    "opened_exact_extension": true,
+    "status": "passed",
+    "summary": "strace observed DuckDB opening the exact requested HTTPFS extension file",
+    "trace_path": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.4/real/httpfs-load.strace",
+    "trace_sha256": "1e0b98cb7ccaab46336de285e87920e4e38c3f2eb34f2a7ee808044566daf04c"
+  },
+  "identities": {
+    "duckdb": {
+      "name": "duckdb",
+      "path": "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.4/official/duckdb",
+      "required": true,
+      "sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+      "size_bytes": 54251376,
+      "status": "available",
+      "version": "v1.5.4 (Variegata) 08e34c447b"
+    },
+    "extension": {
+      "name": "extension",
+      "path": "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.4/builds/19b0d53c9b42e73c00d210f4d2b99736566fad20b0ce582673d8552f325c804d/release/extension/duckomo/duckomo.duckdb_extension",
+      "required": true,
+      "sha256": "703df1cc7a7c493bcf8e2fc4e3c37480f482081f476808e3dbcd14d0142701b0",
+      "size_bytes": 40556006,
+      "status": "available"
+    },
+    "httpfs": {
+      "name": "httpfs",
+      "path": "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.4/official/httpfs.duckdb_extension",
+      "required": true,
+      "sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+      "size_bytes": 19763390,
+      "status": "available"
+    },
+    "source_snapshots": {
+      "head_chunk_1594": {
+        "path": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/run-20260803-linux-arm64/t040/sources/chunk-1594.head",
+        "sha256": "932b11abfae15bc1839b8df22ccc80a1b423233828fd8261774075cd99c656ce",
+        "size_bytes": 458
+      },
+      "head_chunk_1595": {
+        "path": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/run-20260803-linux-arm64/t040/sources/chunk-1595.head",
+        "sha256": "2b478a7301c489cbed371e476cd22dcda1074b0be08af33999cb0e6141341407",
+        "size_bytes": 488
+      },
+      "live_listing": {
+        "path": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/run-20260803-linux-arm64/t040/sources/live-listing.xml",
+        "sha256": "73fe7c6e52c7268be3908622843cfc81530562cf7d95b814debc3fd65afbd095",
+        "size_bytes": 25372
+      },
+      "live_metadata": {
+        "path": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/run-20260803-linux-arm64/t040/sources/live-metadata.json",
+        "sha256": "d1d9fa295ed8fd4b1acdb158df18122436225c11bb3a0bb0fa97eba378b8ac74",
+        "size_bytes": 596
+      },
+      "manual_union_oracle": {
+        "path": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/run-20260803-linux-arm64/t040/oracles/manual-union.json",
+        "sha256": "2d73a12ee6d2c14a4873bc0dfda5fe81da33405ac0c693a6a3f4d33fe82eb65e",
+        "size_bytes": 171
+      },
+      "open_data_readme": {
+        "path": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/run-20260803-linux-arm64/t040/sources/open-data-readme.md",
+        "sha256": "85c2b2bee77119dfaa7b09ff96fac49bd06b8bb7cbad54e50537fbb7267c75a1",
+        "size_bytes": 25010
+      },
+      "series_boundary_oracle": {
+        "path": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/run-20260803-linux-arm64/t040/oracles/series-boundary-probe.json",
+        "sha256": "2d73a12ee6d2c14a4873bc0dfda5fe81da33405ac0c693a6a3f4d33fe82eb65e",
+        "size_bytes": 171
+      }
+    }
+  },
+  "manifest_validation_error": null,
+  "mode": "real",
+  "object_checks": [
+    {
+      "expected": {
+        "etag": "\"3958affd1f109a35a6320048231668d4-8\"",
+        "last_modified": "2026-10-09T01:03:49Z",
+        "size_bytes": 66552160
+      },
+      "identity_matches": true,
+      "key": "data/ecmwf_ifs025/temperature_2m/chunk_1594.om",
+      "observed": {
+        "ended_at_utc": "2026-11-06T06:38:09Z",
+        "etag": "\"3958affd1f109a35a6320048231668d4-8\"",
+        "last_modified": "2026-10-09T01:03:49Z",
+        "size_bytes": 66552160,
+        "started_at_utc": "2026-11-06T06:38:08Z",
+        "status": 200,
+        "url": "https://openmeteo.s3.us-west-2.amazonaws.com/data/ecmwf_ifs025/temperature_2m/chunk_1594.om"
+      },
+      "status": "passed",
+      "url": "https://openmeteo.s3.us-west-2.amazonaws.com/data/ecmwf_ifs025/temperature_2m/chunk_1594.om"
+    },
+    {
+      "expected": {
+        "etag": "\"2723deb82b74aee469f11cf7e948ec2d-9\"",
+        "last_modified": "2026-10-22T01:44:24Z",
+        "size_bytes": 67160304
+      },
+      "identity_matches": true,
+      "key": "data/ecmwf_ifs025/temperature_2m/chunk_1595.om",
+      "observed": {
+        "ended_at_utc": "2026-11-06T06:38:09Z",
+        "etag": "\"2723deb82b74aee469f11cf7e948ec2d-9\"",
+        "last_modified": "2026-10-22T01:44:24Z",
+        "size_bytes": 67160304,
+        "started_at_utc": "2026-11-06T06:38:09Z",
+        "status": 200,
+        "url": "https://openmeteo.s3.us-west-2.amazonaws.com/data/ecmwf_ifs025/temperature_2m/chunk_1595.om"
+      },
+      "status": "passed",
+      "url": "https://openmeteo.s3.us-west-2.amazonaws.com/data/ecmwf_ifs025/temperature_2m/chunk_1595.om"
+    }
+  ],
+  "platform": {
+    "machine": "aarch64",
+    "python": "3.13.13",
+    "system": "Linux"
+  },
+  "prerequisites": [
+    {
+      "name": "duckdb",
+      "path": "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.4/official/duckdb",
+      "required": true,
+      "sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+      "size_bytes": 54251376,
+      "status": "available",
+      "version": "v1.5.4 (Variegata) 08e34c447b"
+    },
+    {
+      "name": "extension",
+      "path": "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.4/builds/19b0d53c9b42e73c00d210f4d2b99736566fad20b0ce582673d8552f325c804d/release/extension/duckomo/duckomo.duckdb_extension",
+      "required": true,
+      "sha256": "703df1cc7a7c493bcf8e2fc4e3c37480f482081f476808e3dbcd14d0142701b0",
+      "size_bytes": 40556006,
+      "status": "available"
+    },
+    {
+      "name": "httpfs",
+      "path": "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.4/official/httpfs.duckdb_extension",
+      "required": true,
+      "sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+      "size_bytes": 19763390,
+      "status": "available"
+    },
+    {
+      "name": "real_object_manifest",
+      "path": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/run-20260803-linux-arm64/t040/real-object-manifest.json",
+      "required": true,
+      "sha256": "cebba410eb1633c1730464bc6fa6cc5b927f8e388c7451ee0224721f2d2aa555",
+      "size_bytes": 4866,
+      "status": "available"
+    },
+    {
+      "name": "linux_arm64",
+      "reason": null,
+      "status": "available"
+    }
+  ],
+  "producer_provenance": {
+    "archived_metadata_path": "specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-catalog-metadata-20261008/snapshots/data/ecmwf_ifs025/static/meta.json",
+    "archived_metadata_sha256": "3c984581a41d27360b03c5927a4e5d40863cff50719c4551fd4db5cd309e4fcc",
+    "domain_source_path": "src/grid/domain_registry.cpp",
+    "domain_source_sha256": "69cb698878afa042fb2f1af99fcfcc100b2a2661e557c133f2dd6061cb65cdff",
+    "model_key": "ecmwf_ifs025",
+    "models_path": "test/data/series/models.json",
+    "models_sha256": "e3dc7e177cdf6c63b70a28933b8efa8769e81f7329d5f8f368173bb8d4ce4cf0",
+    "producer_domain": "EcmwfDomain.ifs025",
+    "producer_source_path": "Sources/App/Ecmwf/EcmwfDomain.swift",
+    "producer_source_sha256": "79907b5912b653e0ac2c9ef4f61155d03acfe762de75fb811f9306d3a3eed83d",
+    "upstream_commit": "b06f4760fd1f997e5559bb380f64c5e496b4a509",
+    "upstream_repository": "https://github.com/open-meteo/open-meteo"
+  },
+  "real_manifest": {
+    "path": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/run-20260803-linux-arm64/t040/real-object-manifest.json",
+    "schema_version": 1,
+    "sha256": "cebba410eb1633c1730464bc6fa6cc5b927f8e388c7451ee0224721f2d2aa555"
+  },
+  "schema_version": 1,
+  "spatial_configuration": {
+    "dimensions": [
+      "lat",
+      "lon",
+      "time"
+    ],
+    "domain": "ecmwf_ifs025",
+    "output_value_column": "value",
+    "point": {
+      "lat": 0.0,
+      "lon": 0.0
+    },
+    "producer_variable": "temperature_2m"
+  },
+  "started_at_utc": "2026-11-06T06:38:08Z",
+  "status": "passed"
+}

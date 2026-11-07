@@ -80,6 +80,7 @@ struct RemoteFailure final {
     const char *category;
     const char *hint;
     int http_status = 0;
+    ReaderErrorCategory typed_category = ReaderErrorCategory::Unclassified;
 };
 
 RemoteFailure ClassifyRemoteFailure(const ErrorData &error) {
@@ -89,7 +90,8 @@ RemoteFailure ClassifyRemoteFailure(const ErrorData &error) {
     case ExceptionType::AUTOLOAD:
         return {"extension_load", "check the matching official httpfs installation, version/platform and extension download access"};
     case ExceptionType::PERMISSION:
-        return {"access_denied", "check DuckDB external-access permissions and the applicable user secret/access policy"};
+        return {"access_denied", "check DuckDB external-access permissions and the applicable user secret/access policy",
+                0, ReaderErrorCategory::AccessDenied};
     case ExceptionType::INVALID_INPUT:
     case ExceptionType::INVALID_CONFIGURATION:
     case ExceptionType::SETTINGS:
@@ -112,14 +114,17 @@ RemoteFailure ClassifyRemoteFailure(const ErrorData &error) {
                 switch (status) {
                 case 401:
                 case 403:
-                    return {"access_denied", "check the applicable user secret, bucket/object permissions and endpoint policy", status};
+                    return {"access_denied", "check the applicable user secret, bucket/object permissions and endpoint policy",
+                            status, ReaderErrorCategory::AccessDenied};
                 case 404:
-                    return {"object_not_found", "check the exact object key; Open-Meteo rolling forecast objects may have expired", status};
+                    return {"object_not_found", "check the exact object key; Open-Meteo rolling forecast objects may have expired",
+                            status, ReaderErrorCategory::ObjectNotFound};
                 case 408:
                 case 504:
                     return {"timeout", "check connectivity, proxy and HTTP timeout/retry settings", status};
                 case 412:
-                    return {"object_changed", "retry with a stable object/version; conditional-read validation failed", status};
+                    return {"object_changed", "retry with a stable object/version; conditional-read validation failed",
+                            status, ReaderErrorCategory::ObjectChanged};
                 case 416:
                     return {"range_request", "check object stability and server byte-range support", status};
                 case 429:
@@ -136,7 +141,8 @@ RemoteFailure ClassifyRemoteFailure(const ErrorData &error) {
 }
 
 std::string RemoteFailureMessage(const std::exception &exception, const char *operation,
-                                 const std::string &redacted_path) {
+                                 const std::string &redacted_path,
+                                 ReaderErrorCategory *typed_category = nullptr) {
     ErrorData error(ExceptionType::UNKNOWN_TYPE, "");
     try {
         error = ErrorData(exception);
@@ -146,6 +152,7 @@ std::string RemoteFailureMessage(const std::exception &exception, const char *op
         // so a decoded interruption still propagates as cancellation.
     }
     const auto failure = ClassifyRemoteFailure(error);
+    if (typed_category) *typed_category = failure.typed_category;
     std::string message = std::string("remote OM ") + operation + " failed for '" + redacted_path +
                           "' [" + failure.category + "]";
     if (failure.http_status) message += " (HTTP " + std::to_string(failure.http_status) + ")";
@@ -203,13 +210,23 @@ public:
             const auto length = file_system_->GetFileSize(*handle_);
             if (length <= 0) throw IOException("no positive length");
             size_ = static_cast<std::uint64_t>(length);
-            session_->ConfirmIdentity(size_, file_system_->GetVersionTag(*handle_));
+            try {
+                session_->ConfirmIdentity(size_, file_system_->GetVersionTag(*handle_));
+            } catch (const ReaderError &error) {
+                throw ReaderError(error.Code(), error.what(), error.OmError(), ReaderErrorCategory::ObjectChanged,
+                                  stage_ == ScanMetadataStage::Bind ? ReaderErrorStage::InitialOpen
+                                                                  : ReaderErrorStage::LaterOpen);
+            }
             CheckInterrupt();
         } catch (const InterruptException &) { throw;
         } catch (const ReaderError &) { throw;
         } catch (const std::exception &exception) {
             CheckInterrupt();
-            throw ReaderError(ReaderErrorCode::FileIo, RemoteFailureMessage(exception, "open", Path()));
+            ReaderErrorCategory category;
+            const auto message = RemoteFailureMessage(exception, "open", Path(), &category);
+            const auto failure_stage = stage_ == ScanMetadataStage::Bind ? ReaderErrorStage::InitialOpen
+                                                                        : ReaderErrorStage::LaterOpen;
+            throw ReaderError(ReaderErrorCode::FileIo, message, ERROR_OK, category, failure_stage);
         }
         memory_account_ = std::make_shared<ScanMemoryAccount>(Metrics(), ScanMemoryComponent::TransportControl);
         memory_account_->Set(sizeof(*this)); // HTTPFS handle/buffer memory is outside the DuckOMO ledger.
@@ -239,8 +256,10 @@ public:
         } catch (const InterruptException &) { throw;
         } catch (const std::exception &exception) {
             CheckInterrupt();
+            ReaderErrorCategory category;
+            const auto message = RemoteFailureMessage(exception, "range read", Path(), &category);
             throw ReaderError(phase == ScanReadPhase::Index ? ReaderErrorCode::IndexRead : ReaderErrorCode::DataRead,
-                              RemoteFailureMessage(exception, "range read", Path()));
+                              message, ERROR_OK, category, ReaderErrorStage::Read);
         }
         RecordReadMetric(Metrics(), stage_, phase, size, variable_path);
     }

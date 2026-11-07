@@ -92,3 +92,9 @@ coverage/
 venv/
 __pycache__/
 *.py[cod]
+
+# Local pi agent tree (includes env.wake-parent.local secrets)
+.pi/
+
+# Bulky 010 histories — keep on disk; ship via external archive, not product PR
+specs/010-read-om-series/evidence/run-20260803-linux-arm64/

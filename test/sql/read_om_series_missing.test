@@ -1,0 +1,310 @@
+# name: test/sql/read_om_series_missing.test
+# description: Validate default missing-chunk skip, strict validation, and declared empty schemas
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+# Missing first, middle, and last candidates contribute no filler rows. The one
+# existing NaN in chunk 1 remains a NULL value row, distinct from absence.
+query III
+SELECT count(*)::INTEGER, count(value)::INTEGER,
+       count(*) FILTER (WHERE value IS NULL)::INTEGER
+FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/first-missing/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 11:00:00']
+);
+----
+48	47	1
+
+query III
+SELECT count(*)::INTEGER, count(value)::INTEGER,
+       count(*) FILTER (WHERE value IS NULL)::INTEGER
+FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/middle-missing/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 11:00:00']
+);
+----
+48	48	0
+
+query III
+SELECT count(*)::INTEGER, count(value)::INTEGER,
+       count(*) FILTER (WHERE value IS NULL)::INTEGER
+FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/last-missing/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 11:00:00']
+);
+----
+48	47	1
+
+# An all-missing default query is a typed empty relation with no fabricated rows.
+query I
+SELECT count(*)::INTEGER
+FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/all-missing/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 01:00:00']
+);
+----
+0
+
+# Metadata-free all-missing root schema matches a present root object.
+query I
+WITH empty_schema AS (
+    SELECT column_name, column_type
+    FROM (DESCRIBE SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/all-missing/temperature',
+        chunk_time_length := 4, time_step := INTERVAL '1 hour',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 01:00:00']
+    ))
+), present_schema AS (
+    SELECT column_name, column_type
+    FROM (DESCRIBE SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+        chunk_time_length := 4, time_step := INTERVAL '1 hour',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 01:00:00']
+    ))
+)
+SELECT (SELECT count(*) FROM (SELECT * FROM empty_schema EXCEPT ALL SELECT * FROM present_schema))
+     + (SELECT count(*) FROM (SELECT * FROM present_schema EXCEPT ALL SELECT * FROM empty_schema));
+----
+0
+
+# A declared named-array map keeps its exact output schema when no file exists.
+query I
+WITH empty_schema AS (
+    SELECT column_name, column_type
+    FROM (DESCRIBE SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/all-missing/temperature',
+        chunk_time_length := 4, time_step := INTERVAL '1 hour',
+        dimensions := map(['/temperature','/humidity'],
+                         [['lead','point','time'],['lead','point','time']]),
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 01:00:00']
+    ))
+), present_schema AS (
+    SELECT column_name, column_type
+    FROM (DESCRIBE SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/named/temperature',
+        chunk_time_length := 4, time_step := INTERVAL '1 hour',
+        dimensions := map(['/temperature','/humidity'],
+                         [['lead','point','time'],['lead','point','time']]),
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 01:00:00']
+    ))
+)
+SELECT (SELECT count(*) FROM (SELECT * FROM empty_schema EXCEPT ALL SELECT * FROM present_schema))
+     + (SELECT count(*) FROM (SELECT * FROM present_schema EXCEPT ALL SELECT * FROM empty_schema));
+----
+0
+
+# A variable selector narrows the declaration identically for empty and present data.
+query I
+WITH empty_schema AS (
+    SELECT column_name, column_type
+    FROM (DESCRIBE SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/all-missing/temperature',
+        chunk_time_length := 4, time_step := INTERVAL '1 hour', variable := 'temperature',
+        dimensions := map(['/temperature'], [['lead','point','time']]),
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 01:00:00']
+    ))
+), present_schema AS (
+    SELECT column_name, column_type
+    FROM (DESCRIBE SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/named/temperature',
+        chunk_time_length := 4, time_step := INTERVAL '1 hour', variable := 'temperature',
+        dimensions := map(['/temperature'], [['lead','point','time']]),
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 01:00:00']
+    ))
+)
+SELECT (SELECT count(*) FROM (SELECT * FROM empty_schema EXCEPT ALL SELECT * FROM present_schema))
+     + (SELECT count(*) FROM (SELECT * FROM present_schema EXCEPT ALL SELECT * FROM empty_schema));
+----
+0
+
+# include_source keeps its existing STRUCT type for all-missing declarations.
+query I
+WITH empty_schema AS (
+    SELECT column_name, column_type
+    FROM (DESCRIBE SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/all-missing/temperature',
+        chunk_time_length := 4, time_step := INTERVAL '1 hour', include_source := true,
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 01:00:00']
+    ))
+), present_schema AS (
+    SELECT column_name, column_type
+    FROM (DESCRIBE SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+        chunk_time_length := 4, time_step := INTERVAL '1 hour', include_source := true,
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 01:00:00']
+    ))
+)
+SELECT (SELECT count(*) FROM (SELECT * FROM empty_schema EXCEPT ALL SELECT * FROM present_schema))
+     + (SELECT count(*) FROM (SELECT * FROM present_schema EXCEPT ALL SELECT * FROM empty_schema));
+----
+0
+
+# Strict mode rejects every missing-position pattern, including all-missing input.
+statement error
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/first-missing/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', strict := true,
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 11:00:00']
+);
+----
+<REGEX>:(?i).*(could not open|no such file|not found|missing).*
+
+statement error
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/middle-missing/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', strict := true,
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 11:00:00']
+);
+----
+<REGEX>:(?i).*(could not open|no such file|not found|missing).*
+
+statement error
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/last-missing/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', strict := true,
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 11:00:00']
+);
+----
+<REGEX>:(?i).*(could not open|no such file|not found|missing).*
+
+statement error
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/all-missing/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', strict := true,
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 01:00:00']
+);
+----
+<REGEX>:(?i).*(could not open|no such file|not found|missing).*
+
+# Strict validation is a bind-time obligation, so outer operators cannot bypass it.
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/first-missing/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', strict := true,
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 11:00:00']
+)
+LIMIT 0;
+----
+<REGEX>:(?i).*(could not open|no such file|not found|missing).*
+
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/middle-missing/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', strict := true,
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 11:00:00']
+)
+WHERE valid_time >= TIMESTAMP '1970-01-01 08:00:00';
+----
+<REGEX>:(?i).*(could not open|no such file|not found|missing).*
+
+statement error
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/all-missing/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', strict := NULL,
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 01:00:00']
+);
+----
+<REGEX>:(?i).*(strict|non-NULL|boolean).*
+
+# Strict mode still checks the candidate when the requested subinterval has no slots.
+statement error
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/all-missing/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', strict := true,
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    start := TIMESTAMP '1970-01-01 00:00:00.000001', "end" := TIMESTAMP '1970-01-01 00:59:59.999999'
+);
+----
+<REGEX>:(?i).*(could not open|no such file|not found|missing).*
+
+# A slotless first candidate remains subject to strict presence checks when later chunks contribute rows.
+statement error
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/first-missing/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', strict := true,
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    start := TIMESTAMP '1970-01-01 03:00:00.000001', "end" := TIMESTAMP '1970-01-01 05:00:00'
+);
+----
+<REGEX>:(?i).*(could not open|no such file|not found|missing).*
+
+# A present slotless candidate is bound for validation but contributes no rows.
+query I
+SELECT count(*)::INTEGER
+FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', strict := true,
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    start := TIMESTAMP '1970-01-01 03:00:00.000001', "end" := TIMESTAMP '1970-01-01 03:59:59.999999'
+);
+----
+0

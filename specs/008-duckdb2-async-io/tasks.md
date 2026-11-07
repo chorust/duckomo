@@ -123,8 +123,8 @@ description: "Task list for DuckDB 2.0 support, remote request merging and async
 - [X] T039 [US3] ScanReadOmImpl 使用 pinned 2.0 的 AsyncResult(tasks) 返回 BLOCKED，由引擎 executor 调度并唤醒；恢复后解码。该版本没有 FromTasks/HandleBlocked 接口。
 - [X] T040 [US3] 在 `src/scan/read_om.cpp` 与 `src/om/remote_file.cpp` 实现失败/取消清理：任一任务失败时保留首个分类错误、释放全部缓冲与账本；记录 `remote_io.async_applied` 与 `inflight_peak`
 - [X] T041 [US3] 用 TSan 与 T032 并发用例验证并发读取与取消安全 native 并发回归与 TSan 通过。 最终 TSan 使用 ENABLE_JEMALLOC=OFF、setarch aarch64 -R 执行，退出码 0，无竞争报告；原 jemalloc 报告另存 evidence/008/final/tsan-run.log，最终日志为 tsan-system-run.log。
-- [ ] T042 [US3] 用 `scripts/benchmark-remote-io.py` 在 2.0 上比较 `merge=on:async=off` 与 `merge=on:async=on`（1/4 workers、受控 HTTP/S3），并在 `SET memory_limit='256MB'` 下复测；结果保存 `evidence/008/async-a.json`，判定 SC-006/SC-007/SC-008 旧 async-a.json 不含 RSS 且未达 20% speedup；runner 已增加 RSS/产物 SHA256，HTTP/S3 全矩阵需重跑。 已补 query-profiled HTTP/S3、实际并发、受控 10ms 场景与 HTTP 256MB RSS，普通/延迟场景均未稳定达到 20%；S3 256MB/polygon/nearest 仍缺，保持未完成。
-- [ ] T043 [US3] 条件任务（仅当 T042 未达 SC-006）：已实现实验有界跨输出批次取数窗口（duckomo_async_prefetch_batches=1–4，默认1关闭），真实单变量并发、结果、取消恢复与TSan通过；HTTP/S3/10ms延迟测量更慢，保持默认关闭并如实报告。完整跨批 I/O/解码重叠流水线及重叠范围复用尚未实现，SC-006仍未达标。证据：evidence/008/prefetch/report.md。
+- [ ] T042 [US3] 用 `scripts/benchmark-remote-io.py` 在 2.0 上比较 `merge=on:async=off` 与 `merge=on:async=on`（1/4 workers、受控 HTTP/S3），并在 `SET memory_limit='256MB'` 下复测；结果保存 `evidence/008/async-a.json`，判定 SC-006/SC-007/SC-008。 **SC-006 吞吐部分：deferred/relaxed（2026-11-05）** — 已有 fresh performance-gates 证明默认 async ~0%、结果一致、未达 20%；不再为 ≥20% 继续重跑。HTTP 256MB RSS 已有；S3 256MB/polygon/nearest 与 SC-007/SC-008 全矩阵仍缺，**保持未勾选**（勿假装 PASS）。
+- [ ] T043 [US3] 条件任务（仅当 T042 未达原 SC-006 ≥20%）：已实现实验有界跨输出批次取数窗口（`duckomo_async_prefetch_batches=1–4`，默认 1 关闭）与跨批范围复用缓存（planned_cache/data_cache）；消除重复读取爆炸与严重性能回退，请求数完全对齐串行 merge-on（840/997）；单变量并发、结果、取消恢复通过。**真正的批间 I/O·decode overlap 未实现**（DuckDB 拉取模型限制），全量顺序扫描未达 20%。 **status: deferred/relaxed（2026-11-05）** — 保持默认关闭并如实报告；**保持未勾选**，勿假装 PASS。证据：`evidence/008/performance-gates/report.md`。
 
 **Checkpoint**: 2.0 用户获得异步读取；1.5.x 行为不变
 

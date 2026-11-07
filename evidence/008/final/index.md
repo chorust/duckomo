@@ -9,4 +9,8 @@
 
 Each benchmark run records its own extension hash; refer to that hash when interpreting intermediate measurements.
 
-[Current status](status.md) records passed checks and unmet gates.
+## Focused performance-gate rerun
+
+Fresh SC-006 and SC-009 evidence, including the rebuilt artifact identities and all benchmark medians, is in [performance-gates/report.md](../performance-gates/report.md).
+
+**2026-11-05:** SC-006 ≥20% throughput gate **relaxed / won’t meet** (correctness + ~0% measured ceiling accepted); SC-009 remains met. See [status.md](status.md). Other Spec 008 gates may still be open — do not treat this as full Spec PASS.

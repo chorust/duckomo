@@ -1,0 +1,14 @@
+rectangular batch decoded chunks: 35 -> 5
+  row=0 planned_items=0 retained_bytes=136
+  row=7 planned_items=0 retained_bytes=496
+  row=14 planned_items=0 retained_bytes=136
+  row=21 planned_items=0 retained_bytes=144
+  row=28 planned_items=0 retained_bytes=144
+  row=35 planned_items=0 retained_bytes=152
+  row=42 planned_items=0 retained_bytes=152
+  row=49 planned_items=0 retained_bytes=152
+  row=56 planned_items=0 retained_bytes=152
+  row=63 planned_items=0 retained_bytes=152
+  row=70 planned_items=0 retained_bytes=447
+remote sync retained payload peak: 496 bytes (single range bound 4462)
+reader capacity bounds passed

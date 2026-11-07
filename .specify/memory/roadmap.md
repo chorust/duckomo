@@ -1,3 +1,14 @@
+<!-- Sync Impact Report — 2026-11-05 SC-006 relax
+Version change: 1.5.2 → 1.5.3
+Bump rationale: PATCH — relax Spec 008 SC-006 ≥20% async throughput hard gate to won’t-meet with evidence; do not promote Spec 008 to verified.
+Specs affected: 008
+Evidence: evidence/008/performance-gates/report.md, specs/008-duckdb2-async-io/checklists/success-criteria.md
+Changes:
+  - SC-006: original ≥20% waived; correctness + ~0% measured ceiling recorded; not a fabricated PASS.
+  - T042/T043 remain unchecked (deferred/relaxed for ≥20%/true overlap).
+  - SC-009 remains met; Spec 008 lifecycle stays in-progress (other gates open).
+-->
+
 <!-- Sync Impact Report — 2026-10-25 spec 008 evaluation
 Version change: 1.5.1 → 1.5.2
 Bump rationale: MINOR — add spec 008 as an active evaluation item; record local compatibility evidence and outstanding remote merge/async/release gates without promoting support.
@@ -301,15 +312,15 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 - **Spec dir:** [007](../../specs/007-region-bilinear-sampling/)；[规格](../../specs/007-region-bilinear-sampling/spec.md)、[质量清单](../../specs/007-region-bilinear-sampling/checklists/requirements.md)。
 - **Notes:** 2026-10-22 Draft，仅启动规格；16 FR / 7 SC。下一步 plan/contracts 冻结声明 SQL、权重/组合顺序和 sampling schema，再生成任务；尚无实现或运行验收。
 
-### 尚未形成 spec 的其他方向
+### 后续方向与当前开发项
 
-| 产品方向 | 已有目标与范围依据 | 原产品阶段状态 | 尚待确认 |
+| 产品方向 | 已有目标与范围依据 | 当前状态 | 尚待确认 |
 | --- | --- | --- | --- |
 | Phase 7 — 科学计算 | 独立设计 `om_slice`、`om_reduce`、`om_interp`、`om_regrid`；算子与扫描入口的职责分开。[来源](../../docs/roadmap.md#阶段) | 计划中 | 单一或多个 specs、编号、各算子的语义与约束、技术选型、验收及 spec 级依赖 |
 | 空间采样后续 | [空间计算提案](../../docs/plans/2026-10-14-spatial-sampling-and-computation.md)中的Line、单元覆盖/面积统计；nearest已由006交付，窄范围bilinear已登记007 | 提案，未形成新spec | 逐方法数值/缺测/来源/边界与验收；只在第二个真实消费者出现时提取通用设施 |
-| Phase 8 — 跨chunk时间序列 | [series提案](../../docs/roadmap.md#phase-8--跨-chunk-时间序列入口待评审提案)以单对象read_om组合时间窗 | 待评审，未立项 | model参数证据、时间/缺失chunk政策、身份/指标、接口和独立spec；本次不批准草案默认跳过404 |
+| Feature 010 — 跨chunk时间序列 | [Feature 010 spec](../../specs/010-read-om-series/spec.md)、[当前验收报告](../../specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/report.md) | 开发源码；当前验收仅对 Linux AArch64 / linux_arm64、DuckDB v1.5.4/v1.5.5/v1.5.6/v2.0.0 的声明范围 PASS；真实数据限两个相邻 IFS025 `temperature_2m` 对象、一个点、一个边界窗口；其他十个模型仅 provenance + synthetic runtime equivalence，N160 synthetic | 保持开发源码身份；不扩展平台或生产网格支持声明 |
 
-以上保留现有产品文档和设计提案中的后续意图，不自动立项；Phase 6 已由004承接，nearest已由006交付。产品阶段顺序本身不足以确定未来科学算子的硬依赖边。
+以上不自动立项未来科学算子；Phase 6 已由004承接，nearest已由006交付。产品阶段顺序本身不足以确定未来科学算子的硬依赖边。
 
 ## Open Questions
 
@@ -336,11 +347,12 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 
 ## Spec 008 — DuckDB 2.0, remote merge and async I/O
 
-**Lifecycle:** in-progress. DuckDB 2.0.0 compatibility is verified and available through v0.3.5-rc.1 on all four release platforms; engine release_state is target. This is a prerelease, not a stable release. Remaining async speedup/local performance goals and cross-batch pipeline work keep Spec 008 incomplete; they do not revoke engine compatibility verification.
+**Lifecycle:** in-progress. DuckDB 2.0.0 compatibility is verified and available through v0.3.5-rc.1 on all four release platforms; engine release_state is target. This is a prerelease, not a stable release. **SC-006 ≥20% async throughput hard gate was relaxed 2026-11-05 (won’t meet; ~0% measured; correctness accepted)** — this does **not** make Spec 008 verified. SC-009 is met. Remaining open items (merge final reruns SC-003–005, SC-007/SC-008 matrix, T042/T043 unchecked, T047) keep Spec 008 incomplete; they do not revoke engine compatibility verification.
 
 - **Scope:** add DuckDB v2.0.0 to a separate engine-compatibility and release matrix while retaining 1.5.4–1.5.6; calibrate remote OM range merging; add true DuckDB 2.0 async reads only with correctness, cancellation, and memory evidence.
-- **Current evidence:** [success criteria](../../specs/008-duckdb2-async-io/checklists/success-criteria.md), [cross-version local result](../../evidence/duckdb-2.0/final/cross-version.json), [CI dispatch status](../../evidence/duckdb-2.0/final/ci.json), [evaluation notes](../../docs/duckdb-2.0-evaluation.md).
-- **Governing decisions:** keep `extension_ci_tools.commit` equal to the submodule HEAD while separately pinning the CI toolchain; do not claim async is applied until multi-range scheduled I/O exists; do not set matrix `release_state` to `target` before T015–T017 pass.
+- **SC-006 (relaxed 2026-11-05):** won’t meet original ≥20%; default async ~0% vs merge-only on controlled O1280; cross-batch range reuse fixed (840/997); no true batch-boundary I/O·decode overlap under DuckDB pull model. Evidence: [performance-gates/report.md](../../evidence/008/performance-gates/report.md).
+- **Current evidence:** [success criteria](../../specs/008-duckdb2-async-io/checklists/success-criteria.md), [performance gates](../../evidence/008/performance-gates/report.md), [verification status](../../evidence/008/final/status.md), [cross-version local result](../../evidence/duckdb-2.0/final/cross-version.json), [CI dispatch status](../../evidence/duckdb-2.0/final/ci.json), [evaluation notes](../../docs/duckdb-2.0-evaluation.md).
+- **Governing decisions:** keep `extension_ci_tools.commit` equal to the submodule HEAD while separately pinning the CI toolchain; do not claim async is applied until multi-range scheduled I/O exists; do not set matrix `release_state` to `target` before T015–T017 pass; **do not claim SC-006 ≥20% PASS** after the 2026-11-05 relax.
 
 <!-- Historical version snapshot: **Version**: 1.2.0 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-10 -->
 
@@ -350,4 +362,4 @@ Status legend (lifecycle): **undecided** · **needs-info** · **planned** · **s
 
 ---
 
-**Version**: 1.5.1 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-10-22
+**Version**: 1.5.3 | **Ratified**: 2026-09-30 | **Last Amended**: 2026-11-05

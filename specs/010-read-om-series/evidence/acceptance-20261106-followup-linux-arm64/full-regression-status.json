@@ -1,0 +1,80 @@
+{
+  "runs": [
+    {
+      "pair": "v1.5.4",
+      "command": [
+        "bash",
+        "scripts/validate.sh",
+        "--matrix",
+        "test/data/grids/version-matrix.json",
+        "--pair",
+        "v1.5.4",
+        "--output-root",
+        "build/series-acceptance-sc004-corrected-20261106",
+        "--local-only"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "started_at_utc": "2026-11-06T06:39:35Z",
+      "ended_at_utc": "2026-11-06T06:41:10Z",
+      "exit_code": 0,
+      "log": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.4/full-regression-final.log"
+    },
+    {
+      "pair": "v1.5.5",
+      "command": [
+        "bash",
+        "scripts/validate.sh",
+        "--matrix",
+        "test/data/grids/version-matrix.json",
+        "--pair",
+        "v1.5.5",
+        "--output-root",
+        "build/series-acceptance-sc004-corrected-20261106",
+        "--local-only"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "started_at_utc": "2026-11-06T06:41:10Z",
+      "ended_at_utc": "2026-11-06T06:42:47Z",
+      "exit_code": 0,
+      "log": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.5/full-regression-final.log"
+    },
+    {
+      "pair": "v1.5.6",
+      "command": [
+        "bash",
+        "scripts/validate.sh",
+        "--matrix",
+        "test/data/grids/version-matrix.json",
+        "--pair",
+        "v1.5.6",
+        "--output-root",
+        "build/series-acceptance-sc004-corrected-20261106",
+        "--local-only"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "started_at_utc": "2026-11-06T06:42:47Z",
+      "ended_at_utc": "2026-11-06T06:44:22Z",
+      "exit_code": 0,
+      "log": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.6/full-regression-final.log"
+    },
+    {
+      "pair": "v2.0.0",
+      "command": [
+        "bash",
+        "scripts/validate.sh",
+        "--matrix",
+        "test/data/engine-compatibility/version-matrix.json",
+        "--pair",
+        "v2.0.0",
+        "--output-root",
+        "build/series-acceptance-sc004-corrected-20261106",
+        "--local-only"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "started_at_utc": "2026-11-06T06:44:22Z",
+      "ended_at_utc": "2026-11-06T06:46:01Z",
+      "exit_code": 0,
+      "log": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v2.0.0/full-regression-final.log"
+    }
+  ]
+}

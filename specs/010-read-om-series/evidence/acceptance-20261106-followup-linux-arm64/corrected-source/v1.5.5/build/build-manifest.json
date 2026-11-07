@@ -1,0 +1,116 @@
+{
+  "schema_version": 2,
+  "status": "built (runtime gates pending)",
+  "pair_id": "v1.5.5",
+  "build_id": "ccfa7772a2ed17bc4c9366d95fdc46ecb4ff5d1ce38835e371446983aae40021",
+  "release_dir": "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.5/builds/ccfa7772a2ed17bc4c9366d95fdc46ecb4ff5d1ce38835e371446983aae40021/release",
+  "inputs": {
+    "schema_version": 2,
+    "pair_id": "v1.5.5",
+    "commits": {
+      "duckdb": {
+        "repository": "https://github.com/duckdb/duckdb.git",
+        "commit": "d8cdaa33fda8df955cc76ef58a280f68f4cd43fa",
+        "version": "v1.5.5"
+      },
+      "om_c": {
+        "repository": "https://github.com/open-meteo/om-file-format.git",
+        "commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+      },
+      "extension_ci_tools": {
+        "repository": "https://github.com/duckdb/extension-ci-tools.git",
+        "commit": "b777c70d30942cca5bef62d6d4fa23a13362f398"
+      }
+    },
+    "platform": {
+      "target": "Linux AArch64",
+      "official_extension_platform": "linux_arm64",
+      "cxx_abi": "libstdc++ cxx11abi=1"
+    },
+    "build_options": {
+      "CMAKE_BUILD_TYPE": "Release",
+      "BUILD_UNITTESTS": "TRUE",
+      "BUILD_SHELL": "TRUE",
+      "NATIVE_ARCH": "FALSE",
+      "ENABLE_UNITTEST_CPP_TESTS": "FALSE",
+      "ENABLE_EXTENSION_AUTOLOADING": "FALSE",
+      "ENABLE_EXTENSION_AUTOINSTALL": "FALSE"
+    },
+    "extension_source_sha256": "8f1f2624fc64951aa42e35625f90c7008ff18672c4e114000dfada4c7e6bef6e"
+  },
+  "official_runtime": {
+    "version": "v1.5.5",
+    "platform": "linux_arm64",
+    "cli_url": "https://github.com/duckdb/duckdb/releases/download/v1.5.5/duckdb_cli-linux-arm64.zip",
+    "cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+    "httpfs_url": "https://extensions.duckdb.org/v1.5.5/linux_arm64/httpfs.duckdb_extension.gz",
+    "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9"
+  },
+  "artifact_hashes": {
+    "duckomo": "2c981c7b1c372ec2f3f1e28212821c7359fcea53345fb427da41bfe027b78268",
+    "duckdb": "0984430ad4f861204700f56062e72592b40fa6f9f124d69844391117b7426977",
+    "unittest": "58e144063b1adbf5cba28cc2e64db4e60254793440fee1fedff0d34c59f42ed6"
+  },
+  "commands": [
+    {
+      "argv": [
+        "cmake",
+        "-S",
+        "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.5/source/duckdb",
+        "-B",
+        "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.5/builds/ccfa7772a2ed17bc4c9366d95fdc46ecb4ff5d1ce38835e371446983aae40021/release",
+        "-DDUCKDB_EXTENSION_CONFIGS=/home/blizhan/repo/github/duckomo/extension_config.cmake",
+        "-DDUCKOMO_BUILD_DEVELOPER_TOOLS=ON",
+        "-DOVERRIDE_GIT_DESCRIBE=v1.5.5",
+        "-DUNITTEST_ROOT_DIRECTORY=/home/blizhan/repo/github/duckomo",
+        "-DBENCHMARK_ROOT_DIRECTORY=/home/blizhan/repo/github/duckomo",
+        "-DDUCKOMO_BUILD_PAIR_ID=v1.5.5",
+        "-DDUCKOMO_BUILD_ID=ccfa7772a2ed17bc4c9366d95fdc46ecb4ff5d1ce38835e371446983aae40021",
+        "-DDUCKOMO_DUCKDB_COMMIT=d8cdaa33fda8df955cc76ef58a280f68f4cd43fa",
+        "-DDUCKOMO_OM_COMMIT=d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+        "-DDUCKOMO_EXTENSION_CI_TOOLS_COMMIT=b777c70d30942cca5bef62d6d4fa23a13362f398",
+        "-DDUCKOMO_MATRIX_PLATFORM=Linux AArch64",
+        "-DDUCKOMO_CXX_ABI=libstdc++ cxx11abi=1",
+        "-DDUCKOMO_REGION_SANITIZER_SPATIAL_PATH=",
+        "-DDUCKOMO_REGION_SANITIZER_SPATIAL_SHA256=",
+        "-DBUILD_SHELL=TRUE",
+        "-DBUILD_UNITTESTS=TRUE",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DENABLE_EXTENSION_AUTOINSTALL=FALSE",
+        "-DENABLE_EXTENSION_AUTOLOADING=FALSE",
+        "-DENABLE_UNITTEST_CPP_TESTS=FALSE",
+        "-DNATIVE_ARCH=FALSE"
+      ],
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "cmake",
+        "--build",
+        "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.5/builds/ccfa7772a2ed17bc4c9366d95fdc46ecb4ff5d1ce38835e371446983aae40021/release",
+        "--target",
+        "shell",
+        "duckomo_loadable_extension",
+        "core_functions_loadable_extension",
+        "json_loadable_extension",
+        "unittest",
+        "duckomo_developer_tools",
+        "duckomo_sanitizer_checks",
+        "duckomo_loadable_extension",
+        "core_functions_loadable_extension",
+        "json_loadable_extension",
+        "unittest",
+        "duckomo_fixture_tool",
+        "nearest_sampling_test",
+        "region_sampling_test",
+        "region_geometry_test",
+        "region_input_test",
+        "spatial_layout_test",
+        "reader_capacity_test",
+        "--parallel",
+        "3"
+      ],
+      "exit_code": 0
+    }
+  ]
+}

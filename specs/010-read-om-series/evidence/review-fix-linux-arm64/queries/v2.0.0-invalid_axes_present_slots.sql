@@ -1,0 +1,2 @@
+LOAD '/home/blizhan/repo/github/duckomo/build/series-review-fix/v2.0.0/extension/duckomo/duckomo.duckdb_extension';
+SELECT count(*) FROM read_om_series('/home/blizhan/repo/github/duckomo/build/series-fixtures/data/synthetic/temperature', chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'}, spatial_axes := ['not_an_axis'], start := TIMESTAMP '1970-01-01', "end" := TIMESTAMP '1970-01-01 01:00:00');

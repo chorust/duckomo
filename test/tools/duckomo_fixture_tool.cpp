@@ -10,6 +10,7 @@
 #include <iostream>
 #include <limits>
 #include <locale>
+#include <optional>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -95,6 +96,7 @@ struct Fixture final {
 	std::vector<std::uint64_t> shape;
 	std::vector<std::uint64_t> chunks;
 	std::vector<float> values;
+	std::vector<double> double_values;
 	std::vector<std::string> axes;
 	OmCompression_t compression = COMPRESSION_FPX_XOR2D;
 	float scale_factor = 1.0F;
@@ -107,6 +109,7 @@ struct TreeArray final {
 	std::vector<std::string> axes;
 	std::string reference_name;
 	std::vector<std::pair<std::string, std::string>> string_attributes;
+	std::optional<std::int64_t> valid_time_seconds;
 	std::uint64_t lut_size = 0;
 	std::uint64_t lut_offset = 0;
 };
@@ -228,7 +231,9 @@ void AlignForArrayMetadata(std::vector<std::uint8_t> &file) {
 void EncodeArrayPayload(std::vector<std::uint8_t> &file, TreeArray &array) {
 	const auto &fixture = array.fixture;
 	Require(fixture.shape.size() == fixture.chunks.size(), "fixture shape and chunk rank differ: " + fixture.id);
-	Require(CheckedProduct(fixture.shape) == fixture.values.size(), "fixture data length does not match shape: " + fixture.id);
+	const auto data_type = fixture.double_values.empty() ? DATA_TYPE_FLOAT_ARRAY : DATA_TYPE_DOUBLE_ARRAY;
+	const auto value_count = fixture.double_values.empty() ? fixture.values.size() : fixture.double_values.size();
+	Require(CheckedProduct(fixture.shape) == value_count, "fixture data length does not match shape: " + fixture.id);
 	for (std::size_t axis = 0; axis < fixture.shape.size(); axis++) {
 		Require(fixture.chunks[axis] > 0 && fixture.chunks[axis] <= fixture.shape[axis],
 		        "invalid chunk length in fixture " + fixture.id);
@@ -236,8 +241,7 @@ void EncodeArrayPayload(std::vector<std::uint8_t> &file, TreeArray &array) {
 
 	OmEncoder_t encoder{};
 	const auto init_error = om_encoder_init(&encoder, fixture.scale_factor, fixture.add_offset, fixture.compression,
-	                                       DATA_TYPE_FLOAT_ARRAY,
-	                                       fixture.shape.data(), fixture.chunks.data(), fixture.shape.size());
+	                                       data_type, fixture.shape.data(), fixture.chunks.data(), fixture.shape.size());
 	Require(init_error == ERROR_OK, "official OM encoder init failed for " + fixture.id + ": " + om_error_string(init_error));
 	const auto chunk_count = om_encoder_count_chunks(&encoder);
 	Require(chunk_count > 0 && chunk_count < std::numeric_limits<std::size_t>::max(),
@@ -254,9 +258,12 @@ void EncodeArrayPayload(std::vector<std::uint8_t> &file, TreeArray &array) {
 	std::vector<std::uint8_t> compressed(static_cast<std::size_t>(compressed_capacity));
 	std::vector<std::uint8_t> chunk_buffer(static_cast<std::size_t>(chunk_capacity));
 	std::vector<std::uint64_t> array_offset(fixture.shape.size(), 0);
+	const void *values = fixture.double_values.empty()
+	                         ? static_cast<const void *>(fixture.values.data())
+	                         : static_cast<const void *>(fixture.double_values.data());
 	for (std::uint64_t chunk_index = 0; chunk_index < chunk_count; chunk_index++) {
 		const auto compressed_size = om_encoder_compress_chunk(
-		    &encoder, fixture.values.data(), fixture.shape.data(), array_offset.data(), fixture.shape.data(), chunk_index,
+		    &encoder, values, fixture.shape.data(), array_offset.data(), fixture.shape.data(), chunk_index,
 		    chunk_index, compressed.data(), chunk_buffer.data());
 		Require(compressed_size > 0 && compressed_size <= compressed.size(),
 		        "official OM encoder returned an invalid compressed chunk length for " + fixture.id);
@@ -318,6 +325,19 @@ NodeRef WriteTreeMetadata(std::vector<std::uint8_t> &file, TreeNode &node, bool 
 			child_offsets.push_back(offset);
 			child_sizes.push_back(size);
 		}
+		if (node.array->valid_time_seconds.has_value()) {
+			AlignForArrayMetadata(file);
+			const auto offset = static_cast<std::uint64_t>(file.size());
+			const auto name_size = AsNameSize("valid_time");
+			const auto size = om_variable_write_scalar_size(name_size, 0, DATA_TYPE_INT64, 0);
+			std::vector<std::uint8_t> metadata(size, 0);
+			const std::int64_t seconds = *node.array->valid_time_seconds;
+			om_variable_write_scalar(metadata.data(), name_size, 0, nullptr, nullptr, "valid_time", DATA_TYPE_INT64,
+			                         &seconds, 0);
+			Append(file, metadata.data(), metadata.size());
+			child_offsets.push_back(offset);
+			child_sizes.push_back(size);
+		}
 		AlignForArrayMetadata(file);
 		node.metadata_offset = static_cast<std::uint64_t>(file.size());
 		const auto &fixture = node.array->fixture;
@@ -328,8 +348,8 @@ NodeRef WriteTreeMetadata(std::vector<std::uint8_t> &file, TreeNode &node, bool 
 		om_variable_write_numeric_array(metadata.data(), AsNameSize(node.name), children_count,
 		                                child_offsets.empty() ? nullptr : child_offsets.data(),
 		                                child_sizes.empty() ? nullptr : child_sizes.data(), node.name.data(),
-		                                DATA_TYPE_FLOAT_ARRAY, fixture.compression, fixture.scale_factor,
-		                                fixture.add_offset,
+		                                fixture.double_values.empty() ? DATA_TYPE_FLOAT_ARRAY : DATA_TYPE_DOUBLE_ARRAY,
+		                                fixture.compression, fixture.scale_factor, fixture.add_offset,
 		                                fixture.shape.size(), fixture.shape.data(), fixture.chunks.data(),
 		                                node.array->lut_size, node.array->lut_offset);
 		Append(file, metadata.data(), metadata.size());
@@ -1650,6 +1670,51 @@ TreeArray MakeGridArray(const std::string &id, std::vector<std::string> segments
 	return array;
 }
 
+std::string SeriesChunkFilename(std::int64_t chunk_index) {
+	std::ostringstream filename;
+	filename << "chunk_";
+	if (chunk_index < 0) {
+		const auto magnitude = static_cast<std::uint64_t>(-(chunk_index + 1)) + 1;
+		filename << '-' << std::setw(3) << std::setfill('0') << magnitude;
+	} else {
+		filename << std::setw(4) << std::setfill('0') << static_cast<std::uint64_t>(chunk_index);
+	}
+	filename << ".om";
+	return filename.str();
+}
+
+std::vector<float> BuildSeriesValues(std::int64_t chunk_index, std::uint64_t point_count,
+                                     std::uint64_t time_count, float array_offset = 0.0F,
+                                     bool inject_nan = true, bool all_nan = false) {
+	std::vector<float> values;
+	values.reserve(static_cast<std::size_t>(point_count * time_count));
+	for (std::uint64_t point = 0; point < point_count; point++) {
+		for (std::uint64_t slot = 0; slot < time_count; slot++) {
+			if (all_nan || (inject_nan && chunk_index == 1 && point == 2 && slot == 1)) {
+				values.push_back(std::numeric_limits<float>::quiet_NaN());
+			} else {
+				values.push_back(1000.0F * static_cast<float>(chunk_index) +
+				                 100.0F * static_cast<float>(point) + static_cast<float>(slot) + array_offset);
+			}
+		}
+	}
+	return values;
+}
+
+TreeArray MakeSeriesTreeArray(const std::string &id, const std::vector<std::string> &path,
+                              std::int64_t chunk_index, std::uint64_t point_count = 6,
+                              std::uint64_t time_count = 4, float array_offset = 0.0F,
+                              bool inject_nan = true) {
+	TreeArray array;
+	array.fixture.id = id;
+	array.fixture.shape = {1, point_count, time_count};
+	array.fixture.chunks = {1, std::min<std::uint64_t>(3, point_count), std::min<std::uint64_t>(2, time_count)};
+	array.fixture.values = BuildSeriesValues(chunk_index, point_count, time_count, array_offset, inject_nan);
+	array.segments = path;
+	array.axes = {"lead", "point", "time"};
+	return array;
+}
+
 std::vector<TreeArray> BuildGridLayoutArrays() {
 	// The value at every logical location identifies its row and column.  The
 	// sample manifest supplies negative native steps for this [y,x] payload.
@@ -2097,7 +2162,7 @@ void WriteGridSampleManifest(const std::filesystem::path &output_directory) {
 }
 
 void GenerateGridTreeFixture(const std::filesystem::path &output_directory, const std::string &file_name,
-	                         std::vector<TreeArray> &arrays, bool write_references = true) {
+                             std::vector<TreeArray> &arrays, bool write_references = true) {
 	const auto bytes = EncodeTreeFile(arrays);
 	const auto path = output_directory / file_name;
 	WriteFile(path, bytes);
@@ -2123,6 +2188,288 @@ void GenerateGridTreeFixture(const std::filesystem::path &output_directory, cons
 	}
 	std::cout << "generated " << file_name << " variables=" << arrays.size()
 	          << " oracle=passed sha256=" << Sha256Hex(bytes) << '\n';
+}
+
+struct RegistryModelSpec final {
+	std::string key;
+	std::uint64_t chunk_time_length;
+	std::uint64_t step_seconds;
+};
+
+void GenerateSeriesFixtures(const std::filesystem::path &output_directory) {
+	std::filesystem::create_directories(output_directory);
+	struct WriterRecord final {
+		std::string id;
+		std::string role;
+		std::int64_t chunk_index;
+		std::string path;
+		std::vector<std::uint64_t> shape;
+		std::vector<std::uint64_t> chunk_shape;
+		std::string compression;
+		std::vector<std::string> array_paths;
+		std::string data_type;
+		std::string metadata_json;
+		std::string sha256;
+		std::uint64_t size_bytes;
+	};
+	std::vector<WriterRecord> records;
+	auto record_file = [&](const std::string &id, const std::string &role, std::int64_t chunk_index,
+	                       const std::string &relative_path, const std::vector<std::uint64_t> &shape,
+	                       const std::vector<std::uint64_t> &chunk_shape, OmCompression_t compression,
+	                       const std::vector<std::string> &array_paths, const std::vector<std::uint8_t> &bytes,
+	                       const std::string &data_type, const std::string &metadata_json) {
+		const auto compression_name = compression == COMPRESSION_PFOR_DELTA2D_INT16
+		                                  ? "PFOR_DELTA2D_INT16"
+		                                  : "FPX_XOR2D";
+		records.push_back(WriterRecord{id, role, chunk_index, relative_path, shape, chunk_shape,
+		                               compression_name, array_paths, data_type, metadata_json, Sha256Hex(bytes),
+		                               static_cast<std::uint64_t>(bytes.size())});
+	};
+	auto write_root_with_layout = [&](const std::string &id, const std::string &role, std::int64_t chunk_index,
+	                                  const std::string &relative_path, std::uint64_t point_count,
+	                                  std::uint64_t time_count, std::vector<std::uint64_t> chunk_shape,
+	                                  OmCompression_t compression, bool inject_nan, bool all_nan) {
+		Fixture fixture;
+		fixture.id = id;
+		fixture.file_name = relative_path;
+		fixture.shape = {1, point_count, time_count};
+		fixture.chunks = std::move(chunk_shape);
+		fixture.compression = compression;
+		fixture.axes = {"lead", "point", "time"};
+		fixture.values = BuildSeriesValues(chunk_index, point_count, time_count, 0.0F, inject_nan, all_nan);
+		const auto bytes = EncodeRootArray(fixture);
+		const auto path = output_directory / relative_path;
+		WriteFile(path, bytes);
+		std::vector<std::uint64_t> decoded_shape;
+		std::vector<std::uint64_t> decoded_chunks;
+		const auto decoded = DecodeFullRootArray(path, &decoded_shape, &decoded_chunks);
+		Require(decoded_shape == fixture.shape && decoded_chunks == fixture.chunks,
+		        "official series oracle returned different root metadata for " + id);
+		RequireExactRoundtrip(fixture, decoded);
+		record_file(id, role, chunk_index, relative_path, fixture.shape, fixture.chunks,
+		            fixture.compression, {"/"}, bytes, "FLOAT_ARRAY", "{}");
+	};
+	auto write_root = [&](const std::string &id, const std::string &role, std::int64_t chunk_index,
+	                      const std::string &relative_path, std::uint64_t point_count = 6,
+	                      std::uint64_t time_count = 4, bool all_nan = false) {
+		write_root_with_layout(id, role, chunk_index, relative_path, point_count, time_count,
+		                       {1, std::min<std::uint64_t>(3, point_count), std::min<std::uint64_t>(2, time_count)},
+		                       COMPRESSION_FPX_XOR2D, !all_nan, all_nan);
+	};
+	auto write_tree = [&](const std::string &id, const std::string &role, std::int64_t chunk_index,
+	                      const std::string &relative_path, std::vector<TreeArray> arrays) {
+		const auto bytes = EncodeTreeFile(arrays);
+		const auto path = output_directory / relative_path;
+		WriteFile(path, bytes);
+		const auto decoded = DecodeTreeFile(path);
+		Require(decoded.size() == arrays.size(), "official series oracle returned a different array count for " + id);
+		std::vector<std::string> paths;
+		for (const auto &array : arrays) {
+			const auto variable_path = CanonicalVariablePath(array.segments);
+			const auto &actual = FindDecodedVariable(decoded, variable_path);
+			Require(actual.shape == array.fixture.shape && actual.chunks == array.fixture.chunks,
+			        "official series oracle returned different metadata for " + id + " " + variable_path);
+			RequireExactRoundtrip(array.fixture, actual.values);
+			paths.push_back(variable_path);
+		}
+		std::sort(paths.begin(), paths.end());
+		std::ostringstream metadata;
+		metadata << "{";
+		bool first_metadata = true;
+		for (const auto &attribute : arrays.front().string_attributes) {
+			if (!first_metadata) metadata << ",";
+			first_metadata = false;
+			metadata << "\"" << JsonEscape(attribute.first) << "\":\"" << JsonEscape(attribute.second) << "\"";
+		}
+		if (arrays.front().valid_time_seconds.has_value()) {
+			if (!first_metadata) metadata << ",";
+			metadata << "\"valid_time\":" << *arrays.front().valid_time_seconds;
+		}
+		metadata << "}";
+		const auto data_type = arrays.front().fixture.double_values.empty() ? "FLOAT_ARRAY" : "DOUBLE_ARRAY";
+		const auto shape = arrays.empty() ? std::vector<std::uint64_t>{} : arrays.front().fixture.shape;
+		record_file(id, role, chunk_index, relative_path, shape, arrays.front().fixture.chunks,
+		            arrays.front().fixture.compression, paths, bytes, data_type, metadata.str());
+	};
+	auto chunk_path = [](const std::string &prefix, std::int64_t chunk_index) {
+		return prefix + "/" + SeriesChunkFilename(chunk_index);
+	};
+
+	for (std::int64_t chunk = 0; chunk <= 2; chunk++) {
+		write_root("adjacent_" + SeriesChunkFilename(chunk).substr(6, 4), "adjacent_root", chunk,
+		           chunk_path("data/synthetic/temperature", chunk));
+	}
+	constexpr std::uint64_t N160_POINT_COUNT = 138346;
+	const std::array<std::vector<std::uint64_t>, 3> n160_chunk_shapes = {
+	    std::vector<std::uint64_t>{1, 2048, 4}, {1, 1024, 2}, {1, 4096, 1}};
+	const std::array<OmCompression_t, 3> n160_compressions = {
+	    COMPRESSION_FPX_XOR2D, COMPRESSION_FPX_XOR2D, COMPRESSION_FPX_XOR2D};
+	for (std::int64_t chunk = 0; chunk <= 2; chunk++) {
+		write_root_with_layout("reduced_gaussian_n160_" + SeriesChunkFilename(chunk).substr(6, 4),
+		                       "reduced_gaussian_n160", chunk,
+		                       chunk_path("data/synthetic/reduced-gaussian-n160/temperature", chunk),
+		                       N160_POINT_COUNT, 4, n160_chunk_shapes[static_cast<std::size_t>(chunk)],
+		                       n160_compressions[static_cast<std::size_t>(chunk)], false, false);
+	}
+	write_root("all_nan_0000", "all_nan", 0, chunk_path("data/all_nan/temperature", 0), 6, 4, true);
+	for (const std::int64_t chunk : {-1, 0}) {
+		write_root("negative_" + SeriesChunkFilename(chunk).substr(6, 4), "negative_time", chunk,
+		           chunk_path("data/negative/temperature", chunk));
+	}
+	for (std::int64_t chunk = 0; chunk <= 1; chunk++) {
+		std::vector<TreeArray> arrays;
+		arrays.push_back(MakeSeriesTreeArray("named.temperature", {"temperature"}, chunk));
+		arrays.push_back(MakeSeriesTreeArray("named.humidity", {"humidity"}, chunk, 6, 4, 5000.0F, false));
+		write_tree("named_" + SeriesChunkFilename(chunk).substr(6, 4), "named_arrays", chunk,
+		           chunk_path("data/named/temperature", chunk), std::move(arrays));
+	}
+
+	write_root("time_extent_good_0000", "mismatch_time_extent", 0,
+	           chunk_path("data/mismatch/time-extent/temperature", 0));
+	write_root("time_extent_bad_0001", "mismatch_time_extent", 1,
+	           chunk_path("data/mismatch/time-extent/temperature", 1), 6, 3);
+	write_root("point_extent_good_0000", "mismatch_point_extent", 0,
+	           chunk_path("data/mismatch/point-extent/temperature", 0));
+	write_root("point_extent_bad_0001", "mismatch_point_extent", 1,
+	           chunk_path("data/mismatch/point-extent/temperature", 1), 5, 4);
+	{
+		std::vector<TreeArray> arrays;
+		arrays.push_back(MakeSeriesTreeArray("metadata_time.temperature", {"temperature"}, 0));
+		arrays.back().valid_time_seconds = 3600;
+		write_tree("metadata_time_conflict_0000", "mismatch_time_metadata", 0,
+		           chunk_path("data/mismatch/embedded-time/temperature", 0), std::move(arrays));
+	}
+	{
+		std::vector<TreeArray> arrays;
+		arrays.push_back(MakeSeriesTreeArray("dimension_order.temperature", {"temperature"}, 0));
+		arrays.back().string_attributes = {{"coordinates", "lead time point"}};
+		write_tree("dimension_order_bad_0000", "mismatch_dimension_order", 0,
+		           chunk_path("data/mismatch/dimension-order/temperature", 0), std::move(arrays));
+	}
+	{
+		std::vector<TreeArray> arrays;
+		arrays.push_back(MakeSeriesTreeArray("spatial_profile.temperature", {"temperature"}, 0));
+		arrays.back().string_attributes = {{"coordinates", "lead latitude_axis time"}};
+		write_tree("spatial_profile_bad_0000", "mismatch_spatial_profile", 0,
+		           chunk_path("data/mismatch/spatial-profile/temperature", 0), std::move(arrays));
+	}
+	{
+		std::vector<TreeArray> arrays;
+		arrays.push_back(MakeSeriesTreeArray("grid_identity.temperature", {"temperature"}, 0));
+		arrays.back().string_attributes = {
+		    {"coordinates", "lead point time"},
+		    {"crs_wkt", "GEOGCRS[\"Reduced Gaussian Grid\", DATUM[\"World Geodetic System 1984\", "
+		                "ELLIPSOID[\"WGS 84\",6378137,298.257223563]], CS[ellipsoidal,2], "
+		                "AXIS[\"latitude\",north], AXIS[\"longitude\",east], "
+		                "ANGLEUNIT[\"degree\",0.0174532925199433], "
+		                "USAGE[SCOPE[\"grid\"],BBOX[-90,-180.0,90,180]]]"}};
+		write_tree("grid_identity_bad_0000", "mismatch_grid_identity", 0,
+		           chunk_path("data/mismatch/grid-identity/temperature", 0), std::move(arrays));
+	}
+	{
+		TreeArray array = MakeSeriesTreeArray("declared_type.temperature", {"temperature"}, 0);
+		array.fixture.values.clear();
+		array.fixture.double_values.reserve(24);
+		for (std::uint64_t point = 0; point < 6; point++) {
+			for (std::uint64_t slot = 0; slot < 4; slot++) {
+				array.fixture.double_values.push_back(100.0 * static_cast<double>(point) + static_cast<double>(slot));
+			}
+		}
+		std::vector<TreeArray> arrays{std::move(array)};
+		const auto bytes = EncodeTreeFile(arrays);
+		const auto relative_path = chunk_path("data/mismatch/declared-type/temperature", 0);
+		WriteFile(output_directory / relative_path, bytes);
+		record_file("declared_type_bad_0000", "mismatch_declared_type", 0, relative_path,
+		            arrays.front().fixture.shape, arrays.front().fixture.chunks,
+		            arrays.front().fixture.compression, {"/temperature"}, bytes, "DOUBLE_ARRAY", "{}");
+	}
+	{
+		std::vector<TreeArray> arrays;
+		arrays.push_back(MakeSeriesTreeArray("array_set.temperature", {"temperature"}, 0));
+		arrays.push_back(MakeSeriesTreeArray("array_set.humidity", {"humidity"}, 0, 6, 4, 5000.0F));
+		write_tree("array_set_good_0000", "mismatch_array_set", 0,
+		           chunk_path("data/mismatch/array-set/temperature", 0), std::move(arrays));
+	}
+	{
+		std::vector<TreeArray> arrays;
+		arrays.push_back(MakeSeriesTreeArray("array_set.temperature", {"temperature"}, 1));
+		write_tree("array_set_bad_0001", "mismatch_array_set", 1,
+		           chunk_path("data/mismatch/array-set/temperature", 1), std::move(arrays));
+	}
+
+	std::sort(records.begin(), records.end(), [](const WriterRecord &left, const WriterRecord &right) {
+		return left.id < right.id;
+	});
+	std::ostringstream manifest;
+	manifest << "{\n  \"schema_version\": 1,\n"
+	         << "  \"generated_by\": \"duckomo_fixture_tool --series-output\",\n"
+	         << "  \"value_rule\": \"1000 * chunk_index + 100 * point_index + slot_index + array_offset\",\n"
+	         << "  \"objects\": [\n";
+	for (std::size_t index = 0; index < records.size(); index++) {
+		const auto &record = records[index];
+		manifest << "    {\"id\": \"" << JsonEscape(record.id) << "\", \"role\": \""
+		         << JsonEscape(record.role) << "\", \"chunk_index\": " << record.chunk_index
+		         << ", \"path\": \"" << JsonEscape(record.path) << "\", \"shape\": "
+		         << JsonNumberArray(record.shape) << ", \"chunk_shape\": "
+		         << JsonNumberArray(record.chunk_shape) << ", \"compression\": \""
+		         << JsonEscape(record.compression) << "\", \"array_paths\": "
+		         << JsonStringArray(record.array_paths) << ", \"data_type\": \""
+		         << JsonEscape(record.data_type) << "\", \"metadata\": " << record.metadata_json
+		         << ", \"size_bytes\": " << record.size_bytes
+		         << ", \"sha256\": \"" << record.sha256 << "\"}"
+		         << (index + 1 == records.size() ? "\n" : ",\n");
+	}
+	manifest << "  ]\n}\n";
+	const auto text = manifest.str();
+	WriteFile(output_directory / "series-writer-manifest.json",
+	          std::vector<std::uint8_t>(text.begin(), text.end()));
+	std::cout << "generated " << records.size() << " deterministic series OM objects; official writer roundtrip=passed\n";
+}
+
+void GenerateSeriesRegistryFixtures(const std::filesystem::path &output_directory,
+                                    const std::vector<RegistryModelSpec> &models) {
+	Require(!models.empty(), "registry-equivalence fixtures require at least one model");
+	std::filesystem::create_directories(output_directory);
+	std::ostringstream manifest;
+	manifest << "{\n  \"schema_version\": 1,\n"
+	         << "  \"generated_by\": \"duckomo_fixture_tool --series-registry-output\",\n"
+	         << "  \"value_rule\": \"100 * point_index + slot_index\",\n"
+	         << "  \"objects\": [\n";
+	for (std::size_t index = 0; index < models.size(); index++) {
+		const auto &model = models[index];
+		Fixture fixture;
+		fixture.id = "registry_" + model.key;
+		fixture.shape = {1, 6, model.chunk_time_length};
+		fixture.chunks = {1, 3, std::min<std::uint64_t>(2, model.chunk_time_length)};
+		fixture.axes = {"lead", "point", "time"};
+		fixture.values = BuildSeriesValues(0, 6, model.chunk_time_length, 0.0F, false, false);
+		const auto relative_path = "data/registry-equivalence/" + model.key + "/" + SeriesChunkFilename(0);
+		const auto bytes = EncodeRootArray(fixture);
+		const auto path = output_directory / relative_path;
+		WriteFile(path, bytes);
+		std::vector<std::uint64_t> decoded_shape;
+		std::vector<std::uint64_t> decoded_chunks;
+		const auto decoded = DecodeFullRootArray(path, &decoded_shape, &decoded_chunks);
+		Require(decoded_shape == fixture.shape && decoded_chunks == fixture.chunks,
+		        "official registry oracle returned different metadata for " + model.key);
+		RequireExactRoundtrip(fixture, decoded);
+		manifest << "    {\"id\": \"registry_" << JsonEscape(model.key)
+		         << "\", \"role\": \"registry_equivalence\", \"model_key\": \""
+		         << JsonEscape(model.key) << "\", \"chunk_time_length\": " << model.chunk_time_length
+		         << ", \"step_seconds\": " << model.step_seconds << ", \"chunk_index\": 0"
+		         << ", \"path\": \"" << JsonEscape(relative_path) << "\", \"shape\": "
+		         << JsonNumberArray(fixture.shape) << ", \"chunk_shape\": " << JsonNumberArray(fixture.chunks)
+		         << ", \"compression\": \"FPX_XOR2D\", \"array_paths\": [\"/\"]"
+		         << ", \"data_type\": \"FLOAT_ARRAY\", \"metadata\": {}"
+		         << ", \"size_bytes\": " << bytes.size() << ", \"sha256\": \"" << Sha256Hex(bytes) << "\"}"
+		         << (index + 1 == models.size() ? "\n" : ",\n");
+		std::cout << "generated " << relative_path << " slots=" << model.chunk_time_length
+		          << " step_seconds=" << model.step_seconds << " oracle=passed sha256=" << Sha256Hex(bytes) << '\n';
+	}
+	manifest << "  ]\n}\n";
+	const auto text = manifest.str();
+	WriteFile(output_directory / "series-registry-writer-manifest.json",
+	          std::vector<std::uint8_t>(text.begin(), text.end()));
 }
 
 void Generate(const std::filesystem::path &output_directory) {
@@ -2621,6 +2968,40 @@ std::vector<std::uint64_t> ParseOracleShape(const std::string &text) {
 	return result;
 }
 
+RegistryModelSpec ParseRegistryModelSpec(const std::string &text) {
+	const auto first_separator = text.find(':');
+	const auto second_separator = first_separator == std::string::npos
+	                                 ? std::string::npos
+	                                 : text.find(':', first_separator + 1);
+	Require(first_separator != std::string::npos && second_separator != std::string::npos &&
+	            text.find(':', second_separator + 1) == std::string::npos,
+	        "registry model must use KEY:CHUNK_TIME_LENGTH:STEP_SECONDS");
+	const auto key = text.substr(0, first_separator);
+	Require(!key.empty() && std::all_of(key.begin(), key.end(), [](char character) {
+		return (character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z') ||
+		       (character >= '0' && character <= '9') || character == '_';
+	}), "registry model key contains unsupported characters");
+	auto parse_positive = [](const std::string &value, const std::string &field) {
+		Require(!value.empty(), field + " must be a positive integer");
+		std::uint64_t parsed = 0;
+		for (const auto character : value) {
+			Require(character >= '0' && character <= '9', field + " must be a positive integer");
+			const auto digit = static_cast<std::uint64_t>(character - '0');
+			Require(parsed <= (std::numeric_limits<std::uint64_t>::max() - digit) / 10,
+			        field + " overflows uint64_t");
+			parsed = parsed * 10 + digit;
+		}
+		Require(parsed > 0, field + " must be positive");
+		return parsed;
+	};
+	const auto chunk_time_length = parse_positive(text.substr(first_separator + 1,
+	                                                           second_separator - first_separator - 1),
+	                                             "chunk_time_length");
+	const auto step_seconds = parse_positive(text.substr(second_separator + 1), "step_seconds");
+	Require(chunk_time_length <= 4096, "registry fixture chunk_time_length exceeds 4096 slots");
+	return {key, chunk_time_length, step_seconds};
+}
+
 void PrintUsage(std::ostream &output) {
 	output << "Usage:\n"
 	       << "  duckomo_fixture_tool --output DIR\n"
@@ -2629,13 +3010,17 @@ void PrintUsage(std::ostream &output) {
 	       << "  duckomo_fixture_tool --oracle INPUT.om --csv REFERENCE.csv\n"
 	       << "  duckomo_fixture_tool --oracle-prefix INPUT.om --variable /PATH --count N --csv REFERENCE.csv\n"
 	       << "  duckomo_fixture_tool --oracle-slice INPUT.om --offset A,B,... --shape A,B,... --csv REFERENCE.csv\n"
+	       << "  duckomo_fixture_tool --series-output DIR\n"
+	       << "  duckomo_fixture_tool --series-registry-output DIR --registry-model KEY:L:STEP [--registry-model ...]\n"
 	       << "\n--output generates raw.om, special.om, raw_large.om, spatial_flat.om, spatial_axes.om, spatial_single.om, spatial_conflict.om, source-conflict.om, multi.om, pfor_attributes.om, nested.om, projection.om, grids/layouts.om and per-layout grid OM files, grids/long-line.om, fixed-chunk projected and Gaussian memory pairs, their oracle CSV files, "
 	          "negative mutation assets, and manifest.json.\n"
 	       << "--oracle runs the independent fixed official OM reader over a full root array and exports index,value CSV.\n"
 	       << "--regions-output writes only the region-statistics fixtures and official-reader references under DIR.\n"
 	       << "--sampling-output writes synthetic nearest-sampling fixtures, official-reader references, and hash manifest under DIR.\n"
 	       << "--hres-output DIR generates synthetic HRES static/time-series fixtures without changing the frozen manifest.\n"
-	       << "--seasonal-output DIR generates O320/N160 time/member fixtures outside the frozen manifest.\n";
+	       << "--seasonal-output DIR generates O320/N160 time/member fixtures outside the frozen manifest.\n"
+	       << "--series-output DIR generates deterministic adjacent, missing-gap, negative-time, named-array, NaN and mismatch fixture objects with official OM writer round-trip checks.\n"
+	       << "--series-registry-output DIR writes one official OM chunk per supplied temporal model using that model's frozen slot count.\n";
 }
 
 } // namespace
@@ -2643,6 +3028,9 @@ void PrintUsage(std::ostream &output) {
 int main(int argc, char **argv) {
 	try {
 		std::filesystem::path output_directory;
+		std::filesystem::path series_output;
+		std::filesystem::path series_registry_output;
+		std::vector<RegistryModelSpec> registry_models;
 		std::filesystem::path regions_output;
 		std::filesystem::path sampling_output;
 		std::filesystem::path hres_output;
@@ -2663,6 +3051,18 @@ int main(int argc, char **argv) {
 			}
 			if (argument == "--output" && index + 1 < argc) {
 				output_directory = argv[++index];
+				continue;
+			}
+			if (argument == "--series-output" && index + 1 < argc) {
+				series_output = argv[++index];
+				continue;
+			}
+			if (argument == "--series-registry-output" && index + 1 < argc) {
+				series_registry_output = argv[++index];
+				continue;
+			}
+			if (argument == "--registry-model" && index + 1 < argc) {
+				registry_models.push_back(ParseRegistryModelSpec(argv[++index]));
 				continue;
 			}
 			if (argument == "--regions-output" && index + 1 < argc) {
@@ -2717,6 +3117,25 @@ int main(int argc, char **argv) {
 			throw std::runtime_error("unknown or incomplete argument: " + argument);
 		}
 
+		if (!series_registry_output.empty()) {
+			Require(series_output.empty() && output_directory.empty() && regions_output.empty() && sampling_output.empty() &&
+			            hres_output.empty() && seasonal_output.empty() && oracle_input.empty() && oracle_prefix_input.empty() &&
+			            oracle_slice_input.empty() && slice_offset.empty() && slice_count.empty() && oracle_csv.empty() &&
+			            variable_path.empty() && prefix_count == 0,
+			        "--series-registry-output is exclusive and cannot be combined with another mode");
+			GenerateSeriesRegistryFixtures(series_registry_output, registry_models);
+			return 0;
+		}
+		Require(registry_models.empty(), "--registry-model requires --series-registry-output");
+		if (!series_output.empty()) {
+			Require(output_directory.empty() && regions_output.empty() && sampling_output.empty() && hres_output.empty() &&
+			            seasonal_output.empty() && oracle_input.empty() && oracle_prefix_input.empty() &&
+			            oracle_slice_input.empty() && slice_offset.empty() && slice_count.empty() && oracle_csv.empty() &&
+			            variable_path.empty() && prefix_count == 0,
+			        "--series-output is exclusive and cannot be combined with another mode");
+			GenerateSeriesFixtures(series_output);
+			return 0;
+		}
 		if (!sampling_output.empty()) {
 			Require(output_directory.empty() && regions_output.empty() && hres_output.empty() &&
 			            seasonal_output.empty() && oracle_input.empty() && oracle_prefix_input.empty() &&

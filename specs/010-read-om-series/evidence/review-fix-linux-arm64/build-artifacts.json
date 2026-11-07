@@ -1,0 +1,296 @@
+{
+  "purpose": "Fresh review-fix extension links from changed DuckOMO translation units; each pin's existing static archive is reused",
+  "platform": "aarch64",
+  "repository_head": "80ebe4bac2fa7b2fc29fd1c44cb55985baa6b9f9",
+  "extension_version": "80ebe4b",
+  "pairs": [
+    {
+      "pair": "v1.5.4",
+      "engine_version": "v1.5.4",
+      "engine_pin": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+      "cli": {
+        "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/official/duckdb",
+        "sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a"
+      },
+      "previous_extension": {
+        "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/builds/2a1e218a7e3055b8db02c397eca7e5e2d2255bae3ecc04848a79a1a91f58e15b/release/extension/duckomo/duckomo.duckdb_extension",
+        "sha256": "a5511e272ed9c2d18adab039cbe1ce1df8e94368e41b5b4032bb59090779a5b3"
+      },
+      "reused_duckdb_static": {
+        "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/builds/2a1e218a7e3055b8db02c397eca7e5e2d2255bae3ecc04848a79a1a91f58e15b/release/src/libduckdb_static.a",
+        "sha256": "17fa5753c594b16784537b5f07ff8b64e8981c6b536ad6c70c98a0763ca11d22"
+      },
+      "commands": [
+        {
+          "stage": "compile_changed_translation_units",
+          "command": [
+            "/usr/bin/gmake",
+            "-B",
+            "-C",
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/builds/2a1e218a7e3055b8db02c397eca7e5e2d2255bae3ecc04848a79a1a91f58e15b/release",
+            "-f",
+            "extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/build.make",
+            "extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om.cpp.o",
+            "extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om_series.cpp.o"
+          ],
+          "exit_code": 0,
+          "stdout": "gmake: \u8fdb\u5165\u76ee\u5f55\u201c/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/builds/2a1e218a7e3055b8db02c397eca7e5e2d2255bae3ecc04848a79a1a91f58e15b/release\u201d\n[ 95%] Building CXX object extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om.cpp.o\n[ 95%] Building CXX object extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om_series.cpp.o\ngmake: \u79bb\u5f00\u76ee\u5f55\u201c/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/builds/2a1e218a7e3055b8db02c397eca7e5e2d2255bae3ecc04848a79a1a91f58e15b/release\u201d\n",
+          "stderr": ""
+        },
+        {
+          "stage": "link_extension",
+          "command": [
+            "cmake",
+            "-E",
+            "cmake_link_script",
+            "CMakeFiles/duckomo_loadable_extension.dir/link.txt",
+            "--verbose=1"
+          ],
+          "exit_code": 0,
+          "stdout": "/usr/bin/c++ -fPIC -O3 -DNDEBUG -ffunction-sections -fdata-sections -O3 -DNDEBUG   -shared -Wl,-soname,duckomo.duckdb_extension -o duckomo.duckdb_extension CMakeFiles/duckomo_loadable_extension.dir/src/om_extension.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/compat/duckdb_api.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/om/local_file.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/om/metadata.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/om/reader.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/om/remote_file.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/batch.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/dimensions.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/axis_filter.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/axis_selection.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/projection.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om_series.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/series_plan.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/series_registry.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_input.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_geometry.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/grid_info.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/grid_selection.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/semantic_axes.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/raw_scan.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/schema.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/spatial_filter.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/spatial_selection.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/domain_bbox.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/grid_definition.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/grid_identity.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/projected_grid.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/gaussian_grid.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/regular_grid.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/spatial_layout.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/domain_registry.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/nearest_sampling.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_sampling.cpp.o  ../../src/libduckdb_static.a ../libdummy_static_extension_loader.a -Wl,--gc-sections -Wl,--exclude-libs,ALL libduckomo_om.a -ldl \n",
+          "stderr": ""
+        },
+        {
+          "stage": "append_extension_metadata",
+          "command": [
+            "cmake",
+            "-DABI_TYPE=CPP",
+            "-DEXTENSION=/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/builds/2a1e218a7e3055b8db02c397eca7e5e2d2255bae3ecc04848a79a1a91f58e15b/release/extension/duckomo/duckomo.duckdb_extension",
+            "-DPLATFORM_FILE=/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/builds/2a1e218a7e3055b8db02c397eca7e5e2d2255bae3ecc04848a79a1a91f58e15b/release/duckdb_platform_out",
+            "-DVERSION_FIELD=v1.5.4",
+            "-DEXTENSION_VERSION=80ebe4b",
+            "-DNULL_FILE=/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/source/duckdb/scripts/null.txt",
+            "-P",
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/source/duckdb/scripts/append_metadata.cmake"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "exit_code": 0,
+      "previous_extension_restored": true,
+      "duckdb_static_unchanged": true,
+      "review_fix_extension": {
+        "path": "/home/blizhan/repo/github/duckomo/build/series-review-fix/v1.5.4/extension/duckomo/duckomo.duckdb_extension",
+        "sha256": "5ea5c2e04af13721b0db0fcceb6573900ee68504b1511bbf577441bed0f55ff5"
+      }
+    },
+    {
+      "pair": "v1.5.5",
+      "engine_version": "v1.5.5",
+      "engine_pin": "d8cdaa33fda8df955cc76ef58a280f68f4cd43fa",
+      "cli": {
+        "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/official/duckdb",
+        "sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1"
+      },
+      "previous_extension": {
+        "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/builds/ec88818b699c5bbde425f97f74cbd59c6dd5ff9b3e766b9cbec29dbeb20cae27/release/extension/duckomo/duckomo.duckdb_extension",
+        "sha256": "8557e3c7e6227ff6834fe7046ed63ebf6635103e9211237e72e1e64e5615acc6"
+      },
+      "reused_duckdb_static": {
+        "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/builds/ec88818b699c5bbde425f97f74cbd59c6dd5ff9b3e766b9cbec29dbeb20cae27/release/src/libduckdb_static.a",
+        "sha256": "e144117fbe6be32ee7577d0f34d931b94f843126c6cba939f8dd33f5d2486819"
+      },
+      "commands": [
+        {
+          "stage": "compile_changed_translation_units",
+          "command": [
+            "/usr/bin/gmake",
+            "-B",
+            "-C",
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/builds/ec88818b699c5bbde425f97f74cbd59c6dd5ff9b3e766b9cbec29dbeb20cae27/release",
+            "-f",
+            "extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/build.make",
+            "extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om.cpp.o",
+            "extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om_series.cpp.o"
+          ],
+          "exit_code": 0,
+          "stdout": "gmake: \u8fdb\u5165\u76ee\u5f55\u201c/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/builds/ec88818b699c5bbde425f97f74cbd59c6dd5ff9b3e766b9cbec29dbeb20cae27/release\u201d\nBuilding CXX object extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om.cpp.o\nBuilding CXX object extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om_series.cpp.o\ngmake: \u79bb\u5f00\u76ee\u5f55\u201c/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/builds/ec88818b699c5bbde425f97f74cbd59c6dd5ff9b3e766b9cbec29dbeb20cae27/release\u201d\n",
+          "stderr": ""
+        },
+        {
+          "stage": "link_extension",
+          "command": [
+            "cmake",
+            "-E",
+            "cmake_link_script",
+            "CMakeFiles/duckomo_loadable_extension.dir/link.txt",
+            "--verbose=1"
+          ],
+          "exit_code": 0,
+          "stdout": "/usr/bin/c++ -fPIC -O3 -DNDEBUG -O3 -DNDEBUG   -shared -Wl,-soname,duckomo.duckdb_extension -o duckomo.duckdb_extension CMakeFiles/duckomo_loadable_extension.dir/src/om_extension.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/compat/duckdb_api.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/om/local_file.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/om/metadata.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/om/reader.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/om/remote_file.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/batch.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/dimensions.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/axis_filter.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/axis_selection.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/projection.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om_series.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/series_plan.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/series_registry.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_input.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_geometry.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/grid_info.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/grid_selection.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/semantic_axes.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/raw_scan.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/schema.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/spatial_filter.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/spatial_selection.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/domain_bbox.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/grid_definition.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/grid_identity.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/projected_grid.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/gaussian_grid.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/regular_grid.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/spatial_layout.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/domain_registry.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/nearest_sampling.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_sampling.cpp.o  ../../src/libduckdb_static.a ../libdummy_static_extension_loader.a -Wl,--gc-sections -Wl,--exclude-libs,ALL libduckomo_om.a -ldl \n",
+          "stderr": ""
+        },
+        {
+          "stage": "append_extension_metadata",
+          "command": [
+            "cmake",
+            "-DABI_TYPE=CPP",
+            "-DEXTENSION=/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/builds/ec88818b699c5bbde425f97f74cbd59c6dd5ff9b3e766b9cbec29dbeb20cae27/release/extension/duckomo/duckomo.duckdb_extension",
+            "-DPLATFORM_FILE=/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/builds/ec88818b699c5bbde425f97f74cbd59c6dd5ff9b3e766b9cbec29dbeb20cae27/release/duckdb_platform_out",
+            "-DVERSION_FIELD=v1.5.5",
+            "-DEXTENSION_VERSION=80ebe4b",
+            "-DNULL_FILE=/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/source/duckdb/scripts/null.txt",
+            "-P",
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/source/duckdb/scripts/append_metadata.cmake"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "exit_code": 0,
+      "previous_extension_restored": true,
+      "duckdb_static_unchanged": true,
+      "review_fix_extension": {
+        "path": "/home/blizhan/repo/github/duckomo/build/series-review-fix/v1.5.5/extension/duckomo/duckomo.duckdb_extension",
+        "sha256": "54f623b717aadb942370f7a357ac03a171b8d8d06fdde9c37b717f95cf2a574b"
+      }
+    },
+    {
+      "pair": "v1.5.6",
+      "engine_version": "v1.5.6",
+      "engine_pin": "069cc9f9b5be802405797faecc284961b07c70ef",
+      "cli": {
+        "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/official/duckdb",
+        "sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48"
+      },
+      "previous_extension": {
+        "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/builds/533359c090ab587fb14a593086eedc7e8ee79be5b303ff613edfa58168ce666f/release/extension/duckomo/duckomo.duckdb_extension",
+        "sha256": "5d2a7f635d27699206278575bad10c4439e129044c7529864efa0da6527c3970"
+      },
+      "reused_duckdb_static": {
+        "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/builds/533359c090ab587fb14a593086eedc7e8ee79be5b303ff613edfa58168ce666f/release/src/libduckdb_static.a",
+        "sha256": "ade9ad75bce67c8661428674aa00fad5bcb6e843f217f2753582d8da8fef9d28"
+      },
+      "commands": [
+        {
+          "stage": "compile_changed_translation_units",
+          "command": [
+            "/usr/bin/gmake",
+            "-B",
+            "-C",
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/builds/533359c090ab587fb14a593086eedc7e8ee79be5b303ff613edfa58168ce666f/release",
+            "-f",
+            "extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/build.make",
+            "extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om.cpp.o",
+            "extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om_series.cpp.o"
+          ],
+          "exit_code": 0,
+          "stdout": "gmake: \u8fdb\u5165\u76ee\u5f55\u201c/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/builds/533359c090ab587fb14a593086eedc7e8ee79be5b303ff613edfa58168ce666f/release\u201d\nBuilding CXX object extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om.cpp.o\nBuilding CXX object extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om_series.cpp.o\ngmake: \u79bb\u5f00\u76ee\u5f55\u201c/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/builds/533359c090ab587fb14a593086eedc7e8ee79be5b303ff613edfa58168ce666f/release\u201d\n",
+          "stderr": ""
+        },
+        {
+          "stage": "link_extension",
+          "command": [
+            "cmake",
+            "-E",
+            "cmake_link_script",
+            "CMakeFiles/duckomo_loadable_extension.dir/link.txt",
+            "--verbose=1"
+          ],
+          "exit_code": 0,
+          "stdout": "/usr/bin/c++ -fPIC -O3 -DNDEBUG -O3 -DNDEBUG   -shared -Wl,-soname,duckomo.duckdb_extension -o duckomo.duckdb_extension CMakeFiles/duckomo_loadable_extension.dir/src/om_extension.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/compat/duckdb_api.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/om/local_file.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/om/metadata.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/om/reader.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/om/remote_file.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/batch.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/dimensions.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/axis_filter.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/axis_selection.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/projection.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om_series.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/series_plan.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/series_registry.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_input.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_geometry.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/grid_info.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/grid_selection.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/semantic_axes.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/raw_scan.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/schema.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/spatial_filter.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/spatial_selection.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/domain_bbox.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/grid_definition.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/grid_identity.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/projected_grid.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/gaussian_grid.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/regular_grid.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/spatial_layout.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/domain_registry.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/nearest_sampling.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_sampling.cpp.o  ../../src/libduckdb_static.a ../libdummy_static_extension_loader.a -Wl,--gc-sections -Wl,--exclude-libs,ALL libduckomo_om.a -ldl \n",
+          "stderr": ""
+        },
+        {
+          "stage": "append_extension_metadata",
+          "command": [
+            "cmake",
+            "-DABI_TYPE=CPP",
+            "-DEXTENSION=/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/builds/533359c090ab587fb14a593086eedc7e8ee79be5b303ff613edfa58168ce666f/release/extension/duckomo/duckomo.duckdb_extension",
+            "-DPLATFORM_FILE=/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/builds/533359c090ab587fb14a593086eedc7e8ee79be5b303ff613edfa58168ce666f/release/duckdb_platform_out",
+            "-DVERSION_FIELD=v1.5.6",
+            "-DEXTENSION_VERSION=80ebe4b",
+            "-DNULL_FILE=/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/source/duckdb/scripts/null.txt",
+            "-P",
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/source/duckdb/scripts/append_metadata.cmake"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "exit_code": 0,
+      "previous_extension_restored": true,
+      "duckdb_static_unchanged": true,
+      "review_fix_extension": {
+        "path": "/home/blizhan/repo/github/duckomo/build/series-review-fix/v1.5.6/extension/duckomo/duckomo.duckdb_extension",
+        "sha256": "b34acbd8d82db76ba8cd479c437583560af287f51a40cebd8ed3db8d7bcccb56"
+      }
+    },
+    {
+      "pair": "v2.0.0",
+      "engine_version": "v2.0.0",
+      "engine_pin": "d54cbbe3df17e8e5ce68312f483b4155836112aa",
+      "cli": {
+        "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/official/duckdb",
+        "sha256": "f4c681bcf41a5c43dcf9a354703fe5bded9e2265282d1915d6d99637cd1e1f29"
+      },
+      "previous_extension": {
+        "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/builds/0f04bb552ba7fe4322b8cc719ea7fb8e045c450377997e33fabf22b60d6d04b3/release/extension/duckomo/duckomo.duckdb_extension",
+        "sha256": "19cd2423ba27e43ce0ca0d4a13e9cb7c7700ccc9c8a7397e76f58d5ed541de8d"
+      },
+      "reused_duckdb_static": {
+        "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/builds/0f04bb552ba7fe4322b8cc719ea7fb8e045c450377997e33fabf22b60d6d04b3/release/src/libduckdb_static.a",
+        "sha256": "d182a3d8869fe7d2fd9b1f5750684f6ec5195b5549e4f62232a3199209ea4228"
+      },
+      "commands": [
+        {
+          "stage": "compile_changed_translation_units",
+          "command": [
+            "/usr/bin/gmake",
+            "-B",
+            "-C",
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/builds/0f04bb552ba7fe4322b8cc719ea7fb8e045c450377997e33fabf22b60d6d04b3/release",
+            "-f",
+            "extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/build.make",
+            "extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om.cpp.o",
+            "extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om_series.cpp.o"
+          ],
+          "exit_code": 0,
+          "stdout": "gmake: \u8fdb\u5165\u76ee\u5f55\u201c/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/builds/0f04bb552ba7fe4322b8cc719ea7fb8e045c450377997e33fabf22b60d6d04b3/release\u201d\nBuilding CXX object extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om.cpp.o\nBuilding CXX object extension/duckomo/CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om_series.cpp.o\ngmake: \u79bb\u5f00\u76ee\u5f55\u201c/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/builds/0f04bb552ba7fe4322b8cc719ea7fb8e045c450377997e33fabf22b60d6d04b3/release\u201d\n",
+          "stderr": "/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp: In function \u2018void duckdb::duckomo::{anonymous}::ScanGridInfo(duckdb::ClientContext&, duckdb::TableFunctionInput&, duckdb::DataChunk&)\u2019:\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3037:24: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 3037 |         output.SetValue(0, 0, Value::INTEGER(1));\n      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~\nIn file included from /home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/execution/physical_operator_states.hpp:14,\n                 from /home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/function/table_function.hpp:14,\n                 from /home/blizhan/repo/github/duckomo/src/include/duckomo/read_om.hpp:5,\n                 from /home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:1:\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3038:24: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 3038 |         output.SetValue(1, 0, Value(document.grid_id));\n      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3039:24: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 3039 |         output.SetValue(2, 0, document.parent_grid_id ? Value(*document.parent_grid_id) : Value(LogicalType::VARCHAR));\n      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3040:24: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 3040 |         output.SetValue(3, 0, Value(document.grid_type));\n      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3041:24: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 3041 |         output.SetValue(4, 0, JsonValue(document.definition_json));\n      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3042:24: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 3042 |         output.SetValue(5, 0, JsonValue(document.layout_json));\n      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3043:24: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 3043 |         output.SetValue(6, 0, JsonValue(document.crs_json));\n      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3044:24: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 3044 |         output.SetValue(7, 0, JsonValue(document.capabilities_json));\n      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3045:24: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 3045 |         output.SetValue(8, 0, JsonValue(document.provenance_json));\n      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3046:24: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 3046 |         output.SetValue(9, 0, Value(document.object_id));\n      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3047:24: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 3047 |         output.SetValue(10, 0, document.object_version ? Value(*document.object_version) : Value(LogicalType::VARCHAR));\n      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3048:24: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 3048 |         output.SetValue(11, 0, Value(document.version_strength));\n      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3049:24: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 3049 |         output.SetValue(12, 0, Value::BOOLEAN(document.content_verified));\n      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp: In function \u2018void duckdb::duckomo::{anonymous}::FilterRegionCandidates(duckdb::ClientContext&, ReadOmGlobalState&, ReadOmLocalState&, const ReadOmBindData&, std::vector<long unsigned int, std::allocator<long unsigned int> >&)\u2019:\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3121:35: warning: \u2018void duckdb::DataChunk::SetCardinality(duckdb::idx_t)\u2019 is deprecated: Use CheckCardinality (preferred) or SetChildCardinality instead [-Wdeprecated-declarations]\n 3121 |         coordinates.SetCardinality(REGION_GEOMETRY_BATCH_SIZE);\n      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:78:9: note: declared here\n   78 |         SetCardinality(idx_t count_p) {\n      |         ^~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3123:35: warning: \u2018void duckdb::DataChunk::SetCardinality(duckdb::idx_t)\u2019 is deprecated: Use CheckCardinality (preferred) or SetChildCardinality instead [-Wdeprecated-declarations]\n 3123 |         coordinates.SetCardinality(0);\n      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:78:9: note: declared here\n   78 |         SetCardinality(idx_t count_p) {\n      |         ^~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp: In lambda function:\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3142:43: warning: \u2018void duckdb::DataChunk::SetCardinality(duckdb::idx_t)\u2019 is deprecated: Use CheckCardinality (preferred) or SetChildCardinality instead [-Wdeprecated-declarations]\n 3142 |                 coordinates.SetCardinality(coordinate_count);\n      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:78:9: note: declared here\n   78 |         SetCardinality(idx_t count_p) {\n      |         ^~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp: In function \u2018void duckdb::duckomo::{anonymous}::FilterRegionCandidates(duckdb::ClientContext&, ReadOmGlobalState&, ReadOmLocalState&, const ReadOmBindData&, std::vector<long unsigned int, std::allocator<long unsigned int> >&)\u2019:\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3178:45: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 3178 |                         coordinates.SetValue(0, coordinate_count, Value::DOUBLE(coordinate.longitude));\n      |                         ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3179:45: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 3179 |                         coordinates.SetValue(1, coordinate_count, Value::DOUBLE(coordinate.latitude));\n      |                         ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp: In function \u2018void duckdb::duckomo::{anonymous}::ScanLastMetrics(duckdb::ClientContext&, duckdb::TableFunctionInput&, duckdb::DataChunk&)\u2019:\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:4098:32: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 4098 |                 output.SetValue(0, count, Value(row.query_id));\n      |                 ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:4099:32: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 4099 |                 output.SetValue(1, count, Value::UBIGINT(row.scan_id));\n      |                 ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:4100:32: warning: \u2018void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)\u2019 is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]\n 4100 |                 output.SetValue(2, count, Value(row.metrics));\n      |                 ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here\n   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);\n      |         ^~~~~~~~\n"
+        },
+        {
+          "stage": "link_extension",
+          "command": [
+            "cmake",
+            "-E",
+            "cmake_link_script",
+            "CMakeFiles/duckomo_loadable_extension.dir/link.txt",
+            "--verbose=1"
+          ],
+          "exit_code": 0,
+          "stdout": "/usr/bin/c++ -fPIC -O3 -DNDEBUG -ffunction-sections -fdata-sections -O3 -DNDEBUG   -shared -Wl,-soname,duckomo.duckdb_extension -o duckomo.duckdb_extension CMakeFiles/duckomo_loadable_extension.dir/src/om_extension.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/compat/duckdb_api.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/om/local_file.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/om/metadata.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/om/reader.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/om/remote_file.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/batch.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/dimensions.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/axis_filter.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/axis_selection.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/projection.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/read_om_series.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/series_plan.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/series_registry.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_input.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_geometry.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/grid_info.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/grid_selection.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/semantic_axes.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/raw_scan.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/schema.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/spatial_filter.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/spatial_selection.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/domain_bbox.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/grid_definition.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/grid_identity.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/projected_grid.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/gaussian_grid.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/regular_grid.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/spatial_layout.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/domain_registry.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/grid/nearest_sampling.cpp.o CMakeFiles/duckomo_loadable_extension.dir/src/scan/region_sampling.cpp.o  ../../src/libduckdb_static.a -Wl,--gc-sections -Wl,--exclude-libs,ALL libduckomo_om.a -ldl \n",
+          "stderr": ""
+        },
+        {
+          "stage": "append_extension_metadata",
+          "command": [
+            "cmake",
+            "-DABI_TYPE=CPP",
+            "-DEXTENSION=/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/builds/0f04bb552ba7fe4322b8cc719ea7fb8e045c450377997e33fabf22b60d6d04b3/release/extension/duckomo/duckomo.duckdb_extension",
+            "-DPLATFORM_FILE=/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/builds/0f04bb552ba7fe4322b8cc719ea7fb8e045c450377997e33fabf22b60d6d04b3/release/duckdb_platform_out",
+            "-DVERSION_FIELD=v2.0.0",
+            "-DEXTENSION_VERSION=80ebe4b",
+            "-DNULL_FILE=/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/scripts/null.txt",
+            "-P",
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/source/duckdb/scripts/append_metadata.cmake"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "exit_code": 0,
+      "previous_extension_restored": true,
+      "duckdb_static_unchanged": true,
+      "review_fix_extension": {
+        "path": "/home/blizhan/repo/github/duckomo/build/series-review-fix/v2.0.0/extension/duckomo/duckomo.duckdb_extension",
+        "sha256": "6717813ae8a4c9ac52ccedea5ac3af9fad6e7be62414e696c47d8afdc11dd6df"
+      }
+    }
+  ]
+}

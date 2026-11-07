@@ -1,4 +1,5 @@
 #include "duckomo/read_om.hpp"
+#include "duckomo/read_om_binding.hpp"
 #include "duckomo/region_geometry.hpp"
 #include "duckomo/region_input.hpp"
 #include "duckomo/region_sampling.hpp"
@@ -36,6 +37,7 @@
 #include "duckdb/main/client_context_state.hpp"
 #include "duckdb/main/database.hpp"
 #include "duckdb/storage/buffer_manager.hpp"
+#include "duckdb/planner/binder.hpp"
 #include "duckdb/planner/column_binding.hpp"
 #include "duckdb/planner/expression/bound_constant_expression.hpp"
 #include "duckdb/planner/expression/bound_function_expression.hpp"
@@ -643,6 +645,50 @@ std::vector<std::string> ReadSpatialAxes(const Value *value) {
 	return result;
 }
 
+RegularGrid ReadLegacyRegularGrid(const Value &grid_value) {
+	static const std::vector<std::string> required_fields = {"nx", "ny", "lat0", "lon0", "dlat", "dlon", "order"};
+	const auto &field_types = StructType::GetChildTypes(grid_value.type());
+	const auto &field_values = StructValue::GetChildren(grid_value);
+	if (field_types.size() != required_fields.size() || field_values.size() != required_fields.size()) {
+		throw BinderException("read_om grid STRUCT must contain exactly nx, ny, lat0, lon0, dlat, dlon, and order");
+	}
+	std::unordered_map<std::string, const Value *> fields;
+	fields.reserve(required_fields.size());
+	for (idx_t index = 0; index < field_types.size(); index++) {
+		const auto &name = StructType::GetChildName(grid_value.type(), index);
+		if (std::find(required_fields.begin(), required_fields.end(), name) == required_fields.end() ||
+		    field_values[index].IsNull() || !fields.emplace(name, &field_values[index]).second) {
+			throw BinderException("read_om grid STRUCT has an unknown, duplicate, or NULL field '" + name + "'");
+		}
+	}
+	for (const auto &field : required_fields) {
+		if (fields.find(field) == fields.end()) {
+			throw BinderException("read_om grid STRUCT is missing field '" + field + "'");
+		}
+	}
+	if (fields.at("order")->type().id() != LogicalTypeId::VARCHAR) {
+		throw BinderException("read_om grid field 'order' must be VARCHAR");
+	}
+	const auto order_name = StringValue::Get(*fields.at("order"));
+	GridStorageOrder order;
+	if (order_name == "separate") {
+		order = GridStorageOrder::Separate;
+	} else if (order_name == "lon_fastest") {
+		order = GridStorageOrder::LongitudeFastest;
+	} else if (order_name == "lat_fastest") {
+		order = GridStorageOrder::LatitudeFastest;
+	} else {
+		throw BinderException("read_om grid order must be separate, lon_fastest, or lat_fastest");
+	}
+	try {
+		return RegularGrid(ReadGridExtent(*fields.at("nx"), "nx"), ReadGridExtent(*fields.at("ny"), "ny"),
+		                   ReadGridDouble(*fields.at("lat0"), "lat0"), ReadGridDouble(*fields.at("lon0"), "lon0"),
+		                   ReadGridDouble(*fields.at("dlat"), "dlat"), ReadGridDouble(*fields.at("dlon"), "dlon"), order);
+	} catch (const ReaderError &error) {
+		throw BinderException("read_om grid is invalid: " + std::string(error.what()));
+	}
+}
+
 std::string GridOrderName(GridStorageOrder order) {
 	switch (order) {
 	case GridStorageOrder::Separate:
@@ -860,21 +906,6 @@ LogicalType NearestSamplingType(const BoundSchema &schema) {
 	return LogicalType::STRUCT(fields);
 }
 
-LogicalType OmSourceType() {
-	return LogicalType::STRUCT({
-	    {"object_id", LogicalType::VARCHAR},
-	    {"object_version", LogicalType::VARCHAR},
-	    {"version_strength", LogicalType::VARCHAR},
-	    {"content_verified", LogicalType::BOOLEAN},
-	    {"grid_id", LogicalType::VARCHAR},
-	    {"layout_id", LogicalType::VARCHAR},
-	    {"logical_index", LogicalType::UBIGINT},
-	    {"point_index", LogicalType::UBIGINT},
-	    {"parent_point_index", LogicalType::UBIGINT},
-	    {"axis_indices", LogicalType::LIST(LogicalType::UBIGINT)},
-	});
-}
-
 Value MakeOmSourceValue(const SpatialBindConfiguration &spatial, std::uint64_t logical_index) {
 	if (!spatial.include_source || !spatial.identity_definition || !spatial.layout) {
 		throw InternalException("read_om source output has no bound grid identity or layout");
@@ -930,7 +961,7 @@ void ValidateGridSourceCrs(const BoundSchema &schema, const GridDefinition &defi
 	throw BinderException("read_om source crs_wkt profile conflicts with the declared grid geometry or earth model");
 }
 
-void ValidateGridCoordinates(ClientContext &context, const GridDefinition &definition, ScanMetrics &metrics) {
+void ValidateGridCoordinates(ClientContext &context, const GridDefinition &definition, ScanMetrics *metrics) {
 	// Geometry constructors check PointCount against the signed 64-bit bound;
 	// this constant-space pass is therefore bounded by the declared grid size.
 	const auto count = definition.PointCount();
@@ -954,42 +985,122 @@ void ValidateGridCoordinates(ClientContext &context, const GridDefinition &defin
 			(void)definition.Coordinate(position);
 		}
 	} catch (...) {
-		metrics.RecordCoordinatePreparation(evaluations, false);
+		if (metrics) metrics->RecordCoordinatePreparation(evaluations, false);
 		throw;
 	}
-	metrics.RecordCoordinatePreparation(evaluations, true);
+	if (metrics) metrics->RecordCoordinatePreparation(evaluations, true);
+}
+
+struct ParsedSpatialDeclaration final {
+	bool has_grid = false;
+	bool has_domain = false;
+	std::string domain_name;
+	const VerifiedDomain *verified_domain = nullptr;
+	const RegisteredGridDefinition *registered_domain = nullptr;
+	std::optional<RegularGrid> grid;
+	std::optional<GridDefinition> definition;
+	std::vector<std::string> spatial_axes;
+};
+
+ParsedSpatialDeclaration ParseSpatialDeclaration(const TableFunctionBindInput &input, bool regions_mode) {
+	ParsedSpatialDeclaration result;
+	const auto *grid_value = GetTableFunctionNamedArgument(input, "grid");
+	const auto *axes_value = GetTableFunctionNamedArgument(input, "spatial_axes");
+	const auto *domain_value = GetTableFunctionNamedArgument(input, "domain");
+	result.has_grid = grid_value != nullptr && !grid_value->IsNull();
+	result.has_domain = domain_value != nullptr && !domain_value->IsNull();
+	if (result.has_grid && result.has_domain) {
+		throw BinderException("read_om grid and domain are mutually exclusive");
+	}
+	if (result.has_domain) {
+		if (domain_value->type().id() != LogicalTypeId::VARCHAR) {
+			throw BinderException("read_om domain must be a VARCHAR name");
+		}
+		result.domain_name = StringValue::Get(*domain_value);
+		result.verified_domain = FindVerifiedDomain(result.domain_name);
+		if (result.verified_domain == nullptr) {
+			result.registered_domain = FindRegisteredGridDefinition(result.domain_name);
+		}
+		if (result.verified_domain == nullptr && result.registered_domain == nullptr) {
+			const auto message = "read_om domain is unknown or not verified: '" + result.domain_name + "'";
+			throw BinderException(regions_mode ? "[region_reference] " + message : message);
+		}
+		if (result.registered_domain != nullptr && !result.registered_domain->domain_bindable) {
+			throw BinderException("read_om domain '" + result.domain_name +
+			                      "' is a formula identity vector, not a producer domain");
+		}
+		if (axes_value != nullptr && !axes_value->IsNull()) {
+			throw BinderException("read_om domain does not accept an extra spatial_axes override");
+		}
+		return result;
+	}
+	if (!result.has_grid) {
+		if (axes_value != nullptr && !axes_value->IsNull()) {
+			throw BinderException("read_om spatial_axes requires grid or domain");
+		}
+		return result;
+	}
+	if (grid_value->type().id() != LogicalTypeId::STRUCT) {
+		throw BinderException("read_om grid must be a named STRUCT");
+	}
+	const auto &top_field_names = StructType::GetChildTypes(grid_value->type());
+	bool is_version_one = false;
+	for (idx_t index = 0; index < top_field_names.size(); index++) {
+		if (StructType::GetChildName(grid_value->type(), index) == "version") {
+			is_version_one = true;
+			break;
+		}
+	}
+	if (is_version_one) {
+		try {
+			result.definition.emplace(ReadVersionOneGrid(*grid_value));
+		} catch (const ReaderError &error) {
+			throw BinderException("read_om version=1 grid is invalid: " + std::string(error.what()));
+		}
+	} else {
+		result.grid.emplace(ReadLegacyRegularGrid(*grid_value));
+	}
+	result.spatial_axes = ReadSpatialAxes(axes_value);
+	return result;
+}
+
+std::size_t SpatialAxisCount(const ParsedSpatialDeclaration &declaration) {
+	if (declaration.grid) {
+		return declaration.grid->Order() == GridStorageOrder::Separate ? 2 : 1;
+	}
+	if (!declaration.definition) throw InternalException("spatial axis count requested without an explicit grid");
+	if (const auto *regular = std::get_if<RegularGrid>(&declaration.definition->geometry)) {
+		return regular->Order() == GridStorageOrder::Separate ? 2 : 1;
+	}
+	if (const auto *projected = std::get_if<ProjectedGrid>(&declaration.definition->geometry)) {
+		const auto order = std::visit([](const auto &parameters) { return parameters.order; }, projected->Parameters());
+		return order == GridStorageOrder::Separate ? 2 : 1;
+	}
+	return 1;
+}
+
+void ValidateDeclaredSpatialAxes(const std::vector<std::string> &required_axes,
+                                 const DeclaredSeriesSchema &declared, const std::string &where) {
+	for (const auto &array : declared.arrays) {
+		for (const auto &axis : required_axes) {
+			if (std::find(array.dimension_names.begin(), array.dimension_names.end(), axis) ==
+			    array.dimension_names.end()) {
+				throw BinderException("read_om_series " + where + " axis '" + axis +
+				                      "' is not present in declared dimensions for '" + array.canonical_path + "'");
+			}
+		}
+	}
 }
 
 SpatialBindConfiguration BindSpatialConfiguration(const TableFunctionBindInput &input, const BoundSchema &schema,
 	                                               const AxisDeclarations &axes, ScanMetrics &metrics,
 	                                               ClientContext &context, bool regions_mode) {
 	SpatialBindConfiguration result;
-	const auto *grid_value = GetTableFunctionNamedArgument(input, "grid");
-	const auto *axes_value = GetTableFunctionNamedArgument(input, "spatial_axes");
-	const auto *domain_value = GetTableFunctionNamedArgument(input, "domain");
-	const bool has_grid = grid_value != nullptr && !grid_value->IsNull();
-	const bool has_domain = domain_value != nullptr && !domain_value->IsNull();
-	if (has_grid && has_domain) {
-		throw BinderException("read_om grid and domain are mutually exclusive");
-	}
-	if (has_domain) {
-		if (domain_value->type().id() != LogicalTypeId::VARCHAR) {
-			throw BinderException("read_om domain must be a VARCHAR name");
-		}
-		const auto domain_name = StringValue::Get(*domain_value);
-		const auto *domain = FindVerifiedDomain(domain_name);
-		if (domain == nullptr) {
-			const auto *registered = FindRegisteredGridDefinition(domain_name);
-			if (registered == nullptr) {
-				const auto message = "read_om domain is unknown or not verified: '" + domain_name + "'";
-				throw BinderException(regions_mode ? "[region_reference] " + message : message);
-			}
-			if (!registered->domain_bindable) {
-				throw BinderException("read_om domain '" + domain_name + "' is a formula identity vector, not a producer domain");
-			}
-			if (axes_value != nullptr && !axes_value->IsNull()) {
-				throw BinderException("read_om domain does not accept an extra spatial_axes override");
-			}
+	const auto declaration = ParseSpatialDeclaration(input, regions_mode);
+	if (declaration.has_domain) {
+		const auto &domain_name = declaration.domain_name;
+		if (declaration.registered_domain != nullptr) {
+			const auto *registered = declaration.registered_domain;
 			if (schema.variables.size() != axes.size() || registered->expected_axis_order.empty()) {
 				throw BinderException("read_om domain '" + domain_name + "' requires ordered axes for every array");
 			}
@@ -1030,7 +1141,7 @@ SpatialBindConfiguration BindSpatialConfiguration(const TableFunctionBindInput &
 					throw ReaderError(ReaderErrorCode::InvalidShape,
 					                  "registered grid layout does not match its frozen spatial profile");
 				}
-				ValidateGridCoordinates(context, *result.definition, metrics);
+				ValidateGridCoordinates(context, *result.definition, &metrics);
 			} catch (const ReaderError &error) {
 				throw BinderException("read_om domain '" + domain_name + "' layout is invalid: " +
 				                      std::string(error.what()));
@@ -1042,13 +1153,8 @@ SpatialBindConfiguration BindSpatialConfiguration(const TableFunctionBindInput &
 			DescribeSpatialConfiguration(result, metrics);
 			return result;
 		}
-		if (!domain) {
-			const auto message = "read_om domain is unknown or not verified: '" + domain_name + "'";
-			throw BinderException(regions_mode ? "[region_reference] " + message : message);
-		}
-		if (axes_value != nullptr && !axes_value->IsNull()) {
-			throw BinderException("read_om domain does not accept an extra spatial_axes override");
-		}
+
+		const auto *domain = declaration.verified_domain;
 		if (schema.variables.size() != axes.size()) {
 			throw BinderException("read_om domain '" + domain_name + "' requires ordered axes for every array");
 		}
@@ -1077,86 +1183,26 @@ SpatialBindConfiguration BindSpatialConfiguration(const TableFunctionBindInput &
 		DescribeSpatialConfiguration(result, metrics);
 		return result;
 	}
-	if (!has_grid) {
-		if (axes_value != nullptr && !axes_value->IsNull()) {
-			throw BinderException("read_om spatial_axes requires grid or domain");
-		}
-		return result;
-	}
+	if (!declaration.has_grid) return result;
 
-	if (grid_value->type().id() != LogicalTypeId::STRUCT) {
-		throw BinderException("read_om grid must be a named STRUCT");
-	}
-	const auto &top_field_names = StructType::GetChildTypes(grid_value->type());
-	bool is_version_one = false;
-	for (idx_t index = 0; index < top_field_names.size(); index++) {
-		if (StructType::GetChildName(grid_value->type(), index) == "version") is_version_one = true;
-	}
-	if (is_version_one) {
-		try {
-			result.definition.emplace(ReadVersionOneGrid(*grid_value));
-		} catch (const ReaderError &error) {
-			throw BinderException("read_om version=1 grid is invalid: " + std::string(error.what()));
-		}
+	if (declaration.definition) {
+		result.definition = declaration.definition;
 		ValidateGridSourceCrs(schema, *result.definition);
-		auto spatial_axes = ReadSpatialAxes(axes_value);
 		try {
-			result.layout.emplace(BindGridSpatialLayout(schema, axes, *result.definition, spatial_axes));
-			ValidateGridCoordinates(context, *result.definition, metrics);
+			result.layout.emplace(BindGridSpatialLayout(schema, axes, *result.definition,
+			                                           declaration.spatial_axes));
+			ValidateGridCoordinates(context, *result.definition, &metrics);
 		} catch (const ReaderError &error) {
 			throw BinderException("read_om version=1 spatial layout is invalid: " + std::string(error.what()));
 		}
-		result.source = "explicit";
-		DescribeSpatialConfiguration(result, metrics);
-		return result;
-	}
-	static const std::vector<std::string> required_fields = {"nx", "ny", "lat0", "lon0", "dlat", "dlon", "order"};
-	const auto &field_types = StructType::GetChildTypes(grid_value->type());
-	const auto &field_values = StructValue::GetChildren(*grid_value);
-	if (field_types.size() != required_fields.size() || field_values.size() != required_fields.size()) {
-		throw BinderException("read_om grid STRUCT must contain exactly nx, ny, lat0, lon0, dlat, dlon, and order");
-	}
-	std::unordered_map<std::string, const Value *> fields;
-	fields.reserve(required_fields.size());
-	for (idx_t index = 0; index < field_types.size(); index++) {
-		const auto &name = StructType::GetChildName(grid_value->type(), index);
-		if (std::find(required_fields.begin(), required_fields.end(), name) == required_fields.end() ||
-		    field_values[index].IsNull() || !fields.emplace(name, &field_values[index]).second) {
-			throw BinderException("read_om grid STRUCT has an unknown, duplicate, or NULL field '" + name + "'");
-		}
-	}
-	for (const auto &field : required_fields) {
-		if (fields.find(field) == fields.end()) {
-			throw BinderException("read_om grid STRUCT is missing field '" + field + "'");
-		}
-	}
-	if (fields.at("order")->type().id() != LogicalTypeId::VARCHAR) {
-		throw BinderException("read_om grid field 'order' must be VARCHAR");
-	}
-	const auto order_name = StringValue::Get(*fields.at("order"));
-	GridStorageOrder order;
-	if (order_name == "separate") {
-		order = GridStorageOrder::Separate;
-	} else if (order_name == "lon_fastest") {
-		order = GridStorageOrder::LongitudeFastest;
-	} else if (order_name == "lat_fastest") {
-		order = GridStorageOrder::LatitudeFastest;
 	} else {
-		throw BinderException("read_om grid order must be separate, lon_fastest, or lat_fastest");
-	}
-
-	try {
-		result.grid.emplace(ReadGridExtent(*fields.at("nx"), "nx"), ReadGridExtent(*fields.at("ny"), "ny"),
-		                    ReadGridDouble(*fields.at("lat0"), "lat0"), ReadGridDouble(*fields.at("lon0"), "lon0"),
-		                    ReadGridDouble(*fields.at("dlat"), "dlat"), ReadGridDouble(*fields.at("dlon"), "dlon"), order);
-	} catch (const ReaderError &error) {
-		throw BinderException("read_om grid is invalid: " + std::string(error.what()));
-	}
-	auto spatial_axes = ReadSpatialAxes(axes_value);
-	try {
-		result.layout.emplace(BindSpatialLayout(schema, axes, *result.grid, spatial_axes));
-	} catch (const ReaderError &error) {
-		throw BinderException("read_om spatial layout is invalid: " + std::string(error.what()));
+		result.grid = declaration.grid;
+		try {
+			result.layout.emplace(BindSpatialLayout(schema, axes, *result.grid,
+			                                      declaration.spatial_axes));
+		} catch (const ReaderError &error) {
+			throw BinderException("read_om spatial layout is invalid: " + std::string(error.what()));
+		}
 	}
 	result.source = "explicit";
 	DescribeSpatialConfiguration(result, metrics);
@@ -1333,7 +1379,8 @@ struct ReadOmBindData final : TableFunctionData {
 	      region_bind_memory_account(regions ? std::make_shared<ScanMemoryAccount>(metrics, ScanMemoryComponent::RegionInput)
 	                                         : nullptr),
 	      region_geometries(other.region_geometries), variable_selected(other.variable_selected),
-	      sampling_options(other.sampling_options), nearest_plan(other.nearest_plan) {
+	      sampling_options(other.sampling_options), nearest_plan(other.nearest_plan),
+	      series_statement_cacheable(other.series_statement_cacheable) {
 		region_predicates.reserve(other.region_predicates.size());
 		for (const auto &predicate : other.region_predicates) region_predicates.emplace_back(predicate->Copy());
 		memory_account->Set(EstimateBindMemory(*this));
@@ -1366,7 +1413,7 @@ struct ReadOmBindData final : TableFunctionData {
 	}
 
 	bool SupportStatementCache() const override {
-		return false;
+		return series_statement_cacheable;
 	}
 
     std::string path;
@@ -1391,6 +1438,7 @@ struct ReadOmBindData final : TableFunctionData {
 	bool variable_selected = false;
 	RegionSamplingOptions sampling_options;
 	std::shared_ptr<const NearestSamplingPlan> nearest_plan;
+	bool series_statement_cacheable = false;
 };
 
 std::uint64_t AddMemoryBytes(std::uint64_t total, std::uint64_t bytes) {
@@ -2809,21 +2857,12 @@ unique_ptr<FunctionData> BindReadOmInternal(ClientContext &context, TableFunctio
 	names.reserve(names.size() + schema.variables.size() + (spatial.HasGrid() ? 2 : 0) +
 	              (temporal ? 1 : 0) + semantic_column_count + (regions_mode ? 1 : 0) +
 	              (has_sampling_column ? 1 : 0) + (spatial.include_source ? 1 : 0));
-	for (const auto &variable : schema.variables) {
-		return_types.emplace_back(variable.type);
-		names.emplace_back(variable.column_name);
-	}
+	AppendValueOutputColumns(schema, return_types, names);
 	if (spatial.HasGrid()) {
 		AppendSpatialOutputColumns(schema, return_types, names);
 	}
 	if (temporal) {
-		for (const auto &name : names) {
-			if (StringUtil::CIEquals(TableFunctionColumnNameString(name), "valid_time")) {
-				throw BinderException("read_om valid_time column name conflicts with a source array");
-			}
-		}
-		return_types.emplace_back(LogicalType::TIMESTAMP);
-		names.emplace_back("valid_time");
+		AppendValidTimeOutputColumn("read_om", return_types, names);
 	}
 	for (const auto &semantic_axis : semantic_axes) {
 		if (semantic_axis.kind == SemanticAxisKind::Time) continue;
@@ -2856,13 +2895,7 @@ unique_ptr<FunctionData> BindReadOmInternal(ClientContext &context, TableFunctio
 		names.emplace_back("sampling");
 	}
 	if (spatial.include_source) {
-		for (const auto &existing_name : names) {
-			if (StringUtil::CIEquals(TableFunctionColumnNameString(existing_name), "om_source")) {
-				throw BinderException("read_om om_source column name conflicts with source array '" + existing_name + "'");
-			}
-		}
-		return_types.emplace_back(OmSourceType());
-		names.emplace_back("om_source");
+		AppendOmSourceOutputColumn(schema, "read_om", return_types, names);
 	}
 	auto bind_data = make_uniq<ReadOmBindData>(path, std::move(schema), std::move(axes), std::move(spatial),
 	                                          std::move(temporal), std::move(semantic_axes),
@@ -3407,8 +3440,31 @@ void ScanNearestBatch(ClientContext &context, ReadOmGlobalState &state, ReadOmLo
 	}
 }
 
+class OmPlannedCacheWindowScope final {
+public:
+	explicit OmPlannedCacheWindowScope(vector<unique_ptr<OmDecoderState>> &decoders) noexcept
+	    : decoders_(decoders) {
+		for (auto &decoder : decoders_) {
+			if (decoder) decoder->BeginPlannedCacheScope();
+		}
+	}
+
+	OmPlannedCacheWindowScope(const OmPlannedCacheWindowScope &) = delete;
+	OmPlannedCacheWindowScope &operator=(const OmPlannedCacheWindowScope &) = delete;
+
+	~OmPlannedCacheWindowScope() {
+		for (auto &decoder : decoders_) {
+			if (decoder) decoder->EndPlannedCacheScope();
+		}
+	}
+
+private:
+	vector<unique_ptr<OmDecoderState>> &decoders_;
+};
+
 void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLocalState &local,
 	                const ReadOmBindData &bind_data, DataChunk &output, TableFunctionInput &input) {
+	OmPlannedCacheWindowScope planned_cache_scope(local.decoders);
 	SetOutputCardinality(output, 0);
 	if (state.stop_requested.load() || context.IsInterrupted()) {
 #if DUCKOMO_DUCKDB_API_GENERATION >= 2
@@ -3568,6 +3624,9 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLoca
 			local.pending_async.active = false;
 			local.pending_async.items.clear();
 			local.pending_async.logical_positions.clear();
+			for (auto &dec : local.decoders) {
+				dec->planned_cache.clear();
+			}
 		}
 		local.task_position_offset += candidate_count;
 		state.metrics->RecordScannedRows(count);
@@ -3741,8 +3800,12 @@ void ScanReadOmImpl(ClientContext &context, ReadOmGlobalState &state, ReadOmLoca
 							range.reuse_range = true;
 						}
 					}
-					if (range.reuse_range) state.metrics->RecordLogicalRead(
-					    ScanReadPhase::Data, range.ranges.front().count, item.plan.variable_path);
+					if (range.reuse_range) {
+						for (const auto &sub_range : range.ranges) {
+							state.metrics->RecordLogicalRead(
+							    ScanReadPhase::Data, sub_range.count, item.plan.variable_path);
+						}
+					}
 				}
 			}
 		}
@@ -4064,6 +4127,129 @@ void ScanLastMetrics(ClientContext &, TableFunctionInput &input, DataChunk &outp
 }
 
 } // namespace
+
+void ValidateReadOmSeriesSpatialDeclaration(ClientContext &context, const TableFunctionBindInput &input,
+                                            const DeclaredSeriesSchema &declared) {
+	const auto declaration = ParseSpatialDeclaration(input, false);
+	if (declaration.has_grid == declaration.has_domain || declared.arrays.empty()) {
+		throw BinderException("read_om_series requires exactly one explicit grid or domain and declared arrays");
+	}
+
+	std::vector<std::string> required_axes;
+	if (declaration.has_grid) {
+		const auto expected_count = SpatialAxisCount(declaration);
+		if (declaration.spatial_axes.size() != expected_count) {
+			throw BinderException(expected_count == 2
+			                          ? "read_om series spatial layout requires distinct [latitude_axis, longitude_axis]"
+			                          : "read_om series flattened spatial layout requires exactly one spatial point axis");
+		}
+		if (declaration.definition) {
+			try {
+				ValidateGridCoordinates(context, *declaration.definition, nullptr);
+			} catch (const ReaderError &error) {
+				throw BinderException("read_om version=1 grid is invalid: " + std::string(error.what()));
+			}
+		}
+		required_axes = declaration.spatial_axes;
+	} else if (declaration.registered_domain != nullptr) {
+		const auto &registered = *declaration.registered_domain;
+		if (registered.expected_axis_order.empty()) {
+			throw BinderException("read_om domain '" + declaration.domain_name +
+			                      "' requires ordered axes for every array");
+		}
+		required_axes = registered.expected_axis_order;
+		if (required_axes.size() == 1 && !registered.flattened_axis_alias.empty() &&
+		    std::find(declared.arrays.front().dimension_names.begin(), declared.arrays.front().dimension_names.end(),
+		              required_axes.front()) == declared.arrays.front().dimension_names.end()) {
+			required_axes.front() = registered.flattened_axis_alias;
+		}
+	} else {
+		required_axes = {"lat", "lon"};
+	}
+	ValidateDeclaredSpatialAxes(required_axes, declared, "spatial");
+}
+
+ReadOmBindingSignature ReadOmBindingSignatureFrom(const FunctionData &bind_data_p) {
+	const auto &data = bind_data_p.Cast<ReadOmBindData>();
+	ReadOmBindingSignature signature;
+	signature.arrays.reserve(data.schema.variables.size());
+	for (std::size_t index = 0; index < data.schema.variables.size(); index++) {
+		const auto &variable = data.schema.variables[index];
+		ReadOmArrayBindingSignature array;
+		array.canonical_path = variable.canonical_path;
+		array.column_name = variable.column_name;
+		array.type = variable.type;
+		array.shape = variable.shape;
+		if (index < data.axes.size()) array.dimension_names = data.axes[index];
+		signature.arrays.emplace_back(std::move(array));
+	}
+	signature.grid_id = data.spatial.grid_id;
+	signature.layout_id = data.spatial.layout_id;
+	signature.object_id = data.spatial.object_id;
+	signature.include_source = data.spatial.include_source;
+
+	TableFunctionColumnNames names;
+	AppendValueOutputColumns(data.schema, signature.column_types, names);
+	if (data.spatial.HasGrid()) AppendSpatialOutputColumns(data.schema, signature.column_types, names);
+	if (data.temporal) AppendValidTimeOutputColumn(data.regions_mode ? "read_om_regions" : "read_om",
+	                                               signature.column_types, names);
+	for (const auto &axis : data.semantic_axes) {
+		if (axis.kind == SemanticAxisKind::Time) continue;
+		signature.column_types.emplace_back(axis.output_type);
+		names.emplace_back(SemanticOutputName(axis.kind));
+	}
+	if (data.regions_mode) {
+		signature.column_types.emplace_back(LogicalType::VARCHAR);
+		names.emplace_back("region_id");
+		if (data.sampling_options.method == RegionMethod::Nearest) {
+			signature.column_types.emplace_back(NearestSamplingType(data.schema));
+			names.emplace_back("sampling");
+		}
+	}
+	if (data.spatial.include_source) AppendOmSourceOutputColumn(data.schema,
+	                                                            data.regions_mode ? "read_om_regions" : "read_om",
+	                                                            signature.column_types, names);
+	signature.column_names.reserve(names.size());
+	for (const auto &name : names) signature.column_names.emplace_back(TableFunctionColumnNameString(name));
+	return signature;
+}
+
+ReadOmChildBinding BindReadOmChild(ClientContext &context, TableFunctionBindInput &input,
+                                   bool propagate_rebind_requirement) {
+	ReadOmChildBinding child;
+	auto function = GetReadOmFunction();
+	if (!function.bind) throw InternalException("read_om child function has no bind callback");
+	vector<LogicalType> return_types;
+	TableFunctionColumnNames return_names;
+	child.bind_data = function.bind(context, input, return_types, return_names);
+	if (!child.bind_data) throw InternalException("read_om child bind returned no owned bind data");
+	if (!propagate_rebind_requirement) {
+		// DuckDB 2 checks retained LogicalGet bind data when deciding whether a
+		// prepared custom bind-operator plan must be rebound. A series child keeps
+		// its bind-time identity and reopens through that session at scan time.
+		child.bind_data->Cast<ReadOmBindData>().series_statement_cacheable = true;
+	}
+	if (propagate_rebind_requirement && input.binder && !child.bind_data->SupportStatementCache())
+		input.binder->SetAlwaysRequireRebind();
+	child.signature = ReadOmBindingSignatureFrom(*child.bind_data);
+	std::vector<std::string> bound_names;
+	bound_names.reserve(return_names.size());
+	for (const auto &name : return_names) bound_names.emplace_back(TableFunctionColumnNameString(name));
+	if (return_types != child.signature.column_types || bound_names != child.signature.column_names) {
+		throw InternalException("read_om child signature differs from its ordinary bind callback");
+	}
+	if (function.get_virtual_columns) {
+		child.virtual_columns = function.get_virtual_columns(context, child.bind_data.get());
+	}
+	child.function = BindReadOmFunctionCall(function, input);
+	return child;
+}
+
+unique_ptr<LogicalOperator> ReadOmChildBinding::CreateLogicalGet(idx_t bind_index) && {
+	if (!bind_data) throw InternalException("cannot create a read_om LogicalGet without owned bind data");
+	return CreateReadOmLogicalGet(bind_index, std::move(function), std::move(bind_data), signature.column_types,
+	                              signature.column_names, std::move(virtual_columns));
+}
 
 TableFunction GetReadOmFunction() {
 	TableFunction function("read_om", {LogicalType::VARCHAR}, ScanReadOm, BindReadOm, InitReadOm, InitReadOmLocal);

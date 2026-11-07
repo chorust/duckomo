@@ -1,8 +1,10 @@
 # DuckDB Community Extensions 接入
 
-状态：**现有 ARM64 GitHub CI 已通过；社区登记和签名发布待执行**，见 [main 构建记录](https://github.com/chorust/duckomo/actions/runs/37905479056)。登记草案在 [`community/duckomo/description.yml.in`](../community/duckomo/description.yml.in)，首次版本暂定 `0.1.0`，维护者按源码仓库 owner 填写为 `chorust`。本次检查记录见 [`community/validation.json`](../community/validation.json)：三版本既有产物检查、新编译 v1.5.6 生产配置产物、登记解析、平台过滤和 manifest 校验通过；完整社区 Docker 构建尚未执行。
+状态：**已收录并公开发布**。[社区扩展页](https://duckdb.org/community_extensions/extensions/duckomo) 提供 `INSTALL duckomo FROM community;`。上游登记见 [`duckdb/community-extensions` 的 `extensions/duckomo/description.yml`](https://github.com/duckdb/community-extensions/blob/main/extensions/duckomo/description.yml)：版本 **`0.3.5-rc.1`**，维护者 **`blizhan`**，源码 `repo.ref` **`55d66f3fbd3199d7471b8cd569c43cc91a8cec7e`**（与本仓库历史提交一致，不必等于当前 `main` tip）。排除平台为 musl / Windows / Wasm；Linux glibc x86_64/ARM64 与 macOS Intel/Apple Silicon 在登记范围内。
 
-新增的 [GitHub tag 发布流程](releases.md) 独立于社区流程，配置为四个 DuckDB 版本（1.5.4、1.5.5、1.5.6、2.0.0）× Linux/macOS 双架构，共 16 个产物；本特性的社区登记模板不改，仍面向 v1.5.6。DuckDB 2.0.0 已通过兼容性与四平台产物校验，并由 v0.3.5-rc.1 预发布提供；尚未进入稳定版或社区登记。异步性能验收独立于引擎兼容状态。新增平台须在各自 CI 实际通过后才能形成验证记录。GitHub 包未签名，不扩大本文件的社区首发平台范围，也不替代完整生产验收和独立复现。
+本仓库 [GitHub tag 发布流程](releases.md) 仍独立提供开发/预发布产物（含 DuckDB 1.5.4–1.5.6 与 2.0.0）。社区页说明：2.0.0 兼容与四平台产物已验证；异步远程 I/O 仍为实验性且无稳定加速承诺；网格验收限于文档化对象，不外推全部 OM。本地 [`community/duckomo/description.yml.in`](../community/duckomo/description.yml.in) 与 [`community/validation.json`](../community/validation.json) 已于 2026-11-04 按已发布登记回填（`0.3.5-rc.1` / `blizhan` / ref `55d66f3…` / `published-in-community`）；`validation.json` 内仍嵌套保留 2026-10-08 筹备快照供审计。社区产物 hash 未在本轮重新拉取（见 validation TODO）。
+
+GitHub 开发包仍未签名；社区签名产物正常加载不需要 `-unsigned`。收录不等于 Spec 008 性能门禁完成，也不扩大超出文档范围的网格验收声明。
 
 ## 发布契约
 
@@ -19,7 +21,7 @@ LOAD httpfs;
 SELECT * FROM read_om('weather.om') LIMIT 10;
 ```
 
-社区签名产物正常加载不需要 `-unsigned`。本地构建和 GitHub Actions 构建检查的产物仍未签名，开发验证才使用 `-unsigned`。当前不能以 `INSTALL duckomo FROM community` 的成功作为已完成证据。
+社区签名产物正常加载不需要 `-unsigned`。本地构建和 GitHub Actions 构建检查的产物仍未签名，开发验证才使用 `-unsigned`。`INSTALL duckomo FROM community` 已可用于公开安装；它证明社区分发可用，不单独充当 Spec 门禁或全网格验收证据。
 
 DuckOMO 已移除配套 HTTPFS capability、补丁和源码子模块，远程入口使用官方 FileSystem API。自有缓存的移除属于复杂度取舍，并非社区收录要求；重复查询的网络读取代价见 [官方 HTTPFS 说明](official-httpfs.md)。
 
@@ -27,12 +29,14 @@ DuckOMO 已移除配套 HTTPFS capability、补丁和源码子模块，远程入
 
 | 项目 | 范围 |
 |---|---|
-| 社区首次目标 | DuckDB v1.5.6 / `linux_arm64`，Linux AArch64、glibc |
-| 源码兼容验证 | v1.5.4、v1.5.5、v1.5.6，每个版本独立产物 |
-| 暂缓的平台 | Linux x86_64、musl、macOS、Windows、Wasm |
-| 开发子模块 | 仍固定 v1.5.4，避免修改既有开发树；社区 CI 按目标版本切换 |
+| 已发布社区版本 | `0.3.5-rc.1`（预发布标识） |
+| 已发布源码 ref | `55d66f3fbd3199d7471b8cd569c43cc91a8cec7e` |
+| 登记平台 | Linux glibc x86_64/ARM64、macOS Intel/Apple Silicon（见上游 `excluded_platforms`） |
+| 仍排除 | musl、Windows、Wasm |
+| 源码兼容验证 | 仍覆盖 v1.5.4、v1.5.5、v1.5.6；社区页亦列 2.0.0 |
+| 开发子模块 | 本地开发树仍可固定 v1.5.4；社区/发布 CI 按目标版本切换 |
 
-社区当前默认 v1.5.6，发布通常面向最新稳定版。三版本兼容不意味着本次登记会向旧版仓库回填产物。平台范围由真实支持的 `extension.excluded_platforms` 字段控制；`opt_in_platforms` 不启用。新增平台要先构建并验证，随后更新登记文件。
+平台范围以已发布 `description.yml` 的 `excluded_platforms` 为准。新增平台要先构建并验证，再改上游登记。仓库内 `description.yml.in` 已与上游已发布登记对齐；后续升级时再改 version / repo.ref 后提交 community-extensions PR。
 
 Makefile 从实际 DuckDB checkout 推导版本；社区传入的 `DUCKDB_GIT_VERSION` 稳定版 tag 可用于没有 tag 的源码 checkout。移除了固定 v1.5.4 的覆盖。`make matrix-release` 默认 v1.5.6；指定 `DUCKOMO_MATRIX_PAIR=v1.5.4` 或 `v1.5.5` 可构建对应版本。
 
@@ -66,26 +70,45 @@ python3 scripts/verify-community-artifact.py --version v1.5.6 \
 
 ## 提交登记
 
-先完成源码提交并推送到公开的 `chorust/duckomo`，确认 CI 成功。当前工作树尚未发布，草案中的 `@DUCKOMO_SOURCE_REF@` 故意不填旧 HEAD，防止社区构建到不含本轮修改的源码。提交 SHA 固定后，在仓库根目录生成登记文件：
+后续升级社区登记时：先完成源码提交并推送到公开的 `chorust/duckomo`，确认相关 CI 成功。设置目标社区版本；脚本会从当前 checkout 读取待登记的源码 commit。模板把 `@DUCKOMO_VERSION@` 和 `@DUCKOMO_SOURCE_REF@` 放在 YAML 的实际字段中。生成时用 PyYAML 解析结果，并断言 `extension.version` 与 `repo.ref` 都等于本次目标值，再提交生成文件：
 
 ```sh
-python3 - <<'PY'
+# Example only: set the community version selected for this PR.
+DUCKOMO_COMMUNITY_VERSION=0.3.5-rc.2 python3 - <<'PY'
 from pathlib import Path
+import os
 import subprocess
+import yaml
+
 ref = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+version = os.environ['DUCKOMO_COMMUNITY_VERSION']
 template = Path('community/duckomo/description.yml.in').read_text()
+assert template.count('@DUCKOMO_SOURCE_REF@') == 1
+assert template.count('@DUCKOMO_VERSION@') == 1
+rendered = template.replace('@DUCKOMO_SOURCE_REF@', ref).replace('@DUCKOMO_VERSION@', version)
+assert '@DUCKOMO_' not in rendered
+descriptor = yaml.safe_load(rendered)
+assert descriptor['repo']['ref'] == ref
+assert descriptor['extension']['version'] == version
 output = Path('build/community-submission/extensions/duckomo/description.yml')
 output.parent.mkdir(parents=True, exist_ok=True)
-output.write_text(template.replace('@DUCKOMO_SOURCE_REF@', ref))
-print(output)
+output.write_text(rendered)
+print(f'{output}: version={version} repo.ref={ref}')
 PY
 ```
 
-将生成文件加入 community-extensions 仓库的 PR，等待维护者审查、社区构建、签名和发布。维护更新时改 `repo.ref`；未来不兼容的新引擎适配可使用 `repo.ref_next`。本特性不修改 `community/duckomo/description.yml.in`，社区登记仍面向 DuckDB 1.5.6；DuckDB 2.0 的开发包由本仓库 GitHub tag release 矩阵提供。构建 CI 与发布 CI 分别固定 2.0 工具链 ref `v2.0-cyanoptera`、commit `b8d325c37e82160886579880707493bd358c0e62` 和 vcpkg `cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3`，不将其误认为社区登记支持。
+将生成文件以 PR 更新 [community-extensions](https://github.com/duckdb/community-extensions) 中已有的 `extensions/duckomo/description.yml`，等待维护者审查、社区构建、签名和发布。未来不兼容的新引擎适配可使用 `repo.ref_next`。`description.yml.in` 的版本/ref 占位符必须位于 YAML 字段本身；其余登记字段仍需与上游核对。DuckDB 2.0 开发包仍可由本仓库 GitHub tag release 矩阵提供。构建 CI 与发布 CI 的 2.0 工具链 pin（如 `v2.0-cyanoptera`）服务于本仓库矩阵，不等于社区页上的全部可用引擎组合。
 
-社区签名发布/完整验收声明前仍需完成已有的 R21 独立复现条件。GitHub 开发发行包可按 tag 流程供试用，建议未完成验收时使用 prerelease；包发布不代表 R21 通过。004 的真实网格、完整内存账及 H0–H9 未完成部分保持原状态；登记描述不把投影/Gaussian 的实现等同于生产验收完成。
+社区已签名发布，但**不**自动关闭本仓库未完成的 Spec 门禁或历史独立复现条件。GitHub 开发发行包仍可按 tag 流程供试用；预发布标识应保留到稳定版 tag。登记描述不把投影/Gaussian 或异步性能目标等同于已全部验收完成。
 
-## 核对来源（2026-10-08）
+## 核对来源
+
+### 已发布登记（2026-11-04 核对）
+
+- [社区扩展页 duckomo](https://duckdb.org/community_extensions/extensions/duckomo)
+- [已发布 description.yml](https://github.com/duckdb/community-extensions/blob/main/extensions/duckomo/description.yml)（`0.3.5-rc.1` / `blizhan` / ref `55d66f3…`）
+
+### 筹备期快照（2026-10-08，历史）
 
 - [官方开发与登记说明](https://duckdb.org/community_extensions/development)
 - [官方发布流程：构建、签名和分发](https://duckdb.org/2024/07/05/community-extensions)

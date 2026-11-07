@@ -37,6 +37,10 @@ set(DUCKOMO_NATIVE_TEST_SOURCES
     spatial_lifecycle_test
     domain_reference_test
     remote_session_test
+    series_binding_test
+    series_error_test
+    series_plan_test
+    series_schema_test
     remote_async_test
     official_httpfs_test
     projected_grid_test
@@ -54,6 +58,10 @@ set(DUCKOMO_NATIVE_TEST_SOURCES
 set(DUCKOMO_SQLLOGICTEST_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/raw.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/read_om.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/read_om_series.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/read_om_series_validation.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/read_om_series_missing.test"
+    "${CMAKE_CURRENT_SOURCE_DIR}/sql/read_om_series_pushdown.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/interface_usability.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/semantic_axes.test"
     "${CMAKE_CURRENT_SOURCE_DIR}/sql/axis_filter.test"
@@ -293,11 +301,18 @@ foreach(test IN LISTS DUCKOMO_NATIVE_TEST_SOURCES)
                 # an official extension at runtime needs.
                 link_extension_libraries("${test}" "PRIVATE")
             endif()
-            if(test STREQUAL "grid_zero_io_test" OR test STREQUAL "source_identity_test" OR test STREQUAL "schema_test")
+            if(test STREQUAL "grid_zero_io_test" OR test STREQUAL "source_identity_test" OR
+               test STREQUAL "schema_test" OR test STREQUAL "series_binding_test" OR
+               test STREQUAL "series_error_test")
                 target_include_directories("${test}" PRIVATE
                     "${CMAKE_SOURCE_DIR}/extension/core_functions/include"
                 )
                 target_link_libraries("${test}" PRIVATE core_functions_extension)
+            endif()
+            if(test STREQUAL "series_plan_test" OR test STREQUAL "series_schema_test")
+                # DuckDB 1.x's static DuckDB constructor references this no-op loader even though these checks do not
+                # construct a database; 2.0 supplies the generated capability loader above.
+                target_sources("${test}" PRIVATE "${PROJECT_SOURCE_DIR}/test/tools/dummy_static_extension_loader.cpp")
             endif()
         endif()
     endif()

@@ -1,0 +1,351 @@
+# read_om_series Controlled Remote Validation
+
+- Feature: `010-read-om-series`
+- Run status: **passed**
+- Started: `2026-11-06T06:35:09Z`
+- Platform: `Linux aarch64`
+- Mode: `controlled-remote`
+
+## Transport gates
+
+- **http: passed** — skip, strict, model and fault checks completed
+- **s3: passed** — skip, strict, model and fault checks completed
+- **https: passed** — skip, strict, model and fault checks completed
+
+## Feature gates
+
+- **S3: passed** — first/middle/last/all-missing skip and strict semantics, including LIMIT 0 and WHERE false, recorded on all transports
+- **S4: passed** — zero-request argument errors, structured and unclassified faults, post-bind mutation and recovery recorded on all transports
+- **SC-004: passed** — all eleven models matched explicit temporal parameters on HTTP, HTTPS and S3 with no discovery requests
+- **S5: passed** — N160 remote domain scans matched explicit-grid manual UNION ALL across HTTP, HTTPS and path-style S3 at 1/2/4 workers
+- **S6: passed** — remote per-child metrics showed completed value scans and zero value I/O for COUNT(*) across all transports
+
+## Extension load identity
+
+- Status: **passed** — strace observed DuckDB opening the exact requested extension file
+- Requested extension: `/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v2.0.0/builds/7202d65f2f8bf615349bbd87f64d2979c9ee65d6731b8dded234bdb448e91556/release/extension/duckomo/duckomo.duckdb_extension`
+
+## Scenario outcomes
+
+- `http-argument-error-zero-origin-requests`: **passed** — pure prefix argument error returned before any origin object request
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-sc004-registered-vs-explicit-ecmwf_ifs`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-sc004-registered-vs-explicit-ecmwf_ifs025`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-sc004-registered-vs-explicit-ncep_gfs013`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-sc004-registered-vs-explicit-ncep_gfs025`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-sc004-registered-vs-explicit-dwd_icon`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-sc004-registered-vs-explicit-dwd_icon_eu`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-sc004-registered-vs-explicit-dwd_icon_d2`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-sc004-registered-vs-explicit-jma_gsm`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-sc004-registered-vs-explicit-cmc_gem_gdps`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-sc004-registered-vs-explicit-meteofrance_arpege_world025`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-sc004-registered-vs-explicit-ukmo_global_deterministic_10km`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-registered-partial-override`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 3, executed scans 3; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-first_missing-skip`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-first_missing-strict`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-middle_missing-skip`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-middle_missing-strict`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 2, bound 1, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-last_missing-skip`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-last_missing-strict`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 3, bound 2, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-all_missing-skip`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-all_missing-strict`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-first-missing-strict-limit-zero`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-first-missing-strict-where-false`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-fault-http_404`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-fault-http_403`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-fault-body_404_status_403`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-fault-http_412`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-fault-http_500`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-fault-http_503`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-fault-corrupt`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-fault-drop`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-post-fault-recovery`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 3, executed scans 3; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-post-bind-remove-recovery`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 3, executed scans 3; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-post-bind-remove`: **passed** — prepared scan failed after the bound object was removed
+- `http-post-bind-replace-recovery`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 3, executed scans 3; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-post-bind-replace`: **passed** — prepared scan failed after the bound object was replaced with a changed ETag
+- `http-s5-n160-domain-vs-explicit-worker-1`: **passed** — N160 domain series matches explicit-grid manual UNION ALL
+  - N160 worker cap `1`; rows 3200 vs 3200; value scans `passed`, value-free COUNT scans `passed`; worker caps respected `True`/`True`; memory upper bounds respected `True`/`True`; COUNT 691730 vs 691730
+  - children: attempted 2, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-s5-n160-domain-vs-explicit-worker-2`: **passed** — N160 domain series matches explicit-grid manual UNION ALL
+  - N160 worker cap `2`; rows 3200 vs 3200; value scans `passed`, value-free COUNT scans `passed`; worker caps respected `True`/`True`; memory upper bounds respected `True`/`True`; COUNT 691730 vs 691730
+  - children: attempted 2, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `http-s5-n160-domain-vs-explicit-worker-4`: **passed** — N160 domain series matches explicit-grid manual UNION ALL
+  - N160 worker cap `4`; rows 3200 vs 3200; value scans `passed`, value-free COUNT scans `passed`; worker caps respected `True`/`True`; memory upper bounds respected `True`/`True`; COUNT 691730 vs 691730
+  - children: attempted 2, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-argument-error-zero-origin-requests`: **passed** — pure prefix argument error returned before any origin object request
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-sc004-registered-vs-explicit-ecmwf_ifs`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-sc004-registered-vs-explicit-ecmwf_ifs025`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-sc004-registered-vs-explicit-ncep_gfs013`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-sc004-registered-vs-explicit-ncep_gfs025`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-sc004-registered-vs-explicit-dwd_icon`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-sc004-registered-vs-explicit-dwd_icon_eu`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-sc004-registered-vs-explicit-dwd_icon_d2`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-sc004-registered-vs-explicit-jma_gsm`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-sc004-registered-vs-explicit-cmc_gem_gdps`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-sc004-registered-vs-explicit-meteofrance_arpege_world025`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-sc004-registered-vs-explicit-ukmo_global_deterministic_10km`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-registered-partial-override`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 3, executed scans 3; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-first_missing-skip`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-first_missing-strict`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-middle_missing-skip`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-middle_missing-strict`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 2, bound 1, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-last_missing-skip`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-last_missing-strict`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 3, bound 2, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-all_missing-skip`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-all_missing-strict`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-first-missing-strict-limit-zero`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-first-missing-strict-where-false`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-fault-http_404`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-fault-http_403`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-fault-body_404_status_403`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-fault-http_412`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-fault-http_500`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-fault-http_503`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-fault-corrupt`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-fault-drop`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-post-fault-recovery`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 3, executed scans 3; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-post-bind-remove-recovery`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 3, executed scans 3; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-post-bind-remove`: **passed** — prepared scan failed after the bound object was removed
+- `s3-post-bind-replace-recovery`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 3, executed scans 3; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-post-bind-replace`: **passed** — prepared scan failed after the bound object was replaced with a changed ETag
+- `s3-s5-n160-domain-vs-explicit-worker-1`: **passed** — N160 domain series matches explicit-grid manual UNION ALL
+  - N160 worker cap `1`; rows 3200 vs 3200; value scans `passed`, value-free COUNT scans `passed`; worker caps respected `True`/`True`; memory upper bounds respected `True`/`True`; COUNT 691730 vs 691730
+  - children: attempted 2, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-s5-n160-domain-vs-explicit-worker-2`: **passed** — N160 domain series matches explicit-grid manual UNION ALL
+  - N160 worker cap `2`; rows 3200 vs 3200; value scans `passed`, value-free COUNT scans `passed`; worker caps respected `True`/`True`; memory upper bounds respected `True`/`True`; COUNT 691730 vs 691730
+  - children: attempted 2, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `s3-s5-n160-domain-vs-explicit-worker-4`: **passed** — N160 domain series matches explicit-grid manual UNION ALL
+  - N160 worker cap `4`; rows 3200 vs 3200; value scans `passed`, value-free COUNT scans `passed`; worker caps respected `True`/`True`; memory upper bounds respected `True`/`True`; COUNT 691730 vs 691730
+  - children: attempted 2, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-argument-error-zero-origin-requests`: **passed** — pure prefix argument error returned before any origin object request
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-sc004-registered-vs-explicit-ecmwf_ifs`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-sc004-registered-vs-explicit-ecmwf_ifs025`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-sc004-registered-vs-explicit-ncep_gfs013`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-sc004-registered-vs-explicit-ncep_gfs025`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-sc004-registered-vs-explicit-dwd_icon`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-sc004-registered-vs-explicit-dwd_icon_eu`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-sc004-registered-vs-explicit-dwd_icon_d2`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-sc004-registered-vs-explicit-jma_gsm`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-sc004-registered-vs-explicit-cmc_gem_gdps`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-sc004-registered-vs-explicit-meteofrance_arpege_world025`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-sc004-registered-vs-explicit-ukmo_global_deterministic_10km`: **passed** — registered defaults match explicit temporal parameters by two-way EXCEPT ALL
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-registered-partial-override`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 3, executed scans 3; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-first_missing-skip`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-first_missing-strict`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-middle_missing-skip`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-middle_missing-strict`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 2, bound 1, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-last_missing-skip`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-last_missing-strict`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 3, bound 2, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-all_missing-skip`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-all_missing-strict`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-first-missing-strict-limit-zero`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-first-missing-strict-where-false`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-fault-http_404`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-fault-http_403`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-fault-body_404_status_403`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-fault-http_412`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-fault-http_500`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-fault-http_503`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-fault-corrupt`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-fault-drop`: **passed** — expected initial absence/fault propagated during bind
+  - children: attempted 1, bound 0, executed scans 0; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-post-fault-recovery`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 3, executed scans 3; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-post-bind-remove-recovery`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 3, executed scans 3; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-post-bind-remove`: **passed** — prepared scan failed after the bound object was removed
+- `https-post-bind-replace-recovery`: **passed** — schema and full row multiset match
+  - children: attempted 3, bound 3, executed scans 3; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-post-bind-replace`: **passed** — prepared scan failed after the bound object was replaced with a changed ETag
+- `https-s5-n160-domain-vs-explicit-worker-1`: **passed** — N160 domain series matches explicit-grid manual UNION ALL
+  - N160 worker cap `1`; rows 3200 vs 3200; value scans `passed`, value-free COUNT scans `passed`; worker caps respected `True`/`True`; memory upper bounds respected `True`/`True`; COUNT 691730 vs 691730
+  - children: attempted 2, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-s5-n160-domain-vs-explicit-worker-2`: **passed** — N160 domain series matches explicit-grid manual UNION ALL
+  - N160 worker cap `2`; rows 3200 vs 3200; value scans `passed`, value-free COUNT scans `passed`; worker caps respected `True`/`True`; memory upper bounds respected `True`/`True`; COUNT 691730 vs 691730
+  - children: attempted 2, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+- `https-s5-n160-domain-vs-explicit-worker-4`: **passed** — N160 domain series matches explicit-grid manual UNION ALL
+  - N160 worker cap `4`; rows 3200 vs 3200; value scans `passed`, value-free COUNT scans `passed`; worker caps respected `True`/`True`; memory upper bounds respected `True`/`True`; COUNT 691730 vs 691730
+  - children: attempted 2, bound 2, executed scans 2; series restarts 0
+  - audit: list 0, metadata/unclassified 0, witness 0
+
+## Identities and retained evidence
+
+- DuckDB CLI SHA-256: `f4c681bcf41a5c43dcf9a354703fe5bded9e2265282d1915d6d99637cd1e1f29`
+- DuckOMO extension SHA-256: `0af98d6150b38a88817a151d318da706c83a26f397e0067a87327c269005e5e0`
+- Official HTTPFS SHA-256: `53f7aea1a0448ea62ef9b63f95da37c5766070084f14f14110e275e76382e7b2`
+- Fixture manifest SHA-256: `8b06774549ff9435537323ec2d59352d5fb508aa4448a854bf341c53e5129cd6`
+- Temporal model registry SHA-256: `e3dc7e177cdf6c63b70a28933b8efa8769e81f7329d5f8f368173bb8d4ce4cf0`
+- Request audit contains sanitized origin events; private service configuration was kept in temporary storage.
+- Repeated failed origin requests are counted separately from runner query invocations; the adapter cannot identify HTTPFS retry intent.

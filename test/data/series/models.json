@@ -1,0 +1,348 @@
+{
+  "schema_version": 1,
+  "feature": "010-read-om-series",
+  "upstream": {
+    "repository": "https://github.com/open-meteo/open-meteo",
+    "commit": "b06f4760fd1f997e5559bb380f64c5e496b4a509",
+    "commit_verification": "Fetched the exact commit from the public repository and verified FETCH_HEAD resolves to this full commit ID.",
+    "pin_reference": {
+      "path": "test/data/grids/source-manifest.json",
+      "field": "pinned_commit",
+      "expected_commit": "b06f4760fd1f997e5559bb380f64c5e496b4a509"
+    },
+    "key_mapping_source": {
+      "path": "Sources/App/Helper/DomainRegistry.swift",
+      "sha256": "59985f2064d9c6507b39ea1dca652a1ea7a78d7c8ba34940d70d49844fab3536",
+      "mapping_rule": "Each exact DomainRegistry case is its rawValue; DomainRegistry.directory uses that rawValue beneath the data directory."
+    },
+    "metadata_writer_source": {
+      "path": "Sources/App/Helper/File/ModelMetaJson.swift",
+      "sha256": "d3149d822f38c8b70419914d88fc726caa049b0c44d684a5bb9d2347f1c040e9",
+      "metadata_object_key_template": "data/${domain.rawValue}/static/meta.json",
+      "metadata_file_domain_input": "domain.domainRegistry",
+      "temporal_field_mapping": {
+        "chunk_time_length": "domain.omFileLength",
+        "temporal_resolution_seconds": "domain.dtSeconds"
+      }
+    }
+  },
+  "archived_metadata_source": {
+    "repository": "https://github.com/open-meteo/open-data",
+    "bucket_endpoint": "https://openmeteo.s3.us-west-2.amazonaws.com/",
+    "captured_at_utc": "2026-10-08T03:00:23.054451+00:00",
+    "audit_path": "specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-catalog-metadata-20261008/audit.json",
+    "audit_sha256": "d4ea465c0d02eb7f511eaacfb15327f4a4040a34201a65bf692150676d2777e8",
+    "snapshot_root": "specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-catalog-metadata-20261008/snapshots/data",
+    "verification_scope": "Archived HTTP 200 metadata responses and their recorded raw-byte SHA-256 values; this is not a live availability check."
+  },
+  "models": [
+    {
+      "key": "ecmwf_ifs",
+      "data_key": "ecmwf_ifs",
+      "metadata_object_key": "data/ecmwf_ifs/static/meta.json",
+      "producer_domain": "EcmwfEcpdsDomain.ifs",
+      "producer_source": {
+        "path": "Sources/App/EcmwfEcpds/EcmwfEcpdsDomain.swift",
+        "sha256": "70cccf553cbeef823d8ac7da7df9e686e1761871dc079a90be0dabcfea258805",
+        "chunk_time_length": {
+          "source_symbol": "omFileLength",
+          "source_expression": "24 * 21",
+          "value": 504
+        },
+        "temporal_resolution_seconds": {
+          "source_symbol": "dtSeconds",
+          "source_expression": "3600",
+          "value": 3600
+        }
+      },
+      "metadata_snapshot": {
+        "path": "specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-catalog-metadata-20261008/snapshots/data/ecmwf_ifs/static/meta.json",
+        "sha256": "7520cf6e87fe5eb9cd4e541d5d19950f2095e97ef240da3a4ec47dfc6486aecc",
+        "audit_entry_sha256_matches": true
+      },
+      "provenance_status": "pinned_source_and_archived_metadata_match",
+      "discrepancies": [],
+      "notes": ["The pinned producer source comments that 24 * 21 preserves compatibility with older IFS HRES data."]
+    },
+    {
+      "key": "ecmwf_ifs025",
+      "data_key": "ecmwf_ifs025",
+      "metadata_object_key": "data/ecmwf_ifs025/static/meta.json",
+      "producer_domain": "EcmwfDomain.ifs025",
+      "producer_source": {
+        "path": "Sources/App/Ecmwf/EcmwfDomain.swift",
+        "sha256": "79907b5912b653e0ac2c9ef4f61155d03acfe762de75fb811f9306d3a3eed83d",
+        "chunk_time_length": {
+          "source_symbol": "omFileLength",
+          "source_expression": "(240 + 3 * 24) / dtHours; dtHours = 3 from dtSeconds = 3 * 3600",
+          "value": 104
+        },
+        "temporal_resolution_seconds": {
+          "source_symbol": "dtSeconds",
+          "source_expression": "3 * 3600",
+          "value": 10800
+        }
+      },
+      "metadata_snapshot": {
+        "path": "specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-catalog-metadata-20261008/snapshots/data/ecmwf_ifs025/static/meta.json",
+        "sha256": "3c984581a41d27360b03c5927a4e5d40863cff50719c4551fd4db5cd309e4fcc",
+        "audit_entry_sha256_matches": true
+      },
+      "provenance_status": "pinned_source_and_archived_metadata_match",
+      "discrepancies": [],
+      "notes": []
+    },
+    {
+      "key": "ncep_gfs013",
+      "data_key": "ncep_gfs013",
+      "metadata_object_key": "data/ncep_gfs013/static/meta.json",
+      "producer_domain": "GfsDomain.gfs013",
+      "producer_source": {
+        "path": "Sources/App/Gfs/GfsDomain.swift",
+        "sha256": "89a20f743f91849d7d8627d7868b44ec1a4bddd02b8ab4ef41a17f0f27d7ed71",
+        "chunk_time_length": {
+          "source_symbol": "omFileLength",
+          "source_expression": "384 + 1 + 4 * 24",
+          "value": 481
+        },
+        "temporal_resolution_seconds": {
+          "source_symbol": "dtSeconds",
+          "source_expression": "3600",
+          "value": 3600
+        }
+      },
+      "metadata_snapshot": {
+        "path": "specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-catalog-metadata-20261008/snapshots/data/ncep_gfs013/static/meta.json",
+        "sha256": "137299cb07a2e97a44b5e4a85131c5d83d1493212fa0e1120efd965e43ca4f9e",
+        "audit_entry_sha256_matches": true
+      },
+      "provenance_status": "pinned_source_and_archived_metadata_match",
+      "discrepancies": [],
+      "notes": []
+    },
+    {
+      "key": "ncep_gfs025",
+      "data_key": "ncep_gfs025",
+      "metadata_object_key": "data/ncep_gfs025/static/meta.json",
+      "producer_domain": "GfsDomain.gfs025",
+      "producer_source": {
+        "path": "Sources/App/Gfs/GfsDomain.swift",
+        "sha256": "89a20f743f91849d7d8627d7868b44ec1a4bddd02b8ab4ef41a17f0f27d7ed71",
+        "chunk_time_length": {
+          "source_symbol": "omFileLength",
+          "source_expression": "384 + 1 + 4 * 24",
+          "value": 481
+        },
+        "temporal_resolution_seconds": {
+          "source_symbol": "dtSeconds",
+          "source_expression": "3600",
+          "value": 3600
+        }
+      },
+      "metadata_snapshot": {
+        "path": "specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-catalog-metadata-20261008/snapshots/data/ncep_gfs025/static/meta.json",
+        "sha256": "fd566c5a5ef746944a34b64120766467b371c8ef578184998f23cda4b57084cf",
+        "audit_entry_sha256_matches": true
+      },
+      "provenance_status": "pinned_source_and_archived_metadata_match",
+      "discrepancies": [],
+      "notes": []
+    },
+    {
+      "key": "dwd_icon",
+      "data_key": "dwd_icon",
+      "metadata_object_key": "data/dwd_icon/static/meta.json",
+      "producer_domain": "IconDomains.icon",
+      "producer_source": {
+        "path": "Sources/App/Icon/Icon.swift",
+        "sha256": "56c5aff4876f9137fbc74f3c6ebf04f237a24006bcdd2292b1a960fb93c9c7e6",
+        "chunk_time_length": {
+          "source_symbol": "omFileLength",
+          "source_expression": "180 + 1 + 3 * 24",
+          "value": 253
+        },
+        "temporal_resolution_seconds": {
+          "source_symbol": "dtSeconds",
+          "source_expression": "3600",
+          "value": 3600
+        }
+      },
+      "metadata_snapshot": {
+        "path": "specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-catalog-metadata-20261008/snapshots/data/dwd_icon/static/meta.json",
+        "sha256": "59df65ec016a1b08bf4107e7bd7ec2266dec4457e7237ebfd81631ec01d3e177",
+        "audit_entry_sha256_matches": true
+      },
+      "provenance_status": "pinned_source_and_archived_metadata_match",
+      "discrepancies": [],
+      "notes": []
+    },
+    {
+      "key": "dwd_icon_eu",
+      "data_key": "dwd_icon_eu",
+      "metadata_object_key": "data/dwd_icon_eu/static/meta.json",
+      "producer_domain": "IconDomains.iconEu",
+      "producer_source": {
+        "path": "Sources/App/Icon/Icon.swift",
+        "sha256": "56c5aff4876f9137fbc74f3c6ebf04f237a24006bcdd2292b1a960fb93c9c7e6",
+        "chunk_time_length": {
+          "source_symbol": "omFileLength",
+          "source_expression": "120 + 1 + 3 * 24",
+          "value": 193
+        },
+        "temporal_resolution_seconds": {
+          "source_symbol": "dtSeconds",
+          "source_expression": "3600",
+          "value": 3600
+        }
+      },
+      "metadata_snapshot": {
+        "path": "specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-catalog-metadata-20261008/snapshots/data/dwd_icon_eu/static/meta.json",
+        "sha256": "167dfd261bf35231b62b18d4b2bb967e114ce9a4841db1200b1fc606ede8952e",
+        "audit_entry_sha256_matches": true
+      },
+      "provenance_status": "pinned_source_and_archived_metadata_match",
+      "discrepancies": [],
+      "notes": []
+    },
+    {
+      "key": "dwd_icon_d2",
+      "data_key": "dwd_icon_d2",
+      "metadata_object_key": "data/dwd_icon_d2/static/meta.json",
+      "producer_domain": "IconDomains.iconD2",
+      "producer_source": {
+        "path": "Sources/App/Icon/Icon.swift",
+        "sha256": "56c5aff4876f9137fbc74f3c6ebf04f237a24006bcdd2292b1a960fb93c9c7e6",
+        "chunk_time_length": {
+          "source_symbol": "omFileLength",
+          "source_expression": "48 + 1 + 3 * 24",
+          "value": 121
+        },
+        "temporal_resolution_seconds": {
+          "source_symbol": "dtSeconds",
+          "source_expression": "3600",
+          "value": 3600
+        }
+      },
+      "metadata_snapshot": {
+        "path": "specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-catalog-metadata-20261008/snapshots/data/dwd_icon_d2/static/meta.json",
+        "sha256": "8380cadaa4483a7999bedbb0a5b70f4faa2d5aac6436c947616321bbf2885b0a",
+        "audit_entry_sha256_matches": true
+      },
+      "provenance_status": "pinned_source_and_archived_metadata_match",
+      "discrepancies": [],
+      "notes": []
+    },
+    {
+      "key": "jma_gsm",
+      "data_key": "jma_gsm",
+      "metadata_object_key": "data/jma_gsm/static/meta.json",
+      "producer_domain": "JmaDomain.gsm",
+      "producer_source": {
+        "path": "Sources/App/JMA/JmaDownloader.swift",
+        "sha256": "0d2eacae19dad6bfb0869178e486bf69a74f41d867f8a88ce9af785801b3dc30",
+        "chunk_time_length": {
+          "source_symbol": "omFileLength",
+          "source_expression": "110",
+          "value": 110
+        },
+        "temporal_resolution_seconds": {
+          "source_symbol": "dtSeconds",
+          "source_expression": "6 * 3600",
+          "value": 21600
+        }
+      },
+      "metadata_snapshot": {
+        "path": "specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-catalog-metadata-20261008/snapshots/data/jma_gsm/static/meta.json",
+        "sha256": "c32d45b1114bc2ce94f6535f5711c42de8eac183d86a10433737990fd1ba615d",
+        "audit_entry_sha256_matches": true
+      },
+      "provenance_status": "pinned_source_and_archived_metadata_match",
+      "discrepancies": [],
+      "notes": []
+    },
+    {
+      "key": "cmc_gem_gdps",
+      "data_key": "cmc_gem_gdps",
+      "metadata_object_key": "data/cmc_gem_gdps/static/meta.json",
+      "producer_domain": "GemDomain.gem_global",
+      "producer_source": {
+        "path": "Sources/App/Gem/GemDomain.swift",
+        "sha256": "d452ba91071ff74c5d9cb7aec758ff16abd1aed50383ce545c0ad65e4713f431",
+        "chunk_time_length": {
+          "source_symbol": "omFileLength",
+          "source_expression": "110",
+          "value": 110
+        },
+        "temporal_resolution_seconds": {
+          "source_symbol": "dtSeconds",
+          "source_expression": "3 * 3600",
+          "value": 10800
+        }
+      },
+      "metadata_snapshot": {
+        "path": "specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-catalog-metadata-20261008/snapshots/data/cmc_gem_gdps/static/meta.json",
+        "sha256": "9e904b9e1ce056231475ed25b77b68c723f9fd51c54e47db760b2f2dd7ce68f3",
+        "audit_entry_sha256_matches": true
+      },
+      "provenance_status": "pinned_source_and_archived_metadata_match",
+      "discrepancies": [],
+      "notes": ["The pinned DomainRegistry marks cmc_gem_gdps retired on 2026-05-27. The archived metadata response was HTTP 200 at the recorded 2026-10-08 capture; this registry entry freezes those temporal defaults and does not establish current chunk availability or live service status."]
+    },
+    {
+      "key": "meteofrance_arpege_world025",
+      "data_key": "meteofrance_arpege_world025",
+      "metadata_object_key": "data/meteofrance_arpege_world025/static/meta.json",
+      "producer_domain": "MeteoFranceDomain.arpege_world",
+      "producer_source": {
+        "path": "Sources/App/MeteoFrance/MeteoFranceDomain.swift",
+        "sha256": "84f341277de90811c2085663cb6abc85240f90f423ce43c48fe0d4cc80543210",
+        "chunk_time_length": {
+          "source_symbol": "omFileLength",
+          "source_expression": "114 + 4 * 24",
+          "value": 210
+        },
+        "temporal_resolution_seconds": {
+          "source_symbol": "dtSeconds",
+          "source_expression": "3600",
+          "value": 3600
+        }
+      },
+      "metadata_snapshot": {
+        "path": "specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-catalog-metadata-20261008/snapshots/data/meteofrance_arpege_world025/static/meta.json",
+        "sha256": "6dc96a6e6c684da41f37df5470c2599d13e5f4139228114f2c8b1d8e7bba2c8a",
+        "audit_entry_sha256_matches": true
+      },
+      "provenance_status": "pinned_source_and_archived_metadata_match",
+      "discrepancies": [],
+      "notes": []
+    },
+    {
+      "key": "ukmo_global_deterministic_10km",
+      "data_key": "ukmo_global_deterministic_10km",
+      "metadata_object_key": "data/ukmo_global_deterministic_10km/static/meta.json",
+      "producer_domain": "UkmoDomain.global_deterministic_10km",
+      "producer_source": {
+        "path": "Sources/App/UKMO/UkmoDomain.swift",
+        "sha256": "d30b790c58f5c505925cedd48493982034e5a9727b11bce9f12c17b2ec957500",
+        "chunk_time_length": {
+          "source_symbol": "omFileLength",
+          "source_expression": "168 + 1 + 24",
+          "value": 193
+        },
+        "temporal_resolution_seconds": {
+          "source_symbol": "dtSeconds",
+          "source_expression": "3600",
+          "value": 3600
+        }
+      },
+      "metadata_snapshot": {
+        "path": "specs/004-multi-grid-selection/evidence/baseline-local/open-meteo-s3-catalog-metadata-20261008/snapshots/data/ukmo_global_deterministic_10km/static/meta.json",
+        "sha256": "edfe7a7efe2344b8bede5259dd6308cccc4ea842e879e400b6e9f1b416f8729e",
+        "audit_entry_sha256_matches": true
+      },
+      "provenance_status": "pinned_source_and_archived_metadata_match",
+      "discrepancies": [],
+      "notes": []
+    }
+  ]
+}

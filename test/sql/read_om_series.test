@@ -1,0 +1,193 @@
+# name: test/sql/read_om_series.test
+# description: Compare closed-window series results with independent read_om unions
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+# A root Float32 array retains read_om's stable value name and output signature.
+query T
+SELECT column_name || ' ' || column_type
+FROM (
+    SELECT column_name, column_type, row_number() OVER () AS ordinal_position
+    FROM (DESCRIBE SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+        chunk_time_length := 4, time_step := INTERVAL '1 hour',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 08:00:00']
+    ))
+)
+ORDER BY ordinal_position;
+----
+value FLOAT
+lat DOUBLE
+lon DOUBLE
+valid_time TIMESTAMP
+
+# A one-chunk window matches an independently bound ordinary read_om call.
+query II
+WITH actual AS (
+    SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+        chunk_time_length := 4, time_step := INTERVAL '1 hour',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        valid_times := [TIMESTAMP '1970-01-01 01:00:00', TIMESTAMP '1970-01-01 02:00:00']
+    )
+), expected AS (
+    SELECT * FROM read_om(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature/chunk_0000.om',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        axes := {'time': {'axis':'time','start':TIMESTAMP '1970-01-01 00:00:00','step':INTERVAL '1 hour'}}
+    )
+    WHERE valid_time BETWEEN TIMESTAMP '1970-01-01 01:00:00' AND TIMESTAMP '1970-01-01 02:00:00'
+)
+SELECT (SELECT count(*) FROM (SELECT * FROM actual EXCEPT ALL SELECT * FROM expected)),
+       (SELECT count(*) FROM (SELECT * FROM expected EXCEPT ALL SELECT * FROM actual));
+----
+0	0
+
+# An unaligned closed window crossing one chunk boundary keeps the boundary slot once.
+query II
+WITH actual AS (
+    SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+        chunk_time_length := 4, time_step := INTERVAL '1 hour',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        valid_times := [TIMESTAMP '1970-01-01 03:00:00', TIMESTAMP '1970-01-01 05:00:00']
+    )
+), expected_unfiltered AS (
+    SELECT * FROM read_om(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature/chunk_0000.om',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        axes := {'time': {'axis':'time','start':TIMESTAMP '1970-01-01 00:00:00','step':INTERVAL '1 hour'}}
+    )
+    UNION ALL
+    SELECT * FROM read_om(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature/chunk_0001.om',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        axes := {'time': {'axis':'time','start':TIMESTAMP '1970-01-01 04:00:00','step':INTERVAL '1 hour'}}
+    )
+), expected AS (
+    SELECT * FROM expected_unfiltered
+    WHERE valid_time BETWEEN TIMESTAMP '1970-01-01 03:00:00' AND TIMESTAMP '1970-01-01 05:00:00'
+)
+SELECT (SELECT count(*) FROM (SELECT * FROM actual EXCEPT ALL SELECT * FROM expected)),
+       (SELECT count(*) FROM (SELECT * FROM expected EXCEPT ALL SELECT * FROM actual));
+----
+0	0
+
+# Three adjacent chunks include both exact boundaries and preserve NaN as a NULL row.
+query II
+WITH actual AS (
+    SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+        chunk_time_length := 4, time_step := INTERVAL '1 hour',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 08:00:00']
+    )
+), expected_unfiltered AS (
+    SELECT * FROM read_om(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature/chunk_0000.om',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        axes := {'time': {'axis':'time','start':TIMESTAMP '1970-01-01 00:00:00','step':INTERVAL '1 hour'}}
+    )
+    UNION ALL
+    SELECT * FROM read_om(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature/chunk_0001.om',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        axes := {'time': {'axis':'time','start':TIMESTAMP '1970-01-01 04:00:00','step':INTERVAL '1 hour'}}
+    )
+    UNION ALL
+    SELECT * FROM read_om(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature/chunk_0002.om',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        axes := {'time': {'axis':'time','start':TIMESTAMP '1970-01-01 08:00:00','step':INTERVAL '1 hour'}}
+    )
+), expected AS (
+    SELECT * FROM expected_unfiltered
+    WHERE valid_time BETWEEN TIMESTAMP '1970-01-01 00:00:00' AND TIMESTAMP '1970-01-01 08:00:00'
+)
+SELECT (SELECT count(*) FROM (SELECT * FROM actual EXCEPT ALL SELECT * FROM expected)),
+       (SELECT count(*) FROM (SELECT * FROM expected EXCEPT ALL SELECT * FROM actual));
+----
+0	0
+
+query II
+SELECT count(*), count(*) FILTER (WHERE value IS NULL)
+FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 03:00:00', TIMESTAMP '1970-01-01 05:00:00']
+);
+----
+18	1
+
+# Each timestamp retains six point rows; UNION ALL does not deduplicate multiplicity.
+query TR
+SELECT valid_time, count(*)
+FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    start := TIMESTAMP '1970-01-01 03:00:00', "end" := TIMESTAMP '1970-01-01 05:00:00'
+)
+GROUP BY valid_time ORDER BY valid_time;
+----
+1970-01-01 03:00:00	6
+1970-01-01 04:00:00	6
+1970-01-01 05:00:00	6
+
+# The alternate endpoint form has the same full row multiset.
+query II
+WITH from_list AS (
+    SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+        chunk_time_length := 4, time_step := INTERVAL '1 hour',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        valid_times := [TIMESTAMP '1970-01-01 03:00:00', TIMESTAMP '1970-01-01 05:00:00']
+    )
+), from_pair AS (
+    SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+        chunk_time_length := 4, time_step := INTERVAL '1 hour',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        start := TIMESTAMP '1970-01-01 03:00:00', "end" := TIMESTAMP '1970-01-01 05:00:00'
+    )
+)
+SELECT (SELECT count(*) FROM (SELECT * FROM from_list EXCEPT ALL SELECT * FROM from_pair)),
+       (SELECT count(*) FROM (SELECT * FROM from_pair EXCEPT ALL SELECT * FROM from_list));
+----
+0	0

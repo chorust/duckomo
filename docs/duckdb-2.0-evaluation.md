@@ -6,7 +6,7 @@ DuckDB 2.0.0 **已验证兼容，通过 v0.3.5-rc.1 预发布提供**。四版�
 
 远程合并在固定 O1280 的受控 HTTP/S3 测量中将请求从 11,591 降到 840。useful_bytes 排除预读、未选 chunk 和缓存复用，不再宣称等于 physical_bytes。
 
-**异步没有稳定加速，也未达到额外快 20% 的目标。** 实验跨批窗口 `duckomo_async_prefetch_batches` 默认1关闭；显式4批的 HTTP O1280 单 worker /256MB 中位数1351→1910ms，请求840→1523，结果相同。详见 [真实实验结果](../evidence/008/prefetch/report.md)。本地热查询大体接近基线，部分首次查询超过5%门槛，保留未达标结论。旧46.1%提升声明已撤销。Spec 008 性能目标尚未全部完成，不影响已验证的引擎兼容状态。
+**异步没有稳定加速；原「额外快 20%」硬门禁已于 2026-11-05 放宽为 won’t meet（负责人决定）。** 默认 async 相对 merge-only 受控 O1280 全扫约 ~0%（HTTP +0.1%/+0.2%，S3 −1.4%/+0.2%），结果哈希一致。实验跨批窗口 `duckomo_async_prefetch_batches` 默认 1 关闭；显式 4 批在跨批 range 复用后请求对齐串行 840/997，不再出现早期 840→1523 爆炸，但仍达不到 20%，且 DuckDB 拉取模型下批间 I/O·decode 难重叠。详见 [performance gates](../evidence/008/performance-gates/report.md)（历史 [prefetch report](../evidence/008/prefetch/report.md) 保留）。SC-009 本地 pooled 中位数门禁已达标。旧 46.1% 提升声明已撤销。Spec 008 其余门禁未全部完成，不影响已验证的引擎兼容状态——**勿将 SC-006 放宽写成 ≥20% PASS**。
 
 官方 [v2.0.0 release](https://github.com/duckdb/duckdb/releases/tag/v2.0.0) 与 tag 指向 `d54cbbe3df17e8e5ce68312f483b4155836112aa`。实验输入、官方 CLI/HTTPFS 解压后 SHA256 见 [独立矩阵](../test/data/engine-compatibility/version-matrix.json)。不替换现有稳定矩阵或 DuckDB 子模块。
 
@@ -114,4 +114,4 @@ OM → Parquet 可以作为独立实验，分开测 OM 输入、编码/写出、
 
 2.0 兼容性及四平台产物已验证，不再标记为 evaluation。稳定版发布仍待后续正式 tag；社区扩展登记仍为1.5.6，未随本预发布更改。
 
-Spec 008 尚未全部完成：异步未稳定达到20%加速，部分本地首次查询超出5%门槛，完整跨批重叠流水线尚未完成。这些是实验功能与性能限制，不撤销已验证的2.0引擎兼容性。详见[实测报告](../evidence/008/prefetch/report.md)。
+Spec 008 尚未全部完成：SC-006 ≥20% 已 relaxed/won’t meet（~0% 实测上限，正确性已接受）；SC-009 已达标；完整跨批 I/O·decode 重叠流水线尚未完成；其余 SC/任务矩阵仍有开放项。这些是实验功能与性能限制，不撤销已验证的 2.0 引擎兼容性。详见[performance gates](../evidence/008/performance-gates/report.md)。

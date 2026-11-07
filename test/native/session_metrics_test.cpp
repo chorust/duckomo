@@ -94,10 +94,16 @@ int main() {
 		        "cache clearing must preserve all scan profiles from the latest query");
 		auto remote = first.Query(
 		    "SELECT * FROM read_om('https://example.invalid/file.om?X-Amz-Signature=secret-signature')");
-		Require(remote && remote->HasError(), "remote reads must stay unavailable without the official httpfs");
-		Require(remote->GetError().find("matching official httpfs") !=
-		            std::string::npos,
-		        "unsupported remote input should explain the missing runtime dependency");
+		Require(remote && remote->HasError(), "remote reads against the unreachable fixture host must fail");
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+		// DuckDB 2 has HTTP transport in core; the unreachable host must fail as
+		// a sanitized transport error instead of a missing-extension diagnostic.
+		Require(remote->GetError().find("[transport]") != std::string::npos,
+		        "unreachable remote input should report a transport failure: " + remote->GetError());
+#else
+		Require(remote->GetError().find("matching official httpfs") != std::string::npos,
+		        "unsupported remote input should explain the missing runtime dependency: " + remote->GetError());
+#endif
 		Require(remote->GetError().find("secret-signature") == std::string::npos,
 		        "remote path errors must not expose signed URL query parameters");
 

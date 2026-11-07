@@ -1,0 +1,2 @@
+LOAD '/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/builds/2a1e218a7e3055b8db02c397eca7e5e2d2255bae3ecc04848a79a1a91f58e15b/release/extension/duckomo/duckomo.duckdb_extension';
+SELECT count(*) FROM read_om_series('/home/blizhan/repo/github/duckomo/build/series-fixtures/review-prefix-that-does-not-exist', chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'], grid := 42, spatial_axes := ['point'], start := TIMESTAMP '1970-01-01', "end" := TIMESTAMP '1970-01-01 01:00:00');

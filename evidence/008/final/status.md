@@ -17,8 +17,8 @@ The local sync path now streams reads/decode using existing bounded buffers, avo
 
 ## Unfinished gates — do not mark Spec complete
 
-- SC-006 is not met: true concurrency alone does not yield stable ≥20% query speedup. Ordinary HTTP/S3 and 10ms-delay scenarios show <20% gains or regressions. Single-variable O1280 batches usually expose one request. Exact pending-range dedup helps but does not eliminate redundant subrange reads. Cross-batch bounded prefetch (T043) remains to implement and validate.
-- SC-009 is not met across all combinations: matched-engine pre-feature/current 31/51-repeat comparisons show full-scan medians within 5% in the final 51-run measurement but some 2–5ms selected-query medians exceed the threshold. See local-stream-final.json / local-stream-51.json. Competing compilation load makes the result unsuitable for claiming a clean acceptance pass; rerun idle.
+- SC-006 **relaxed / won’t meet ≥20%** (owner 2026-11-05). Fresh 2.0.0 O1280 full-scan medians for default async are +0.1%/+0.2% on HTTP and −1.4%/+0.2% on S3 (one/four workers), matching hashes, peak in-flight 1 (~0% vs merge-only). Four-batch + cross-batch range reuse matches serial 840/997 and clears prior regressions (−4.0%/−1.5% HTTP, −4.4%/−0.1% S3) but still does not reach 20%; DuckDB pull model prevents reliable batch-boundary I/O·decode overlap. Correctness accepted; original ≥20% hard gate waived — **not** a fabricated PASS. See `evidence/008/performance-gates/report.md`. T042/T043 remain unchecked (deferred/relaxed for ≥20%/overlap).
+- SC-009 meets the ≤5% median gate on pooled n=102 observations per local query/worker/phase slice; all result hashes match. Separate 51-run batches varied, with selected-query slices reaching +5.43% and +8.42%. Both raw runs and the pooling details are in `evidence/008/performance-gates/report.md`.
 - Complete latest-build controlled S3 256MB RSS, polygon/nearest benchmark modes, cancellation ledger-residue proof and final cloud refresh remain open.
 - Whole batches still allocate planned buffers before I/O scheduling; accounted bytes are not a BufferManager reservation. Bounded cross-batch work must address this before claiming full memory governance.
 - CI dispatch retried for release.yml and community-build.yml: both HTTP 403; evidence/duckdb-2.0/final/ci-retry.json. Local working-tree changes are not pushed, so remote main would not validate them. No support promotion or publishing occurred.
@@ -30,7 +30,7 @@ The final aggregate attempt exposed a build-selection bug: seasonal Python used 
 
 A second integration-only issue was fixed: two blocked-region-identity tests assumed every CLI version exists in the production region matrix. They now create an explicit blocked evaluation-version record and verify rejection. Both execute under 2.0 (15 validator Python tests pass). Unified retry log: aggregate20-verified.log.
 
-Idle 51-round matched local comparison is also recorded (local-idle-51.json). Repeated-query medians are within 5%, but fresh-process full/selected at one worker and selected at four workers exceed 5%; SC-009 is still not accepted. Latest 1.5.6/2.0 O1280 count and sum match exactly (cross-version-final-aggregate.json).
+The earlier `local-idle-51.json` remains a historical 51-run measurement. It is superseded for SC-009 status by the fresh pooled n=102 local comparison in `evidence/008/performance-gates/`; the per-batch variation is documented there. Latest 1.5.6/2.0 O1280 count and sum match exactly (cross-version-final-aggregate.json).
 
 The benchmark profile parser has a dedicated regression test for both DuckDB 1.5 root latency and 2.0 query.total_time. benchmark_remote_io_test.py now passes 3 tests. Fixture delay and blocked-evaluation-runtime test changes are validated without changing the production support matrix.
 

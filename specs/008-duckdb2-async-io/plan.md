@@ -27,7 +27,7 @@
 
 **Project Type**: DuckDB 可加载扩展（库）+ 构建/发布工具
 
-**Performance Goals**: SC-003（请求数 −90%，字节 ≤110%）、SC-004（局部字节 ≤125%）、SC-005（S3 单 worker 全扫 −70%）、SC-006（异步再 −20%）、SC-009（本地 ±5%）
+**Performance Goals**: SC-003（请求数 −90%，字节 ≤110%）、SC-004（局部字节 ≤125%）、SC-005（S3 单 worker 全扫 −70%）、SC-006（**relaxed 2026-11-05**：结果一致；原异步再 −20% won’t meet，见 performance-gates）、SC-009（本地 ±5%）
 
 **Constraints**: 结果与 1.5.6 相同；错误分类与凭据脱敏不变；DIRECT_IO、禁止整体下载、对象身份校验不变；内存受查询账本约束（SC-007）；取消 1 s 内结束（SC-008）
 
@@ -117,8 +117,8 @@ README.md / README.en.md
 | P1-a 兼容提交 | 提交评估期改动；清理剩余 `SetCardinality`；1.5.4/1.5.5/1.5.6/2.0 全量回归与 sanitizer；最终源码重建 2.0 pair 并重算 build_id | SC-002 |
 | P1-b CI/发布 | workflow 拆分、release-runtimes 增加 2.0、release_tools/verify/build-version 更新、三平台 SHA 冻结、文档与 README 更新；dry-run 发布 | SC-001 |
 | P2 请求合并 | 指标拆分 index/data；会话设置与校验；扫参校准默认值；有用/间隙字节指标；基准脚本入库 | SC-003、SC-004、SC-005、SC-009 |
-| P3-a 批内异步 | Reader 三段式 API；read_om 接入 HandleBlocked；PARALLEL_ACCESS 或句柄池；随剩余内存收缩的在途预算与内存账本；版本不匹配、取消/错误一致性测试 | SC-006（部分）、SC-007、SC-008 |
-| P3-b 跨批预取（条件） | 仅当 P3-a 未达 SC-006：TaskExecutor(ASYNC) + ManagedAsyncMemoryGovernor 流水线 | SC-006、SC-007 |
+| P3-a 批内异步 | Reader 三段式 API；read_om 接入 HandleBlocked；PARALLEL_ACCESS 或句柄池；随剩余内存收缩的在途预算与内存账本；版本不匹配、取消/错误一致性测试 | SC-006（正确性；≥20% 已 relaxed）、SC-007、SC-008 |
+| P3-b 跨批预取（条件） | 已实现实验有界窗口 + 跨批 range 复用；**批间 I/O·decode overlap 未实现**（DuckDB 拉取模型限制）；≥20% 吞吐不再作为本阶段退出门禁 | SC-006（relaxed）、SC-007 |
 | 收尾 | 真实云端点测量（FR-018）；评估文档改为正式支持；roadmap 更新 | 全部 SC |
 
 P2 不依赖 P1-b，可与之并行；P3 依赖 P1-a 与 P2。

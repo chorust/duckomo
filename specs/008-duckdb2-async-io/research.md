@@ -65,3 +65,7 @@
 
 - **Decision**: 把一次性的 `build/duckdb-2-evaluation/real-benchmark.py` 提升为仓库脚本 `scripts/benchmark-remote-io.py`：参数化端点、对象清单、版本运行时、模式（merge on/off、async on/off）与查询集合（全扫、局部选择、坐标-only、polygon、nearest），断点续跑，输出中位数、请求数、发送字节、有用字节、峰值 RSS、在途峰值。受控 loopback 服务沿用 `scripts/setup-remote-fixtures.py`；真实云端点使用公开 Open-Meteo 对象（`s3://openmeteo/...`，见 `test/data/grids/sample-manifest.json`），只读、匿名访问。
 - **Rationale**: 满足 FR-017/FR-018，且基准可在 CI 外复现。
+
+## Addendum — SC-006 relax (2026-11-05)
+
+阶段 B 的「未达 SC-006 才做跨批预取」前提仍成立：批内异步未达 ≥20%。跨批窗口与 range 复用已落地并消除请求爆炸，但在 DuckDB 拉取扫描模型下仍无法稳定实现批间 I/O·decode 重叠，全量顺序扫描 peak in-flight 常为 1，默认 async 约 ~0%。负责人决定将 SC-006 吞吐硬门禁标为 **relaxed / won’t meet ≥20%**，以结果一致性与实测证据收口；T043 真正 overlap 保持未勾选。详见 `evidence/008/performance-gates/report.md`。

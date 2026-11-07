@@ -1,0 +1,71 @@
+{
+  "fixture_manifest_sha256": "dcf2c7a9b5b67d045b61eee9e01849568a74baa8b4d777b118f4272c1e1de627",
+  "fixture_object_sha256": "6a34044749250c0de21d65d40d4f6c270c3ae31d16ac623626bc6b2f7a01ced3",
+  "service_run_manifest": "/tmp/duckomo-official-httpfs-20261106/run-manifest.json",
+  "results": [
+    {
+      "pair": "v1.5.4",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.4/release/test/native/official_httpfs_test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "http_base": "http://127.0.0.1:40883",
+      "duckdb_commit": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+      "duckdb_cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+      "httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+      "extension_sha256": "703df1cc7a7c493bcf8e2fc4e3c37480f482081f476808e3dbcd14d0142701b0",
+      "started_at_utc": "2026-11-06T06:41:52Z",
+      "ended_at_utc": "2026-11-06T06:41:54Z",
+      "exit_code": 0,
+      "stdout_log": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.4/official-httpfs/stdout.log"
+    },
+    {
+      "pair": "v1.5.5",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.5/release/test/native/official_httpfs_test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "http_base": "http://127.0.0.1:40883",
+      "duckdb_commit": "d8cdaa33fda8df955cc76ef58a280f68f4cd43fa",
+      "duckdb_cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+      "httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+      "extension_sha256": "2c981c7b1c372ec2f3f1e28212821c7359fcea53345fb427da41bfe027b78268",
+      "started_at_utc": "2026-11-06T06:41:54Z",
+      "ended_at_utc": "2026-11-06T06:41:57Z",
+      "exit_code": 0,
+      "stdout_log": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.5/official-httpfs/stdout.log"
+    },
+    {
+      "pair": "v1.5.6",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v1.5.6/release/test/native/official_httpfs_test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "http_base": "http://127.0.0.1:40883",
+      "duckdb_commit": "069cc9f9b5be802405797faecc284961b07c70ef",
+      "duckdb_cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+      "httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+      "extension_sha256": "50ceb367f019195d03b5287d189e8db66bc8abdf12f7ce65612a0cb5c2509add",
+      "started_at_utc": "2026-11-06T06:41:57Z",
+      "ended_at_utc": "2026-11-06T06:41:59Z",
+      "exit_code": 0,
+      "stdout_log": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.6/official-httpfs/stdout.log"
+    },
+    {
+      "pair": "v2.0.0",
+      "command": [
+        "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v2.0.0/release/test/native/official_httpfs_test"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "http_base": "http://127.0.0.1:40883",
+      "duckdb_commit": "d54cbbe3df17e8e5ce68312f483b4155836112aa",
+      "duckdb_cli_sha256": "f4c681bcf41a5c43dcf9a354703fe5bded9e2265282d1915d6d99637cd1e1f29",
+      "httpfs_sha256": "53f7aea1a0448ea62ef9b63f95da37c5766070084f14f14110e275e76382e7b2",
+      "extension_sha256": "0af98d6150b38a88817a151d318da706c83a26f397e0067a87327c269005e5e0",
+      "started_at_utc": "2026-11-06T06:41:59Z",
+      "ended_at_utc": "2026-11-06T06:42:01Z",
+      "exit_code": 0,
+      "stdout_log": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v2.0.0/official-httpfs/stdout.log"
+    }
+  ]
+}

@@ -1,0 +1,654 @@
+# name: test/sql/read_om_series_validation.test
+# description: Reject invalid read_om_series arguments and incompatible object schemas
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+# A file path is not a directory prefix.
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature/chunk_0000.om',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']
+);
+----
+<REGEX>:(?i).*(prefix|directory).*
+
+statement error
+SELECT * FROM read_om_series('', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(prefix|directory).*
+
+statement error
+SELECT * FROM read_om_series('build/series-fixtures/data/synthetic/*', chunk_time_length := 4,
+    time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(glob|wildcard|prefix).*
+
+statement error
+SELECT * FROM read_om_series('https://example.invalid/data/temperature?token=secret', chunk_time_length := 4,
+    time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(query|string|prefix).*
+
+statement error
+SELECT * FROM read_om_series('https://user:pass@example.invalid/data/temperature', chunk_time_length := 4,
+    time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(userinfo|credentials|prefix|URI).*
+
+statement error
+SELECT * FROM read_om_series('https://example.invalid/data/temperature#fragment', chunk_time_length := 4,
+    time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(fragment|prefix|URI).*
+
+statement error
+SELECT * FROM read_om_series('build/series-fixtures/data_run/run-1/temperature', chunk_time_length := 4,
+    time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(data_run|run.selector|prefix).*
+
+statement error
+SELECT * FROM read_om_series('build/series-fixtures/data_spatial/temperature', chunk_time_length := 4,
+    time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(data_spatial|run.selector|prefix).*
+
+# Exactly one complete finite closed window form is required.
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point']);
+----
+<REGEX>:(?i).*(valid_times|start|end|window).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], start := TIMESTAMP '1970-01-01');
+----
+<REGEX>:(?i).*(both|end|window).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], "end" := TIMESTAMP '1970-01-01');
+----
+<REGEX>:(?i).*(both|start|window).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00'],
+    start := TIMESTAMP '1970-01-01', "end" := TIMESTAMP '1970-01-01 01:00:00');
+----
+<REGEX>:(?i).*(conflict|exclusive|together).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01']);
+----
+<REGEX>:(?i).*(two|2|endpoint|length).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', NULL]);
+----
+<REGEX>:(?i).*(finite|NULL|timestamp).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP 'infinity', TIMESTAMP 'infinity']);
+----
+<REGEX>:(?i).*(finite|infinite|timestamp).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], start := TIMESTAMP '1970-01-01 01:00:00', "end" := TIMESTAMP '1970-01-01');
+----
+<REGEX>:(?i).*(start|end|order|window).*
+
+# Interval, dimensions and per-child option validation are explicit.
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 0, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(chunk_time_length|positive|greater than zero).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '-1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(time_step|positive|greater than zero).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 month',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(month|calendar|fixed).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 microsecond',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(second|precision|time_step).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(time|dimension|array).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(duplicate|twice|time).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], axes := NULL,
+    valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(axes|automatic|generated|not supported).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], axes := map([]::VARCHAR[], []::INTEGER[]),
+    valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(axes|automatic|generated|not supported).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], strict := NULL,
+    valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(strict|NULL|boolean).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], unknown_option := true,
+    valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(unknown|named|parameter|argument|option).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'],
+    valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(domain|grid|spatial).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(spatial_axes|spatial|axis).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'],
+    domain := 'ecmwf_ifs', grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(domain|grid|mutually|exclusive).*
+
+statement error
+SELECT * FROM read_om_series('__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['not_an_axis'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(spatial|axis|dimension).*
+
+# Slot-count, candidate-count, and finite timestamp-boundary arithmetic reject before child access.
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 9223372036854775807, time_step := INTERVAL '1 second',
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01']);
+----
+<REGEX>:(?i).*(span|chunk_time_length|overflow|signed 64-bit).*
+
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [make_timestamp(0::BIGINT), make_timestamp(58982400000000::BIGINT)]);
+----
+<REGEX>:(?i).*(4096|candidate|smaller ranges).*
+
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1000000000000 seconds',
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [make_timestamp(-9000000000000000000::BIGINT), make_timestamp(-9000000000000000000::BIGINT)]);
+----
+<REGEX>:(?i).*(chunk origin|finite TIMESTAMP|outside).*
+
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '750000000000 seconds',
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [make_timestamp(9223372036854775806::BIGINT), make_timestamp(9223372036854775806::BIGINT)]);
+----
+<REGEX>:(?i).*(final generated slot|finite TIMESTAMP|outside).*
+
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 month', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(month|calendar|fixed).*
+
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := 42, spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*grid.*STRUCT.*
+
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    domain := 'review_nonexistent_domain',
+    valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(unknown|not verified).*domain.*
+
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['not_an_axis'],
+    start := TIMESTAMP '1970-01-01 00:00:00.000001', "end" := TIMESTAMP '1970-01-01 00:59:59.999999');
+----
+<REGEX>:(?i).*(axis|dimension).*not.*declared.*
+
+# Existing candidates are bound and reconciled before the logical result can execute.
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/mismatch/time-extent/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01 03:00:00', TIMESTAMP '1970-01-01 05:00:00']);
+----
+<REGEX>:(?i).*(length|extent|shape|dimension).*
+
+# A present candidate with no selected time slots still has its metadata validated in strict mode.
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/mismatch/time-extent/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', strict := true,
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    start := TIMESTAMP '1970-01-01 04:00:00.000001', "end" := TIMESTAMP '1970-01-01 04:59:59.999999'
+);
+----
+<REGEX>:(?i).*(length|extent|shape|dimension).*
+
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/mismatch/point-extent/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01 03:00:00', TIMESTAMP '1970-01-01 05:00:00']);
+----
+<REGEX>:(?i).*(shape|dimension|spatial|point|layout).*
+
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/mismatch/array-set/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := map(['/temperature','/humidity'], [['lead','point','time'],['lead','point','time']]),
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01 03:00:00', TIMESTAMP '1970-01-01 05:00:00']);
+----
+<REGEX>:(?i).*(array|variable|schema|path|selected).*
+
+# A shared dimensions list cannot declare hidden nested arrays when no object is inspected.
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/named/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(root|shared|array|dimension|variable).*
+
+# Registered defaults and independent overrides preserve the exact ordinary-read row multiset.
+query I
+WITH registered AS (
+    SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+        model := 'ecmwf_ifs', chunk_time_length := 4,
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']
+    )
+), manual AS (
+    SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+        chunk_time_length := 4, time_step := INTERVAL '1 hour',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']
+    )
+)
+SELECT
+    (SELECT count(*) FROM (SELECT * FROM registered EXCEPT ALL SELECT * FROM manual) AS left_only) +
+    (SELECT count(*) FROM (SELECT * FROM manual EXCEPT ALL SELECT * FROM registered) AS right_only);
+----
+0
+
+query I
+WITH registered AS (
+    SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+        model := 'ecmwf_ifs', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']
+    )
+), custom AS (
+    SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+        model := 'future_model', chunk_time_length := 4, time_step := INTERVAL '1 hour',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']
+    )
+)
+SELECT
+    (SELECT count(*) FROM (SELECT * FROM registered EXCEPT ALL SELECT * FROM custom) AS left_only) +
+    (SELECT count(*) FROM (SELECT * FROM custom EXCEPT ALL SELECT * FROM registered) AS right_only);
+----
+0
+
+# Unknown/omitted models require both explicit temporal parameters before any object is opened.
+statement error
+SELECT * FROM read_om_series('missing/prefix', model := 'ecmwf', chunk_time_length := 4,
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(not registered|provide.*time_step|both.*override).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(omitted|both|chunk_time_length|override).*
+
+# A registered model supplies the missing chunk length for a time-step-only override;
+# the existing fixture's shorter time extent must still be rejected during child bind.
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    model := 'ecmwf_ifs', time_step := INTERVAL '30 minutes',
+    dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(length|extent|shape|dimension|time.step).*
+
+# Registered defaults cannot bypass the ordinary per-object time-extent check.
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    model := 'ecmwf_ifs', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(length|extent|shape|dimension).*
+
+statement error
+SELECT * FROM read_om_series('missing/prefix', model := 'ecmwf_ifs', time_step := INTERVAL '1 month',
+    dimensions := ['lead','point','time'], grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(month|calendar|fixed).*
+
+# Model values never infer a spatial domain or grid.
+statement error
+SELECT * FROM read_om_series('missing/prefix', model := 'ecmwf_ifs', chunk_time_length := 4,
+    time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(domain|grid|spatial).*
+
+# Spatial declarations are parsed against explicit dimensions before any candidate open,
+# including present, missing, and slotless candidate intervals.
+statement error
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := 42, spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*grid.*STRUCT.*
+
+statement error
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/all-missing/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := 42, spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*grid.*STRUCT.*
+
+statement error
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := 42, spatial_axes := ['point'],
+    start := TIMESTAMP '1970-01-01 00:00:00.000001', "end" := TIMESTAMP '1970-01-01 00:59:59.999999');
+----
+<REGEX>:(?i).*grid.*STRUCT.*
+
+statement error
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    domain := 'review_nonexistent_domain',
+    valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(unknown|not verified).*domain.*
+
+statement error
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/all-missing/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    domain := 'review_nonexistent_domain',
+    valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(unknown|not verified).*domain.*
+
+statement error
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    domain := 'review_nonexistent_domain',
+    start := TIMESTAMP '1970-01-01 00:00:00.000001', "end" := TIMESTAMP '1970-01-01 00:59:59.999999');
+----
+<REGEX>:(?i).*(unknown|not verified).*domain.*
+
+statement error
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['not_an_axis'],
+    valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(axis|dimension).*not.*declared.*
+
+statement error
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/gaps/all-missing/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['not_an_axis'],
+    valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(axis|dimension).*not.*declared.*
+
+statement error
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['not_an_axis'],
+    start := TIMESTAMP '1970-01-01 00:00:00.000001', "end" := TIMESTAMP '1970-01-01 00:59:59.999999');
+----
+<REGEX>:(?i).*(axis|dimension).*not.*declared.*
+
+# S2 metadata-dependent mismatches open the stated present candidate, then fail during binding.
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/mismatch/embedded-time/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := map(['/temperature'], [['lead','point','time']]),
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(scalar valid_time|time.*metadata|metadata.*time).*
+
+# A candidate is still metadata-validated when the requested interval has no selected slots.
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/mismatch/embedded-time/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := map(['/temperature'], [['lead','point','time']]),
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    start := TIMESTAMP '1970-01-01 03:00:00.000001', "end" := TIMESTAMP '1970-01-01 03:59:59.999999');
+----
+<REGEX>:(?i).*(scalar valid_time|time.*metadata|metadata.*time).*
+
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/mismatch/declared-type/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := map(['/temperature'], [['lead','point','time']]),
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(only Float32|unsupported.*array|Float32 value array).*
+
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/mismatch/dimension-order/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := map(['/temperature'], [['lead','point','time']]),
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(dimensions axis names conflict with coordinates metadata|dimension.*conflict).*
+
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/mismatch/spatial-profile/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := map(['/temperature'], [['lead','point','time']]),
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(dimensions axis names conflict with coordinates metadata|dimension.*conflict).*
+
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/mismatch/grid-identity/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := map(['/temperature'], [['lead','point','time']]),
+    grid := {
+        'version':1, 'type':'reduced_gaussian', 'numeric_policy':'float64_v1',
+        'earth':{'model':'sphere','radius_m':6371229.0},
+        'layout':{'order':'row_major'},
+        'parameters':{
+            'n':1, 'latitude_rule':'explicit_v1',
+            'rows':[
+                {'latitude':60.0,'point_count':3,'longitude_origin':0.0,'longitude_step':120.0},
+                {'latitude':-60.0,'point_count':3,'longitude_origin':0.0,'longitude_step':120.0}
+            ],
+            'subset_segments':NULL
+        }
+    }, spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01', TIMESTAMP '1970-01-01 01:00:00']);
+----
+<REGEX>:(?i).*(source crs_wkt profile conflicts with the declared grid geometry or earth model|source crs).*
+
+# Shape validation includes temporal extent across adjacent candidates.
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/mismatch/time-extent/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01 03:00:00', TIMESTAMP '1970-01-01 05:00:00']);
+----
+<REGEX>:(?i).*(length|extent|shape|dimension).*
+
+# Shape validation covers the point extent as well as temporal extent across adjacent candidates.
+statement error
+SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/mismatch/point-extent/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'], valid_times := [TIMESTAMP '1970-01-01 03:00:00', TIMESTAMP '1970-01-01 05:00:00']);
+----
+<REGEX>:(?i).*(shape|dimension|spatial|point|layout).*

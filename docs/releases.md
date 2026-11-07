@@ -161,6 +161,6 @@ python3 scripts/verify-community-artifact.py \
 
 - 远程范围合并与请求/有用字节/间隙指标，新增实际并发及内存压力收缩检查。
 - DuckDB 2.0 使用引擎 AsyncResult；1.5.x 保持同步。本地同步读取保留逐块解码。
-- 异步未稳定加速；跨批实验窗口默认关闭，固定样本中开启后请求增加、耗时变长。部分本地首次查询超过5%性能门槛。
-- 已发布 v0.3.5-rc.1；16份产物均通过匹配官方运行时校验。2.0已验证兼容，通过预发布提供；尚非稳定版。Spec 008性能目标未全部完成，异步继续标记实验性。
-- 实测和限制：[prefetch report](../evidence/008/prefetch/report.md)、[verification status](../evidence/008/final/status.md)。
+- 异步未稳定加速；**SC-006 ≥20% 已于 2026-11-05 放宽为 won’t meet**（默认 async 实测约 ~0%，结果一致）。跨批实验窗口默认关闭；跨批 range 复用已对齐串行请求数（840/997），但批间 I/O·decode 仍难重叠。SC-009 本地中位数门禁已达标；部分历史批次仍有 >5% 波动记录。
+- 已发布 v0.3.5-rc.1；16份产物均通过匹配官方运行时校验。2.0已验证兼容，通过预发布提供；尚非稳定版。Spec 008 其余性能/矩阵门禁未全部完成，异步继续标记实验性——**勿将 SC-006 放宽解读为 Spec 完成**。
+- 实测和限制：[performance gates](../evidence/008/performance-gates/report.md)、[verification status](../evidence/008/final/status.md)（历史 [prefetch report](../evidence/008/prefetch/report.md) 保留，请求爆炸数据已被后续复用修复 supersede）。

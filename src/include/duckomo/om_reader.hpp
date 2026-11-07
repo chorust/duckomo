@@ -111,10 +111,27 @@ enum class ReaderErrorCode : std::uint8_t {
 	Allocation
 };
 
+enum class ReaderErrorCategory : std::uint8_t {
+	Unclassified,
+	ObjectNotFound,
+	AccessDenied,
+	ObjectChanged
+};
+
+enum class ReaderErrorStage : std::uint8_t {
+	Other,
+	InitialOpen,
+	LaterOpen,
+	Read
+};
+
 class ReaderError final : public std::runtime_error {
 public:
-	ReaderError(ReaderErrorCode error_code, std::string message, OmError_t om_error_code = ERROR_OK)
-	    : std::runtime_error(std::move(message)), code_(error_code), om_error_(om_error_code) {
+	ReaderError(ReaderErrorCode error_code, std::string message, OmError_t om_error_code = ERROR_OK,
+	            ReaderErrorCategory category = ReaderErrorCategory::Unclassified,
+	            ReaderErrorStage stage = ReaderErrorStage::Other)
+	    : std::runtime_error(std::move(message)), code_(error_code), om_error_(om_error_code),
+	      category_(category), stage_(stage) {
 	}
 
 	ReaderErrorCode Code() const noexcept {
@@ -125,9 +142,19 @@ public:
 		return om_error_;
 	}
 
+	ReaderErrorCategory Category() const noexcept {
+		return category_;
+	}
+
+	ReaderErrorStage Stage() const noexcept {
+		return stage_;
+	}
+
 private:
 	ReaderErrorCode code_;
 	OmError_t om_error_;
+	ReaderErrorCategory category_;
+	ReaderErrorStage stage_;
 };
 
 // A checked row count for the supported positive-rank OM array subset. The
@@ -246,9 +273,44 @@ struct OmDecoderState final {
 	std::uint64_t data_range_offset = 0;
 	std::uint64_t data_range_size = 0;
 	std::shared_ptr<std::vector<std::uint8_t>> data_cache;
+	struct CacheEntry final {
+		std::uint64_t offset = 0;
+		std::uint64_t size = 0;
+		std::shared_ptr<std::vector<std::uint8_t>> buffer;
+	};
+	// Lookup entries are scoped to one standalone plan or an explicit scan window.
+	// PlannedSelection and pending async items own buffers that remain in flight.
+	std::vector<CacheEntry> planned_cache;
+	std::size_t planned_cache_scope_depth = 0;
 	OmByteBuffer chunk_scratch;
 	OmDecoderCapacityBounds capacity_bounds;
 	std::shared_ptr<ScanMemoryAccount> memory_account;
+
+	void BeginPlannedCacheScope() noexcept {
+		if (planned_cache_scope_depth == 0) planned_cache.clear();
+		++planned_cache_scope_depth;
+	}
+
+	void EndPlannedCacheScope() noexcept {
+		if (planned_cache_scope_depth > 0 && --planned_cache_scope_depth == 0) planned_cache.clear();
+	}
+};
+
+class OmPlannedCacheScope final {
+public:
+	explicit OmPlannedCacheScope(OmDecoderState &state) noexcept : state_(&state) {
+		state_->BeginPlannedCacheScope();
+	}
+
+	OmPlannedCacheScope(const OmPlannedCacheScope &) = delete;
+	OmPlannedCacheScope &operator=(const OmPlannedCacheScope &) = delete;
+
+	~OmPlannedCacheScope() {
+		state_->EndPlannedCacheScope();
+	}
+
+private:
+	OmDecoderState *state_;
 };
 
 void EnableOmDecoderMemoryAccounting(OmDecoderState &state, const std::shared_ptr<ScanMetrics> &metrics);
