@@ -1,0 +1,6 @@
+{
+  "extension_source_sha256": "4974560d43df2a1abcc67cb24755f57b9da36df37a92df3d0f2d34fae3aec516",
+  "matches_final_implementation_record": true,
+  "method": "scripts/version_matrix.py extension_source_digest",
+  "scope": "src, test, scripts, OM submodule and build inputs using existing matrix exclusions"
+}

@@ -2,8 +2,15 @@
 
 #include "duckdb/common/constants.hpp"
 #include "duckdb/common/string_util.hpp"
+#include "duckdb/planner/operator/logical_get.hpp"
+#include "duckdb/planner/operator/logical_empty_result.hpp"
+#include "duckdb/planner/operator/logical_filter.hpp"
+#include "duckdb/planner/operator/logical_projection.hpp"
+#include "duckdb/planner/operator/logical_set_operation.hpp"
+#include "duckdb/planner/binder.hpp"
 #include "duckdb/planner/expression/bound_between_expression.hpp"
 #include "duckdb/planner/expression/bound_cast_expression.hpp"
+#include "duckdb/planner/expression/bound_columnref_expression.hpp"
 #include "duckdb/planner/expression/bound_comparison_expression.hpp"
 #include "duckdb/planner/expression/bound_conjunction_expression.hpp"
 #include "duckdb/planner/expression/bound_constant_expression.hpp"
@@ -13,6 +20,190 @@
 
 namespace duckdb {
 namespace duckomo {
+
+ReadOmBoundTableFunction BindReadOmFunctionCall(const TableFunction &function,
+                                                const TableFunctionBindInput &input) {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	BoundTableFunction bound_function(function);
+	bound_function.SetCallArguments(input.inputs, input.named_parameters);
+	return bound_function;
+#else
+	(void)input;
+	return function;
+#endif
+}
+
+unique_ptr<LogicalOperator> CreateReadOmLogicalGet(idx_t bind_index, ReadOmBoundTableFunction function,
+                                                   unique_ptr<FunctionData> bind_data,
+                                                   const std::vector<LogicalType> &return_types,
+                                                   const std::vector<std::string> &return_names,
+                                                   virtual_column_map_t virtual_columns) {
+	vector<LogicalType> duckdb_types(return_types.begin(), return_types.end());
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	vector<Identifier> duckdb_names;
+	duckdb_names.reserve(return_names.size());
+	for (const auto &name : return_names) duckdb_names.emplace_back(name);
+	auto get = make_uniq<LogicalGet>(TableIndex(bind_index), std::move(function), std::move(bind_data),
+	                                 std::move(duckdb_types), std::move(duckdb_names), std::move(virtual_columns));
+	for (idx_t column = 0; column < return_types.size(); column++) get->AddColumnId(column);
+	return get;
+#else
+	vector<string> duckdb_names(return_names.begin(), return_names.end());
+	auto get = make_uniq<LogicalGet>(bind_index, std::move(function), std::move(bind_data), std::move(duckdb_types),
+	                                 std::move(duckdb_names), std::move(virtual_columns));
+	for (idx_t column = 0; column < return_types.size(); column++) get->AddColumnId(column);
+	return get;
+#endif
+}
+
+idx_t ReadOmLogicalGetTableIndex(const LogicalGet &get) {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	return get.table_index.index;
+#else
+	return get.table_index;
+#endif
+}
+
+idx_t ReadOmColumnBindingTableIndex(const ColumnBinding &binding) {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	return binding.table_index.index;
+#else
+	return binding.table_index;
+#endif
+}
+
+unique_ptr<LogicalOperator> CreateReadOmSeriesCardinalityProjection(unique_ptr<LogicalOperator> child,
+                                                                   idx_t projection_index,
+                                                                   idx_t child_table_index,
+                                                                   idx_t input_column_count) {
+	if (!child) throw InternalException("read_om_series cardinality projection has no child operator");
+	child->ResolveOperatorTypes();
+	if (child->types.size() != input_column_count) {
+		throw InternalException("read_om_series cardinality projection input has an unexpected column count");
+	}
+
+	vector<unique_ptr<Expression>> expressions;
+	expressions.reserve(input_column_count + 1);
+	expressions.emplace_back(make_uniq<BoundConstantExpression>(Value::BOOLEAN(true)));
+	for (idx_t column = 0; column < input_column_count; column++) {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+		const ColumnBinding binding{TableIndex(child_table_index), ProjectionIndex(column)};
+#else
+		const ColumnBinding binding(child_table_index, column);
+#endif
+		expressions.emplace_back(make_uniq<BoundColumnRefExpression>(child->types[column], binding));
+	}
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	auto projection = make_uniq<LogicalProjection>(TableIndex(projection_index), std::move(expressions));
+#else
+	auto projection = make_uniq<LogicalProjection>(projection_index, std::move(expressions));
+#endif
+	projection->children.emplace_back(std::move(child));
+	return projection;
+}
+
+unique_ptr<LogicalOperator> CreateReadOmSeriesOutputProjection(unique_ptr<LogicalOperator> child,
+                                                               idx_t output_table_index,
+                                                               idx_t child_table_index,
+                                                               idx_t output_column_count) {
+	if (!child) throw InternalException("read_om_series output projection has no child operator");
+	child->ResolveOperatorTypes();
+	if (child->types.size() != output_column_count + 1 || child->types.front() != LogicalType::BOOLEAN) {
+		throw InternalException("read_om_series internal cardinality column does not match its output schema");
+	}
+
+	vector<unique_ptr<Expression>> expressions;
+	expressions.reserve(output_column_count);
+	for (idx_t column = 0; column < output_column_count; column++) {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+		const ColumnBinding binding{TableIndex(child_table_index), ProjectionIndex(column + 1)};
+#else
+		const ColumnBinding binding(child_table_index, column + 1);
+#endif
+		expressions.emplace_back(make_uniq<BoundColumnRefExpression>(child->types[column + 1], binding));
+	}
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	auto projection = make_uniq<LogicalProjection>(TableIndex(output_table_index), std::move(expressions));
+#else
+	auto projection = make_uniq<LogicalProjection>(output_table_index, std::move(expressions));
+#endif
+	projection->children.emplace_back(std::move(child));
+	return projection;
+}
+
+idx_t GenerateReadOmTableIndex(Binder &binder) {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	return binder.GenerateTableIndex().index;
+#else
+	return binder.GenerateTableIndex();
+#endif
+}
+
+unique_ptr<LogicalOperator> CreateReadOmUnionOperator(
+    idx_t bind_index, idx_t column_count, std::vector<unique_ptr<LogicalOperator>> children) {
+	vector<unique_ptr<LogicalOperator>> duckdb_children;
+	duckdb_children.reserve(children.size());
+	for (auto &child : children) duckdb_children.emplace_back(std::move(child));
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	return make_uniq<LogicalSetOperation>(TableIndex(bind_index), column_count, std::move(duckdb_children),
+	                                      LogicalOperatorType::LOGICAL_UNION, true);
+#else
+	return make_uniq<LogicalSetOperation>(bind_index, column_count, std::move(duckdb_children),
+	                                      LogicalOperatorType::LOGICAL_UNION, true);
+#endif
+}
+
+unique_ptr<LogicalOperator> CreateReadOmEmptyResult(idx_t bind_index,
+                                                    const std::vector<LogicalType> &return_types) {
+	vector<LogicalType> duckdb_types(return_types.begin(), return_types.end());
+	vector<ColumnBinding> bindings;
+	bindings.reserve(return_types.size());
+	for (idx_t column = 0; column < return_types.size(); column++) {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+		bindings.emplace_back(TableIndex(bind_index), ProjectionIndex(column));
+#else
+		bindings.emplace_back(bind_index, column);
+#endif
+	}
+	return make_uniq<LogicalEmptyResult>(std::move(duckdb_types), std::move(bindings));
+}
+
+unique_ptr<LogicalOperator> CreateReadOmTimestampWindowFilter(unique_ptr<LogicalOperator> child,
+                                                              idx_t table_index, idx_t column_index,
+                                                              std::int64_t start_microseconds,
+                                                              std::int64_t end_microseconds) {
+	if (!child) {
+		throw InternalException("read_om_series timestamp filter has no child operator");
+	}
+	// LogicalGet stores returned_types separately until its logical types are resolved.
+	child->ResolveOperatorTypes();
+	if (column_index >= child->types.size() || child->types[column_index] != LogicalType(LogicalTypeId::TIMESTAMP)) {
+		throw InternalException("read_om_series valid_time filter has no TIMESTAMP child binding");
+	}
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	const ColumnBinding binding{TableIndex(table_index), ProjectionIndex(column_index)};
+#else
+	const ColumnBinding binding(table_index, column_index);
+#endif
+	auto filter = make_uniq<LogicalFilter>();
+	filter->children.emplace_back(std::move(child));
+	auto column = make_uniq<BoundColumnRefExpression>(LogicalType(LogicalTypeId::TIMESTAMP), binding);
+	auto lower = make_uniq<BoundConstantExpression>(Value::TIMESTAMP(timestamp_t(start_microseconds)));
+	auto upper_column = make_uniq<BoundColumnRefExpression>(LogicalType(LogicalTypeId::TIMESTAMP), binding);
+	auto upper = make_uniq<BoundConstantExpression>(Value::TIMESTAMP(timestamp_t(end_microseconds)));
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	filter->expressions.emplace_back(BoundComparisonExpression::Create(
+	    ExpressionType::COMPARE_GREATERTHANOREQUALTO, std::move(column), std::move(lower)));
+	filter->expressions.emplace_back(BoundComparisonExpression::Create(
+	    ExpressionType::COMPARE_LESSTHANOREQUALTO, std::move(upper_column), std::move(upper)));
+#else
+	filter->expressions.emplace_back(make_uniq<BoundComparisonExpression>(
+	    ExpressionType::COMPARE_GREATERTHANOREQUALTO, std::move(column), std::move(lower)));
+	filter->expressions.emplace_back(make_uniq<BoundComparisonExpression>(
+	    ExpressionType::COMPARE_LESSTHANOREQUALTO, std::move(upper_column), std::move(upper)));
+#endif
+	return filter;
+}
 
 void AddTableFunctionOption(TableFunction &function, std::string name, LogicalType type) {
 #if DUCKOMO_DUCKDB_API_GENERATION >= 2
@@ -33,6 +224,30 @@ const Value *GetTableFunctionNamedArgument(const TableFunctionBindInput &input, 
 		if (StringUtil::CIEquals(TableFunctionColumnNameString(entry.first), name)) return &entry.second;
 	}
 	return nullptr;
+}
+
+void RemoveTableFunctionNamedArgument(TableFunctionNamedArguments &parameters, const std::string &name) {
+	for (auto entry = parameters.begin(); entry != parameters.end();) {
+		if (StringUtil::CIEquals(TableFunctionColumnNameString(entry->first), name)) {
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+			parameters.erase(entry);
+			entry = parameters.begin();
+#else
+			entry = parameters.erase(entry);
+#endif
+		} else {
+			++entry;
+		}
+	}
+}
+
+void SetTableFunctionNamedArgument(TableFunctionNamedArguments &parameters, std::string name, Value value) {
+	RemoveTableFunctionNamedArgument(parameters, name);
+#if DUCKOMO_DUCKDB_API_GENERATION >= 2
+	parameters.insert(Identifier(std::move(name)), std::move(value));
+#else
+	parameters.emplace(std::move(name), std::move(value));
+#endif
 }
 
 Value ValueWithLogicalType(Value value, const LogicalType &type) {

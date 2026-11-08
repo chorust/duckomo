@@ -263,7 +263,29 @@ void TestAsyncOnOffMatches(Connection &conn, AsyncTestFileSystem &fs, AsyncState
 	Require(state.active_concurrent_reads.load() == 0, "no reads survive query completion");
 	Require(ExtractRemoteIoUint(async_metrics, "inflight_budget_bytes") > 0, "inflight_budget_bytes is recorded and > 0");
 
-	std::cout << "  [PASS] Async on/off results match bit-for-bit (peak inflight="
+	// Force DuckDB's table-function input into SYNCHRONOUS execution while
+	// keeping duckomo_async_io enabled. This exercises the inline async task path.
+	Require(!conn.Query("SET debug_physical_table_scan_execution_strategy = 'SYNCHRONOUS'")->HasError(),
+	        "force synchronous table-scan execution");
+	fs.Reset();
+	auto inline_result = duckdb::duckomo_test::Rows(conn.Query(query));
+	Require(inline_result && !inline_result->HasError() && inline_result->RowCount() == 1,
+	        "inline async synchronous query succeeds");
+	Require(inline_result->GetValue(0, 0).ToString() == async_count &&
+	            inline_result->GetValue(1, 0).ToString() == async_humidity &&
+	            inline_result->GetValue(2, 0).ToString() == async_pressure &&
+	            inline_result->GetValue(3, 0).ToString() == async_temperature,
+	        "inline async synchronous results match ordinary async results");
+	Require(state.active_concurrent_reads.load() == 0,
+	        "inline async synchronous reads finish before returning");
+	const auto inline_metrics = duckdb::duckomo_test::Rows(
+	    conn.Query("SELECT metrics FROM duckomo_last_scan_metrics()"))->GetValue(0, 0).ToString();
+	Require(ExtractRemoteIoBool(inline_metrics, "async_applied"),
+	        "inline synchronous branch still exercises planned async reads");
+	Require(!conn.Query("RESET debug_physical_table_scan_execution_strategy")->HasError(),
+	        "restore table-scan execution strategy");
+
+	std::cout << "  [PASS] Async on/off and inline synchronous results match bit-for-bit (peak inflight="
 	          << ExtractRemoteIoUint(async_metrics, "inflight_peak")
 	          << ", budget=" << ExtractRemoteIoUint(async_metrics, "inflight_budget_bytes")
 	          << ", max concurrent=" << state.max_concurrent_reads.load() << ")" << std::endl;
@@ -368,7 +390,7 @@ void TestAsyncCancellationAndRecovery(Connection &conn, AsyncTestFileSystem &fs,
 void TestSingleVariablePrefetch(Connection &conn, AsyncTestFileSystem &fs, AsyncState &state) {
 	const std::string query = "SELECT count(*),sum(humidity) FROM read_om('https://duckomo-async/projection.om', "
 	    "dimensions := map(['humidity','pressure','temperature'], [['row','column'],['row','column'],['row','column']]))";
-	Require(!conn.Query("SET threads=4; SET duckomo_max_threads=1; SET duckomo_async_prefetch_batches=4; SET duckomo_async_io=false")->HasError(), "single worker settings");
+	Require(!conn.Query("SET threads=4; SET duckomo_max_threads=1; SET duckomo_async_prefetch_batches=4; SET duckomo_remote_max_request=2048; SET duckomo_async_io=false")->HasError(), "single worker settings");
 	auto baseline = duckdb::duckomo_test::Rows(conn.Query(query));
 	Require(baseline && !baseline->HasError(), "single variable baseline");
 	const auto expected = baseline->GetValue(1, 0).ToString();
@@ -393,7 +415,7 @@ void TestSingleVariablePrefetch(Connection &conn, AsyncTestFileSystem &fs, Async
 	Require(state.active_concurrent_reads == 0, "prefetch window drains on cancellation");
 	fs.Reset();
 	Require(!conn.Query(query)->HasError(), "prefetch window recovers after cancellation");
-	Require(!conn.Query("RESET duckomo_max_threads; RESET duckomo_async_prefetch_batches")->HasError(), "reset scan workers and window");
+	Require(!conn.Query("RESET duckomo_max_threads; RESET duckomo_async_prefetch_batches; RESET duckomo_remote_max_request")->HasError(), "reset scan workers and window");
 	std::cout << "  [PASS] Single-variable cross-batch window preserves results with concurrent reads="
 	          << state.max_concurrent_reads.load() << std::endl;
 }

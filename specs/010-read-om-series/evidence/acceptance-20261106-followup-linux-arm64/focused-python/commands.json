@@ -1,0 +1,80 @@
+{
+  "runs": [
+    {
+      "argv": [
+        "python3",
+        "scripts/generate-series-registry.py",
+        "--check"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "started_at_utc": "2026-11-06T06:49:12Z",
+      "ended_at_utc": "2026-11-06T06:49:12Z",
+      "exit_code": 0,
+      "log": "01.log"
+    },
+    {
+      "argv": [
+        "python3",
+        "-m",
+        "py_compile",
+        "scripts/generate-series-fixtures.py",
+        "scripts/validate-series.py",
+        "scripts/series_remote.py",
+        "scripts/version_matrix.py",
+        "test/tools/series_fixtures_test.py",
+        "test/tools/validate_series_test.py",
+        "test/tools/series_remote_test.py",
+        "test/tools/series_registry_test.py"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "started_at_utc": "2026-11-06T06:49:12Z",
+      "ended_at_utc": "2026-11-06T06:49:12Z",
+      "exit_code": 0,
+      "log": "02.log"
+    },
+    {
+      "argv": [
+        "python3",
+        "test/tools/series_fixtures_test.py"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "started_at_utc": "2026-11-06T06:49:12Z",
+      "ended_at_utc": "2026-11-06T06:49:12Z",
+      "exit_code": 0,
+      "log": "03.log"
+    },
+    {
+      "argv": [
+        "python3",
+        "test/tools/validate_series_test.py"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "started_at_utc": "2026-11-06T06:49:12Z",
+      "ended_at_utc": "2026-11-06T06:49:13Z",
+      "exit_code": 0,
+      "log": "04.log"
+    },
+    {
+      "argv": [
+        "python3",
+        "test/tools/series_remote_test.py"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "started_at_utc": "2026-11-06T06:49:13Z",
+      "ended_at_utc": "2026-11-06T06:49:24Z",
+      "exit_code": 0,
+      "log": "05.log"
+    },
+    {
+      "argv": [
+        "python3",
+        "test/tools/series_registry_test.py"
+      ],
+      "cwd": "/home/blizhan/repo/github/duckomo",
+      "started_at_utc": "2026-11-06T06:49:24Z",
+      "ended_at_utc": "2026-11-06T06:49:24Z",
+      "exit_code": 0,
+      "log": "06.log"
+    }
+  ]
+}

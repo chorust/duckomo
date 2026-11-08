@@ -2,16 +2,17 @@
 
 # DuckOMO 接口说明
 
-当前工作树包含本地扫描、维度语义、列裁剪、规则/投影/Gaussian 网格、多区域 polygon 读取、官方 HTTPFS 的 HTTP(S)/S3 范围读取、并行任务、opt-in 源位置、网格描述和 v4 扫描指标实现。v0.3.0 GitHub 包包含实验性 005 区域功能；当前源码的跨平台完整验收仍未完成，已验证范围见 [元数据修复记录](../specs/005-polygon-region-statistics/evidence/metadata-selection-fixes.md)；004 的四定义/五冻结对象、三版本/AArch64 H0–H9 已通过，含独立 AI 复现，见[当前最终验收](../specs/004-multi-grid-selection/evidence/current-20261021/report.md)。DuckDB 2.0 已退出当前支持范围。[README](../README.md) 提供用法示例；原有空间契约见 [002 SQL 契约](../specs/002-spatial-pushdown/contracts/sql-interface.md)，维度与远程约定见 [003 SQL 契约](../specs/003-dimensions-remote-parallel/contracts/sql-interface.md)，多网格接口见 [004 SQL 契约](../specs/004-multi-grid-selection/contracts/sql-interface.md)，区域接口见 [005 SQL 契约](../specs/005-polygon-region-statistics/contracts/sql-interface.md)。
+当前工作树包含本地扫描、维度语义、列裁剪、规则/投影/Gaussian 网格、多区域 polygon 读取、官方 HTTPFS 的 HTTP(S)/S3 范围读取、并行任务、opt-in 源位置、网格描述和 v4 扫描指标实现。开发源码还包含跨 chunk 时间入口 `read_om_series`；Feature 010 当前源码验收仅在声明范围内 PASS，见 [follow-up 验收报告](../specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/report.md)。v0.3.0 GitHub 包包含实验性 005 区域功能；当前源码的跨平台完整验收仍未完成，已验证范围见 [元数据修复记录](../specs/005-polygon-region-statistics/evidence/metadata-selection-fixes.md)；004 的四定义/五冻结对象、三版本/AArch64 H0–H9 已通过，含独立 AI 复现，见[当前最终验收](../specs/004-multi-grid-selection/evidence/current-20261021/report.md)。DuckDB 2.0.0 兼容性已验证，并随 v0.3.5-rc.1 预发布提供；这不代表各 Spec 门禁完成，也不把开发中的 series 纳入已发布功能身份。[README](../README.md) 提供用法示例；原有空间契约见 [002 SQL 契约](../specs/002-spatial-pushdown/contracts/sql-interface.md)，维度与远程约定见 [003 SQL 契约](../specs/003-dimensions-remote-parallel/contracts/sql-interface.md)，多网格接口见 [004 SQL 契约](../specs/004-multi-grid-selection/contracts/sql-interface.md)，区域接口见 [005 SQL 契约](../specs/005-polygon-region-statistics/contracts/sql-interface.md)。
 
 ## 支持范围
 
 | 项目 | 当前行为 |
 |---|---|
-| 输入 | 单个本地普通文件或 HTTP(S)/S3 URI；不接受目录、glob 或文件列表 |
+| 输入 | `read_om` 每次读取一个本地/HTTP(S)/S3 对象；开发版 `read_om_series` 接收一个精确变量目录前缀，按时间计算 chunk 键且不列目录。二者都不接受 glob 或文件列表 |
 | 格式 | OM v3；Float32；FPX_XOR2D / PFOR_DELTA2D_INT16 |
 | 布局 | 根数组、层级值数组及附属元数据；rank 1–8，不接受零长度轴 |
 | 多变量 | shape 和有序轴身份一致；不自动转置、广播或连接 |
+| 时间序列（开发版） | `read_om_series` 使用冻结 model 时间默认值或明确覆盖；显式维度/空间声明、闭区间 UTC 窗口、初次缺对象 skip/strict。Feature 010 当前源码验收仅在声明范围内 PASS：linux_arm64 / Linux AArch64，DuckDB v1.5.4、v1.5.5、v1.5.6、v2.0.0。真实 producer 样本仅为两个相邻 IFS025 `temperature_2m` 对象、一个点和一个边界窗口；其他十个注册模型仅有 provenance 与 synthetic runtime equivalence，N160 为合成。`read_om_series` 仅是开发源码功能身份。详见 [follow-up 报告](../specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/report.md) |
 | 缺测与精度 | NaN → SQL NULL；保留 ±Inf；值与官方 Float32 解码结果精确一致 |
 | 空间坐标 | 显式规则经纬度网格、68 个规则 domain；当前实现还包含 version=1 rotated/Lambert/stereographic/reduced-Gaussian 网格 |
 | 新网格验收 | 合成 native/SQL 回归、真实投影样本的全量坐标/值子比较已有；producer 轴点序、Gaussian 参考及四类完整验收/远程收益仍待补齐 |
@@ -24,9 +25,29 @@
 ## 什么时候用哪个入口
 
 - **读取文件或筛选一块经纬度范围：用 `read_om`。** 例如查看有哪些列、读取温度、按 `WHERE lat BETWEEN ... AND ...` 选矩形范围。它返回原始网格记录。
+- **跨多个 chunk 的单变量时间序列：用 `read_om_series`（开发版）。** 提供变量目录前缀、完整 `dimensions`、明确 `domain` 或 `grid` 与闭区间时间窗口；series 自动生成每个对象的时间轴。不要传单个 chunk 文件名或期待它发现多个变量。
+
 - **手里已有行政区、流域等 polygon：用 `read_om_regions`。** 它接收一组带 ID 的区域。省略 `method` 或写 `method := 'points'` 时返回面内及边界的原始网格点；小区域可能零样本。`method := 'nearest'` 为每个非空间轴组合选取区域代表点最近的单个网格源值，代表位置的值不是区域面积均值。两种方式都保留原值列，可按 `region_id` 分组。nearest 需要显式加载与 DuckDB 完全匹配的 spatial 扩展；points 保留原有区域依赖。
 
-最小切换示例（已有 `regions` WKB 列表及匹配的 `grid`/`domain` 配置）：
+最小时间序列示例（本地 fixture 前缀；model 只用于时间默认值，grid 仍显式给出）：
+
+```sql
+SELECT value AS temperature_2m, valid_time, lat, lon
+FROM read_om_series(
+  'build/series-fixtures/data/synthetic/temperature',
+  model := 'ecmwf_ifs',
+  chunk_time_length := 4, -- 独立覆盖注册的槽数；time_step 继承 1 小时注册值
+  dimensions := ['lead', 'point', 'time'],
+  grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,
+           'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+  spatial_axes := ['point'],
+  valid_times := [TIMESTAMP '1970-01-01 03:00:00',
+                  TIMESTAMP '1970-01-01 05:00:00']
+)
+ORDER BY valid_time, lat, lon;
+```
+
+最小区域读取示例（已有 `regions` WKB 列表及匹配的 `grid`/`domain` 配置）：
 
 ```sql
 -- 兼容的旧行为：返回多边形覆盖的原始点
@@ -74,6 +95,33 @@ read_om(path, dimensions := NULL, grid := NULL,
 
 v0.3.1 新增 SEAS5/EC46 的 O320 与 N160 产品 domain，名称及实际轴布局见 [季节预测 domain 指南](seasonal-domains.md)。它们沿用展平 Gaussian 布局，保留所有时间/成员/层次轴；domain 不推定单位或缺失的时间标签。v0.3.0 发布包不包含这次新增注册。查询示例与读取优化从 v0.3.1 起可用。
 
+## 跨 chunk 时间序列：`read_om_series`（开发版）
+
+`read_om` 的 `path` 始终是一个对象。series 接收一个变量目录前缀，例如生产布局的 `.../data/<model>/<variable>`，并只构造时间窗口所需的 `chunk_<signed-index>.om`。前缀可为本地路径或 HTTP/HTTPS/S3 URI；只去掉一个末尾斜线，不列目录、不 glob、不读取 `static/meta.json`，也不搜索窗口之外的对象。输入不能是 `.om` 文件、glob、带 query/fragment/userinfo 的 URI，或 `data_run/`、`data_spatial/` 选择器。
+
+```text
+read_om_series(directory_prefix,
+  model := VARCHAR,
+  chunk_time_length := BIGINT,
+  time_step := INTERVAL,
+  valid_times := [TIMESTAMP start_utc, TIMESTAMP end_utc],
+  -- 或者同时提供 start := TIMESTAMP, "end" := TIMESTAMP
+  dimensions := VARCHAR[] | MAP(VARCHAR, VARCHAR[]),
+  domain := VARCHAR,
+  -- 或者 grid := <read_om grid>, spatial_axes := VARCHAR[]
+  strict := BOOLEAN, include_source := BOOLEAN, variable := VARCHAR)
+```
+
+`valid_times` 是恰好两个有限 UTC 端点的闭区间，不是 `read_om.valid_times` 的逐槽坐标列表。`TIMESTAMP` 按 UTC 解释，`TIMESTAMPTZ` 转为 UTC；若使用命名端点，必须同时提供 `start` 和保留字引用的 `"end"`，且不能混用两种窗口形式。查询按数学 floor 选择首尾 chunk，再对每个子对象应用精确的 `start <= valid_time AND valid_time <= end`。默认最大 4096 个候选 chunk，含缺失对象；过大窗口应拆分。SQL 输出不保证顺序。
+
+`model` 使用区分大小写的冻结 temporal registry，仅提供 `chunk_time_length` 和 `time_step` 默认值，不选择变量、domain 或 grid。两种显式覆盖独立生效；未知或省略 model 时必须同时提供两个。空间声明仍是必需的：传完整 `domain`，或传 `grid` 并同时给 `spatial_axes`。`dimensions` 须完整描述所选数组的有序轴，且每个所选数组恰好含一个 `time`；系列入口自动生成该轴，因此任何 `axes` 参数都会被拒绝。非时间轴名如 `lead` 仍是原始维度，不自动产生 `lead_time`。
+
+输出沿用 `read_om` 命名：根 Float32 数组列名为 `value`，可在 SQL 投影中写 `value AS variable_name`；之后是 `lat`、`lon`、`valid_time`，可选的 `om_source` 在末尾。所有存在的候选对象必须具有一致的所选数组、完整 shape/轴顺序和空间身份；物理压缩块形状可以不同，不做隐式 cast、广播、重排、连接或缺列填充。结果为 `UNION ALL`，保留重复行与 NULL；没有 `ORDER BY` 时不能依赖对象或时间顺序。
+
+`strict` 默认为 false，只跳过初次打开时被结构化状态确认不存在的本地文件或远程对象（例如 HTTP 404）。403、5xx、无结构状态的 transport 错误、损坏、schema/time metadata 冲突以及成功 bind 后的对象移除/替换都报错。`strict := true` 令任何缺失候选失败，即使外层 `LIMIT` 或过滤器不消费该分支。缺失 chunk 不补 NULL 行；存在 chunk 中的 NaN 转换成 SQL NULL，但仍保留原来的行。`strict := NULL` 无效。
+
+Feature 010 当前源码验收仅在声明范围内 **PASS**：Linux AArch64 (`linux_arm64`)，DuckDB pinned pairs v1.5.4、v1.5.5、v1.5.6、v2.0.0。真实 producer 数据仅覆盖两个相邻 IFS025 `temperature_2m` 对象、一个点和一个边界窗口；其余十个注册模型只有 provenance 与 synthetic runtime equivalence，N160 为合成数据。受控故障证明错误不会被静默跳过；official HTTPFS 下 HTTP(S) 403/412 表现为 unknown-status `[transport]`。`corrupt` fixture 返回 HTTP 200 和 `not-an-om-object`，在 range-protocol 阶段失败，没有验证 OM metadata/decode 损坏。当前证据见 [follow-up 报告](../specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/report.md)；2026-08-03 和首次 2026-11-06 报告为历史记录。Feature 008 未 PASS；SC-006 仍 relaxed / 不会达到原 ≥20% 门槛，T042/T043 保持未勾选。该开发源码结果不扩展平台或生产网格支持声明。
+
 ## 输出与查询语义
 
 根数组输出 `value FLOAT`；层级值列去掉内部路径的前导 `/`，按内部规范路径排序。嵌套列如 `surface/temperature` 需用双引号引用。附属元数据不生成值列。完整命名规则见基础读取契约。
@@ -108,7 +156,7 @@ HTTP(S)/S3 需要匹配 DuckDB 版本及平台的官方 `httpfs`；已安装且�
 
 006 nearest sampling 已在 `read_om_regions` 实现，points 默认兼容。006 已完成声明范围内的 N0–N7 验收：Linux AArch64、DuckDB v1.5.4/v1.5.5/v1.5.6、合成规则球面网格与固定 NCEP GFS025；真实输入仅私有留存、不公开分发，N7由独立用户执行。 [验收报告](../specs/006-region-nearest-sampling/evidence/final.md)。
 
-验收平台为 Linux AArch64，Linux x86_64 验证暂缓。既有 002 保持原始规则网格验收范围。004 四定义/五冻结对象、v1.5.4/v1.5.5/v1.5.6 的 H0–H9 及独立 AI 验收已完成，见[最终报告](../specs/004-multi-grid-selection/evidence/current-20261021/report.md)：45 对 HTTP/验证 TLS 的 HTTPS/签名 S3 全量与选择结果一致，三项成本严格下降，四定义在冻结范围登记 remote-benefit-validated。参考为 pinned Open-Meteo producer，不声明原生 GRIB 等价；真实 N160/N320/N 区域与 2.0 按批准范围排除，合成回归保留。H5 不覆盖上游 HTTPFS heap/cache；S3 服务权限转换为专用代理策略，并非上游 IAM 修改。68 个规则 domain 不因注册或这些样本通过而获得全部对象验收。逐定义边界见[网格证据表](grid-domains.md)。
+验收平台为 Linux AArch64，Linux x86_64 验证暂缓。既有 002 保持原始规则网格验收范围。004 四定义/五冻结对象、v1.5.4/v1.5.5/v1.5.6 的 H0–H9 及独立 AI 验收已完成，见[最终报告](../specs/004-multi-grid-selection/evidence/current-20261021/report.md)：45 对 HTTP/验证 TLS 的 HTTPS/签名 S3 全量与选择结果一致，三项成本严格下降，四定义在冻结范围登记 remote-benefit-validated。参考为 pinned Open-Meteo producer，不声明原生 GRIB 等价；在 004 的批准验收范围内，真实 N160/N320/N 区域及 DuckDB 2.0 未列为该项 gate 输入；合成回归保留。H5 不覆盖上游 HTTPFS heap/cache；S3 服务权限转换为专用代理策略，并非上游 IAM 修改。68 个规则 domain 不因注册或这些样本通过而获得全部对象验收。逐定义边界见[网格证据表](grid-domains.md)。
 
 复现步骤见 [空间查询指南](../specs/002-spatial-pushdown/quickstart.md)，已记录结果见 [最终验收](../specs/002-spatial-pushdown/evidence/final.md)。未来能力见 [Roadmap](roadmap.md)。
 

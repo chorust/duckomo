@@ -16,12 +16,13 @@ duckomo 是一个 DuckDB C++ 扩展，将 [Open-Meteo OM](https://github.com/ope
 - **列裁剪与空间筛选**：只读取输出和过滤依赖的值变量；安全的经纬度、时间等条件可缩小候选范围，完整 `WHERE` 仍由 DuckDB 执行。
 - **多种网格 mapping**：规则经纬度、[68 个规则 domain](docs/regular-domains.md)、旋转经纬度、Lambert、stereographic 和 reduced Gaussian。
 - **多变量与语义轴**：按有序轴身份对齐变量，支持 `valid_time`、`level`、`lead_time`、`member`、`run`，不自动转置、广播或连接。
+- **跨 chunk 时间序列（开发版）**：`read_om_series` 从一个显式变量目录前缀组合 chunk，并自动生成 UTC `valid_time`。Feature 010 当前源码验收仅在声明范围内 PASS：Linux AArch64 (`linux_arm64`) 与四个 pinned DuckDB pair；真实 producer 样本和其余 synthetic-only 模型的边界见下方当前报告。
 - **并行与可观测性**：DuckDB 调度并行扫描；提供线程上限、扫描指标、可选 `om_source` 源位置及 `om_grid_info` 网格描述。
 - **Polygon 区域读取（实验性）**：`read_om_regions` 默认保留原始面内点（`method := 'points'`）；`method := 'nearest'` 可按区域代表点为每个非空间轴组合选取一个最近网格源值。nearest 返回代表点采样值，不是面积均值；006 已完成声明范围内的 N0–N7 验收：Linux AArch64、DuckDB v1.5.4/v1.5.5/v1.5.6、合成规则球面网格与固定 NCEP GFS025；真实输入仅私有留存、不公开分发，N7由独立用户执行。 [验收报告](specs/006-region-nearest-sampling/evidence/final.md)。
 
-当前每次读取**单个对象**，不接受目录、glob 或文件列表。`read_om_regions` 的 points/nearest 都需要显式加载匹配版本的 DuckDB spatial；普通 `read_om` 不需要。区域 WKB 的 `grid_lonlat` 参考由调用者负责，points 边界按平面 `covers` 处理，统计为 SQL 等权聚合。nearest 的顶层 `lat/lon` 是面内目标，实际源坐标、距离、逐变量状态位于 `sampling`，COUNT(*)计结果行。006 已完成声明范围内的 N0–N7 验收：Linux AArch64、DuckDB v1.5.4/v1.5.5/v1.5.6、合成规则球面网格与固定 NCEP GFS025；真实输入仅私有留存、不公开分发，N7由独立用户执行。 [验收报告](specs/006-region-nearest-sampling/evidence/final.md)。
+`read_om` 每次仍读取**单个对象**，不接受目录、glob 或文件列表。开发版 `read_om_series` 另接受一个精确的 chunk 目录前缀，不执行目录列表或通配符发现；它尚未包含在已发布扩展包中。当前源码验收报告见 [Feature 010 follow-up](specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/report.md)；2026-08-03 记录和首次 2026-11-06 报告均为历史证据。`read_om_regions` 的 points/nearest 都需要显式加载匹配版本的 DuckDB spatial；普通 `read_om` 不需要。区域 WKB 的 `grid_lonlat` 参考由调用者负责，points 边界按平面 `covers` 处理，统计为 SQL 等权聚合。nearest 的顶层 `lat/lon` 是面内目标，实际源坐标、距离、逐变量状态位于 `sampling`，COUNT(*)计结果行。006 已完成声明范围内的 N0–N7 验收：Linux AArch64、DuckDB v1.5.4/v1.5.5/v1.5.6、合成规则球面网格与固定 NCEP GFS025；真实输入仅私有留存、不公开分发，N7由独立用户执行。 [验收报告](specs/006-region-nearest-sampling/evidence/final.md)。
 
-本仓库 tag release 已配置 DuckDB v1.5.4、v1.5.5、v1.5.6、v2.0.0 × 四平台，共 16 个开发产物。DuckDB 2.0.0 已验证兼容，通过 [v0.3.5-rc.1 预发布](https://github.com/chorust/duckomo/releases/tag/v0.3.5-rc.1) 提供四平台产物；异步 I/O 仍为实验功能，无稳定加速承诺。2026-10-22 [最终验收](specs/004-multi-grid-selection/evidence/current-20261021/report.md)：`gem_rdps_10km`、`gem_regional`、`aladin_central_europe_2km`、`ecmwf_ifs` 四定义的五个冻结对象在 Linux AArch64 / DuckDB v1.5.4、v1.5.5、v1.5.6 通过 H0–H9；45 对 HTTP/HTTPS/签名 S3 完整远程结果与三项严格成本下降通过，范围内为 `remote-benefit-validated`。H9 为未参与产品实现的独立 AI 验证，非人工；构建为变更 TU 重编译/relink。坐标遵循 [pinned Open-Meteo producer](specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md)，不宣称原生 GRIB 等价。真实 N160/N320/N 区域按[批准范围](specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md)跳过，合成回归保留；不外推全部 68 个规则 domain、其他对象/平台或 DuckDB 2.0。Phase 8 跨 chunk 入口仍是待评审提案。
+本仓库 tag release 已配置 DuckDB v1.5.4、v1.5.5、v1.5.6、v2.0.0 × 四平台，共 16 个开发产物。DuckDB 2.0.0 已验证兼容，通过 [v0.3.5-rc.1 预发布](https://github.com/chorust/duckomo/releases/tag/v0.3.5-rc.1) 提供四平台产物；异步 I/O 仍为实验功能，无稳定加速承诺。2026-10-22 [最终验收](specs/004-multi-grid-selection/evidence/current-20261021/report.md)：`gem_rdps_10km`、`gem_regional`、`aladin_central_europe_2km`、`ecmwf_ifs` 四定义的五个冻结对象在 Linux AArch64 / DuckDB v1.5.4、v1.5.5、v1.5.6 通过 H0–H9；45 对 HTTP/HTTPS/签名 S3 完整远程结果与三项严格成本下降通过，范围内为 `remote-benefit-validated`。H9 为未参与产品实现的独立 AI 验证，非人工；构建为变更 TU 重编译/relink。坐标遵循 [pinned Open-Meteo producer](specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md)，不宣称原生 GRIB 等价。真实 N160/N320/N 区域按[批准范围](specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md)跳过，合成回归保留；不外推全部 68 个规则 domain 或其他对象/平台，也不把这项 004 验收结论外推至 DuckDB 2.0。Feature 010 当前源码验收仅在声明范围内 **PASS**：Linux AArch64 (`linux_arm64`)，DuckDB pinned pairs v1.5.4、v1.5.5、v1.5.6、v2.0.0。真实 producer 数据仅覆盖两个相邻的 IFS025 `temperature_2m` 对象、一个点和一个边界窗口；其余十个已登记模型只有 provenance 与 synthetic runtime equivalence，N160 为合成数据。受控故障验证表明错误不会被静默跳过；official HTTPFS 下 HTTP(S) 403/412 表现为 unknown-status `[transport]`，`corrupt` fixture 返回 HTTP 200 和 `not-an-om-object`，在 range-protocol 阶段失败，不证明 OM metadata/decode 损坏处理。当前证据见 [follow-up 报告](specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/report.md)；2026-08-03 和首次 2026-11-06 证据均为历史记录。`read_om_series` 仅存在于开发源码，不是已发布功能身份。Feature 008 **未 PASS**；SC-006 仍为 relaxed / 不会达到原 ≥20% 门槛，T042/T043 保持未勾选；不据此扩展平台或生产网格支持声明。
 
 ## Install
 
@@ -39,7 +40,7 @@ GitHub tag 开发发行矩阵配置为 **DuckDB v1.5.4 / v1.5.5 / v1.5.6 / v2.0.
 GitHub 包未签名，只加载可信来源。用 `duckdb -unsigned` 启动后安装。Release 资产文件名带有版本和平台，直接把 URL 传给 `INSTALL` 时 DuckDB 会按第一个 `.` 截断扩展名（存成 `duckomo-v0.duckdb_extension`），导致后续 `LOAD duckomo` 找不到文件。因此先下载 `.duckdb_extension.gz` 并解压为标准文件名，再本地安装：
 
 ```bash
-DUCKOMO_VERSION=v0.3.4                                                    # DuckOMO 版本
+DUCKOMO_VERSION=v0.3.4   # DuckDB v1.5.x 用 v0.3.4；DuckDB v2.0.0 须改为 v0.3.5-rc.1（v0.3.4 无 2.0 包，下载会 404）
 DUCKDB_VERSION=$(duckdb -list -noheader :memory: "SELECT version();")      # 从本机 DuckDB 获取
 PLATFORM=$(duckdb -list -noheader :memory: "PRAGMA platform;")            # 从本机 DuckDB 获取
 
@@ -47,7 +48,7 @@ curl -sfL "https://github.com/chorust/duckomo/releases/download/${DUCKOMO_VERSIO
 ```
 
 ```sql
-INSTALL './duckomo.duckdb_extension';
+INSTALL './duckomo.duckdb_extension';  -- 本机已装过旧版时改用 FORCE INSTALL，否则 INSTALL 会跳过并继续加载旧文件
 LOAD duckomo;
 ```
 
@@ -112,7 +113,7 @@ ORDER BY lat, lon;
 
 ```sql
 SET VARIABLE wave_file =
-  's3://openmeteo/data_spatial/ncep_gfswave025/2026/10/01/0000Z/2026-10-01T0000.om';
+  's3://openmeteo/data_spatial/ncep_gfswave025/2026/10/29/0000Z/2026-10-29T0000.om';
 
 SELECT wave_height, lat, lon, valid_time
 FROM read_om(getvariable('wave_file'), domain := 'ncep_gfswave025')
@@ -121,7 +122,13 @@ WHERE lat BETWEEN 30 AND 40
 LIMIT 10;
 ```
 
-带时间元数据的文件会自动输出 UTC `valid_time`，可直接用于时间筛选。
+带时间元数据的文件会自动输出 UTC `valid_time`，可直接用于时间筛选；`valid_time` 为 UTC，换算北京时间需自行加 8 小时。
+
+公共桶只保留近期起报，示例中的日期很快会过期并返回 HTTP 404。可用 S3 列表接口找最近的对象键：
+
+```bash
+curl -s 'https://openmeteo.s3.us-west-2.amazonaws.com/?list-type=2&prefix=data_spatial/ncep_gfswave025/2026/10/&delimiter=/'
+```
 
 | 目录 | 常见布局 | 经纬度查询 |
 |---|---|---|
@@ -129,7 +136,43 @@ LIMIT 10;
 | `data_run/` | 一次起报，通常 `[lat, lon, time]` | 通常只需 `domain` |
 | `data/` | 滚动序列或静态数据，样本常缺少轴元数据 | `domain` + 完整 `dimensions` |
 
+`om_grid_info` 的第一个参数是**对象路径**，不是域名，`domain` 另用命名参数传入；它只读元数据，可用来查网格步长：
+
+```sql
+SELECT * FROM om_grid_info(
+  's3://openmeteo/data_run/ncep_gfs013/2026/10/29/0000Z/temperature_2m.om',
+  domain := 'ncep_gfs013');
+-- 定义 JSON 中 dlat/dlon 即网格步长；精确经纬度（如 lat = 37.45）通常不会恰好落在格点上，应使用 BETWEEN 窗口
+```
+
 `dimensions` 支持共享轴列表或逐变量 MAP；目录布局与更多示例见 [规则网格指南](docs/regular-domains.md)。v0.3.1 的 `read_om`、`read_om_regions`、`om_grid_info` 均支持 `variable := '列名'`，在绑定时仅保留该值数组，适合变量很多的远程文件。嵌套列按编码路径选择，如 `weird%2Fname%25/value`；维度 MAP 只声明所选数组。默认扫描复用绑定元数据；如需全树重读检查，设置 `duckomo_revalidate_metadata=true`，会增加读取成本。
+
+### 跨 chunk 时间序列（开发版）
+
+开发版 `read_om_series` 用于一个变量目录前缀下按规则编号的 `chunk_<signed-index>.om` 文件。它计算闭区间 `[start,end]` 的候选 chunk，并为每个对象自动生成 `axes.time`。以下本地例子使用生成的合成 fixture；需先按 Feature 010 quickstart 生成 `build/series-fixtures/`：
+
+```sql
+SELECT value AS temperature, valid_time, lat, lon
+FROM read_om_series(
+  'build/series-fixtures/data/synthetic/temperature',
+  model := 'ecmwf_ifs',
+  chunk_time_length := 4, -- 覆盖注册长度；省略 time_step 时继承注册的 1 小时
+  dimensions := ['lead', 'point', 'time'],
+  grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,
+           'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+  spatial_axes := ['point'],
+  valid_times := [TIMESTAMP '1970-01-01 03:00:00',
+                  TIMESTAMP '1970-01-01 05:00:00']
+)
+WHERE lat BETWEEN 10 AND 11
+ORDER BY valid_time, lat, lon;
+```
+
+`model` 只提供时间默认值，不会推断 `domain`、网格或变量。显式覆盖 `chunk_time_length` 和 `time_step` 时每个字段独立生效；未登记或省略 model 时必须同时给出两个时间参数。目录前缀只对应一个变量；不接受 chunk 文件名、glob、文件列表或 `data_run/`、`data_spatial/` 选择器。`dimensions` 必须完整声明所选数组轴，并包含且只包含一个 `time` 轴；上例显式 `grid` 因此同时给出 `spatial_axes`，也可改用一个明确 `domain`。
+
+根数组的输出列名仍为 `value`，SQL 可用 `value AS temperature` 另取结果列名。`valid_times` 的两个有限 UTC 端点均包含；也可同时使用 `start := TIMESTAMP ..., "end" := TIMESTAMP ...`。不要传 `axes`。省略 `strict` 或写 `strict := false` 时，只跳过确认在初次打开时不存在的对象；`strict := true` 要求所有候选对象存在。缺少 chunk 不产生行，现存 OM 槽中的 NaN 保留一行并输出 SQL NULL。查询不去重、不做时间连接或排序；需要固定顺序时使用 `ORDER BY`。跨变量自动对齐、日期/运行发现、插值及相邻对象物理读取合并不在此入口内。
+
+Feature 010 当前源码验收仅在声明范围内 **PASS**：Linux AArch64 (`linux_arm64`)，DuckDB pinned pairs v1.5.4、v1.5.5、v1.5.6、v2.0.0。真实 producer 数据仅覆盖两个相邻的 IFS025 `temperature_2m` 对象、一个点和一个边界窗口；其余十个已登记模型只有 provenance 与 synthetic runtime equivalence，N160 为合成数据。受控故障验证表明错误不会被静默跳过；official HTTPFS 下 HTTP(S) 403/412 表现为 unknown-status `[transport]`，`corrupt` fixture 返回 HTTP 200 和 `not-an-om-object`，在 range-protocol 阶段失败，不证明 OM metadata/decode 损坏处理。当前证据见 [follow-up 报告](specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/report.md)；2026-08-03 和首次 2026-11-06 证据均为历史记录。`read_om_series` 仅存在于开发源码，不是已发布功能身份。Feature 008 **未 PASS**；SC-006 仍为 relaxed / 不会达到原 ≥20% 门槛，T042/T043 保持未勾选；不据此扩展平台或生产网格支持声明。参见上述当前报告。
 
 ### 按多边形筛选、聚合或取最近代表值
 
@@ -155,7 +198,7 @@ PY
 该文件声明 CRS84（x=经度、y=纬度），下例据此传入 `grid_lonlat`。边界版本为 GADM 4.1，不代表实时行政区划；不再使用未核实坐标参考的 DataV 绘图边界。
 
 ```sql
--- 先按 Install 章节安装 v0.3.4 的匹配包，并以 duckdb -unsigned 启动。
+-- 先按 Install 章节安装与本机 DuckDB 匹配的包，并以 duckdb -unsigned 启动。
 LOAD duckomo;
 INSTALL httpfs; LOAD httpfs;
 INSTALL spatial; LOAD spatial; -- 与当前 DuckDB 匹配；首次安装需要联网
@@ -174,7 +217,7 @@ SET VARIABLE qinghai_regions = (
 SELECT region_id, count(*) AS grid_points,
        round(avg(temperature_80m), 3) AS mean_celsius
 FROM read_om_regions(
-    's3://openmeteo/data_spatial/ncep_gfs025/2026/10/14/0000Z/2026-10-14T0000.om',
+    's3://openmeteo/data_spatial/ncep_gfs025/2026/10/29/0000Z/2026-10-29T0000.om',
     domain := 'ncep_gfs025', variable := 'temperature_80m',
     regions := getvariable('qinghai_regions'),
     region_crs := 'grid_lonlat')

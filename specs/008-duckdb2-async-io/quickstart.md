@@ -56,7 +56,7 @@ python3 scripts/benchmark-remote-io.py <同上 runtime/httpfs/run-env/object 参
 ```
 
 期望：
-- `async=on` 时 `remote_io.inflight_peak > 1`，耗时比 `async=off` 至少低 20%，结果一致。
+- `async=on` 时结果与 `async=off`（merge-on）一致；原「耗时至少低 20% / 全扫 inflight_peak > 1」目标已 **relaxed（won’t meet ≥20%）**——默认 async 实测约 ~0%，全量顺序扫描 peak in-flight 可为 1；见 `evidence/008/performance-gates/report.md`。多不相交 range 场景仍可出现 inflight_peak > 1（native 测试覆盖）。
 - `SET memory_limit='256MB'` 下全扫不 OOM，峰值 RSS ≤ 关闭异步时 1.5 倍。
 - 取消：`official_httpfs_test` 与 `validate-official-httpfs.py` 的取消/恢复用例在 `async=on` 下通过，取消后 1 秒内结束，指标 `cancelled`，无残留内存账本。
 - 1.5.x 上同一命令 `async_applied=false`，结果一致。

@@ -1,0 +1,255 @@
+# name: test/sql/read_om_series_pushdown.test
+# description: Verify read_om_series inherits ordinary read_om predicates, projections, identity and metrics
+# group: [duckomo]
+
+require skip_reload
+
+require allow_unsigned_extensions
+
+statement ok
+LOAD '__BUILD_DIRECTORY__/extension/duckomo/duckomo.duckdb_extension';
+
+# A multi-child reduced-Gaussian COUNT must use row cardinality without reading
+# value chunks. The fixture is synthetic and makes no producer claim.
+query I
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/reduced-gaussian-n160/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour',
+    dimensions := ['lead','point','time'], domain := 'n160',
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 04:00:00']);
+----
+691730
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE metrics LIKE '%"value_totals":{"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0%';
+----
+2
+
+# Combined spatial, temporal, value and residual predicates match the independent
+# ordinary-read union, including NULL filtering across the chunk boundary.
+query I
+WITH actual AS (
+    SELECT value, lat, lon, valid_time
+    FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+        chunk_time_length := 4, time_step := INTERVAL '1 hour',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        valid_times := [TIMESTAMP '1970-01-01 03:00:00', TIMESTAMP '1970-01-01 05:00:00'])
+    WHERE lat BETWEEN 10.0 AND 11.0 AND lon BETWEEN 101.0 AND 102.0
+      AND valid_time BETWEEN TIMESTAMP '1970-01-01 03:00:00' AND TIMESTAMP '1970-01-01 05:00:00'
+      AND value >= 1000 AND value < 1300 AND value IS NOT NULL
+), expected_unfiltered AS (
+    SELECT * FROM read_om(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature/chunk_0000.om',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        axes := {'time': {'axis':'time','start':TIMESTAMP '1970-01-01 00:00:00','step':INTERVAL '1 hour'}})
+    UNION ALL
+    SELECT * FROM read_om(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature/chunk_0001.om',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'],
+        axes := {'time': {'axis':'time','start':TIMESTAMP '1970-01-01 04:00:00','step':INTERVAL '1 hour'}})
+), expected AS (
+    SELECT value, lat, lon, valid_time FROM expected_unfiltered
+    WHERE lat BETWEEN 10.0 AND 11.0 AND lon BETWEEN 101.0 AND 102.0
+      AND valid_time BETWEEN TIMESTAMP '1970-01-01 03:00:00' AND TIMESTAMP '1970-01-01 05:00:00'
+      AND value >= 1000 AND value < 1300 AND value IS NOT NULL
+)
+SELECT (SELECT count(*) FROM (SELECT * FROM actual EXCEPT ALL SELECT * FROM expected)) +
+       (SELECT count(*) FROM (SELECT * FROM expected EXCEPT ALL SELECT * FROM actual));
+----
+0
+
+# Source identity remains the identity of each original object and row when the
+# series operator composes child scans.
+query I
+WITH actual AS (
+    SELECT * FROM read_om_series(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+        chunk_time_length := 4, time_step := INTERVAL '1 hour',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'], include_source := true,
+        valid_times := [TIMESTAMP '1970-01-01 03:00:00', TIMESTAMP '1970-01-01 05:00:00'])
+), expected AS (
+    SELECT * FROM read_om(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature/chunk_0000.om',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'], include_source := true,
+        axes := {'time': {'axis':'time','start':TIMESTAMP '1970-01-01 00:00:00','step':INTERVAL '1 hour'}})
+    UNION ALL
+    SELECT * FROM read_om(
+        '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature/chunk_0001.om',
+        dimensions := ['lead','point','time'],
+        grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+        spatial_axes := ['point'], include_source := true,
+        axes := {'time': {'axis':'time','start':TIMESTAMP '1970-01-01 04:00:00','step':INTERVAL '1 hour'}})
+), expected_window AS (
+    SELECT * FROM expected WHERE valid_time BETWEEN TIMESTAMP '1970-01-01 03:00:00' AND TIMESTAMP '1970-01-01 05:00:00'
+)
+SELECT (SELECT count(*) FROM (SELECT * FROM actual EXCEPT ALL SELECT * FROM expected_window)) +
+       (SELECT count(*) FROM (SELECT * FROM expected_window EXCEPT ALL SELECT * FROM actual));
+----
+0
+
+# Projection keeps the inherited names and types without requiring value output.
+query TTTTTT
+DESCRIBE SELECT valid_time, lon FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 08:00:00']);
+----
+valid_time	TIMESTAMP	YES	NULL	NULL	NULL
+lon	DOUBLE	YES	NULL	NULL	NULL
+
+# A full-consuming value-free COUNT executes all three child leaves with unique
+# scan identities and no value index/data requests or decodes.
+query I
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 08:00:00']);
+----
+54
+
+query III
+SELECT count(*), count(DISTINCT query_id), count(DISTINCT scan_id)
+FROM duckomo_last_scan_metrics();
+----
+3	1	3
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE metrics LIKE '%"value_totals":{"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0%';
+----
+3
+
+# A value-dependent COUNT is not value-free: the predicate needs each child’s
+# value index/data path even though the projection contains only COUNT(*).
+query I
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 08:00:00'])
+WHERE value > 1000;
+----
+28
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics()
+WHERE metrics NOT LIKE '%"value_totals":{"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0%';
+----
+3
+
+# Result rows remain identical under the existing 1/2/4 worker controls.
+statement ok
+SET threads=4;
+
+statement ok
+SET duckomo_max_threads=1;
+
+statement ok
+CREATE TEMP TABLE series_workers_1 AS SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 08:00:00']);
+
+statement ok
+SET duckomo_max_threads=2;
+
+statement ok
+CREATE TEMP TABLE series_workers_2 AS SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 08:00:00']);
+
+statement ok
+SET duckomo_max_threads=4;
+
+statement ok
+CREATE TEMP TABLE series_workers_4 AS SELECT * FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 08:00:00']);
+
+query I
+SELECT count(*) FROM (
+    (SELECT * FROM series_workers_1 EXCEPT ALL SELECT * FROM series_workers_2)
+    UNION ALL
+    (SELECT * FROM series_workers_2 EXCEPT ALL SELECT * FROM series_workers_1)
+);
+----
+0
+
+query I
+SELECT count(*) FROM (
+    (SELECT * FROM series_workers_1 EXCEPT ALL SELECT * FROM series_workers_4)
+    UNION ALL
+    (SELECT * FROM series_workers_4 EXCEPT ALL SELECT * FROM series_workers_1)
+);
+----
+0
+
+query I
+SELECT count(*) FROM series_workers_4;
+----
+54
+
+# An impossible residual predicate is optimized away. Existing bind-time records
+# remain, but scan_complete stays false and no scan-phase or value I/O is claimed.
+statement ok
+CREATE TEMP TABLE series_metrics_before AS SELECT query_id, scan_id FROM duckomo_last_scan_metrics();
+
+query I
+SELECT count(*) FROM read_om_series(
+    '__WORKING_DIRECTORY__/build/series-fixtures/data/synthetic/temperature',
+    chunk_time_length := 4, time_step := INTERVAL '1 hour', dimensions := ['lead','point','time'],
+    grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+    spatial_axes := ['point'],
+    valid_times := [TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '1970-01-01 08:00:00'])
+WHERE FALSE;
+----
+0
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics() current
+WHERE NOT EXISTS (
+    SELECT 1 FROM series_metrics_before previous
+    WHERE previous.query_id = current.query_id AND previous.scan_id = current.scan_id
+);
+----
+3
+
+query I
+SELECT count(*) FROM duckomo_last_scan_metrics() current
+WHERE NOT EXISTS (
+    SELECT 1 FROM series_metrics_before previous
+    WHERE previous.query_id = current.query_id AND previous.scan_id = current.scan_id
+)
+  AND metrics LIKE '%"scan_complete":false%'
+  AND metrics LIKE '%"scan_requests":0%'
+  AND metrics LIKE '%"value_totals":{"index_bytes":0,"index_requests":0,"data_bytes":0,"data_requests":0,"decoded_chunks":0%';
+----
+3
+
+statement ok
+SET duckomo_max_threads=0;

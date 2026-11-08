@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "run_id": "acceptance-20261106-linux-arm64",
+  "feature": "010-read-om-series",
+  "started_at_utc": "2026-11-06T04:28:32Z",
+  "platform": "linux_arm64",
+  "overall_status": "blocked",
+  "overall_status_reason": "SC-004 all-entry runtime equivalence, S3, S4, and full S7 remain incomplete; Feature 010 is not PASS.",
+  "extension_source_sha256": "e9194d1a0e0c16341e8bb1e6e8a953ee6e01c64ee39f2a0835b22d69e7f4c7b0",
+  "fixture_manifest_sha256": "42fbc86a033736039d0cae8a540b9b21da1a6f29e573760afb9c84e4e096a8ab",
+  "s2_sql_source_sha256": "c88be0cc9982cb1df11bd7da3d10a02b3ae4f6e87fb535b2be5b48c15f153fee",
+  "s2_case_shape": {
+    "preflight_no_candidate_access": 38,
+    "metadata_expected_candidate_access": 8,
+    "per_pair_passed": 46,
+    "per_pair_failed": 0,
+    "per_pair_blocked": 0
+  },
+  "common_commits": {
+    "om_c": "d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+    "extension_ci_tools": "b777c70d30942cca5bef62d6d4fa23a13362f398"
+  },
+  "pairs": [
+    {
+      "version": "v1.5.4",
+      "duckdb_commit": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+      "build_id": "b5202780d0553decc2ba30ce3873d73f056e8a71dbfa68d5fa8ed1f7f870ffb9",
+      "duckomo_sha256": "4281c1ad813caf9210b7890b749fb571bb42a6a07d5a5fa061f24f8590fba71d",
+      "official_cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+      "official_httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+      "gates": {"S0": "passed", "S1": "passed", "S2": "passed", "S3": "blocked", "S4": "blocked", "S5": "passed", "S6": "passed", "S7": "blocked"},
+      "native_series_tests": {"series_plan_test": "passed", "series_binding_test": "passed", "series_error_test": "passed", "series_schema_test": "passed"},
+      "evidence_dir": "v1.5.4/"
+    },
+    {
+      "version": "v1.5.5",
+      "duckdb_commit": "d8cdaa33fda8df955cc76ef58a280f68f4cd43fa",
+      "build_id": "4bedfc80a9454f5ea60cbaf9ce3b07c04f4857003d4883cd530aa4eae5eb8acf",
+      "duckomo_sha256": "0e281b116cbeb0a34fcf40c1b9ef6591a7ecc89943b8af3d94203630d5457110",
+      "official_cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+      "official_httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+      "gates": {"S0": "passed", "S1": "passed", "S2": "passed", "S3": "blocked", "S4": "blocked", "S5": "passed", "S6": "passed", "S7": "blocked"},
+      "native_series_tests": {"series_plan_test": "passed", "series_binding_test": "passed", "series_error_test": "passed", "series_schema_test": "passed"},
+      "evidence_dir": "v1.5.5/"
+    },
+    {
+      "version": "v1.5.6",
+      "duckdb_commit": "069cc9f9b5be802405797faecc284961b07c70ef",
+      "build_id": "d178c67316b6541d69520c8958cd44ea799089dac0b1cd1d0a0a3604b55e0ac7",
+      "duckomo_sha256": "343fb3eb3334edd9b5ab7928f4eb5036bc2e458aa8c25a93ba2171b7830d182e",
+      "official_cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+      "official_httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+      "gates": {"S0": "passed", "S1": "passed", "S2": "passed", "S3": "blocked", "S4": "blocked", "S5": "passed", "S6": "passed", "S7": "blocked"},
+      "native_series_tests": {"series_plan_test": "passed", "series_binding_test": "passed", "series_error_test": "passed", "series_schema_test": "passed"},
+      "evidence_dir": "v1.5.6/"
+    },
+    {
+      "version": "v2.0.0",
+      "duckdb_commit": "d54cbbe3df17e8e5ce68312f483b4155836112aa",
+      "build_id": "5cc4316e6939d4ddcfbb3630e50bea2541f47cbe5338527cd260c86bb0d58639",
+      "duckomo_sha256": "5b70255bb9c81964cf74e43e043900380f57e08f3e999d107ec2c13c2ce6d0ed",
+      "official_cli_sha256": "f4c681bcf41a5c43dcf9a354703fe5bded9e2265282d1915d6d99637cd1e1f29",
+      "official_httpfs_sha256": "53f7aea1a0448ea62ef9b63f95da37c5766070084f14f14110e275e76382e7b2",
+      "gates": {"S0": "passed", "S1": "passed", "S2": "passed", "S3": "blocked", "S4": "blocked", "S5": "passed", "S6": "passed", "S7": "blocked"},
+      "native_series_tests": {"series_plan_test": "passed", "series_binding_test": "passed", "series_error_test": "passed", "series_schema_test": "passed"},
+      "evidence_dir": "v2.0.0/"
+    }
+  ],
+  "success_criteria": {
+    "SC-001": "passed",
+    "SC-002": "passed for the recorded acceptance matrix",
+    "SC-003": "blocked",
+    "SC-004": "blocked: registered-vs-explicit runtime equivalence was exercised for ecmwf_ifs only, not every registry entry",
+    "SC-005": "passed",
+    "SC-006": "passed for Feature 010 per-child metrics",
+    "SC-007": "passed"
+  },
+  "additional_local_checks": {
+    "make_release": "passed",
+    "reader_capacity_test": "passed",
+    "read_om_series_validation_sql": "passed: 69 assertions on the local release build",
+    "registry_generation_and_provenance": "passed",
+    "registered_vs_explicit_temporal_equivalence": "passed for ecmwf_ifs on all four pairs; all-registry-entry equivalence remains blocked"
+  },
+  "unavailable_current_source_gates": [
+    "S3 controlled HTTP/verified HTTPS/S3 missing and strict matrix",
+    "S4 controlled transport faults and origin audits",
+    "SC-004 runtime equivalence for every registered model entry",
+    "S7 full existing scanner regression workflow across all pairs",
+    "S7 real producer-object acceptance"
+  ],
+  "feature_008_boundary": {
+    "pass_claimed": false,
+    "SC-006": "relaxed / won't meet original >=20% throughput target",
+    "T042": "unchecked",
+    "T043": "unchecked"
+  }
+}

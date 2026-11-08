@@ -1,0 +1,549 @@
+-- git hash d54cbbe3df, version v2.0.0, extension folder v2.0.0
+-- Build workers: compile= link_release=4 link_non_release=2
+-- Extensions will be deployed to: /home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/builds/76da44b31663a1775355935545f257c7536d02f8866c3af58233a985c206f293/release/repository
+-- Load extension 'json' from '/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/extensions' @ v2.0.0
+-- Load extension 'parquet' from '/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/extensions' @ v2.0.0
+-- Load extension 'duckomo' from '/home/blizhan/repo/github/duckomo' @ 80ebe4bac2
+-- Load extension 'core_functions' from '/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/extensions' @ v2.0.0
+-- Load extension 'icu' from '/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/extensions' @ v2.0.0
+CMake Warning at extension/extension_build_tools.cmake:1008 (message):
+  Extension 'duckomo' has a vcpkg.json, but build was not run with VCPKG.  If
+  build fails, check out VCPKG build instructions in
+  'duckdb/extension/README.md' or try manually installing the dependencies in
+  /home/blizhan/repo/github/duckomo/vcpkg.json
+Call Stack (most recent call first):
+  CMakeLists.txt:1256 (include)
+
+
+-- Not registering region_geometry_test_sanitizer: verified matching spatial runtime was not supplied
+-- Not registering region_scan_test_sanitizer: verified matching spatial runtime was not supplied
+-- Not registering region_sampling_test_sanitizer: verified matching spatial runtime was not supplied
+-- Linked into DuckDB: extensions [core_functions, parquet, json, icu], capabilities [httplib, loadable_extensions, local_extension_repository]
+-- Extensions built but not linked: [duckomo]
+-- Tests loaded for extensions: [duckomo]
+-- DuckDB CLI Release architecture flags: -march=armv8-a -mtune=generic
+-- Configuring done (1.6s)
+-- Generating done (0.3s)
+-- Build files have been written to: /home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/builds/76da44b31663a1775355935545f257c7536d02f8866c3af58233a985c206f293/release
+[  0%] Built target duckdb_optimizer_compressed_materialization
+[  7%] Built target duckdb_zstd
+[  1%] Built target duckdb_optimizer
+[  7%] Built target duckdb_optimizer_join_order
+[  7%] Built target duckdb_optimizer_matcher
+[  7%] Built target duckdb_optimizer_pullup
+[  8%] Built target duckdb_optimizer_pushdown
+[  8%] Built target duckdb_optimizer_relation_statistics
+[  8%] Built target duckdb_optimizer_rules
+[  8%] Built target duckdb_optimizer_statistics_expr
+[ 19%] Built target duckdb_jemalloc
+[ 19%] Built target duckdb_optimizer_statistics_op
+[ 19%] Built target duckdb_planner
+[ 21%] Built target duckdb_planner_expression
+[ 21%] Built target duckdb_bind_expression
+[ 21%] Built target duckdb_bind_query_node
+[ 21%] Built target duckdb_bind_tableref
+[ 21%] Built target duckdb_bind_statement
+[ 21%] Built target duckdb_planner_filter
+[ 21%] Built target duckdb_expression_binders
+[ 21%] Built target duckdb_planner_operator
+[ 21%] Built target duckdb_planner_sql_export
+[ 21%] Built target duckdb_planner_subquery
+[ 21%] Built target duckdb_parser
+[ 22%] Built target duckdb_constraints
+[ 22%] Built target duckdb_expression
+[ 22%] Built target duckdb_parsed_data
+[ 22%] Built target duckdb_parser_peg
+[ 22%] Built target duckdb_parser_peg_tokenizer
+[ 22%] Built target duckdb_parser_peg_transformer
+[ 22%] Built target duckdb_parser_peg_keyword_helper
+[ 22%] Built target duckdb_query_node
+[ 22%] Built target duckdb_statement
+[ 22%] Built target duckdb_parser_tableref
+[ 22%] Built target duckdb_function
+[ 22%] Built target duckdb_func_aggr
+[ 22%] Built target duckdb_aggr_distr
+[ 22%] Built target duckdb_func_cast
+[ 22%] Built target duckdb_union_cast
+[ 22%] Built target duckdb_variant_cast
+[ 22%] Built target duckdb_func_pragma
+[ 22%] Built target duckdb_func_scalar
+[ 22%] Built target duckdb_func_comparison
+[ 22%] Built target duckdb_func_compressed_materialization
+[ 22%] Built target duckdb_func_date
+[ 22%] Built target duckdb_func_generic_main
+[ 22%] Built target duckdb_function_map
+[ 22%] Built target duckdb_func_list_nested
+[ 22%] Built target duckdb_func_ops_main
+[ 22%] Built target duckdb_func_seq
+[ 22%] Built target duckdb_func_string_main
+[ 22%] Built target duckdb_func_string_regexp
+[ 22%] Built target duckdb_func_struct_main
+[ 22%] Built target duckdb_func_variant_main
+[ 24%] Built target duckdb_func_geometry
+[ 24%] Built target duckdb_func_system
+[ 26%] Built target duckdb_func_table
+[ 26%] Built target duckdb_table_func_system
+[ 26%] Built target duckdb_arrow_conversion
+[ 26%] Built target duckdb_func_table_version
+[ 26%] Built target duckdb_func_window
+[ 26%] Built target duckdb_function_variant
+[ 28%] Built target duckdb_catalog_entries
+[ 28%] Built target duckdb_catalog
+[ 28%] Built target duckdb_catalog_entries_dependency
+[ 28%] Built target duckdb_catalog_default_entries
+[ 29%] Built target duckdb_adbc
+[ 29%] Built target duckdb_common
+[ 29%] Built target duckdb_adbc_nanoarrow
+[ 29%] Built target duckdb_common_allocator
+[ 29%] Built target duckdb_common_arrow
+[ 29%] Built target duckdb_common_arrow_appender
+[ 29%] Built target duckdb_common_crypto
+[ 29%] Built target duckdb_common_enums
+[ 29%] Built target duckdb_common_exception
+[ 31%] Built target duckdb_common_multi_file
+[ 31%] Built target duckdb_progress_bar
+[ 31%] Built target duckdb_common_operators
+[ 31%] Built target duckdb_common_tree_renderer
+[ 31%] Built target duckdb_row_operations
+[ 31%] Built target duckdb_common_serializer
+[ 31%] Built target duckdb_common_types
+[ 31%] Built target duckdb_sort
+[ 31%] Built target duckdb_common_types_column
+[ 31%] Built target duckdb_common_util
+[ 31%] Built target duckdb_common_variant
+[ 31%] Built target duckdb_common_types_row
+[ 31%] Built target duckdb_value_operations
+[ 31%] Built target duckdb_common_vector_types
+[ 33%] Built target duckdb_logging
+[ 35%] Built target duckdb_vector_operations
+[ 35%] Built target duckdb_execution
+[ 35%] Built target duckdb_expression_executor
+[ 35%] Built target duckdb_nested_loop_join
+[ 35%] Built target duckdb_operator_aggregate
+[ 35%] Built target duckdb_csv_encode
+[ 35%] Built target duckdb_csv_buffer_manager
+[ 35%] Built target duckdb_csv_scanner
+[ 35%] Built target duckdb_csv_sniffer
+[ 35%] Built target duckdb_csv_state_machine
+[ 36%] Built target duckdb_csv_util
+[ 36%] Built target duckdb_operator_csv_table_function
+[ 36%] Built target duckdb_operator_filter
+[ 36%] Built target duckdb_operator_join
+[ 36%] Built target duckdb_operator_helper
+[ 36%] Built target duckdb_operator_order
+[ 38%] Built target duckdb_operator_persistent
+[ 38%] Built target duckdb_operator_projection
+[ 38%] Built target duckdb_operator_scan
+[ 38%] Built target duckdb_operator_schema
+[ 38%] Built target duckdb_operator_set
+[ 38%] Built target duckdb_execution_index
+[ 38%] Built target duckdb_physical_plan
+[ 38%] Built target duckdb_sample
+[ 38%] Built target duckdb_execution_index_art
+[ 38%] Built target duckdb_main
+[ 38%] Built target duckdb_main_capi_cast
+[ 38%] Built target duckdb_main_capi_v1
+[ 38%] Built target duckdb_main_capi_v2
+[ 38%] Built target duckdb_common_http
+[ 38%] Built target duckdb_main_profiler
+[ 38%] Built target duckdb_main_relation
+[ 40%] Built target duckdb_main_extension
+[ 40%] Built target duckdb_main_settings
+[ 40%] Built target duckdb_main_secret
+[ 40%] Built target duckdb_main_buffered_data
+[ 40%] Built target duckdb_storage
+[ 40%] Built target duckdb_parallel
+[ 40%] Built target duckdb_storage_buffer
+[ 40%] Built target duckdb_storage_checkpoint
+[ 40%] Built target duckdb_storage_compression
+[ 42%] Built target duckdb_storage_compression_chimp
+[ 42%] Built target duckdb_storage_compression_alp
+[ 42%] Built target duckdb_storage_compression_roaring
+[ 42%] Built target duckdb_storage_compression_dictionary
+[ 42%] Built target duckdb_external_file_cache
+[ 42%] Built target duckdb_storage_compression_dict_fsst
+[ 42%] Built target duckdb_storage_metadata
+[ 42%] Built target duckdb_storage_statistics
+[ 42%] Built target duckdb_storage_serialization
+[ 42%] Built target duckdb_storage_table
+[ 42%] Built target duckdb_storage_table_variant
+[ 42%] Built target duckdb_fastpforlib
+[ 43%] Built target duckdb_transaction
+[ 45%] Built target duckdb_fmt
+[ 45%] Built target duckdb_fsst
+[ 47%] Built target duckdb_hyperloglog
+[ 47%] Built target duckdb_miniz
+[ 49%] Built target duckdb_skiplistlib
+[ 54%] Built target duckdb_mbedtls
+[ 59%] Built target duckdb_re2
+[ 59%] Built target duckdb_utf8proc
+[ 59%] Built target duckdb_yyjson
+[ 59%] Built target duckdb_parquet_readers
+[ 59%] Built target duckdb_parquet_decoders
+[ 61%] Built target duckdb_parquet_writers
+[ 61%] Built target duckdb_parquet_reader_variant
+[ 61%] Built target duckdb_parquet_writer_variant
+[ 66%] Built target duckomo_om
+[ 66%] Built target duckdb_core_functions_distributive
+[ 66%] Built target duckdb_core_functions_algebraic
+[ 66%] Built target duckdb_core_functions_holistic
+[ 66%] Built target duckdb_core_functions_nested
+[ 68%] Built target duckdb_core_functions_variant
+[ 68%] Built target duckdb_core_functions_regression
+[ 68%] Built target duckdb_core_functions_array
+[ 68%] Built target duckdb_core_functions_bit
+[ 68%] Built target duckdb_core_functions_blob
+[ 68%] Built target duckdb_core_functions_date
+[ 68%] Built target duckdb_core_functions_debug
+[ 68%] Built target duckdb_core_functions_enum
+[ 68%] Built target duckdb_core_functions_generic
+[ 70%] Built target duckdb_core_functions_list
+[ 70%] Built target duckdb_core_functions_map
+[ 70%] Built target duckdb_core_functions_math
+[ 70%] Built target duckdb_core_functions_operators
+[ 70%] Built target duckdb_core_functions_random
+[ 70%] Built target duckdb_core_functions_string
+[ 70%] Built target duckdb_core_functions_struct
+[ 70%] Built target duckdb_static
+[ 70%] Built target duckdb_core_functions_union
+[ 80%] Built target parquet_extension
+[ 91%] Built target json_extension
+[ 92%] Built target icu_extension
+[ 92%] Building CXX object extension/duckomo/CMakeFiles/duckomo_extension.dir/src/om/reader.cpp.o
+[ 92%] Built target duckdb_loadable_extensions
+[ 92%] Built target duckdb_httplib
+[ 92%] Built target duckdb_local_extension_repository
+[ 92%] Building CXX object extension/duckomo/CMakeFiles/duckomo_extension.dir/src/scan/read_om.cpp.o
+[ 94%] Built target core_functions_extension
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp: In function ‘void duckdb::duckomo::{anonymous}::ScanGridInfo(duckdb::ClientContext&, duckdb::TableFunctionInput&, duckdb::DataChunk&)’:
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3037:24: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 3037 |         output.SetValue(0, 0, Value::INTEGER(1));
+      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/execution/physical_operator_states.hpp:14,
+                 from /home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/function/table_function.hpp:14,
+                 from /home/blizhan/repo/github/duckomo/src/include/duckomo/read_om.hpp:5,
+                 from /home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:1:
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3038:24: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 3038 |         output.SetValue(1, 0, Value(document.grid_id));
+      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3039:24: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 3039 |         output.SetValue(2, 0, document.parent_grid_id ? Value(*document.parent_grid_id) : Value(LogicalType::VARCHAR));
+      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3040:24: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 3040 |         output.SetValue(3, 0, Value(document.grid_type));
+      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3041:24: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 3041 |         output.SetValue(4, 0, JsonValue(document.definition_json));
+      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3042:24: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 3042 |         output.SetValue(5, 0, JsonValue(document.layout_json));
+      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3043:24: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 3043 |         output.SetValue(6, 0, JsonValue(document.crs_json));
+      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3044:24: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 3044 |         output.SetValue(7, 0, JsonValue(document.capabilities_json));
+      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3045:24: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 3045 |         output.SetValue(8, 0, JsonValue(document.provenance_json));
+      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3046:24: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 3046 |         output.SetValue(9, 0, Value(document.object_id));
+      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3047:24: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 3047 |         output.SetValue(10, 0, document.object_version ? Value(*document.object_version) : Value(LogicalType::VARCHAR));
+      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3048:24: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 3048 |         output.SetValue(11, 0, Value(document.version_strength));
+      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3049:24: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 3049 |         output.SetValue(12, 0, Value::BOOLEAN(document.content_verified));
+      |         ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp: In function ‘void duckdb::duckomo::{anonymous}::FilterRegionCandidates(duckdb::ClientContext&, ReadOmGlobalState&, ReadOmLocalState&, const ReadOmBindData&, std::vector<long unsigned int, std::allocator<long unsigned int> >&)’:
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3121:35: warning: ‘void duckdb::DataChunk::SetCardinality(duckdb::idx_t)’ is deprecated: Use CheckCardinality (preferred) or SetChildCardinality instead [-Wdeprecated-declarations]
+ 3121 |         coordinates.SetCardinality(REGION_GEOMETRY_BATCH_SIZE);
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:78:9: note: declared here
+   78 |         SetCardinality(idx_t count_p) {
+      |         ^~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3123:35: warning: ‘void duckdb::DataChunk::SetCardinality(duckdb::idx_t)’ is deprecated: Use CheckCardinality (preferred) or SetChildCardinality instead [-Wdeprecated-declarations]
+ 3123 |         coordinates.SetCardinality(0);
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:78:9: note: declared here
+   78 |         SetCardinality(idx_t count_p) {
+      |         ^~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp: In lambda function:
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3142:43: warning: ‘void duckdb::DataChunk::SetCardinality(duckdb::idx_t)’ is deprecated: Use CheckCardinality (preferred) or SetChildCardinality instead [-Wdeprecated-declarations]
+ 3142 |                 coordinates.SetCardinality(coordinate_count);
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:78:9: note: declared here
+   78 |         SetCardinality(idx_t count_p) {
+      |         ^~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp: In function ‘void duckdb::duckomo::{anonymous}::FilterRegionCandidates(duckdb::ClientContext&, ReadOmGlobalState&, ReadOmLocalState&, const ReadOmBindData&, std::vector<long unsigned int, std::allocator<long unsigned int> >&)’:
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3178:45: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 3178 |                         coordinates.SetValue(0, coordinate_count, Value::DOUBLE(coordinate.longitude));
+      |                         ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:3179:45: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 3179 |                         coordinates.SetValue(1, coordinate_count, Value::DOUBLE(coordinate.latitude));
+      |                         ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp: In function ‘void duckdb::duckomo::{anonymous}::ScanLastMetrics(duckdb::ClientContext&, duckdb::TableFunctionInput&, duckdb::DataChunk&)’:
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:4121:32: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 4121 |                 output.SetValue(0, count, Value(row.query_id));
+      |                 ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:4122:32: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 4122 |                 output.SetValue(1, count, Value::UBIGINT(row.scan_id));
+      |                 ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+/home/blizhan/repo/github/duckomo/src/scan/read_om.cpp:4123:32: warning: ‘void duckdb::DataChunk::SetValue(duckdb::idx_t, duckdb::idx_t, const duckdb::Value&)’ is deprecated: Use Vector::Append on data[col_idx] instead (or Vector::SetValue for write-at-index semantics) [-Wdeprecated-declarations]
+ 4123 |                 output.SetValue(2, count, Value(row.metrics));
+      |                 ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/blizhan/repo/github/duckomo/build/official-matrix/v2.0.0/source/duckdb/src/include/duckdb/common/types/data_chunk.hpp:90:9: note: declared here
+   90 |         SetValue(idx_t col_idx, idx_t index, const Value &val);
+      |         ^~~~~~~~
+[ 94%] Linking CXX static library libduckomo_extension.a
+[100%] Built target duckomo_extension
+[100%] Building CXX object extension/duckomo/test/CMakeFiles/reader_capacity_test.dir/native/reader_capacity_test.cpp.o
+[100%] Linking CXX executable ../../../test/native/reader_capacity_test
+[100%] Built target reader_capacity_test
+[  1%] Built target duckdb_optimizer_compressed_materialization
+[  7%] Built target duckdb_zstd
+[  7%] Built target duckdb_optimizer
+[  8%] Built target duckdb_optimizer_matcher
+[  8%] Built target duckdb_optimizer_join_order
+[ 17%] Built target duckdb_jemalloc
+[ 17%] Built target duckdb_optimizer_pullup
+[ 19%] Built target duckdb_optimizer_pushdown
+[ 19%] Built target duckdb_optimizer_rules
+[ 19%] Built target duckdb_optimizer_relation_statistics
+[ 19%] Built target duckdb_optimizer_statistics_expr
+[ 19%] Built target duckdb_optimizer_statistics_op
+[ 21%] Built target duckdb_planner_expression
+[ 21%] Built target duckdb_planner
+[ 21%] Built target duckdb_bind_expression
+[ 21%] Built target duckdb_bind_query_node
+[ 21%] Built target duckdb_bind_statement
+[ 21%] Built target duckdb_expression_binders
+[ 21%] Built target duckdb_bind_tableref
+[ 21%] Built target duckdb_planner_filter
+[ 21%] Built target duckdb_planner_subquery
+[ 21%] Built target duckdb_planner_operator
+[ 21%] Built target duckdb_planner_sql_export
+[ 21%] Built target duckdb_parser
+[ 21%] Built target duckdb_expression
+[ 22%] Built target duckdb_constraints
+[ 22%] Built target duckdb_parsed_data
+[ 22%] Built target duckdb_parser_peg
+[ 22%] Built target duckdb_parser_peg_tokenizer
+[ 22%] Built target duckdb_parser_peg_keyword_helper
+[ 22%] Built target duckdb_parser_peg_transformer
+[ 22%] Built target duckdb_query_node
+[ 22%] Built target duckdb_statement
+[ 22%] Built target duckdb_parser_tableref
+[ 22%] Built target duckdb_function
+[ 22%] Built target duckdb_func_aggr
+[ 22%] Built target duckdb_aggr_distr
+[ 22%] Built target duckdb_func_cast
+[ 22%] Built target duckdb_union_cast
+[ 22%] Built target duckdb_variant_cast
+[ 22%] Built target duckdb_func_pragma
+[ 22%] Built target duckdb_func_scalar
+[ 22%] Built target duckdb_func_comparison
+[ 22%] Built target duckdb_func_compressed_materialization
+[ 22%] Built target duckdb_func_date
+[ 22%] Built target duckdb_func_generic_main
+[ 22%] Built target duckdb_func_list_nested
+[ 22%] Built target duckdb_function_map
+[ 22%] Built target duckdb_func_ops_main
+[ 22%] Built target duckdb_func_string_main
+[ 22%] Built target duckdb_func_seq
+[ 22%] Built target duckdb_func_string_regexp
+[ 22%] Built target duckdb_func_struct_main
+[ 24%] Built target duckdb_func_geometry
+[ 24%] Built target duckdb_func_variant_main
+[ 24%] Built target duckdb_func_system
+[ 26%] Built target duckdb_func_table
+[ 26%] Built target duckdb_func_table_version
+[ 26%] Built target duckdb_arrow_conversion
+[ 26%] Built target duckdb_table_func_system
+[ 26%] Built target duckdb_function_variant
+[ 26%] Built target duckdb_func_window
+[ 26%] Built target duckdb_catalog
+[ 28%] Built target duckdb_catalog_entries
+[ 28%] Built target duckdb_catalog_entries_dependency
+[ 28%] Built target duckdb_catalog_default_entries
+[ 29%] Built target duckdb_adbc
+[ 29%] Built target duckdb_common
+[ 29%] Built target duckdb_common_allocator
+[ 29%] Built target duckdb_adbc_nanoarrow
+[ 29%] Built target duckdb_common_arrow
+[ 29%] Built target duckdb_common_crypto
+[ 29%] Built target duckdb_common_arrow_appender
+[ 29%] Built target duckdb_common_enums
+[ 29%] Built target duckdb_common_exception
+[ 31%] Built target duckdb_common_multi_file
+[ 31%] Built target duckdb_progress_bar
+[ 31%] Built target duckdb_common_operators
+[ 31%] Built target duckdb_common_tree_renderer
+[ 31%] Built target duckdb_common_serializer
+[ 31%] Built target duckdb_row_operations
+[ 31%] Built target duckdb_sort
+[ 31%] Built target duckdb_common_types_column
+[ 31%] Built target duckdb_common_types
+[ 31%] Built target duckdb_common_types_row
+[ 31%] Built target duckdb_common_variant
+[ 31%] Built target duckdb_common_util
+[ 31%] Built target duckdb_value_operations
+[ 31%] Built target duckdb_common_vector_types
+[ 33%] Built target duckdb_logging
+[ 35%] Built target duckdb_vector_operations
+[ 35%] Built target duckdb_execution
+[ 35%] Built target duckdb_expression_executor
+[ 35%] Built target duckdb_nested_loop_join
+[ 35%] Built target duckdb_operator_aggregate
+[ 35%] Built target duckdb_csv_buffer_manager
+[ 35%] Built target duckdb_csv_encode
+[ 35%] Built target duckdb_csv_scanner
+[ 35%] Built target duckdb_csv_sniffer
+[ 35%] Built target duckdb_csv_state_machine
+[ 35%] Built target duckdb_operator_csv_table_function
+[ 36%] Built target duckdb_csv_util
+[ 36%] Built target duckdb_operator_filter
+[ 36%] Built target duckdb_operator_helper
+[ 36%] Built target duckdb_operator_join
+[ 36%] Built target duckdb_operator_order
+[ 38%] Built target duckdb_operator_persistent
+[ 38%] Built target duckdb_operator_projection
+[ 38%] Built target duckdb_operator_scan
+[ 38%] Built target duckdb_operator_schema
+[ 38%] Built target duckdb_operator_set
+[ 38%] Built target duckdb_physical_plan
+[ 38%] Built target duckdb_sample
+[ 38%] Built target duckdb_execution_index
+[ 38%] Built target duckdb_execution_index_art
+[ 38%] Built target duckdb_main
+[ 38%] Built target duckdb_main_capi_v1
+[ 38%] Built target duckdb_main_capi_cast
+[ 38%] Built target duckdb_main_capi_v2
+[ 40%] Built target duckdb_main_extension
+[ 40%] Built target duckdb_common_http
+[ 40%] Built target duckdb_main_profiler
+[ 40%] Built target duckdb_main_relation
+[ 40%] Built target duckdb_main_secret
+[ 40%] Built target duckdb_main_settings
+[ 40%] Built target duckdb_main_buffered_data
+[ 40%] Built target duckdb_parallel
+[ 40%] Built target duckdb_storage
+[ 40%] Built target duckdb_storage_buffer
+[ 40%] Built target duckdb_storage_checkpoint
+[ 40%] Built target duckdb_storage_compression
+[ 42%] Built target duckdb_storage_compression_chimp
+[ 42%] Built target duckdb_storage_compression_alp
+[ 42%] Built target duckdb_storage_compression_roaring
+[ 42%] Built target duckdb_storage_compression_dictionary
+[ 42%] Built target duckdb_storage_compression_dict_fsst
+[ 42%] Built target duckdb_external_file_cache
+[ 42%] Built target duckdb_storage_metadata
+[ 42%] Built target duckdb_storage_statistics
+[ 42%] Built target duckdb_storage_table_variant
+[ 42%] Built target duckdb_storage_serialization
+[ 42%] Built target duckdb_storage_table
+[ 43%] Built target duckdb_fmt
+[ 43%] Built target duckdb_fastpforlib
+[ 45%] Built target duckdb_transaction
+[ 45%] Built target duckdb_fsst
+[ 47%] Built target duckdb_hyperloglog
+[ 47%] Built target duckdb_miniz
+[ 52%] Built target duckdb_mbedtls
+[ 57%] Built target duckdb_re2
+[ 57%] Built target duckdb_utf8proc
+[ 59%] Built target duckdb_skiplistlib
+[ 59%] Built target duckdb_yyjson
+[ 59%] Built target duckdb_parquet_decoders
+[ 59%] Built target duckdb_parquet_reader_variant
+[ 59%] Built target duckdb_parquet_readers
+[ 59%] Built target duckdb_parquet_writer_variant
+[ 61%] Built target duckdb_parquet_writers
+[ 61%] Built target duckdb_core_functions_algebraic
+[ 66%] Built target duckomo_om
+[ 66%] Built target duckdb_core_functions_distributive
+[ 66%] Built target duckdb_core_functions_holistic
+[ 66%] Built target duckdb_core_functions_nested
+[ 66%] Built target duckdb_core_functions_regression
+[ 66%] Built target duckdb_core_functions_array
+[ 68%] Built target duckdb_core_functions_variant
+[ 68%] Built target duckdb_core_functions_bit
+[ 68%] Built target duckdb_core_functions_blob
+[ 68%] Built target duckdb_core_functions_date
+[ 68%] Built target duckdb_core_functions_debug
+[ 68%] Built target duckdb_core_functions_generic
+[ 68%] Built target duckdb_core_functions_enum
+[ 70%] Built target duckdb_core_functions_list
+[ 70%] Built target duckdb_core_functions_map
+[ 70%] Built target duckdb_core_functions_math
+[ 70%] Built target duckdb_core_functions_operators
+[ 70%] Built target duckdb_core_functions_string
+[ 70%] Built target duckdb_core_functions_random
+[ 70%] Built target duckdb_core_functions_struct
+[ 70%] Built target duckdb_core_functions_union
+[ 70%] Built target duckdb_static
+[ 71%] Built target core_functions_extension
+[ 78%] Built target json_extension
+[ 89%] Built target parquet_extension
+[ 94%] Built target icu_extension
+[ 94%] Built target duckdb_loadable_extensions
+[100%] Built target duckomo_extension
+[100%] Built target duckdb_local_extension_repository
+[100%] Built target duckdb_httplib
+[100%] Building CXX object extension/duckomo/test/CMakeFiles/remote_async_test.dir/native/remote_async_test.cpp.o
+[100%] Linking CXX executable ../../../test/native/remote_async_test
+[100%] Built target remote_async_test

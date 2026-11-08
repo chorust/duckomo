@@ -1,0 +1,486 @@
+{
+  "platform": "aarch64",
+  "purpose": "Independent review probes; not acceptance gate upgrades",
+  "pairs": [
+    {
+      "pair": "v1.5.4",
+      "verified_artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/official/duckdb",
+          "sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/builds/2a1e218a7e3055b8db02c397eca7e5e2d2255bae3ecc04848a79a1a91f58e15b/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "a5511e272ed9c2d18adab039cbe1ce1df8e94368e41b5b4032bb59090779a5b3"
+        }
+      ],
+      "cases": [
+        {
+          "case": "strict_missing_slotless",
+          "expected": "error: strict validates candidate presence even without selected slots",
+          "sql_file": "v1.5.4-strict_missing_slotless.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 0,
+          "stdout": "[{\"count_star()\":0}]\n",
+          "stderr": ""
+        },
+        {
+          "case": "strict_missing_with_slots_control",
+          "expected": "error: initial missing child",
+          "sql_file": "v1.5.4-strict_missing_with_slots_control.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Invalid Error: could not open local OM file '/home/blizhan/repo/github/duckomo/build/series-fixtures/review-prefix-that-does-not-exist/chunk_0000.om': {\"exception_type\":\"IO\",\"exception_message\":\"Cannot open file \\\"/home/blizhan/repo/github/duckomo/build/series-fixtures/review-prefix-that-does-not-exist/chunk_0000.om\\\": No such file or directory\",\"errno\":\"2\"}\n\nLINE 1: SELECT count(*) FROM read_om_series('/home/blizhan/repo/github/duckomo/build...\n                             ^\n"
+        },
+        {
+          "case": "unknown_domain_all_missing",
+          "expected": "error: invalid spatial declaration",
+          "sql_file": "v1.5.4-unknown_domain_all_missing.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 0,
+          "stdout": "[{\"count_star()\":0}]\n",
+          "stderr": ""
+        },
+        {
+          "case": "invalid_grid_all_missing",
+          "expected": "error: grid must be a STRUCT",
+          "sql_file": "v1.5.4-invalid_grid_all_missing.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 0,
+          "stdout": "[{\"count_star()\":0}]\n",
+          "stderr": ""
+        },
+        {
+          "case": "invalid_grid_present",
+          "expected": "error before any object access",
+          "sql_file": "v1.5.4-invalid_grid_present.sql",
+          "command": [
+            "strace",
+            "-f",
+            "-e",
+            "trace=openat",
+            "-o",
+            "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/code-review/v1.5.4-invalid_grid_present.strace",
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Binder Error: read_om grid must be a named STRUCT\n\nLINE 1: SELECT count(*) FROM read_om_series('/home/blizhan/repo/github/duckomo/build...\n                             ^\n",
+          "fixture_open_events": [
+            "3303560 openat(AT_FDCWD, \"/home/blizhan/repo/github/duckomo/build/series-fixtures/data/synthetic/temperature/chunk_0000.om\", O_RDONLY) = 3"
+          ]
+        },
+        {
+          "case": "case_collision_all_missing",
+          "expected": "error: case-insensitive column collision",
+          "sql_file": "v1.5.4-case_collision_all_missing.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.4/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Binder Error: table \"read_om_series\" has duplicate column name \"foo\"\n\nLINE 1: SELECT count(*) FROM read_om_series('/home/blizhan/repo/github/duckomo/build...\n                             ^\n"
+        }
+      ]
+    },
+    {
+      "pair": "v1.5.5",
+      "verified_artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/official/duckdb",
+          "sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/builds/ec88818b699c5bbde425f97f74cbd59c6dd5ff9b3e766b9cbec29dbeb20cae27/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "8557e3c7e6227ff6834fe7046ed63ebf6635103e9211237e72e1e64e5615acc6"
+        }
+      ],
+      "cases": [
+        {
+          "case": "strict_missing_slotless",
+          "expected": "error: strict validates candidate presence even without selected slots",
+          "sql_file": "v1.5.5-strict_missing_slotless.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 0,
+          "stdout": "[{\"count_star()\":0}]\n",
+          "stderr": ""
+        },
+        {
+          "case": "strict_missing_with_slots_control",
+          "expected": "error: initial missing child",
+          "sql_file": "v1.5.5-strict_missing_with_slots_control.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Invalid Error: could not open local OM file '/home/blizhan/repo/github/duckomo/build/series-fixtures/review-prefix-that-does-not-exist/chunk_0000.om': {\"exception_type\":\"IO\",\"exception_message\":\"Cannot open file \\\"/home/blizhan/repo/github/duckomo/build/series-fixtures/review-prefix-that-does-not-exist/chunk_0000.om\\\": No such file or directory\",\"errno\":\"2\"}\n\nLINE 1: SELECT count(*) FROM read_om_series('/home/blizhan/repo/github/duckomo/build...\n                             ^\n"
+        },
+        {
+          "case": "unknown_domain_all_missing",
+          "expected": "error: invalid spatial declaration",
+          "sql_file": "v1.5.5-unknown_domain_all_missing.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 0,
+          "stdout": "[{\"count_star()\":0}]\n",
+          "stderr": ""
+        },
+        {
+          "case": "invalid_grid_all_missing",
+          "expected": "error: grid must be a STRUCT",
+          "sql_file": "v1.5.5-invalid_grid_all_missing.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 0,
+          "stdout": "[{\"count_star()\":0}]\n",
+          "stderr": ""
+        },
+        {
+          "case": "invalid_grid_present",
+          "expected": "error before any object access",
+          "sql_file": "v1.5.5-invalid_grid_present.sql",
+          "command": [
+            "strace",
+            "-f",
+            "-e",
+            "trace=openat",
+            "-o",
+            "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/code-review/v1.5.5-invalid_grid_present.strace",
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Binder Error: read_om grid must be a named STRUCT\n\nLINE 1: SELECT count(*) FROM read_om_series('/home/blizhan/repo/github/duckomo/build...\n                             ^\n",
+          "fixture_open_events": [
+            "3303683 openat(AT_FDCWD, \"/home/blizhan/repo/github/duckomo/build/series-fixtures/data/synthetic/temperature/chunk_0000.om\", O_RDONLY) = 3"
+          ]
+        },
+        {
+          "case": "case_collision_all_missing",
+          "expected": "error: case-insensitive column collision",
+          "sql_file": "v1.5.5-case_collision_all_missing.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.5/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Binder Error: table \"read_om_series\" has duplicate column name \"foo\"\n\nLINE 1: SELECT count(*) FROM read_om_series('/home/blizhan/repo/github/duckomo/build...\n                             ^\n"
+        }
+      ]
+    },
+    {
+      "pair": "v1.5.6",
+      "verified_artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/official/duckdb",
+          "sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/builds/533359c090ab587fb14a593086eedc7e8ee79be5b303ff613edfa58168ce666f/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "5d2a7f635d27699206278575bad10c4439e129044c7529864efa0da6527c3970"
+        }
+      ],
+      "cases": [
+        {
+          "case": "strict_missing_slotless",
+          "expected": "error: strict validates candidate presence even without selected slots",
+          "sql_file": "v1.5.6-strict_missing_slotless.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 0,
+          "stdout": "[{\"count_star()\":0}]\n",
+          "stderr": ""
+        },
+        {
+          "case": "strict_missing_with_slots_control",
+          "expected": "error: initial missing child",
+          "sql_file": "v1.5.6-strict_missing_with_slots_control.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Invalid Error: could not open local OM file '/home/blizhan/repo/github/duckomo/build/series-fixtures/review-prefix-that-does-not-exist/chunk_0000.om': {\"exception_type\":\"IO\",\"exception_message\":\"Cannot open file \\\"/home/blizhan/repo/github/duckomo/build/series-fixtures/review-prefix-that-does-not-exist/chunk_0000.om\\\": No such file or directory\",\"errno\":\"2\"}\n\nLINE 1: SELECT count(*) FROM read_om_series('/home/blizhan/repo/github/duckomo/build...\n                             ^\n"
+        },
+        {
+          "case": "unknown_domain_all_missing",
+          "expected": "error: invalid spatial declaration",
+          "sql_file": "v1.5.6-unknown_domain_all_missing.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 0,
+          "stdout": "[{\"count_star()\":0}]\n",
+          "stderr": ""
+        },
+        {
+          "case": "invalid_grid_all_missing",
+          "expected": "error: grid must be a STRUCT",
+          "sql_file": "v1.5.6-invalid_grid_all_missing.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 0,
+          "stdout": "[{\"count_star()\":0}]\n",
+          "stderr": ""
+        },
+        {
+          "case": "invalid_grid_present",
+          "expected": "error before any object access",
+          "sql_file": "v1.5.6-invalid_grid_present.sql",
+          "command": [
+            "strace",
+            "-f",
+            "-e",
+            "trace=openat",
+            "-o",
+            "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/code-review/v1.5.6-invalid_grid_present.strace",
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Binder Error: read_om grid must be a named STRUCT\n\nLINE 1: SELECT count(*) FROM read_om_series('/home/blizhan/repo/github/duckomo/build...\n                             ^\n",
+          "fixture_open_events": [
+            "3303807 openat(AT_FDCWD, \"/home/blizhan/repo/github/duckomo/build/series-fixtures/data/synthetic/temperature/chunk_0000.om\", O_RDONLY) = 3"
+          ]
+        },
+        {
+          "case": "case_collision_all_missing",
+          "expected": "error: case-insensitive column collision",
+          "sql_file": "v1.5.6-case_collision_all_missing.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v1.5.6/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Binder Error: table \"read_om_series\" has duplicate column name \"foo\"\n\nLINE 1: SELECT count(*) FROM read_om_series('/home/blizhan/repo/github/duckomo/build...\n                             ^\n"
+        }
+      ]
+    },
+    {
+      "pair": "v2.0.0",
+      "verified_artifacts": [
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/official/duckdb",
+          "sha256": "f4c681bcf41a5c43dcf9a354703fe5bded9e2265282d1915d6d99637cd1e1f29"
+        },
+        {
+          "path": "/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/builds/0f04bb552ba7fe4322b8cc719ea7fb8e045c450377997e33fabf22b60d6d04b3/release/extension/duckomo/duckomo.duckdb_extension",
+          "sha256": "19cd2423ba27e43ce0ca0d4a13e9cb7c7700ccc9c8a7397e76f58d5ed541de8d"
+        }
+      ],
+      "cases": [
+        {
+          "case": "strict_missing_slotless",
+          "expected": "error: strict validates candidate presence even without selected slots",
+          "sql_file": "v2.0.0-strict_missing_slotless.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 0,
+          "stdout": "[{\"count_star()\":0}]\n",
+          "stderr": ""
+        },
+        {
+          "case": "strict_missing_with_slots_control",
+          "expected": "error: initial missing child",
+          "sql_file": "v2.0.0-strict_missing_with_slots_control.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Invalid Error: could not open local OM file '/home/blizhan/repo/github/duckomo/build/series-fixtures/review-prefix-that-does-not-exist/chunk_0000.om': {\"exception_type\":\"IO\",\"exception_message\":\"Cannot open file \\\"/home/blizhan/repo/github/duckomo/build/series-fixtures/review-prefix-that-does-not-exist/chunk_0000.om\\\": No such file or directory\",\"errno\":\"2\"}\n\nLINE 1: SELECT count(*) FROM read_om_series('/home/blizhan/repo/github/duckomo/build...\n                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"
+        },
+        {
+          "case": "unknown_domain_all_missing",
+          "expected": "error: invalid spatial declaration",
+          "sql_file": "v2.0.0-unknown_domain_all_missing.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 0,
+          "stdout": "[{\"count_star()\":0}]\n",
+          "stderr": ""
+        },
+        {
+          "case": "invalid_grid_all_missing",
+          "expected": "error: grid must be a STRUCT",
+          "sql_file": "v2.0.0-invalid_grid_all_missing.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 0,
+          "stdout": "[{\"count_star()\":0}]\n",
+          "stderr": ""
+        },
+        {
+          "case": "invalid_grid_present",
+          "expected": "error before any object access",
+          "sql_file": "v2.0.0-invalid_grid_present.sql",
+          "command": [
+            "strace",
+            "-f",
+            "-e",
+            "trace=openat",
+            "-o",
+            "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/code-review/v2.0.0-invalid_grid_present.strace",
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Binder Error: read_om grid must be a named STRUCT\n\nLINE 1: SELECT count(*) FROM read_om_series('/home/blizhan/repo/github/duckomo/build...\n                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n",
+          "fixture_open_events": [
+            "3304252 openat(AT_FDCWD, \"/home/blizhan/repo/github/duckomo/build/series-fixtures/data/synthetic/temperature/chunk_0000.om\", O_RDONLY) = 3"
+          ]
+        },
+        {
+          "case": "case_collision_all_missing",
+          "expected": "error: case-insensitive column collision",
+          "sql_file": "v2.0.0-case_collision_all_missing.sql",
+          "command": [
+            "/home/blizhan/repo/github/duckomo/build/series-matrix/v2.0.0/official/duckdb",
+            "-no-init",
+            "-unsigned",
+            "-bail",
+            "-json",
+            ":memory:"
+          ],
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Binder Error: table \"read_om_series\" has duplicate column name \"foo\"\n\nLINE 1: SELECT count(*) FROM read_om_series('/home/blizhan/repo/github/duckomo/build...\n                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "pair": "v2.0.0",
+  "command": [
+    "/home/blizhan/repo/github/duckomo/build/series-acceptance-sc004-corrected-20261106/v2.0.0/release/test/native/official_httpfs_test"
+  ],
+  "cwd": "/home/blizhan/repo/github/duckomo",
+  "http_base": "http://127.0.0.1:40883",
+  "duckdb_commit": "d54cbbe3df17e8e5ce68312f483b4155836112aa",
+  "duckdb_cli_sha256": "f4c681bcf41a5c43dcf9a354703fe5bded9e2265282d1915d6d99637cd1e1f29",
+  "httpfs_sha256": "53f7aea1a0448ea62ef9b63f95da37c5766070084f14f14110e275e76382e7b2",
+  "extension_sha256": "0af98d6150b38a88817a151d318da706c83a26f397e0067a87327c269005e5e0",
+  "started_at_utc": "2026-11-06T06:41:59Z",
+  "ended_at_utc": "2026-11-06T06:42:01Z",
+  "exit_code": 0,
+  "stdout_log": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v2.0.0/official-httpfs/stdout.log",
+  "stdout": "official_httpfs_test: actual HTTPFS diagnostics/redaction, cancellation/recovery and connection isolation passed"
+}

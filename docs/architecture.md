@@ -1,12 +1,13 @@
 # DuckOMO 技术架构
 
-当前工作树实现本地 OM 扫描、语义维度选择、列裁剪、规则/投影/Gaussian 网格、多区域 polygon 扫描、nearest 区域代表值采样、native-window 空间选择、opt-in source 身份、grid-info 描述、DuckDB 并行任务及 v4 指标。005 的 points 区域功能使用匹配版 spatial adapter、受检 WKB、惰性区域任务和逐 query owned-memory accounting；版本矩阵和 P6 审计状态见 [005 版本矩阵](../specs/005-polygon-region-statistics/evidence/version-matrix.md) 与 [P6 摘要](../specs/005-polygon-region-statistics/evidence/p6-summary.md)；P7 独立复现由未参与实现者执行。006 nearest 在既有 `read_om_regions` 内以 `method` 选择，points 默认兼容；006 已完成声明范围内的 N0–N7 验收：Linux AArch64、DuckDB v1.5.4/v1.5.5/v1.5.6、合成规则球面网格与固定 NCEP GFS025；真实输入仅私有留存、不公开分发，N7由独立用户执行。 [验收报告](../specs/006-region-nearest-sampling/evidence/final.md)。
+当前工作树实现本地 OM 扫描、语义维度选择、列裁剪、规则/投影/Gaussian 网格、多区域 polygon 扫描、nearest 区域代表值采样、native-window 空间选择、opt-in source 身份、grid-info 描述、DuckDB 并行任务及 v4 指标。开发源码还提供 `read_om_series`：时间规划器把闭区间窗口映射为精确 chunk 键，再组合普通 `read_om` 子扫描。Feature 010 当前源码验收仅在声明范围内 PASS：Linux AArch64 (`linux_arm64`) 与 DuckDB v1.5.4、v1.5.5、v1.5.6、v2.0.0；真实数据限两个相邻 IFS025 `temperature_2m` 对象、一个点和一个边界窗口，其他十个注册模型仅有 provenance 与 synthetic runtime equivalence，N160 为合成数据。详见 [Feature 010 follow-up 报告](../specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/report.md)。`read_om_series` 仍是开发源码功能，不属于已发布扩展身份。005 的 points 区域功能使用匹配版 spatial adapter、受检 WKB、惰性区域任务和逐 query owned-memory accounting；版本矩阵和 P6 审计状态见 [005 版本矩阵](../specs/005-polygon-region-statistics/evidence/version-matrix.md) 与 [P6 摘要](../specs/005-polygon-region-statistics/evidence/p6-summary.md)；P7 独立复现由未参与实现者执行。006 nearest 在既有 `read_om_regions` 内以 `method` 选择，points 默认兼容；006 已完成声明范围内的 N0–N7 验收：Linux AArch64、DuckDB v1.5.4/v1.5.5/v1.5.6、合成规则球面网格与固定 NCEP GFS025；真实输入仅私有留存、不公开分发，N7由独立用户执行。 [验收报告](../specs/006-region-nearest-sampling/evidence/final.md)。
 
 ## 模块职责
 
 | 模块 | 职责 | 源码 |
 |---|---|---|
-| DuckDB table function | 绑定参数、稳定 schema、分析空间/语义条件、生成任务并输出 DataChunk | `src/scan/read_om.cpp` |
+| Temporal series planner / registry | Resolve frozen temporal defaults and independent overrides; calculate candidate indices and generated time axes without directory discovery | `src/scan/series_plan.cpp`、`series_registry.cpp` |
+| DuckDB table function | Bind arguments, own a stable schema, analyze spatial/semantic conditions, create tasks, and emit DataChunks; the series binder composes owned ordinary-reader child binds | `src/scan/read_om.cpp`、`read_om_series.cpp` |
 | Region input/geometry | 严格审计 WKB/ID/预算；逐区域运行官方 spatial `covers`，隔离 worker expression state 并轮询取消 | `src/scan/region_input.cpp`、`src/scan/region_geometry.cpp` |
 | Schema / dimensions | 变量命名、共享 LIST/逐变量 MAP 归一化及共同的 shape/有序轴/语义坐标校验 | `src/scan/schema.cpp`、`dimensions.cpp`、`semantic_axes.cpp` |
 | ProjectionPlan | 保留输出与过滤依赖，去重物理变量并保留输出顺序 | `src/scan/projection.cpp` |
@@ -34,6 +35,14 @@ DuckDB SQL
 ```
 
 不带空间或语义条件时沿用完整 row-major 逻辑扫描；未映射轴仍参与行索引，不被折叠。task cursor 不物化全域行或任务表。查询成功与扫描完整是两个状态：下游 LIMIT 可以令 SQL 成功、`scan_complete=false`。
+
+### `read_om_series` 的逻辑组合
+
+Series 在绑定阶段先解析完整时间窗口、registry 默认值和各自独立的 temporal override，并对时间范围、候选数及 chunk 索引做 checked arithmetic。参数和扩展边界错误在打开对象前报告。它只按已计算的候选区间构造 `chunk_<signed-index>.om`，不列目录、不 glob、不读取 `meta.json`。每个候选通过同一个 `read_om` 内部 binder 创建拥有独立 metadata、对象身份、schema 和扫描回调的 child bind；series 为 child 注入 `axes.time`，把闭区间过滤附着到对应叶子。
+
+初次打开时只有结构化 `ObjectNotFound` 在默认模式下可跳过；严格模式及所有其他错误向上传播。对存在对象检查选中数组、完整维度次序、time 长度、非时间 shape 和 grid/layout identity；随后以平衡逻辑 `UNION ALL` 连接 children，不去重、不排序、不做时间 join。COUNT(*) 使用内部常量 cardinality 投影提供行数、允许优化器裁掉值列，再由外层投影还原公开 schema；值过滤仍保留值依赖。物理扫描仍走原有 child callbacks、DuckDB worker/thread 限制、predicate/projection pushdown 和 decoder，不增加 series executor、值缓存或跨对象读取合并。
+
+每个已执行 child 继续发布既有 query_id / scan_id 和单独指标；系列不制造聚合指标或缺失对象成功记录。绑定期 metrics 与执行期扫描通过完成状态及 I/O/decode 计数区分。输出排序仍由调用者 `ORDER BY` 决定。
 
 区域points扫描在绑定阶段先验证并保留整个 regions 输入，随后为每个区域和原始空间窗口惰性生成任务。worker只持有当前区域geometry与bounded point batch；官方 spatial 执行最终 `covers` 判断。nearest模式为每个区域×原始非空间轴组合生成一行，使用官方代表点函数取得面内目标，再由独立规则球面locator选取网格源。两种模式都在 SQL侧按region_id/time/member等分组，不在扫描器里预聚合。区域集合、geometry opaque copy、bound predicates、task/worker scratch均纳入DuckOMO query-owned memory accounting；spatial/GEOS内部内存仍单列unknown，进程RSS作为独立增长检查。取消和异常在task/QueryEnd汇合时发布不完整终态并清理状态。
 

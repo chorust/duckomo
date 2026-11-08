@@ -1,0 +1,934 @@
+{
+  "checks": [
+    {
+      "path": ".gitignore",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "4195538317aa3e3915ab3e0cef75c875e773a1835ad86b4384c5e260ebefd243"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.gitignore",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "5460c618ab959d996e9408b33095d591a4d16fe774a069420f66962ad20368df"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.pre-commit-config.yaml",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "8dcc0abfd491210c1851720a2402a29dfd4884be945ab98199f1734d9b917cdc"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.release-please-manifest.json",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "f8e1c70335985ec26653098ddcb0758653c67d97b80aad8b2b7a2cef6eff25ac"
+    },
+    {
+      "path": ".specify/extensions/roadmap/CHANGELOG.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "127c5374350ee51f878492ddc0b58b356e979767fd40d0670dd5f807505c3518"
+    },
+    {
+      "path": ".specify/extensions/roadmap/LICENSE",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "4369c4a93e87621d32cc9ab38991aff9a2d01f1158e44f494876199d8eb3c06e"
+    },
+    {
+      "path": ".specify/extensions/roadmap/README.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "1ac814e43c8075eacd29d4861dd403a2543b3987bd2abe09095eb4008ebb6376"
+    },
+    {
+      "path": ".specify/extensions/roadmap/apm.lock.yaml",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "5cf405a7c9587cf83ad2db577323f63eefb9c27f7cc257c741a4620cafe55b25"
+    },
+    {
+      "path": ".specify/extensions/roadmap/apm.yml",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "842916a5ed4970ef45159d57d1edfb704f5b4b180c8c2660452a57175c0eb45e"
+    },
+    {
+      "path": ".specify/extensions/roadmap/config-template.yml",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "35c4776873262945cd60f861b06febede6bd76f7edfe81f2dde2069b08c148ff"
+    },
+    {
+      "path": ".specify/extensions/roadmap/extension.yml",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "44f0a2de47237031011dc7ea60b1a4ebf88bb715311327cf1e44539afbac60eb"
+    },
+    {
+      "path": ".specify/extensions/roadmap/justfile",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "3d60674745ac4a3a7b7613d310af302c6b2bded1026acf3930288dc742f9759d"
+    },
+    {
+      "path": ".specify/extensions/roadmap/mise.toml",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "4c0e11316f8d3668088b95473e1e9ee99971fde4892c5792964283645b3a401e"
+    },
+    {
+      "path": ".specify/extensions/roadmap/release-please-config.json",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "eedb4910fedc8ae1f8580c6e6c7dbc6da3219aac5aab16114c61dafc60c4c0a2"
+    },
+    {
+      "path": ".specify/extensions/roadmap/roadmap-config.yml",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "35c4776873262945cd60f861b06febede6bd76f7edfe81f2dde2069b08c148ff"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.github/workflows/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.github/workflows/release-please.yml",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "403e98907bd00009cb975636cf9f5a0ff9f5359b8b5c39971e9f8415fbb1798b"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.github/workflows/test.yml",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "61ef9f9d979b3f6f531fbf6a29da85d2b983cf5df478371e0879f620454275a0"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/extensions.yml",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "c65b55ab81e05618506f8e952b60a743a469a93d2b8ffb01acc90344f1758e5c"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/feature.json",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "0bfe6c5ea47810cb0affa6b5d8c3cd7a904a2a36b8444baafe8b1dd11c7b6490"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/init-options.json",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "d9417182edfd8e7c1fecb2aea35465a359f8d9c2b1cf1d01edaa5b5897f855c9"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/integration.json",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "2da1b1c57638dfd2397494db9acaa3015427406ea16815f306499152eab01365"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/integrations/claude.manifest.json",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "51d765cfd96617599c89ef8515cff32a11f5abbabe893ff453bbd6a8cf46cf5e"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/integrations/speckit.manifest.json",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "939cec716db1cb6a1f270a6cf308ece58b8873a06a26b58807c1eea3fe862ea3"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/memory/constitution.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "bde7492dc394a1e0935ce2163912259c9534641b5f39014d32a723d52fd4c83a"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/memory/roadmap-sync-2026-06-24.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "2cae204eac758bb0f972f60858de8792c6edfb784c14f9caf6b1276b4e8d32b2"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/memory/roadmap.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "ac296321491a53f56c32e6956cbd308efe0a1100325042e79ea7e44952fa394a"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/scripts/bash/check-prerequisites.sh",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "afce0aa8db177320d83aa0b8e3619c06b865fd810781894e4a7a3f81664941ce"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/scripts/bash/common.sh",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "af8a16f87b4f9084759c42ff9abf35c0b2a2025dffe58c298758ff86de2923b2"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/scripts/bash/create-new-feature.sh",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "9ba116b64f0328eb69bc1a195d209074ea38823a73a554160d69df34a74daa65"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/scripts/bash/setup-plan.sh",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "4eb12c5b00f5c66a7d01b56c90898d320dcef4425d9b96652d57156c84948eda"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/scripts/bash/setup-tasks.sh",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "cf21ba2212b4dd5b435c5ea8527500cfd27768b86c0bbc7ebc3207759f118d27"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/templates/checklist-template.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "c37695297e5d3153d64f82c21223509940b13932046c7961c42d1d669516130c"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/templates/constitution-template.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "ce7549540fa45543cca797a150201d868e64495fdff39dc38246fb17bd4024b3"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/templates/plan-template.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "cc7f7979cf8d8836ec26492785affd80791d3422a2b745062ec695be8c985ef7"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/templates/spec-template.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "3945437fc35cd30a5b2bf7beea680337c3516826d3efa5a6b92c4a7eca1ba28e"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/templates/tasks-template.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "fc29a233f6f5a27ca31f1aa46b596af6500c627441c6e62b2bc4a1d721525842"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/workflows/workflow-registry.json",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "848e88285d591386427087a5578fcc0b71b5f6544b160ceaf4802907bbc1b1f2"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/workflows/speckit/workflow.yml",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "a58d17e2f36d4632f205210746b59fbbfd9ef561f1978b21428ee7ea19d1d1ad"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/workflows/speckit-full/workflow.yml",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "75565b082d95763f696a69eaa43399769a586862cc962fff7d5801fa3dbe29f9"
+    },
+    {
+      "path": ".specify/extensions/roadmap/.specify/workflows/speckit-quality/workflow.yml",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "87ac72170ebeca7c476154abb1e78ce39ce1f729158e70d4a2aaa89ae11c5977"
+    },
+    {
+      "path": ".specify/extensions/roadmap/archive/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/assets/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/commands/speckit.roadmap.brief.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "d404cc317f60e66192371c807e711c209b7a1b8f9a9154a7b028fb7e38575662"
+    },
+    {
+      "path": ".specify/extensions/roadmap/commands/speckit.roadmap.debrief.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "b1a4dd1a0c417ce032666f31afa3371db04dc635f8cb6e6ea3920820e11db4ee"
+    },
+    {
+      "path": ".specify/extensions/roadmap/commands/speckit.roadmap.sync.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "3004c5e63c39177c3215b5c220275c39ecfe5483b23c1070f5d0c94eaccc99af"
+    },
+    {
+      "path": ".specify/extensions/roadmap/commands/speckit.roadmap.write.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "f90c2d352e128b071f5bd5caa12297dfd14e841d83e7f6e1695c1e9fbdf760eb"
+    },
+    {
+      "path": ".specify/extensions/roadmap/docs/autonomous-decisions-log.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "c33a809a866c62b84792d0ceba2ef37afb36e9acdbf009a57d61ab9327edaf26"
+    },
+    {
+      "path": ".specify/extensions/roadmap/docs/catalog-submission-issue.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "312755aaf3e7fcde7fcb56ce2d37898b65b64f37502e8e9c40a3de9b18ffd0a5"
+    },
+    {
+      "path": ".specify/extensions/roadmap/docs/api/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/docs/architecture/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/docs/decisions/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/docs/engineering/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/docs/operations/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/docs/product/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/docs/research/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/docs/runbooks/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/infrastructure/environments/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/infrastructure/terraform/environments/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/infrastructure/terraform/modules/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/infrastructure/terraform/stacks/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/scripts/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/scripts/bash/load-config.sh",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "b371d3d1de69a52ba4bbba41e599f6190bf65ff682201ae4b06dca716059307e"
+    },
+    {
+      "path": ".specify/extensions/roadmap/scripts/powershell/load-config.ps1",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "21382b86ae47d02e4b779142bb1a8e2abda2162cab63985b4b00f71b2fce8ff3"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/001-roadmap-write/data-model.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "95b3638a95d3cde5ee2223c15d9b1e9d1ab83da6a86b09ec8cea3086b93d3105"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/001-roadmap-write/plan.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "b4fe8b8951709e13261d334ed676727d7881c38a64a2b5bd24accdeec65e8395"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/001-roadmap-write/quickstart.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "ec23a7e268f9077bfc2f970a7676aef440f6ce4ded3b90d43f189422429ab8a8"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/001-roadmap-write/research.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "157c3da06c3059e6de69b0cc21f83dd7a381591212a8962fff4e83e4b0f95eec"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/001-roadmap-write/spec.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "cb835eeadeb2d4c940e54884518bf101dd650f7dac7c4e77794f0e08330cfc2f"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/001-roadmap-write/tasks.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "985fe939c35a19e47cf49e3403d842ee6c117529223c43e76c3f9c2fdf5e2749"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/001-roadmap-write/checklists/requirements.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "5d488569cb138ea549a061107da9031367945ad127530d6cc8764d06f7cca67f"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/001-roadmap-write/contracts/load-config.schema.json",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "48e204054b1151655e1e0a4b5294e97cd431233bcd46f11b31c8e491c7745b65"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/001-roadmap-write/critiques/critique-2026-06-24.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "4967d9c01ba56127579f806926c583a3c9d9605c47354bf0a639fe8b5b0e657b"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/002-roadmap-brief/plan.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "41c3879c83794af6ba2b91747551697a271b32c9fe787f9afbea50946ad375da"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/002-roadmap-brief/quickstart.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "ef5578328c946068d877d5a1e87764906d301d4779c3b5f5897b868fea434b21"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/002-roadmap-brief/research.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "abc87fd017bbee9a2d8ac18d13b9c11940bdfd048d7736323beea447323718d7"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/002-roadmap-brief/spec.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "9eb1fd46b039656ecad3b8f376a0f796c4cdaf40e706421590ad836f13457225"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/002-roadmap-brief/tasks.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "ec3083f439cdf2b4fb45f311ceb639397583706dba1396f0373a84ff376c61bb"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/002-roadmap-brief/checklists/requirements.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "2da2ec2eb0d301bc4b5e462676d1dc1cf799afd0a1ccb8f0a45be9685d3e1ade"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/002-roadmap-brief/critiques/critique-2026-06-24.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "ef923c195bdd302fb49957eb1b5d612430b9ef83a3e0a64a2134d782897f2d30"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/002-roadmap-brief/roadmap-reviews/brief-2026-06-24.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "3cca6f00dc2a651e143325346c1d89db71b7091079481e8bbf7ae89d012f8407"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/002-roadmap-brief/roadmap-reviews/brief-2026-06-24T19.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "ee6b15008549a1a209015b65a96d2af8e01d292aa2a751a4e42a3fd8864fb27b"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/002-roadmap-brief/roadmap-reviews/debrief-2026-06-24.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "70682f0ca24e9da2edaee0372961e9bb725426e23ae06eef8f6c886742c610e4"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/003-roadmap-debrief/plan.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "11d67582865710b3971ca4c79911b2de62f75b4abc4342e662c4296fcc932eaf"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/003-roadmap-debrief/quickstart.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "7f200ec94cba894aa871c3dfbc84f66812d1ae0600bf316c19b2395815f8f592"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/003-roadmap-debrief/research.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "66954e1cdcd17c6821fd9e2861c6d275456bc0e21e386ad62faebeabc732bf4e"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/003-roadmap-debrief/spec.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "abbda2d0611056dfc36e4fc7570f03bb8dc2adc6cfe925bbde756cd5f684cff2"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/003-roadmap-debrief/tasks.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "ba7d0c95f04fce70cd43a80b769be31d582d0c3ce3ed6928b54cff786ced3624"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/003-roadmap-debrief/checklists/requirements.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "4e9156d367b7abe0e9f52d842f3384e62dabfabd3f858ed83f6b20a389abe2dc"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/003-roadmap-debrief/critiques/critique-2026-06-24.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "dae9f7f6c8345340df69777f53deb445f11062fda1d08085b47e68f3ce721e0c"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/003-roadmap-debrief/roadmap-reviews/brief-2026-06-24.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "424b3203fb8f6cb22792e87660f9f032c9eb8dfe9e95bbe4ef0fff24fb523996"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/003-roadmap-debrief/roadmap-reviews/debrief-2026-06-24.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "85719ecb873cf6a4cef46f16c9fb135034894d158ac88ca9ac35558bea5bb419"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/004-roadmap-sync/plan.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "83f81f9e2e9a5064d893ddd18cf10096dc715247afa0d1ea09d44f2e00306e1c"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/004-roadmap-sync/quickstart.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "4fd556326918b64769514a24892e3e5b4acf1d76f453c6b07dc42d29005fadfa"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/004-roadmap-sync/research.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e716311dee8d4cb4b168838418fb641d72fcaab7afe1f24a635a238c13937dfb"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/004-roadmap-sync/spec.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "94b77107f8b48ae5d7002252d1babc4a6e9fdd18dfcc67091eeb72ebad1ae2df"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/004-roadmap-sync/tasks.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "83cc14e602d5a9faa3bc569d1c784c7a9c73241279b5eb3dabd02da44a1f120a"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/004-roadmap-sync/checklists/requirements.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "8184d41f6f2fe6a49e0aeb663b5ba9793ce8c67c024751c87fdccd36232699ab"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/004-roadmap-sync/critiques/critique-2026-06-24.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "9391a24229d9fe83263ec4193d6007941ca2fc7958e422a2cf26575ae214604c"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/004-roadmap-sync/roadmap-reviews/brief-2026-06-24.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "ccfb9b149bba5827731652a4d227b553bfb03d3fff5a5ff445c85614327c3551"
+    },
+    {
+      "path": ".specify/extensions/roadmap/specs/004-roadmap-sync/roadmap-reviews/debrief-2026-06-24.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "3ffe2e393ae2aeadc4b67b2c3d9c99764cd5367fb0db3966c415788bb455c1d1"
+    },
+    {
+      "path": ".specify/extensions/roadmap/templates/review-report-template.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "aef25c08ed96b839b36b39ed89eae299ea7f996067de6e191ecc626ac2969f29"
+    },
+    {
+      "path": ".specify/extensions/roadmap/templates/roadmap-template.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "be3e3e85f6484113ab2dbce19854f3703fa5dfab59b2d7de275be6132f80a370"
+    },
+    {
+      "path": ".specify/extensions/roadmap/tests/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/extensions/roadmap/tests/README.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "a42e7338fb91055b40c34a6fe760cb1b7684a233bd4c4a5c79614b4e88c2e8a1"
+    },
+    {
+      "path": ".specify/extensions/roadmap/tests/bash/load-config.bats",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "380b34ab0425216a51f780497fe43f91f04f1a3c4d1b14e919c209af7a97ef6c"
+    },
+    {
+      "path": ".specify/extensions/roadmap/tests/bash/fixtures/env.yml",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "c7f659321970d5cbbc2917befed978400a24e84bd19f090aef77edfb523fb589"
+    },
+    {
+      "path": ".specify/extensions/roadmap/tests/bash/fixtures/invalid.yml",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "bea250e8fbbce3d0e6270302ae5806a8be84ba47c3d76c4938921026327c6d1d"
+    },
+    {
+      "path": ".specify/extensions/roadmap/tests/bash/fixtures/missing.yml",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "74efbd90d7d3bd0d6117ea9880e67797fbe6fdad1a9bb8e0f4b6cf98578d579e"
+    },
+    {
+      "path": ".specify/extensions/roadmap/tests/bash/fixtures/valid.yml",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "609725a0834d5a4418537127bf68b8d2bcb95838b60ab30dfa2d8c527140ebac"
+    },
+    {
+      "path": ".specify/extensions/roadmap/tests/parity/parity.bats",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "4cdfe5360a83158f27ba1be7d62899fe7aceb74efaf9fe9c108e1e49c9451cde"
+    },
+    {
+      "path": ".specify/extensions/roadmap/tests/powershell/load-config.Tests.ps1",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "cf1da7ce40e9aa90c7f892e722d071a5b1ca244c2bdb75a77cab8fa6184e0df3"
+    },
+    {
+      "path": ".specify/extensions/roadmap/tools/.gitkeep",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".specify/memory/roadmap.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "1a1bc1627dc71d4e23d2f24b44cd04a6c901705b5ebb8a7449a0e52187cf577c"
+    },
+    {
+      "path": "README.en.md",
+      "matches_implementation_baseline": false,
+      "matches_final_record": true,
+      "current_sha256": "a49098f669925b80f9bc05bd56861ed43c2e08e2caddead207ac3a35b8370c1a"
+    },
+    {
+      "path": "README.md",
+      "matches_implementation_baseline": false,
+      "matches_final_record": true,
+      "current_sha256": "331ae509e9e6d99f300c0b2354aa2c09ebf52fd25eeb7f3d69a20687c906ad43"
+    },
+    {
+      "path": "community/duckomo/description.yml.in",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "e64d9319fa6ac30c94afc577d36840dda6bcfbdc961bfe01def0d7f611fdc9f3"
+    },
+    {
+      "path": "community/validation.json",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "90fde9828bb85c99c8959de5e507250b619455c20fe41d5b1c68aa544d623d90"
+    },
+    {
+      "path": "docs/community-extensions.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "5d8b25ab5185b6626ffdfa4a5cc348de71e1865c478b1d54400f90dcf2fd58d9"
+    },
+    {
+      "path": "docs/duckdb-2.0-evaluation.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "8de2fba0fc7c077836bd4057b102c0c07e671cbdb0064fad99585cfbdfe4598b"
+    },
+    {
+      "path": "docs/release-notes/v0.3.5-rc.1.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "d067a9ff875e4c22b6ac00c85bac0cfde8ebf34089259f11caf21b13bebdcd8a"
+    },
+    {
+      "path": "docs/releases.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "6c95a6bcac50eae0ca85a959f76faf1e64602ac58135424e88339e623fa5be60"
+    },
+    {
+      "path": "docs/roadmap.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "45eb70a67ddf4806e93731720582755ad8b363b7ee464738b595bff7af550b81"
+    },
+    {
+      "path": "evidence/008/final/index.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "7fd402ed62d483786bd69dc2a27c67b67baa4ac15223c7a1b6d849684e59ac71"
+    },
+    {
+      "path": "evidence/008/final/status.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "ce81aacbaf387f3acced2ff35a6b4d23d863e13fc3590d59f818184d85e64db7"
+    },
+    {
+      "path": "specs/008-duckdb2-async-io/checklists/success-criteria.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "a2ac2debc896fd070689665df9516ca4c9415ecc7e5272d4da636cd871c4fef9"
+    },
+    {
+      "path": "specs/008-duckdb2-async-io/plan.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "c72c0c775844a3895ee1659286b0e5a029618d112ed511609b441637d05a8e2f"
+    },
+    {
+      "path": "specs/008-duckdb2-async-io/quickstart.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "64d4553b8f96cf7911e2aca90416e6c177a6d656e6e4b95c47c86724e6e865b6"
+    },
+    {
+      "path": "specs/008-duckdb2-async-io/research.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "2c3dbf2b331a0544fd557ad2a6ea90eb58cac72138d7aac3cb06c217458dfda9"
+    },
+    {
+      "path": "specs/008-duckdb2-async-io/spec.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "d7ac63af3560ae435c246c80c139fb584f6dbee526ff56a6585e945a69bb03ca"
+    },
+    {
+      "path": "specs/008-duckdb2-async-io/tasks.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "889980a48e091392cbe5923b9d8525ea65a777125dfdf62d5f7fc52d7a120963"
+    },
+    {
+      "path": "src/include/duckomo/om_reader.hpp",
+      "matches_implementation_baseline": false,
+      "matches_final_record": true,
+      "current_sha256": "ad9c4595e47f027cd05d9032f6a201855be0dd50d9438524a6bb9155237ed29c"
+    },
+    {
+      "path": "src/om/reader.cpp",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "c090858ecb712121b3e7e2ec4753e56aa8c3aaad0344bdccb671d489be5e96c4"
+    },
+    {
+      "path": "src/scan/read_om.cpp",
+      "matches_implementation_baseline": false,
+      "matches_final_record": true,
+      "current_sha256": "0b57a2db9c087401edb4ece38738a2f75190b8337811200c28faaaa074791c3a"
+    },
+    {
+      "path": "test/native/remote_async_test.cpp",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "00d75f939331a7fc7257f64d76cddedb81516094ad716fe2ba4a48c7cf264b3c"
+    },
+    {
+      "path": ".pi/extensions/README-wake-parent.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "66f0d789f824089bfe57a0078795cba5661ebbb104a2a9953dfb4e520368c03e"
+    },
+    {
+      "path": ".pi/extensions/wake-parent.ts",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "8695af6875e937c4cb6b20a38ff63c2b7ba6d5e40e84d236191e380495feef1c"
+    },
+    {
+      "path": ".pi/templates/speckit-milestone-phases.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "7ac72b45d85b06b4708b905871e225f168de165ec6f863fb4078e730abf253f5"
+    },
+    {
+      "path": "evidence/008/performance-gates/async-full.json",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "95fbacde7b2c9198bb4362307323ae3d53d454a97fe338a82c168e743d698578"
+    },
+    {
+      "path": "evidence/008/performance-gates/async-prefetch4.json",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "80ec025b7fa0c2d8f38ec33e08e888336e406934da09399fe5ab6f79c7d06839"
+    },
+    {
+      "path": "evidence/008/performance-gates/local-median-recheck/summary.json",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "6a6fa30294b763ee8207a4a00efec24e82c246ac420114e176d206f9c81279a6"
+    },
+    {
+      "path": "evidence/008/performance-gates/local-median/summary.json",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "3afd02ab3260e2f05d7443f2488c1a952fa331e4441afb9c2b852408aa6134ab"
+    },
+    {
+      "path": "evidence/008/performance-gates/report.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "0667f912cdc265390e64f45445bf71477c93a4eec1a6919e13ffcbc293f33965"
+    },
+    {
+      "path": "specs/009-point-site-nearest-sampling/checklists/requirements.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "156a326743b8a40f2d6444bc92b4f2960c0f6539feaebb55d7ed1df817308fd2"
+    },
+    {
+      "path": "specs/009-point-site-nearest-sampling/spec.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "04bd1e489909ff85c9f0ebd2e5f32ec5b175e49e8921f8217101677fb6707da6"
+    },
+    {
+      "path": "specs/010-read-om-series/checklists/requirements.md",
+      "matches_implementation_baseline": false,
+      "matches_final_record": true,
+      "current_sha256": "c90a95050c15e6205f47d1460dfbea5bc71cb1523aed6629ce8c53bba874a94d"
+    },
+    {
+      "path": "specs/010-read-om-series/contracts/acceptance.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "bfcad5f2b046732480ced10b7cdfeb6c946c53f568beabae98174fb80080fa5b"
+    },
+    {
+      "path": "specs/010-read-om-series/contracts/sql.md",
+      "matches_implementation_baseline": false,
+      "matches_final_record": true,
+      "current_sha256": "b40982c5c760978259c3d0389505bedabdf8de60d5104c6014b96dee9bb8055f"
+    },
+    {
+      "path": "specs/010-read-om-series/data-model.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "323b57859a92518328bf16931a584b8cf3738e79de83b1af8a8eadb3cbb49af8"
+    },
+    {
+      "path": "specs/010-read-om-series/plan.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "07cf25d90572622e13c6073fa53ab59c20a9b676af5aa0201812fb53c8aea23b"
+    },
+    {
+      "path": "specs/010-read-om-series/quickstart.md",
+      "matches_implementation_baseline": false,
+      "matches_final_record": true,
+      "current_sha256": "357daa1d31d18d60be108309694d86c519208b4d2712d60a81e21d3a2dbd7137"
+    },
+    {
+      "path": "specs/010-read-om-series/research.md",
+      "matches_implementation_baseline": true,
+      "matches_final_record": true,
+      "current_sha256": "4d6d67227e2ac50de644d9ad8e774c33ae552fcb95b9581ce5518a8027530756"
+    },
+    {
+      "path": "specs/010-read-om-series/spec.md",
+      "matches_implementation_baseline": false,
+      "matches_final_record": true,
+      "current_sha256": "160bf19008d67d03ab24db3dbb88fff9224801eecde2787a25b28b7372821f4c"
+    },
+    {
+      "path": "specs/010-read-om-series/tasks.md",
+      "matches_implementation_baseline": false,
+      "matches_final_record": true,
+      "current_sha256": "6279d905a6fba3a1810f61cdba622908c56f0d42005915d9dcfc5854a6ed637c"
+    }
+  ]
+}

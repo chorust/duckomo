@@ -2,7 +2,7 @@
 
 本地扫描、列裁剪和规则网格空间查询（Phase 0–3）已实现。Phase 4 的维度语义已实现；Phase 5 的官方 HTTPFS 远程与并行路径已通过 v1.5.4/v1.5.5/v1.5.6 的受控验证，现行声明范围的独立 AI 复现与最终映射已完成，见[003 当前交付](../evidence/003-dimensions-remote-parallel/current-delivery-20261021.md)。Phase 6 的 [004 多网格](../specs/004-multi-grid-selection/spec.md) 已在批准的四定义/五对象、三版本/AArch64 范围通过 H0–H9 与独立 AI H9，见[最终验收](../specs/004-multi-grid-selection/evidence/current-20261021/report.md)。[005 Polygon 区域读取](../specs/005-polygon-region-statistics/spec.md) 当前源码已通过三版本P0–P7声明范围验收，含独立AI复现；固定窗口成本按负责人批准的非递增规则，见[最终记录](../specs/005-polygon-region-statistics/evidence/current-20261020.md)。[006 nearest polygon sampling](../specs/006-region-nearest-sampling/spec.md) 已在既有 `read_om_regions` 中实现，points 默认兼容；006 已完成声明范围内的 N0–N7 验收：Linux AArch64、DuckDB v1.5.4/v1.5.5/v1.5.6、合成规则球面网格与固定 NCEP GFS025；真实输入仅私有留存、不公开分发，N7由独立用户执行。 [验收报告](../specs/006-region-nearest-sampling/evidence/final.md)。
 
-2026-10-22 当前补记：005 合计预算修复与现行接口已同步，见[修复及验证](../evidence/code-audit-remediation-20261021.md)。003 R21/R22 已完成，独立验收为 AI、非人工，fresh 执行限 v1.5.4，三版本工程运行分别绑定；性能失败与波动保留，不承诺普遍加速。004 当前 H0–H9 已通过，C004-01–04 全部关闭，四定义冻结范围为 remote-benefit-validated，见[当前报告](../specs/004-multi-grid-selection/evidence/current-20261021/report.md)，优先于下列较早的 H1/H2 状态说明。窄范围 [007 bilinear](../specs/007-region-bilinear-sampling/spec.md) 已立 Draft，限定规则经纬度/单个连续标量；下一步冻结计划与契约，尚未实现。
+2026-10-22 当前补记：005 合计预算修复与现行接口已同步，见[修复及验证](../evidence/code-audit-remediation-20261021.md)。003 R21/R22 已完成，独立验收为 AI、非人工，fresh 执行限 v1.5.4，三版本工程运行分别绑定；性能失败与波动保留，不承诺普遍加速。004 当前 H0–H9 已通过，C004-01–04 全部关闭，四定义冻结范围为 remote-benefit-validated，见[当前报告](../specs/004-multi-grid-selection/evidence/current-20261021/report.md)，优先于下列较早的 H1/H2 状态说明。窄范围 [007 bilinear](../specs/007-region-bilinear-sampling/spec.md) 已立 Draft，限定规则经纬度/单个连续标量；**须等 008 收口后再开 plan/契约**，尚未实现。[008 DuckDB 2.0 / 远程合并与异步](../specs/008-duckdb2-async-io/spec.md) 仍为 in-progress：引擎兼容与 v0.3.5-rc.1 预发布已验证；**SC-006 ≥20% 异步加速已于 2026-11-05 放宽为 won’t meet**（默认 async ~0%，跨批复用已修，批间 overlap 未实现；见 [performance gates](../evidence/008/performance-gates/report.md)）；SC-009 已达标；其余 SC/任务未齐，**不宣称 Spec 008 完成**。
 
 ## 阶段
 
@@ -18,7 +18,7 @@
 | **005 — Polygon 区域读取** | 当前声明范围验收完成，P0–P7通过 | 三版本/AArch64固定窗口、17项sanitizer、独立AI P7；每目标三项成本均不增加且至少一项下降，见[最终报告](../specs/005-polygon-region-statistics/evidence/current-20261020.md)；非人工、无全域收益声明 |
 | **006 — 区域最近邻采样** | 声明范围内验收完成，N0–N7通过 | points/nearest、状态/来源与三版本验证通过；私有真实输入和独立用户复现见[最终报告](../specs/006-region-nearest-sampling/evidence/final.md) |
 | **7 — 科学计算** | 计划中 | 独立设计 `om_slice`、`om_reduce`、`om_interp`、`om_regrid` |
-| **8 — 跨 chunk 时间序列入口** | 待评审提案；未立项、未实现 | `read_om_series` 按 model 登记的 chunk 时间参数把任意时间窗展开为多个 `data/` 布局 `chunk_*.om` 对象并按 `valid_time` 对齐拼接，用户无需知道目标时间落在哪个 chunk；设计细节见下节 |
+| **8 — 跨 chunk 时间序列入口** | 开发版；当前源码验收在声明范围内 PASS | `read_om_series` 按冻结 temporal registry 或显式参数把时间窗展开为多个 `data/` 布局 `chunk_*.om` 对象；仅 Linux AArch64 / linux_arm64 与 DuckDB v1.5.4、v1.5.5、v1.5.6、v2.0.0 四个 pinned pair，见 [当前 follow-up 报告](../specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/report.md)；尚不属于发布支持项 |
 
 **历史阶段说明（2026-10-10，004 状态由上列 2026-10-22 最终验收替代）：** Phase 4 的语义维度和本地筛选已实现。Phase 5 已切换为官方 HTTPFS，跨来源结果、1/2/4 worker、冷局部收益、访问变化、故障恢复、取消及隔离有三版本受控记录；旧自有缓存及其 SQL 已删除，旧 G5 为 superseded，历史失败不改写。Phase 6 的 version=1 新网格与 source/grid-info 已实现；三类真实投影样本的全量坐标/值子比较及 source-only 辅助检查已通过；按 [2026-10-10 pinned producer 参考决定](../specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md)，producer 源码即参考，四个 Open-Meteo 定义登记 coordinate-value-validated；完整 H1/H2 尚未通过。**2026-10-10 修订**：按 [负责人批准的范围修订](../specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md)，N160/N320/N 区域真实样本本轮跳过，不阻塞当前范围收口，定义及合成回归保留。`ecmwf_ifs` O1280（HRES）为本轮 Gaussian 验收目标，已登记 coordinate-value-validated（与 Open-Meteo 发布对象一致，非 ECMWF 原生 GRIB 等价）；[本地真实 domain/空间/抽样时间查询](../specs/004-multi-grid-selection/evidence/baseline-local/o1280-real-local-20261010/final.md) 已留证并通过，完整远程 gate 与 H9 仍开放，详见 [网格证据表](grid-domains.md)。2.0 开发版已退出本轮范围。科学算子仍独立于扫描入口实现；普通 `read_om` 继续直接输出 DuckDB Vector。
 
@@ -26,9 +26,9 @@
 
 针对小行政区在粗网格上没有内部采样点的情况，nearest 已按[空间采样与区域计算设计提案](plans/2026-10-14-spatial-sampling-and-computation.md)和[生态调研](research/2026-10-14-spatial-computation-ecosystem.md)实现在现有 `read_om_regions` 内，以 `method` 选择处理方式：省略或 points 保持原始区内点；nearest 对每个区域和非空间轴组合选取代表点最近的规则球面网格源值。`read_om` 继续用于普通网格读取或坐标范围筛选；已有 polygon 的查询使用 `read_om_regions`。功能与验收范围见 [006 spec](../specs/006-region-nearest-sampling/spec.md)、[实施计划及契约](../specs/006-region-nearest-sampling/plan.md)、[65项任务](../specs/006-region-nearest-sampling/tasks.md) 和 [evidence](../specs/006-region-nearest-sampling/evidence/)；006 已完成声明范围内的 N0–N7 验收：Linux AArch64、DuckDB v1.5.4/v1.5.5/v1.5.6、合成规则球面网格与固定 NCEP GFS025；真实输入仅私有留存、不公开分发，N7由独立用户执行。 [验收报告](../specs/006-region-nearest-sampling/evidence/final.md)。
 
-## Phase 8 — 跨 chunk 时间序列入口（待评审提案）
+## Phase 8 — 跨 chunk 时间序列入口（开发中；声明范围验收通过）
 
-> 以下保留设计讨论，不是已批准的立项或冻结契约。接口、参数表和默认跳过 404 等政策均待独立评审；“实测”描述尚未附完整冻结执行记录，不能作为验收证据。当前 `read_om` 仍只接受单对象，本次 O1280 修订不实施 series 入口。
+> 以下保留原始提案作为设计来源，不是当前冻结契约或验收证据。`read_om_series` 已在开发源码实现；当前契约见 [Feature 010 spec](../specs/010-read-om-series/spec.md) 与 [SQL contract](../specs/010-read-om-series/contracts/sql.md)。当前源码验收仅对 Linux AArch64 (`linux_arm64`) 和 DuckDB v1.5.4、v1.5.5、v1.5.6、v2.0.0 四个 pinned pair 的声明范围 PASS。真实 producer 数据仅为两个相邻 IFS025 `temperature_2m` 对象、一个点和一个边界窗口；其他十个注册模型仅有 provenance 与 synthetic runtime equivalence，N160 为合成数据。当前报告：[2026-11-06 follow-up](../specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/report.md)。
 
 ### 问题
 
@@ -53,7 +53,7 @@ chunk 起始时刻 = Unix epoch + chunk序号 × chunk_time_length × 步长
 | `meteofrance_arpege_world025` | 210 | 1h | ~9 天 |
 | `ukmo_global_deterministic_10km` | 193 | 1h | ~8 天 |
 
-当前用户必须自行完成“目标时间 → chunk 序号 → 拼 URI → 手动声明 `axes` 时间起点”四步，且跨 chunk 边界的大窗口需要手写 UNION ALL（已实测 `chunk_921∪922` 可无缝拼接，见下）。
+在开发版 `read_om_series` 可用前，用户必须自行完成“目标时间 → chunk 序号 → 拼 URI → 手动声明 `axes` 时间起点”四步，跨 chunk 边界的大窗口需要手写 UNION ALL。当前接口解决了该工作流；本节后续引用的 O1280/`chunk_921∪922` 观察仍只是历史背景，不是当前源码的 S7 验收。
 
 ### 目标接口（草案）
 

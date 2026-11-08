@@ -78,6 +78,9 @@ set(EXTENSION_SOURCES
     src/scan/axis_selection.cpp
     src/scan/projection.cpp
     src/scan/read_om.cpp
+    src/scan/read_om_series.cpp
+    src/scan/series_plan.cpp
+    src/scan/series_registry.cpp
 	src/scan/region_input.cpp
 	src/scan/region_geometry.cpp
 	src/scan/grid_info.cpp

@@ -16,12 +16,13 @@ duckomo is a DuckDB C++ extension that queries Float32 arrays in [Open-Meteo OM]
 - **Column pruning and spatial selection**: read only output/filter dependencies. Safe geographic, time, and other axis predicates narrow candidates while DuckDB retains the full `WHERE`.
 - **Multiple grid mappings**: regular latitude/longitude, [68 regular domains](docs/regular-domains.md), rotated latitude/longitude, Lambert, stereographic, and reduced Gaussian.
 - **Multiple variables and semantic axes**: align variables by ordered axis identity; support `valid_time`, `level`, `lead_time`, `member`, and `run`, without implicit transposition, broadcasting, or joins.
+- **Cross-chunk time series (development build)**: `read_om_series` composes chunks under one explicit variable-directory prefix and generates UTC `valid_time`. Current-source acceptance is **PASS for the declared scope only**: Linux AArch64 (`linux_arm64`) and the four pinned DuckDB pairs. See the current report below for the real-data and synthetic-only boundaries.
 - **Parallelism and observability**: DuckDB-scheduled scans, thread limits, scan metrics, opt-in `om_source` positions, and `om_grid_info` descriptions.
 - **Polygon-region reads (experimental)**: `read_om_regions` keeps covered grid points by default (`method := 'points'`). Set `method := 'nearest'` to select one nearest grid source for each region representative point and non-spatial axis combination. The representative-point value is not an area mean. Feature 006 has passed N0–N7 for its declared scope: Linux AArch64, DuckDB v1.5.4/v1.5.5/v1.5.6, synthetic regular spherical grids and the frozen NCEP GFS025 case. Raw inputs are retained privately without public redistribution; the human user performed independent N7 validation. [Acceptance evidence](specs/006-region-nearest-sampling/evidence/final.md).
 
-Each input names **one object**, not a directory, glob, or file list. The 005 region entrypoint requires an explicitly loaded spatial extension that matches DuckDB; ordinary `read_om` does not. Callers are responsible for the WKB `grid_lonlat` reference, containment uses planar `covers`, and SQL aggregates are equally weighted. Region acceptance is limited to the [documented 005 scope](specs/005-polygon-region-statistics/evidence/current-20261020.md). Projected/Gaussian acceptance is limited to the frozen objects and versions below; see [supported scope](docs/spec.md) and [grid evidence](docs/grid-domains.md).
+`read_om` still reads **one object per call**; it does not accept directories, globs, or file lists. The development-only `read_om_series` accepts one exact chunk-directory prefix and does not list or glob objects. It is not included in the released extension packages. See the [current Feature 010 follow-up report](specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/report.md); the 2026-08-03 record and the first 2026-11-06 report remain historical evidence. The 005 region entrypoint requires an explicitly loaded spatial extension that matches DuckDB; ordinary `read_om` does not. Callers are responsible for the WKB `grid_lonlat` reference, containment uses planar `covers`, and SQL aggregates are equally weighted. Region acceptance is limited to the [documented 005 scope](specs/005-polygon-region-statistics/evidence/current-20261020.md). Projected/Gaussian acceptance is limited to the frozen objects and versions below; see [supported scope](docs/spec.md) and [grid evidence](docs/grid-domains.md).
 
-The GitHub tag release matrix is configured for DuckDB v1.5.4, v1.5.5, v1.5.6 and v2.0.0 across four platforms, for 16 development artifacts. DuckDB 2.0.0 compatibility is verified, with four-platform binaries available in [v0.3.5-rc.1](https://github.com/chorust/duckomo/releases/tag/v0.3.5-rc.1). Async I/O remains experimental with no consistent speedup claim. The [2026-10-22 final acceptance](specs/004-multi-grid-selection/evidence/current-20261021/report.md) passes H0–H9 for five frozen objects from `gem_rdps_10km`, `gem_regional`, `aladin_central_europe_2km` and `ecmwf_ifs` on Linux AArch64 with DuckDB v1.5.4/v1.5.5/v1.5.6. All 45 complete HTTP/verified HTTPS/signed S3 pairs pass value comparison and strict reductions in body bytes, value-data bytes and decoded chunks; these definitions are `remote-benefit-validated` only within that scope. H9 was performed by an independent AI that did not implement the product, not a human; builds used changed-TU rebuild/relink. Coordinates follow the [pinned Open-Meteo producer](specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md), without native-GRIB equivalence. Real N160/N320/N-region acceptance remains excluded under the [approved scope amendment](specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md); synthetic regressions remain. This does not validate all 68 regular domains, other objects/platforms or DuckDB 2.0. The Phase 8 cross-chunk entry remains an unapproved proposal.
+The GitHub tag release matrix is configured for DuckDB v1.5.4, v1.5.5, v1.5.6 and v2.0.0 across four platforms, for 16 development artifacts. DuckDB 2.0.0 compatibility is verified, with four-platform binaries available in [v0.3.5-rc.1](https://github.com/chorust/duckomo/releases/tag/v0.3.5-rc.1). Async I/O remains experimental with no consistent speedup claim. The [2026-10-22 final acceptance](specs/004-multi-grid-selection/evidence/current-20261021/report.md) passes H0–H9 for five frozen objects from `gem_rdps_10km`, `gem_regional`, `aladin_central_europe_2km` and `ecmwf_ifs` on Linux AArch64 with DuckDB v1.5.4/v1.5.5/v1.5.6. All 45 complete HTTP/verified HTTPS/signed S3 pairs pass value comparison and strict reductions in body bytes, value-data bytes and decoded chunks; these definitions are `remote-benefit-validated` only within that scope. H9 was performed by an independent AI that did not implement the product, not a human; builds used changed-TU rebuild/relink. Coordinates follow the [pinned Open-Meteo producer](specs/004-multi-grid-selection/contracts/pinned-producer-reference-20261010.md), without native-GRIB equivalence. Real N160/N320/N-region acceptance remains excluded under the [approved scope amendment](specs/004-multi-grid-selection/contracts/gaussian-acceptance-20261010.md); synthetic regressions remain. This does not validate all 68 regular domains or other objects/platforms, and it does not extend this Feature 004 acceptance result to DuckDB 2.0. Feature 010 current-source acceptance is **PASS for the declared scope only**: Linux AArch64 (`linux_arm64`) with pinned DuckDB pairs v1.5.4, v1.5.5, v1.5.6 and v2.0.0. Real producer data covers only two adjacent IFS025 `temperature_2m` objects, one point and one boundary window; the other ten registered models have provenance plus synthetic runtime equivalence only, and N160 is synthetic. Controlled fault runs showed injected faults failed without being silently skipped; under official HTTPFS, HTTP(S) 403/412 surfaced as unknown-status `[transport]` errors. The controlled `corrupt` case served HTTP 200 with `not-an-om-object` and failed at the range-protocol stage, so it does not demonstrate corrupt OM metadata or decode handling. Current evidence is the [follow-up report](specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/report.md); the 2026-08-03 and first 2026-11-06 evidence trees remain historical. `read_om_series` is development-source-only and is not a released feature identity. Feature 008 is **not PASS**; SC-006 remains relaxed and will not meet the original ≥20% gate, and T042/T043 remain unchecked. No broader platform or production-grid support is claimed.
 
 ## Install
 
@@ -39,7 +40,7 @@ The GitHub tag development release matrix is configured for **DuckDB v1.5.4 / v1
 GitHub binaries are unsigned; load only trusted code. Start `duckdb -unsigned`, then install. Release asset names carry the version and platform, and passing the URL directly to `INSTALL` makes DuckDB truncate the extension name at the first `.` (it is stored as `duckomo-v0.duckdb_extension`), so a later `LOAD duckomo` cannot find the file. Download the `.duckdb_extension.gz`, decompress it to the canonical name, and install locally instead:
 
 ```bash
-DUCKOMO_VERSION=v0.3.4                                                    # DuckOMO version
+DUCKOMO_VERSION=v0.3.4   # v0.3.4 for DuckDB v1.5.x; DuckDB v2.0.0 needs v0.3.5-rc.1 (v0.3.4 has no 2.0 package and returns 404)
 DUCKDB_VERSION=$(duckdb -list -noheader :memory: "SELECT version();")      # detected from local DuckDB
 PLATFORM=$(duckdb -list -noheader :memory: "PRAGMA platform;")            # detected from local DuckDB
 
@@ -47,7 +48,7 @@ curl -sfL "https://github.com/chorust/duckomo/releases/download/${DUCKOMO_VERSIO
 ```
 
 ```sql
-INSTALL './duckomo.duckdb_extension';
+INSTALL './duckomo.duckdb_extension';  -- use FORCE INSTALL if an older copy is already installed; plain INSTALL skips it and keeps loading the old file
 LOAD duckomo;
 ```
 
@@ -111,7 +112,7 @@ This example queries a GFS Wave spatial snapshot. Choose an available file from 
 
 ```sql
 SET VARIABLE wave_file =
-  's3://openmeteo/data_spatial/ncep_gfswave025/2026/10/01/0000Z/2026-10-01T0000.om';
+  's3://openmeteo/data_spatial/ncep_gfswave025/2026/10/29/0000Z/2026-10-29T0000.om';
 
 SELECT wave_height, lat, lon, valid_time
 FROM read_om(getvariable('wave_file'), domain := 'ncep_gfswave025')
@@ -120,7 +121,13 @@ WHERE lat BETWEEN 30 AND 40
 LIMIT 10;
 ```
 
-Files with time metadata expose UTC `valid_time`, which you can use in time predicates.
+Files with time metadata expose UTC `valid_time`, which you can use in time predicates. It is UTC; add 8 hours yourself for Beijing time.
+
+The public bucket keeps only recent runs, so dated keys in the examples expire quickly and return HTTP 404. Use the S3 listing API to find a current object key:
+
+```bash
+curl -s 'https://openmeteo.s3.us-west-2.amazonaws.com/?list-type=2&prefix=data_spatial/ncep_gfswave025/2026/10/&delimiter=/'
+```
 
 | Directory | Typical layout | Geographic queries |
 |---|---|---|
@@ -128,9 +135,45 @@ Files with time metadata expose UTC `valid_time`, which you can use in time pred
 | `data_run/` | One forecast run, usually `[lat, lon, time]` | Usually just `domain` |
 | `data/` | Rolling series or static data; samples often lack axis metadata | `domain` + complete `dimensions` |
 
+The first argument of `om_grid_info` is an **object path**, not a domain name; pass `domain` as a named parameter. It reads metadata only and can be used to look up the grid step:
+
+```sql
+SELECT * FROM om_grid_info(
+  's3://openmeteo/data_run/ncep_gfs013/2026/10/29/0000Z/temperature_2m.om',
+  domain := 'ncep_gfs013');
+-- dlat/dlon in the definition JSON is the grid step; an exact coordinate such as lat = 37.45 rarely lands on a grid point, so use a BETWEEN window
+```
+
 `dimensions` accepts a shared axis list or a per-variable MAP. See the [regular-grid guide](docs/regular-domains.md) for directory layouts and more examples.
 
 v0.3.1 supports `variable := 'column_name'` on `read_om`, `read_om_regions`, and `om_grid_info`. It binds one value array, which reduces metadata work for remote files with many variables. Names follow encoded SQL column paths, such as `weird%2Fname%25/value`, with an optional leading slash. A dimensions MAP must contain only the selected array. NULL, empty, missing, or non-value names fail during binding. Scans reuse bound metadata by default; `SET duckomo_revalidate_metadata=true` enables full-tree rereads and comparison of the same selected view.
+
+### Cross-chunk time series (development build)
+
+`read_om_series` reads the signed chunk sequence under one variable-directory prefix and generates each child’s UTC `axes.time`. This local example uses generated synthetic fixtures; create `build/series-fixtures/` with the Feature 010 fixture command first:
+
+```sql
+SELECT value AS temperature, valid_time, lat, lon
+FROM read_om_series(
+  'build/series-fixtures/data/synthetic/temperature',
+  model := 'ecmwf_ifs',
+  chunk_time_length := 4, -- override registered length; omitted time_step inherits the registered 1-hour step
+  dimensions := ['lead', 'point', 'time'],
+  grid := {'nx':3,'ny':2,'lat0':10.0,'lon0':100.0,
+           'dlat':1.0,'dlon':1.0,'order':'lon_fastest'},
+  spatial_axes := ['point'],
+  valid_times := [TIMESTAMP '1970-01-01 03:00:00',
+                  TIMESTAMP '1970-01-01 05:00:00']
+)
+WHERE lat BETWEEN 10 AND 11
+ORDER BY valid_time, lat, lon;
+```
+
+`model` supplies temporal defaults only; it does not infer a `domain`, grid, or variable. `chunk_time_length` and `time_step` overrides take effect independently. An unknown or omitted model requires both. The prefix names one variable directory; file paths, globs, file lists, `data_run/` and `data_spatial/` selectors are unsupported. `dimensions` must fully declare the selected array axes with exactly one `time` axis. The example supplies `spatial_axes` because it uses an explicit `grid`; a single explicit `domain` can be used instead.
+
+A root array is still named `value`; use `value AS temperature` to choose a SQL output alias. Both finite UTC endpoints in `valid_times` are inclusive. Alternatively provide both `start := TIMESTAMP ...` and `"end" := TIMESTAMP ...`. Do not pass `axes`. The default `strict := false` skips only objects confirmed absent during initial open; `strict := true` requires every candidate object. A missing chunk contributes no rows, while a stored NaN remains a row with SQL NULL. Results are not deduplicated, joined, or sorted; add `ORDER BY` when order matters. Cross-variable auto-alignment, run discovery, interpolation, and physical reads merged across adjacent objects are outside this entrypoint.
+
+Feature 010 current-source acceptance is **PASS for the declared scope only**: Linux AArch64 (`linux_arm64`) with pinned DuckDB pairs v1.5.4, v1.5.5, v1.5.6 and v2.0.0. Real producer data covers only two adjacent IFS025 `temperature_2m` objects, one point and one boundary window; the other ten registered models have provenance plus synthetic runtime equivalence only, and N160 is synthetic. Controlled fault runs showed injected faults failed without being silently skipped; under official HTTPFS, HTTP(S) 403/412 surfaced as unknown-status `[transport]` errors. The controlled `corrupt` case served HTTP 200 with `not-an-om-object` and failed at the range-protocol stage, so it does not demonstrate corrupt OM metadata or decode handling. Current evidence is the [follow-up report](specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/report.md); the 2026-08-03 and first 2026-11-06 evidence trees remain historical. `read_om_series` is development-source-only and is not a released feature identity. Feature 008 is **not PASS**; SC-006 remains relaxed and will not meet the original ≥20% gate, and T042/T043 remain unchecked. No broader platform or production-grid support is claimed.
 
 ### Polygon filtering, aggregation, or nearest representative values
 
@@ -156,7 +199,7 @@ PY
 The archive explicitly declares CRS84 (x=longitude, y=latitude), used here as `grid_lonlat`. These are GADM 4.1 boundaries, not a promise of current administrative divisions. Use matching DuckDB, DuckOMO, HTTPFS, and spatial builds:
 
 ```sql
--- Install the matching v0.3.4 package above, then start duckdb -unsigned.
+-- Install the package matching your DuckDB version as above, then start duckdb -unsigned.
 LOAD duckomo;
 INSTALL httpfs; LOAD httpfs;
 INSTALL spatial; LOAD spatial; -- matching DuckDB version; initial install needs network
@@ -175,7 +218,7 @@ SET VARIABLE qinghai_regions = (
 SELECT region_id, count(*) AS grid_points,
        round(avg(temperature_80m), 3) AS mean_celsius
 FROM read_om_regions(
-    's3://openmeteo/data_spatial/ncep_gfs025/2026/10/14/0000Z/2026-10-14T0000.om',
+    's3://openmeteo/data_spatial/ncep_gfs025/2026/10/29/0000Z/2026-10-29T0000.om',
     domain := 'ncep_gfs025', variable := 'temperature_80m',
     regions := getvariable('qinghai_regions'),
     region_crs := 'grid_lonlat')

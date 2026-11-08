@@ -64,8 +64,9 @@ std::vector<std::uint8_t> ReadBinaryFile(const fs::path &path) {
 class MemoryReadAtFile final : public ReadAtFile {
 public:
 	explicit MemoryReadAtFile(std::vector<std::uint8_t> bytes,
-	                          std::shared_ptr<ScanMetrics> metrics = nullptr)
-	    : bytes_(std::move(bytes)), metrics_(std::move(metrics)) {
+	                          std::shared_ptr<ScanMetrics> metrics = nullptr,
+	                          std::string path = "memory://reader-capacity-test")
+	    : bytes_(std::move(bytes)), metrics_(std::move(metrics)), path_(std::move(path)) {
 	}
 
 	std::uint64_t Size() const noexcept override {
@@ -114,7 +115,7 @@ public:
 
 private:
 	std::vector<std::uint8_t> bytes_;
-	std::string path_ = "memory://reader-capacity-test";
+	std::string path_;
 	std::shared_ptr<ScanMetrics> metrics_;
 	mutable std::uint64_t index_reads_ = 0;
 	mutable std::uint64_t data_reads_ = 0;
@@ -384,6 +385,98 @@ void CheckRectangularBatchAvoidsRepeatedChunkDecoding() {
 	std::cout << "rectangular batch decoded chunks: " << row_chunks << " -> " << merged_chunks << '\n';
 }
 
+void CheckRemoteSyncPlannedCacheLifetime() {
+	const auto object = ReadBinaryFile("test/data/raw_large.om");
+	const std::string remote_path = "https://reader-cache-review/object.om";
+	auto file = std::make_unique<MemoryReadAtFile>(object, nullptr, remote_path);
+	auto *observed = file.get();
+	OmV3Reader reader(std::move(file));
+	OmDecoderState state(reader.ReadRootVariable());
+	std::uint64_t maximum_retained_bytes = 0;
+
+	auto reuse_file = std::make_unique<MemoryReadAtFile>(object, nullptr, remote_path);
+	auto *reuse_observed = reuse_file.get();
+	OmV3Reader reuse_reader(std::move(reuse_file));
+	OmDecoderState reuse_state(reuse_reader.ReadRootVariable());
+	float first = 0, adjacent = 0;
+	reuse_reader.DecodeSelection(reuse_state, {0, 0}, {1, 1}, {0, 0}, {1, 1}, &first, sizeof(first), 512, 512);
+	const auto first_data_reads = reuse_observed->DataReads();
+	reuse_reader.DecodeSelection(reuse_state, {0, 1}, {1, 1}, {0, 0}, {1, 1}, &adjacent, sizeof(adjacent), 512, 512);
+	Require(first != adjacent && reuse_observed->DataReads() == first_data_reads,
+	        "remote data_cache must preserve its single-range adjacent-selection reuse");
+	Require(reuse_state.planned_cache.empty(), "remote data_cache reuse must not retain planned-cache entries");
+
+	for (std::uint64_t row = 0; row < 73; row += 7) {
+		const auto rows = std::min<std::uint64_t>(7, 73 - row);
+		std::vector<float> output(static_cast<std::size_t>(rows * 61));
+		reader.DecodeSelection(state, {row, 0}, {rows, 61}, {0, 0}, {rows, 61}, output.data(),
+		                       output.size() * sizeof(float), 512, 512);
+
+		std::uint64_t retained_bytes = state.data_cache ? state.data_cache->size() : 0;
+		for (const auto &entry : state.planned_cache) {
+			if (entry.buffer && entry.buffer != state.data_cache) retained_bytes += entry.buffer->size();
+		}
+		maximum_retained_bytes = std::max(maximum_retained_bytes, retained_bytes);
+		Require(state.planned_cache.empty(),
+		        "remote synchronous decode must release planned-cache entries at the selection boundary");
+		Require(state.planned_cache_scope_depth == 0,
+		        "remote synchronous decode must close its planned-cache scope at the selection boundary");
+		Require(retained_bytes <= state.capacity_bounds.data_buffer_upper_bound_bytes,
+		        "remote synchronous decode may retain only the single reusable data-cache range");
+		std::cout << "  row=" << row << " planned_items=" << state.planned_cache.size()
+		          << " retained_bytes=" << retained_bytes << '\n';
+	}
+
+	Require(observed->DataReads() > 0, "remote-path probe must exercise planned data reads");
+	std::cout << "remote sync retained payload peak: " << maximum_retained_bytes
+	          << " bytes (single range bound " << state.capacity_bounds.data_buffer_upper_bound_bytes << ")\n";
+
+	auto failing_file = std::make_unique<MemoryReadAtFile>(object, nullptr, remote_path);
+	auto *failing_observer = failing_file.get();
+	failing_observer->SetBeforeDataRead([failing_observer] {
+		if (failing_observer->DataReads() == 2) throw std::runtime_error("injected remote data-read failure");
+	});
+	OmV3Reader failing_reader(std::move(failing_file));
+	OmDecoderState failing_state(failing_reader.ReadRootVariable());
+	std::vector<float> failed_output(7 * 61);
+	bool failed = false;
+	try {
+		failing_reader.DecodeSelection(failing_state, {0, 0}, {7, 61}, {0, 0}, {7, 61},
+		                               failed_output.data(), failed_output.size() * sizeof(float), 512, 512);
+	} catch (const std::runtime_error &) {
+		failed = true;
+	}
+	Require(failed, "injected remote read must fail after planned payload allocation");
+	Require(failing_state.planned_cache.empty(),
+	        "remote synchronous failure must release planned-cache entries");
+	Require(failing_state.planned_cache_scope_depth == 0,
+	        "remote synchronous failure must close the planned-cache scope");
+	Require(failing_state.data_cache == nullptr && failing_state.data_range_size == 0,
+	        "failed remote fetch must invalidate the single reusable data-cache range");
+
+	auto cancelled_file = std::make_unique<MemoryReadAtFile>(object, nullptr, remote_path);
+	auto *cancelled_observer = cancelled_file.get();
+	cancelled_observer->SetBeforeDataRead([cancelled_observer] {
+		if (cancelled_observer->DataReads() == 2) {
+			throw duckdb::InterruptException();
+		}
+	});
+	OmV3Reader cancelled_reader(std::move(cancelled_file));
+	OmDecoderState cancelled_state(cancelled_reader.ReadRootVariable());
+	bool interrupted = false;
+	try {
+		cancelled_reader.DecodeSelection(cancelled_state, {0, 0}, {7, 61}, {0, 0}, {7, 61},
+		                                 failed_output.data(), failed_output.size() * sizeof(float), 512, 512);
+	} catch (const duckdb::InterruptException &) {
+		interrupted = true;
+	}
+	Require(interrupted, "injected cancellation must interrupt the remote planned read");
+	Require(cancelled_state.planned_cache.empty() && cancelled_state.planned_cache_scope_depth == 0,
+	        "remote synchronous cancellation must release and close the planned-cache scope");
+	Require(cancelled_state.data_cache == nullptr && cancelled_state.data_range_size == 0,
+	        "cancelled remote fetch must invalidate the single reusable data-cache range");
+}
+
 void CheckBufferReplacementReleasesBeforeAllocation() {
 	using duckdb::duckomo::OmByteBuffer;
 
@@ -412,6 +505,7 @@ int main() {
 		CheckAdjacentSelectionsReuseRanges();
 		CheckRemoteRangesMergeWithinBudget();
 		CheckRectangularBatchAvoidsRepeatedChunkDecoding();
+		CheckRemoteSyncPlannedCacheLifetime();
 		CheckBufferReplacementReleasesBeforeAllocation();
 		std::cout << "reader capacity bounds passed\n";
 		return 0;

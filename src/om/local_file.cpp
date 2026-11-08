@@ -1,11 +1,14 @@
 #include "duckomo/local_file.hpp"
 
+#include <cerrno>
+#include <charconv>
 #include <cctype>
 #include <limits>
 #include <new>
 #include <sstream>
 #include <utility>
 
+#include "duckdb/common/error_data.hpp"
 #include "duckdb/main/client_context.hpp"
 #include "duckdb/main/database.hpp"
 #include "duckomo/om_reader.hpp"
@@ -43,6 +46,23 @@ bool IsGlobPath(const std::string &path) {
 
 std::string FileErrorMessage(const std::string &action, const std::string &path, const std::exception &exception) {
 	return action + " local OM file '" + path + "': " + exception.what();
+}
+
+ReaderErrorCategory LocalFailureCategory(const std::exception &exception) {
+	const auto error = ErrorData(exception);
+	const auto found = error.ExtraInfo().find("errno");
+	if (found == error.ExtraInfo().end()) return ReaderErrorCategory::Unclassified;
+	int error_number = 0;
+	const auto parsed = std::from_chars(found->second.data(), found->second.data() + found->second.size(), error_number);
+	if (parsed.ec != std::errc() || parsed.ptr != found->second.data() + found->second.size())
+		return ReaderErrorCategory::Unclassified;
+	if (error_number == ENOENT) return ReaderErrorCategory::ObjectNotFound;
+	if (error_number == EACCES || error_number == EPERM) return ReaderErrorCategory::AccessDenied;
+	return ReaderErrorCategory::Unclassified;
+}
+
+ReaderErrorStage LocalOpenStage(ScanMetadataStage stage) {
+	return stage == ScanMetadataStage::Bind ? ReaderErrorStage::InitialOpen : ReaderErrorStage::LaterOpen;
 }
 
 } // namespace
@@ -109,14 +129,16 @@ LocalFile LocalFile::Open(ClientContext &context, const std::string &path, std::
 	} catch (const ReaderError &) {
 		throw;
 	} catch (const std::exception &exception) {
-		throw ReaderError(ReaderErrorCode::FileIo, FileErrorMessage("could not inspect", path, exception));
+		throw ReaderError(ReaderErrorCode::FileIo, FileErrorMessage("could not inspect", path, exception), ERROR_OK,
+		                  ReaderErrorCategory::Unclassified, LocalOpenStage(metadata_stage));
 	}
 
 	std::unique_ptr<FileHandle> handle;
 	try {
 		handle = file_system.OpenFile(path, FileFlags::FILE_FLAGS_READ);
 	} catch (const std::exception &exception) {
-		throw ReaderError(ReaderErrorCode::FileIo, FileErrorMessage("could not open", path, exception));
+		throw ReaderError(ReaderErrorCode::FileIo, FileErrorMessage("could not open", path, exception), ERROR_OK,
+		                  LocalFailureCategory(exception), LocalOpenStage(metadata_stage));
 	}
 	if (!handle) {
 		throw ReaderError(ReaderErrorCode::FileIo, "could not open local OM file '" + path + "'");
@@ -132,7 +154,8 @@ LocalFile LocalFile::Open(ClientContext &context, const std::string &path, std::
 	try {
 		size = handle->GetFileSize();
 	} catch (const std::exception &exception) {
-		throw ReaderError(ReaderErrorCode::FileIo, FileErrorMessage("could not read the size of", path, exception));
+		throw ReaderError(ReaderErrorCode::FileIo, FileErrorMessage("could not read the size of", path, exception),
+		                  ERROR_OK, LocalFailureCategory(exception), LocalOpenStage(metadata_stage));
 	}
 	return LocalFile(file_system, std::move(handle), path, static_cast<std::uint64_t>(size), std::move(metrics),
 	                  metadata_stage);
@@ -185,7 +208,8 @@ void LocalFile::ReadRangeInternal(std::uint64_t offset, std::uint64_t size, void
 		}
 		file_system->Read(*handle, destination, static_cast<std::int64_t>(size), static_cast<idx_t>(offset));
 	} catch (const std::exception &exception) {
-		throw ReaderError(ReaderErrorCode::FileIo, FileErrorMessage("could not read", path, exception));
+		throw ReaderError(ReaderErrorCode::FileIo, FileErrorMessage("could not read", path, exception), ERROR_OK,
+		                  LocalFailureCategory(exception), ReaderErrorStage::Read);
 	}
 	if (metrics && phase != nullptr) {
 		if (*phase == ScanReadPhase::Metadata) {

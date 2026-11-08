@@ -1,0 +1,707 @@
+{
+  "common_pins": {
+    "extension_ci_tools": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+    "om_c": "d8855e418e2231ae8439f0c7e840fa3f93b371e3"
+  },
+  "consolidated_report": {
+    "path": "report.md",
+    "sha256": "26df598d9dbd9cd91da9b7b89eca4a1b68e2871a0ceecea520b606de1e2b6c06"
+  },
+  "ended_at_utc": "2026-11-06T06:46:01Z",
+  "evidence_file_hashes": [
+    {
+      "path": "report.md",
+      "sha256": "26df598d9dbd9cd91da9b7b89eca4a1b68e2871a0ceecea520b606de1e2b6c06",
+      "size_bytes": 9811
+    },
+    {
+      "path": "full-regression-status.json",
+      "sha256": "9ed2d7b6738db7c16b618a96fddc43da4d2694404d7740b43b15784b5e8a9975",
+      "size_bytes": 2686
+    },
+    {
+      "path": "official-httpfs-matrix.json",
+      "sha256": "f650947bbfe482e2ce1da14980bbf7a2851978d8fdebabb5b7e37cf6632baa32",
+      "size_bytes": 4083
+    },
+    {
+      "path": "focused-python/commands.json",
+      "sha256": "790f62a72878af54935299d186e831afc082d48157cc1b654f07b7805bb5f2b7",
+      "size_bytes": 2107
+    },
+    {
+      "path": "corrected-source/v1.5.4/build/build-manifest.json",
+      "sha256": "b00bb4cf3ae34934895aaf93a980fee37c2ed1f28bb04aa3e5336dbe767b85d4",
+      "size_bytes": 4764
+    },
+    {
+      "path": "corrected-source/v1.5.4/build/runtime.json",
+      "sha256": "7dc81ebd992075314f48c610c32b951b189090ffec204c4342d2d1bf59e5ce77",
+      "size_bytes": 755
+    },
+    {
+      "path": "corrected-source/v1.5.4/build/build.log",
+      "sha256": "5ad043f7cd1d211ca2aae9c6c0124ba1ff144ed78bb9f9e7dba7bf075e7ee726",
+      "size_bytes": 195827
+    },
+    {
+      "path": "corrected-source/v1.5.4/controlled-remote/manifest.json",
+      "sha256": "41e5a0ccd5457ee22ec4074736dab485c964754ef0b642fb3f4c4bb3d8fe96d2",
+      "size_bytes": 23180933
+    },
+    {
+      "path": "corrected-source/v1.5.4/controlled-remote/report.md",
+      "sha256": "e9ac49d2b8c1d22010e15390f8feccf2d46a32ec0719697aec9d958cd729a468",
+      "size_bytes": 28423
+    },
+    {
+      "path": "corrected-source/v1.5.4/real/manifest.json",
+      "sha256": "d12d53db41757ceeb43018691b297d620a8150609950dba92615a9046efe5b24",
+      "size_bytes": 17625
+    },
+    {
+      "path": "corrected-source/v1.5.4/real/report.md",
+      "sha256": "7f2805ffec63d63471448661c62255d5999291105f1a2a055a4d4c4091382618",
+      "size_bytes": 1990
+    },
+    {
+      "path": "corrected-source/v1.5.4/official-httpfs/result.json",
+      "sha256": "7b527f568779cd00d46439e73647decc6cd0b8f9a6d826642066b71fa12e47b6",
+      "size_bytes": 1009
+    },
+    {
+      "path": "corrected-source/v1.5.4/local/manifest.json",
+      "sha256": "48470c989d7cc733d0f581b18540b1555c453e871041f339ce0b1c0900ab0550",
+      "size_bytes": 6159195
+    },
+    {
+      "path": "corrected-source/v1.5.4/local/report.md",
+      "sha256": "6abbbebfcc0e3cbbfe1e59d2b94e6735f783ac7d52905987d64a677d5671e20c",
+      "size_bytes": 10910
+    },
+    {
+      "path": "corrected-source/v1.5.5/build/build-manifest.json",
+      "sha256": "135d074a4aebe9c7c8f2bc1929812f36e2b3e0c1cc497a09c7c780e45bebe186",
+      "size_bytes": 4764
+    },
+    {
+      "path": "corrected-source/v1.5.5/build/runtime.json",
+      "sha256": "60dbd9800ef6bfddcc9c80d091db00233721e54ec963ef7a86b4e0ed772578da",
+      "size_bytes": 755
+    },
+    {
+      "path": "corrected-source/v1.5.5/build/build.log",
+      "sha256": "adeab46cf2e59b638f4c781b8be3104deefda90e6d5a08c7c70cacd86e848fb6",
+      "size_bytes": 195827
+    },
+    {
+      "path": "corrected-source/v1.5.5/controlled-remote/manifest.json",
+      "sha256": "bcbff382b1f641ea2aad858978651fdb75f1dfae0e135b13fe16e78ae86be1ff",
+      "size_bytes": 23180725
+    },
+    {
+      "path": "corrected-source/v1.5.5/controlled-remote/report.md",
+      "sha256": "f28a62283cd83be7202270e7868131c49968b51e97d92fe216af2c2009343006",
+      "size_bytes": 28423
+    },
+    {
+      "path": "corrected-source/v1.5.5/real/manifest.json",
+      "sha256": "456a47e63e0fefd5bfd5ca6c55c1ff55c014c6b514768d8364125060971f8ca0",
+      "size_bytes": 17625
+    },
+    {
+      "path": "corrected-source/v1.5.5/real/report.md",
+      "sha256": "482d591866a1306583db31c13fdbbf36f6205158a2521f4c8187ef279d15aed9",
+      "size_bytes": 1990
+    },
+    {
+      "path": "corrected-source/v1.5.5/official-httpfs/result.json",
+      "sha256": "903360f7d5e9622cf8f368175e1c09da4077b356a3d7bef686d087f9bddde4f6",
+      "size_bytes": 1009
+    },
+    {
+      "path": "corrected-source/v1.5.5/local/manifest.json",
+      "sha256": "a71966c29bba595872f7e6760d837310693341ef203abfed0a32f4d33ee9124b",
+      "size_bytes": 6159035
+    },
+    {
+      "path": "corrected-source/v1.5.5/local/report.md",
+      "sha256": "c47d364952a801958d19dcb2f4d7fef4bd3c9242042e480d6ce57cc66afec01a",
+      "size_bytes": 10910
+    },
+    {
+      "path": "corrected-source/v1.5.6/build/build-manifest.json",
+      "sha256": "4564fc1e13ef78aad3c060047508c3c46484b8cf24efd74cf03eaba08192d421",
+      "size_bytes": 4764
+    },
+    {
+      "path": "corrected-source/v1.5.6/build/runtime.json",
+      "sha256": "cc67d1279c8f02cc2fa59911f32617b63f2ae4220f994b2057430a135ca05bb6",
+      "size_bytes": 755
+    },
+    {
+      "path": "corrected-source/v1.5.6/build/build.log",
+      "sha256": "d831af3d98c877c6fd5fc370ea6b0b5856576124682555fbcb9c258f5090e133",
+      "size_bytes": 195945
+    },
+    {
+      "path": "corrected-source/v1.5.6/controlled-remote/manifest.json",
+      "sha256": "c08b5ce3a3685528d91ca1986cdbb3d49c38433a34d7a1ccd33734ad28953d75",
+      "size_bytes": 23166817
+    },
+    {
+      "path": "corrected-source/v1.5.6/controlled-remote/report.md",
+      "sha256": "8d7e67dee850db671cb47c60e64141f8da952e7e9c32bab3f41c33af7520c63b",
+      "size_bytes": 28423
+    },
+    {
+      "path": "corrected-source/v1.5.6/real/manifest.json",
+      "sha256": "574b8b0da605fcae7a5ba0f8493b5aceddbb4f2ff57ba54a7f89ad55a1dc5e06",
+      "size_bytes": 17623
+    },
+    {
+      "path": "corrected-source/v1.5.6/real/report.md",
+      "sha256": "d386fb36e79ba858e9fa7fa0fffb324d26edbd33b03899bca6c4914846f38c5b",
+      "size_bytes": 1990
+    },
+    {
+      "path": "corrected-source/v1.5.6/official-httpfs/result.json",
+      "sha256": "2ca14a0df260be6795ba0ebe75d9297641d37301ebc48357d1bb762fb5347fc3",
+      "size_bytes": 1009
+    },
+    {
+      "path": "corrected-source/v1.5.6/local/manifest.json",
+      "sha256": "ae7284565469c94153207efd03749b7ec4a290324489ad221dfacc140acf0b17",
+      "size_bytes": 6158991
+    },
+    {
+      "path": "corrected-source/v1.5.6/local/report.md",
+      "sha256": "7d63777765c4e37122e9c8e697810e128acae35d14ca9158fedd45052f0b6495",
+      "size_bytes": 10910
+    },
+    {
+      "path": "corrected-source/v2.0.0/build/build-manifest.json",
+      "sha256": "d4843f6b580cee31133f81740b3e9403015aaeaede1912eed960f2a8966ceefc",
+      "size_bytes": 4767
+    },
+    {
+      "path": "corrected-source/v2.0.0/build/runtime.json",
+      "sha256": "dcab89c16844c1520dea7a8161588c7c6ee867ac53744034315b8e6f01440595",
+      "size_bytes": 759
+    },
+    {
+      "path": "corrected-source/v2.0.0/build/build.log",
+      "sha256": "b0beb9b2da49dba14ff156b9b0c4b0f3445281348f01950685f4671998538025",
+      "size_bytes": 293856
+    },
+    {
+      "path": "corrected-source/v2.0.0/controlled-remote/manifest.json",
+      "sha256": "9dad8ac1bf49dcc6b02a9d56d422b7aa7ecd745daaf0f25d2a82a8c0a4a82273",
+      "size_bytes": 23175111
+    },
+    {
+      "path": "corrected-source/v2.0.0/controlled-remote/report.md",
+      "sha256": "8050c0848c4ca29fd4eeeec35c6a0c0e6bdd38f662686c7c5938b2ee1e620194",
+      "size_bytes": 28423
+    },
+    {
+      "path": "corrected-source/v2.0.0/real/manifest.json",
+      "sha256": "61413ed7293922cb1f4b95a5f5ba4fe49896f58b7eff2b3673db27601bd7546c",
+      "size_bytes": 17723
+    },
+    {
+      "path": "corrected-source/v2.0.0/real/report.md",
+      "sha256": "fcb438c11bb322a991b487b1104d19bf11eb6f7544a8d18126705d4deefd1d41",
+      "size_bytes": 1990
+    },
+    {
+      "path": "corrected-source/v2.0.0/official-httpfs/result.json",
+      "sha256": "0bc14a0cd43e81afb9b7882b99f87f1280d2a161234a562494171d6d06334095",
+      "size_bytes": 1009
+    },
+    {
+      "path": "corrected-source/v2.0.0/local-corrected/manifest.json",
+      "sha256": "af6fad7aa6c5dc7a6c6173d15a945a04efd2b194b5ac39f172cbd3de8393ca0c",
+      "size_bytes": 6168034
+    },
+    {
+      "path": "corrected-source/v2.0.0/local-corrected/report.md",
+      "sha256": "080e96b902359a591d47ab66fd7278e5bc23d9b0dcff3a6759f4965adaff8403",
+      "size_bytes": 10920
+    }
+  ],
+  "feature": "010-read-om-series",
+  "feature_008": {
+    "acceptance_evaluated": false,
+    "pass_claimed": false
+  },
+  "fixture_provenance": {
+    "official_writer_roundtrip": "passed",
+    "registered_model_count": 11,
+    "registry_models_path": "test/data/series/models.json",
+    "registry_models_sha256": "e3dc7e177cdf6c63b70a28933b8efa8769e81f7329d5f8f368173bb8d4ce4cf0"
+  },
+  "focused_python": {
+    "all_commands_exit_zero": true,
+    "commands_manifest": "focused-python/commands.json"
+  },
+  "full_regression_status_path": "full-regression-status.json",
+  "gates": {
+    "S0": "passed",
+    "S1": "passed",
+    "S2": "passed",
+    "S3": "passed",
+    "S4": "passed",
+    "S5": "passed",
+    "S6": "passed",
+    "S7": "passed"
+  },
+  "git_head": "80ebe4bac2fa7b2fc29fd1c44cb55985baa6b9f9",
+  "host_platform": "Linux 6.17.0-1029-nvidia aarch64",
+  "limitations": [
+    "Acceptance is limited to Linux AArch64 and the four recorded pinned pairs.",
+    "Real producer validation covers two adjacent public ECMWF IFS025 objects, one point, and the captured boundary window.",
+    "Synthetic registry equivalence does not establish real-data validity for the other ten models.",
+    "No Feature 008 PASS or broad producer-data support is claimed."
+  ],
+  "pairs": [
+    {
+      "build_id": "19b0d53c9b42e73c00d210f4d2b99736566fad20b0ce582673d8552f325c804d",
+      "build_manifest": {
+        "path": "corrected-source/v1.5.4/build/build-manifest.json",
+        "sha256": "b00bb4cf3ae34934895aaf93a980fee37c2ed1f28bb04aa3e5336dbe767b85d4",
+        "size_bytes": 4764
+      },
+      "controlled_remote": {
+        "evidence_directory": "corrected-source/v1.5.4/controlled-remote",
+        "expected_sc004_model_transport_cells": 33,
+        "fixture_manifest_sha256": "8b06774549ff9435537323ec2d59352d5fb508aa4448a854bf341c53e5129cd6",
+        "gates": {
+          "S3": "passed",
+          "S4": "passed",
+          "S5": "passed",
+          "S6": "passed",
+          "SC-004": "passed"
+        },
+        "passed_scenarios": 117,
+        "sc004_model_transport_cells": 33,
+        "scenario_count": 117,
+        "status": "passed"
+      },
+      "duckdb_commit": "08e34c447bae34eaee3723cac61f2878b6bdf787",
+      "duckomo_sha256": "703df1cc7a7c493bcf8e2fc4e3c37480f482081f476808e3dbcd14d0142701b0",
+      "extension_ci_tools_commit": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+      "extension_source_sha256": "8f1f2624fc64951aa42e35625f90c7008ff18672c4e114000dfada4c7e6bef6e",
+      "full_regression": {
+        "command": [
+          "bash",
+          "scripts/validate.sh",
+          "--matrix",
+          "test/data/grids/version-matrix.json",
+          "--pair",
+          "v1.5.4",
+          "--output-root",
+          "build/series-acceptance-sc004-corrected-20261106",
+          "--local-only"
+        ],
+        "cwd": "/home/blizhan/repo/github/duckomo",
+        "ended_at_utc": "2026-11-06T06:41:10Z",
+        "exit_code": 0,
+        "log": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.4/full-regression-final.log",
+        "started_at_utc": "2026-11-06T06:39:35Z"
+      },
+      "local": {
+        "evidence_directory": "corrected-source/v1.5.4/local",
+        "fixture_manifest_sha256": "8b06774549ff9435537323ec2d59352d5fb508aa4448a854bf341c53e5129cd6",
+        "gates": {
+          "S1": "passed",
+          "S2": "passed",
+          "S5": "passed",
+          "S6": "passed",
+          "SC-004": "passed"
+        },
+        "s1_scenarios": 7,
+        "s2_cases": 46,
+        "sc004_models": true
+      },
+      "matrix": "test/data/grids/version-matrix.json",
+      "official_cli_sha256": "513b573b5ad3a94ad2c0668b1ccefb5f281b6f7aa2a5e2ff057825473848e69a",
+      "official_httpfs_native": {
+        "evidence": {
+          "path": "corrected-source/v1.5.4/official-httpfs/result.json",
+          "sha256": "7b527f568779cd00d46439e73647decc6cd0b8f9a6d826642066b71fa12e47b6",
+          "size_bytes": 1009
+        },
+        "exit_code": 0,
+        "summary": "official_httpfs_test: actual HTTPFS diagnostics/redaction, cancellation/recovery and connection isolation passed"
+      },
+      "official_httpfs_sha256": "6d30a487968cbe5553b7272fd5bad0e4485c4117db96e21fd1e5e2a225a5a538",
+      "om_c_commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+      "pair": "v1.5.4",
+      "real_object_s7": {
+        "actual_matches_frozen_oracle": true,
+        "actual_matches_manual_union": true,
+        "evidence_directory": "corrected-source/v1.5.4/real",
+        "row_count": 2,
+        "status": "passed",
+        "two_way_except_all_empty": true
+      },
+      "runtime_manifest": {
+        "path": "corrected-source/v1.5.4/build/runtime.json",
+        "sha256": "7dc81ebd992075314f48c610c32b951b189090ffec204c4342d2d1bf59e5ce77",
+        "size_bytes": 755
+      },
+      "sanitizer_checks": {
+        "build_log": {
+          "path": "corrected-source/v1.5.4/build/build.log",
+          "sha256": "5ad043f7cd1d211ca2aae9c6c0124ba1ff144ed78bb9f9e7dba7bf075e7ee726",
+          "size_bytes": 195827
+        },
+        "passed": true,
+        "tests_failed": 0,
+        "tests_passed": 14
+      },
+      "status": "passed"
+    },
+    {
+      "build_id": "ccfa7772a2ed17bc4c9366d95fdc46ecb4ff5d1ce38835e371446983aae40021",
+      "build_manifest": {
+        "path": "corrected-source/v1.5.5/build/build-manifest.json",
+        "sha256": "135d074a4aebe9c7c8f2bc1929812f36e2b3e0c1cc497a09c7c780e45bebe186",
+        "size_bytes": 4764
+      },
+      "controlled_remote": {
+        "evidence_directory": "corrected-source/v1.5.5/controlled-remote",
+        "expected_sc004_model_transport_cells": 33,
+        "fixture_manifest_sha256": "8b06774549ff9435537323ec2d59352d5fb508aa4448a854bf341c53e5129cd6",
+        "gates": {
+          "S3": "passed",
+          "S4": "passed",
+          "S5": "passed",
+          "S6": "passed",
+          "SC-004": "passed"
+        },
+        "passed_scenarios": 117,
+        "sc004_model_transport_cells": 33,
+        "scenario_count": 117,
+        "status": "passed"
+      },
+      "duckdb_commit": "d8cdaa33fda8df955cc76ef58a280f68f4cd43fa",
+      "duckomo_sha256": "2c981c7b1c372ec2f3f1e28212821c7359fcea53345fb427da41bfe027b78268",
+      "extension_ci_tools_commit": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+      "extension_source_sha256": "8f1f2624fc64951aa42e35625f90c7008ff18672c4e114000dfada4c7e6bef6e",
+      "full_regression": {
+        "command": [
+          "bash",
+          "scripts/validate.sh",
+          "--matrix",
+          "test/data/grids/version-matrix.json",
+          "--pair",
+          "v1.5.5",
+          "--output-root",
+          "build/series-acceptance-sc004-corrected-20261106",
+          "--local-only"
+        ],
+        "cwd": "/home/blizhan/repo/github/duckomo",
+        "ended_at_utc": "2026-11-06T06:42:47Z",
+        "exit_code": 0,
+        "log": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.5/full-regression-final.log",
+        "started_at_utc": "2026-11-06T06:41:10Z"
+      },
+      "local": {
+        "evidence_directory": "corrected-source/v1.5.5/local",
+        "fixture_manifest_sha256": "8b06774549ff9435537323ec2d59352d5fb508aa4448a854bf341c53e5129cd6",
+        "gates": {
+          "S1": "passed",
+          "S2": "passed",
+          "S5": "passed",
+          "S6": "passed",
+          "SC-004": "passed"
+        },
+        "s1_scenarios": 7,
+        "s2_cases": 46,
+        "sc004_models": true
+      },
+      "matrix": "test/data/grids/version-matrix.json",
+      "official_cli_sha256": "9882c99a9804407de82c0edb1816d7667733d37d771a98eb23ad5f6a8d37acb1",
+      "official_httpfs_native": {
+        "evidence": {
+          "path": "corrected-source/v1.5.5/official-httpfs/result.json",
+          "sha256": "903360f7d5e9622cf8f368175e1c09da4077b356a3d7bef686d087f9bddde4f6",
+          "size_bytes": 1009
+        },
+        "exit_code": 0,
+        "summary": "official_httpfs_test: actual HTTPFS diagnostics/redaction, cancellation/recovery and connection isolation passed"
+      },
+      "official_httpfs_sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9",
+      "om_c_commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+      "pair": "v1.5.5",
+      "real_object_s7": {
+        "actual_matches_frozen_oracle": true,
+        "actual_matches_manual_union": true,
+        "evidence_directory": "corrected-source/v1.5.5/real",
+        "row_count": 2,
+        "status": "passed",
+        "two_way_except_all_empty": true
+      },
+      "runtime_manifest": {
+        "path": "corrected-source/v1.5.5/build/runtime.json",
+        "sha256": "60dbd9800ef6bfddcc9c80d091db00233721e54ec963ef7a86b4e0ed772578da",
+        "size_bytes": 755
+      },
+      "sanitizer_checks": {
+        "build_log": {
+          "path": "corrected-source/v1.5.5/build/build.log",
+          "sha256": "adeab46cf2e59b638f4c781b8be3104deefda90e6d5a08c7c70cacd86e848fb6",
+          "size_bytes": 195827
+        },
+        "passed": true,
+        "tests_failed": 0,
+        "tests_passed": 14
+      },
+      "status": "passed"
+    },
+    {
+      "build_id": "da4b62d463745dafef6d0c113d5235798c460be8e856776cc29fd1af782de54a",
+      "build_manifest": {
+        "path": "corrected-source/v1.5.6/build/build-manifest.json",
+        "sha256": "4564fc1e13ef78aad3c060047508c3c46484b8cf24efd74cf03eaba08192d421",
+        "size_bytes": 4764
+      },
+      "controlled_remote": {
+        "evidence_directory": "corrected-source/v1.5.6/controlled-remote",
+        "expected_sc004_model_transport_cells": 33,
+        "fixture_manifest_sha256": "8b06774549ff9435537323ec2d59352d5fb508aa4448a854bf341c53e5129cd6",
+        "gates": {
+          "S3": "passed",
+          "S4": "passed",
+          "S5": "passed",
+          "S6": "passed",
+          "SC-004": "passed"
+        },
+        "passed_scenarios": 117,
+        "sc004_model_transport_cells": 33,
+        "scenario_count": 117,
+        "status": "passed"
+      },
+      "duckdb_commit": "069cc9f9b5be802405797faecc284961b07c70ef",
+      "duckomo_sha256": "50ceb367f019195d03b5287d189e8db66bc8abdf12f7ce65612a0cb5c2509add",
+      "extension_ci_tools_commit": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+      "extension_source_sha256": "8f1f2624fc64951aa42e35625f90c7008ff18672c4e114000dfada4c7e6bef6e",
+      "full_regression": {
+        "command": [
+          "bash",
+          "scripts/validate.sh",
+          "--matrix",
+          "test/data/grids/version-matrix.json",
+          "--pair",
+          "v1.5.6",
+          "--output-root",
+          "build/series-acceptance-sc004-corrected-20261106",
+          "--local-only"
+        ],
+        "cwd": "/home/blizhan/repo/github/duckomo",
+        "ended_at_utc": "2026-11-06T06:44:22Z",
+        "exit_code": 0,
+        "log": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v1.5.6/full-regression-final.log",
+        "started_at_utc": "2026-11-06T06:42:47Z"
+      },
+      "local": {
+        "evidence_directory": "corrected-source/v1.5.6/local",
+        "fixture_manifest_sha256": "8b06774549ff9435537323ec2d59352d5fb508aa4448a854bf341c53e5129cd6",
+        "gates": {
+          "S1": "passed",
+          "S2": "passed",
+          "S5": "passed",
+          "S6": "passed",
+          "SC-004": "passed"
+        },
+        "s1_scenarios": 7,
+        "s2_cases": 46,
+        "sc004_models": true
+      },
+      "matrix": "test/data/grids/version-matrix.json",
+      "official_cli_sha256": "c0ac0b79e243ee312b3af29c34ac0b94e518aa44c4345036d5d96c1c042c9d48",
+      "official_httpfs_native": {
+        "evidence": {
+          "path": "corrected-source/v1.5.6/official-httpfs/result.json",
+          "sha256": "2ca14a0df260be6795ba0ebe75d9297641d37301ebc48357d1bb762fb5347fc3",
+          "size_bytes": 1009
+        },
+        "exit_code": 0,
+        "summary": "official_httpfs_test: actual HTTPFS diagnostics/redaction, cancellation/recovery and connection isolation passed"
+      },
+      "official_httpfs_sha256": "ae940d800b7f938a4848d0eebcffb28dda0bbed76987f11dc55faa6d1a86db0d",
+      "om_c_commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+      "pair": "v1.5.6",
+      "real_object_s7": {
+        "actual_matches_frozen_oracle": true,
+        "actual_matches_manual_union": true,
+        "evidence_directory": "corrected-source/v1.5.6/real",
+        "row_count": 2,
+        "status": "passed",
+        "two_way_except_all_empty": true
+      },
+      "runtime_manifest": {
+        "path": "corrected-source/v1.5.6/build/runtime.json",
+        "sha256": "cc67d1279c8f02cc2fa59911f32617b63f2ae4220f994b2057430a135ca05bb6",
+        "size_bytes": 755
+      },
+      "sanitizer_checks": {
+        "build_log": {
+          "path": "corrected-source/v1.5.6/build/build.log",
+          "sha256": "d831af3d98c877c6fd5fc370ea6b0b5856576124682555fbcb9c258f5090e133",
+          "size_bytes": 195945
+        },
+        "passed": true,
+        "tests_failed": 0,
+        "tests_passed": 14
+      },
+      "status": "passed"
+    },
+    {
+      "build_id": "7202d65f2f8bf615349bbd87f64d2979c9ee65d6731b8dded234bdb448e91556",
+      "build_manifest": {
+        "path": "corrected-source/v2.0.0/build/build-manifest.json",
+        "sha256": "d4843f6b580cee31133f81740b3e9403015aaeaede1912eed960f2a8966ceefc",
+        "size_bytes": 4767
+      },
+      "controlled_remote": {
+        "evidence_directory": "corrected-source/v2.0.0/controlled-remote",
+        "expected_sc004_model_transport_cells": 33,
+        "fixture_manifest_sha256": "8b06774549ff9435537323ec2d59352d5fb508aa4448a854bf341c53e5129cd6",
+        "gates": {
+          "S3": "passed",
+          "S4": "passed",
+          "S5": "passed",
+          "S6": "passed",
+          "SC-004": "passed"
+        },
+        "passed_scenarios": 117,
+        "sc004_model_transport_cells": 33,
+        "scenario_count": 117,
+        "status": "passed"
+      },
+      "duckdb_commit": "d54cbbe3df17e8e5ce68312f483b4155836112aa",
+      "duckomo_sha256": "0af98d6150b38a88817a151d318da706c83a26f397e0067a87327c269005e5e0",
+      "extension_ci_tools_commit": "b777c70d30942cca5bef62d6d4fa23a13362f398",
+      "extension_source_sha256": "8f1f2624fc64951aa42e35625f90c7008ff18672c4e114000dfada4c7e6bef6e",
+      "full_regression": {
+        "command": [
+          "bash",
+          "scripts/validate.sh",
+          "--matrix",
+          "test/data/engine-compatibility/version-matrix.json",
+          "--pair",
+          "v2.0.0",
+          "--output-root",
+          "build/series-acceptance-sc004-corrected-20261106",
+          "--local-only"
+        ],
+        "cwd": "/home/blizhan/repo/github/duckomo",
+        "ended_at_utc": "2026-11-06T06:46:01Z",
+        "exit_code": 0,
+        "log": "/home/blizhan/repo/github/duckomo/specs/010-read-om-series/evidence/acceptance-20261106-followup-linux-arm64/corrected-source/v2.0.0/full-regression-final.log",
+        "started_at_utc": "2026-11-06T06:44:22Z"
+      },
+      "local": {
+        "evidence_directory": "corrected-source/v2.0.0/local-corrected",
+        "fixture_manifest_sha256": "8b06774549ff9435537323ec2d59352d5fb508aa4448a854bf341c53e5129cd6",
+        "gates": {
+          "S1": "passed",
+          "S2": "passed",
+          "S5": "passed",
+          "S6": "passed",
+          "SC-004": "passed"
+        },
+        "s1_scenarios": 7,
+        "s2_cases": 46,
+        "sc004_models": true
+      },
+      "matrix": "test/data/engine-compatibility/version-matrix.json",
+      "official_cli_sha256": "f4c681bcf41a5c43dcf9a354703fe5bded9e2265282d1915d6d99637cd1e1f29",
+      "official_httpfs_native": {
+        "evidence": {
+          "path": "corrected-source/v2.0.0/official-httpfs/result.json",
+          "sha256": "0bc14a0cd43e81afb9b7882b99f87f1280d2a161234a562494171d6d06334095",
+          "size_bytes": 1009
+        },
+        "exit_code": 0,
+        "summary": "official_httpfs_test: actual HTTPFS diagnostics/redaction, cancellation/recovery and connection isolation passed"
+      },
+      "official_httpfs_sha256": "53f7aea1a0448ea62ef9b63f95da37c5766070084f14f14110e275e76382e7b2",
+      "om_c_commit": "d8855e418e2231ae8439f0c7e840fa3f93b371e3",
+      "pair": "v2.0.0",
+      "real_object_s7": {
+        "actual_matches_frozen_oracle": true,
+        "actual_matches_manual_union": true,
+        "evidence_directory": "corrected-source/v2.0.0/real",
+        "row_count": 2,
+        "status": "passed",
+        "two_way_except_all_empty": true
+      },
+      "runtime_manifest": {
+        "path": "corrected-source/v2.0.0/build/runtime.json",
+        "sha256": "dcab89c16844c1520dea7a8161588c7c6ee867ac53744034315b8e6f01440595",
+        "size_bytes": 759
+      },
+      "sanitizer_checks": {
+        "build_log": {
+          "path": "corrected-source/v2.0.0/build/build.log",
+          "sha256": "b0beb9b2da49dba14ff156b9b0c4b0f3445281348f01950685f4671998538025",
+          "size_bytes": 293856
+        },
+        "passed": true,
+        "tests_failed": 0,
+        "tests_passed": 14
+      },
+      "status": "passed"
+    }
+  ],
+  "preservation": {
+    "matches_recorded_inventory": true,
+    "observed_file_count": 5078,
+    "observed_total_bytes": 1181103584,
+    "protected_historical_evidence_path": "specs/010-read-om-series/evidence/run-20260803-linux-arm64",
+    "shared_duckdb_submodule_mutations_performed": false,
+    "stash_reset_commit_push_performed": false
+  },
+  "run_id": "acceptance-20261106-followup-linux-arm64",
+  "schema_version": 1,
+  "source_identity": {
+    "dirty_worktree_preserved": true,
+    "extension_source_sha256": "8f1f2624fc64951aa42e35625f90c7008ff18672c4e114000dfada4c7e6bef6e",
+    "tracked_dirty_diff_bytes": 254186,
+    "tracked_dirty_diff_sha256": "05e9cd9929e79e9207e8e0159ff52d22fa672888016fe54ce7bad15d89aa350b"
+  },
+  "started_at_utc": "2026-11-06T06:31:18Z",
+  "status": "passed",
+  "status_notes": [
+    {
+      "path": "specs/010-read-om-series/quickstart.md",
+      "sha256": "e398896b19ebcaa268843d5928aa7251a2abd7903fcf99389d05863112f46acf"
+    },
+    {
+      "path": "specs/010-read-om-series/contracts/acceptance.md",
+      "sha256": "e5575b6062282debd0e63d0cda9b7a61acc848cf83774486a7a8ac2d1bc92bc8"
+    },
+    {
+      "path": "specs/010-read-om-series/spec.md",
+      "sha256": "7e86d9deab18c92dddd2c917f950135498580f74d5a5af9918f6c5bed9b6c29e"
+    },
+    {
+      "path": "specs/010-read-om-series/tasks.md",
+      "sha256": "5b1945028ed300416f68c8f4bee1372fcd0241873f566c154507dd1ddef867b0"
+    }
+  ],
+  "status_scope": "Linux AArch64; DuckDB v1.5.4, v1.5.5, v1.5.6, v2.0.0; current extension-source digest and the real-object scope stated in report.md",
+  "success_criteria": {
+    "SC-001": "passed",
+    "SC-002": "passed",
+    "SC-003": "passed",
+    "SC-004": "passed",
+    "SC-005": "passed",
+    "SC-006": "passed",
+    "SC-007": "passed"
+  }
+}

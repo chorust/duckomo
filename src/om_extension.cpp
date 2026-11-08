@@ -49,6 +49,7 @@ void SetAsyncInflight(ClientContext &, SetScope, Value &parameter) {
 void DuckomoExtension::Load(ExtensionLoader &loader) {
 	loader.RegisterFunction(duckomo::GetReadOmRawFunction());
 	loader.RegisterFunction(duckomo::GetReadOmFunction());
+	loader.RegisterFunction(duckomo::GetReadOmSeriesFunction());
 	loader.RegisterFunction(duckomo::GetReadOmRegionsFunction());
 	loader.RegisterFunction(duckomo::GetGridInfoFunction());
 	loader.RegisterFunction(duckomo::GetLastScanMetricsFunction());
