@@ -40,7 +40,7 @@ DuckOMO 已移除配套 HTTPFS capability、补丁和源码子模块，远程入
 
 Makefile 从实际 DuckDB checkout 推导版本；社区传入的 `DUCKDB_GIT_VERSION` 稳定版 tag 可用于没有 tag 的源码 checkout。移除了固定 v1.5.4 的覆盖。`make matrix-release` 默认 v1.5.6；指定 `DUCKOMO_MATRIX_PAIR=v1.5.4` 或 `v1.5.5` 可构建对应版本。
 
-社区构建关闭 DuckOMO 开发用 native/fixture 工具，不依赖私有服务或凭据。CMake 的 `DUCKOMO_BUILD_DEVELOPER_TOOLS` 默认 OFF，本地 Make 和固定矩阵显式启用。SQLLogicTests 仍通过 `extension_config.cmake` 的 `TEST_DIR` / `LOAD_TESTS` 登记。
+社区构建关闭 DuckOMO 开发用 native/fixture 工具，不依赖私有服务或凭据。CMake 的 `DUCKOMO_BUILD_DEVELOPER_TOOLS` 默认 OFF，本地 Make 和固定矩阵显式启用。SQLLogicTests 仍通过 `extension_config.cmake` 的 `TEST_DIR` / `LOAD_TESTS` 登记。会执行这些测试的发布步骤只按需编译 `duckomo_fixture_tool` 并生成 `build/series-fixtures/`，不因此打开整套开发工具。
 
 根目录的 `vcpkg.json` 提供标准工具链所用的空依赖 manifest。OM C 来自固定子模块；HTTPFS 是运行时官方包，不通过 vcpkg 或配套源码编译。社区 CI 自行配置标准 vcpkg，无需使用者提供 `DUCKOMO_VCPKG_ROOT`。
 

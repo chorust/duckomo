@@ -44,7 +44,20 @@ git push origin v0.1.0-rc.1
 
 ## 构建、验证和资产
 
-先在四个平台独立构建实际 OM C target，尽早发现架构编译问题；通过后再复用固定提交的 DuckDB 官方 extension-ci-tools 分发工作流，保持上游测试开启。所有候选产物还必须在匹配架构的 runner 中加载**实际官方 CLI + HTTPFS**：检查引擎版本、平台、二进制 SHA256、本地 6 行/总和 15、HTTP/local 局部 4 行一致，以及服务端 Range 发送量小于完整对象。原生运行检查补充了上游跳过 Linux ARM64/macOS Intel SQL 测试的缺口，但不声称等价于完整回归。
+先在四个平台独立构建实际 OM C target，尽早发现架构编译问题；通过后再复用固定提交的 DuckDB 官方 extension-ci-tools 分发工作流，保持上游测试开启。`read_om_series` 的 SQLLogic 文件读取仓库根下 gitignore 的 `build/series-fixtures/`。`DUCKDB_PLATFORM` 仍让完整开发工具保持关闭；真正执行 `make test_release` / `test_debug` / `test_reldebug` 时，`scripts/ensure-series-fixtures.sh` 只编译 `duckomo_fixture_tool`（`EXCLUDE_FROM_ALL`），再运行 `scripts/generate-series-fixtures.py` 写入该目录。`SKIP_TESTS=1` 的步骤（例如 Linux 镜像外的那一次）直接跳过，不编译这个工具。上游本来就不跑 SQL 的 linux_arm64 与 osx_amd64 仍然跳过。这一步只让会跑 SQL 的平台能找到 fixture，不把 Feature 010 的验收范围扩大到 Linux ARM64 以外，也不把生成的 `.om` 提交进仓库。
+
+本地先配置对应构建，再跑同一条路径（不要为此打 tag）：
+
+```sh
+make release
+make test_release
+# 或，在已有 build/release 时：
+scripts/validate.sh build/release --local-only
+```
+
+两者都会先写入 `build/series-fixtures/`。显式重生成仍然是 `python3 scripts/generate-series-fixtures.py --fixture-tool build/release/test/tools/duckomo_fixture_tool --output-root build/series-fixtures`。
+
+所有候选产物还必须在匹配架构的 runner 中加载**实际官方 CLI + HTTPFS**：检查引擎版本、平台、二进制 SHA256、本地 6 行/总和 15、HTTP/local 局部 4 行一致，以及服务端 Range 发送量小于完整对象。原生运行检查补充了上游跳过 Linux ARM64/macOS Intel SQL 测试的缺口，但不声称等价于完整回归。
 
 官方运行包地址和解压后哈希固定在 [`release-runtimes.json`](../test/data/release-runtimes.json)，不在每次发布时从“最新版本”推断。更新矩阵时须获取实际官方包并重新固定哈希。
 

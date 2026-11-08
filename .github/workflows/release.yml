@@ -12,7 +12,11 @@ on:
       - 'scripts/version_matrix.py'
       - 'scripts/verify-community-artifact.py'
       - 'test/data/release-runtimes.json'
+      - 'Makefile'
+      - 'scripts/ensure-series-fixtures.sh'
+      - 'scripts/validate.sh'
       - 'test/tools/release_tools_test.py'
+      - 'test/tools/series_fixture_ci_test.py'
       - 'test/tools/om_build_test.py'
       - 'CMakeLists.txt'
       - 'third_party/om-file-format'
@@ -45,7 +49,9 @@ jobs:
       - name: Lint release workflow
         run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12 -shellcheck= -pyflakes= .github/workflows/release.yml
       - name: Test release contracts
-        run: python3 test/tools/release_tools_test.py
+        run: |
+          python3 test/tools/release_tools_test.py
+          python3 test/tools/series_fixture_ci_test.py
       - name: Validate tag and emit pinned matrix
         id: matrix
         run: python3 scripts/release_tools.py matrix --tag "$RELEASE_TAG" >> "$GITHUB_OUTPUT"
