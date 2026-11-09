@@ -217,6 +217,26 @@ def test_generator_reproducibility_hashes_and_gap_isolation() -> None:
             if actual_hash != object_record["sha256"]:
                 raise AssertionError(f"manifest does not match generated object hash: {object_record['path']}")
 
+        if not generator.series_fixtures_ready(output_a, FIXTURE_PATH):
+            raise AssertionError("a freshly generated fixture tree must count as complete")
+        if not generator.series_fixtures_ready(output_b, FIXTURE_PATH):
+            raise AssertionError("the second generated fixture tree must count as complete")
+        sample = output_b / second["objects"][0]["path"]
+        sample.unlink()
+        if generator.series_fixtures_ready(output_b, FIXTURE_PATH):
+            raise AssertionError("a missing writer object must not count as complete")
+        empty_gap = output_a / "data/gaps/all-missing/temperature"
+        empty_gap.rmdir()
+        if generator.series_fixtures_ready(output_a, FIXTURE_PATH):
+            raise AssertionError("the all-missing gap directory is part of the fixture set")
+        manifest_path = output_a / "series-fixtures.json"
+        stale = json.loads(manifest_path.read_text(encoding="utf-8"))
+        stale["fixture_definitions_sha256"] = "0" * 64
+        manifest_path.write_text(json.dumps(stale), encoding="utf-8")
+        empty_gap.mkdir()
+        if generator.series_fixtures_ready(output_a, FIXTURE_PATH):
+            raise AssertionError("a fixture tree from a different definition hash must be regenerated")
+
 
 def main() -> int:
     test_fixture_definitions_and_independent_oracle()

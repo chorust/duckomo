@@ -277,6 +277,105 @@ def materialize_gap_prefixes(spec: dict[str, Any], objects: list[dict[str, Any]]
     return results
 
 
+def _recorded_file_matches(root: Path, record: dict[str, Any]) -> bool:
+    """True when a manifest record points at an existing file of the recorded size."""
+    try:
+        relative = safe_relative_path(record.get("path"), "path")
+    except FixtureGenerationError:
+        return False
+    size = record.get("size_bytes")
+    if isinstance(size, bool) or not isinstance(size, int) or size < 0:
+        return False
+    path = root / relative
+    return path.is_file() and path.stat().st_size == size
+
+
+def series_fixtures_ready(output_root: Path, fixtures_path: Path = DEFAULT_FIXTURES,
+                          registry_path: Path = DEFAULT_REGISTRY) -> bool:
+    """Return whether output_root already holds the fixture files SQL tests read.
+
+    series-fixtures.json is written only after every object and gap prefix exists,
+    so a matching manifest plus those files is enough to skip CMake. Definition
+    hashes catch a spec change; file sizes catch a truncated or missing object.
+    """
+    output_root = Path(output_root)
+    manifest_path = output_root / "series-fixtures.json"
+    if not manifest_path.is_file():
+        return False
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        spec = load_spec(fixtures_path)
+        models, registry_sha = load_registry_models(registry_path)
+    except (OSError, UnicodeError, json.JSONDecodeError, FixtureGenerationError):
+        return False
+    if (not isinstance(manifest, dict) or manifest.get("schema_version") != 1
+            or manifest.get("fixture_definitions_sha256") != sha256(fixtures_path)
+            or manifest.get("registry_models_sha256") != registry_sha):
+        return False
+
+    objects = manifest.get("objects")
+    if not isinstance(objects, list):
+        return False
+    by_id: dict[str, dict[str, Any]] = {}
+    for item in objects:
+        if not isinstance(item, dict):
+            return False
+        identifier = item.get("id")
+        if not isinstance(identifier, str) or identifier in by_id:
+            return False
+        by_id[identifier] = item
+    expected_ids = [item["id"] for item in spec["writer_objects"]]
+    expected_ids.extend(f"registry_{model['key']}" for model in models)
+    if len(by_id) != len(expected_ids) or set(by_id) != set(expected_ids):
+        return False
+    for expected in spec["writer_objects"]:
+        actual = by_id[expected["id"]]
+        if actual.get("path") != expected["path"] or not _recorded_file_matches(output_root, actual):
+            return False
+    for model in models:
+        actual = by_id[f"registry_{model['key']}"]
+        expected_path = f"data/registry-equivalence/{model['key']}/chunk_0000.om"
+        if actual.get("path") != expected_path or not _recorded_file_matches(output_root, actual):
+            return False
+
+    gaps = manifest.get("gap_prefixes")
+    if not isinstance(gaps, list):
+        return False
+    gap_by_id: dict[str, dict[str, Any]] = {}
+    for gap in gaps:
+        if not isinstance(gap, dict):
+            return False
+        identifier = gap.get("id")
+        if not isinstance(identifier, str) or identifier in gap_by_id:
+            return False
+        gap_by_id[identifier] = gap
+    if set(gap_by_id) != {item["id"] for item in spec["gap_prefixes"]}:
+        return False
+    for expected_gap in spec["gap_prefixes"]:
+        actual_gap = gap_by_id[expected_gap["id"]]
+        if (actual_gap.get("prefix") != expected_gap["prefix"]
+                or actual_gap.get("present_chunk_indices") != expected_gap["present_chunk_indices"]):
+            return False
+        try:
+            prefix = output_root / safe_relative_path(expected_gap["prefix"], "gap prefix")
+        except FixtureGenerationError:
+            return False
+        if not prefix.is_dir():
+            return False
+        copied = actual_gap.get("objects")
+        if not isinstance(copied, list) or len(copied) != len(expected_gap["present_chunk_indices"]):
+            return False
+        recorded_names: list[str] = []
+        for record in copied:
+            if not isinstance(record, dict) or not _recorded_file_matches(output_root, record):
+                return False
+            recorded_names.append(Path(str(record["path"])).name)
+        actual_names = sorted(path.name for path in prefix.iterdir() if path.is_file())
+        if actual_names != sorted(recorded_names):
+            return False
+    return True
+
+
 def generate(fixture_tool: Path, output_root: Path, fixtures_path: Path = DEFAULT_FIXTURES,
              registry_path: Path = DEFAULT_REGISTRY) -> dict[str, Any]:
     fixture_tool = fixture_tool.resolve()
@@ -323,14 +422,21 @@ def generate(fixture_tool: Path, output_root: Path, fixtures_path: Path = DEFAUL
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--fixture-tool", required=True, type=Path, help="built duckomo_fixture_tool executable")
+    parser.add_argument("--check-existing", action="store_true",
+                        help="exit 0 when output-root already contains the complete fixture set")
+    parser.add_argument("--fixture-tool", type=Path, help="built duckomo_fixture_tool executable")
     parser.add_argument("--output-root", required=True, type=Path, help="build-local generated fixture root")
     parser.add_argument("--fixtures", type=Path, default=DEFAULT_FIXTURES, help="fixture definition JSON")
     parser.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY,
                         help="frozen temporal model registry used for SC-004 fixtures")
     args = parser.parse_args(argv)
+    if args.check_existing:
+        return 0 if series_fixtures_ready(args.output_root, args.fixtures, args.registry) else 1
+    fixture_tool = args.fixture_tool
+    if fixture_tool is None:
+        parser.error("--fixture-tool is required to generate fixtures")
     try:
-        generate(args.fixture_tool, args.output_root, args.fixtures, args.registry)
+        generate(fixture_tool, args.output_root, args.fixtures, args.registry)
     except (FixtureGenerationError, OSError, subprocess.CalledProcessError) as error:
         print(f"series fixture generation failed: {error}", file=sys.stderr)
         return 1
