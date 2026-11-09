@@ -21,6 +21,8 @@ Repeat the 1.5.x commands for v1.5.5 and v1.5.6. The `--local-only` workflow run
 
 These tools are implemented. Fixture generation uses the pinned official OM writer; the validator verifies fixture hashes, checks the exact requested extension load, and compares full schemas and row multisets against explicit `read_om` UNION ALL oracles.
 
+`make test_release`, `make test_debug`, `make test_reldebug`, and `scripts/validate.sh` run this same generator before SQLLogic tests and write `build/series-fixtures/` (gitignored; do not commit the `.om` objects). Release CI leaves `DUCKOMO_BUILD_DEVELOPER_TOOLS` off and builds only `duckomo_fixture_tool` for that step. Platforms whose SQL is skipped upstream (`linux_arm64`, `osx_amd64`) stay skipped. This wiring does not extend the Linux AArch64 acceptance scope recorded above.
+
 ```bash
 python3 scripts/generate-series-registry.py --check
 python3 scripts/generate-series-fixtures.py \

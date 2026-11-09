@@ -114,6 +114,8 @@ if [[ "$SAMPLING" == true ]]; then
     # only after it completes, before any acceptance commands run.
     python3 "$ROOT/scripts/sampling_build.py" --build "$BUILD" --sanitizers
 fi
+# Series SQL files resolve __WORKING_DIRECTORY__/build/series-fixtures.
+"$ROOT/scripts/ensure-series-fixtures.sh" "$BUILD"
 for file in test/sql/*.test; do
     if [[ "$file" == test/sql/regions.test || "$file" == test/sql/region_sampling.test || "$file" == test/sql/region_sampling_spatial_dependency.test ]]; then continue; fi
     "$BUILD/test/unittest" --test-dir "$ROOT" "$file"

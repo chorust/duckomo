@@ -146,6 +146,18 @@ set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
 )
 
 option(DUCKOMO_BUILD_DEVELOPER_TOOLS "Build DuckOMO native checks and fixture tools" OFF)
+# Series SQLLogic tests read gitignored build/series-fixtures/. Release CI leaves the
+# rest of the developer suite off, but still needs this one official-writer binary
+# before `make test_*`. The full developer suite already builds the same target.
+option(DUCKOMO_BUILD_SERIES_FIXTURE_TOOL "Build duckomo_fixture_tool for series SQL fixtures" ON)
 if(DUCKOMO_BUILD_DEVELOPER_TOOLS)
     add_subdirectory(test)
+elseif(DUCKOMO_BUILD_SERIES_FIXTURE_TOOL)
+    add_executable(duckomo_fixture_tool EXCLUDE_FROM_ALL
+        "${CMAKE_CURRENT_SOURCE_DIR}/test/tools/duckomo_fixture_tool.cpp")
+    set_target_properties(duckomo_fixture_tool PROPERTIES
+        CXX_STANDARD 17
+        CXX_STANDARD_REQUIRED ON
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test/tools")
+    target_link_libraries(duckomo_fixture_tool PRIVATE duckomo_om)
 endif()

@@ -44,6 +44,11 @@ endfunction()
                 self.assertNotIn('-march=native', row['command'])
                 self.assertNotIn('-mavx2', row['command'])
             self.run_command(['cmake', '--build', str(build), '--target', 'duckomo_om', '--parallel', '2'])
+            # Developer tools stay off. Series SQL still needs this one writer,
+            # and it must link without pulling in the rest of the suite.
+            self.run_command(['cmake', '--build', str(build), '--target', 'duckomo_fixture_tool', '--parallel', '2'])
+            tool = build / 'test' / 'tools' / 'duckomo_fixture_tool'
+            self.assertTrue(tool.is_file() and tool.stat().st_mode & 0o111, tool)
 
     def run_command(self, command):
         result = subprocess.run(command, text=True, capture_output=True, timeout=600)
