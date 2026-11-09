@@ -39,9 +39,10 @@ TESTS_BASE_DIRECTORY := test/sql/
 # read_om_series SQLLogic tests load gitignored objects from build/series-fixtures/.
 # extension-ci-tools 1.5 runs the suite from test_*_internal; 2.0 runs it from
 # test_* itself. Attach the generator to both so `make test_*` writes that
-# directory first. SKIP_TESTS=1 (the host-side Linux step, and any explicit
-# skip) makes the script a no-op, so architectures whose SQL is skipped are
-# not asked to compile duckomo_fixture_tool.
+# directory first. Linux CI then runs `make test_release` again on the host,
+# where SKIP_TESTS is only a Make variable. The script skips that second run
+# when the fixture files are already complete, and still generates them when
+# they are missing. An environment SKIP_TESTS=1 remains a no-op.
 .PHONY: series-fixtures-release series-fixtures-debug series-fixtures-reldebug
 series-fixtures-release series-fixtures-debug series-fixtures-reldebug:
 	"$(PROJ_DIR)scripts/ensure-series-fixtures.sh" "$(PROJ_DIR)build/$(patsubst series-fixtures-%,%,$@)"
