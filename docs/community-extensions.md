@@ -2,7 +2,7 @@
 
 状态：**已收录并公开发布**。[社区扩展页](https://duckdb.org/community_extensions/extensions/duckomo) 提供 `INSTALL duckomo FROM community;`。上游登记见 [`duckdb/community-extensions` 的 `extensions/duckomo/description.yml`](https://github.com/duckdb/community-extensions/blob/main/extensions/duckomo/description.yml)：版本 **`0.3.5-rc.1`**，维护者 **`blizhan`**，源码 `repo.ref` **`55d66f3fbd3199d7471b8cd569c43cc91a8cec7e`**（与本仓库历史提交一致，不必等于当前 `main` tip）。排除平台为 musl / Windows / Wasm；Linux glibc x86_64/ARM64 与 macOS Intel/Apple Silicon 在登记范围内。
 
-本仓库 [GitHub tag 发布流程](releases.md) 仍独立提供开发/预发布产物（含 DuckDB 1.5.4–1.5.6 与 2.0.0）。社区页说明：2.0.0 兼容与四平台产物已验证；异步远程 I/O 仍为实验性且无稳定加速承诺；网格验收限于文档化对象，不外推全部 OM。本地 [`community/duckomo/description.yml.in`](../community/duckomo/description.yml.in) 与 [`community/validation.json`](../community/validation.json) 已于 2026-11-04 按已发布登记回填（`0.3.5-rc.1` / `blizhan` / ref `55d66f3…` / `published-in-community`）；`validation.json` 内仍嵌套保留 2026-10-08 筹备快照供审计。社区产物 hash 未在本轮重新拉取（见 validation TODO）。
+本仓库 [GitHub tag 发布流程](releases.md) 仍独立提供 tag 产物（含 DuckDB 1.5.4–1.5.6 与 2.0.0）。已发布社区页仍是 **`0.3.5-rc.1`**：2.0.0 兼容与四平台产物已验证；异步远程 I/O 仍为实验性且无稳定加速承诺；网格验收限于文档化对象，不外推全部 OM。本地 [`community/duckomo/description.yml.in`](../community/duckomo/description.yml.in) 的 `extended_description` 已不再把待提交源码写成 prerelease；下一步社区升级目标是 **0.4.0**（GitHub release [v0.4.0](https://github.com/chorust/duckomo/releases/tag/v0.4.0)，commit `1bc76c3a36d26607b463909153cff9c255e19919`），上游合并发布前社区页仍是 `0.3.5-rc.1`。[`community/validation.json`](../community/validation.json) 仍是 2026-11-04 已发布登记回填（`0.3.5-rc.1` / `blizhan` / ref `55d66f3…` / `published-in-community`），并保留 2026-10-08 筹备快照供审计。社区产物 hash 未在本轮重新拉取（见 validation TODO）。
 
 GitHub 开发包仍未签名；社区签名产物正常加载不需要 `-unsigned`。收录不等于 Spec 008 性能门禁完成，也不扩大超出文档范围的网格验收声明。
 
@@ -29,14 +29,15 @@ DuckOMO 已移除配套 HTTPFS capability、补丁和源码子模块，远程入
 
 | 项目 | 范围 |
 |---|---|
-| 已发布社区版本 | `0.3.5-rc.1`（预发布标识） |
+| 已发布社区版本 | `0.3.5-rc.1`（版本号仍带 rc；社区页在下一次合并前不变） |
 | 已发布源码 ref | `55d66f3fbd3199d7471b8cd569c43cc91a8cec7e` |
+| 下一次社区登记（尚未发布） | 版本 `0.4.0`。本地模板已去掉 prerelease 句；不要把它写成已经上线 |
 | 登记平台 | Linux glibc x86_64/ARM64、macOS Intel/Apple Silicon（见上游 `excluded_platforms`） |
 | 仍排除 | musl、Windows、Wasm |
 | 源码兼容验证 | 仍覆盖 v1.5.4、v1.5.5、v1.5.6；社区页亦列 2.0.0 |
 | 开发子模块 | 本地开发树仍可固定 v1.5.4；社区/发布 CI 按目标版本切换 |
 
-平台范围以已发布 `description.yml` 的 `excluded_platforms` 为准。新增平台要先构建并验证，再改上游登记。仓库内 `description.yml.in` 已与上游已发布登记对齐；后续升级时再改 version / repo.ref 后提交 community-extensions PR。
+平台范围以已发布 `description.yml` 的 `excluded_platforms` 为准。新增平台要先构建并验证，再改上游登记。仓库内 `description.yml.in` 的 version / repo.ref 仍是占位符，提交 community-extensions PR 时再填入目标版本与源码 commit。`extended_description` 已按 v0.4.0 去掉 prerelease 表述；已发布上游正文在合并前仍是 `0.3.5-rc.1`。
 
 Makefile 从实际 DuckDB checkout 推导版本；社区传入的 `DUCKDB_GIT_VERSION` 稳定版 tag 可用于没有 tag 的源码 checkout。移除了固定 v1.5.4 的覆盖。`make matrix-release` 默认 v1.5.6；指定 `DUCKOMO_MATRIX_PAIR=v1.5.4` 或 `v1.5.5` 可构建对应版本。
 
@@ -73,8 +74,8 @@ python3 scripts/verify-community-artifact.py --version v1.5.6 \
 后续升级社区登记时：先完成源码提交并推送到公开的 `chorust/duckomo`，确认相关 CI 成功。设置目标社区版本；脚本会从当前 checkout 读取待登记的源码 commit。模板把 `@DUCKOMO_VERSION@` 和 `@DUCKOMO_SOURCE_REF@` 放在 YAML 的实际字段中。生成时用 PyYAML 解析结果，并断言 `extension.version` 与 `repo.ref` 都等于本次目标值，再提交生成文件：
 
 ```sh
-# Example only: set the community version selected for this PR.
-DUCKOMO_COMMUNITY_VERSION=0.3.5-rc.2 python3 - <<'PY'
+# Example only: next community bump is 0.4.0 (not yet published upstream).
+DUCKOMO_COMMUNITY_VERSION=0.4.0 python3 - <<'PY'
 from pathlib import Path
 import os
 import subprocess
@@ -99,7 +100,7 @@ PY
 
 将生成文件以 PR 更新 [community-extensions](https://github.com/duckdb/community-extensions) 中已有的 `extensions/duckomo/description.yml`，等待维护者审查、社区构建、签名和发布。未来不兼容的新引擎适配可使用 `repo.ref_next`。`description.yml.in` 的版本/ref 占位符必须位于 YAML 字段本身；其余登记字段仍需与上游核对。DuckDB 2.0 开发包仍可由本仓库 GitHub tag release 矩阵提供。构建 CI 与发布 CI 的 2.0 工具链 pin（如 `v2.0-cyanoptera`）服务于本仓库矩阵，不等于社区页上的全部可用引擎组合。
 
-社区已签名发布，但**不**自动关闭本仓库未完成的 Spec 门禁或历史独立复现条件。GitHub 开发发行包仍可按 tag 流程供试用；预发布标识应保留到稳定版 tag。登记描述不把投影/Gaussian 或异步性能目标等同于已全部验收完成。
+社区已签名发布的仍是 `0.3.5-rc.1`，这**不**自动关闭本仓库未完成的 Spec 门禁或历史独立复现条件。下一步社区登记目标是 0.4.0；合并发布前不要写成已经上线。GitHub tag [v0.4.0](https://github.com/chorust/duckomo/releases/tag/v0.4.0) 已是正式 release，不是 prerelease。登记描述不把投影/Gaussian 或异步性能目标等同于已全部验收完成。
 
 ## 核对来源
 
